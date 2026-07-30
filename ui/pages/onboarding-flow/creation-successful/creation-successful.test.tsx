@@ -17,6 +17,19 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CreationSuccessful from './creation-successful';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 let mockUseLocationSearch = '';
 
@@ -53,6 +66,14 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
 
 // Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
@@ -60,11 +81,17 @@ const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
+const mockSetPreference = jest.fn().mockResolvedValue(undefined);
+const mockSetUseMultiAccountBalanceChecker = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
+    setPreference: mockSetPreference,
+    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
   },
   {
     get: (target, prop) => {
@@ -113,6 +140,9 @@ describe('Wallet Ready Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
     mockUseNavigate.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
@@ -185,6 +215,26 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  it('sets the consolidated Basic Functionality cohort marker when the build flag is enabled', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByTestId } = renderWithProvider(
+      <CreationSuccessful />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('onboarding-complete-done'));
+
+    await waitFor(() => {
+      expect(mockSetPreference).toHaveBeenCalledWith(
+        'isBasicFunctionalityConsolidatedEnabled',
+        true,
+      );
     });
   });
 

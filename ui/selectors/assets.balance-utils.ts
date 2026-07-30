@@ -1,5 +1,4 @@
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
-import type { TraceCallback } from '@metamask/controller-utils';
 import {
   getAggregatedBalanceForAccount,
   type AccountsById,
@@ -33,7 +32,6 @@ function aggregateGroupBalance(
   accountsById: AccountsById,
   enabledNetworkMap: EnabledNetworkMap,
   accountIds: string[],
-  trace?: TraceCallback,
 ): { totalBalanceInFiat: number; pricePercentChange1d: number } {
   if (accountIds.length === 0) {
     return { totalBalanceInFiat: 0, pricePercentChange1d: 0 };
@@ -45,6 +43,9 @@ function aggregateGroupBalance(
   const placeholderAccount = accountsById[accountIds[0]] ?? {
     id: accountIds[0],
   };
+  // Do not pass the optional `trace` callback. This runs inside a Redux
+  // selector that recomputes per account group on every state change, so
+  // tracing it emits an unbounded number of transaction roots (#44447).
   const { totalBalanceInFiat = 0, pricePercentChange1d = 0 } =
     getAggregatedBalanceForAccount(
       assetsControllerState,
@@ -53,7 +54,6 @@ function aggregateGroupBalance(
       undefined,
       accountIds,
       accountsById,
-      trace,
     );
   return { totalBalanceInFiat, pricePercentChange1d };
 }
@@ -107,7 +107,6 @@ function buildBalanceChangeResult(
  * @param accountTreeState - AccountTreeController state.
  * @param accountsById - Internal accounts keyed by account id.
  * @param enabledNetworkMap - Map of enabled networks keyed by namespace.
- * @param trace - Optional trace callback forwarded to the aggregation selector.
  * @returns Aggregated balances for all wallets and groups.
  */
 export function calculateBalanceForAllWallets(
@@ -115,7 +114,6 @@ export function calculateBalanceForAllWallets(
   accountTreeState: AccountTreeControllerState,
   accountsById: AccountsById,
   enabledNetworkMap: EnabledNetworkMap,
-  trace?: TraceCallback,
 ): AllWalletsBalance {
   const userCurrency = assetsControllerState.selectedCurrency ?? 'usd';
   const wallets: AllWalletsBalance['wallets'] = {};
@@ -138,7 +136,6 @@ export function calculateBalanceForAllWallets(
         accountsById,
         enabledNetworkMap,
         accountIds,
-        trace,
       );
 
       walletBalance.groups[groupId] = {
@@ -164,7 +161,6 @@ export function calculateBalanceChangeForAccountGroup(
   enabledNetworkMap: EnabledNetworkMap,
   groupId: string,
   period: BalanceChangePeriod,
-  trace?: TraceCallback,
 ): BalanceChangeResult {
   const userCurrency = assetsControllerState.selectedCurrency ?? 'usd';
   const accountIds = getAccountIdsForGroup(accountTreeState, groupId);
@@ -173,7 +169,6 @@ export function calculateBalanceChangeForAccountGroup(
     accountsById,
     enabledNetworkMap,
     accountIds,
-    trace,
   );
 
   const { current, previous } = getCurrentAndPrevious(

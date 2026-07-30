@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,7 +20,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,14 +30,15 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
     <Box marginBottom={3} className="create-new-swap">
       <button
         onClick={async () => {
-          trackEvent({
-            event: MetaMetricsEventName.MakeAnotherSwap,
-            category: MetaMetricsEventCategory.Swaps,
-            sensitiveProperties: sensitiveTrackingProperties,
-            properties: {
-              hd_entropy_index: hdEntropyIndex,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.MakeAnotherSwap)
+              .addCategory(MetaMetricsEventCategory.Swaps)
+              .addSensitiveProperties(sensitiveTrackingProperties)
+              .addProperties({
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           navigate(DEFAULT_ROUTE); // It cleans up Swaps state.
           await dispatch(navigateBackToPrepareSwap(navigate));
           dispatch(setSwapsFromToken(defaultSwapsToken));

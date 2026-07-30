@@ -10,18 +10,14 @@ import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 /** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
@@ -29,10 +25,6 @@ I18nProvider.propTypes = {
   current: PropTypes.object,
   en: PropTypes.object,
   children: PropTypes.node,
-};
-
-I18nProvider.defaultProps = {
-  children: undefined,
 };
 
 export function renderWithLocalization(component) {

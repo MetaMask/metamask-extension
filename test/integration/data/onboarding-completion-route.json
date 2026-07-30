@@ -118,7 +118,6 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
-  "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {
       "0xaa36a7": true

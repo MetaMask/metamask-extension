@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Izbrati morate račun!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodaj žetone pridobljene z MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj vzdevek"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Napredno"
   },
-  "customToken": {
-    "message": "Žeton po meri"
-  },
   "decimal": {
     "message": "Decimalna natančnost"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalk mora biti med 0 in 36."
   },
   "delete": {
     "message": "Izbriši"
@@ -335,9 +326,6 @@
   },
   "metamaskVersion": {
     "message": "Različica"
-  },
-  "mustSelectOne": {
-    "message": "Izbran mora biti vsaj 1 žeton."
   },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
@@ -508,9 +496,6 @@
   },
   "sign": {
     "message": "Podpiši"
-  },
-  "signatureRequest": {
-    "message": "Zahteva za podpis"
   },
   "signed": {
     "message": "Podpisano"

@@ -39,7 +39,7 @@ class SelectNetwork {
   private readonly searchInput = '[data-testid="settings-header-search-input"]';
 
   private readonly selectNetworkMessage = {
-    text: 'Networks',
+    text: 'Manage networks',
     tag: 'p',
   };
 

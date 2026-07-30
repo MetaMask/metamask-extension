@@ -91,9 +91,13 @@ export const useNetworkItemCallbacks = () => {
       const isEthereumMainnet =
         chainId === EthScope.Mainnet ||
         (isEvm && hexChainId === CHAIN_IDS.MAINNET);
+      const isSelectedNetwork =
+        chainId === currentChainId ||
+        (Boolean(hexChainId) && hexChainId === currentChainId);
 
       const canRemoveOrDisable =
         isUnlocked &&
+        !isSelectedNetwork &&
         (isDisableableDefault
           ? !isEthereumMainnet
           : isEvm &&

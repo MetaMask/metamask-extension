@@ -3,19 +3,24 @@
 // @ts-ignore
 import { confusables } from 'unicode-confusables';
 
-import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isStellarAddress,
+} from '../../../../shared/lib/multichain/accounts';
 
 import {
   findConfusablesInRecipient,
   validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateStellarAddress,
 } from './sendValidations';
 
 jest.mock('unicode-confusables');
 jest.mock('../../../../shared/lib/multichain/accounts');
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
+const mockIsStellarAddress = jest.mocked(isStellarAddress);
 
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
@@ -158,6 +163,25 @@ describe('SendValidations', () => {
     it('returns error for invalid Bitcoin address', async () => {
       const invalidAddress = 'invalid-address';
       expect(validateBtcAddress(invalidAddress)).toEqual({
+        error: 'invalidAddress',
+      });
+    });
+  });
+
+  describe('validateStellarAddress', () => {
+    beforeEach(() => {
+      mockIsStellarAddress.mockReturnValue(true);
+    });
+
+    it('returns success for valid Stellar account id format', () => {
+      const validAddress = `G${'A'.repeat(55)}`;
+      expect(validateStellarAddress(validAddress)).toEqual({});
+    });
+
+    it('returns error for invalid Stellar address', () => {
+      mockIsStellarAddress.mockReturnValue(false);
+
+      expect(validateStellarAddress('not-a-stellar-address')).toEqual({
         error: 'invalidAddress',
       });
     });

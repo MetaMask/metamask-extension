@@ -1,4 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
+import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
@@ -17,24 +18,6 @@ import {
 // `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
 export { willFlipPosition } from './utils/orderUtils';
 export { buildPerpsVipTrackingData } from './utils/trackingData';
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
- * @example
- * getDisplayName('xyz:TSLA') => 'TSLA'
- * getDisplayName('BTC') => 'BTC'
- */
-export const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
 
 /**
  * Determines if a position is long (positive size) or short (negative size)
@@ -193,26 +176,29 @@ export const getChangeColor = (percentString: string): TextColor => {
 };
 
 /**
- * Extract the display symbol from a full symbol string
- * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
- * Includes null/type safety checks
+ * Extract the display symbol from a full symbol string.
+ * Strips the DEX prefix for HIP-3 markets (e.g. "xyz:TSLA" -> "TSLA").
+ * Includes null/type safety checks.
  *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
+ * IMPORTANT: This is for RENDERING ONLY. Always keep the raw, full symbol
+ * (with prefix) when calling background/API methods, building WebSocket
+ * subscriptions, navigating routes, passing to `PerpsTokenLogo`, or setting
+ * analytics properties / `data-testid` / React `key` values. This is the
+ * single canonical helper for stripping the prefix — do not add another one.
+ *
+ * Delegates to `@metamask/perps-controller`'s `getPerpsDisplaySymbol` so the
+ * UI and controller share one implementation instead of maintaining a
+ * parallel copy that could drift. Re-exported under this name since it's
+ * already used across ~20 call sites in the UI layer.
+ *
+ * @param symbol - The symbol to extract the display name from.
+ * @returns The display symbol.
  * @example
  * getDisplaySymbol('xyz:TSLA') => 'TSLA'
  * getDisplaySymbol('BTC') => 'BTC'
  */
-export const getDisplaySymbol = (symbol: string): string => {
-  if (!symbol || typeof symbol !== 'string') {
-    return symbol;
-  }
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
+export const getDisplaySymbol = (symbol: string): string =>
+  getPerpsDisplaySymbol(symbol);
 
 export type AssetIconUrls = {
   primary: string;
@@ -509,6 +495,26 @@ export function getPnlDisplayColor(pnl: number): TextColor {
     return TextColor.ErrorDefault;
   }
   return TextColor.TextDefault;
+}
+
+/**
+ * Neutralizes a semantic (success/error) text color when the value it's
+ * applied to is currently masked (e.g. by privacy mode). This prevents the
+ * color itself from leaking whether a P&L/return figure is positive or
+ * negative while the value is hidden behind dots.
+ *
+ * @param color - The color to use when the value is visible
+ * @param isHidden - Whether the value is currently masked
+ * @returns `TextColor.TextDefault` when hidden, otherwise the given color
+ * @example
+ * getPrivacyAwareColor(TextColor.SuccessDefault, true) // → TextColor.TextDefault
+ * getPrivacyAwareColor(TextColor.SuccessDefault, false) // → TextColor.SuccessDefault
+ */
+export function getPrivacyAwareColor(
+  color: TextColor,
+  isHidden: boolean | undefined,
+): TextColor {
+  return isHidden ? TextColor.TextDefault : color;
 }
 
 /**

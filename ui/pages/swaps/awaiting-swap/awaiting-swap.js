@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -78,7 +78,8 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -173,18 +174,13 @@ export default function AwaitingSwap({
         rel="noopener noreferrer"
         onClick={() => {
           trackEvent(
-            {
-              category: MetaMetricsEventCategory.Swaps,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
+            createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+              .addCategory(MetaMetricsEventCategory.Swaps)
+              .addProperties({
                 url: SUPPORT_LINK,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
+                location: segmentContext.page?.title,
+              })
+              .build(),
           );
         }}
       >
@@ -207,14 +203,15 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      trackEvent({
-        event: 'Quotes Timed Out',
-        category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties,
-        properties: {
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
+      trackEvent(
+        createEventBuilder('Quotes Timed Out')
+          .addCategory(MetaMetricsEventCategory.Swaps)
+          .addSensitiveProperties(sensitiveProperties)
+          .addProperties({
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');

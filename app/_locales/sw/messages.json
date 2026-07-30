@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Unatakiwa kuchagua akaunti!"
   },
-  "addAcquiredTokens": {
-    "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
-  },
   "addAlias": {
     "message": "Ongeza jina jingine"
   },
@@ -175,14 +172,8 @@
   "custom": {
     "message": "Mipangilio ya kina"
   },
-  "customToken": {
-    "message": "Kianzio Maalumu"
-  },
   "decimal": {
     "message": "Desimali za Usahihi"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
   },
   "delete": {
     "message": "Futa"
@@ -329,9 +320,6 @@
   },
   "metamaskVersion": {
     "message": "Toleo la MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Lazima uchague angalau kianzio 1."
   },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
@@ -502,9 +490,6 @@
   },
   "sign": {
     "message": "Ingia kwenye akaunti"
-  },
-  "signatureRequest": {
-    "message": "Ombi la Saini"
   },
   "signed": {
     "message": "Imesainiwa"

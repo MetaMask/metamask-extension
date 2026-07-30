@@ -1,9 +1,14 @@
 import { BigNumber } from 'bignumber.js';
-import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  ChainId,
+  getNativeAssetForChainId,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
 import {
   formatTokenAmount,
   formatCurrencyAmount,
   formatProviderLabel,
+  readMmFee,
 } from './quote';
 
 describe('Bridge quote utils', () => {
@@ -146,6 +151,72 @@ describe('Bridge quote utils', () => {
       const result = formatProviderLabel(args);
 
       expect(result).toBe('bridge1_undefined');
+    });
+  });
+
+  describe('readMmFee', () => {
+    const createQuote = ({
+      baseBpsFee,
+      discountType,
+      quoteBpsFee,
+    }: {
+      baseBpsFee?: number;
+      discountType?: string | null;
+      quoteBpsFee?: number;
+    }) =>
+      ({
+        quote: {
+          feeData: {
+            metabridge: {
+              baseBpsFee,
+              discountType,
+              quoteBpsFee,
+            },
+          },
+        },
+      }) as unknown as QuoteResponse;
+
+    it('returns fee percentages and no discount when discountType is absent', () => {
+      expect(
+        readMmFee(createQuote({ baseBpsFee: 87.5, quoteBpsFee: 50 })),
+      ).toStrictEqual({
+        baseFeePercentage: '0.875',
+        discountType: undefined,
+        isDiscounted: false,
+        quoteFeePercentage: '0.5',
+      });
+    });
+
+    (['vip', 'promo', 'dao', 'seasonal'] as const).forEach((discountType) => {
+      it(`returns discounted fee data for ${discountType} discountType`, () => {
+        expect(
+          readMmFee(
+            createQuote({ baseBpsFee: 87.5, discountType, quoteBpsFee: 50 }),
+          ),
+        ).toStrictEqual({
+          baseFeePercentage: '0.875',
+          discountType,
+          isDiscounted: true,
+          quoteFeePercentage: '0.5',
+        });
+      });
+    });
+
+    it('treats a zero quote fee as discounted when discountType is present', () => {
+      expect(
+        readMmFee(
+          createQuote({
+            baseBpsFee: 87.5,
+            discountType: 'promo',
+            quoteBpsFee: 0,
+          }),
+        ),
+      ).toStrictEqual({
+        baseFeePercentage: '0.875',
+        discountType: 'promo',
+        isDiscounted: true,
+        quoteFeePercentage: '0',
+      });
     });
   });
 });

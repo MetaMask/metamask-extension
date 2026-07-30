@@ -21,6 +21,7 @@ import {
 } from '../../ducks/bridge/selectors';
 import {
   resetInputFields,
+  setBridgeLocation,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
@@ -63,7 +64,7 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource | 'Carousel',
+      location: MetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -78,6 +79,7 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
+      dispatch(setBridgeLocation(location));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
@@ -90,8 +92,6 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-          // TODO: Remove @ts-expect-error once @metamask/bridge-controller is
-          // updated to 75.2.0, which adds environment_type to the type.
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
         }),

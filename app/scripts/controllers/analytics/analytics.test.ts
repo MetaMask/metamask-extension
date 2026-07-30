@@ -19,11 +19,18 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import { getAnalyticsMessenger } from './analytics-messenger';
-import { configureAnalytics, identify, trackEvent } from './analytics';
+import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import {
+  configureAnalytics,
+  getProfileIdentityProperties,
+  identify,
+  trackEvent,
+  updateProfileSessionData,
+} from './analytics';
 
 function createConfiguredMessenger() {
   const trackEventHandler = jest.fn();
+  const trackViewHandler = jest.fn();
   const identifyHandler = jest.fn();
   const rootMessenger = new Messenger<
     MockAnyNamespace,
@@ -106,20 +113,54 @@ function createConfiguredMessenger() {
     'AnalyticsController:identify',
     identifyHandler as never,
   );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:trackView',
+    trackViewHandler as never,
+  );
+
+  const analyticsMessenger = getAnalyticsControllerInitMessenger(rootMessenger);
 
   configureAnalytics({
-    messenger: getAnalyticsMessenger(rootMessenger),
-    version: '1.2.3',
-    environment: 'test',
+    messenger: analyticsMessenger,
   });
 
   return {
     identifyHandler,
     trackEventHandler,
+    trackViewHandler,
   };
 }
 
+const SAMPLE_SRP_SESSION_DATA = {
+  entropySourceId1: {
+    token: {
+      accessToken: '',
+      expiresIn: 0,
+      obtainedAt: 0,
+    },
+    profile: {
+      identifierId: 'identifierId',
+      profileId: 'profileId',
+      canonicalProfileId: 'canonicalProfileId',
+      metaMetricsId: 'testid',
+    },
+  },
+};
+
+const PROFILE_IDENTITY_EVENT_PROPERTIES = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  profile_id: 'profileId',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  canonical_profile_id: 'canonicalProfileId',
+};
+
 describe('analytics', () => {
+  beforeEach(() => {
+    updateProfileSessionData(undefined);
+  });
+
   it('normalizes lightweight built events before delivery', () => {
     const { trackEventHandler } = createConfiguredMessenger();
 
@@ -134,19 +175,12 @@ describe('analytics', () => {
         name: 'Test Event',
         properties: expect.objectContaining({
           category: 'Test Category',
-          locale: 'en-US',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'popup',
         }),
       }),
       expect.objectContaining({
-        app: {
-          name: 'MetaMask Extension',
-          version: '1.2.3-test',
-        },
-        marketingCampaignCookieId: 'campaign-id',
+        page: expect.any(Object),
       }),
     );
   });
@@ -204,5 +238,15 @@ describe('analytics', () => {
     );
 
     warnSpy.mockRestore();
+  });
+
+  it('caches profile identity for downstream enrichment', () => {
+    updateProfileSessionData(undefined);
+    expect(getProfileIdentityProperties()).toEqual({});
+
+    updateProfileSessionData(SAMPLE_SRP_SESSION_DATA);
+    expect(getProfileIdentityProperties()).toEqual(
+      PROFILE_IDENTITY_EVENT_PROPERTIES,
+    );
   });
 });

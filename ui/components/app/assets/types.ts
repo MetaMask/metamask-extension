@@ -1,11 +1,12 @@
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
-import { type TokenListToken } from '@metamask/assets-controllers';
+import type { Asset, TokenListToken } from '@metamask/assets-controllers';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
   secondary: number | null;
   string?: string;
+  isFiatLoading?: boolean;
 };
 
 export type TokenBalanceValues = {

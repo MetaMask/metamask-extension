@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
+import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import type { AccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type NotificationAccount = {
@@ -16,23 +19,15 @@ export type NotificationWalletGroup = {
 
 export function getNotificationWalletGroups(
   accountGroups: AccountGroupWithInternalAccounts[],
-  notificationAddresses: string[],
 ): NotificationWalletGroup[] {
-  if (accountGroups.length === 0 || notificationAddresses.length === 0) {
+  if (accountGroups.length === 0) {
     return [];
   }
-
-  const notificationAddressSet = new Set(
-    notificationAddresses.map((address) => address.toLowerCase()),
-  );
 
   return accountGroups.reduce<NotificationWalletGroup[]>(
     (walletGroups, accountGroup) => {
       const evmAccount = accountGroup.accounts.find(
-        (account) =>
-          Boolean(account.address) &&
-          isEvmAccountType(account.type) &&
-          notificationAddressSet.has(account.address.toLowerCase()),
+        (account) => Boolean(account.address) && isEvmAccountType(account.type),
       );
 
       if (!evmAccount?.address) {
@@ -63,5 +58,14 @@ export function getNotificationWalletGroups(
       return walletGroups;
     },
     [],
+  );
+}
+
+export function useNotificationAccountGroups(): NotificationWalletGroup[] {
+  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
+
+  return useMemo(
+    () => getNotificationWalletGroups(accountGroups),
+    [accountGroups],
   );
 }

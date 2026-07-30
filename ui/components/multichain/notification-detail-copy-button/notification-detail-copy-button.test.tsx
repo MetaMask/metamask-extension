@@ -7,6 +7,19 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn().mockReturnValue([false, jest.fn()]),
 }));
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn().mockReturnValue((key: string) => key),
 }));

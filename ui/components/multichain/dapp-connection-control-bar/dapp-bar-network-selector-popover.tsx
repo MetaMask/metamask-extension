@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { type Hex } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -17,6 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AvatarNetworkSize,
   Popover,
@@ -55,7 +56,6 @@ import {
   sortNetworks,
 } from '../../../../shared/lib/network.utils';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -86,7 +86,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
@@ -137,9 +137,10 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
     [nonTestEvmNetworksByKey, orderedNetworksList],
   );
 
-  const currentlyOnTestnet = activeDappChainId
-    ? TEST_CHAINS.includes(activeDappChainId)
-    : false;
+  const currentlyOnTestnet = useMemo(
+    () => Boolean(activeDappChainId && TEST_CHAINS.includes(activeDappChainId)),
+    [activeDappChainId],
+  );
 
   // Only include test networks when the global "Show test networks" toggle is
   // on, or when the dapp is already on a testnet (so the user can see the
@@ -200,19 +201,20 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
           dispatch(setTokenNetworkFilter(allOpts));
         }
 
-        trackEvent({
-          event: MetaMetricsEventName.NavNetworkSwitched,
-          category: MetaMetricsEventCategory.Network,
-          properties: {
-            location: 'Dapp Connection Control Bar',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: hexChainId,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            from_network: activeDappChainId,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            to_network: hexChainId,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              location: 'Dapp Connection Control Bar',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: hexChainId,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              from_network: activeDappChainId,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              to_network: hexChainId,
+            })
+            .build(),
+        );
       } finally {
         onClose();
       }
@@ -227,6 +229,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       allChainIds,
       tokenNetworkFilter,
       trackEvent,
+      createEventBuilder,
       onClose,
     ],
   );
@@ -240,13 +243,14 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       }
       const newValue = !currentValue;
       dispatch(setShowTestNetworks(newValue));
-      trackEvent({
-        event: MetaMetricsEventName.TestNetworksDisplayed,
-        category: MetaMetricsEventCategory.Network,
-        properties: { value: newValue },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({ value: newValue })
+          .build(),
+      );
     },
-    [dispatch, trackEvent, currentlyOnTestnet],
+    [dispatch, trackEvent, createEventBuilder, currentlyOnTestnet],
   );
 
   return (

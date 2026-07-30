@@ -42,7 +42,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -66,7 +66,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.startSendFlow();
 
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
@@ -115,7 +115,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -190,7 +190,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },

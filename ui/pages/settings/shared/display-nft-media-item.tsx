@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getOpenSeaEnabled, getUseNftDetection } from '../../../selectors';
 import { setOpenSeaEnabled, setUseNftDetection } from '../../../store/actions';
 import {
@@ -14,7 +14,7 @@ import { SettingsToggleItem } from './settings-toggle-item';
 export const DisplayNftMediaToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
   const useNftDetection = useSelector(getUseNftDetection);
 
@@ -24,15 +24,16 @@ export const DisplayNftMediaToggleItem = () => {
       description={t('displayNftMediaDescriptionV2')}
       value={openSeaEnabled}
       onToggle={(value) => {
-        trackEvent({
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.EnabledDisabledOpenSea,
-          properties: {
-            action: MetaMetricsEventName.EnabledDisabledOpenSea,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            legacy_event: true,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.EnabledDisabledOpenSea)
+            .addCategory(MetaMetricsEventCategory.Settings)
+            .addProperties({
+              action: MetaMetricsEventName.EnabledDisabledOpenSea,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              legacy_event: true,
+            })
+            .build(),
+        );
         if (value && useNftDetection) {
           dispatch(setUseNftDetection(false));
         }

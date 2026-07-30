@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,34 +19,36 @@ import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { transitionBack } from '../../../components/ui/transition';
 import { AUTO_LOCK_OPTIONS } from './auto-lock-utils';
 
 const AutoLockSubPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useSelector(getPreferences);
 
   const handleSelect = (value: number) => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        auto_lock_time_limit_minutes: value,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        previous_auto_lock_time_limit_minutes: autoLockTimeLimit,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          auto_lock_time_limit_minutes: value,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          previous_auto_lock_time_limit_minutes: autoLockTimeLimit,
+        })
+        .build(),
+    );
     dispatch(setAutoLockTimeLimit(value));
-    navigate(SECURITY_AND_PASSWORD_ROUTE);
+    transitionBack(() => navigate(SECURITY_AND_PASSWORD_ROUTE));
   };
 
   return (

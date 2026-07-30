@@ -31,10 +31,6 @@ const Receive = ({ className, size, color }) => (
   </svg>
 );
 
-Receive.defaultProps = {
-  className: undefined,
-};
-
 Receive.propTypes = {
   /**
    * Additional className

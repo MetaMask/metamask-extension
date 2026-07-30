@@ -1,20 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Modal, { ModalContent } from '../../modal';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const LoadingNetworkError = (props, context) => {
-  const { t } = context;
-  const { hideModal } = props;
+const LoadingNetworkError = ({ hideModal }) => {
+  const t = useI18nContext();
 
   return (
     <Modal onSubmit={() => hideModal()} submitText={t('tryAgain')}>
       <ModalContent description={t('somethingWentWrong')} />
     </Modal>
   );
-};
-
-LoadingNetworkError.contextTypes = {
-  t: PropTypes.func,
 };
 
 LoadingNetworkError.propTypes = {

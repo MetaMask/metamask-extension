@@ -29,6 +29,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  getCustomerServiceToken,
   getRewardsHasAccountOptedIn,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -42,10 +43,7 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
@@ -69,7 +67,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getAnalyticsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -734,26 +731,21 @@ export const useHandleSubscription = ({
 
 export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
     const supportLinkWithUserId = buildSupportLinkWithUserData(
       SUPPORT_LINK as string,
       {
         version,
-        profileId,
-        canonicalProfileId,
-        analyticsId,
+        customerServiceToken,
         shieldCustomerId,
       },
     );
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, canonicalProfileId, analyticsId, shieldCustomerId]);
+  }, [version, shieldCustomerId]);
 
   return {
     handleClickContactSupport,

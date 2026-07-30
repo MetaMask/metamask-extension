@@ -84,6 +84,7 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -105,6 +106,7 @@ import {
   ComplianceService,
 } from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
 import { AnalyticsController } from '@metamask/analytics-controller';
 import { OnboardingController } from '../controllers/onboarding';
@@ -125,6 +127,8 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
+import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
@@ -144,6 +148,7 @@ export type MessengerClient =
   | AppStateController
   | AssetsController
   | AuthenticationController
+  | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
   | ClaimsController
@@ -191,6 +196,10 @@ export type MessengerClient =
   | PhishingController
   | PPOMController
   | PreferencesController
+  | QrSyncController
+  | QrSyncDataService
+  | RampsController
+  | RampsService
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
@@ -294,6 +303,8 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  QrSyncController['state'] &
+  RampsController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &

@@ -30,6 +30,21 @@ import ConnectHardwareForm, {
   TREZOR_HD_PATHS,
 } from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);

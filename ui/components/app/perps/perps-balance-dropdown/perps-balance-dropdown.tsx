@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   TextVariant,
@@ -9,6 +10,7 @@ import {
   IconName,
   IconSize,
   Text,
+  SensitiveText,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
@@ -20,6 +22,7 @@ import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
@@ -28,6 +31,7 @@ import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
 import { useOnClickOutside } from '../hooks/useClickOutside';
+import { getPrivacyAwareColor } from '../utils';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -79,6 +83,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
+  const { privacyMode } = useSelector(getPreferences);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -93,6 +98,10 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const pnlNum = Number.parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
+  const pnlColor = getPrivacyAwareColor(
+    isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault,
+    privacyMode,
+  );
   const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
     ranges: PRICE_RANGES_MINIMAL_VIEW,
   })}`;
@@ -176,11 +185,15 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               alignItems={BoxAlignItems.Center}
               gap={2}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <SensitiveText
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                isHidden={privacyMode}
+              >
                 {formatPerpsFiat(accountValue, {
                   ranges: PRICE_RANGES_MINIMAL_VIEW,
                 })}
-              </Text>
+              </SensitiveText>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
                 size={IconSize.Xs}
@@ -232,13 +245,30 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsUnrealizedPnl')}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Baseline}
+            gap={1}
           >
-            {formattedPnl} ({formattedRoe})
-          </Text>
+            <SensitiveText
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={pnlColor}
+              isHidden={privacyMode}
+              data-testid="perps-balance-dropdown-pnl-value"
+            >
+              {formattedPnl}
+            </SensitiveText>
+            <SensitiveText
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={pnlColor}
+              isHidden={privacyMode}
+              data-testid="perps-balance-dropdown-roe-value"
+            >
+              {`(${formattedRoe})`}
+            </SensitiveText>
+          </Box>
         </Box>
       )}
       <PerpsGeoBlockModal

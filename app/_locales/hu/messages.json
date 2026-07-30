@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Ki kell választania egy fiókot!"
   },
-  "addAcquiredTokens": {
-    "message": "Adja hozzá MetaMask-kal a kapott érméket"
-  },
   "addAlias": {
     "message": "Álnév hozzáadása"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Speciális"
   },
-  "customToken": {
-    "message": "Egyéni token"
-  },
   "decimal": {
     "message": "A pontosság tizedesjegyei"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "A tizedesjegyek száma 0 és 36 között legyen . "
   },
   "delete": {
     "message": "Törlés"
@@ -344,9 +335,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask verzió"
-  },
-  "mustSelectOne": {
-    "message": "Legalább 1 tokent ki kell választania."
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
@@ -517,9 +505,6 @@
   },
   "sign": {
     "message": "Aláír"
-  },
-  "signatureRequest": {
-    "message": "Aláírási kérelem"
   },
   "signed": {
     "message": "Aláírva"

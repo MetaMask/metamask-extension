@@ -3,51 +3,9 @@ import * as ActionsModule from '../../store/actions';
 import * as NotificationSelectorsModule from '../../selectors/metamask-notifications/metamask-notifications';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import {
-  useSwitchFeatureAnnouncementsChange,
   useSwitchAccountNotificationsChange,
   useAccountSettingsProps,
 } from './useSwitchNotifications';
-
-describe('useSwitchFeatureAnnouncementsChange() tests', () => {
-  beforeEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  const arrangeMocks = () => {
-    const mockSetFeatureAnnouncementsEnabled = jest.spyOn(
-      ActionsModule,
-      'setFeatureAnnouncementsEnabled',
-    );
-    return {
-      mockSetFeatureAnnouncementsEnabled,
-    };
-  };
-
-  it('should update feature announcement when callback invoked', async () => {
-    const mocks = arrangeMocks();
-    const hook = renderHookWithProviderTyped(
-      () => useSwitchFeatureAnnouncementsChange(),
-      {},
-    );
-
-    await hook.result.current.onChange(true);
-    expect(mocks.mockSetFeatureAnnouncementsEnabled).toHaveBeenCalled();
-  });
-
-  it('should update error state when callback fails', async () => {
-    const mocks = arrangeMocks();
-    mocks.mockSetFeatureAnnouncementsEnabled.mockImplementation(() => {
-      throw new Error('Mock Fail');
-    });
-    const hook = renderHookWithProviderTyped(
-      () => useSwitchFeatureAnnouncementsChange(),
-      {},
-    );
-
-    await hook.result.current.onChange(true);
-    expect(hook.result.current.error).toBeDefined();
-  });
-});
 
 describe('useSwitchAccountNotificationsChange() tests', () => {
   const arrangeMocks = () => {

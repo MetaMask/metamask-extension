@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { OnChainRawNotification } from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
@@ -6,7 +6,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NotificationDetailButton } from '../notification-detail-button';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,7 +25,7 @@ export const NotificationDetailBlockExplorerButton = ({
   txHash,
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const chainIdHex = toHex(chainId);
   const { network } = notification.payload;
@@ -55,25 +55,32 @@ export const NotificationDetailBlockExplorerButton = ({
   }, [notificationBlockExplorerName, configuredBlockExplorer, t]);
 
   const analyticsEvent = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_id: notification.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_type: notification.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        clicked_item: 'block_explorer',
-      },
-    });
-  }, [chainId, notification.id, notification.type, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_id: notification.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_type: notification.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          clicked_item: 'block_explorer',
+        })
+        .build(),
+    );
+  }, [
+    chainId,
+    createEventBuilder,
+    notification.id,
+    notification.type,
+    trackEvent,
+  ]);
 
   if (!blockExplorerUrl) {
     return null;

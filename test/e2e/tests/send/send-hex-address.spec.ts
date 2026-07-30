@@ -79,7 +79,9 @@ describe('Send - Hex Address Normalization', function () {
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.pressContinueButton();
 
           // Verify address on confirmation screen
@@ -110,7 +112,9 @@ describe('Send - Hex Address Normalization', function () {
 
           // Type address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.fillAmount('0');
           await sendPage.pressContinueButton();
 

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState, useRef, useEffect } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useDispatch } from 'react-redux';
 import {
@@ -8,7 +8,7 @@ import {
   rewardsLinkAccountsToSubscriptionCandidate,
 } from '../../store/actions';
 import { OptInStatusDto } from '../../../shared/types/rewards';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,7 +30,7 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isMountedRef = useRef(true);
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
 
@@ -51,13 +51,14 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountTypeCategory(account),
       };
-      trackEvent({
-        category: MetaMetricsEventCategory.Rewards,
-        event,
-        properties: accountMetricProps,
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .addProperties(accountMetricProps)
+          .build(),
+      );
     },
-    [trackEvent],
+    [trackEvent, createEventBuilder],
   );
 
   const linkAccountAddress = useCallback(

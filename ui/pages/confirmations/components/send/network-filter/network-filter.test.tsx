@@ -66,11 +66,14 @@ jest.mock('../../../../../components/component-library', () => ({
   ButtonBase: ({
     children,
     onClick,
+    startIconName,
   }: {
     children: React.ReactNode;
     onClick: () => void;
+    startIconName?: string;
   }) => (
     <button data-testid="send-network-filter-toggle" onClick={onClick}>
+      {startIconName ? <div data-testid={`icon-${startIconName}`} /> : null}
       {children}
     </button>
   ),
@@ -115,11 +118,16 @@ jest.mock('../../../../../components/component-library', () => ({
   AvatarNetwork: ({ name, src }: { name: string; src: string }) => (
     <div data-testid="avatar-network" data-name={name} data-src={src} />
   ),
-  ButtonBaseSize: { Md: 'md' },
+  ButtonBaseSize: { Md: 'md', Sm: 'sm' },
   ButtonIconSize: { Sm: 'sm' },
   ModalContentSize: { Md: 'md' },
-  IconName: { ArrowDown: 'arrow-down', Global: 'global', Close: 'close' },
-  IconSize: { Sm: 'sm', Xl: 'xl' },
+  IconName: {
+    ArrowDown: 'arrow-down',
+    Filter: 'filter',
+    Global: 'global',
+    Close: 'close',
+  },
+  IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
   AvatarNetworkSize: { Sm: 'sm' },
 }));
 jest.mock('../../../../../components/multichain', () => ({
@@ -221,7 +229,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.allNetworks.message)).toBeInTheDocument();
-    expect(getByTestId('icon-global')).toBeInTheDocument();
+    expect(getByTestId('icon-filter')).toBeInTheDocument();
   });
 
   it('renders filter button with selected network name', () => {
@@ -236,7 +244,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
-    expect(getByTestId('avatar-network')).toBeInTheDocument();
+    expect(getByTestId('icon-filter')).toBeInTheDocument();
   });
 
   it('opens modal when filter button is clicked', () => {
@@ -352,6 +360,81 @@ describe('NetworkFilter', () => {
       expect(mockRemoveAssetFilterMethod).toHaveBeenCalledWith(
         AssetFilterMethod.Network,
       );
+    });
+
+    it('skips metrics updates when disableMetrics is true', () => {
+      const { getByTestId, getAllByTestId } = render(
+        <NetworkFilter
+          tokens={mockTokens}
+          nfts={mockNfts}
+          disableMetrics
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      fireEvent.click(getByTestId('send-network-filter-toggle'));
+      fireEvent.click(getAllByTestId('shared-network-selection-item')[0]);
+
+      expect(mockOnChainIdChange).toHaveBeenCalledWith('1');
+      expect(mockAddAssetFilterMethod).not.toHaveBeenCalled();
+      expect(mockRemoveAssetFilterMethod).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('token network details fallback', () => {
+    it('uses token networkName and networkImage when wallet map lacks the chain', () => {
+      mockUseChainNetworkNameAndImageMap.mockReturnValue(new Map());
+
+      const tokensWithDetails = [
+        {
+          chainId: 'eip155:999',
+          networkName: 'Custom Catalog Network',
+          networkImage: 'https://example.com/custom.png',
+          fiat: { balance: 10 },
+        },
+      ];
+
+      const { getByTestId, getByText } = render(
+        <NetworkFilter
+          tokens={tokensWithDetails}
+          nfts={[]}
+          selectedChainId="eip155:999"
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      expect(getByText('Custom Catalog Network')).toBeInTheDocument();
+
+      fireEvent.click(getByTestId('send-network-filter-toggle'));
+
+      expect(getByTestId('shared-network-selection-item')).toHaveTextContent(
+        'Custom Catalog Network',
+      );
+    });
+
+    it('prefers wallet map details over token-supplied network metadata', () => {
+      const tokensWithConflictingDetails = [
+        {
+          chainId: '1',
+          networkName: 'Token Supplied Name',
+          networkImage: 'https://example.com/token.png',
+          fiat: { balance: 100 },
+        },
+      ];
+
+      const { getByText, queryByText } = render(
+        <NetworkFilter
+          tokens={tokensWithConflictingDetails}
+          nfts={[]}
+          selectedChainId="1"
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      expect(
+        getByText(messages.networkNameEthereum.message),
+      ).toBeInTheDocument();
+      expect(queryByText('Token Supplied Name')).not.toBeInTheDocument();
     });
   });
 });

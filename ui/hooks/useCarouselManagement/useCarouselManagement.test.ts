@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -63,6 +62,8 @@ const mockGetCurrentLocale = jest.fn().mockReturnValue('en-US');
 
 describe('useCarouselManagement (simple Contentful tests)', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
     mockFetch.mockResolvedValue({
       prioritySlides: [],
       regularSlides: [slide('fund'), slide('downloadMobileApp')],
@@ -79,7 +80,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         if (selector === getSelectedAccountCachedBalance) {
           return mockGetSelectedAccountCachedBalance() as TSelected;
         }
-        if (selector === getSelectedInternalAccount) {
+        if (selector === (getSelectedInternalAccount as MockSelector)) {
           return mockGetSelectedInternalAccount() as TSelected;
         }
         if (selector === getUseExternalServices) {
@@ -106,8 +107,6 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
       contentfulCarouselEnabled: true,
     });
     mockGetCurrentLocale.mockReturnValue('en');
-
-    jest.clearAllMocks();
   });
 
   const getDispatchedSlides = (): CarouselSlide[] => {
@@ -149,7 +148,14 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     const { rerender } = renderHook(() => useCarouselManagement());
 
-    await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+    // Flush async state updates from getUserProfileLineageAction() (React 18 requires act()).
+    await act(async () => {
+      await mockGetUserProfileLineage.mock.results[0]?.value;
+    });
+    await act(async () => {
+      await mockFetch.mock.results[0]?.value;
+    });
+    expect(mockUpdateSlides).toHaveBeenCalled();
 
     mockGetUserProfileLineage.mockClear();
     mockUpdateSlides.mockClear();

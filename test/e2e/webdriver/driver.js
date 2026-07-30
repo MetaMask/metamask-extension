@@ -728,13 +728,17 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @param {object} [options] - Click options
+   * @param {number} [options.retries] - The number of times to retry the click action if it fails
+   * @param {number} [options.timeout] - How long (ms) to wait for the element to be clickable on each attempt
    * @returns {Promise} promise that resolves to the WebElement
    */
-  async clickElement(rawLocator, retries = 3) {
+  async clickElement(rawLocator, { retries = 3, timeout = this.timeout } = {}) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
-        const element = await this.findClickableElement(rawLocator);
+        const element = await this.findClickableElement(rawLocator, {
+          timeout,
+        });
         await element.click();
         return;
       } catch (error) {
@@ -756,7 +760,7 @@ class Driver {
           // obstruction so the next attempt can succeed.
           if (error.name === 'ElementClickInterceptedError') {
             try {
-              const el = await this.findElement(rawLocator);
+              const el = await this.findElement(rawLocator, timeout);
               await this.scrollToElement(el);
             } catch {
               // Element may have gone stale; the next iteration will re-find it.
@@ -778,16 +782,35 @@ class Driver {
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
   async isElementMoving(rawLocator) {
-    const element = await this.findElement(rawLocator);
-    const initialPosition = await element.getRect();
+    let initialPosition;
+    try {
+      const element = await this.findElement(rawLocator);
+      initialPosition = await element.getRect();
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React replaced the DOM node immediately after findElement — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
 
-    const newPosition = await element.getRect();
+    try {
+      const freshElement = await this.findElement(rawLocator);
+      const newPosition = await freshElement.getRect();
 
-    return (
-      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
-    );
+      return (
+        initialPosition.x !== newPosition.x ||
+        initialPosition.y !== newPosition.y
+      );
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React re-rendered during the animation window — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -844,7 +867,10 @@ class Driver {
   async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
-    await element.waitForElementState('hidden', timeout);
+    // Wait for staleness on the clicked node reference. Do not re-find by locator
+    // here: after route navigation the element is already gone and findElement
+    // would wait for it to appear again (default driver timeout).
+    await this.driver.wait(until.stalenessOf(element), timeout);
   }
 
   /**
@@ -859,17 +885,7 @@ class Driver {
    */
   async clickElementSafe(rawLocator, timeout = 2000) {
     try {
-      const locator = this.buildLocator(rawLocator);
-      const elements = await this.driver.wait(
-        until.elementsLocated(locator),
-        timeout,
-      );
-
-      await Promise.all([
-        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
-        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
-      ]);
-      await elements[0].click();
+      await this.clickElement(rawLocator, { timeout });
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -897,15 +913,38 @@ class Driver {
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
+   * @param retries
    */
-  async clickElementUsingMouseMove(rawLocator) {
-    const element = await this.findClickableElement(rawLocator);
-    await this.scrollToElement(element);
-    await this.driver
-      .actions()
-      .move({ origin: element, x: 1, y: 1 })
-      .click()
-      .perform();
+  async clickElementUsingMouseMove(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await this.scrollToElement(element);
+        await this.driver
+          .actions()
+          .move({ origin: element, x: 1, y: 1 })
+          .click()
+          .perform();
+        return;
+      } catch (error) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying mouse-move click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**
@@ -1004,7 +1043,6 @@ class Driver {
     const endTime = startTime + timeout;
 
     // Loop indefinitely until condition met or timeout
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const result = await condition();
       if (result === true) {
@@ -1296,7 +1334,7 @@ class Driver {
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
     const handle = await this.driver.getWindowHandle();
-    await this.clickElement(rawLocator, retries);
+    await this.clickElement(rawLocator, { retries });
     await this.waitForWindowToClose(handle);
   }
 
@@ -1311,7 +1349,7 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
@@ -1680,6 +1718,26 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
+  }
+
+  /**
+   * Wait for a browser alert, validate its text, then click OK (accept).
+   * Call this while focused on a live window (not a closed dialog).
+   *
+   * @param {string} expectedText - Expected alert message.
+   * @param {number} [timeout]
+   * @returns {Promise<void>}
+   */
+  async validateAlertTextAndClose(expectedText, timeout = this.timeout) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const text = await alert.getText();
+    if (text !== expectedText) {
+      throw new Error(
+        `Expected alert text to be "${expectedText}", but got "${text}".`,
+      );
+    }
+    await alert.accept();
   }
 
   // Error handling

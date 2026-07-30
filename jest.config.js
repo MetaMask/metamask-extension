@@ -7,7 +7,7 @@ module.exports = {
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
-    '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts)',
+    '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
@@ -36,6 +36,7 @@ module.exports = {
     'json',
     'node',
   ],
+  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),

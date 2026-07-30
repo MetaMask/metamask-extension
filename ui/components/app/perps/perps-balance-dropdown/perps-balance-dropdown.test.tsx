@@ -270,4 +270,52 @@ describe('PerpsBalanceDropdown', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
   });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the total balance when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown />, privacyStore);
+
+      expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+      expect(screen.getByText('••••••')).toBeInTheDocument();
+    });
+
+    it('masks the P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+      expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
+      expect(screen.getAllByText('••••••')).toHaveLength(3);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      const pnl = screen.getByTestId('perps-balance-dropdown-pnl-value');
+      const roe = screen.getByTestId('perps-balance-dropdown-roe-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
+    });
+  });
+
+  it('uses the success color for a profitable P&L outside of privacy mode', () => {
+    renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
+
+    expect(screen.getByTestId('perps-balance-dropdown-pnl-value')).toHaveClass(
+      'text-success-default',
+    );
+  });
 });

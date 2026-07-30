@@ -6,10 +6,7 @@ import {
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
-import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
+import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import type {
   TraceRequest,
   EndTraceRequest,
@@ -160,14 +157,6 @@ export type OAuthServiceOptions = {
     fn?: (context?: unknown) => unknown,
   ) => void;
   bufferedEndTrace: (request: EndTraceRequest) => void;
-
-  /**
-   * Track a MetaMetrics event
-   */
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => void;
 
   /**
    * Add an event before metrics opt-in (for buffering before user consent)

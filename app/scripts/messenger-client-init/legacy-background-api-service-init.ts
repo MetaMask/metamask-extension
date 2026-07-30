@@ -14,6 +14,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
  * @param request.sendUpdate - A function to send updates to the UI.
  * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
+ * @param request.createVaultMutex - A mutex to serialize vault creation/export with locking.
  * @param request.offscreenPromise - A promise that resolves when the offscreen document is ready.
  * @returns The initialized service.
  */
@@ -27,6 +28,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   getOpenMetamaskTabsIds,
   sendUpdate,
   seedlessOperationMutex,
+  createVaultMutex,
   offscreenPromise,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
@@ -36,6 +38,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     getOpenMetamaskTabsIds,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   });
 

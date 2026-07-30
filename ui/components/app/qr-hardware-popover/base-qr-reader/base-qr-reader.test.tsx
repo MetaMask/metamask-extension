@@ -36,6 +36,21 @@ import {
 } from './base-qr-reader.types';
 import BaseQrReader from './base-qr-reader';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
@@ -148,7 +163,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame(
           'UR:CRYPTO-HDKEY/24-2/LPCSCSAOCSNYCYNLAMSKJPHDGTEHOEADCSFNAOAEAMTAADDYOTADLNCSDWYKCSFNYKAEYKAOCYJKSKTNBKAXAXATTAADDYOEADLRAEWKLAWKAXAEAYCYTEDMFEAYASISGRIHKKJKJYJLJTIHBKJOHSIAIAJLKPJTJYDMJKJYHSJTIEHSJPIEHTSTGSAO',
@@ -771,7 +785,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame('not-a-valid-ur-payload');
       }, [onFrame]);
@@ -794,7 +807,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame('not-a-valid-ur-payload');
       }, [onFrame]);
@@ -833,7 +845,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame(`ur:${UrType.EthSignature}/mock-frame`);
       }, [onFrame]);
@@ -844,7 +855,7 @@ describe('BaseQrReader', () => {
       .fn()
       .mockRejectedValue(new QrMismatchedTransactionError());
 
-    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+    mockTrackEvent.mockClear();
 
     await act(async () => {
       renderWithProvider(
@@ -857,7 +868,6 @@ describe('BaseQrReader', () => {
         undefined,
         '/',
         render,
-        () => mockTrackEvent,
       );
     });
 
@@ -876,11 +886,12 @@ describe('BaseQrReader', () => {
 
     const scanFailed = mockTrackEvent.mock.calls.filter(
       (call: unknown[]) =>
-        (call[0] as { event: string }).event ===
+        (call[0] as { name: string }).name ===
         MetaMetricsEventName.QrHardwareScanFailed,
     );
     expect(scanFailed).toHaveLength(1);
     expect(scanFailed[0][0].properties).toStrictEqual({
+      category: 'Accounts',
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
       device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
@@ -948,16 +959,8 @@ describe('BaseQrReader', () => {
   // ---- MetaMetrics tracking -----------------------------------------------
 
   describe('MetaMetrics tracking', () => {
-    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
-
     function renderWithMetrics(ui: React.ReactElement) {
-      return renderWithProvider(
-        ui,
-        undefined,
-        '/',
-        render,
-        () => mockTrackEvent,
-      );
+      return renderWithProvider(ui, undefined, '/', render);
     }
 
     beforeEach(() => {
@@ -986,7 +989,7 @@ describe('BaseQrReader', () => {
 
       const modalViewed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
       );
       expect(modalViewed).toHaveLength(1);
@@ -1018,7 +1021,7 @@ describe('BaseQrReader', () => {
 
       const modalViewed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
       );
       expect(modalViewed).toHaveLength(1);
@@ -1051,7 +1054,7 @@ describe('BaseQrReader', () => {
 
       const ctaClicked = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
       );
       expect(ctaClicked).toHaveLength(1);
@@ -1089,7 +1092,7 @@ describe('BaseQrReader', () => {
 
       const ctaClicked = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
       );
       expect(ctaClicked).toHaveLength(1);
@@ -1134,7 +1137,7 @@ describe('BaseQrReader', () => {
 
       const successViewed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
       );
       expect(successViewed).toHaveLength(1);
@@ -1181,7 +1184,7 @@ describe('BaseQrReader', () => {
 
       const modalViewed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
       );
       expect(modalViewed).toHaveLength(2);
@@ -1221,7 +1224,6 @@ describe('BaseQrReader', () => {
       }: {
         onFrame: (data: string) => void;
       }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           onFrame('not-a-valid-ur-payload');
         }, [onFrame]);
@@ -1234,11 +1236,12 @@ describe('BaseQrReader', () => {
 
       const scanFailed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.QrHardwareScanFailed,
       );
       expect(scanFailed).toHaveLength(1);
       expect(scanFailed[0][0].properties).toStrictEqual({
+        category: 'Accounts',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
         device_type: 'QR Hardware',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
@@ -1256,7 +1259,6 @@ describe('BaseQrReader', () => {
       }: {
         onFrame: (data: string) => void;
       }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           onFrame('not-a-valid-ur-payload');
         }, [onFrame]);
@@ -1271,7 +1273,7 @@ describe('BaseQrReader', () => {
 
       const scanFailed = mockTrackEvent.mock.calls.filter(
         (call: unknown[]) =>
-          (call[0] as { event: string }).event ===
+          (call[0] as { name: string }).name ===
           MetaMetricsEventName.QrHardwareScanFailed,
       );
       expect(scanFailed).toHaveLength(1);

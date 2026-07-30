@@ -7,9 +7,9 @@
  * Based on mobile's MusdConversionAssetListCta component.
  */
 
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -28,12 +28,11 @@ import {
   BadgeWrapper,
 } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useMusdConversion,
@@ -45,9 +44,10 @@ import {
   getImageForChainId,
 } from '../../../selectors/multichain';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ASSET_CELL_HEIGHT } from '../assets/constants';
 import {
+  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
@@ -89,10 +89,10 @@ export const MusdBuyGetCta = ({
   selectedChainId,
 }: MusdBuyGetCtaProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const { defaultPaymentToken } = useMusdConversionTokens();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
 
   // Get network configuration for icon
   const networkConfigurationsByChainId = useSelector(
@@ -153,14 +153,26 @@ export const MusdBuyGetCta = ({
       clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
     });
 
-    trackEvent({
-      event: MetaMetricsEventName.MusdConversionCtaClicked,
-      category: MetaMetricsEventCategory.Tokens,
-      properties: eventProperties,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.MusdConversionCtaClicked)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties(eventProperties)
+        .build(),
+    );
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
-      openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
+      const buyChainId = selectedChainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+      goToBuy({
+        // Pre-select mUSD so the in-app flow lands on build-quote instead of
+        // the token-selection page. Fall back to mainnet mUSD when the current
+        // chain has no mUSD route. chainId is only used for the flag-off
+        // Portfolio fallback.
+        assetId: (getMusdAssetIdForChain(buyChainId) ??
+          getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID)) as
+          | CaipAssetType
+          | undefined,
+        chainId: selectedChainId ?? undefined,
+      });
     } else if (variant === BuyGetMusdCtaVariant.GET) {
       if (!defaultPaymentToken) {
         console.error(
@@ -182,8 +194,9 @@ export const MusdBuyGetCta = ({
     networkName,
     ctaButtonText,
     educationSeen,
+    createEventBuilder,
     trackEvent,
-    openBuyCryptoInPdapp,
+    goToBuy,
     startConversionFlow,
     defaultPaymentToken,
   ]);

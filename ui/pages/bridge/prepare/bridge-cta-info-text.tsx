@@ -52,7 +52,7 @@ export const BridgeCTAInfoText = () => {
 
   const infoText = [
     showMmFeeText
-      ? t('rateIncludesMMFee', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
+      ? t('bridgeFeeDisclaimer', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
       : null,
     showApprovalText &&
       (isCrossChain(activeQuote.quote.srcChainId, activeQuote.quote.destChainId)
@@ -60,7 +60,7 @@ export const BridgeCTAInfoText = () => {
         : t('willApproveAmountForSwapping')),
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(showMmFeeText && showApprovalText ? '. ' : ' ');
 
   if (!infoText) {
     return null;

@@ -20,6 +20,9 @@ on:
         type: string
 
 jobs:
+  # This is a separate job from `publish-prerelease` because it runs in the
+  # `release-ci` environment for AI test-plan secrets. Keeping it separate
+  # avoids exposing those secrets to the PR comment publishing job.
   generate-test-plan:
     name: Generate AI test plan
     if: ${{ startsWith(github.head_ref || github.ref_name, 'release/') }}
@@ -50,14 +53,22 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const prs = await github.rest.pulls.list({
+            const prs = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`,
               base: 'stable',
+              state: 'open',
+              per_page: 100,
             });
-            if (prs.data.length > 0) {
-              core.exportVariable("PR_NUMBER", prs.data[0].number);
+
+            const headRepository = `${context.repo.owner}/${context.repo.repo}`;
+            const pr = prs.find((candidate) =>
+              candidate.head.ref === process.env.BRANCH &&
+              candidate.head.repo.full_name === headRepository
+            );
+
+            if (pr) {
+              core.exportVariable("PR_NUMBER", pr.number);
             }
 
       - name: Generate test plan
@@ -135,21 +146,39 @@ jobs:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
+      - name: Fetch full history for cherry-picks section
+        if: ${{ startsWith(env.BRANCH, 'release/') }}
+        continue-on-error: true
+        run: |
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --unshallow
+          fi
+
+          git fetch origin main:refs/remotes/origin/main --tags
+
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v8
         with:
           script: |
-            const prs = await github.rest.pulls.list({
+            const prs = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`,
               base: 'stable',
+              state: 'open',
+              per_page: 100,
             });
-            if (prs.data.length > 0) {
-              core.exportVariable("PR_NUMBER", prs.data[0].number);
-              core.exportVariable("BASE_COMMIT_HASH", prs.data[0].base.sha);
-              core.exportVariable("HEAD_COMMIT_HASH", prs.data[0].head.sha);
+
+            const headRepository = `${context.repo.owner}/${context.repo.repo}`;
+            const pr = prs.find((candidate) =>
+              candidate.head.ref === process.env.BRANCH &&
+              candidate.head.repo.full_name === headRepository
+            );
+
+            if (pr) {
+              core.exportVariable("PR_NUMBER", pr.number);
+              core.exportVariable("BASE_COMMIT_HASH", pr.base.sha);
+              core.exportVariable("HEAD_COMMIT_HASH", pr.head.sha);
               core.info(`The pull request number is '${process.env.PR_NUMBER}', the base commit hash is '${process.env.BASE_COMMIT_HASH}', and the head commit hash is '${process.env.HEAD_COMMIT_HASH}'`);
             } else {
               core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
@@ -200,5 +229,5 @@ jobs:
       - name: Publish prerelease
         if: ${{ env.PR_NUMBER && steps.token.outputs.token && vars.AWS_CLOUDFRONT_URL }}
         env:
-          PR_COMMENT_TOKEN: ${{ steps.token.outputs.token }}
+          BUILD_ANNOUNCE_TOKEN: ${{ steps.token.outputs.token }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts

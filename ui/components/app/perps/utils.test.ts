@@ -1,6 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
 import {
-  getDisplayName,
   getPositionDirection,
   formatOrderType,
   formatStatus,
@@ -18,6 +17,7 @@ import {
   getTransactionStatusColor,
   getTransactionAmountColor,
   getPnlDisplayColor,
+  getPrivacyAwareColor,
   parseVolume,
   hasVolume,
   formatRoePercent,
@@ -47,24 +47,6 @@ const createMockMarket = (
 });
 
 describe('Perps Utils', () => {
-  describe('getDisplayName', () => {
-    it('returns the symbol unchanged for regular assets', () => {
-      expect(getDisplayName('BTC')).toBe('BTC');
-      expect(getDisplayName('ETH')).toBe('ETH');
-    });
-
-    it('extracts the asset name from HIP-3 prefixed symbols', () => {
-      expect(getDisplayName('xyz:TSLA')).toBe('TSLA');
-      expect(getDisplayName('abc:AAPL')).toBe('AAPL');
-    });
-
-    it('handles edge cases with colons', () => {
-      expect(getDisplayName(':INVALID')).toBe(':INVALID');
-      expect(getDisplayName('INVALID:')).toBe('INVALID:');
-      expect(getDisplayName(':')).toBe(':');
-    });
-  });
-
   describe('getPositionDirection', () => {
     it('returns long for positive sizes', () => {
       expect(getPositionDirection('100')).toBe('long');
@@ -213,6 +195,13 @@ describe('Perps Utils', () => {
     it('handles edge cases with colons', () => {
       expect(getDisplaySymbol(':INVALID')).toBe(':INVALID');
       expect(getDisplaySymbol('INVALID:')).toBe('INVALID:');
+      expect(getDisplaySymbol(':')).toBe(':');
+    });
+
+    it('handles null/undefined/non-string input safely', () => {
+      expect(getDisplaySymbol(null as unknown as string)).toBeNull();
+      expect(getDisplaySymbol(undefined as unknown as string)).toBeUndefined();
+      expect(getDisplaySymbol('')).toBe('');
     });
   });
 
@@ -604,6 +593,32 @@ describe('Perps Utils', () => {
 
     it('returns TextDefault for zero PnL', () => {
       expect(getPnlDisplayColor(0)).toBe(TextColor.TextDefault);
+    });
+  });
+
+  describe('getPrivacyAwareColor', () => {
+    it('returns the given color when the value is not hidden', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, false)).toBe(
+        TextColor.SuccessDefault,
+      );
+      expect(getPrivacyAwareColor(TextColor.ErrorDefault, false)).toBe(
+        TextColor.ErrorDefault,
+      );
+    });
+
+    it('returns TextDefault when the value is hidden, regardless of the given color', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, true)).toBe(
+        TextColor.TextDefault,
+      );
+      expect(getPrivacyAwareColor(TextColor.ErrorDefault, true)).toBe(
+        TextColor.TextDefault,
+      );
+    });
+
+    it('treats an undefined isHidden as not hidden', () => {
+      expect(getPrivacyAwareColor(TextColor.SuccessDefault, undefined)).toBe(
+        TextColor.SuccessDefault,
+      );
     });
   });
 

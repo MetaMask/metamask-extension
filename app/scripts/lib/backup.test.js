@@ -11,6 +11,14 @@ import {
 import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: (...args) => mockTrackEvent(...args),
+}));
+
 function getMockPreferencesController() {
   const state = {
     useBlockie: false,
@@ -191,7 +199,6 @@ describe('Backup', function () {
       addressBookController: getMockAddressBookController(),
       networkController: getMockNetworkController(),
       accountsController: getMockAccountsController(),
-      trackMetaMetricsEvent: jest.fn(),
     });
   };
 

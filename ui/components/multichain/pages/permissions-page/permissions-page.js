@@ -46,8 +46,9 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
+import { transitionForward } from '../../../ui/transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
-import { Toast, ToastContainer } from '../../toast';
+import { toast } from '../../../ui/toast/toast';
 import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
@@ -74,8 +75,6 @@ const PermissionsPage = () => {
   };
   const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
@@ -119,19 +118,25 @@ const PermissionsPage = () => {
     setShowDisconnectAllModal(false);
 
     if (errors.length > 0) {
-      setShowErrorToast(true);
+      toast.error(t('disconnectAllSitesError'), {
+        id: 'disconnect-all-error-toast',
+      });
     } else {
-      setShowSuccessToast(true);
+      toast.success(t('disconnectAllSitesSuccess'), {
+        id: 'disconnect-all-success-toast',
+      });
     }
-  }, [dispatch, mergedConnectionsList, subjects]);
+  }, [dispatch, mergedConnectionsList, subjects, t]);
 
   const handleConnectionClick = (connection) => {
-    navigate({
-      pathname: REVIEW_PERMISSIONS,
-      search: createSearchParams({
-        origin: connection.origin,
-      }).toString(),
-    });
+    transitionForward(() =>
+      navigate({
+        pathname: REVIEW_PERMISSIONS,
+        search: createSearchParams({
+          origin: connection.origin,
+        }).toString(),
+      }),
+    );
   };
 
   const renderConnectionsList = (connectionList) =>
@@ -215,28 +220,6 @@ const PermissionsPage = () => {
             gap={2}
             alignItems={AlignItems.center}
           >
-            {showSuccessToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesSuccess')}
-                  onClose={() => setShowSuccessToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowSuccessToast(false)}
-                  dataTestId="disconnect-all-success-toast"
-                />
-              </ToastContainer>
-            )}
-            {showErrorToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesError')}
-                  onClose={() => setShowErrorToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowErrorToast(false)}
-                  dataTestId="disconnect-all-error-toast"
-                />
-              </ToastContainer>
-            )}
             <Button
               size={ButtonSize.Lg}
               block

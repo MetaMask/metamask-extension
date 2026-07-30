@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
+  toggleBasicFunctionality,
   toggleExternalServices,
 } from '../../../store/actions';
 import {
@@ -37,8 +38,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getUseExternalServices } from '../../../selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
@@ -51,12 +53,15 @@ import { useBoolean } from '../../../hooks/useBoolean';
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
+  );
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
   );
 
   const { pathname } = useLocation();
@@ -100,7 +105,12 @@ export function BasicConfigurationModal() {
           },
         };
 
-    trackEvent(event);
+    trackEvent(
+      createEventBuilder(event.event)
+        .addCategory(event.category)
+        .addProperties(event.properties)
+        .build(),
+    );
 
     if (isExternalServicesEnabled || onboardingFlow) {
       dispatch(setParticipateInMetaMetrics(false));
@@ -110,7 +120,11 @@ export function BasicConfigurationModal() {
     if (onboardingFlow) {
       dispatch(onboardingToggleBasicFunctionalityOff());
     } else {
-      dispatch(toggleExternalServices(!isExternalServicesEnabled));
+      dispatch(
+        isBasicFunctionalityConsolidationEnabled
+          ? toggleBasicFunctionality(!isExternalServicesEnabled)
+          : toggleExternalServices(!isExternalServicesEnabled),
+      );
     }
     closeModal();
   };

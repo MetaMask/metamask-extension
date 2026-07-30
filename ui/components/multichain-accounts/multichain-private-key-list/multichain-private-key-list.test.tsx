@@ -12,6 +12,21 @@ import {
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),

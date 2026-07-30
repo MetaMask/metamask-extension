@@ -10,11 +10,8 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
-import {
-  applyTransactionContainers,
-  applyTransactionContainersExisting,
-} from './util';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
+import { applyTransactionContainers } from './util';
 import { enforceSimulations } from './enforced-simulations';
 
 jest.mock('./enforced-simulations');
@@ -127,73 +124,6 @@ describe('Container Utils', () => {
       expect(transactionToUpdate.containerTypes).toStrictEqual([
         TransactionContainerType.EnforcedSimulations,
       ]);
-    });
-  });
-
-  describe('applyTransactionContainersExisting', () => {
-    it('throws if transaction not found', async () => {
-      const updateEditableParams = jest.fn();
-
-      await expect(
-        applyTransactionContainersExisting({
-          containerTypes: [TransactionContainerType.EnforcedSimulations],
-          transactionId: TRANSACTION_ID_MOCK,
-          messenger,
-          updateEditableParams,
-        }),
-      ).rejects.toThrow(
-        `Transaction with ID ${TRANSACTION_ID_MOCK} not found.`,
-      );
-    });
-
-    it('calls updateEditableParams with new parameters', async () => {
-      getTransactionControllerStateMock.mockReturnValue({
-        transactions: [TRANSACTION_META_MOCK],
-      });
-
-      const updateEditableParams = jest.fn();
-
-      await applyTransactionContainersExisting({
-        containerTypes: [TransactionContainerType.EnforcedSimulations],
-        transactionId: TRANSACTION_ID_MOCK,
-        messenger,
-        updateEditableParams,
-      });
-
-      expect(updateEditableParams).toHaveBeenCalledWith(
-        TRANSACTION_ID_MOCK,
-        expect.objectContaining({
-          containerTypes: [TransactionContainerType.EnforcedSimulations],
-          data: NEW_DATA_MOCK,
-          gas: ESTIMATE_GAS_MOCK,
-        }),
-      );
-    });
-
-    it('defaults data to 0x when undefined after unwrapping', async () => {
-      enforceSimulationsMock.mockResolvedValue({
-        updateTransaction: jest.fn(),
-      });
-
-      getTransactionControllerStateMock.mockReturnValue({
-        transactions: [TRANSACTION_META_MOCK],
-      });
-
-      const updateEditableParams = jest.fn();
-
-      await applyTransactionContainersExisting({
-        containerTypes: [TransactionContainerType.EnforcedSimulations],
-        transactionId: TRANSACTION_ID_MOCK,
-        messenger,
-        updateEditableParams,
-      });
-
-      expect(updateEditableParams).toHaveBeenCalledWith(
-        TRANSACTION_ID_MOCK,
-        expect.objectContaining({
-          data: '0x',
-        }),
-      );
     });
   });
 });

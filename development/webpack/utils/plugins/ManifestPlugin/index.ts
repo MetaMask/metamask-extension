@@ -17,10 +17,7 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import {
-  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-  UI_RELOAD_CLIENT_ENTRY_NAME,
-} from '../../dev-server/reload-protocol';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from '../../dev-server/protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -112,8 +109,7 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
-    UI_RELOAD_CLIENT_ENTRY_NAME,
-    BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+    BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
   private bundleSizeCategoriesByEntrypoint: Map<
@@ -623,8 +619,6 @@ export class ManifestPlugin<Z extends boolean> {
       if (resources && resources.length > 0) {
         if (manifest.manifest_version === 3) {
           manifest.web_accessible_resources =
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
             resource.matches.includes('<all_urls>'),
@@ -641,8 +635,6 @@ export class ManifestPlugin<Z extends boolean> {
           }
         } else {
           manifest.web_accessible_resources = [
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ...(manifest.web_accessible_resources || []),
             ...resources,
           ];

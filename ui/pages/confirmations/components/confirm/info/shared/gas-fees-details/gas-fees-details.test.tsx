@@ -3,9 +3,12 @@ import React from 'react';
 
 import {
   SimulationError,
+  TransactionContainerType,
+  TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
@@ -33,28 +36,40 @@ function getStore({
   selectedGasFeeToken,
   simulationFails,
   userFeeLevel,
+  chainId,
+  isEnforcedSimulations = false,
 }: {
   isAdvanced?: boolean;
   selectedGasFeeToken?: Hex;
   simulationFails?: SimulationError;
   userFeeLevel?: UserFeeLevel;
+  chainId?: Hex;
+  isEnforcedSimulations?: boolean;
 } = {}) {
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    chainId,
+    selectedGasFeeToken,
+    simulationFails,
+    userFeeLevel,
+  }) as TransactionMeta;
+
+  if (isEnforcedSimulations) {
+    confirmation.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+    confirmation.txParamsOriginal = { ...confirmation.txParams };
+    confirmation.txParams.gas = '0x156ee';
+  }
+
   return configureStore(
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        selectedGasFeeToken,
-        simulationFails,
-        userFeeLevel,
-      }),
-      {
-        metamask: {
-          preferences: {
-            showFiatInTestnets: true,
-            showConfirmationAdvancedDetails: isAdvanced ?? false,
-          },
+    getMockConfirmStateForTransaction(confirmation, {
+      metamask: {
+        preferences: {
+          showFiatInTestnets: true,
+          showConfirmationAdvancedDetails: isAdvanced ?? false,
         },
       },
-    ),
+    }),
   );
 }
 
@@ -83,7 +98,11 @@ describe('<GasFeesDetails />', () => {
   it('renders max fee if advanced', async () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore({ isAdvanced: true }),
+      getStore({
+        isAdvanced: true,
+        chainId: CHAIN_IDS.SEPOLIA,
+        isEnforcedSimulations: true,
+      }),
     );
 
     await act(async () => {
@@ -91,6 +110,9 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(getByTestId('gas-fee-details-max-fee')).toBeInTheDocument();
+    expect(getByTestId('added-protection-network-fee')).toHaveTextContent(
+      messages.addedProtectionIncludesNetworkFee.message.replace('$1', '$0.07'),
+    );
   });
 
   it('does not render max fee if advanced and selected gas fee token', async () => {

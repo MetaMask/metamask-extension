@@ -103,13 +103,13 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
-      if ('redirectTo' in destination) {
-        window.location.href = destination.redirectTo.toString();
-        return;
-      }
-
-      const { path, query } = destination;
-      const href = getExtensionURL(path, query.toString() ?? null);
+      const href =
+        'redirectTo' in destination
+          ? destination.redirectTo.toString()
+          : getExtensionURL(
+              destination.path,
+              destination.query.toString() ?? null,
+            );
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;

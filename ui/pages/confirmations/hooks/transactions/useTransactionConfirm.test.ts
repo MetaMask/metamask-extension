@@ -87,11 +87,13 @@ function runHook({
   customNonceValue,
   gasFeeTokens,
   isGasFeeSponsored,
+  isExternalSign,
   selectedGasFeeToken,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
   isGasFeeSponsored?: boolean;
+  isExternalSign?: boolean;
   selectedGasFeeToken?: Hex;
 } = {}) {
   const { result } = renderHookWithConfirmContextProvider(
@@ -100,6 +102,7 @@ function runHook({
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens,
         isGasFeeSponsored,
+        isExternalSign,
         selectedGasFeeToken,
       }),
       {
@@ -640,6 +643,51 @@ describe('useTransactionConfirm', () => {
 
     const actual = updateAndApproveTxMock.mock.calls[0][0];
     expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('clears isExternalSign when gasless is unsupported (e.g. hardware wallet on a sponsored chain)', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(false);
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('keeps isExternalSign when gasless is supported and user has not opted out', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(true);
   });
 
   it('returns true after successful transaction in popup environment', async () => {

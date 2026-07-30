@@ -96,24 +96,25 @@ describe('calculateBalanceForAllWallets', () => {
     expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
   });
 
-  it('forwards the optional trace callback to the aggregation selector', () => {
+  it('does not pass a trace callback to the aggregation selector', () => {
     mockGetAggregatedBalanceForAccount.mockReturnValue({
       entries: [],
       totalBalanceInFiat: 1,
       pricePercentChange1d: 0,
     });
-    const trace = jest.fn();
 
     calculateBalanceForAllWallets(
       assetsControllerState,
       accountTreeState,
       accountsById,
       undefined,
-      trace as never,
     );
 
-    // 7th positional argument of getAggregatedBalanceForAccount is the trace.
-    expect(mockGetAggregatedBalanceForAccount.mock.calls[0][6]).toBe(trace);
+    // This runs inside a Redux selector that recomputes per account group on
+    // every state change, so tracing it emits an unbounded number of
+    // transaction roots (#44447). The 7th positional argument of
+    // `getAggregatedBalanceForAccount` is the trace.
+    expect(mockGetAggregatedBalanceForAccount.mock.calls[0][6]).toBeUndefined();
   });
 });
 
