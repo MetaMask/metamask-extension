@@ -49,9 +49,7 @@ describe('LavamoatPlugin', () => {
       assert.strictEqual(result.mode, 'safe');
       assert.strictEqual(result.staticShims.length, 1);
       assert.ok(
-        result.staticShims[0].endsWith(
-          '/app/scripts/load/init-state-hooks.ts',
-        ),
+        result.staticShims[0].endsWith('/app/scripts/load/init-state-hooks.ts'),
       );
       const exceptions =
         result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
