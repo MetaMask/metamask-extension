@@ -866,16 +866,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
         // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
+          // "The browser is shutting down." is thrown by chrome.storage.local.get
+          // during browser shutdown. It is expected and not actionable — skip
+          // Sentry reporting and vault recovery to avoid false-positive alerts.
+          if (localStoreError.message === 'The browser is shutting down.') {
+            log.info(
+              'storage.local.get rejected during browser shutdown — expected',
+            );
+            return undefined;
+          }
           log.error(
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
-          // "The browser is shutting down." is thrown by chrome.storage.local.get
-          // during browser shutdown. It is expected and not actionable — skip
-          // Sentry reporting and vault recovery to avoid false-positive alerts.
-          const isBrowserShuttingDown =
-            localStoreError.message === 'The browser is shutting down.';
-          if (reportErrors && !isBrowserShuttingDown) {
+          if (reportErrors) {
             // Custom fingerprint prevents Sentry's deduplication from dropping
             // this event when other persistence errors with the same underlying
             // error message (e.g., "An unexpected error occurred") are reported.
@@ -883,9 +887,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               tags: { 'persistence.error': 'get-failed' },
               fingerprint: ['persistence-error', 'get-failed'],
             });
-          }
-          if (isBrowserShuttingDown) {
-            return undefined;
           }
         }
 
