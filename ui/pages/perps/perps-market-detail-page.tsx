@@ -406,6 +406,7 @@ const PerpsMarketDetailPage = () => {
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
+  const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -418,7 +419,7 @@ const PerpsMarketDetailPage = () => {
     // Gate on `market` so an unknown symbol emits only the error screen view
     // below (not both asset_details and error for one rendered error screen).
     conditions:
-      !marketsLoading &&
+      marketCatalogReady &&
       Boolean(decodedSymbol) &&
       account !== null &&
       Boolean(market),
@@ -484,7 +485,7 @@ const PerpsMarketDetailPage = () => {
   // below); emit the error screen view for that funnel state.
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
+    conditions: marketCatalogReady && Boolean(decodedSymbol) && !market,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
       [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
@@ -1063,7 +1064,7 @@ const PerpsMarketDetailPage = () => {
   }
 
   // Show loading state while market data is being fetched
-  if (marketsLoading) {
+  if (!marketCatalogReady) {
     return <PerpsDetailPageSkeleton />;
   }
 

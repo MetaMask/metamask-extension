@@ -497,7 +497,7 @@ describe('PerpsMarketDetailPage', () => {
 
     it('emits the error screen view when the market is not found', async () => {
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [mockCryptoMarkets[0]],
         isInitialLoading: false,
       });
       await renderPage(mockStore(createMockState(true)));
@@ -518,7 +518,7 @@ describe('PerpsMarketDetailPage', () => {
 
     it('emits exactly one error screen view and no asset_details view for an unknown symbol', async () => {
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [mockCryptoMarkets[0]],
         isInitialLoading: false,
       });
       mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
@@ -549,9 +549,23 @@ describe('PerpsMarketDetailPage', () => {
       expect(activeAssetDetailViews).toHaveLength(0);
     });
 
-    it('re-arms the error screen view per symbol via resetKey', async () => {
+    it('does not emit a market-not-found view for an empty initial snapshot', async () => {
       mockLiveMarketData.mockReturnValue({
         markets: [],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { conditions?: boolean } | undefined;
+
+      expect(errorView?.conditions).toBe(false);
+    });
+
+    it('re-arms the error screen view per symbol via resetKey', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
         isInitialLoading: false,
       });
       mockUseParams.mockReturnValue({ symbol: 'BADONE' });
