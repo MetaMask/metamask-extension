@@ -43,7 +43,8 @@ import {
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { useFallbackDisplayName } from '../../../../app/confirm/info/row/hook';
+import { useGetDisplayName } from '../../../../../hooks/useGetDisplayName';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
   GatorPermissionDetailRow,
@@ -102,7 +103,7 @@ const ReviewAddressDisplay = ({
   testId: string;
   style?: React.CSSProperties;
 }) => {
-  const { displayName, hexAddress } = useFallbackDisplayName(address);
+  const getDisplayName = useGetDisplayName();
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
 
@@ -122,7 +123,7 @@ const ReviewAddressDisplay = ({
           color={TextColor.TextAlternative}
           data-testid={testId}
         >
-          {displayName}
+          {getDisplayName(address)}
         </Text>
         <CopyIcon
           copyText={address}
@@ -133,7 +134,7 @@ const ReviewAddressDisplay = ({
       {isNicknamePopoverShown ? (
         <NicknamePopovers
           onClose={() => setIsNicknamePopoverShown(false)}
-          address={hexAddress}
+          address={toChecksumHexAddress(address)}
         />
       ) : null}
     </>
