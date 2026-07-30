@@ -869,11 +869,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           // "The browser is shutting down." is thrown by chrome.storage.local.get
           // during browser shutdown. It is expected and not actionable — skip
           // Sentry reporting and vault recovery to avoid false-positive alerts.
+          // We still re-throw below so callers fail gracefully rather than
+          // silently continuing with undefined state (which could trigger
+          // generateInitialState and overwrite persisted data on the next write).
           if (localStoreError.message === 'The browser is shutting down.') {
             log.info(
               'storage.local.get rejected during browser shutdown — expected',
             );
-            return undefined;
+            throw localStoreError;
           }
           log.error(
             'Error retrieving the current state of the local store:',

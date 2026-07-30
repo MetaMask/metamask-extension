@@ -455,9 +455,13 @@ describe('PersistenceManager', () => {
       const shutdownError = new Error('The browser is shutting down.');
       mockStoreGet.mockRejectedValueOnce(shutdownError);
 
-      const result = await manager.get({ validateVault: true });
+      // Re-throws so callers fail gracefully instead of continuing with
+      // undefined state (which would trigger generateInitialState and could
+      // overwrite persisted data on the next write).
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        shutdownError,
+      );
 
-      expect(result).toBeUndefined();
       expect(mockedCaptureException).not.toHaveBeenCalled();
       expect(log.error).not.toHaveBeenCalled();
     });
@@ -466,12 +470,10 @@ describe('PersistenceManager', () => {
       const shutdownError = new Error('The browser is shutting down.');
       mockStoreGet.mockRejectedValueOnce(shutdownError);
 
-      const result = await manager.get({
-        validateVault: false,
-        reportErrors: false,
-      });
+      await expect(
+        manager.get({ validateVault: false, reportErrors: false }),
+      ).rejects.toThrow(shutdownError);
 
-      expect(result).toBeUndefined();
       expect(mockedCaptureException).not.toHaveBeenCalled();
       expect(log.error).not.toHaveBeenCalled();
     });
