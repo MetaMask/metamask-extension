@@ -40,6 +40,7 @@ import {
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
+import { transitionForward } from '../../../ui/transition';
 import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
@@ -74,10 +75,10 @@ export const GatorPermissionsPage = () => {
   ) => {
     switch (permissionGroupName) {
       case 'sites':
-        navigate(PERMISSIONS);
+        transitionForward(() => navigate(PERMISSIONS));
         break;
       case 'token-transfer':
-        navigate(TOKEN_TRANSFER_ROUTE);
+        transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE));
         break;
       default:
         console.error('Invalid permission group name:', permissionGroupName);

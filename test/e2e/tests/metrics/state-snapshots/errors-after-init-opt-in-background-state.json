@@ -28,6 +28,7 @@
   },
   "AnalyticsController": {
     "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+    "consentDecisionMade": true,
     "eventQueue": "object",
     "optedIn": true
   },
@@ -68,7 +69,6 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
@@ -98,8 +98,7 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
@@ -148,6 +147,7 @@
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
+  "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgCount": 0,
     "unapprovedDecryptMsgs": "object"
@@ -180,9 +180,7 @@
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
-    "completedMetaMetricsOnboarding": true,
     "dataCollectionForMarketing": "boolean",
-    "eventsBeforeMetricsOptIn": "object",
     "fragments": "object",
     "marketingCampaignCookieId": null,
     "tracesBeforeMetricsOptIn": "object",

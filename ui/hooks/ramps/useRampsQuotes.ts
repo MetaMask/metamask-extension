@@ -45,6 +45,8 @@ export function useRampsQuotes(
       assetId: options?.assetId,
       amount: options?.amount ?? 0,
       walletAddress: options?.walletAddress ?? '',
+      region: options?.region,
+      fiat: options?.fiat,
       redirectUrl: options?.redirectUrl,
       paymentMethods: options?.paymentMethods,
       providers: options?.providers,

@@ -86,6 +86,8 @@ const Success = ({
       paddingTop={8}
       className="flex-1"
       data-testid="qr-sync-success"
+      data-synced-wallet-count={walletCount}
+      data-synced-account-count={importedAccountCount}
     >
       <Box
         className="text-center"

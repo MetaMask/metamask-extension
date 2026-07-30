@@ -10,29 +10,31 @@ import AddWallets from './add-wallets';
 const mockWalletId = toAccountWalletId(AccountWalletType.Entropy, 'entropy1');
 const mockGroupId = `${mockWalletId}/0`;
 
-jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
+const mockStableAccountTree = (() => {
   const { AccountWalletType: WalletType, toAccountWalletId: toWalletId } =
     jest.requireActual('@metamask/account-api');
   const walletId = toWalletId(WalletType.Entropy, 'entropy1');
   const groupId = `${walletId}/0`;
   return {
-    getAccountTree: jest.fn(() => ({
-      wallets: {
-        [walletId]: {
-          id: walletId,
-          type: WalletType.Entropy,
-          metadata: { name: 'My Wallet', entropy: { id: 'entropy1' } },
-          groups: {
-            [groupId]: {
-              id: groupId,
-              metadata: { name: 'Account 1' },
-            },
+    wallets: {
+      [walletId]: {
+        id: walletId,
+        type: WalletType.Entropy,
+        metadata: { name: 'My Wallet', entropy: { id: 'entropy1' } },
+        groups: {
+          [groupId]: {
+            id: groupId,
+            metadata: { name: 'Account 1' },
           },
         },
       },
-    })),
+    },
   };
-});
+})();
+
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  getAccountTree: jest.fn(() => mockStableAccountTree),
+}));
 
 jest.mock('./wallet-selection-list', () => ({
   WalletSelectionList: () => <div data-testid="wallet-selection-list" />,
@@ -67,7 +69,7 @@ describe('AddWallets', () => {
 
     expect(onAddWallets).toHaveBeenCalledWith({
       selectedAccountGroupIds: [mockGroupId],
-      syncedAccountCount: 1,
+      syncedAccountCount: 0,
       syncedWalletCount: 1,
     });
   });

@@ -31,9 +31,9 @@ const QR_SYNC_TIMEOUT_MS_PRODUCTION = {
   MWP_SESSION_TIMEOUT: 60_000, // 60 seconds
 } as const;
 
-const QR_SYNC_TIMEOUT_MS_E2E = {
-  SYNC_OFFER_TIMEOUT: 1_000, // 1 second
-  SYNC_COMPLETION_TIMEOUT: 1_000, // 1 second
+export const QR_SYNC_TIMEOUT_MS_E2E = {
+  SYNC_OFFER_TIMEOUT: 2_000, // 2 second
+  SYNC_COMPLETION_TIMEOUT: 2_000, // 2 second
   MWP_SESSION_TIMEOUT: 10_000, // 10 seconds
 } as const;
 

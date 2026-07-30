@@ -159,6 +159,7 @@ import {
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
@@ -171,7 +172,6 @@ import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
   MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerTrackEventAction,
   MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
@@ -217,13 +217,16 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
+  'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'openUpdateTabAndReload',
   'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
+  'requestSafeReload',
   'resetAccount',
   'setAccountLabel',
   'setCurrentCurrency',
@@ -277,7 +280,6 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerTrackEventAction
   | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -352,6 +354,8 @@ type LegacyBackgroundApiServiceOptions = {
   createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
+  markNotificationPopupAsAutomaticallyClosed: () => void;
+  requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
 };
@@ -376,6 +380,10 @@ export class LegacyBackgroundApiService {
 
   readonly #getOpenMetamaskTabsIds: () => Record<string, number>;
 
+  readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
+
+  readonly #requestSafeReload: () => Promise<void>;
+
   readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
@@ -393,6 +401,8 @@ export class LegacyBackgroundApiService {
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+   * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
+   * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
@@ -403,6 +413,8 @@ export class LegacyBackgroundApiService {
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    markNotificationPopupAsAutomaticallyClosed,
+    requestSafeReload,
     sendUpdate,
     seedlessOperationMutex,
     createVaultMutex,
@@ -413,6 +425,9 @@ export class LegacyBackgroundApiService {
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
+    this.#markNotificationPopupAsAutomaticallyClosed =
+      markNotificationPopupAsAutomaticallyClosed;
+    this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
@@ -532,6 +547,21 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  async requestSafeReload(): Promise<void> {
+    return this.#requestSafeReload();
+  }
+
+  /**
+   * Opens the "Updating" page in a new tab and then triggers a safe extension
+   * reload. Used when an update is available.
+   */
+  async openUpdateTabAndReload(): Promise<void> {
+    return openUpdateTabAndReload(this.#requestSafeReload);
+  }
+
+  /**
    * Updates the phishing lists if necessary and then checks whether the given
    * website is a known phishing site.
    *
@@ -544,6 +574,16 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('PhishingController:maybeUpdateState');
 
     return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   *
+   * This lets us differentiate between the cases where we close the
+   * notification popup v.s. when the user closes the popup window directly.
+   */
+  markNotificationPopupAsAutomaticallyClosed(): void {
+    this.#markNotificationPopupAsAutomaticallyClosed();
   }
 
   /**

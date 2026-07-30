@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-token-selection-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-token-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Select token
+      </p>
+    </div>
+    <div
+      class="flex-1 overflow-y-auto"
+    >
+      <div
+        data-testid="send-asset-picker"
+      >
+        <span
+          data-testid="hide-balances"
+        >
+          true
+        </span>
+        <span
+          data-testid="disable-metrics"
+        >
+          true
+        </span>
+        <span
+          data-testid="token-count"
+        >
+          1
+        </span>
+        <span
+          data-testid="empty-state-message"
+        >
+          No tokens available
+        </span>
+        <button
+          data-testid="apply-network-filter"
+        >
+          Apply network filter
+        </button>
+        <button
+          data-testid="mapped-token-eip155:1/slip44:60"
+        >
+          ETH
+        </button>
+      </div>
+    </div>
+    <div
+      class="border-t border-border-muted px-4 py-3"
+    >
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-show-all-tokens"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Show all tokens
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsTokenSelectionScreen shows error state when tokensError exists 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-token-selection-error"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-token-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Select token
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-2 items-center justify-center flex-1 px-4 py-8"
+    >
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Error loading tokens
+      </p>
+    </div>
+  </div>
+</div>
+`;

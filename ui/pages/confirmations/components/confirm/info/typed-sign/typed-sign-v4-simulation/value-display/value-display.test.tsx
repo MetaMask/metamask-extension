@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
@@ -47,19 +47,17 @@ describe('PermitSimulationValueDisplay', () => {
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    await act(async () => {
-      const { container, findByText } = renderWithProvider(
-        <PermitSimulationValueDisplay
-          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-          value="4321"
-          chainId="0x1"
-        />,
-        mockStore,
-      );
+    const { container, findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
 
-      expect(await findByText('0.432')).toBeInTheDocument();
-      expect(container).toMatchSnapshot();
-    });
+    expect(await findByText('0.432')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should invoke method to track missing decimal information for ERC20 tokens', async () => {
@@ -72,16 +70,14 @@ describe('PermitSimulationValueDisplay', () => {
       .mocked(actions.getTokenStandardAndDetails)
       .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
 
-    await act(async () => {
-      renderWithProvider(
-        <PermitSimulationValueDisplay
-          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-          value="4321"
-          chainId="0x1"
-        />,
-        mockStore,
-      );
-    });
+    renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith(
@@ -95,7 +91,7 @@ describe('PermitSimulationValueDisplay', () => {
   it('renders unlimited if value at threshold', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { getByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <PermitSimulationValueDisplay
         tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         value={UNLIMITED_THRESHOLD}
@@ -105,17 +101,13 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
-    });
-
-    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+    expect(await findByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value over threshold', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { getByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <PermitSimulationValueDisplay
         tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
@@ -125,11 +117,7 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
-    });
-
-    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+    expect(await findByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value under threshold', async () => {
@@ -145,10 +133,8 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
+    await waitFor(() => {
+      expect(queryByText(messages.unlimited.message)).toBeNull();
     });
-
-    expect(queryByText(messages.unlimited.message)).toBeNull();
   });
 });

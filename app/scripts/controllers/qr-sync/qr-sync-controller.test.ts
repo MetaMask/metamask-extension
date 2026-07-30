@@ -1049,6 +1049,22 @@ describe('QrSyncController', () => {
 
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
+
+    it('resets to idle when the relay disconnects during cancelSync teardown', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      mockEmitConnected();
+
+      mockMwp.dappClient?.disconnect.mockImplementation(async () => {
+        mockMwp.dappClient?.emit('disconnected');
+      });
+
+      await controller.cancelSync();
+      await flushAsyncWork();
+
+      expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
+    });
   });
 
   describe('channel errors', () => {
@@ -1119,6 +1135,26 @@ describe('QrSyncController', () => {
       });
     });
 
+    it('fails the session when mobile sends sync-error during sync completion', async () => {
+      const { controller, primaryGroupId } = setupController();
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
+
+      mockEmitSyncError({
+        message: 'Mobile could not complete the sync',
+      });
+      await flushAsyncWork();
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
+      expect(controller.state.qrSyncError).toStrictEqual({
+        code: QrSyncErrorCodes.SYNC_FAILED,
+        message: 'Mobile could not complete the sync',
+      });
+    });
+
     it('ignores duplicate peer cancel messages after the session has ended', async () => {
       const { controller } = setupController();
 
@@ -1129,6 +1165,184 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncError?.message).toBe(
         QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       );
+    });
+  });
+
+  describe('Sentry reporting', () => {
+    it('reports unexpected session failures to Sentry', async () => {
+      const captureException = jest.fn();
+      const connectError = new Error('Relay unavailable');
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+      mockMwp.connect.mockRejectedValueOnce(connectError);
+
+      await controller.createSession();
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.UNKNOWN})`,
+      );
+      expect(sentryError.cause).toBe(connectError);
+    });
+
+    it('does not report QR expiry to Sentry', async () => {
+      const captureException = jest.fn();
+      const expiredError = new MwpCoreSessionError(
+        MwpCoreErrorCode.REQUEST_EXPIRED,
+        'Did not receive handshake offer from wallet in time.',
+      );
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+      mockMwp.connect.mockRejectedValueOnce(expiredError);
+
+      await controller.createSession();
+
+      expect(captureException).not.toHaveBeenCalled();
+    });
+
+    it('reports mobile sync-error messages to Sentry', async () => {
+      const captureException = jest.fn();
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      mockEmitSyncError({
+        message: 'Mobile could not complete the sync',
+      });
+      await flushAsyncWork();
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
+      );
+      expect(sentryError.cause).toBeInstanceOf(Error);
+      expect((sentryError.cause as Error).message).toBe(
+        'Mobile could not complete the sync',
+      );
+    });
+
+    it('reports sync-error during completion wait to Sentry only once', async () => {
+      const captureException = jest.fn();
+      const { controller, qrSyncMessenger, primaryGroupId } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
+
+      mockEmitSyncError({
+        message: 'Mobile could not complete the sync',
+      });
+      await flushAsyncWork();
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
+      );
+      expect((sentryError.cause as Error).message).toBe(
+        'Mobile could not complete the sync',
+      );
+    });
+
+    it('does not report sync offer timeouts to Sentry', async () => {
+      const captureException = jest.fn();
+      const submitOtp = jest.fn().mockResolvedValue(undefined);
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      mockEmitOtpRequired(submitOtp);
+
+      jest.useFakeTimers();
+      try {
+        await controller.submitOtp('123456');
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT,
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+
+      expect(captureException).not.toHaveBeenCalled();
+    });
+
+    it('does not report OTP expiry to Sentry', async () => {
+      const captureException = jest.fn();
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+
+      jest.useFakeTimers();
+      try {
+        mockEmitOtpRequired(jest.fn());
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+
+      expect(captureException).not.toHaveBeenCalled();
+    });
+
+    it('does not report transport disconnects to Sentry', async () => {
+      const captureException = jest.fn();
+      const { controller, qrSyncMessenger } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      mockMwp.dappClient?.emit(
+        'disconnected',
+        new MwpCoreSessionError(
+          MwpCoreErrorCode.TRANSPORT_DISCONNECTED,
+          'Transport disconnected.',
+        ),
+      );
+      await flushAsyncWork();
+
+      expect(captureException).not.toHaveBeenCalled();
+    });
+
+    it('reports send-message failures to Sentry', async () => {
+      const captureException = jest.fn();
+      const sendError = new Error('Relay write failed');
+      const { controller, qrSyncMessenger, primaryGroupId } = setupController();
+      // @ts-expect-error - captureException mock
+      qrSyncMessenger.captureException = captureException;
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+      mockMwp.dappClient?.sendRequest.mockRejectedValueOnce(sendError);
+
+      await expect(
+        controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]),
+      ).rejects.toThrow(QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE);
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        `QR sync failed to send message (${QrSyncActionTypes.SYNC_READY})`,
+      );
+      expect(sentryError.cause).toBe(sendError);
     });
   });
 });

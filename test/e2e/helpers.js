@@ -4,6 +4,8 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+// TODO: Fix environment or rename
+// eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
@@ -305,6 +307,14 @@ async function withFixtures(options, testSuite) {
           // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const { TronNode } = require('./seeder/tron/node');
           localNode = new TronNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'bitcoin':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { BitcoinNode } = require('./seeder/bitcoin/node');
+          localNode = new BitcoinNode();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;

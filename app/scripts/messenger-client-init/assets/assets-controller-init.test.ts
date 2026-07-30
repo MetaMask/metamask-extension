@@ -12,7 +12,15 @@ import {
   getAssetsControllerInitMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
+import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { AssetsControllerInit } from './assets-controller-init';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  traceAsControllerCallback: jest.fn((_req, fn) =>
+    Promise.resolve(fn?.('traced-context')),
+  ),
+}));
 
 jest.mock('@metamask/assets-controller', () => ({
   AssetsController: jest.fn().mockImplementation(() => ({
@@ -59,6 +67,9 @@ function getInitRequestMock(
     if (action === 'AuthenticationController:getBearerToken') {
       return Promise.resolve('mock-bearer-token');
     }
+    if (action === 'RemoteFeatureFlagController:getState') {
+      return { remoteFeatureFlags: {} };
+    }
     throw new Error(`Unexpected action: ${action}`);
   });
 
@@ -103,6 +114,9 @@ function buildSubscribeTestSetup(
     if (action === 'AuthenticationController:getBearerToken') {
       return Promise.resolve('mock-bearer-token');
     }
+    if (action === 'RemoteFeatureFlagController:getState') {
+      return { remoteFeatureFlags: {} };
+    }
     throw new Error(`Unexpected action: ${action}`);
   });
 
@@ -141,6 +155,8 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       isOnboarded: expect.any(Function),
+      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 
@@ -176,6 +192,8 @@ describe('AssetsControllerInit', () => {
         enabled: false,
       },
       isOnboarded: expect.any(Function),
+      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 
@@ -441,6 +459,126 @@ describe('AssetsControllerInit', () => {
       const isOnboarded = constructorCall.isOnboarded as () => boolean;
 
       expect(isOnboarded()).toBe(false);
+    });
+  });
+
+  describe('trace feature flag (assetsUnifyState.tracesEnabled)', () => {
+    it('skips Sentry tracing when tracesEnabled is absent / off', async () => {
+      const requestMock = getInitRequestMock();
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const { trace } = constructorCall;
+      if (!trace) {
+        throw new Error('Expected trace callback to be defined');
+      }
+
+      const fn = jest.fn(() => 'result');
+      await expect(
+        trace({ name: 'AssetsControllerFirstInitFetch' }, fn),
+      ).resolves.toBe('result');
+
+      expect(fn).toHaveBeenCalledWith();
+      expect(traceAsControllerCallback).not.toHaveBeenCalled();
+    });
+
+    it('forwards to traceAsControllerCallback when assetsUnifyState.tracesEnabled is on', async () => {
+      const requestMock = getInitRequestMock();
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'OnboardingController:getState') {
+            return { completedOnboarding: true };
+          }
+          if (action === 'PreferencesController:getState') {
+            return { useTokenDetection: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          if (action === 'RemoteFeatureFlagController:getState') {
+            return {
+              remoteFeatureFlags: {
+                [ASSETS_UNIFY_STATE_FLAG]: {
+                  enabled: true,
+                  featureVersion: '1',
+                  minimumVersion: '13.38.0',
+                  deprecatedControllers: ['TokenListController'],
+                  tracesEnabled: true,
+                },
+              },
+            };
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const { trace } = constructorCall;
+      if (!trace) {
+        throw new Error('Expected trace callback to be defined');
+      }
+
+      const fn = jest.fn(() => 'result');
+      const request = { name: 'AssetsControllerFirstInitFetch' };
+      await expect(trace(request, fn)).resolves.toBe('result');
+
+      expect(traceAsControllerCallback).toHaveBeenCalledWith(request, fn);
+    });
+  });
+
+  describe('tempMigrateAssetsInfoMetadataAssets3346', () => {
+    it('returns the TokensController and AccountsController persisted state slices for the healing migration', () => {
+      const persistedState = {
+        TokensController: {
+          allTokens: {
+            '0xe': {
+              '0x0000000000000000000000000000000000000001': [
+                {
+                  address: '0x0000000000000000000000000000000000000002',
+                  symbol: 'NICHE',
+                  decimals: 18,
+                },
+              ],
+            },
+          },
+        },
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              'account-id-1': {
+                address: '0x0000000000000000000000000000000000000001',
+              },
+            },
+          },
+        },
+      };
+
+      const requestMock = getInitRequestMock();
+      // The healing migration treats the persisted state as untrusted and
+      // re-validates every shape, so a partial fixture is intentional here.
+      requestMock.persistedState =
+        persistedState as unknown as typeof requestMock.persistedState;
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const getMigrationState =
+        constructorCall.tempMigrateAssetsInfoMetadataAssets3346;
+      if (!getMigrationState) {
+        throw new Error(
+          'Expected tempMigrateAssetsInfoMetadataAssets3346 to be defined',
+        );
+      }
+
+      const migrationState = getMigrationState();
+      expect(migrationState.TokensController).toBe(
+        persistedState.TokensController,
+      );
+      expect(migrationState.AccountsController).toBe(
+        persistedState.AccountsController,
+      );
     });
   });
 

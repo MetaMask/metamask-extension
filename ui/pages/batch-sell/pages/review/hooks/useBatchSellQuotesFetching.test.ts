@@ -1,15 +1,13 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import {
   resetBridgeController,
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { getIsStxEnabled } from '../../../../../ducks/bridge/selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   getBatchSellQuotes,
   getBatchSellQuotesValidationErrors,
@@ -25,11 +23,15 @@ import {
   mockUseSelectorPassthrough,
   BATCH_SELL_CHAIN_ID,
 } from '../../../../../../test/data/batch-sell';
+import { useDispatch } from '../../../../../store/hooks';
 import { useBatchSellQuotesFetching } from './useBatchSellQuotesFetching';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -42,8 +44,11 @@ jest.mock('../../../../../ducks/bridge/actions', () => ({
 }));
 
 jest.mock('../../../../../ducks/bridge/selectors', () => ({
-  getFromAccount: jest.fn(),
   getIsStxEnabled: jest.fn(),
+}));
+
+jest.mock('../../../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/batch-sell/selectors', () => ({
@@ -71,9 +76,11 @@ jest.mock('lodash', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
-const mockGetFromAccount = jest.mocked(getFromAccount);
+const mockGetInternalAccountBySelectedAccountGroupAndCaip = jest.mocked(
+  getInternalAccountBySelectedAccountGroupAndCaip,
+);
 const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
 const mockGetBatchSellQuotes = jest.mocked(getBatchSellQuotes);
 const mockGetBatchSellQuotesValidationErrors = jest.mocked(
@@ -179,9 +186,11 @@ describe('useBatchSellQuotesFetching', () => {
     jest.clearAllMocks();
 
     mockDispatch.mockReset();
-    mockUseDispatch.mockReturnValue(mockDispatch as never);
+    mockUseAppDispatch.mockReturnValue(mockDispatch as never);
 
-    mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
+    mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+      MOCK_ACCOUNT as never,
+    );
     mockGetIsStxEnabled.mockReturnValue(true as never);
     mockGetBatchSellQuotes.mockReturnValue(
       MOCK_CONTROLLER_RESULT_NOT_FETCHED as never,
@@ -309,7 +318,9 @@ describe('useBatchSellQuotesFetching', () => {
     });
 
     it('does not dispatch when selectedAccount has no address', () => {
-      mockGetFromAccount.mockReturnValue(null as never);
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        null as never,
+      );
 
       renderDefault({ enabled: true });
 

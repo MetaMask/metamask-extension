@@ -27,14 +27,18 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
-// Mock usePerpsTransactionHistory hook to avoid controller dependency
+// Mock usePerpsTransactionHistory hook to avoid controller dependency. Tests
+// that need to simulate the initial-fetch-in-progress-with-wallet-data
+// scenario override this via mockUsePerpsTransactionHistory.mockReturnValue.
+const mockUsePerpsTransactionHistory = jest.fn().mockReturnValue({
+  transactions: mockTransactions,
+  isLoading: false,
+  error: null,
+  refetch: jest.fn(),
+});
+
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
-  usePerpsTransactionHistory: () => ({
-    transactions: mockTransactions,
-    isLoading: false,
-    error: null,
-    refetch: jest.fn(),
-  }),
+  usePerpsTransactionHistory: () => mockUsePerpsTransactionHistory(),
 }));
 
 const mockGetIsPerpsExperienceAvailable =
@@ -53,6 +57,12 @@ describe('PerpsActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+    mockUsePerpsTransactionHistory.mockReturnValue({
+      transactions: mockTransactions,
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
   });
 
   it('renders with correct data-testid', () => {
@@ -181,6 +191,61 @@ describe('PerpsActivityPage', () => {
     expect(
       screen.getByTestId('perps-activity-filter-button'),
     ).toHaveTextContent('Deposits');
+  });
+
+  describe('initial fetch with wallet-tracked transactions already available', () => {
+    // Simulates usePerpsTransactionHistory's mergedTransactions behavior:
+    // wallet-tracked deposits/withdrawals are merged in and returned
+    // immediately, even while the REST fetch (isLoading) is still in flight.
+    const walletDepositTransaction = mockTransactions.find(
+      (tx) => tx.id === 'tx-005',
+    );
+
+    it('shows the skeleton (not a blank list) when a wallet transaction is present for a non-matching filter while loading', () => {
+      mockUsePerpsTransactionHistory.mockReturnValue({
+        transactions: [walletDepositTransaction],
+        isLoading: true,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      // Default filter is 'trade'; the only available transaction is a
+      // deposit, so groupedTransactions is empty for this filter and the
+      // skeleton must render instead of leaving the content area blank.
+      expect(
+        screen.getByTestId('perps-activity-page-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('transaction-card-tx-005'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the already-known wallet transaction immediately while still loading, for a matching filter', () => {
+      mockUsePerpsTransactionHistory.mockReturnValue({
+        transactions: [walletDepositTransaction],
+        isLoading: true,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      // Switch to the Deposits filter, which matches the wallet transaction.
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(
+        screen.getByTestId('perps-activity-filter-option-deposit'),
+      );
+
+      // The wallet-tracked deposit renders immediately, without waiting for
+      // isLoading to become false, and no skeleton is shown since there is
+      // already something to display.
+      expect(screen.getByTestId('transaction-card-tx-005')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-activity-page-skeleton'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('order transaction navigation', () => {

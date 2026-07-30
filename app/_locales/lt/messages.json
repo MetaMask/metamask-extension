@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Skaičiai po kablelio"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
-  },
   "delete": {
     "message": "Ištrinti"
   },
@@ -352,9 +349,6 @@
   "networks": {
     "message": "Tinklai"
   },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
-  },
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"
@@ -511,9 +505,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"

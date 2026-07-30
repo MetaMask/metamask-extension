@@ -185,7 +185,7 @@ features:
 env:
   - ENABLE_SENTRY: true
   - ACCOUNTS_USE_DEV_APIS: false
-  - BRIDGE_USE_DEV_APIS: false
+  - BRIDGE_USE_CUSTOM_BASE_URL: null
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
@@ -372,6 +372,9 @@ env:
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
   - QR_SYNC_ENABLED: false
+  # Pure-black (OLED) dark mode. Set to true in .metamaskrc for local dev,
+  # or change this entry to true to enable for all users in a build.
+  - MM_PURE_BLACK_PREVIEW: true
 
   ###
   # Meta variables
@@ -437,3 +440,11 @@ env:
 
   # Basic Functionality toggle (required for onboarding)
   - BFT_CONSOLIDATION_ENABLED: false
+
+  # Sentry browser SDK serverless environment checks
+  - FUNCTIONS_WORKER_RUNTIME: ''
+  - LAMBDA_TASK_ROOT: ''
+  - K_SERVICE: ''
+  - CF_PAGES: ''
+  - VERCEL: ''
+  - NETLIFY: ''

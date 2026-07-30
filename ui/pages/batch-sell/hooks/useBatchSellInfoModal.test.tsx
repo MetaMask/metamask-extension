@@ -95,7 +95,6 @@ describe('useBatchSellModal', () => {
 
   describe('consumer component integration', () => {
     it('wires openModal and closeModal to UI actions correctly', () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       const TestConsumer = () => {
         const { openModal, closeModal } = useBatchSellInfoModal();
         return (

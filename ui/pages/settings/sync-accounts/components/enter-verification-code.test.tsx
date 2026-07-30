@@ -25,7 +25,10 @@ type QrSyncError = {
   message: string;
 };
 
-const renderComponent = (qrSyncError: QrSyncError | null = null) => {
+const renderComponent = (
+  qrSyncError: QrSyncError | null = null,
+  onRestart: () => void = jest.fn(),
+) => {
   const store = configureMockStore([thunk])({
     ...mockState,
     metamask: {
@@ -33,7 +36,13 @@ const renderComponent = (qrSyncError: QrSyncError | null = null) => {
       qrSyncError,
     },
   });
-  return renderWithProvider(<EnterVerificationCode />, store);
+  return {
+    onRestart,
+    ...renderWithProvider(
+      <EnterVerificationCode onRestart={onRestart} />,
+      store,
+    ),
+  };
 };
 
 const getInputs = () =>
@@ -91,27 +100,22 @@ describe('EnterVerificationCode', () => {
       await screen.findByText(messages.enter_verification_code_error.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.start_with_new_qr_code.message),
+      screen.getByTestId('qr-sync-start-with-new-qr-code'),
     ).toBeInTheDocument();
   });
 
-  it('creates a new session when restart is clicked after an error', async () => {
+  it('calls onRestart when restart is clicked after an error', async () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('invalid otp'));
-    renderComponent();
+    const onRestart = jest.fn();
+    renderComponent(null, onRestart);
 
     typeCode('111111');
 
     await screen.findByText(messages.enter_verification_code_error.message);
 
-    mockSubmitRequestToBackground.mockResolvedValue(undefined);
-    fireEvent.click(screen.getByText(messages.start_with_new_qr_code.message));
+    fireEvent.click(screen.getByTestId('qr-sync-start-with-new-qr-code'));
 
-    await waitFor(() => {
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
-      );
-    });
+    expect(onRestart).toHaveBeenCalledTimes(1);
   });
 
   it('shows the max-attempts message, restart button and disables the inputs', () => {
@@ -124,7 +128,7 @@ describe('EnterVerificationCode', () => {
       screen.getByText(messages.enter_verification_code_max_attempts.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.start_with_new_qr_code.message),
+      screen.getByTestId('qr-sync-start-with-new-qr-code'),
     ).toBeInTheDocument();
     getInputs().forEach((input) => {
       expect(input).toBeDisabled();
@@ -143,7 +147,7 @@ describe('EnterVerificationCode', () => {
       screen.getByText(messages.enter_verification_code_expired.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.start_with_new_qr_code.message),
+      screen.getByTestId('qr-sync-start-with-new-qr-code'),
     ).toBeInTheDocument();
   });
 });

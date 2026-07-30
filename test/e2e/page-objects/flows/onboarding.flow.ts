@@ -18,7 +18,7 @@ import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 
@@ -818,6 +818,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
 
   await onboardingCompletePage.completeOnboarding();
 
