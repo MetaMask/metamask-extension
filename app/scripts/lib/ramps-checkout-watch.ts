@@ -59,6 +59,12 @@ export function createWatchRampsCheckoutTab(
     checkoutOpenedAt,
     region,
   }: WatchRampsCheckoutTabParams): void {
+    // Defensive: the flow watches each freshly-opened tab exactly once, so a
+    // repeat tab id should never occur. If it ever does, the old session is
+    // silently superseded — deliberately NOT emitted as `checkout-closed`,
+    // since displacement is not a user close and the schema has no
+    // displacement close source (better an edge undercount than mislabeled
+    // telemetry).
     activeByTabId.get(tabId)?.cleanup();
 
     const analyticsContext: RampsCheckoutAnalyticsContext = {
