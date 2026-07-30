@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.41.0]
+
+### Added
+
+- Added transitions to manage tokens page (#44484)
+- Added the ability to save gas fee preferences per account and network (#43317)
+- Added support for `Blob` global in Snaps (#44396)
+- Added the ability to sync selected wallets and accounts from the extension to MetaMask Mobile via QR code pairing in Settings (#44047)
+- Added Robinhood Chain as a supported network in the Swap & Bridge flow (#44347)
+- Added Robinhood default Infura RPC and Quicknode failover (#44331)
+- Added Stellar Asset Activation UI component (#44193)
+- Added a QR code prompt when opening a trending/explore deeplink on Extension, so users can continue on MetaMask mobile (#44170)
+- Added order summary tooltips for Margin, Liquidation price, and Fees labels (#44290)
+
+### Changed
+
+- Replaced the "Loading..." text on the Activity screen with a skeleton (#44423)
+- Prevented cache thrashing in parameterized network lookups (#44475)
+- Navigated directly to the Perps deposit screen from the Perps Funded activity details 'Fund again' CTA (#44427)
+- Display 1:1 proportion of qr code for smaller screen (#44417)
+- Migrated asset routes to CAIP-19 identifiers (#44114)
+- QR Sync flow should now show step specific error and global errors on a dedicated error view (#44081)
+- Moved account-sync flow from settings sub-page to top level route (#43870)
+- Seed unified assets for non-EVM search (#44361)
+
+### Fixed
+
+- Fixed extra mascot showing in unlock page while on strict mode (#44533)
+- Fixed a bug where home subtab content was emitting duplicate events (#44528)
+- Fixed a bug that required two clicks to select a token when buying crypto (#44497)
+- Fixed a crash when typing a comma as the decimal separator in the amount field of MetaMask Pay confirmations, such as Perps withdraw or mUSD conversion (#44521)
+- Fixed asset selector cache thrashing for NFTs and token scan results (#44473)
+- Fixed a regression that hid the destination-network block explorer link (and destination token) on cross-chain bridge transaction details, leaving only the source-network link (#44488)
+- Fixed parameterized selector cache thrashing for chain-checking selectors (#44474)
+- Fixed the Perps reverse-position modal displaying a raw provider-prefixed symbol instead of the ticker, and added the market ticker next to the volume on Perps market list rows (#44478)
+- Ensure stellar assets show correctly in token details page (#44444)
+- Fixed QR account sync session timeout, cancellation, and error recovery when pairing with MetaMask Mobile (#44422)
+- Fixed a bug that could cause the Perps deposit screen to get stuck on a loading skeleton when opened for the first time (#44247)
+- Fixed perps deposit/withdraw activity details missing info bug (#44425)
+- Fixed display details and spacing for added protection in transaction confirmations (#44343)
+- Fixed a bug where open order size and value were not hidden when Privacy Mode was enabled (#44432)
+- Fixed extra pending row during mUSD conversion flow (#44370)
+- Fixed extra pending row during mUSD conversion flow (#44359)
+- Fixed an issue where the VIP badge could be missing on a fresh install even when VIP fee discounts were applied (#44282)
+- Fixed misaligned warning icon in estimated changes section on malicious approval confirmations (#44207)
+
 ## [13.40.0]
 
 ### Added
@@ -2739,7 +2785,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...HEAD
+[13.41.0]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...v13.41.0
 [13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
 [13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
 [13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1

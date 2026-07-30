@@ -6,6 +6,7 @@ import {
   transformOrdersToTransactions,
   transformFundingToTransactions,
   transformUserHistoryToTransactions,
+  dedupeWalletTransactionsByTxHash,
 } from '../../components/app/perps/utils/transactionTransforms';
 import type {
   Order,
@@ -20,6 +21,8 @@ import {
   invalidateCoalescedRequest,
 } from './coalesceBackgroundRequest';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
+import { useWalletPerpsDepositTransactions } from './useWalletPerpsDepositTransactions';
+import { useWalletPerpsWithdrawalTransactions } from './useWalletPerpsWithdrawalTransactions';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -140,6 +143,14 @@ export function usePerpsTransactionHistory({
   // Subscribe to live WebSocket fills for instant trade updates
   // This ensures new trades appear immediately without waiting for REST refetch
   const { fills: liveFills } = usePerpsLiveFills({ throttleMs: 0 });
+
+  // Wallet-tracked deposits/withdrawals (perpsDeposit / perpsDepositAndOrder /
+  // perpsWithdraw), used as a fallback so a just-completed deposit or
+  // withdrawal is visible immediately even before HyperLiquid's user-history
+  // ledger reflects it. De-duplicated against userHistoryTransactions by
+  // txHash below.
+  const walletDepositTransactions = useWalletPerpsDepositTransactions();
+  const walletWithdrawalTransactions = useWalletPerpsWithdrawalTransactions();
 
   // Store userHistory in ref to avoid recreating fetchAllTransactions callback
   const userHistoryRef = useRef(userHistory);
@@ -325,9 +336,16 @@ export function usePerpsTransactionHistory({
     // Note: transformFillsToTransactions now aggregates split stop loss/TP fills
     const liveTransactions = transformFillsToTransactions(liveFills);
 
-    // If no REST transactions yet, return only live fills
+    // If no REST transactions yet, return live fills plus wallet
+    // deposits/withdrawals (deduped against nothing, since there's no
+    // user-history yet)
     if (transactions.length === 0) {
-      return liveTransactions;
+      const allTransactions = [
+        ...liveTransactions,
+        ...dedupeWalletTransactionsByTxHash(walletDepositTransactions, []),
+        ...dedupeWalletTransactionsByTxHash(walletWithdrawalTransactions, []),
+      ];
+      return allTransactions.sort((a, b) => b.timestamp - a.timestamp);
     }
 
     // Separate trade transactions from non-trade transactions (orders, funding, deposits)
@@ -359,15 +377,29 @@ export function usePerpsTransactionHistory({
       tradeMap.set(dedupKey, tx);
     }
 
-    // Combine deduplicated trades with non-trade transactions
+    // Combine deduplicated trades with non-trade transactions and any
+    // wallet-sourced deposits/withdrawals not yet reflected in user history
     const allTransactions = [
       ...Array.from(tradeMap.values()),
       ...nonTradeTransactions,
+      ...dedupeWalletTransactionsByTxHash(
+        walletDepositTransactions,
+        nonTradeTransactions,
+      ),
+      ...dedupeWalletTransactionsByTxHash(
+        walletWithdrawalTransactions,
+        nonTradeTransactions,
+      ),
     ];
 
     // Sort by timestamp descending
     return allTransactions.sort((a, b) => b.timestamp - a.timestamp);
-  }, [liveFills, transactions]);
+  }, [
+    liveFills,
+    transactions,
+    walletDepositTransactions,
+    walletWithdrawalTransactions,
+  ]);
 
   return {
     transactions: mergedTransactions,

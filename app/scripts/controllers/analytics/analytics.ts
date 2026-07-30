@@ -300,7 +300,7 @@ export function trackEvent(
   try {
     const mergedOptions = { ...built.options, ...options };
 
-    if (!canSubmitAnalytics(built.name)) {
+    if (!isBasicFunctionalityEnabled()) {
       return;
     }
 

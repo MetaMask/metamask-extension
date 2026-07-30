@@ -6,16 +6,15 @@ import { WINDOW_TITLES } from '../../constants';
 class CriticalErrorPage {
   protected readonly driver: Driver;
 
+  protected readonly errorMessage = '.critical-error__details';
+
   // Locators
   protected readonly errorPageTitle: object = {
     text: 'MetaMask had trouble starting.',
     css: 'h1',
   };
 
-  protected readonly errorMessage = '.critical-error__details';
-
-  protected readonly troubleStartingDescription =
-    'This error could be intermittent, so try restarting the extension.';
+  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
   protected readonly repairButton = '#critical-error-repair-button';
 
@@ -25,7 +24,8 @@ class CriticalErrorPage {
   // On CI this chain can exceed the default 10s selector wait, so we allow more.
   protected readonly repairButtonTimeoutMs = 30000;
 
-  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
+  protected readonly troubleStartingDescription =
+    'This error could be intermittent, so try restarting the extension.';
 
   constructor(driver: Driver) {
     this.driver = driver;

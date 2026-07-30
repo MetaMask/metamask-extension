@@ -228,7 +228,10 @@ describe('EnforcedSimulationsRow', () => {
     const input = getByTestId(
       'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
-    input?.click();
+
+    await act(async () => {
+      input.click();
+    });
 
     expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
       expect.any(String),
@@ -248,7 +251,10 @@ describe('EnforcedSimulationsRow', () => {
     const input = await waitFor(() =>
       getByTestId('enforced-simulations-toggle-input'),
     );
-    input.click();
+
+    await act(async () => {
+      input.click();
+    });
 
     await waitFor(() => {
       expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();

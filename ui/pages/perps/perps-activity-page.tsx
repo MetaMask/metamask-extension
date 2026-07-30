@@ -153,7 +153,12 @@ const PerpsActivityPage = () => {
         {/* Transaction List */}
         <Box flexDirection={BoxFlexDirection.Column}>
           {/* Loading State */}
-          {isLoading && transactions.length === 0 && (
+          {/* Gated on groupedTransactions (not the raw transactions array) so
+              that wallet-tracked deposits/withdrawals which are already
+              available (and thus render immediately, see mergedTransactions
+              in usePerpsTransactionHistory) don't wrongly suppress the
+              skeleton when they don't match the currently selected filter. */}
+          {isLoading && groupedTransactions.length === 0 && (
             <PerpsActivityPageSkeleton />
           )}
 
@@ -193,8 +198,11 @@ const PerpsActivityPage = () => {
           )}
 
           {/* Transaction Groups */}
-          {!isLoading &&
-            !error &&
+          {/* Not gated on isLoading: wallet-tracked deposits/withdrawals (and,
+              once the REST fetch resolves, the full merged list) must render
+              immediately rather than waiting for isLoading to flip to false,
+              otherwise the list would go blank until the fetch completes. */}
+          {!error &&
             groupedTransactions.map((group) => (
               <Box
                 key={group.date}
