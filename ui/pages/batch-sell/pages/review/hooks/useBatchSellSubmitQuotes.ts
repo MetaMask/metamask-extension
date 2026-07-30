@@ -43,7 +43,9 @@ export default function useBatchSellSubmitQuotes({
   const srcChainId = quoteResponses.find((q) => q)?.chainId;
   const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),
+    srcChainIdHex
+      ? getIsSmartTransaction(state as BridgeAppState, srcChainIdHex)
+      : false,
   );
   const fromAccount = useSelector(getFromAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);

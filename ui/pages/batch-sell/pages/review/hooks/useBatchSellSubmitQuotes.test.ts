@@ -236,6 +236,23 @@ describe('useBatchSellSubmitQuotes', () => {
       );
     });
 
+    // `getIsSmartTransaction` falls back to the globally selected network when
+    // given no chain id, which has nothing to do with the chain being sold on.
+    it('reports STX as disabled instead of querying the global network when the source chain has no hex equivalent', async () => {
+      mockGetMaybeHexChainId.mockReturnValue(undefined);
+
+      const { result } = renderDefault();
+
+      await act(async () => {
+        await result.current.submitBatchSellQuotes();
+      });
+
+      expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
+      expect(mockSubmitBatchSellTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ isStxEnabled: false }),
+      );
+    });
+
     it('navigates to the activity tab after submission', async () => {
       const { result } = renderDefault();
 

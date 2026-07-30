@@ -1,12 +1,13 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
+import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
 import {
   resetBridgeController,
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import { getIsStxEnabled } from '../../../../../ducks/bridge/selectors';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   getBatchSellQuotes,
@@ -43,8 +44,8 @@ jest.mock('../../../../../ducks/bridge/actions', () => ({
   })),
 }));
 
-jest.mock('../../../../../ducks/bridge/selectors', () => ({
-  getIsStxEnabled: jest.fn(),
+jest.mock('../../../../../../shared/lib/selectors', () => ({
+  getIsSmartTransaction: jest.fn(),
 }));
 
 jest.mock('../../../../../selectors/multichain-accounts/account-tree', () => ({
@@ -81,7 +82,7 @@ const mockUseSelector = jest.mocked(useSelector);
 const mockGetInternalAccountBySelectedAccountGroupAndCaip = jest.mocked(
   getInternalAccountBySelectedAccountGroupAndCaip,
 );
-const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
+const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
 const mockGetBatchSellQuotes = jest.mocked(getBatchSellQuotes);
 const mockGetBatchSellQuotesValidationErrors = jest.mocked(
   getBatchSellQuotesValidationErrors,
@@ -191,7 +192,7 @@ describe('useBatchSellQuotesFetching', () => {
     mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
       MOCK_ACCOUNT as never,
     );
-    mockGetIsStxEnabled.mockReturnValue(true as never);
+    mockGetIsSmartTransaction.mockReturnValue(true);
     mockGetBatchSellQuotes.mockReturnValue(
       MOCK_CONTROLLER_RESULT_NOT_FETCHED as never,
     );
@@ -300,6 +301,37 @@ describe('useBatchSellQuotesFetching', () => {
           controllerResult: MOCK_CONTROLLER_RESULT_FETCHED,
           receivedAsset,
         }),
+      );
+    });
+  });
+
+  describe('smart transactions flag', () => {
+    // Batch sell never writes its source chain to the bridge slice, so reading
+    // STX availability from the bridge/global network would describe a
+    // different chain than the one being sold on.
+    it('scopes the STX check to the batch-sell source chain', () => {
+      renderDefault({ enabled: true });
+
+      expect(mockGetIsSmartTransaction).toHaveBeenCalledWith({}, '0x1');
+      expect(mockBuildQuoteRequestContext).toHaveBeenCalledWith(
+        expect.objectContaining({ smartTransactionsEnabled: true }),
+      );
+    });
+
+    it('reports STX as disabled on a non-EVM source chain rather than falling back to the global network', () => {
+      renderDefault({
+        enabled: true,
+        config: {
+          sendAssetsConfig,
+          receivedAsset: buildReceivedAsset({
+            chainId: MultichainNetworks.SOLANA,
+          }),
+        },
+      });
+
+      expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
+      expect(mockBuildQuoteRequestContext).toHaveBeenCalledWith(
+        expect.objectContaining({ smartTransactionsEnabled: false }),
       );
     });
   });
