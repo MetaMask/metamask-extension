@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import {
@@ -19,6 +20,10 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
+import {
+  selectTransactionPayAccountOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
@@ -40,7 +45,9 @@ type FromAccountRowProps = {
  *
  * Displays the account currently funding the transaction and lets the user
  * switch to another EVM account via a modal. Selecting an account updates the
- * TransactionPayController's `accountOverride`.
+ * TransactionPayController's `accountOverride`. The displayed account is
+ * `accountOverride ?? txParams.from`, matching how the pay controller resolves
+ * the funding account.
  *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.
@@ -54,8 +61,17 @@ export function FromAccountRow({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const from = currentConfirmation?.txParams?.from ?? '';
+  const transactionId = currentConfirmation?.id ?? '';
+  const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
+
+  const accountOverride = useSelector((state: TransactionPayState) =>
+    selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+  );
+
+  // Prefer the pay-controller override so the pill updates when the user picks
+  // a different funding account without mutating txParams.from.
+  const from = accountOverride ?? txFrom;
 
   const { name: fromName, subtitle: fromWalletName } = useDisplayName({
     value: toChecksumHexAddress(from),
