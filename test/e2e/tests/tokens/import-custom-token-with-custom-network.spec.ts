@@ -353,6 +353,7 @@ describe('Import custom token on a custom network', function () {
 
         const customTokenImportPage = new CustomTokenImportPage(driver);
         await customTokenImportPage.checkPageIsLoaded();
+        // Fix flaky test here
         await customTokenImportPage.importToken(UFO_TOKEN_ADDRESS);
 
         await tokenManagementPage.checkPageIsLoaded();
