@@ -9,7 +9,6 @@ const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const reactCompilerPlugin = require('eslint-plugin-react-compiler');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
@@ -377,7 +376,7 @@ module.exports = defineConfig([
     ],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -388,10 +387,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'error',
@@ -411,6 +408,20 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
+      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+      // promotes them to error and clears the baseline.
+      'react-hooks/config': 'warn',
+      'react-hooks/error-boundaries': 'warn',
+      'react-hooks/gating': 'warn',
+      'react-hooks/globals': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/use-memo': 'warn',
     },
     settings: {
       react: {
@@ -434,7 +445,7 @@ module.exports = defineConfig([
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -445,10 +456,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'off',
@@ -468,6 +477,20 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
+      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+      // promotes them to error and clears the baseline.
+      'react-hooks/config': 'warn',
+      'react-hooks/error-boundaries': 'warn',
+      'react-hooks/gating': 'warn',
+      'react-hooks/globals': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/use-memo': 'warn',
     },
     settings: {
       react: {
@@ -924,7 +947,6 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/home/nfts-tab.ts',
       'test/e2e/page-objects/pages/home/perps-tab.ts',
       'test/e2e/page-objects/pages/home/tokens-tab.ts',
-      'test/e2e/page-objects/pages/home/transaction-details.ts',
       'test/e2e/page-objects/pages/login-page.ts',
       'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
       'test/e2e/page-objects/pages/multichain/address-list-modal.ts',

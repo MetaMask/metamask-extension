@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import {
   CHAIN_IDS,
@@ -171,7 +171,7 @@ describe('<EditGasFeesRow />', () => {
   it('does not renders edit gas fee button for quote suggested swap', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      selectedQuote: {} as unknown as QuoteResponse,
+      selectedQuote: {} as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);

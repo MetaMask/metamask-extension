@@ -71,12 +71,14 @@
     "502 Bad Gateway", // load-balancer/proxy failure between runner and upstream
     "503 Service Unavailable", // upstream service temporarily down
     "504 Gateway Time-out", // upstream timed out behind a proxy/LB
-    "API rate limit exceeded", // GitHub REST API rate limit
     "Anvil exited: Error: Address already in use", // port collision starting Foundry local chain
+    "API rate limit exceeded", // GitHub REST API rate limit
     "Authentication failed for", // transient git auth failure cloning repos
     "Back off \\d+(\\.\\d+)? seconds before retry", // npm registry throttle (e.g. "Back off 16.402 seconds before retry")
     "binaries\\.sonarsource\\.com.*\\n.*Action failed: Unexpected HTTP response", // SonarScanner CDN flake (4xx/5xx downloading scanner-cli zip)
     "Command failed after \\d+ attempts", // Prepare dependencies: yarn install retries exhausted
+    "Could not assume role with OIDC: Token expired", // AWS OIDC credential expired during a long-running job; a rerun gets a fresh token
+    "Could not find the pullrequest with key", // SonarCloud PR analysis race: PR exists in GitHub but is not yet visible to SonarCloud
     "Could not resolve host", // DNS resolution failure
     "EAI_AGAIN", // Node.js DNS lookup timed out
     "ECONNREFUSED", // TCP connection refused (service not listening)
@@ -88,12 +90,13 @@
     "Exceeded timeout of \\d+ ms for a test", // Jest test timeout (flaky slow test)
     "expected flush after ref listing", // git protocol error during fetch/clone (usually GitHub 500)
     "Fail to request.*sonarcloud\\.io", // SonarCloud API unreachable during scan
-    "fatal: unable to access", // git clone/fetch network failure
     "Failed to FinalizeArtifact", // GitHub artifact upload failure (403/transient API error)
     "Failed to resolve action download info", // GitHub Actions HTTP timeout downloading action tarball
+    "fatal: unable to access", // git clone/fetch network failure
     "git.* failed with exit code 128", // git op failed (auth, network, corrupt pack)
     "gzip: stdin: not in gzip format", // download returned non-gzip content (e.g. error page from CDN instead of tarball)
     "heap out of memory", // V8 heap exhaustion (generic form)
+    "Internal Server Error occurred while resolving", // GitHub Actions failed to resolve an action dependency
     "JavaScript heap out of memory", // Node.js OOM crash
     "net::ERR_", // Chromium network errors in E2E (ERR_CONNECTION_REFUSED, etc.)
     "No space left on device", // runner disk full
@@ -101,10 +104,13 @@
     "OOMKilled", // Linux OOM killer terminated the process
     "re-run this check after the baseline refresh completes", // yarn-audit-diff: ambient CVEs triggered a baseline refresh
     "read ECONNRESET", // TCP read failure (more specific than ECONNRESET alone)
+    "Recv failure: Connection reset by peer", // curl TLS connection reset while downloading workflow metadata
     "resource temporarily unavailable", // file descriptor / process limit exhaustion
     "socket hang up", // HTTP connection dropped mid-request
+    "sonarcloud\\.io.*failed with HTTP \\d+", // SonarScanner CLI hitting api/scanner.sonarcloud.io with 4xx/5xx (JRE metadata or JRE binary download)
     "tar: Error is not recoverable", // fatal tar extraction failure (corrupted or non-archive input)
     "The requested URL returned error: 429", // GitHub raw content / API rate limit (curl error)
+    "Unhandled error: HttpError: <!DOCTYPE html>", // GitHub API returned an HTML error page instead of JSON
     "Upload progress stalled", // GitHub artifact upload timeout (actions/upload-artifact)
     "vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER", // GPU driver issue on runner for headless Chrome
     "VulkanError.cpp", // GPU driver crash in headless Chrome
@@ -120,8 +126,11 @@
   "deterministicErrorPatterns": [
     "\\.github/workflows/.*\\.yml:\\d+:\\d+:", // actionlint: any workflow lint error (expression, shellcheck, syntax, etc.)
     "\\*\\*\\w+\\*\\*: \\d+ unused messages", // verify-locale-strings: locale files have unused message keys (e.g. "**de**: 43 unused messages")
+    "✖ \\d+ problems? \\(", // ESLint summary: "✖ N problems (X errors, Y warnings)"
+    "✖ failing tests:", // Node.js test runner (node --test) summary of failures
     "BASELINE VIOLATIONS DETECTED", // lint-baseline.mts: new violations added to already-baselined files
-    "Can't walk dependency graph", // ts-migration-dashboard build (Browserify/module-deps): unresolvable import/require chain
+    "Can't find stylesheet to import", // Sass compilation error: missing or invalid stylesheet import
+    "Can't walk dependency graph", // Browserify build: broken import/require chain
     "Cannot find module", // Node.js require/import of missing package or path
     "Code style issues found", // oxlint --check or ESLint formatting rule failure
     "compiled with \\d+ errors?", // Webpack build errors
@@ -132,26 +141,33 @@
     "Error occurred when checking code style", // oxfmt parse error checking formatting
     "Failed to build the preview", // Storybook: Webpack compilation error building story preview
     "Format issues found in above \\d+ files", // Prettier or oxfmt --check: files need reformatting
+    "I18nProvider: Support for defaultProps", // Unit console baseline check: React defaultProps warning count changed
     "Invalid code fence parameters", // build: malformed code fence in source (BEGIN:, END:)
     "Invalid package.json", // malformed package.json (parse error during yarn install)
     "LavaMoat - required.*package not in allowlist", // LavaMoat policy: dependency not in allowlist (node builtin or regular package)
+    "Lint errors encountered for transformed file", // Browserify build: ESLint errors in post-transform output
     "Module not found", // Webpack: import of nonexistent module
     "NEW FILES \\(not in baseline\\)", // lint-baseline.mts: new files with violations not yet baselined
     "No build-name entries found in main.yml", // filter-files-changed: main.yml missing expected build-name fields
     "no platform directories.*found in dist", // build verification: platform folders missing from output
     "Not a valid commit name", // git can't resolve a commit SHA (shallow clone, force-pushed, or pruned ref)
     "packageManager.*current global version", // Corepack not enabled: workflow uses wrong Yarn version (needs corepack enable)
+    "Post comment failed with status '(Forbidden|Unauthorized)'", // Publish prerelease: GitHub comment denied because issue is locked or token lacks permission
+    "Protected branch update failed for refs/heads/", // Storybook deploy: target branch requires a PR and rejects force pushes
     "ReferenceError:", // JS runtime error: undefined variable or function
+    "runInChildProcess for task .* encountered an error", // Browserify build: a build sub-task crashed
     "shellcheck reported issue", // actionlint/shellcheck: shell script issues in workflow YAML
     "snapshots? failed", // Jest snapshot assertion mismatch
+    "Syntax Error", // JS/TS parser error emitted with spaced wording rather than SyntaxError
     "SyntaxError:", // JS/TS parse error (bad syntax, duplicate declaration, unexpected token)
     "test at .*\\.test\\.[tj]sx?:\\d+:\\d+\\n.*✖", // node:test runner: failure location followed by ✖ marker (2-line match ensures only failures are caught)
     "Test Files.*failed", // Vitest summary line: one or more test files failed
     "Test Suites:.*failed", // Jest summary line: one or more test suites failed
+    "Token exchange failed: 403 Forbidden", // Publish prerelease: deterministic policy/permission denial from token exchange service
     "Unable to resolve action", // GitHub Actions can't resolve a composite/reusable action (deleted tag or missing ref)
+    "Update baseline: yarn test:integration:update-baseline", // Integration console baseline detected new warnings
+    "useSelector\\(\\(state\\) =>", // Integration console baseline: React-Redux selector identity warning surfaced with concrete source line in log
     "Working tree dirty", // git working tree has uncommitted changes after a build/generate step
-    "yarn audit FAILED", // yarn audit found a production vulnerability
-    "✖ failing tests:", // Node.js test runner (node --test) summary of failures
-    "✖ \\d+ problems? \\(" // ESLint summary: "✖ N problems (X errors, Y warnings)"
+    "yarn audit FAILED" // yarn audit found a production vulnerability
   ]
 }
