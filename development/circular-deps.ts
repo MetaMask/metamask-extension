@@ -1,11 +1,13 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { stderr } from 'node:process';
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
+import ts from 'typescript';
 
 /**
  * Circular dependencies are represented as an array of arrays, where each
@@ -65,10 +67,49 @@ const ENTRYPOINTS = [
   'ui/', // UI components and styles
 ];
 
+/**
+ * Given a `tsConfig` string, madge pre-parses it into
+ * `{ ...raw, compilerOptions: alreadyParsedOptions }`. filing-cabinet sees the
+ * `compilerOptions` key and re-runs `ts.convertCompilerOptionsFromJson` over
+ * values that are already enums, which silently drops `module`,
+ * `moduleResolution`, `target`, and `jsx`. TypeScript then falls back to Node10
+ * resolution, which cannot resolve the `#ui/*` and `#shared/*` subpath imports
+ * declared in package.json's `imports` field.
+ *
+ * Handing madge a pre-parsed config avoids both parsing passes: filing-cabinet
+ * uses `options` verbatim.
+ *
+ * @param tsConfigPath
+ */
+function parseTsConfig(tsConfigPath: string): { options: ts.CompilerOptions } {
+  const configFile = ts.readJsonConfigFile(tsConfigPath, ts.sys.readFile);
+  const { options, errors } = ts.parseJsonSourceFileConfigFileContent(
+    configFile,
+    ts.sys,
+    dirname(tsConfigPath),
+  );
+
+  if (errors.length) {
+    const messages = errors.map((error) =>
+      ts.flattenDiagnosticMessageText(error.messageText, '\n'),
+    );
+    throw new Error(`Could not parse ${tsConfigPath}:\n${messages.join('\n')}`);
+  }
+
+  return { options };
+}
+
 // Common madge configuration
-const { allowedCircularGlob, ...MADGE_CONFIG } = JSON.parse(
+const { allowedCircularGlob, tsConfig, ...madgeRc } = JSON.parse(
   readFileSync('.madgerc', 'utf-8'),
 ) as MadgeRC;
+
+const MADGE_CONFIG: MadgeConfig = {
+  ...madgeRc,
+  ...(typeof tsConfig === 'string'
+    ? { tsConfig: parseTsConfig(tsConfig) }
+    : { tsConfig }),
+};
 
 async function update(): Promise<void> {
   try {
