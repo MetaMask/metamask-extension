@@ -100,6 +100,11 @@ type AssetListControlBarProps = {
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
   onNetworkSelect?: (networks: string[]) => void;
+  /**
+   * When provided with `showImportTokenButton={false}`, shows the more-options
+   * menu containing only a "Refresh list" action that invokes this callback.
+   */
+  onRefresh?: () => void;
 };
 
 const AssetListControlBar = ({
@@ -107,6 +112,7 @@ const AssetListControlBar = ({
   showImportTokenButton = true,
   showSortControl = true,
   onNetworkSelect,
+  onRefresh,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -162,6 +168,8 @@ const AssetListControlBar = ({
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+  const [isRefreshListPopoverOpen, setIsRefreshListPopoverOpen] =
+    useState(false);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -267,6 +275,7 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
@@ -274,6 +283,7 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
   };
 
@@ -281,7 +291,16 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
+  };
+
+  const toggleRefreshListPopover = () => {
+    setIsNetworkFilterModalOpen(false);
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(!isRefreshListPopoverOpen);
   };
 
   const closePopover = () => {
@@ -289,6 +308,7 @@ const AssetListControlBar = ({
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
   };
 
   const handleNetworkFilterClick = () => {
@@ -300,6 +320,7 @@ const AssetListControlBar = ({
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
@@ -340,6 +361,11 @@ const AssetListControlBar = ({
       updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
     );
     dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
+    closePopover();
+  };
+
+  const handleRefreshListOnly = () => {
+    onRefresh?.();
     closePopover();
   };
 
@@ -453,6 +479,14 @@ const AssetListControlBar = ({
                 />
               </Tooltip>
             ))}
+
+          {!showImportTokenButton && onRefresh ? (
+            <ImportControl
+              ref={importButtonRef}
+              showTokensLinks
+              onClick={toggleRefreshListPopover}
+            />
+          ) : null}
         </Box>
       </Box>
 
@@ -568,6 +602,34 @@ const AssetListControlBar = ({
             </SelectableListItem>
           )}
         </Box>
+      </Popover>
+
+      {/* Refresh-only Popover (e.g. DeFi) */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isRefreshListPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={importButtonRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '158px' : '',
+        }}
+      >
+        <SelectableListItem
+          onClick={handleRefreshListOnly}
+          testId="refreshList"
+        >
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('refreshList')}
+        </SelectableListItem>
       </Popover>
     </Box>
   );
