@@ -319,7 +319,7 @@ const AssetPage = ({
       balance,
       secondary: balance ? Number(balance) : 0,
       accountType: bip44Asset?.accountType,
-      assetId: resolvedAssetId,
+      assetId: bip44Asset?.assetId ?? assetId,
       rwaData,
     }),
     [
