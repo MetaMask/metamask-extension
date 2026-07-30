@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import {
   formatTokenAmount,
@@ -174,7 +174,7 @@ describe('Bridge quote utils', () => {
             },
           },
         },
-      }) as unknown as QuoteResponse;
+      }) as unknown as QuoteResponseV1;
 
     it('returns fee percentages and no discount when discountType is absent', () => {
       expect(

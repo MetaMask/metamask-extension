@@ -7056,6 +7056,10 @@
   "perpsDateYesterday": {
     "message": "Yesterday"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Deposit",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Bridge failed"
   },
@@ -7085,6 +7089,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Your Perps account was funded"
+  },
+  "perpsDepositedVerb": {
+    "message": "Deposited",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -7480,11 +7488,17 @@
   "perpsStatusCompleted": {
     "message": "Completed"
   },
+  "perpsStatusFailed": {
+    "message": "Failed"
+  },
   "perpsStatusFilled": {
     "message": "Filled"
   },
   "perpsStatusOpen": {
     "message": "Open"
+  },
+  "perpsStatusPending": {
+    "message": "Pending"
   },
   "perpsStatusQueued": {
     "message": "Queued"
@@ -7799,6 +7813,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Withdrawal",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Withdrew",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "You receive"
@@ -8186,6 +8208,9 @@
   "rampsBuyToken": {
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Unable to start your purchase. Please try again."
   },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
