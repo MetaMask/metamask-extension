@@ -116,6 +116,7 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
+import { createSidepanelOpener } from './sidepanel/opener';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -230,6 +231,14 @@ let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
 const frameIdMapping = {};
+
+// Coordinates opening the side panel through the content script's user gesture.
+// triggerUi calls requestSidePanelOpenFromTab when a real confirmation exists.
+const { requestSidePanelOpenFromTab } = createSidepanelOpener({
+  isSidepanelPreferred: () =>
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true,
+});
 
 if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -2132,12 +2141,31 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  const sidepanelPreferred =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  const sidepanelSupported = Boolean(browser?.sidePanel?.open);
+
+  // Confirmation exists: try opening the side panel from the focused window's
+  // active tab (not getActiveTabs()[0], which can be another window). Fallback
+  // to the notification window if the round-trip fails or there is no gesture.
+  if (sidepanelPreferred && sidepanelSupported) {
+    const [focusedWindowActiveTab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    const activeTabId = focusedWindowActiveTab?.id;
+    if (activeTabId && (await requestSidePanelOpenFromTab(activeTabId))) {
+      return;
+    }
+  }
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0 &&
-    true
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {

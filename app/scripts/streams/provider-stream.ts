@@ -20,6 +20,7 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
+import { setupSidepanelListener } from '../sidepanel/listener';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
@@ -358,6 +359,8 @@ export const initStreams = () => {
   setupLegacyExtensionStreams();
 
   browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
+
+  setupSidepanelListener();
 };
 
 // TODO:LegacyProvider: Delete
