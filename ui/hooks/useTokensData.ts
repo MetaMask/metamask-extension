@@ -4,7 +4,7 @@
 // from Redux state rather than calling the API directly.
 import { useState, useEffect } from 'react';
 import { handleFetch } from '@metamask/controller-utils';
-import type { CaipChainId } from '@metamask/utils';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 
 export type TokenAsset = {
@@ -39,7 +39,11 @@ function withIconUrlFallback(token: TokenAsset): TokenAsset {
     return token;
   }
 
-  const chainId = token.assetId.split('/')[0] as CaipChainId;
+  if (!isCaipAssetType(token.assetId)) {
+    return token;
+  }
+
+  const { chainId } = parseCaipAssetType(token.assetId);
   return {
     ...token,
     iconUrl: getAssetImageUrl(token.assetId, chainId) ?? '',
