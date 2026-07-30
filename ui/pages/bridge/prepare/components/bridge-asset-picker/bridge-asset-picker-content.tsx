@@ -18,7 +18,6 @@ import {
   Text,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
@@ -165,7 +164,7 @@ export const BridgeAssetPickerContent = forwardRef<
           <Box className="mx-4">
             <TextFieldSearch
               autoFocus
-              className="app-text-field-search"
+              className="w-full"
               clearButtonOnClick={() => setSearchQuery('')}
               inputProps={
                 {
@@ -174,7 +173,6 @@ export const BridgeAssetPickerContent = forwardRef<
               }
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder={t('enterTokenNameOrAddress')}
-              size={TextFieldSize.Lg}
               value={searchQuery}
             />
           </Box>
