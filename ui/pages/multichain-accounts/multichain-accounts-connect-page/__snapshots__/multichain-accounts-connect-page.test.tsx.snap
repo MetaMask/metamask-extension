@@ -171,6 +171,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     >
                       <p
                         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
+                        data-testid="multichain-account-cell-name-Test Account Group 1"
                       >
                         Test Account Group 1
                       </p>
@@ -416,6 +417,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     >
                       <p
                         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
+                        data-testid="multichain-account-cell-name-Test Account Group 1"
                       >
                         Test Account Group 1
                       </p>
@@ -661,6 +663,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     >
                       <p
                         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
+                        data-testid="multichain-account-cell-name-Test Account Group 1"
                       >
                         Test Account Group 1
                       </p>
