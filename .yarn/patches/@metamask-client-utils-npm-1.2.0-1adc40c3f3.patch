@@ -1,0 +1,32 @@
+diff --git a/dist/mappers/helpers/caip.cjs b/dist/mappers/helpers/caip.cjs
+index eb220f66dc1ab1842bcc814a019864db18fec8ff..2c469eb7c620176a462fcbe1d87ecebada7017f9 100644
+--- a/dist/mappers/helpers/caip.cjs
++++ b/dist/mappers/helpers/caip.cjs
+@@ -15,6 +15,11 @@ const nativeAssetsByCaipChainId = {
+     'eip155:42161': { symbol: 'ETH', decimals: 18, slip44: 60 },
+     'eip155:43114': { symbol: 'AVAX', decimals: 18, slip44: 9005 },
+     'eip155:59144': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:143': { symbol: 'MON', decimals: 18, slip44: 268435779 },
++    'eip155:999': { symbol: 'HYPE', decimals: 18, slip44: 2457 },
++    'eip155:4326': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:4663': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:5042': { symbol: 'USDC', decimals: 18, slip44: 5042 },
+ };
+ /**
+  * Normalizes a hex, decimal, numeric, or CAIP chain id to its CAIP-2 form.
+diff --git a/dist/mappers/helpers/caip.mjs b/dist/mappers/helpers/caip.mjs
+index 9316aaf76c17a20a5731565d6382fed67f5ed87f..6b4876e3fcf1b75de48b679c372e1de8a1d6e5a4 100644
+--- a/dist/mappers/helpers/caip.mjs
++++ b/dist/mappers/helpers/caip.mjs
+@@ -12,6 +12,11 @@ const nativeAssetsByCaipChainId = {
+     'eip155:42161': { symbol: 'ETH', decimals: 18, slip44: 60 },
+     'eip155:43114': { symbol: 'AVAX', decimals: 18, slip44: 9005 },
+     'eip155:59144': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:143': { symbol: 'MON', decimals: 18, slip44: 268435779 },
++    'eip155:999': { symbol: 'HYPE', decimals: 18, slip44: 2457 },
++    'eip155:4326': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:4663': { symbol: 'ETH', decimals: 18, slip44: 60 },
++    'eip155:5042': { symbol: 'USDC', decimals: 18, slip44: 5042 },
+ };
+ /**
+  * Normalizes a hex, decimal, numeric, or CAIP chain id to its CAIP-2 form.
