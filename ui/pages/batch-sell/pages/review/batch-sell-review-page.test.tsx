@@ -7,11 +7,12 @@ import {
   buildSendAssetConfigEntry,
   buildReceivedAsset,
 } from '../../../../../test/data/batch-sell';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
+
 import { BatchSellReviewPage } from './batch-sell-review-page';
 
 // Referenced from inside the `useBatchSellHighRateAlertModal` jest.mock(..)
