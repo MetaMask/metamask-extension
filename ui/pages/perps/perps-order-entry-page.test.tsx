@@ -199,6 +199,11 @@ const mockStreamManagerBase = {
     getCachedData: () => null,
     clearCache: jest.fn(),
   },
+  orderBookAggregatedStatus: {
+    subscribe: jest.fn(() => jest.fn()),
+    getCachedData: () => 'connecting',
+    clearCache: jest.fn(),
+  },
   setOptimisticTPSL: jest.fn(),
   clearOptimisticTPSL: jest.fn(),
   pushPositionsWithOverrides: jest.fn(),
@@ -760,6 +765,7 @@ describe('PerpsOrderEntryPage', () => {
       // hook remounts fresh and (without this clear) would render the previous
       // market's cached aggregated ladder until the new symbol streams in.
       mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
+      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
 
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState());
@@ -768,6 +774,9 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         mockStreamManagerBase.orderBookAggregated.clearCache,
       ).toHaveBeenCalledTimes(1);
+      expect(
+        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
+      ).toHaveBeenCalledTimes(1);
 
       mockUseParams.mockReturnValue({ symbol: 'ETH' });
       rerender(<PerpsOrderEntryPage />);
@@ -775,6 +784,40 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         mockStreamManagerBase.orderBookAggregated.clearCache,
       ).toHaveBeenCalledTimes(2);
+      expect(
+        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
+      ).toHaveBeenCalledTimes(2);
+    });
+
+    it('clears aggregated book and status caches when the order book panel is closed', () => {
+      // Regression: closing clears book data but must also clear status. On
+      // reopen, usePerpsChannel does not clear on first mount, so a prior
+      // `error` would show "connection lost" instead of the loading skeleton.
+      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
+      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      // Symbol-change effect clears once on mount — ignore that baseline.
+      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
+      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).not.toHaveBeenCalled();
+      expect(
+        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
+      ).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
+      ).toHaveBeenCalledTimes(1);
     });
   });
 
