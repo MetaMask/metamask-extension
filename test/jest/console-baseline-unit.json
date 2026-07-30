@@ -188,9 +188,6 @@
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/components/app/assets/defi-list/defi-tab.test.tsx": {
-      "MetaMask: Background connection not initialized": 4
-    },
     "ui/components/app/assets/nfts/nft-details/nft-details.test.js": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 6,
