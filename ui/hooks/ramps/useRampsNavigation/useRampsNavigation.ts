@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
@@ -25,7 +25,7 @@ import {
   selectTokens,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
-import { useDispatch } from '../../../store/hooks';
+import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -103,24 +103,19 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
- * unsupported, providers/tokens fetched-but-empty) and then routes into the
- * native buy flow: an intent with a supported `assetId` pre-selects the token
- * and opens the build-quote page; without one it opens the token-selection
- * page; an unsupported `assetId` raises the unsupported modal. The gate is
- * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
- * Portfolio redirect).
+ * When `rampsEnabled` is on:
+ * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
+ * - Wallets that have connected to Portfolio open Portfolio (hedge while
+ * order-history Profile Sync is still rolling out; returning buyers keep
+ * Portfolio until migration lands).
  *
- * Geolocation is resolved on demand via the background `GeolocationController`
- * (mobile parity — it does not fetch at startup, so reading synced state alone
- * would fail closed). Any loading/indeterminate state fails open; only a
- * settled, definitively-blocking state raises a modal.
+ * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
  * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, so callers can gate follow-up UI (e.g. a
- * "tab opened" toast).
+ * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
+ * gate follow-up UI (e.g. a "tab opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -132,6 +127,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -139,6 +135,13 @@ export default function useRampsNavigation() {
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
+        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        return true;
+      }
+
+      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
+      // migration can flip them onto native Buy.
+      if (everConnectedToPortfolio) {
         openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
@@ -207,13 +210,17 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      everConnectedToPortfolio,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
     ],
   );
 
-  // Expose the rollout flag so callers can gate follow-up UI (e.g. the flag-off
-  // "tab opened" toast) without re-reading the selector themselves.
-  return { goToBuy, isRampsEnabled: isEnabled };
+  // Expose whether Buy leaves the extension so callers can gate follow-up UI
+  // (e.g. the "tab opened" toast) without re-deriving the destination.
+  return {
+    goToBuy,
+    opensBuyInPortfolioTab: !isEnabled || everConnectedToPortfolio,
+  };
 }

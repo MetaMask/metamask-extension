@@ -1,8 +1,15 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+// Firefox executes scripts in a mutable sandbox, so `window` is the
+// original page global while `globalThis` points at the sandbox global.
+const lockdownTarget = isFirefox ? 'window' : 'globalThis';
 
 // Detect scuttling by prodding globals until found
 // This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
@@ -27,15 +34,15 @@ function assertScuttling() {
 }
 
 // This is enough of a proof that lockdown is in effect and the shared prototypes are also hardened.
-function assertLockdown() {
+function assertLockdown(target: typeof globalThis) {
   if (
     !(
       (
-        Object.isFrozen(window.Object) &&
-        Object.isFrozen(window.Object.prototype) &&
-        Object.isFrozen(window.Function) &&
-        Object.isFrozen(window.Function.prototype) &&
-        Function.prototype.constructor !== window.Function
+        Object.isFrozen(target.Object) &&
+        Object.isFrozen(target.Object.prototype) &&
+        Object.isFrozen(target.Function) &&
+        Object.isFrozen(target.Function.prototype) &&
+        target.Function.prototype.constructor !== target.Function
       ) // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
@@ -43,9 +50,9 @@ function assertLockdown() {
   }
 }
 
-const testCode = `
+const lockdownTestScript = `
 ${assertLockdown.toString()};
-assertLockdown();
+assertLockdown(${lockdownTarget});
 ${assertScuttling.toString()};
 assertScuttling();
 return true;
@@ -61,7 +68,7 @@ describe('lockdown', function (this: Mocha.Suite) {
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
         assert(
-          await driver.executeScript(testCode),
+          await driver.executeScript(lockdownTestScript),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
         );
       },
@@ -81,15 +88,26 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
-          // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
+          assert(
+            await driver.executeScript(lockdownTestScript),
+            'Expected script execution to be complete. driver.executeScript might have failed silently.',
+          );
+
+          await driver.navigate(PAGES.HOME);
+          assert(
+            await driver.executeScriptInExtensionServiceWorker(
+              lockdownTestScript,
+            ),
+            'Expected script execution to be complete. driver.executeScriptInExtensionServiceWorker might have failed silently.',
+          );
         } else {
           await driver.navigate(PAGES.BACKGROUND);
+          assert(
+            await driver.executeScript(lockdownTestScript),
+            'Expected script execution to be complete. driver.executeScript might have failed silently.',
+          );
         }
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
-        );
       },
     );
   });
