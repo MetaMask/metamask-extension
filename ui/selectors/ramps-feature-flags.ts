@@ -4,15 +4,17 @@ import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature
 /**
  * Selector to determine if the ramps feature is enabled.
  *
- * TEST PR (`test/tram-3718-prod-ramps-qa`): force ON so QA does not depend on
- * client-config `rc`/`prod` (where `rampsEnabled` is currently false).
+ * TEMP QA (`test/tram-3718-prod-ramps-qa`): forced ON. Client-config currently
+ * has `rampsEnabled` enabled for `dev` but disabled for `rc`/`prod`. Forcing
+ * here keeps native ramps usable while this branch points the ramps API at
+ * Production. Do not merge this override to `main`.
  *
  * @param _state - The root Redux state object.
  * @returns Boolean indicating whether ramps feature is enabled.
  */
 export const getIsRampsEnabled = createSelector(
   getRemoteFeatureFlags,
-  // TEST PR override — always enable native ramps for this QA branch.
+  // TEMP QA override — always enable native ramps for this branch.
   (_flags) => true,
 );
 
