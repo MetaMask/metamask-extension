@@ -28,19 +28,22 @@ export const useDiscoverPerpsSearch = ({
   enabled = true,
 }: UseDiscoverPerpsSearchOptions): UseDiscoverPerpsSearchResult => {
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const { markets, isInitialLoading, error } = usePerpsLiveMarketListData();
+  const isPerpsSearchEnabled = enabled && isPerpsAvailable;
+  const { markets, isInitialLoading, error } = usePerpsLiveMarketListData({
+    activateStream: isPerpsSearchEnabled,
+  });
 
   const data = useMemo(() => {
-    if (!enabled || !isPerpsAvailable) {
+    if (!isPerpsSearchEnabled) {
       return [];
     }
 
     return filterMarketsByQuery(markets, query);
-  }, [enabled, isPerpsAvailable, markets, query]);
+  }, [isPerpsSearchEnabled, markets, query]);
 
   return {
     data,
-    isLoading: Boolean(enabled && isPerpsAvailable && isInitialLoading),
-    error: error ? new Error(String(error)) : null,
+    isLoading: Boolean(isPerpsSearchEnabled && isInitialLoading),
+    error: isPerpsSearchEnabled && error ? new Error(String(error)) : null,
   };
 };

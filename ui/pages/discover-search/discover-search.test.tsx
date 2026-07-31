@@ -83,12 +83,12 @@ describe('DiscoverSearchPage', () => {
     mockRunCloseTransition.mockClear();
   });
 
-  const renderPage = () => {
+  const renderPage = ({ currentCurrency = 'usd' } = {}) => {
     const store = mockStore({
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        currentCurrency: 'usd',
+        currentCurrency,
       },
     });
     const queryClient = new QueryClient({
@@ -136,5 +136,17 @@ describe('DiscoverSearchPage', () => {
 
     expect(mockRunCloseTransition).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('navigates to the CAIP asset route when an asset result is clicked', () => {
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId('discover-crypto-preview-eip155:1/slip44:60'),
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+    );
   });
 });

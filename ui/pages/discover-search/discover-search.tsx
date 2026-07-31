@@ -22,16 +22,11 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  isCaipAssetType,
-  parseCaipAssetType,
-  type CaipAssetType,
-} from '@metamask/utils';
+import { isCaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import {
-  ASSET_ROUTE,
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
@@ -42,20 +37,10 @@ import {
 } from '../../hooks/discover-search';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { DiscoverAssetRow } from './discover-asset-row';
 import { DiscoverSearchSectionHeader } from './discover-search-section-header';
-
-const getAssetNavigationPath = (assetId: string): string | null => {
-  if (!isCaipAssetType(assetId)) {
-    return null;
-  }
-
-  const { chainId, assetReference } = parseCaipAssetType(
-    assetId as CaipAssetType,
-  );
-  return `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(assetReference)}`;
-};
 
 const LoadingState = ({ label }: { label: string }) => (
   <Box
@@ -127,9 +112,8 @@ export const DiscoverSearchPage = () => {
 
   const handleAssetPress = useCallback(
     (asset: TrendingAsset) => {
-      const path = getAssetNavigationPath(asset.assetId);
-      if (path) {
-        navigate(path);
+      if (isCaipAssetType(asset.assetId)) {
+        navigate(buildAssetRoutePath(asset.assetId));
       }
     },
     [navigate],

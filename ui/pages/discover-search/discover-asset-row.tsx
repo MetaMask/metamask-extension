@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import type { TrendingAsset } from '@metamask/assets-controllers';
-import { useSelector } from 'react-redux';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -17,7 +16,6 @@ import {
 import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 
 import { getCaipAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -27,6 +25,7 @@ import {
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
+const USD_CURRENCY = 'USD';
 
 export type DiscoverAssetRowProps = {
   asset: TrendingAsset;
@@ -34,7 +33,7 @@ export type DiscoverAssetRowProps = {
   'data-testid'?: string;
 };
 
-const formatAssetPrice = (price: string | undefined, currency: string) => {
+const formatAssetPrice = (price: string | undefined) => {
   const value = Number(price);
   if (!Number.isFinite(value) || value === 0) {
     return '—';
@@ -42,7 +41,7 @@ const formatAssetPrice = (price: string | undefined, currency: string) => {
 
   return new Intl.NumberFormat(undefined, {
     style: 'currency',
-    currency,
+    currency: USD_CURRENCY,
     maximumFractionDigits: value < 1 ? 6 : 2,
   }).format(value);
 };
@@ -60,7 +59,6 @@ export const DiscoverAssetRow = ({
   'data-testid': dataTestId,
 }: DiscoverAssetRowProps) => {
   const t = useI18nContext();
-  const currency = useSelector(getCurrentCurrency);
 
   const imageUrl = useMemo(() => {
     if (!isCaipAssetType(asset.assetId)) {
@@ -70,10 +68,10 @@ export const DiscoverAssetRow = ({
   }, [asset.assetId]);
 
   const secondaryText = useMemo(() => {
-    const cap = formatCompactCurrency(asset.marketCap, currency);
-    const vol = formatCompactCurrency(asset.aggregatedUsdVolume, currency);
+    const cap = formatCompactCurrency(asset.marketCap, USD_CURRENCY);
+    const vol = formatCompactCurrency(asset.aggregatedUsdVolume, USD_CURRENCY);
     return `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
-  }, [asset.aggregatedUsdVolume, asset.marketCap, currency, t]);
+  }, [asset.aggregatedUsdVolume, asset.marketCap, t]);
 
   const changePct = asset.priceChangePct?.h24 ?? '';
   const changeColor = changePct
@@ -125,7 +123,7 @@ export const DiscoverAssetRow = ({
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatAssetPrice(asset.price, currency)}
+          {formatAssetPrice(asset.price)}
         </Text>
         <Text variant={TextVariant.BodySm} color={changeColor}>
           {changePct ? formatSignedChangePercent(changePct) : '—'}
