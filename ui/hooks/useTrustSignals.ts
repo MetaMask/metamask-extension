@@ -5,10 +5,7 @@ import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import isEqual from 'lodash/isEqual';
 import { getAddressSecurityAlertResponse } from '../selectors';
-import {
-  ResultType,
-  createCacheKey,
-} from '../../shared/lib/trust-signals';
+import { ResultType, createCacheKey } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 import { useI18nContext } from './useI18nContext';
 
