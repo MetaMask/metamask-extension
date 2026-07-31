@@ -654,6 +654,11 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
+      // GeolocationController must init before AnalyticsController, which
+      // resolves geolocation during its own init via
+      // GeolocationController:getGeolocationData.
+      GeolocationApiService: GeolocationApiServiceInit,
+      GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -672,9 +677,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
-      GeolocationApiService: GeolocationApiServiceInit,
       SentinelApiService: SentinelApiServiceInit,
-      GeolocationController: GeolocationControllerInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
       RampsService: RampsServiceInit,
