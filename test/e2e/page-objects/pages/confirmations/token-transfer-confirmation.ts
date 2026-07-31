@@ -32,16 +32,19 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     this.driver = driver;
   }
 
-  // Action Methods
-
-  async clickConfirmButton(): Promise<void> {
-    console.log('Click confirm button to confirm transaction');
-    await this.driver.clickElement(this.confirmButton);
-  }
-
   // Check Methods
   async checkInteractingWithParagraph() {
     await this.driver.waitForSelector(this.interactingWithParagraph);
+  }
+
+  /**
+   * Check if network text is displayed
+   *
+   * @param networkText - The expected network text to verify
+   */
+  async checkNetwork(networkText: string): Promise<void> {
+    console.log(`Checking for network text: ${networkText}`);
+    await this.driver.waitForSelector(this.networkTextElement(networkText));
   }
 
   async checkNetworkFeeParagraph() {
@@ -91,14 +94,11 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     }
   }
 
-  /**
-   * Check if network text is displayed
-   *
-   * @param networkText - The expected network text to verify
-   */
-  async checkNetwork(networkText: string): Promise<void> {
-    console.log(`Checking for network text: ${networkText}`);
-    await this.driver.waitForSelector(this.networkTextElement(networkText));
+  // Action Methods
+
+  async clickConfirmButton(): Promise<void> {
+    console.log('Click confirm button to confirm transaction');
+    await this.driver.clickElement(this.confirmButton);
   }
 }
 

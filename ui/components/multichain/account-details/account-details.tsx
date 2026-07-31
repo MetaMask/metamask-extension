@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
@@ -32,6 +32,7 @@ import {
   getMetaMaskKeyrings,
 } from '../../../selectors';
 import { clearAccountDetails } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Modal,

@@ -1,8 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 
 class SnapListPage {
-  private readonly driver: Driver;
-
   private readonly backButton = 'button[aria-label="Back"]';
 
   private readonly closeModalButton = 'button[aria-label="Close"]';
@@ -21,6 +19,8 @@ class SnapListPage {
     text: 'Description from Webpack Plugin Example Snap',
     tag: 'p',
   };
+
+  private readonly driver: Driver;
 
   private readonly homePageSnap = {
     text: 'Home Page Example Snap',

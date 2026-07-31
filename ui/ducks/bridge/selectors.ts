@@ -15,7 +15,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
@@ -55,7 +55,10 @@ import {
 } from '@metamask/account-tree-controller';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createParameterizedSelector,
+} from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
@@ -76,7 +79,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
-  type SmartTransactionsMetaMaskState,
+  type SmartTransactionsState,
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
@@ -106,6 +109,7 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
+import type { MetaMaskReduxState } from '../../store/store';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -127,7 +131,7 @@ const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
-    SmartTransactionsMetaMaskState['metamask'] &
+    SmartTransactionsState['metamask'] &
     GasFeeState &
     NetworkState &
     AccountsControllerState &
@@ -151,6 +155,19 @@ export type BridgeAppState = {
     };
   bridge: BridgeState;
 };
+
+/**
+ * Returns the bridge-relevant slices from the full Redux state.
+ *
+ * @param state - Full Redux state.
+ */
+export function getBridgeAppState(state: MetaMaskReduxState): BridgeAppState {
+  return {
+    // @ts-expect-error FlattenedBackgroundStateProxy matches the bridge metamask shape at runtime.
+    metamask: state.metamask,
+    bridge: state.bridge,
+  };
+}
 
 // getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
 const getAllBridgeableNetworks = createSelector(
@@ -821,11 +838,12 @@ export const getFormattedPriceImpactPercentage = createSelector(
 
 export const getFormattedPriceImpactFiat = createSelector(
   [
-    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
     getCurrentCurrency,
   ],
-  (activeQuote, currentCurrency) =>
-    formatPriceImpactFiat(activeQuote, currentCurrency),
+  (priceImpact, currentCurrency) =>
+    formatPriceImpactFiat(priceImpact, currentCurrency),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,
@@ -973,18 +991,22 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
 export const isNativeBalanceInsufficientForQuote = (
-  quote: QuoteResponse & QuoteMetadata,
+  quote: QuoteResponseV1 & QuoteMetadata,
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
-): boolean =>
-  isNativeAddress(fromToken.assetId)
+): boolean => {
+  if (!quote.sentAmount?.amount || !quote.totalNetworkFee?.amount) {
+    return false;
+  }
+  return isNativeAddress(fromToken.assetId)
     ? new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
         .sub(minimumBalanceToKeep)
         .lte(0)
     : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+};
 
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
@@ -1002,7 +1024,7 @@ export const resolveMinimumBalanceToKeep = (
     : '0';
 
 export const computeQuoteValidationErrors = (
-  quote: (QuoteMetadata & QuoteResponse) | undefined | null,
+  quote: (QuoteMetadata & QuoteResponseV1) | undefined | null,
   {
     priceImpactThresholds: { warning, error },
     isHardwareWalletAccount,
@@ -1180,6 +1202,22 @@ const _getBaseValidationErrors = createDeepEqualSelector(
   },
 );
 
+const getValidationErrorsAtTime = createParameterizedSelector(20)(
+  (state: BridgeAppState) => _getBaseValidationErrors(state),
+  (state: BridgeAppState) => state,
+  (_state: BridgeAppState, currentTimeInMs?: number) => currentTimeInMs,
+  (baseErrors, state, currentTimeInMs) => ({
+    ...baseErrors,
+    isQuoteExpired: currentTimeInMs
+      ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
+      : false,
+    isStockMarketClosed:
+      currentTimeInMs === undefined
+        ? false
+        : getIsStockMarketClosed(state, currentTimeInMs),
+  }),
+);
+
 /**
  * Returns all validation errors for the current bridge/swap form state.
  * Pass `currentTimeInMs` to include stock market-closed status and quote expiration status
@@ -1189,16 +1227,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 export const getValidationErrors = (
   state: BridgeAppState,
   currentTimeInMs?: number,
-) => ({
-  ..._getBaseValidationErrors(state),
-  isQuoteExpired: currentTimeInMs
-    ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
-    : false,
-  isStockMarketClosed:
-    currentTimeInMs === undefined
-      ? false
-      : getIsStockMarketClosed(state, currentTimeInMs),
-});
+) => getValidationErrorsAtTime(state, currentTimeInMs);
 
 /**
  * Returns warning labels for metrics. Pass `currentTimeInMs` to include
@@ -1331,20 +1360,6 @@ export const selectNoFeeAssets = createSelector(
   },
 );
 
-const getIsGasIncludedSwapSupported = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    (_, isSendBundleSupportedForChain: boolean) =>
-      isSendBundleSupportedForChain,
-  ],
-  (fromChainId, isSendBundleSupportedForChain) => {
-    if (!fromChainId || isNonEvmChainId(fromChainId)) {
-      return false;
-    }
-    return isSendBundleSupportedForChain;
-  },
-);
-
 export const getIsStxEnabled = createSelector(
   [
     (state: BridgeAppState) => getFromChain(state)?.chainId,
@@ -1356,21 +1371,6 @@ export const getIsStxEnabled = createSelector(
       return false;
     }
     return getIsSmartTransaction(state, hexChainId);
-  },
-);
-
-export const getIsGasIncluded = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    getIsStxEnabled,
-    getIsGasIncludedSwapSupported,
-  ],
-  // Enable gas-included swaps for solana
-  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
-    if (isSolanaChainId(fromChainId)) {
-      return true;
-    }
-    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
 

@@ -2,20 +2,24 @@ import {
   Box,
   BoxFlexDirection,
   FontWeight,
+  SensitiveText,
   Text,
   TextColor,
   TextVariant,
+  SensitiveTextLength,
 } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
-import { BigNumber } from 'bignumber.js';
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { computeSpendableBalance } from '../../../../shared/lib/multichain/spendable-balance';
 
 export type SpendableBalanceSectionProps = {
+  spendableBalance: string;
+  minimumReserveBalance: string;
   totalBalance: string;
   symbol: string;
-  baseReserve: string;
   fiatValue: number | null;
 };
 
@@ -23,31 +27,27 @@ export type SpendableBalanceSectionProps = {
  * Spendable balance section: breakdown for a native asset (total, spendable, reserved, fiat value).
  *
  * @param params - Spendable balance section parameters
+ * @param params.minimumReserveBalance - minimum reserve balance.
+ * @param params.spendableBalance - spendable balance.
  * @param params.totalBalance - The total balance
  * @param params.symbol - The symbol of the asset
- * @param params.baseReserve - The base reserve
  * @param params.fiatValue - The fiat value
  */
 export function SpendableBalanceSection({
+  minimumReserveBalance,
+  spendableBalance,
   totalBalance,
   symbol,
-  baseReserve,
   fiatValue,
 }: SpendableBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
+  const { privacyMode } = useSelector(getPreferences);
 
-  const { totalDisplay, spendableDisplay, reservedDisplay } = useMemo(() => {
-    const spendable = computeSpendableBalance(totalBalance, baseReserve);
-
-    return {
-      totalDisplay: `${totalBalance} ${symbol}`,
-      spendableDisplay: `${spendable} ${symbol}`,
-      reservedDisplay: `${baseReserve} ${symbol}`,
-    };
-  }, [baseReserve, symbol, totalBalance]);
-
-  const valueDisplay =
+  const totalDisplay = `${totalBalance} ${symbol}`;
+  const spendableDisplay = `${spendableBalance} ${symbol}`;
+  const reservedDisplay = `${minimumReserveBalance} ${symbol}`;
+  const fiatValueDisplay =
     fiatValue !== null && Number.isFinite(fiatValue)
       ? formatFiat(fiatValue)
       : '—';
@@ -76,13 +76,14 @@ export function SpendableBalanceSection({
           >
             {t('spendableBalanceTotalBalance')}
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
             data-testid="spendable-balance-total-balance"
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
             {totalDisplay}
-          </Text>
+          </SensitiveText>
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -96,12 +97,14 @@ export function SpendableBalanceSection({
           >
             {t('spendableBalanceFiatValue')}
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodyMd}
             data-testid="spendable-balance-fiat-value"
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
-            {valueDisplay}
-          </Text>
+            {fiatValueDisplay}
+          </SensitiveText>
         </Box>
       </Box>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
@@ -117,13 +120,15 @@ export function SpendableBalanceSection({
           >
             {t('spendableBalance')}
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodyMd}
             color={TextColor.SuccessDefault}
             data-testid="spendable-balance-spendable-balance"
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
             {spendableDisplay}
-          </Text>
+          </SensitiveText>
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -137,13 +142,15 @@ export function SpendableBalanceSection({
           >
             {t('spendableBalanceBaseReserved')}
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodyMd}
             color={TextColor.SuccessDefault}
             data-testid="spendable-balance-base-reserved"
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
             {reservedDisplay}
-          </Text>
+          </SensitiveText>
         </Box>
       </Box>
     </Box>

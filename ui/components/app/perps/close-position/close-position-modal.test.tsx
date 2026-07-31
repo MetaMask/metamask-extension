@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
@@ -7,6 +13,17 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
+
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatNumber: (value: number) =>
+      value.toLocaleString('en-US', {
+        maximumFractionDigits: 6,
+      }),
+    formatPercentWithMinThreshold: (value: number) =>
+      `${(value * 100).toFixed(2)}%`,
+  }),
+}));
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -452,7 +469,9 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
+      await act(async () => {
+        slider.focus();
+      });
       await user.keyboard('{ArrowLeft}');
 
       expect(
@@ -1292,15 +1311,17 @@ describe('ClosePositionModal', () => {
       enterLimitPrice('3000');
 
       const currentState = store.getState();
-      store.dispatch({
-        type: 'UPDATE_METAMASK_STATE',
-        value: {
-          ...currentState.metamask,
-          remoteFeatureFlags: {
-            ...currentState.metamask.remoteFeatureFlags,
-            perpsClosePositionLimitOrderEnabled: false,
+      await act(async () => {
+        store.dispatch({
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            ...currentState.metamask,
+            remoteFeatureFlags: {
+              ...currentState.metamask.remoteFeatureFlags,
+              perpsClosePositionLimitOrderEnabled: false,
+            },
           },
-        },
+        });
       });
 
       await waitFor(() => {

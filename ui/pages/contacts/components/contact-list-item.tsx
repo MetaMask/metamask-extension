@@ -117,7 +117,7 @@ export function ContactListItem({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={2}
-        className="mt-4 shrink-0"
+        className="shrink-0"
       >
         {isDuplicate && (
           <Tooltip title={t('duplicateContactTooltip')} position="top">

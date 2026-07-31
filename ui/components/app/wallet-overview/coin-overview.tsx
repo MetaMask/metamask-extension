@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { CaipChainId } from '@metamask/utils';
@@ -66,6 +66,7 @@ import {
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
+import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 

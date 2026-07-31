@@ -4,11 +4,20 @@ import type {
   OrderFill,
   UserHistoryItem,
 } from '@metamask/perps-controller';
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
+import {
+  TransactionStatus,
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   FillType,
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
+  type PerpsTransaction,
 } from '../types/transactionHistory';
+import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
 import {
   aggregateFillsByTimestamp,
   transformFillsToTransactions,
@@ -17,9 +26,69 @@ import {
   transformUserHistoryToTransactions,
   transformWithdrawalRequestsToTransactions,
   transformDepositRequestsToTransactions,
+  transformWalletPerpsDepositsToTransactions,
+  transformWalletPerpsWithdrawalsToTransactions,
+  dedupeWalletTransactionsByTxHash,
   type WithdrawalRequest,
   type DepositRequest,
 } from './transactionTransforms';
+
+const erc20Interface = new Interface(abiERC20);
+
+// Helper to create a mock wallet-tracked Perps deposit TransactionMeta with a
+// standard ERC20 `transfer(address,uint256)` payload, matching the shape
+// `transformWalletPerpsDepositsToTransactions` expects.
+const createMockWalletDepositTx = (
+  overrides: Partial<TransactionMeta> = {},
+): TransactionMeta => {
+  const amountRaw = '100000000'; // 100 USDC at 6 decimals
+  const data = erc20Interface.encodeFunctionData('transfer', [
+    '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+    amountRaw,
+  ]) as `0x${string}`;
+
+  return {
+    id: 'wallet-tx-1',
+    chainId: '0xa4b1',
+    time: Date.now(),
+    status: TransactionStatus.confirmed,
+    type: TransactionType.perpsDeposit,
+    hash: '0xabc123',
+    txParams: {
+      from: '0x1234567890123456789012345678901234567890',
+      to: ARBITRUM_USDC.address,
+      data,
+    },
+    ...overrides,
+  } as TransactionMeta;
+};
+
+// Helper to create a mock wallet-tracked Perps withdrawal TransactionMeta,
+// matching the shape `transformWalletPerpsWithdrawalsToTransactions` expects.
+const createMockWalletWithdrawalTx = (
+  overrides: Partial<TransactionMeta> = {},
+): TransactionMeta => {
+  const amountRaw = '50000000'; // 50 USDC at 6 decimals
+  const data = erc20Interface.encodeFunctionData('transfer', [
+    '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+    amountRaw,
+  ]) as `0x${string}`;
+
+  return {
+    id: 'wallet-withdraw-tx-1',
+    chainId: '0xa4b1',
+    time: Date.now(),
+    status: TransactionStatus.confirmed,
+    type: TransactionType.perpsWithdraw,
+    hash: '0xdef456',
+    txParams: {
+      from: '0x1234567890123456789012345678901234567890',
+      to: ARBITRUM_USDC.address,
+      data,
+    },
+    ...overrides,
+  } as TransactionMeta;
+};
 
 // Helper to create mock OrderFill
 const createMockFill = (overrides: Partial<OrderFill> = {}): OrderFill => ({
@@ -408,6 +477,7 @@ describe('Transaction Transform Utilities', () => {
       expect(result[0].type).toBe('deposit');
       expect(result[0].category).toBe('deposit');
       expect(result[0].title).toBe('Deposited 1000.00 USDC');
+      expect(result[0].subtitle).toBe('Completed');
       expect(result[0].depositWithdrawal?.isPositive).toBe(true);
       expect(result[0].depositWithdrawal?.amount).toBe('+$1000.00');
     });
@@ -460,6 +530,7 @@ describe('Transaction Transform Utilities', () => {
       expect(result).toHaveLength(1);
       expect(result[0].type).toBe('withdrawal');
       expect(result[0].title).toBe('Withdrew 250.00 USDC');
+      expect(result[0].subtitle).toBe('Completed');
       expect(result[0].depositWithdrawal?.amount).toBe('-$250.00');
       expect(result[0].depositWithdrawal?.amountNumber).toBe(-250);
       expect(result[0].depositWithdrawal?.isPositive).toBe(false);
@@ -543,6 +614,315 @@ describe('Transaction Transform Utilities', () => {
       const result = transformDepositRequestsToTransactions(requests);
 
       expect(result).toHaveLength(1);
+    });
+  });
+
+  describe('transformWalletPerpsDepositsToTransactions', () => {
+    it('transforms a confirmed wallet perpsDeposit transaction into a completed deposit', () => {
+      const tx = createMockWalletDepositTx();
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].type).toBe('deposit');
+      expect(result[0].title).toBe('Deposited 100.00 USDC');
+      expect(result[0].subtitle).toBe('Completed');
+      expect(result[0].depositWithdrawal?.status).toBe('completed');
+      expect(result[0].depositWithdrawal?.amount).toBe('+$100.00');
+      expect(result[0].depositWithdrawal?.amountNumber).toBe(100);
+      expect(result[0].depositWithdrawal?.isPositive).toBe(true);
+      expect(result[0].depositWithdrawal?.txHash).toBe('0xabc123');
+    });
+
+    it('includes confirmed perpsDepositAndOrder transactions', () => {
+      const tx = createMockWalletDepositTx({
+        type: TransactionType.perpsDepositAndOrder,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+    });
+
+    it('includes a submitted deposit with a pending status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-pending',
+        status: TransactionStatus.submitted,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].subtitle).toBe('Pending');
+      expect(result[0].depositWithdrawal?.status).toBe('pending');
+    });
+
+    it('includes an unapproved deposit with a pending status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-unapproved',
+        status: TransactionStatus.unapproved,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result[0].depositWithdrawal?.status).toBe('pending');
+    });
+
+    it('includes a failed deposit with a failed status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-failed',
+        status: TransactionStatus.failed,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].subtitle).toBe('Failed');
+      expect(result[0].depositWithdrawal?.status).toBe('failed');
+    });
+
+    it('includes a dropped deposit with a failed status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-dropped',
+        status: TransactionStatus.dropped,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result[0].depositWithdrawal?.status).toBe('failed');
+    });
+
+    it('includes a rejected deposit with a failed status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-rejected',
+        status: TransactionStatus.rejected,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result[0].depositWithdrawal?.status).toBe('failed');
+    });
+
+    it('includes a cancelled deposit with a failed status', () => {
+      const tx = createMockWalletDepositTx({
+        id: 'wallet-tx-cancelled',
+        status: TransactionStatus.cancelled,
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result[0].depositWithdrawal?.status).toBe('failed');
+    });
+
+    it('uses a generic title when the transfer amount cannot be decoded', () => {
+      const tx = createMockWalletDepositTx({
+        txParams: {
+          from: '0x1234567890123456789012345678901234567890',
+          to: ARBITRUM_USDC.address,
+          data: '0x',
+        },
+      });
+
+      const result = transformWalletPerpsDepositsToTransactions([tx]);
+
+      expect(result[0].title).toBe('Deposit');
+    });
+  });
+
+  describe('transformWalletPerpsWithdrawalsToTransactions', () => {
+    it('transforms a confirmed wallet perpsWithdraw transaction into a completed withdrawal', () => {
+      const tx = createMockWalletWithdrawalTx();
+
+      const result = transformWalletPerpsWithdrawalsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].type).toBe('withdrawal');
+      expect(result[0].title).toBe('Withdrew 50.00 USDC');
+      expect(result[0].subtitle).toBe('Completed');
+      expect(result[0].depositWithdrawal?.status).toBe('completed');
+      expect(result[0].depositWithdrawal?.amount).toBe('-$50.00');
+      expect(result[0].depositWithdrawal?.amountNumber).toBe(-50);
+      expect(result[0].depositWithdrawal?.isPositive).toBe(false);
+      expect(result[0].depositWithdrawal?.txHash).toBe('0xdef456');
+    });
+
+    it('includes a submitted withdrawal with a pending status', () => {
+      const tx = createMockWalletWithdrawalTx({
+        id: 'wallet-withdraw-tx-pending',
+        status: TransactionStatus.submitted,
+      });
+
+      const result = transformWalletPerpsWithdrawalsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].subtitle).toBe('Pending');
+      expect(result[0].depositWithdrawal?.status).toBe('pending');
+    });
+
+    it('includes a failed withdrawal with a failed status', () => {
+      const tx = createMockWalletWithdrawalTx({
+        id: 'wallet-withdraw-tx-failed',
+        status: TransactionStatus.failed,
+      });
+
+      const result = transformWalletPerpsWithdrawalsToTransactions([tx]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].subtitle).toBe('Failed');
+      expect(result[0].depositWithdrawal?.status).toBe('failed');
+    });
+
+    it('uses a generic title when the transfer amount cannot be decoded', () => {
+      const tx = createMockWalletWithdrawalTx({
+        txParams: {
+          from: '0x1234567890123456789012345678901234567890',
+          to: ARBITRUM_USDC.address,
+          data: '0x',
+        },
+      });
+
+      const result = transformWalletPerpsWithdrawalsToTransactions([tx]);
+
+      expect(result[0].title).toBe('Withdrawal');
+    });
+  });
+
+  describe('dedupeWalletTransactionsByTxHash', () => {
+    const walletDeposit: PerpsTransaction = {
+      id: 'wallet-deposit-1',
+      type: 'deposit',
+      category: 'deposit',
+      title: 'Deposited 100.00 USDC',
+      subtitle: 'Completed',
+      timestamp: Date.now(),
+      symbol: 'USDC',
+      depositWithdrawal: {
+        amount: '+$100.00',
+        amountNumber: 100,
+        isPositive: true,
+        asset: 'USDC',
+        txHash: '0xABC123',
+        status: 'completed',
+        type: 'deposit',
+      },
+    };
+
+    const walletWithdrawal: PerpsTransaction = {
+      id: 'wallet-withdrawal-1',
+      type: 'withdrawal',
+      category: 'withdrawal',
+      title: 'Withdrew 50.00 USDC',
+      subtitle: 'Completed',
+      timestamp: Date.now(),
+      symbol: 'USDC',
+      depositWithdrawal: {
+        amount: '-$50.00',
+        amountNumber: -50,
+        isPositive: false,
+        asset: 'USDC',
+        txHash: '0xDEF456',
+        status: 'completed',
+        type: 'withdrawal',
+      },
+    };
+
+    it('keeps wallet deposits with no matching existing deposit', () => {
+      const result = dedupeWalletTransactionsByTxHash([walletDeposit], []);
+
+      expect(result).toEqual([walletDeposit]);
+    });
+
+    it('drops wallet deposits already represented by an existing deposit with the same txHash (case-insensitive)', () => {
+      const existingDeposit: PerpsTransaction = {
+        ...walletDeposit,
+        id: 'history-deposit-1',
+        depositWithdrawal: {
+          ...walletDeposit.depositWithdrawal,
+          txHash: '0xabc123',
+        } as PerpsTransaction['depositWithdrawal'],
+      };
+
+      const result = dedupeWalletTransactionsByTxHash(
+        [walletDeposit],
+        [existingDeposit],
+      );
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('does not dedupe against existing non-deposit transactions', () => {
+      const existingTrade: PerpsTransaction = {
+        ...walletDeposit,
+        id: 'trade-1',
+        type: 'trade',
+      };
+
+      const result = dedupeWalletTransactionsByTxHash(
+        [walletDeposit],
+        [existingTrade],
+      );
+
+      expect(result).toEqual([walletDeposit]);
+    });
+
+    it('keeps wallet withdrawals with no matching existing withdrawal', () => {
+      const result = dedupeWalletTransactionsByTxHash([walletWithdrawal], []);
+
+      expect(result).toEqual([walletWithdrawal]);
+    });
+
+    it('drops wallet withdrawals already represented by an existing withdrawal with the same txHash (case-insensitive)', () => {
+      const existingWithdrawal: PerpsTransaction = {
+        ...walletWithdrawal,
+        id: 'history-withdrawal-1',
+        depositWithdrawal: {
+          ...walletWithdrawal.depositWithdrawal,
+          txHash: '0xdef456',
+        } as PerpsTransaction['depositWithdrawal'],
+      };
+
+      const result = dedupeWalletTransactionsByTxHash(
+        [walletWithdrawal],
+        [existingWithdrawal],
+      );
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('does not dedupe a wallet withdrawal against a deposit sharing the same txHash', () => {
+      const existingDepositSameHash: PerpsTransaction = {
+        ...walletDeposit,
+        id: 'history-deposit-same-hash',
+        depositWithdrawal: {
+          ...walletDeposit.depositWithdrawal,
+          txHash: walletWithdrawal.depositWithdrawal?.txHash ?? '',
+        } as PerpsTransaction['depositWithdrawal'],
+      };
+
+      const result = dedupeWalletTransactionsByTxHash(
+        [walletWithdrawal],
+        [existingDepositSameHash],
+      );
+
+      expect(result).toEqual([walletWithdrawal]);
+    });
+
+    it('dedupes deposits and withdrawals independently when both are present', () => {
+      const existingDeposit: PerpsTransaction = {
+        ...walletDeposit,
+        id: 'history-deposit-1',
+        depositWithdrawal: {
+          ...walletDeposit.depositWithdrawal,
+          txHash: '0xabc123',
+        } as PerpsTransaction['depositWithdrawal'],
+      };
+
+      const result = dedupeWalletTransactionsByTxHash(
+        [walletDeposit, walletWithdrawal],
+        [existingDeposit],
+      );
+
+      expect(result).toEqual([walletWithdrawal]);
     });
   });
 });

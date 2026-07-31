@@ -2011,12 +2011,6 @@
     "message": "批准 $1 进行桥接",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "您正在授权访问 $1 $2。该合约不会动用任何其他资金。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "要进行桥接操作，您需要先授权访问 $1 $2，再批准将其桥接到 $3。此操作需进行两次独立的确认。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "区块浏览器链接已复制"
   },
@@ -4179,9 +4173,6 @@
   },
   "gotIt": {
     "message": "知道了"
-  },
-  "grantExactAccess": {
-    "message": "授予精确获取权限"
   },
   "gwei": {
     "message": "GWEI"
@@ -7857,149 +7848,6 @@
   "publicAddress": {
     "message": "公钥"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "您的 $1 多头仓位现已开立。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "您的 $1 空头仓位现已开立。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "限价订单已成交"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "您的 $1 多头仓位已平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "您的 $1 空头仓位已平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "仓位已清算"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "您的索赔已创建"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "索赔已创建"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "您的索赔已更新"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "索赔已更新"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "了解详情"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "您的计划现已激活。"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "您的计划因付款失败已被暂停。"
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask 交易防护功能"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "更新付款信息"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "您的 $1 多头仓位已触发止损平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "您的 $1 空头仓位已触发止损平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "止损已触发"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "您的 $1 多头仓位已达成止盈平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "您的 $1 空头仓位已达成止盈平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "止盈已触发"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "您收到了 $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "您已收到一些代币"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "已收到资金"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "您已成功发送 $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "您已成功发送一些代币"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "已发送资金"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "您已收到新的 NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "已收到 NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "您已成功发送一个 NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "NFT 已发送"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "您的 Lido 质押已成功"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "质押完成"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "您的 Lido 质押现在已准备好提取"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "可供提取的质押"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "您的 Lido 提取已成功"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "提取已完成"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "您的 Lido 提取请求已提交"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "已请求提取"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "您的 RocketPool 质押已成功"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "质押完成"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "您的 RocketPool 解除质押已成功"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "解除质押完成"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "您的 MetaMask 兑换已成功"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "兑换已完成"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -10321,18 +10169,6 @@
   "statusNotConnected": {
     "message": "未连接"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "添加此信任线时出错。请重试。",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "移除此信任线时出错。请重试。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "您的钱包中仍有 $1 $2。在 Stellar 上停用此资产前，必须将其全部发送或兑换。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "仍在连接到 $1……",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -11418,12 +11254,6 @@
   },
   "whatsThis": {
     "message": "这是什么？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "批准代币进行桥接。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "批准代币进行兑换。"
   },
   "withdrawTo": {
     "message": "收款",

@@ -2011,12 +2011,6 @@
     "message": "Aprubahan ang $1 para sa bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Pinahihintulutan mo ang access sa $1 $2. Hindi gagamitin ng kontrata ang anumang karagdagang pondo."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $3. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nakopya ang link ng block explorer"
   },
@@ -4179,9 +4173,6 @@
   },
   "gotIt": {
     "message": "Nakuha ko"
-  },
-  "grantExactAccess": {
-    "message": "Payagan ang eksaktong access"
   },
   "gwei": {
     "message": "GWEI"
@@ -7857,149 +7848,6 @@
   "publicAddress": {
     "message": "Pampublikong address"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Bukas na ang long position mo na $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Bukas na ang short position mo na $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Na-fill ang limit order"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Isinara na ang iyong long position sa $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Isinara na ang iyong short position sa $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Na-liquidate ang posisyon"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Nagawa na ang claim mo"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Nagawa ang claim"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Na-update na ang claim mo"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Na-update ang claim"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Matuto pa"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Aktibo na ngayon ang plan mo."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Inihinto ang plan mo dahil sa hindi pagbabayad."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "Transaction Shield ng MetaMask"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "I-update ang paraan ng pagbabayad"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Nag-long close ang iyong $1 sa itinakda mong stop loss.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Nag-short close ang iyong $1 sa itinakda mong stop loss.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Na-trigger ang stop loss"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Nag-long close ang iyong $1 sa itinakda mong take profit.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Nag-short close ang iyong $1 sa itinakda mong take profit.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Na-trigger ang take profit"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Nakatanggap ka ng $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Nakatanggap ka ng ilang token"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Natanggap ang pondo"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Matagumpay kang nakapagpadala ng $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Matagumpay mong naipadala ang ilang token"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Naipadala ang pondo"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Nakatanggap ka ng mga bagong NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Natanggap ang NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Matagumpay mong naipadala ang NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Naipadala ang NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Matagumpay ang pag-stake mo sa Lido"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-stake"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Ang stake mo sa Lido ay handa ng i-withdraw ngayon"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Handa nang i-withdraw ang stake"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Matagumpay ang pag-withdraw mo sa Lido"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Nakumpleto ang pag-withdraw"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Naisumite ang hiling mo na pag-withdraw sa Lido."
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Hiniling ang pag-withdraw"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Matagumpay ang pag-stake mo sa RocketPool"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-stake"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Matagumpay ang pag-unstake mo sa RocketPool"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-unstake"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Matagumpay ang Pag-swap mo sa MetaMask"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Nakumpleto ang pag-swap"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -10321,18 +10169,6 @@
   "statusNotConnected": {
     "message": "Hindi konektado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Nagkaproblema habang idinaragdag ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Nagkaproblema habang tinatanggal ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "May $1 $2 ka pa sa wallet na ito. Dapat mong ipadala o i-swap ang lahat ng ito bago i-deactivate ang asset na ito sa Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -11418,12 +11254,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprubahan ang token para sa bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprubahan ang token para sa swap."
   },
   "withdrawTo": {
     "message": "Tumanggap",

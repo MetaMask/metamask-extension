@@ -4,30 +4,30 @@ const FEEDBACK_MESSAGE =
   'Message: Unable to find value of key "debug" for locale "en"';
 
 class ErrorPage {
+  private readonly contactSupportButton =
+    '[data-testid="error-page-contact-support-button"]';
+
   private readonly driver: Driver;
+
+  private readonly errorMessage = '[data-testid="error-page-error-message"]';
 
   // Locators
   private readonly errorPageTitle = '[data-testid="error-page-title"]';
 
-  private readonly errorMessage = '[data-testid="error-page-error-message"]';
-
   private readonly sendReportToSentryButton =
     '[data-testid="error-page-describe-what-happened-button"]';
-
-  private readonly sentryReportForm =
-    '[data-testid="error-page-sentry-feedback-modal"]';
-
-  private readonly contactSupportButton =
-    '[data-testid="error-page-contact-support-button"]';
-
-  private readonly sentryFeedbackTextarea =
-    '[data-testid="error-page-sentry-feedback-textarea"]';
 
   private readonly sentryFeedbackSubmitButton =
     '[data-testid="error-page-sentry-feedback-submit-button"]';
 
   private readonly sentryFeedbackSuccessModal =
     '[data-testid="error-page-sentry-feedback-success-modal"]';
+
+  private readonly sentryFeedbackTextarea =
+    '[data-testid="error-page-sentry-feedback-textarea"]';
+
+  private readonly sentryReportForm =
+    '[data-testid="error-page-sentry-feedback-modal"]';
 
   private readonly visitSupportDataConsentModal =
     '[data-testid="visit-support-data-consent-modal"]';
@@ -52,11 +52,30 @@ class ErrorPage {
     console.log('Error page is loaded');
   }
 
-  async validateErrorMessage(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Message: Unable to find value of key "debug" for locale "en"`,
-      css: this.errorMessage,
-    });
+  async clickContactButton(): Promise<void> {
+    console.log(`Contact metamask support form in a separate page`);
+    await this.driver.waitUntilXWindowHandles(1);
+    await this.driver.findScrollToAndClickElement(this.contactSupportButton);
+  }
+
+  async consentDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    // Accept awaits getCustomerServiceToken (up to 5s product timeout).
+    // Default clickElementAndWaitToDisappear timeout (3s) is too short.
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalAcceptButton,
+      10000,
+    );
+    // metamask, help page
+    await this.driver.waitUntilXWindowHandles(2);
+  }
+
+  async rejectDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalRejectButton,
+    );
+    await this.driver.waitUntilXWindowHandles(2);
   }
 
   async submitToSentryUserFeedbackForm(): Promise<void> {
@@ -69,27 +88,11 @@ class ErrorPage {
     );
   }
 
-  async clickContactButton(): Promise<void> {
-    console.log(`Contact metamask support form in a separate page`);
-    await this.driver.waitUntilXWindowHandles(1);
-    await this.driver.findScrollToAndClickElement(this.contactSupportButton);
-  }
-
-  async consentDataToMetamaskSupport(): Promise<void> {
-    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.visitSupportDataConsentModalAcceptButton,
-    );
-    // metamask, help page
-    await this.driver.waitUntilXWindowHandles(2);
-  }
-
-  async rejectDataToMetamaskSupport(): Promise<void> {
-    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.visitSupportDataConsentModalRejectButton,
-    );
-    await this.driver.waitUntilXWindowHandles(2);
+  async validateErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Message: Unable to find value of key "debug" for locale "en"`,
+      css: this.errorMessage,
+    });
   }
 
   async waitForSentrySuccessModal(): Promise<void> {
