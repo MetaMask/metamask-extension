@@ -24,8 +24,6 @@ import {
   mockTronGetBlockByNum,
   mockTronGetNowBlock,
   mockTronGetReward,
-  mockTronGetTransactions,
-  mockTronGetTrc20Transactions,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
@@ -251,8 +249,6 @@ async function mockTronFixtureApis(
     await mockTronGetBlock(mockServer),
     await mockTronGetNowBlock(mockServer),
     await mockTronGetBlockByNum(mockServer),
-    await mockTronGetTransactions(mockServer),
-    await mockTronGetTrc20Transactions(mockServer),
     // NOTE: no static `broadcasttransaction` mock here. mockttp serves the
     // first matching *unused* rule, so a static broadcast mock would swallow
     // each test's single broadcast with a fake txid that the local node never
