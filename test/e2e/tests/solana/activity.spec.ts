@@ -17,7 +17,7 @@ import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 const SOLANA_EXPLORER_URL = 'https://solscan.io';
 
-describe('Transaction activity list', function (this: Suite) {
+describe('Solana - Activity', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
     await withFixtures(
