@@ -12,6 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import {
   ethSentNotification,
   featureNotification,
@@ -34,6 +35,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
+      getNotificationPreferences: createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -92,7 +94,7 @@ describe('Notifications List', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: false,
         },
@@ -149,25 +151,24 @@ describe('Notifications List', () => {
       const notificationsInteractionsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category ===
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.properties?.category ===
               MetaMetricsEventCategory.NotificationInteraction,
         );
 
-      expect(notificationsInteractionsEvent?.[0]).toBe('trackMetaMetricsEvent');
+      expect(notificationsInteractionsEvent?.[0]).toBe('trackAnalyticsEvent');
       const [metricsEvent] = notificationsInteractionsEvent?.[1] as unknown as [
         {
-          event: string;
-          category: string;
+          name: string;
           properties: Record<string, unknown>;
         },
       ];
 
-      expect(metricsEvent?.event).toBe(
+      expect(metricsEvent?.name).toBe(
         MetaMetricsEventName.NotificationsMenuOpened,
       );
 
-      expect(metricsEvent?.category).toBe(
+      expect(metricsEvent?.properties?.category).toBe(
         MetaMetricsEventCategory.NotificationInteraction,
       );
 
@@ -259,6 +260,69 @@ describe('Notifications List', () => {
           },
         ],
       ]);
+    });
+  });
+
+  it('tracks Notification Clicked when a notification item is clicked', async () => {
+    const mockedState = getStateWithTwoUnreadNotifications();
+    const unreadEthSentNotification = {
+      ...ethSentNotification,
+      isRead: false,
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedState,
+          consentDecisionMade: true,
+          optedIn: true,
+          dataCollectionForMarketing: false,
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('account-options-menu-button'));
+
+    const notificationsMenuItem = await screen.findByTestId(
+      'notifications-menu-item',
+    );
+    fireEvent.click(notificationsMenuItem);
+
+    const notificationListItem = await screen.findByTestId(
+      `notification-list-item-${unreadEthSentNotification.id}`,
+    );
+    fireEvent.click(within(notificationListItem).getByRole('button'));
+
+    await waitFor(() => {
+      const notificationClickedEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.NotificationClicked,
+        );
+
+      expect(notificationClickedEvent?.[0]).toBe('trackAnalyticsEvent');
+      const [metricsEvent] = notificationClickedEvent?.[1] as unknown as [
+        {
+          name: string;
+          properties: Record<string, unknown>;
+        },
+      ];
+
+      expect(metricsEvent?.name).toBe(MetaMetricsEventName.NotificationClicked);
+      expect(metricsEvent?.properties?.category).toBe(
+        MetaMetricsEventCategory.NotificationInteraction,
+      );
+      expect(metricsEvent.properties).toMatchObject({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        /* eslint-disable @typescript-eslint/naming-convention */
+        notification_id: unreadEthSentNotification.id,
+        notification_type: 'wallet_activity',
+        notification_subtype: 'eth_sent',
+        chain_id: unreadEthSentNotification.payload.chain_id,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
     });
   });
 });

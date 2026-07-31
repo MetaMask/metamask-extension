@@ -107,7 +107,7 @@ describe('Send ERC20', function () {
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'TST');
-          await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 

@@ -228,7 +228,6 @@ export class OAuthMockttpService {
   ) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const jsonRpcRequestBody = await request.body.getJson();
-    // eslint-disable-next-line camelcase
     const { grant_type: grantType } = jsonRpcRequestBody as {
       grant_type: string;
     };
@@ -271,23 +270,11 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: accessToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: idToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'mock-revoke-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         metadata_access_token: idToken,
       },
     };
@@ -341,11 +328,7 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'new-mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'new-mock-revoke-token',
       },
     };
@@ -363,23 +346,11 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: accessToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: idToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'mock-revoke-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         metadata_access_token: idToken,
       },
     };
@@ -425,8 +396,6 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: 'mocked-oidc-access-token',
       },
     };

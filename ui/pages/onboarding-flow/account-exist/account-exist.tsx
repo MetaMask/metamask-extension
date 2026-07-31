@@ -10,8 +10,6 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
 import { useAccountStatusContext } from '../hooks/useAccountStatusContext';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
   const navigate = useNavigate();
   const {
@@ -20,6 +18,7 @@ export default function AccountExist() {
     descriptionInterpolation,
     resetOnboardingAndReturn,
     trackEvent,
+    createEventBuilder,
     bufferedTrace,
     onboardingParentContext,
   } = useAccountStatusContext({
@@ -38,15 +37,16 @@ export default function AccountExist() {
   };
 
   const onDone = async () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletImportStarted,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletImportStarted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+        })
+        .build(),
+    );
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSocialLogin,
       op: TraceOperation.OnboardingUserJourney,

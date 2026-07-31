@@ -2,41 +2,26 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import MusdEducationScreen from './education';
 
-// Mock MetaMetricsContext so we can verify trackEvent calls
-jest.mock('../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const _trackEvent = jest.fn().mockResolvedValue(undefined);
-  const ctx = ReactActual.createContext({
-    trackEvent: _trackEvent,
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  ctx.Provider = (({ children }: { children: React.ReactNode }) =>
-    ReactActual.createElement(
-      ReactActual.Fragment,
-      null,
-      children,
-    )) as unknown as typeof ctx.Provider;
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext: ctx,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __mockTrackEvent: _trackEvent,
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
-const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __mockTrackEvent: jest.Mock;
-}>('../../../contexts/metametrics');
 
 // Mock useMusdConversion hook
 const mockStartConversionFlow = jest.fn().mockResolvedValue(undefined);
@@ -64,11 +49,15 @@ jest.mock('../../../hooks/musd', () => ({
   useCanBuyMusd: () => mockUseCanBuyMusd(),
 }));
 
-const mockOpenBuyCryptoInPdapp = jest.fn();
-jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+const mockGoToBuy = jest.fn().mockResolvedValue(true);
+let mockOpensBuyInPortfolioTab = true;
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp }),
+  default: () => ({
+    goToBuy: mockGoToBuy,
+    opensBuyInPortfolioTab: mockOpensBuyInPortfolioTab,
+  }),
 }));
 
 // Mock useTheme
@@ -139,6 +128,7 @@ describe('MusdEducationScreen', () => {
       canBuyMusdInRegion: true,
       isLoading: false,
     });
+    mockOpensBuyInPortfolioTab = true;
   });
 
   it('renders the headline with the bonus percentage', () => {
@@ -259,7 +249,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+        name: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
         properties: expect.objectContaining({
           location: 'conversion_education_screen',
         }),
@@ -273,7 +263,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+        name: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
         properties: expect.objectContaining({
           location: 'conversion_education_screen',
         }),
@@ -296,7 +286,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     expect(mockStartConversionFlow).not.toHaveBeenCalled();
-    expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
+    expect(mockGoToBuy).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------
@@ -312,7 +302,7 @@ describe('MusdEducationScreen', () => {
       });
     });
 
-    it('shows "Buy mUSD" and opens buy flow when user can buy', () => {
+    it('routes through goToBuy (mainnet) and returns home when Buy opens Portfolio', async () => {
       mockUseCanBuyMusd.mockReturnValue({
         canBuyMusdInRegion: true,
         isLoading: false,
@@ -325,8 +315,38 @@ describe('MusdEducationScreen', () => {
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalled();
-      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      // Deeplink buy branch pins the fallback chain to mainnet.
+      expect(mockGoToBuy).toHaveBeenCalledWith({
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+        chainId: '0x1',
+      });
+      // Portfolio opens in a new tab, so the screen returns home.
+      await waitFor(() =>
+        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE),
+      );
+      expect(mockStartConversionFlow).not.toHaveBeenCalled();
+    });
+
+    it('routes through goToBuy and stays put when Buy navigates in-app', async () => {
+      mockUseCanBuyMusd.mockReturnValue({
+        canBuyMusdInRegion: true,
+        isLoading: false,
+      });
+      mockOpensBuyInPortfolioTab = false;
+      const store = createMockStore();
+      renderWithProvider(<MusdEducationScreen />, store);
+
+      const button = screen.getByTestId('musd-education-continue-button');
+      fireEvent.click(button);
+
+      await waitFor(() =>
+        expect(mockGoToBuy).toHaveBeenCalledWith({
+          assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+          chainId: '0x1',
+        }),
+      );
+      // goToBuy navigates in-app itself; the screen must not override it home.
+      expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
     });
 
@@ -349,7 +369,7 @@ describe('MusdEducationScreen', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
-      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
+      expect(mockGoToBuy).not.toHaveBeenCalled();
     });
 
     it('shows "Continue" and navigates home when ramp unavailable in region', () => {
@@ -366,7 +386,7 @@ describe('MusdEducationScreen', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
-      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
+      expect(mockGoToBuy).not.toHaveBeenCalled();
     });
   });
 
@@ -397,7 +417,7 @@ describe('MusdEducationScreen', () => {
         skipEducation: true,
         entryPoint: 'deeplink',
       });
-      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
+      expect(mockGoToBuy).not.toHaveBeenCalled();
     });
 
     it('shows "Get started" and starts conversion flow even when user cannot buy in region', async () => {
@@ -418,7 +438,7 @@ describe('MusdEducationScreen', () => {
         skipEducation: true,
         entryPoint: 'deeplink',
       });
-      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
+      expect(mockGoToBuy).not.toHaveBeenCalled();
     });
   });
 });

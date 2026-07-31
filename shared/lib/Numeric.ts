@@ -143,7 +143,7 @@ function numberToBigNumber(value: number, numericBase: NumericBase) {
   if (numericBase === 16 && isHexString(`${value}`)) {
     return new BigNumber(`${value}`, 16);
   }
-  return new BigNumber(value, 10);
+  return new BigNumber(String(value), 10);
 }
 
 function bigintToBigNumber(value: bigint, numericBase: NumericBase) {
@@ -340,8 +340,6 @@ export class Numeric {
     denomination?: EtherDenomination,
   ) {
     if (value instanceof Numeric) {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       if (base || denomination) {
         throw new Error(
           `Numeric.from was called with a value (${value.toString()}) that is already a Numeric but a base and/or denomination was provided. Only supply base or denomination when creating a new Numeric`,

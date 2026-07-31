@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
@@ -256,8 +255,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved token alert modal and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -351,8 +348,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         console.log('Approved all confirmation alerts and submitted swap');
 
-        await bridgePage.dismissStatusPageIfPresent();
-
         await verifySubmittedSwapTransaction({
           driver,
           quote: {
@@ -434,8 +429,6 @@ describe('Swap tests', function (this: Suite) {
         await bridgePage.approveModal();
         await bridgePage.approveModal();
         console.log('Approved all alerts and submitted swap');
-
-        await bridgePage.dismissStatusPageIfPresent();
 
         await verifySubmittedSwapTransaction({
           driver,

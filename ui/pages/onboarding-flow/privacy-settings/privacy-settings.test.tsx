@@ -11,6 +11,19 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
   return {
     type: SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
@@ -22,6 +35,21 @@ jest.mock('../../../ducks/app/app.ts', () => {
     openBasicFunctionalityModal: () => {
       return mockOpenBasicFunctionalityModal();
     },
+  };
+});
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
 
@@ -217,6 +245,31 @@ describe('Privacy Settings Onboarding View', () => {
       const ipfsEvent = {
         target: {
           value: 'gateway.ipfs.io',
+        },
+      };
+
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
+
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
+
+      expect(invalidErrorMsg).toBeInTheDocument();
+    });
+
+    it('should error with ipfs.infura.io IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets as HTMLElement);
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: 'ipfs.infura.io',
         },
       };
 

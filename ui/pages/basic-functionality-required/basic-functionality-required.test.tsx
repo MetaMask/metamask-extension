@@ -67,6 +67,11 @@ jest.mock('../../hooks/useI18nContext', () => ({
   },
 }));
 
+jest.mock('../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityConsolidationEnabled: () => false,
+}));
+
 function renderWithStore(
   ui: React.ReactElement,
   { useExternalServices = false } = {},

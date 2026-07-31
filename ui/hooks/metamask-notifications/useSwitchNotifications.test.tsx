@@ -3,51 +3,9 @@ import * as ActionsModule from '../../store/actions';
 import * as NotificationSelectorsModule from '../../selectors/metamask-notifications/metamask-notifications';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import {
-  useSwitchFeatureAnnouncementsChange,
   useSwitchAccountNotificationsChange,
   useAccountSettingsProps,
 } from './useSwitchNotifications';
-
-describe('useSwitchFeatureAnnouncementsChange() tests', () => {
-  beforeEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  const arrangeMocks = () => {
-    const mockSetFeatureAnnouncementsEnabled = jest.spyOn(
-      ActionsModule,
-      'setFeatureAnnouncementsEnabled',
-    );
-    return {
-      mockSetFeatureAnnouncementsEnabled,
-    };
-  };
-
-  it('should update feature announcement when callback invoked', async () => {
-    const mocks = arrangeMocks();
-    const hook = renderHookWithProviderTyped(
-      () => useSwitchFeatureAnnouncementsChange(),
-      {},
-    );
-
-    await hook.result.current.onChange(true);
-    expect(mocks.mockSetFeatureAnnouncementsEnabled).toHaveBeenCalled();
-  });
-
-  it('should update error state when callback fails', async () => {
-    const mocks = arrangeMocks();
-    mocks.mockSetFeatureAnnouncementsEnabled.mockImplementation(() => {
-      throw new Error('Mock Fail');
-    });
-    const hook = renderHookWithProviderTyped(
-      () => useSwitchFeatureAnnouncementsChange(),
-      {},
-    );
-
-    await hook.result.current.onChange(true);
-    expect(hook.result.current.error).toBeDefined();
-  });
-});
 
 describe('useSwitchAccountNotificationsChange() tests', () => {
   const arrangeMocks = () => {
@@ -98,7 +56,11 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
         () => useSwitchAccountNotificationsChange(),
         {},
       );
-      await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      try {
+        await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      } catch {
+        // onChange rethrows after setting error state — expected here
+      }
       return hook.result.current.error;
     };
 
@@ -168,6 +130,43 @@ describe('useAccountSettingsProps() tests', () => {
         '0x1',
         '0x2',
       ]);
+    });
+  });
+
+  it('lowercases the address keys returned by the presence check', async () => {
+    const mocks = arrangeMocks();
+    const mixedCaseAddress = '0xAbCdEf0000000000000000000000000000000001';
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.resolve({
+        [mixedCaseAddress]: true,
+      })) as unknown as ReturnType<typeof ActionsModule.checkAccountsPresence>);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps([mixedCaseAddress]),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.data).toStrictEqual({
+        [mixedCaseAddress.toLowerCase()]: true,
+      });
+    });
+  });
+
+  it('preserves an empty presence result without normalizing', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.resolve({})) as unknown as ReturnType<
+      typeof ActionsModule.checkAccountsPresence
+    >);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps(['0x1']),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.data).toStrictEqual({});
     });
   });
 });

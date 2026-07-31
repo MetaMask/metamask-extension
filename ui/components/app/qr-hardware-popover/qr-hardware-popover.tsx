@@ -1,7 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -21,6 +23,13 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+} from '../../../helpers/constants/routes';
+import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
+import { useDispatch } from '../../../store/hooks';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -41,6 +50,9 @@ const EMPTY_HEADER_PLACEHOLDER = '\u00A0';
 const QRHardwarePopover = () => {
   const t = useI18nContext();
   const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
+  const { pathname } = useLocation();
+  const isBridgeHardwareWalletSigningPage =
+    pathname === `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
 
   const environmentType = getEnvironmentType();
   const isRestrictedEnv =
@@ -48,6 +60,7 @@ const QRHardwarePopover = () => {
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const [errorTitle, setErrorTitle] = useState('');
   const [errorActive, setErrorActive] = useState(false);
+  const cameraPermissionErrorCodeRef = useRef<ErrorCode | null>(null);
 
   const { txData } = useSelector(
     (state: { confirmTransaction: ConfirmTransactionSlice }) => {
@@ -68,10 +81,23 @@ const QRHardwarePopover = () => {
   }
 
   const dispatch = useDispatch();
-  const walletImporterCancel = useCallback(
-    () => dispatch(cancelQrCodeScan()),
-    [dispatch],
+  const setCameraPermissionErrorCode = useCallback(
+    (errorCode: ErrorCode | null) => {
+      cameraPermissionErrorCodeRef.current = errorCode;
+    },
+    [],
   );
+
+  const getCameraPermissionCancelError = useCallback(() => {
+    const errorCode = cameraPermissionErrorCodeRef.current;
+    return errorCode
+      ? createHardwareWalletError(errorCode, HardwareWalletType.Qr)
+      : undefined;
+  }, []);
+
+  const walletImporterCancel = useCallback(() => {
+    dispatch(cancelQrCodeScan(getCameraPermissionCancelError()));
+  }, [dispatch, getCameraPermissionCancelError]);
 
   const signRequestCancel = useCallback(() => {
     // txData may not be populated yet if the user cancels before Redux
@@ -85,8 +111,8 @@ const QRHardwarePopover = () => {
       );
       dispatch(cancelTx(txDataRef.current));
     }
-    dispatch(cancelQrCodeScan());
-  }, [dispatch]);
+    dispatch(cancelQrCodeScan(getCameraPermissionCancelError()));
+  }, [dispatch, getCameraPermissionCancelError]);
 
   // Error-specific title takes priority. When the child is showing error
   // content (errorActive) without a specific title, suppress the flow heading
@@ -113,6 +139,13 @@ const QRHardwarePopover = () => {
   // checkEnvironment() to open a duplicate fullscreen tab, stealing focus
   // from the tab that shows the "Select an account" list after scanning.
   if (isRestrictedEnv && activeScanRequest?.type === QrScanRequestType.PAIR) {
+    return null;
+  }
+
+  if (
+    isBridgeHardwareWalletSigningPage &&
+    activeScanRequest?.type === QrScanRequestType.SIGN
+  ) {
     return null;
   }
 
@@ -145,12 +178,14 @@ const QRHardwarePopover = () => {
             handleCancel={walletImporterCancel}
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
+            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
           />
         )}
         {activeScanRequest.type === QrScanRequestType.SIGN && (
           <QRHardwareSignRequest
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
+            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
             handleCancel={signRequestCancel}
             request={activeScanRequest.request}
           />

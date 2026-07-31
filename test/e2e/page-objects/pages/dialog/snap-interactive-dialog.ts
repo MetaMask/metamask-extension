@@ -45,46 +45,11 @@ class SnapInteractiveDialog {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        selectors.interactiveUITitle,
-        selectors.exampleInput,
-      ]);
-    } catch (e: unknown) {
-      console.log(
-        'Timed out while waiting for Snap Interactive UI dialog to load',
-        e,
-      );
-      throw e;
-    }
-    console.log('Snap Interactive UI dialog is loaded');
-  }
-
-  async clickSubmitButton() {
-    console.log(`Clicking submit button`);
-    await this.driver.clickElement({ text: 'Submit', tag: 'button' });
-  }
-
-  async clickCancelButton() {
-    console.log(`Clicking cancel button`);
-    await this.driver.clickElementAndWaitForWindowToClose({
-      text: 'Cancel',
-      tag: 'button',
-    });
-  }
-
-  async clickOKButton() {
-    console.log(`Clicking OK button`);
-    await this.driver.clickElementAndWaitForWindowToClose({
-      text: 'OK',
-      tag: 'button',
-    });
-  }
-
-  async fillMessage(message: string) {
-    console.log(`Filling message in example input`);
-    await this.driver.fill(selectors.exampleInput, message);
+  /**
+   * Confirms the current picker selection by clicking "OK".
+   */
+  async #confirmPicker(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(selectors.pickerOkButton);
   }
 
   /**
@@ -139,104 +104,26 @@ class SnapInteractiveDialog {
     await this.driver.waitForElementToStopMoving(selectors.muiClock);
   }
 
-  /**
-   * Confirms the current picker selection by clicking "OK".
-   */
-  async #confirmPicker(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(selectors.pickerOkButton);
+  async checkElementIsDisabled(elementToCheck: keyof typeof selectors) {
+    console.log(`Checking if ${elementToCheck} is disabled`);
+    const element = await this.driver.findElement(selectors[elementToCheck]);
+    assert.equal(await element.isEnabled(), false);
   }
 
-  /**
-   * Selects a date and time in the MobileDateTimePicker dialog.
-   * Opens the dialog, navigates to the previous month, clicks the day,
-   * then selects hour and minute on the analog clock, and confirms.
-   *
-   * @param day - Day of the month to select.
-   * @param hour - Hour to select (0–23).
-   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
-   * @returns ISO string of the selected date-time.
-   */
-  async selectInDateTimePicker(day: number, hour: number, minute: number) {
-    const prevMonthDate = DateTime.now().minus({ months: 1 });
-
-    await this.#openPickerDialog(selectors.exampleDateTimePicker);
-    await this.#selectCalendarDay(day);
-    await this.#selectClockHour(hour);
-    await this.#selectClockMinute(minute);
-    await this.#confirmPicker();
-
-    return prevMonthDate
-      .set({ day, hour, minute, second: 0, millisecond: 0 })
-      .toISO();
-  }
-
-  /**
-   * Selects a time in the MobileTimePicker dialog.
-   * Opens the dialog, selects hour and minute on the analog clock, and confirms.
-   *
-   * @param hour - Hour to select (0–23).
-   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
-   * @returns ISO string of the selected time (today's date).
-   */
-  async selectInTimePicker(hour: number, minute: number) {
-    await this.#openPickerDialog(selectors.exampleTimePicker);
-    await this.#selectClockHour(hour);
-    await this.#selectClockMinute(minute);
-    await this.#confirmPicker();
-
-    return DateTime.now()
-      .set({ hour, minute, second: 0, millisecond: 0 })
-      .toISO();
-  }
-
-  /**
-   * Selects a date in the MobileDatePicker dialog.
-   * Opens the dialog, navigates to the previous month, clicks the day, and confirms.
-   *
-   * @param day - Day of the month to select.
-   * @returns ISO string of the selected date.
-   */
-  async selectInDatePicker(day: number) {
-    const prevMonthDate = DateTime.now().minus({ months: 1 });
-
-    await this.#openPickerDialog(selectors.exampleDatePicker);
-    await this.#selectCalendarDay(day);
-    await this.#confirmPicker();
-
-    return prevMonthDate
-      .set({ day, hour: 0, minute: 0, second: 0, millisecond: 0 })
-      .toISO();
-  }
-
-  async selectDropDownOption(exampleDropName: string, option: string) {
-    console.log(`Selecting selector option: "${option}"`);
-    if (exampleDropName === 'selector') {
-      await this.driver.clickElement(selectors.exampleSelectorDropdown);
-      await this.driver.clickElement({
-        text: option,
-        css: selectors.selectorItem,
-      });
-    } else {
-      await this.driver.clickElement(selectors.exampleDropdown);
-      await this.driver.clickElement({ text: option, tag: `option` });
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        selectors.interactiveUITitle,
+        selectors.exampleInput,
+      ]);
+    } catch (e: unknown) {
+      console.log(
+        'Timed out while waiting for Snap Interactive UI dialog to load',
+        e,
+      );
+      throw e;
     }
-  }
-
-  async scrollToSelectorDropDown() {
-    const selector = await this.driver.findElement(
-      selectors.exampleSelectorDropdown,
-    );
-    await this.driver.scrollToElement(selector);
-  }
-
-  async selectRadioOption(option: string) {
-    console.log(`Selecting radio option: "${option}"`);
-    await this.driver.clickElement({ text: option, tag: `label` });
-  }
-
-  async selectCheckbox() {
-    console.log(`Selecting checkbox`);
-    await this.driver.clickElement(selectors.exampleCheckbox);
+    console.log('Snap Interactive UI dialog is loaded');
   }
 
   async checkResult({
@@ -284,10 +171,123 @@ class SnapInteractiveDialog {
     });
   }
 
-  async checkElementIsDisabled(elementToCheck: keyof typeof selectors) {
-    console.log(`Checking if ${elementToCheck} is disabled`);
-    const element = await this.driver.findElement(selectors[elementToCheck]);
-    assert.equal(await element.isEnabled(), false);
+  async clickCancelButton() {
+    console.log(`Clicking cancel button`);
+    await this.driver.clickElementAndWaitForWindowToClose({
+      text: 'Cancel',
+      tag: 'button',
+    });
+  }
+
+  async clickOKButton() {
+    console.log(`Clicking OK button`);
+    await this.driver.clickElementAndWaitForWindowToClose({
+      text: 'OK',
+      tag: 'button',
+    });
+  }
+
+  async clickSubmitButton() {
+    console.log(`Clicking submit button`);
+    await this.driver.clickElement({ text: 'Submit', tag: 'button' });
+  }
+
+  async fillMessage(message: string) {
+    console.log(`Filling message in example input`);
+    await this.driver.fill(selectors.exampleInput, message);
+  }
+
+  async scrollToSelectorDropDown() {
+    const selector = await this.driver.findElement(
+      selectors.exampleSelectorDropdown,
+    );
+    await this.driver.scrollToElement(selector);
+  }
+
+  async selectCheckbox() {
+    console.log(`Selecting checkbox`);
+    await this.driver.clickElement(selectors.exampleCheckbox);
+  }
+
+  async selectDropDownOption(exampleDropName: string, option: string) {
+    console.log(`Selecting selector option: "${option}"`);
+    if (exampleDropName === 'selector') {
+      await this.driver.clickElement(selectors.exampleSelectorDropdown);
+      await this.driver.clickElement({
+        text: option,
+        css: selectors.selectorItem,
+      });
+    } else {
+      await this.driver.clickElement(selectors.exampleDropdown);
+      await this.driver.clickElement({ text: option, tag: `option` });
+    }
+  }
+
+  /**
+   * Selects a date in the MobileDatePicker dialog.
+   * Opens the dialog, navigates to the previous month, clicks the day, and confirms.
+   *
+   * @param day - Day of the month to select.
+   * @returns ISO string of the selected date.
+   */
+  async selectInDatePicker(day: number) {
+    const prevMonthDate = DateTime.now().minus({ months: 1 });
+
+    await this.#openPickerDialog(selectors.exampleDatePicker);
+    await this.#selectCalendarDay(day);
+    await this.#confirmPicker();
+
+    return prevMonthDate
+      .set({ day, hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO();
+  }
+
+  /**
+   * Selects a date and time in the MobileDateTimePicker dialog.
+   * Opens the dialog, navigates to the previous month, clicks the day,
+   * then selects hour and minute on the analog clock, and confirms.
+   *
+   * @param day - Day of the month to select.
+   * @param hour - Hour to select (0–23).
+   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
+   * @returns ISO string of the selected date-time.
+   */
+  async selectInDateTimePicker(day: number, hour: number, minute: number) {
+    const prevMonthDate = DateTime.now().minus({ months: 1 });
+
+    await this.#openPickerDialog(selectors.exampleDateTimePicker);
+    await this.#selectCalendarDay(day);
+    await this.#selectClockHour(hour);
+    await this.#selectClockMinute(minute);
+    await this.#confirmPicker();
+
+    return prevMonthDate
+      .set({ day, hour, minute, second: 0, millisecond: 0 })
+      .toISO();
+  }
+
+  /**
+   * Selects a time in the MobileTimePicker dialog.
+   * Opens the dialog, selects hour and minute on the analog clock, and confirms.
+   *
+   * @param hour - Hour to select (0–23).
+   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
+   * @returns ISO string of the selected time (today's date).
+   */
+  async selectInTimePicker(hour: number, minute: number) {
+    await this.#openPickerDialog(selectors.exampleTimePicker);
+    await this.#selectClockHour(hour);
+    await this.#selectClockMinute(minute);
+    await this.#confirmPicker();
+
+    return DateTime.now()
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .toISO();
+  }
+
+  async selectRadioOption(option: string) {
+    console.log(`Selecting radio option: "${option}"`);
+    await this.driver.clickElement({ text: option, tag: `label` });
   }
 }
 

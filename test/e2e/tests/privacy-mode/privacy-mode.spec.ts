@@ -4,7 +4,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  mockPriceApi,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
 
 describe('Privacy Mode', function () {
@@ -43,17 +46,7 @@ describe('Privacy Mode', function () {
             },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withAssetsController({
-            assetsPrice: {
-              'eip155:1/slip44:60': {
-                assetPriceType: 'fungible' as const,
-                id: 'ethereum',
-                lastUpdated: 0,
-                price: MOCK_ETH_CONVERSION_RATE,
-                usdPrice: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockPriceApi,

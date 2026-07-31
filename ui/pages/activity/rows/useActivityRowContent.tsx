@@ -1,13 +1,16 @@
 import React, { type ReactNode } from 'react';
 import cn from 'clsx';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -27,18 +30,18 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
-function getChainDisplay(activity: ActivityRowProps['data']) {
-  const { namespace } = parseCaipChainId(activity.chainId);
+function getChainDisplay(caipChainId: CaipChainId) {
+  const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
-      ? convertCaipToHexChainId(activity.chainId)
-      : activity.chainId;
+      ? convertCaipToHexChainId(caipChainId)
+      : caipChainId;
   const networkName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
     MULTICHAIN_NETWORK_TO_NICKNAME[
-      activity.chainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
+      caipChainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
     ] ??
-    activity.chainId;
+    caipChainId;
 
   return { chainId, networkName };
 }
@@ -47,8 +50,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId } = getChainDisplay(activity);
+  const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatFiatAmount(chainId);
+  const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -66,26 +70,39 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
-            shortenAddress(address) || t('unknown'),
+            formatDisplayName(address) || t('unknown'),
           ]),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
         };
       }
-      // Source and destination in title; two tokens in avatar
+      // Title is "Swapped"; token pair in subtitle; two tokens in avatar
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
-        const destinationSymbol = destinationToken?.symbol ?? '';
+        const destinationSymbol = destinationToken?.symbol;
+        const hasDestination = Boolean(destinationSymbol);
+        const primaryToken = hasDestination ? destinationToken : sourceToken;
+        const titleKey = hasDestination
+          ? labelKeys.title.key
+          : `activity_swapIncomplete_${activity.status}_title`;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key);
 
         return {
-          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
-          title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
-          subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(destinationToken),
-          primaryDirection: destinationToken?.direction,
-          secondaryAmount: formatTokenAmount(sourceToken),
+          avatarTokens: hasDestination
+            ? [sourceToken?.assetId, destinationToken?.assetId]
+            : [sourceToken?.assetId],
+          title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
+          subtitle,
+          primaryAmount: formatTokenAmount(primaryToken),
+          primaryDirection: primaryToken?.direction,
+          secondaryAmount: hasDestination
+            ? formatTokenAmount(sourceToken)
+            : formatAsFiat(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
@@ -145,12 +162,23 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
         const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
+        const sourceChainId = getChainIdFromAssetId(
+          sourceToken?.assetId as CaipAssetType,
+        );
+        const destinationChainId = getChainIdFromAssetId(
+          destinationToken?.assetId as CaipAssetType,
+        );
+        const subtitle =
+          sourceChainId && destinationChainId
+            ? `${getChainDisplay(sourceChainId).networkName} → ${getChainDisplay(destinationChainId).networkName}`
+            : undefined;
 
         return {
           avatarTokens: destinationToken
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
+          subtitle,
           primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
           primaryDirection: (destinationToken ?? sourceToken)?.direction,
           ...(destinationToken
@@ -158,18 +186,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
                 secondaryAmount: formatTokenAmount(sourceToken),
               }
             : { secondaryAmount: formatAsFiat(sourceToken) }),
-        };
-      }
-      case 'swapIncomplete': {
-        const { sourceToken } = activity.data;
-
-        return {
-          avatarTokens: [sourceToken?.assetId],
-          title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
-          subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(sourceToken),
-          primaryDirection: sourceToken?.direction,
-          secondaryAmount: formatAsFiat(sourceToken),
         };
       }
       case 'buy':
@@ -204,6 +220,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
               ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
               : undefined,
+          primaryDirection:
+            activity.type === 'perpsAddFunds' ? 'in' : undefined,
         };
       }
       case 'nftBuy':
@@ -286,6 +304,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
+        };
+      }
+      case 'assetDeactivation':
+      case 'assetActivation': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
       }
       default:

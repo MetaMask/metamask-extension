@@ -26,6 +26,23 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 };
 
 /**
+ * Refreshes and returns the assets for the given accounts via the
+ * AssetsController (force-updating from remote sources).
+ *
+ * No-ops when the assets unify state feature is not enabled, since the
+ * AssetsController is not registered in that case.
+ *
+ * @param accounts - The accounts to fetch assets for.
+ * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+ * @returns The assets for the given accounts, or `undefined` when the feature
+ * is not enabled.
+ */
+export type LegacyBackgroundApiServiceGetAssetsAction = {
+  type: `LegacyBackgroundApiService:getAssets`;
+  handler: LegacyBackgroundApiService['getAssets'];
+};
+
+/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -34,6 +51,17 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 export type LegacyBackgroundApiServiceIsPublicEndpointUrlAction = {
   type: `LegacyBackgroundApiService:isPublicEndpointUrl`;
   handler: LegacyBackgroundApiService['isPublicEndpointUrl'];
+};
+
+/**
+ * Determines whether the sendBundle feature is supported for the given chain.
+ *
+ * @param chainId - The chain ID to check.
+ * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsSendBundleSupportedAction = {
+  type: `LegacyBackgroundApiService:isSendBundleSupported`;
+  handler: LegacyBackgroundApiService['isSendBundleSupported'];
 };
 
 /**
@@ -55,6 +83,47 @@ export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
   type: `LegacyBackgroundApiService:getOpenMetamaskTabsIds`;
   handler: LegacyBackgroundApiService['getOpenMetamaskTabsIds'];
 };
+
+/**
+ * Triggers a safe reload of the extension without disrupting user state.
+ */
+export type LegacyBackgroundApiServiceRequestSafeReloadAction = {
+  type: `LegacyBackgroundApiService:requestSafeReload`;
+  handler: LegacyBackgroundApiService['requestSafeReload'];
+};
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension
+ * reload. Used when an update is available.
+ */
+export type LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction = {
+  type: `LegacyBackgroundApiService:openUpdateTabAndReload`;
+  handler: LegacyBackgroundApiService['openUpdateTabAndReload'];
+};
+
+/**
+ * Updates the phishing lists if necessary and then checks whether the given
+ * website is a known phishing site.
+ *
+ * @param website - The website origin to check.
+ * @returns The phishing detection result.
+ */
+export type LegacyBackgroundApiServiceGetPhishingResultAction = {
+  type: `LegacyBackgroundApiService:getPhishingResult`;
+  handler: LegacyBackgroundApiService['getPhishingResult'];
+};
+
+/**
+ * Marks the notification popup as having been automatically closed.
+ *
+ * This lets us differentiate between the cases where we close the
+ * notification popup v.s. when the user closes the popup window directly.
+ */
+export type LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction =
+  {
+    type: `LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed`;
+    handler: LegacyBackgroundApiService['markNotificationPopupAsAutomaticallyClosed'];
+  };
 
 /**
  * Marks the password as forgotten.
@@ -82,6 +151,50 @@ export type LegacyBackgroundApiServiceUnMarkPasswordForgottenAction = {
 export type LegacyBackgroundApiServiceGetCodeAction = {
   type: `LegacyBackgroundApiService:getCode`;
   handler: LegacyBackgroundApiService['getCode'];
+};
+
+/**
+ * Checks whether a delegation has been disabled on-chain by performing an
+ * `eth_call` against the delegation manager contract.
+ *
+ * @param delegationManagerAddress - The delegation manager contract address.
+ * @param delegationHash - The hash of the delegation to check.
+ * @param networkClientId - The ID of the network client to use for the request.
+ * @returns `true` if the delegation is disabled, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceCheckDelegationDisabledAction = {
+  type: `LegacyBackgroundApiService:checkDelegationDisabled`;
+  handler: LegacyBackgroundApiService['checkDelegationDisabled'];
+};
+
+/**
+ * Estimates the gas for a given transaction using the currently selected
+ * network client.
+ *
+ * @param estimateGasParams - The parameters of the transaction to estimate
+ * the gas for.
+ * @returns The estimated gas as a hexadecimal string.
+ */
+export type LegacyBackgroundApiServiceEstimateGasAction = {
+  type: `LegacyBackgroundApiService:estimateGas`;
+  handler: LegacyBackgroundApiService['estimateGas'];
+};
+
+/**
+ * Decodes the data of a transaction using the currently selected network
+ * client's provider.
+ *
+ * @param request - The transaction decode request.
+ * @param request.transactionData - The transaction data to decode.
+ * @param request.contractAddress - The address of the contract the
+ * transaction interacts with.
+ * @param request.chainId - The chain ID of the network the transaction is on.
+ * @returns The decoded transaction data, or `undefined` if it could not be
+ * decoded.
+ */
+export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
+  type: `LegacyBackgroundApiService:decodeTransactionData`;
+  handler: LegacyBackgroundApiService['decodeTransactionData'];
 };
 
 /**
@@ -114,6 +227,35 @@ export type LegacyBackgroundApiServiceResetAccountAction = {
 };
 
 /**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
+ * Enables the given network, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ *
+ * @param chainId - The chain ID of the network to enable.
+ */
+export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledNetworks'];
+};
+
+/**
+ * Enables all popular networks, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ */
+export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
+};
+
+/**
  * @deprecated Avoid new references to the global network.
  * Will be removed once multi-chain support is fully implemented.
  *
@@ -135,6 +277,17 @@ export type LegacyBackgroundApiServiceRemoveAccountAction = {
 };
 
 /**
+ * Sets the label for the account at the given address.
+ *
+ * @param address - The address of the account to set the label for.
+ * @param label - The label to set for the account.
+ */
+export type LegacyBackgroundApiServiceSetAccountLabelAction = {
+  type: `LegacyBackgroundApiService:setAccountLabel`;
+  handler: LegacyBackgroundApiService['setAccountLabel'];
+};
+
+/**
  * Execute side effects of a removed account.
  *
  * @param address - The address of the account to remove.
@@ -142,6 +295,29 @@ export type LegacyBackgroundApiServiceRemoveAccountAction = {
 export type LegacyBackgroundApiServiceOnAccountRemovedAction = {
   type: `LegacyBackgroundApiService:onAccountRemoved`;
   handler: LegacyBackgroundApiService['onAccountRemoved'];
+};
+
+/**
+ * Rejects a pending permissions request.
+ *
+ * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+ * resolved request does not throw.
+ *
+ * @param requestId - The ID of the permissions request to reject.
+ */
+export type LegacyBackgroundApiServiceRejectPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:rejectPermissionsRequest`;
+  handler: LegacyBackgroundApiService['rejectPermissionsRequest'];
+};
+
+/**
+ * Removes the given permissions for the given subjects.
+ *
+ * @param subjects - The subjects and their permissions to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermissionsForAction = {
+  type: `LegacyBackgroundApiService:removePermissionsFor`;
+  handler: LegacyBackgroundApiService['removePermissionsFor'];
 };
 
 export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
@@ -158,6 +334,16 @@ export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
 export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
   type: `LegacyBackgroundApiService:getAccountsBySnapId`;
   handler: LegacyBackgroundApiService['getAccountsBySnapId'];
+};
+
+/**
+ * Sets the currently selected internal account.
+ *
+ * @param id - The ID of the account to set as selected.
+ */
+export type LegacyBackgroundApiServiceSetSelectedInternalAccountAction = {
+  type: `LegacyBackgroundApiService:setSelectedInternalAccount`;
+  handler: LegacyBackgroundApiService['setSelectedInternalAccount'];
 };
 
 /**
@@ -258,24 +444,194 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
 };
 
 /**
+ * Applies the given transaction container types to an existing transaction.
+ *
+ * @param transactionId - The ID of the transaction to update.
+ * @param containerTypes - The container types to apply to the transaction.
+ */
+export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
+  {
+    type: `LegacyBackgroundApiService:applyTransactionContainersExisting`;
+    handler: LegacyBackgroundApiService['applyTransactionContainersExisting'];
+  };
+
+/**
+ * Creates or updates the UI metrics fragment for a given transaction.
+ *
+ * @param transactionId - The id of the transaction.
+ * @param payload - The fragment settings and properties to store.
+ */
+export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
+  {
+    type: `LegacyBackgroundApiService:upsertTransactionUIMetricsFragment`;
+    handler: LegacyBackgroundApiService['upsertTransactionUIMetricsFragment'];
+  };
+
+/**
+ * Rejects a pending approval request.
+ *
+ * @param id - The ID of the approval request to reject.
+ * @param error - The error to reject the approval request with.
+ * @param error.code - The error code.
+ * @param error.message - The error message.
+ * @param error.data - The error data.
+ */
+export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
+  type: `LegacyBackgroundApiService:rejectPendingApproval`;
+  handler: LegacyBackgroundApiService['rejectPendingApproval'];
+};
+
+/**
+ * Resolve a pending approval. For hardware wallet transactions and signatures,
+ * this handles error parsing.
+ *
+ * @param id - The approval ID.
+ * @param value - The value to resolve with (for transactions, contains txMeta).
+ * @param options - Options for the approval.
+ * @param options.walletType - The hardware wallet type (if hardware wallet).
+ * @param options.waitForResult - Whether to wait for the result.
+ */
+export type LegacyBackgroundApiServiceResolvePendingApprovalAction = {
+  type: `LegacyBackgroundApiService:resolvePendingApproval`;
+  handler: LegacyBackgroundApiService['resolvePendingApproval'];
+};
+
+/**
+ * Approve a hardware wallet transaction with retry support.
+ * This is a convenience wrapper around resolvePendingApproval for the
+ * transaction confirmation flow, which passes txMeta in a specific format.
+ *
+ * @param opts - Options for the transaction.
+ * @param opts.txId - The transaction ID to approve.
+ * @param opts.txMeta - The transaction metadata.
+ * @param opts.actionId - The action ID for tracking.
+ * @param opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+ * @throws When hardware wallet error occurs (with recreatedTxId if recreation succeeded).
+ */
+export type LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction = {
+  type: `LegacyBackgroundApiService:approveHardwareWalletTransaction`;
+  handler: LegacyBackgroundApiService['approveHardwareWalletTransaction'];
+};
+
+/**
+ * Rejects all pending approval requests.
+ *
+ * Snap dialogs and account confirmations are accepted with a falsy value and
+ * their interface deleted where applicable, while all other approvals are
+ * rejected with a user-rejected-request error.
+ */
+export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
+  type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
+  handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
+};
+
+/**
+ * Toggles external services on or off.
+ *
+ * When enabled, token detection and non-RPC gas fee APIs are started, and the
+ * shield service is started if the user has an active shield subscription.
+ * When disabled, those services are stopped, subscription polling is halted,
+ * and the shield service is stopped if applicable.
+ *
+ * @param useExternal - Whether external services should be enabled.
+ */
+export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
+  type: `LegacyBackgroundApiService:toggleExternalServices`;
+  handler: LegacyBackgroundApiService['toggleExternalServices'];
+};
+
+/**
+ * Accepts a permissions request. Silently ignores the request if it can no
+ * longer be found.
+ *
+ * @param request - The permissions request to accept.
+ */
+export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
+  type: `LegacyBackgroundApiService:acceptPermissionsRequest`;
+  handler: LegacyBackgroundApiService['acceptPermissionsRequest'];
+};
+
+/**
+ * Capture an artificial error in a timeout handler for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+ * use this for handling errors.
+ */
+export type LegacyBackgroundApiServiceCaptureTestErrorAction = {
+  type: `LegacyBackgroundApiService:captureTestError`;
+  handler: LegacyBackgroundApiService['captureTestError'];
+};
+
+/**
+ * Throw an artificial error in a timeout handler for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+ * use this for handling errors.
+ */
+export type LegacyBackgroundApiServiceThrowTestErrorAction = {
+  type: `LegacyBackgroundApiService:throwTestError`;
+  handler: LegacyBackgroundApiService['throwTestError'];
+};
+
+/**
+ * Determines if the transaction relay supports the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+ */
+export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
+  type: `LegacyBackgroundApiService:isRelaySupported`;
+  handler: LegacyBackgroundApiService['isRelaySupported'];
+};
+
+/**
+ * Get Sentinel Network flags for the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns The Sentinel network flags for the given chain, or undefined if not found.
+ */
+export type LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction = {
+  type: `LegacyBackgroundApiService:getSentinelNetworkFlags`;
+  handler: LegacyBackgroundApiService['getSentinelNetworkFlags'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
+  | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
+  | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceRequestSafeReloadAction
+  | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
+  | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
+  | LegacyBackgroundApiServiceCheckDelegationDisabledAction
+  | LegacyBackgroundApiServiceEstimateGasAction
+  | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
+  | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
+  | LegacyBackgroundApiServiceRejectPermissionsRequestAction
+  | LegacyBackgroundApiServiceRemovePermissionsForAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
+  | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
@@ -283,4 +639,16 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
-  | LegacyBackgroundApiServiceExportAccountAction;
+  | LegacyBackgroundApiServiceExportAccountAction
+  | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
+  | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
+  | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceResolvePendingApprovalAction
+  | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
+  | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
+  | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
+  | LegacyBackgroundApiServiceCaptureTestErrorAction
+  | LegacyBackgroundApiServiceThrowTestErrorAction
+  | LegacyBackgroundApiServiceIsRelaySupportedAction
+  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction;

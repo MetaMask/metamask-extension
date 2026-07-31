@@ -67,6 +67,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
       - name: Run the benchmark
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
@@ -304,7 +308,6 @@ jobs:
     timeout-minutes: 10
     environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
       HEAD_COMMIT_HASH: ${{ github.sha }}
       OWNER: ${{ github.repository_owner }}
       BRANCH_NAME: ${{ github.ref_name }}
@@ -321,6 +324,16 @@ jobs:
           path: benchmark-results/
           merge-multiple: true
 
+      - name: Get token
+        id: token
+        if: steps.download-perf-benchmark.outcome == 'success'
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_benchmark_stats
+          permissions: |
+            contents: write
+
       - name: Commit performance stats to extension_benchmark_stats
         if: steps.download-perf-benchmark.outcome == 'success'
         continue-on-error: true
@@ -328,3 +341,4 @@ jobs:
         env:
           BENCHMARK_DATA_TYPE: performance
           BENCHMARK_RESULTS_DIR: benchmark-results
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}

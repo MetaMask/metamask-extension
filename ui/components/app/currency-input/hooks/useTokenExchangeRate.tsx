@@ -87,7 +87,7 @@ export default function useTokenExchangeRate(
 
     if (!contractExchangeRate) {
       // TODO: Fix "Calling setState from useMemo may trigger an infinite loop"
-      // eslint-disable-next-line react-compiler/react-compiler
+      // eslint-disable-next-line react-hooks/set-state-in-render
       setExchangeRates((prev) => ({
         ...prev,
         [cacheKey]: LOADING,
@@ -96,8 +96,6 @@ export default function useTokenExchangeRate(
         .then((addressToExchangeRate) => {
           setExchangeRates((prev) => ({
             ...prev,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             [cacheKey]: addressToExchangeRate[tokenAddress] || FAILED,
           }));
         })

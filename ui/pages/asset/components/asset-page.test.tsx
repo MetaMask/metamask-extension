@@ -24,6 +24,19 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({
@@ -89,9 +102,6 @@ jest.mock('../../../hooks/musd', () => {
     }),
   };
 });
-jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
-  ActivityList: () => <div data-testid="mock-activity-list" />,
-}));
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
 }));
@@ -101,6 +111,24 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTokenSecurityData', () => ({
+  useTokenSecurityData: jest.fn(() => ({
+    securityData: null,
+    isLoading: false,
+    error: null,
+  })),
+}));
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
 }));
 
 jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
@@ -126,44 +154,54 @@ jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
-function mockGetDefaultAssetsBySelectedAccountGroup() {
-  return {
-    '0x1': [
-      {
-        assetId: '0x0000000000000000000000000000000000000000',
-        rawBalance: '0x0',
-        balance: '0',
-        fiat: {
-          balance: 0,
-        },
+const DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP = {
+  '0x1': [
+    {
+      assetId: '0x0000000000000000000000000000000000000000',
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
       },
-      {
-        assetId: '0x309375769E79382beFDEc5bdab51063AeBDC4936',
-        rawBalance: '0x0',
-        balance: '0',
-        fiat: {
-          balance: 0,
-        },
+    },
+    {
+      assetId: '0x309375769E79382beFDEc5bdab51063AeBDC4936',
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
       },
-      {
-        assetId: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
-        rawBalance: '0x0',
-        balance: '0',
-        fiat: {
-          balance: 0,
-        },
+    },
+    {
+      assetId: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
       },
-      {
-        assetId: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-        rawBalance: '0x0',
-        balance: '0',
-        fiat: {
-          balance: 0,
-        },
+    },
+    {
+      assetId: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
       },
-    ],
-  };
-}
+    },
+  ],
+};
+
+const ARC_USDC_ASSETS_BY_SELECTED_ACCOUNT_GROUP = {
+  [CHAIN_IDS.ARC]: [
+    {
+      assetId: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+      rawBalance: '0x75bcd15',
+      balance: '123.456789',
+      fiat: { balance: 123.456789 },
+    },
+  ],
+};
 
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
@@ -177,6 +215,9 @@ describe('AssetPage', () => {
     },
     appState: {
       confirmationExchangeRates: {},
+    },
+    confirmTransaction: {
+      txData: {},
     },
     metamask: {
       ...mockMultichainNetworkState(),
@@ -330,7 +371,7 @@ describe('AssetPage', () => {
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
     (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-      mockGetDefaultAssetsBySelectedAccountGroup(),
+      DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP,
     );
 
     // Mock implementation for useMultiPolling
@@ -413,7 +454,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('keeps the buy button enabled on unsupported chains', () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -426,10 +467,10 @@ describe('AssetPage', () => {
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).toBeEnabled();
   });
 
-  it('should open the buy crypto URL for a buyable chain ID', async () => {
+  it('opens the in-extension buy flow when clicking the buy button', async () => {
     const mockedStoreWithBuyableChainId = {
       ...mockStore,
       metamask: {
@@ -450,13 +491,7 @@ describe('AssetPage', () => {
     expect(buyButton).not.toBeDisabled();
 
     fireEvent.click(buyButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() =>
-      expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_sell_button`),
-      }),
-    );
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
   it('hides the Send button when token balance is zero', () => {
@@ -498,19 +533,9 @@ describe('AssetPage', () => {
   });
 
   it('uses the Arc native balance on the ERC20 USDC token page', () => {
-    (
-      getAssetsBySelectedAccountGroup as unknown as jest.Mock
-    ).mockReturnValueOnce({
-      [CHAIN_IDS.ARC]: [
-        {
-          assetId: '0x0000000000000000000000000000000000000000',
-          isNative: true,
-          rawBalance: '0x75bcd15',
-          balance: '123.456789',
-          fiat: { balance: 123.456789 },
-        },
-      ],
-    });
+    (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+      ARC_USDC_ASSETS_BY_SELECTED_ACCOUNT_GROUP,
+    );
 
     const { queryByTestId } = renderWithProvider(
       <AssetPage
@@ -772,8 +797,7 @@ describe('AssetPage', () => {
         options;
       const mainnetRaw = mainnetPositive ? '0x01' : '0x0';
       const lineaRaw = lineaPositive ? '0x01' : '0x0';
-      const defaultMainnet =
-        mockGetDefaultAssetsBySelectedAccountGroup()['0x1'];
+      const defaultMainnet = DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP['0x1'];
       return {
         [CHAIN_IDS.MAINNET]: [
           ...defaultMainnet.slice(0, 3),
@@ -800,7 +824,7 @@ describe('AssetPage', () => {
     afterEach(() => {
       // Return a stable reference so subsequent tests don't see stale overrides.
       (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        mockGetDefaultAssetsBySelectedAccountGroup(),
+        DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP,
       );
     });
 

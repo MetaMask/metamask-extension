@@ -8,6 +8,20 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const middleware = [thunk];
 
 const mockApprovalId = 1;

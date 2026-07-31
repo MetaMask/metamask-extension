@@ -1,10 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,7 +20,7 @@ export const AccountDetailsMenuItem = ({
   textProps,
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const accountGroupId = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
@@ -28,14 +28,15 @@ export const AccountDetailsMenuItem = ({
   const LABEL = t('accountDetails');
 
   const handleNavigation = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.AccountDetailsOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: metricsLocation,
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: metricsLocation,
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     navigate({
       pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -52,6 +53,7 @@ export const AccountDetailsMenuItem = ({
     metricsLocation,
     accountGroupId,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (

@@ -1,7 +1,10 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
 import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
@@ -15,8 +18,9 @@ jest.mock('../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
 
-const EXPECTED_BUY_URL =
-  'https://portfolio.test/buy?metamaskEntry=ext_buy_sell_button&chainId=5&metricsEnabled=false';
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
+
+const mockGoToBuy = jest.fn();
 
 function processAlertActionKey(actionKey: string) {
   const { result } = renderHookWithProvider(
@@ -34,7 +38,11 @@ describe('useConfirmationAlertActions', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
+
+    jest.mocked(useRampsNavigation).mockReturnValue({
+      goToBuy: mockGoToBuy,
+    } as unknown as ReturnType<typeof useRampsNavigation>);
 
     useGasFeeModalContextMock.mockReturnValue({
       openGasFeeModal: openGasFeeModalMock,
@@ -45,6 +53,7 @@ describe('useConfirmationAlertActions', () => {
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           type: TransactionEnvelopeType.feeMarket,
         },
@@ -53,17 +62,14 @@ describe('useConfirmationAlertActions', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
     });
-
-    // @ts-expect-error mocking platform
-    global.platform = { openTab: jest.fn() };
   });
 
-  it('opens portfolio tab if action key is Buy', () => {
+  it('routes Buy through goToBuy with the native gas token and chain', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
-    expect(global.platform.openTab).toHaveBeenCalledTimes(1);
-    expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: EXPECTED_BUY_URL,
+    expect(mockGoToBuy).toHaveBeenCalledWith({
+      assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
+      chainId: CHAIN_IDS.MAINNET,
     });
   });
 

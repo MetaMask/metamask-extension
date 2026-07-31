@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
@@ -49,12 +49,13 @@ import { SmartTransactionStatus } from '../../../../shared/constants/transaction
 
 import SwapsFooter from '../swaps-footer';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useDispatch } from '../../../store/hooks';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -139,7 +140,7 @@ export default function SmartTransactionStatusPage() {
         latestSmartTransaction?.destinationTokenDecimals,
     ).toPrecision(8);
   }
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isSmartTransactionPending =
     smartTransactionStatus === SmartTransactionStatus.pending;
@@ -149,14 +150,15 @@ export default function SmartTransactionStatusPage() {
   const txHash = latestSmartTransaction?.statusMetadata?.minedHash;
 
   useEffect(() => {
-    trackEvent({
-      event: 'STX Status Page Loaded',
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder('STX Status Page Loaded')
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties(sensitiveProperties)
+        .addProperties({
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     // eslint-disable-next-line
   }, []);
 
@@ -265,32 +267,6 @@ export default function SmartTransactionStatusPage() {
 
   const showCancelSwapLink =
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
-
-  const CancelSwap = () => {
-    return (
-      <Box marginBottom={0}>
-        <a
-          className="smart-transaction-status__cancel-swap-link"
-          href="#"
-          onClick={(e) => {
-            e?.preventDefault();
-            setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
-            trackEvent({
-              event: 'Cancel STX',
-              category: MetaMetricsEventCategory.Swaps,
-              sensitiveProperties,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
-          }}
-        >
-          {t('attemptToCancelSwapForFree')}
-        </a>
-      </Box>
-    );
-  };
 
   return (
     <div className="smart-transaction-status">
@@ -463,7 +439,33 @@ export default function SmartTransactionStatusPage() {
       </Box>
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
-        isSmartTransactionPending && <CancelSwap />}
+        isSmartTransactionPending && (
+          <Box marginBottom={0}>
+            <a
+              className="smart-transaction-status__cancel-swap-link"
+              href="#"
+              onClick={(e) => {
+                e?.preventDefault();
+                // Hide the link after a user clicks on it.
+                setCancelSwapLinkClicked(true);
+                trackEvent(
+                  createEventBuilder('Cancel STX')
+                    .addCategory(MetaMetricsEventCategory.Swaps)
+                    .addSensitiveProperties(sensitiveProperties)
+                    .addProperties({
+                      hd_entropy_index: hdEntropyIndex,
+                    })
+                    .build(),
+                );
+                dispatch(
+                  cancelSwapsSmartTransaction(latestSmartTransactionUuid),
+                );
+              }}
+            >
+              {t('attemptToCancelSwapForFree')}
+            </a>
+          </Box>
+        )}
       {smartTransactionStatus === SmartTransactionStatus.success ? (
         <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}

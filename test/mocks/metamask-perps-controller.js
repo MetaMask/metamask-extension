@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* eslint-disable import-x/unambiguous -- Jest manual mock uses `module.exports`; ESLint parses this glob as `sourceType: 'module'`. */
 /**
  * Jest stub for `@metamask/perps-controller`.
@@ -117,6 +116,17 @@ function mockGetMarketTypeFilter(market) {
   return mockIsHip3Market(market) ? 'new' : 'crypto';
 }
 
+function mockGetPerpsDisplaySymbol(symbol) {
+  if (!symbol || typeof symbol !== 'string') {
+    return symbol;
+  }
+  const colonIndex = symbol.indexOf(':');
+  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
+    return symbol.substring(colonIndex + 1);
+  }
+  return symbol;
+}
+
 /**
  * Proxy-based mock for PERPS_ERROR_CODES.
  * Any property access returns the property name as a string, so code like
@@ -157,6 +167,24 @@ const mockTradingDefaults = {
 };
 
 /**
+ * Stub for the dedicated aggregated order-book WebSocket. Keeps controller /
+ * bridge unit tests from opening a real Hyperliquid socket.
+ */
+class MockAggregatedOrderBookConnection {
+  constructor(options) {
+    this.options = options;
+  }
+
+  subscribe(_params) {
+    return () => undefined;
+  }
+
+  close() {
+    return undefined;
+  }
+}
+
+/**
  * Simplified max-amount helper for unit tests (matches controller shape; omits
  * position-size rounding details that are covered by controller tests).
  *
@@ -193,4 +221,6 @@ module.exports = {
   MARKET_CATEGORIES: mockMarketCategories,
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
+  getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
+  AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };

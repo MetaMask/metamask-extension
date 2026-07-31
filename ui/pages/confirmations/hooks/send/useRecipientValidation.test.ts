@@ -1,10 +1,11 @@
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   BITCOIN_ASSET,
   EVM_ASSET,
   SOLANA_ASSET,
+  STELLAR_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,17 +14,21 @@ import * as SendValidationUtils from '../../utils/sendValidations';
 import * as NameValidation from './useNameValidation';
 import { useSendType } from './useSendType';
 import { useRecipientValidation } from './useRecipientValidation';
+import { useSendAlerts } from './alerts/useSendAlerts';
 
 jest.mock('../../../../hooks/useI18nContext');
 jest.mock('../../context/send');
 jest.mock('./useSendType');
+jest.mock('./alerts/useSendAlerts');
 
 describe('useRecipientValidation', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseSendContext = jest.mocked(useSendContext);
   const mockUseSendType = jest.mocked(useSendType);
+  const mockUseSendAlerts = jest.mocked(useSendAlerts);
 
   const mockT = jest.fn((key) => key);
+  const mockAcknowledgeAlerts = jest.fn();
 
   function renderHook() {
     return renderHookWithProvider(useRecipientValidation, mockState);
@@ -32,6 +37,11 @@ describe('useRecipientValidation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue(mockT);
+    mockUseSendAlerts.mockReturnValue({
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: mockAcknowledgeAlerts,
+    });
     mockUseSendContext.mockReturnValue({
       to: '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73',
       chainId: '0x1',
@@ -45,6 +55,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
   });
 
@@ -54,13 +65,13 @@ describe('useRecipientValidation', () => {
     expect(result.current).toEqual({
       recipientConfusableCharacters: undefined,
       recipientError: undefined,
-      recipientErrorAllowAcknowledge: false,
-
-      acknowledgeError: expect.any(Function),
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
       toAddressValidated: undefined,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: mockAcknowledgeAlerts,
     });
   });
 
@@ -80,17 +91,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: 'invalidAddress',
-        recipientErrorAllowAcknowledge: false,
-
-        acknowledgeError: expect.any(Function),
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: '0x123',
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: 'invalidAddress',
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: '0x123',
+        }),
+      );
       expect(mockT).toHaveBeenCalledWith('invalidAddress');
     });
   });
@@ -153,17 +163,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: undefined,
-        recipientErrorAllowAcknowledge: false,
-
-        acknowledgeError: expect.any(Function),
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: undefined,
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: undefined,
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: undefined,
+        }),
+      );
     });
   });
 
@@ -177,17 +186,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: undefined,
-        recipientErrorAllowAcknowledge: false,
-
-        acknowledgeError: expect.any(Function),
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: undefined,
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: undefined,
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: undefined,
+        }),
+      );
     });
   });
 
@@ -195,11 +203,12 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const mockValidateHexAddress = jest
       .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-      .mockResolvedValue({
+      .mockReturnValue({
         error: 'invalidAddress',
       });
 
@@ -215,6 +224,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -244,11 +254,50 @@ describe('useRecipientValidation', () => {
     });
   });
 
+  it('validate stellar address for Stellar send type', async () => {
+    const validStellarAddress = `G${'A'.repeat(55)}`;
+
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: false,
+      isStellarSendType: true,
+      isTronSendType: false,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: STELLAR_NATIVE_ASSET,
+      to: validStellarAddress,
+      chainId: 'stellar:pubnet',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({
+          error: 'nameResolutionFailedError',
+        }),
+    });
+
+    const mockValidateStellarAddress = jest
+      .spyOn(SendValidationUtils, 'validateStellarAddress')
+      .mockReturnValue({});
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(mockValidateStellarAddress).toHaveBeenCalledWith(
+        validStellarAddress,
+      );
+      expect(result.current.recipientError).toBeUndefined();
+    });
+  });
+
   it('validate bitcoin address for Bitcoin send type', async () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
       isBitcoinSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -422,17 +471,16 @@ describe('useRecipientValidation', () => {
 
       await waitFor(() => {
         expect(mockValidateName).not.toHaveBeenCalled();
-        expect(result.current).toEqual({
-          recipientConfusableCharacters: undefined,
-          recipientError: 'invalidAddress',
-          recipientErrorAllowAcknowledge: false,
-
-          acknowledgeError: expect.any(Function),
-          recipientResolvedLookup: undefined,
-          recipientWarning: undefined,
-          resolutionProtocol: undefined,
-          toAddressValidated: 'v.e',
-        });
+        expect(result.current).toEqual(
+          expect.objectContaining({
+            recipientConfusableCharacters: undefined,
+            recipientError: 'invalidAddress',
+            recipientResolvedLookup: undefined,
+            recipientWarning: undefined,
+            resolutionProtocol: undefined,
+            toAddressValidated: 'v.e',
+          }),
+        );
       });
     });
 
@@ -465,81 +513,29 @@ describe('useRecipientValidation', () => {
     });
   });
 
-  describe('acknowledgment', () => {
-    it('returns allowAcknowledge when validation includes it', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
+  describe('alerts passthrough', () => {
+    it('does not suppress a hard error when an unrelated alert is active', async () => {
+      jest.spyOn(SendValidationUtils, 'validateEvmHexAddress').mockReturnValue({
+        error: 'contractAddressError',
+      });
+
+      mockUseSendAlerts.mockReturnValue({
+        alerts: [
+          {
+            key: 'firstTimeInteraction',
+            title: 'First time',
+            message: 'First time sending to this address',
+          },
+        ],
+        hasUnacknowledgedAlerts: true,
+        acknowledgeAlerts: mockAcknowledgeAlerts,
+      });
 
       const { result } = renderHook();
 
       await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
-      });
-    });
-
-    it('clears recipientError and sets allowAcknowledge to false when acknowledgeError is called', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      const { result } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-      });
-
-      act(() => {
-        result.current.acknowledgeError();
-      });
-
-      expect(result.current.recipientError).toBeUndefined();
-      expect(result.current.recipientErrorAllowAcknowledge).toBe(false);
-    });
-
-    it('resets acknowledgment when to address changes', async () => {
-      jest
-        .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-        .mockResolvedValue({
-          error: 'tokenContractError',
-          allowAcknowledge: true,
-        });
-
-      const { result, rerender } = renderHook();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-      });
-
-      act(() => {
-        result.current.acknowledgeError();
-      });
-
-      expect(result.current.recipientError).toBeUndefined();
-
-      // Change address
-      mockUseSendContext.mockReturnValue({
-        to: '0xABCDEF1234567890ABCDEF1234567890ABCDEF12',
-        chainId: '0x1',
-        from: '',
-        updateAsset: jest.fn(),
-        updateCurrentPage: jest.fn(),
-        updateTo: jest.fn(),
-        updateValue: jest.fn(),
-        value: '',
-      } as unknown as ReturnType<typeof useSendContext>);
-      rerender();
-
-      await waitFor(() => {
-        expect(result.current.recipientError).toBe('tokenContractError');
-        expect(result.current.recipientErrorAllowAcknowledge).toBe(true);
+        expect(result.current.recipientError).toBe('contractAddressError');
+        expect(result.current.hasUnacknowledgedAlerts).toBe(true);
       });
     });
   });

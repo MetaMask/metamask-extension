@@ -1,4 +1,4 @@
-import React, { useContext, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -7,7 +7,6 @@ import {
   TextAlign,
   TextButton,
   TextButtonSize,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -15,7 +14,7 @@ import {
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../../../components/app/musd/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -29,7 +28,7 @@ type HeaderContent = {
 
 export function useMusdConversionHeaderContent(): HeaderContent {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   return {
     title: t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)]),
@@ -43,15 +42,10 @@ export function useMusdConversionHeaderContent(): HeaderContent {
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+          <Text variant={TextVariant.BodyMd}>
             {t('musdBonusExplanation', [
               String(MUSD_CONVERSION_APY),
-              <TextButton
-                key="terms-link"
-                size={TextButtonSize.BodyMd}
-                isInverse
-                asChild
-              >
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
@@ -63,11 +57,14 @@ export function useMusdConversionHeaderContent(): HeaderContent {
                       url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
                     };
 
-                    trackEvent({
-                      event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
-                      category: MetaMetricsEventCategory.MusdConversion,
-                      properties,
-                    });
+                    trackEvent(
+                      createEventBuilder(
+                        MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                      )
+                        .addCategory(MetaMetricsEventCategory.MusdConversion)
+                        .addProperties(properties)
+                        .build(),
+                    );
                   }}
                 >
                   {t('musdTermsApply')}
@@ -75,12 +72,7 @@ export function useMusdConversionHeaderContent(): HeaderContent {
               </TextButton>,
             ])}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.InfoInverse}
-            textAlign={TextAlign.Center}
-            style={{ opacity: 0.8 }}
-          >
+          <Text variant={TextVariant.BodySm} textAlign={TextAlign.Center}>
             {t('musdBonusPoweredByRelay')}
           </Text>
         </Box>

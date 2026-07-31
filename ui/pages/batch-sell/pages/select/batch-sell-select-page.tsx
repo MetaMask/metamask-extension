@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { formatAddressToCaipReference } from '@metamask/bridge-controller';
 import {
   getAvailableBatchSellSwapAssetsForNetwork,
   getAvailableBatchSellNetworks,
@@ -11,15 +10,12 @@ import {
 import type { BridgeAppState } from '../../../../ducks/bridge/selectors';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useBatchSellInfoModal } from '../../hooks/useBatchSellInfoModal';
 import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { useBatchSellSelection } from '../../providers/batch-sell-selection-provider';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
-import useBridging from '../../../../hooks/bridge/useBridging';
-import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useBatchSellHighRateAlertModal } from '../../hooks/useBatchSellHighRateAlertModal';
 import { SortingToolbar } from './components/sorting-toolbar';
 import { NetworkToolbar } from './components/network-toolbar';
 import { Header } from './components/header';
@@ -28,17 +24,17 @@ import { AssetList } from './components/asset-list';
 import { BatchSellEmptySelectTokens } from './components/batch-sell-empty-select-tokens';
 
 export const BatchSellSelectPage = () => {
-  const t = useI18nContext();
-  const { openBridgeExperience } = useBridging();
-  const { openModal, closeModal } = useBatchSellInfoModal();
+  const { openHighAlertModal } = useBatchSellHighRateAlertModal();
   const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
   const {
     selectedNetworkChainId,
     selectedAssetsId,
     assetsOrderByBalance,
+    hasUserInteracted,
     setSelectedNetworkChainId,
     setSelectedAssetsId,
     setAssetsOrderByBalance,
+    setHasUserInteracted,
   } = useBatchSellSelection();
 
   const availableBatchSellNetworksList = useSelector(
@@ -55,12 +51,21 @@ export const BatchSellSelectPage = () => {
   }, []);
 
   useLayoutEffect(() => {
-    // Default to the first available network when none is selected yet.
-    if (!selectedNetworkChainId && availableNetworkChainIds[0]) {
-      setSelectedNetworkChainId(availableNetworkChainIds[0]);
+    // The available networks list is sorted by balance descending but resolves
+    // asynchronously, so its top entry can change across renders as fiat data
+    // streams in. Until the user makes an explicit selection, keep the default
+    // pinned to the highest-balance network (the first entry) rather than
+    // locking in whichever network happened to load first.
+    if (hasUserInteracted) {
+      return;
+    }
+    const topNetworkChainId = availableNetworkChainIds[0];
+    if (topNetworkChainId && topNetworkChainId !== selectedNetworkChainId) {
+      setSelectedNetworkChainId(topNetworkChainId);
     }
   }, [
     availableNetworkChainIds,
+    hasUserInteracted,
     selectedNetworkChainId,
     setSelectedNetworkChainId,
   ]);
@@ -85,18 +90,21 @@ export const BatchSellSelectPage = () => {
 
   const onNetworkSelect = useCallback(
     (chainId: CaipChainId) => {
+      setHasUserInteracted(true);
       setSelectedAssetsId([]);
       setSelectedNetworkChainId(chainId);
     },
-    [setSelectedAssetsId, setSelectedNetworkChainId],
+    [setHasUserInteracted, setSelectedAssetsId, setSelectedNetworkChainId],
   );
 
   const onSelectAsset = useCallback(
-    (asset: BatchSellAsset) =>
+    (asset: BatchSellAsset) => {
+      setHasUserInteracted(true);
       setSelectedAssetsId((assets) =>
         assets.includes(asset.assetId) ? assets : [...assets, asset.assetId],
-      ),
-    [setSelectedAssetsId],
+      );
+    },
+    [setHasUserInteracted, setSelectedAssetsId],
   );
 
   const onDeselectAsset = useCallback(
@@ -108,61 +116,24 @@ export const BatchSellSelectPage = () => {
     [setSelectedAssetsId],
   );
 
-  const navigateToBridgePageAndPreselect = useCallback(() => {
-    closeModal();
-    const selectedAsset = availableBatchSellAssetsForNetworkList.find(
-      (asset) => asset.assetId === selectedAssetsId[0],
-    );
-    const sourceToken = selectedAsset
-      ? {
-          symbol: selectedAsset.symbol,
-          address: formatAddressToCaipReference(selectedAsset.assetId),
-          name: selectedAsset.name,
-          chainId: selectedAsset.chainId,
-        }
-      : undefined;
-
-    const destTokenAssetId = batchSellDestStablecoins[0];
-
-    transitionForward(() =>
-      openBridgeExperience(
-        MetaMetricsSwapsEventSource.MainView,
-        sourceToken,
-        destTokenAssetId,
-      ),
-    );
-  }, [
-    availableBatchSellAssetsForNetworkList,
-    batchSellDestStablecoins,
-    closeModal,
-    openBridgeExperience,
-    selectedAssetsId,
-  ]);
-
   const onSubmit = useCallback(() => {
     if (selectedAssetsId.length < MIN_SELECTED_ALLOWED_TOKENS) {
-      openModal({
-        titleProps: {
-          children: t('batchSellHighRateAlert'),
-        },
-        descriptionProps: {
-          children: t('batchSellHightRateAlertModalDescription'),
-        },
-        ctaProps: {
-          text: t('yesSwap'),
-          onClick: navigateToBridgePageAndPreselect,
-        },
-      });
+      const selectedAsset = availableBatchSellAssetsForNetworkList.find(
+        (asset) => asset.assetId === selectedAssetsId[0],
+      );
+      const destTokenAssetId = batchSellDestStablecoins[0];
+
+      openHighAlertModal(selectedAsset, destTokenAssetId);
       return;
     }
 
     transitionForward(navigateToBatchSellConfirmPage);
   }, [
     selectedAssetsId,
-    openModal,
     navigateToBatchSellConfirmPage,
-    navigateToBridgePageAndPreselect,
-    t,
+    availableBatchSellAssetsForNetworkList,
+    batchSellDestStablecoins,
+    openHighAlertModal,
   ]);
 
   if (!selectedNetworkChainId) {

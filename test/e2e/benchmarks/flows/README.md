@@ -156,7 +156,7 @@ Each benchmark entry becomes a **Sentry Structured Log** (`Sentry.logger.info`):
 - **Message:** `<benchmarkType>.<presetName>` — e.g. `performance.userJourneyOnboardingImport`, `userAction.interactionUserActions`, `benchmark.startupStandardHome`
 - **Attributes:**
   - `ci.branch`, `ci.commitHash`, `ci.prNumber` — Git/CI context
-  - `ci.browser`, `ci.buildType` — e.g. `chrome` / `browserify`
+  - `ci.browser`, `ci.buildType` — e.g. `chrome` / `webpack`
   - `ci.persona` — `standard` or `powerUser`
   - `ci.testTitle` — human-readable test name from the benchmark file
   - Metric values, namespaced by stat type:
@@ -171,7 +171,7 @@ attributes: {
   "ci.branch":      "main",
   "ci.commitHash":  "abc1234",
   "ci.browser":     "chrome",
-  "ci.buildType":   "browserify",
+  "ci.buildType":   "webpack",
   "ci.persona":     "standard",
   "ci.testTitle":   "benchmark-standard-home",
   "benchmark.mean.uiStartup":          1443,

@@ -13,7 +13,7 @@ import {
   TextVariant,
   FontWeight,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getUseCurrencyRateCheck } from '../../../selectors';
 import {
@@ -35,7 +35,7 @@ export default function FeeCard({
   const t = useContext(I18nContext);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const tokenApprovalTextComponent = (
     <span key="fee-card-approve-symbol" className="fee-card__bold">
@@ -67,10 +67,13 @@ export default function FeeCard({
                             externalLink
                             key="gas-fees-learn-more"
                             onClick={() => {
-                              trackEvent({
-                                event: 'Clicked "Gas Fees: Learn More" Link',
-                                category: MetaMetricsEventCategory.Swaps,
-                              });
+                              trackEvent(
+                                createEventBuilder(
+                                  'Clicked "Gas Fees: Learn More" Link',
+                                )
+                                  .addCategory(MetaMetricsEventCategory.Swaps)
+                                  .build(),
+                              );
                             }}
                           >
                             {t('swapGasFeesExplanationLinkText')}

@@ -21,7 +21,11 @@ export function updateApprovalAmount(
   }
 
   const multiplier = new BigNumber(10).pow(decimals);
-  const value = add0x(new BigNumber(newAmount).times(multiplier).toString(16));
+  const value = add0x(
+    new BigNumber(typeof newAmount === 'number' ? String(newAmount) : newAmount)
+      .times(multiplier)
+      .toString(16),
+  );
 
   let signature = tokenAddress ? SIGNATURE_PERMIT2 : SIGNATURE_LEGACY;
 

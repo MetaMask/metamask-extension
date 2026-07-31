@@ -116,6 +116,10 @@ function setupDefaultMocks({
   hideResults = false,
   isPaidByMetaMask = false,
   prefillMax = false,
+  hasInput = false,
+  payToken = undefined as
+    | { address: string; chainId: `0x${string}` }
+    | undefined,
   defaultPaymentToken = null as {
     address: string;
     chainId: `0x${string}`;
@@ -126,6 +130,8 @@ function setupDefaultMocks({
   hideResults?: boolean;
   isPaidByMetaMask?: boolean;
   prefillMax?: boolean;
+  hasInput?: boolean;
+  payToken?: { address: string; chainId: `0x${string}` } | undefined;
   defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
   jest
@@ -137,7 +143,7 @@ function setupDefaultMocks({
       amountFiat: '100',
       amountHuman: '50',
       amountHumanDebounced: '50',
-      hasInput: false,
+      hasInput,
       isInputChanged: false,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
@@ -190,7 +196,9 @@ function setupDefaultMocks({
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       isNative: false,
-      payToken: undefined,
+      payToken: payToken as ReturnType<
+        typeof useTransactionPayTokenModule.useTransactionPayToken
+      >['payToken'],
       setPayToken: jest.fn(),
     });
   jest
@@ -430,6 +438,20 @@ describe('MusdConversionInfo', () => {
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+  });
+
+  describe('bottom pay with row', () => {
+    it('renders the bottom pay with row in the empty state', () => {
+      const { getByTestId } = render({ hasInput: false });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('keeps the bottom pay with row once an amount is entered', () => {
+      const { getByTestId } = render({ hasInput: true });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
     });
   });
 });

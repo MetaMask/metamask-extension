@@ -1,5 +1,20 @@
 .selectable-list-item-wrapper {
   position: relative;
+
+  // Rounds the top/bottom corners of the first/last items to match the popover
+  // border-radius. Requires all siblings to be .selectable-list-item-wrapper
+  // elements — if the last sibling is a different element (e.g. a wrapping Box),
+  // :last-child won't match and the bottom corners stay square. In that case,
+  // the popover container should use overflow: hidden to clip the corners instead.
+  &:first-child .selectable-list-item {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  &:last-child .selectable-list-item {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 }
 
 .selectable-list-item {

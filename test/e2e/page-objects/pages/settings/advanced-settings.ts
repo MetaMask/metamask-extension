@@ -2,8 +2,6 @@ import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class AdvancedSettings {
-  private readonly driver: Driver;
-
   private readonly autoLockoutButton = {
     testId: 'auto-lockout-button',
   };
@@ -13,11 +11,6 @@ class AdvancedSettings {
   private readonly autoLockoutTimeInput = {
     testId: 'auto-lockout-time',
   };
-
-  private readonly downloadDataButton = '[data-testid="export-data-button"]';
-
-  private readonly downloadStateLogsButton =
-    '[data-testid="advanced-setting-state-logs-button"]';
 
   private readonly clearActivityMessage = {
     text: 'Clear activity and nonce data?',
@@ -33,6 +26,13 @@ class AdvancedSettings {
     text: 'Clear',
     tag: 'button',
   };
+
+  private readonly downloadDataButton = '[data-testid="export-data-button"]';
+
+  private readonly downloadStateLogsButton =
+    '[data-testid="advanced-setting-state-logs-button"]';
+
+  private readonly driver: Driver;
 
   private readonly hexDataToggle = {
     testId: 'transactions-show-hex-data-toggle',

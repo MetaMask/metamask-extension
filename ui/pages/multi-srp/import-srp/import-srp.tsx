@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
@@ -25,11 +25,12 @@ import {
 } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const toastId = 'new-srp-added-toast';
 const autoHideToastDelay = 5 * SECOND;
@@ -37,13 +38,13 @@ const autoHideToastDelay = 5 * SECOND;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   async function importWallet() {
     try {
@@ -60,13 +61,14 @@ export const ImportSrp = () => {
         }
       }
 
-      trackEvent({
-        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-        properties: {
-          status: 'continue_button_clicked',
-          location: 'Multi SRP Import',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
+          .addProperties({
+            status: 'continue_button_clicked',
+            location: 'Multi SRP Import',
+          })
+          .build(),
+      );
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 

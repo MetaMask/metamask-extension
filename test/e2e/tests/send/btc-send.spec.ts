@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -38,6 +38,8 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Send', function (this: Suite) {
+  this.timeout(300000);
+
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
 
@@ -46,7 +48,6 @@ describe('BTC Account - Send', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -65,7 +66,10 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient('invalidBTCAddress');
+        await sendPage.fillRecipient({
+          recipientAddress: 'invalidBTCAddress',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
       },
     );
@@ -76,7 +80,6 @@ describe('BTC Account - Send', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -95,7 +98,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
 
         await sendPage.fillAmount('5');
         await sendPage.checkInsufficientFundsError();
@@ -112,7 +115,6 @@ describe('BTC Account - Send', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -133,9 +135,9 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
 
         await sendPage.selectToken(bitcoinChainId, 'BTC');
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount(sendAmount);
-        await sendPage.isContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
         await sendPage.pressContinueButton();
 
         // From here, we have moved to the confirmation screen

@@ -68,10 +68,13 @@ describe('SnapControllerInit', () => {
         forcePreinstalledSnaps: false,
         autoUpdatePreinstalledSnaps: false,
       },
+      clientConfig: {
+        type: 'extension',
+        version: 'MOCK_VERSION',
+      },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
-      trackEvent: expect.any(Function),
       ensureOnboardingComplete: expect.any(Function),
     });
   });

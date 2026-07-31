@@ -14,7 +14,7 @@ import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import {
   Confirmation,
@@ -45,6 +45,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   selectedGasFeeToken,
   txParamsOriginal,
   isGasFeeSponsored,
+  isExternalSign,
   simulationFails,
   userFeeLevel = UserFeeLevel.MEDIUM,
   excludeNativeTokenForFee,
@@ -62,6 +63,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   simulationData?: SimulationData;
   txParamsOriginal?: TransactionParams;
   isGasFeeSponsored?: boolean;
+  isExternalSign?: boolean;
   simulationFails?: SimulationError;
   userFeeLevel?: UserFeeLevel;
   excludeNativeTokenForFee?: boolean;
@@ -211,6 +213,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     userFeeLevel,
     verifiedOnBlockchain: false,
     isGasFeeSponsored,
+    isExternalSign,
     simulationFails,
     excludeNativeTokenForFee,
   } as SignatureRequestType;
@@ -418,4 +421,4 @@ export const mockBridgeQuotes = [
     },
     estimatedProcessingTimeInSeconds: 0,
   },
-] as unknown as QuoteResponse[];
+] as unknown as QuoteResponseV1[];

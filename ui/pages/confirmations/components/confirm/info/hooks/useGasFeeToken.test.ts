@@ -14,6 +14,11 @@ import {
   useSelectedGasFeeToken,
 } from './useGasFeeToken';
 
+jest.mock('../../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
+}));
+
 const FROM_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
@@ -266,6 +271,20 @@ describe('useGasFeeToken', () => {
     );
 
     expect(result.current.amountFiat).toBe('< $0.01');
+  });
+
+  it('does not throw when conversionRate has more than 15 significant digits', () => {
+    const state = getState({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      currencyRates: { ETH: { conversionRate: 0.07086574003221964 } },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useGasFeeToken({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress }),
+      state,
+    );
+
+    expect(result.current.amountFiat).not.toBeUndefined();
   });
 
   describe('useSelectedGasFeeToken', () => {

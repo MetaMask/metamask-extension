@@ -6,6 +6,9 @@ import RestoreVaultPage from './restore-vault';
 
 const mockStore = configureStore([]);
 const store = mockStore({
+  confirmTransaction: {
+    txData: {},
+  },
   appState: {
     isLoading: false,
   },

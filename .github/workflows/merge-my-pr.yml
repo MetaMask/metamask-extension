@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: default-branch
     permissions:
+      id-token: write
       pull-requests: read
     steps:
       # Fetch PR metadata (head branch) using the GitHub API
@@ -61,6 +62,16 @@ jobs:
             echo "stable-sync-release=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
+            contents: write
+            members: read
+
       - name: Merge approved version bump PR
         if: ${{ steps.check-branch.outputs.version-bump == 'true' }}
         uses: MetaMask/github-tools/.github/actions/merge-approved-pr@v1
@@ -71,7 +82,7 @@ jobs:
           head-branch-pattern: '^version-bump/[0-9]+\.[0-9]+\.[0-9]+$'
           merge-method: 'squash'
           verify-version-bump: true
-          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}
 
       - name: Merge approved stable main PR
         if: ${{ steps.check-branch.outputs.stable-main == 'true' }}
@@ -82,7 +93,7 @@ jobs:
           required-base-branch: 'main'
           head-branch-pattern: '^stable-main-[0-9]+\.[0-9]+\.[0-9]+$'
           merge-method: 'merge'
-          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}
 
       - name: Merge approved stable-sync to release PR
         if: ${{ steps.check-branch.outputs.stable-sync-release == 'true' }}
@@ -92,4 +103,4 @@ jobs:
           required-base-branch: ${{ env.PR_BASE_REF }}
           head-branch-pattern: '^stable-sync-'
           merge-method: 'merge'
-          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}

@@ -1,3 +1,4 @@
+import type { TokenSearchResult } from './token-search-api';
 import { convertSearchResultToImportPayload } from './convert-search-result';
 
 describe('convertSearchResultToImportPayload', () => {
@@ -77,7 +78,7 @@ describe('convertSearchResultToImportPayload', () => {
       convertSearchResultToImportPayload({
         ...base,
         assetId: 'not-a-valid-caip-id',
-      }),
+      } as unknown as TokenSearchResult),
     ).toBeUndefined();
   });
 

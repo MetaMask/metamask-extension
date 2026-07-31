@@ -24,7 +24,7 @@ export const buildSrcTokenAmountSmallestUnit = (
     return undefined;
   }
   const humanReadableAmount = new BigNumber(safeAmountForCalc(asset.balance))
-    .times(sendAmountPercent)
+    .times(String(sendAmountPercent))
     .div(100)
     .toFixed();
   return calcTokenValue(humanReadableAmount, asset.decimals)

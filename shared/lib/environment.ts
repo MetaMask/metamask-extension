@@ -34,6 +34,17 @@ export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
   return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`): controls whether onboarding
+ * assigns new users to the consolidated Basic Functionality experience. This
+ * is intentionally separate from the remote rollout flag because onboarding
+ * completes before remote feature flags are reliably available.
+ */
+export const getIsBasicFunctionalityConsolidationEnabledInBuild =
+  (): boolean => {
+    return process.env.BFT_CONSOLIDATION_ENABLED?.toString() === 'true';
+  };
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
@@ -42,6 +53,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`QR_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsQrSyncEnabled = (): boolean => {
+  return process.env.QR_SYNC_ENABLED?.toString() === 'true';
 };
 
 /**
@@ -83,4 +103,17 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 
 export const getIsPasskeyFeatureEnabled = (): boolean => {
   return process.env.PASSKEY_ENABLED?.toString() === 'true';
+};
+
+/**
+ * Compile-time gate (`MM_PURE_BLACK_PREVIEW`): when true, OLED pure-black
+ * dark mode is enabled locally without requiring the `extensionUxPureBlack`
+ * remote feature flag. Intended for development and QA only.
+ *
+ * NOTE: This is temporary. Once pure-black and dark theme tokens are
+ * consolidated, this env var and all callers should be removed. Tracked in
+ * TMCU-1083.
+ */
+export const getIsPureBlackPreviewEnabled = (): boolean => {
+  return process.env.MM_PURE_BLACK_PREVIEW?.toString() === 'true';
 };

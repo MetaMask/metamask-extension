@@ -11,6 +11,9 @@ import {
   SolMethod,
   SolScope,
   TrxScope,
+  XlmAccountType,
+  XlmMethod,
+  XlmScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -208,6 +211,21 @@ export const MOCK_ACCOUNT_TRON_SHASTA: InternalAccount = {
   type: TrxAccountType.Eoa,
   metadata: {
     name: 'Tron Shasta Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
+export const MOCK_ACCOUNT_STELLAR_PUBNET: InternalAccount = {
+  id: 'stellar-pubnet-account-id',
+  address: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHNMDQEQJKUY2C3D2U7HN3I4LJLQYGX',
+  options: {},
+  methods: [XlmMethod.SignTransaction, XlmMethod.SignMessage],
+  scopes: [XlmScope.Pubnet],
+  type: XlmAccountType.Account,
+  metadata: {
+    name: 'Stellar Account',
     keyring: { type: KeyringTypes.snap },
     importTime: 1691565967600,
     lastSelected: 1955565967656,

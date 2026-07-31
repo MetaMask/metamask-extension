@@ -1,25 +1,30 @@
 import React from 'react';
 import {
   Box,
-  BoxAlignItems,
-  BoxJustifyContent,
+  BoxBackgroundColor,
   Icon,
   IconColor,
   IconName,
   IconSize,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 
-import PulseLoader from '../../../../components/ui/pulse-loader';
+import { isErrorStepStatus } from '../hardware-wallet-signatures.utils';
 import { SignatureStepStatus } from '../types';
+
+const STEP_ICON_CLASSNAME =
+  'flex size-8 shrink-0 items-center justify-center rounded-full';
 
 /**
  * Displays the visual marker for a hardware wallet signature step. Completed
  * steps show a check, interrupted steps show an error icon, active steps show a
- * loader, and pending steps show their sequence number.
+ * spinner, and pending steps show their sequence number.
  *
  * @param props - Component props.
  * @param props.status - Display status for the signature step.
- * @param props.stepNumber - Sequence number shown while the step is pending.
+ * @param props.stepNumber - Sequence number shown while the step is pending or active.
  */
 const SignatureStatusIcon = ({
   status,
@@ -31,8 +36,8 @@ const SignatureStatusIcon = ({
   if (status === SignatureStepStatus.Complete) {
     return (
       <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
+        className={STEP_ICON_CLASSNAME}
+        backgroundColor={BoxBackgroundColor.PrimaryMuted}
       >
         <Icon
           name={IconName.Check}
@@ -43,15 +48,11 @@ const SignatureStatusIcon = ({
     );
   }
 
-  if (
-    status === SignatureStepStatus.Rejected ||
-    status === SignatureStepStatus.Failed ||
-    status === SignatureStepStatus.Disconnected
-  ) {
+  if (isErrorStepStatus(status)) {
     return (
       <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
+        className={STEP_ICON_CLASSNAME}
+        backgroundColor={BoxBackgroundColor.ErrorMuted}
       >
         <Icon
           name={IconName.CircleX}
@@ -65,20 +66,27 @@ const SignatureStatusIcon = ({
   if (status === SignatureStepStatus.Active) {
     return (
       <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
+        className={STEP_ICON_CLASSNAME}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
       >
-        <PulseLoader />
+        <Icon
+          name={IconName.Loading}
+          size={IconSize.Sm}
+          color={IconColor.IconDefault}
+          className="animate-spin"
+        />
       </Box>
     );
   }
 
   return (
     <Box
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Center}
+      className={STEP_ICON_CLASSNAME}
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
     >
-      {stepNumber}
+      <Text variant={TextVariant.BodyXs} color={TextColor.TextDefault}>
+        {stepNumber}
+      </Text>
     </Box>
   );
 };

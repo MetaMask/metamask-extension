@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -25,16 +25,17 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { resetWallet } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
@@ -54,15 +55,13 @@ type LoginErrorModalProps = {
  * @param props.onClose - The function to call when the modal is closed
  * @param props.loginError - The type of login error that occurred
  */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginErrorModal({
   onClose,
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const socialLoginType = useSelector(getSocialLoginType);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,19 +101,13 @@ export default function LoginErrorModal({
         size={TextButtonSize.BodyMd}
         onClick={() => {
           trackEvent(
-            {
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
+            createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+              .addCategory(MetaMetricsEventCategory.Onboarding)
+              .addProperties({
                 url: SUPPORT_LINK,
-                location: 'Welcome page',
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
+                location: segmentContext.page?.title ?? 'Welcome page',
+              })
+              .build(),
           );
         }}
         asChild
@@ -154,14 +147,15 @@ export default function LoginErrorModal({
   };
 
   const handleUpdateTelegramClick = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SupportLinkClicked,
-      properties: {
-        url: TELEGRAM_DESKTOP_UPDATE_URL,
-        location: 'Telegram outdated modal',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          url: TELEGRAM_DESKTOP_UPDATE_URL,
+          location: 'Telegram outdated modal',
+        })
+        .build(),
+    );
     globalThis.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
     onClose();
   };

@@ -13,7 +13,9 @@ import {
 import {
   getMultichainNativeTokenBalance,
   selectBalanceBySelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
+import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../component-library';
@@ -53,15 +55,25 @@ export const AccountGroupBalance = ({
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  const legacySelectedGroupBalance = useSelector(
+    selectBalanceBySelectedAccountGroup,
+  );
+  const unifiedSelectedGroupBalance = useSelector(
+    selectUnifiedBalanceBySelectedAccountGroup,
+  );
+  const selectedGroupBalance = isAssetsUnifyStateEnabled
+    ? unifiedSelectedGroupBalance
+    : legacySelectedGroupBalance;
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const caipChainId = isCaipChainId(chainId)
-    ? chainId
-    : formatChainIdToCaip(chainId);
+  const caipChainId = useMemo(
+    () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
+    [chainId],
+  );
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
@@ -70,19 +82,28 @@ export const AccountGroupBalance = ({
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
 
-  const isEvm = isEvmChainId(chainId);
+  const isEvm = useMemo(() => isEvmChainId(chainId), [chainId]);
 
-  const isTestnetSelected = Boolean(
-    Object.keys(enabledNetworks).length === 1 &&
-    TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+  const isTestnetSelected = useMemo(
+    () =>
+      Boolean(
+        Object.keys(enabledNetworks).length === 1 &&
+        TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+      ),
+    [enabledNetworks],
   );
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
   const networks = useSelector(getMultichainNetwork);
-  const showNativeTokenAsMain = Boolean(
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      Boolean(
+        showNativeTokenAsMainBalance &&
+        Object.keys(enabledNetworks).length === 1,
+      ),
+    [showNativeTokenAsMainBalance, enabledNetworks],
   );
 
   const showConversionForTestnets = useSelector(getShowFiatInTestnets);
@@ -154,6 +175,7 @@ export const AccountGroupBalance = ({
   return (
     <Skeleton
       hideChildren={
+        isEvm &&
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }

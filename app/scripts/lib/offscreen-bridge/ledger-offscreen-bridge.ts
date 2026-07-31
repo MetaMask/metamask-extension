@@ -1,14 +1,16 @@
 import {
+  createLedgerError,
   GetAppNameAndVersionResponse,
+  isKnownLedgerError,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
-  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
@@ -33,20 +35,23 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * the keyring. In this case, the bridge is used to communicate with the
  * Offscreen Document. Inside the Offscreen document the ledger script
  * communicates directly with the Ledger device via WebHID.
+ *
+ * `isDeviceConnected` is intentionally omitted from the implemented shape: the
+ * offscreen bridge does not own HID state (the offscreen document does, and it
+ * already signals connect/disconnect via `OffscreenCommunicationEvents`).
+ * Forcing the bridge to declare a stale `boolean` here would mislead callers
+ * into reading it. If you need device-connection state, listen for
+ * `ledgerDeviceConnect` events on the background side.
+ *
+ * TODO(upstream): make `isDeviceConnected` optional on `LedgerBridge<T>` in
+ * `@metamask/eth-ledger-bridge-keyring` so this `Omit` can go away.
+ * Tracked separately.
  */
-export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
-  isDeviceConnected = false;
-
+export class LedgerOffscreenBridge implements Omit<
+  LedgerBridge<LedgerOffscreenBridgeOptions>,
+  'isDeviceConnected'
+> {
   init() {
-    chrome.runtime.onMessage.addListener((msg) => {
-      if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
-      ) {
-        this.isDeviceConnected = true;
-      }
-    });
-
     return Promise.resolve();
   }
 
@@ -161,32 +166,43 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+
+          if (chrome.runtime.lastError) {
+            const chromeError = chrome.runtime.lastError.message;
+            reject(new Error(chromeError));
+            return;
+          }
+
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            // Need to process the payload to get the error
-            // and then reject with the error
             const error = response?.payload?.error;
-
             if (
+              error?.name === 'HardwareWalletError' &&
+              typeof error?.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
               error &&
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-              // TransportStatusError will regenerate the error message based on the statusCode
-              const transportStatusError = new TransportStatusError(
-                error.statusCode,
-              );
-              reject(transportStatusError);
+              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+              if (isKnownLedgerError(statusCodeHex)) {
+                reject(createLedgerError(statusCodeHex));
+              } else {
+                reject(new TransportStatusError(error.statusCode));
+              }
             } else if (error?.message) {
-              // Regenerate the error based on the SerializedLedgerError
-              const newError = new Error(error.message, {
-                cause: error,
-              });
-              reject(newError);
+              reject(new Error(error.message, { cause: error }));
             } else {
-              // Fallback for unknown Ledger errors when error information is not available
               reject(new Error('Unknown Ledger error occurred'));
             }
           }

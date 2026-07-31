@@ -14,7 +14,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
@@ -79,7 +79,9 @@ describe('Send - Hex Address Normalization', function () {
           await homePage.clickOnSendButton();
           // Paste address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.pressContinueButton();
 
           // Verify address on confirmation screen
@@ -110,7 +112,9 @@ describe('Send - Hex Address Normalization', function () {
 
           // Type address without hex prefix
           const sendPage = new SendPage(driver);
-          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillRecipient({
+            recipientAddress: nonHexPrefixedAddress,
+          });
           await sendPage.fillAmount('0');
           await sendPage.pressContinueButton();
 
