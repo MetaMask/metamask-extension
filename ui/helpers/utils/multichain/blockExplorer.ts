@@ -24,24 +24,42 @@ import {
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import type { MultichainNetwork } from '../../../selectors/multichain/networks';
 
+/** URL and human-readable label for a block explorer link. */
 export type BlockExplorerLink = {
   url: string;
   name: string;
 };
 
+/** Options for building a fungible-token block explorer link from Redux network state. */
 export type GetFungibleAssetBlockExplorerLinkOptions = {
+  /** CAIP-2 chain id (e.g. `eip155:1`, Solana mainnet). */
   caipChainId?: CaipChainId;
+  /** Token contract/mint address, or a full CAIP-19 asset id. */
   tokenAddress?: string;
+  /** When true, no link is returned (native assets have no token contract page). */
   isNative: boolean;
+  /** EVM network configs keyed by hex chain id (`getNetworkConfigurationsByChainId`). */
   evmNetworkConfigurations: Record<Hex, NetworkConfiguration>;
+  /** Multichain network configs keyed by CAIP-2 chain id. */
   multichainNetworkConfigurations: Record<
     CaipChainId,
     MultichainNetworkConfiguration
   >;
+  /** Display name used when no network name is configured (e.g. "Etherscan"). */
   fallbackExplorerLabel: string;
+  /** Optional wallet address appended to EVM token tracker links. */
   walletAddress?: string;
 };
 
+/**
+ * Normalizes a token address for block explorer URL construction.
+ *
+ * Accepts either a plain contract/mint address or a CAIP-19 asset id and
+ * returns the asset reference when a full asset id is provided.
+ *
+ * @param tokenAddress - Plain address or CAIP-19 asset id.
+ * @returns The contract/mint address, or `undefined` when input is missing.
+ */
 const resolveContractAddress = (tokenAddress?: string): string | undefined => {
   if (!tokenAddress) {
     return undefined;
@@ -54,6 +72,16 @@ const resolveContractAddress = (tokenAddress?: string): string | undefined => {
   return tokenAddress;
 };
 
+/**
+ * Builds a non-EVM block explorer URL for a fungible token.
+ *
+ * Prefers the network's asset URL template when available (e.g. Solscan token
+ * pages); otherwise falls back to the address URL template.
+ *
+ * @param formatUrls - Block explorer URL templates for the chain.
+ * @param contractAddress - Token contract or mint address.
+ * @returns The explorer URL, or `null` when templates are unavailable.
+ */
 const getNonEvmAssetBlockExplorerUrl = (
   formatUrls: MultichainBlockExplorerFormatUrls | undefined,
   contractAddress: string,
@@ -69,6 +97,25 @@ const getNonEvmAssetBlockExplorerUrl = (
   return url || null;
 };
 
+/**
+ * Builds a block explorer link for a fungible token on any supported chain.
+ *
+ * Shared by the TDP "View Asset in explorer" menu item and the Security &
+ * Trust detail page official-links section. EVM chains use `getTokenTrackerLink`
+ * with the configured explorer base URL; non-EVM chains use
+ * `MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP`.
+ *
+ * @param options - Chain, token, and network configuration inputs.
+ * @param options.caipChainId
+ * @param options.tokenAddress
+ * @param options.isNative
+ * @param options.evmNetworkConfigurations
+ * @param options.multichainNetworkConfigurations
+ * @param options.fallbackExplorerLabel
+ * @param options.walletAddress
+ * @returns `{ url, name }` for the token's explorer page, or `null` when the
+ * token is native, inputs are incomplete, or no explorer is configured.
+ */
 export const getFungibleAssetBlockExplorerLink = ({
   caipChainId,
   tokenAddress,
