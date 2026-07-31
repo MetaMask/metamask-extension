@@ -43,6 +43,7 @@ import {
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
+import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -66,6 +67,7 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
 
@@ -223,13 +225,15 @@ export const AppHeaderUnlockedContent = ({
                 <NotificationsTagCounter noLabel />
               </BoxDeprecated>
             )}
-            <ButtonIcon
-              iconName={IconNameDeprecated.Search}
-              data-testid="discover-search-button"
-              ariaLabel={t('searchTokens')}
-              onClick={handleOpenDiscoverSearch}
-              size={ButtonIconSize.Lg}
-            />
+            {isDiscoverSearchEnabled && (
+              <ButtonIcon
+                iconName={IconNameDeprecated.Search}
+                data-testid="discover-search-button"
+                ariaLabel={t('searchTokens')}
+                onClick={handleOpenDiscoverSearch}
+                size={ButtonIconSize.Lg}
+              />
+            )}
             <ButtonIcon
               ref={menuRef}
               iconName={IconNameDeprecated.Menu}

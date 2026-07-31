@@ -89,6 +89,7 @@ import {
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
@@ -288,6 +289,12 @@ export const TokenManagementFeatureRoute = () => {
 };
 
 export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
   return <DiscoverSearchPage />;
 };
 
