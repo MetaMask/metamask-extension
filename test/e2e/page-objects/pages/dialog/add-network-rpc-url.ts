@@ -2,19 +2,19 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class AddNetworkRpcUrlModal {
-  private readonly driver: Driver;
+  private readonly addRpcNameInput = {
+    testId: 'rpc-name-input-test',
+  };
 
   private readonly addRpcUrlButton = {
     testId: 'page-container-footer-next',
   };
 
-  private readonly addRpcNameInput = {
-    testId: 'rpc-name-input-test',
-  };
-
   private readonly addRpcUrlInput = {
     testId: 'rpc-url-input-test',
   };
+
+  private readonly driver: Driver;
 
   private readonly errorMessageInvalidUrl = {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
@@ -23,6 +23,28 @@ class AddNetworkRpcUrlModal {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Checks if the add RPC URL button is enabled on add network RPC URL modal.
+   *
+   * @param shouldBeEnabled - Whether the add RPC URL button should be enabled. Defaults to true.
+   */
+  async checkAddRpcUrlButtonIsEnabled(
+    shouldBeEnabled: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Check that add RPC URL button is ${
+        shouldBeEnabled ? 'enabled' : 'disabled'
+      }`,
+    );
+    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
+    assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
+  }
+
+  async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
+    console.log('Check that error message invalid URL is displayed');
+    await this.driver.waitForSelector(this.errorMessageInvalidUrl);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -71,28 +93,6 @@ class AddNetworkRpcUrlModal {
     console.log('Confirm added RPC URL');
     await this.driver.clickElement(this.addRpcUrlButton);
     await this.driver.assertElementNotPresent(this.addRpcUrlInput);
-  }
-
-  /**
-   * Checks if the add RPC URL button is enabled on add network RPC URL modal.
-   *
-   * @param shouldBeEnabled - Whether the add RPC URL button should be enabled. Defaults to true.
-   */
-  async checkAddRpcUrlButtonIsEnabled(
-    shouldBeEnabled: boolean = true,
-  ): Promise<void> {
-    console.log(
-      `Check that add RPC URL button is ${
-        shouldBeEnabled ? 'enabled' : 'disabled'
-      }`,
-    );
-    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
-    assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
-  }
-
-  async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
-    console.log('Check that error message invalid URL is displayed');
-    await this.driver.waitForSelector(this.errorMessageInvalidUrl);
   }
 }
 

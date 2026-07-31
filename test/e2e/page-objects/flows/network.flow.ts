@@ -30,3 +30,9 @@ export const switchToNetworkFromNetworkSelect = async (
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
+
+export async function waitForNetworkManagerBackdropToClear(
+  driver: Driver,
+): Promise<void> {
+  await driver.assertElementNotPresent('.modal__backdrop');
+}
