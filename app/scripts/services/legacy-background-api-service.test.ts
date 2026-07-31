@@ -68,6 +68,7 @@ import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMid
 import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
 import { trackEvent } from '../controllers/analytics';
+import { createTestProviderTools } from '../../../test/stub/provider';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
@@ -418,6 +419,220 @@ describe('LegacyBackgroundApiService', () => {
           expect.anything(),
         );
         expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetails', () => {
+    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+      const providerResultStub = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_getCode: '0x123',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest
+            .fn()
+            .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
+                    decimals: 18,
+                    symbol: 'DAI',
+                  },
+                },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.symbol).toStrictEqual('DAI');
+        expect(result.balance).toStrictEqual('3000000000000000000');
+      });
+    });
+
+    it('falls back to the AssetsContractController when the token is not in any list', async () => {
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '18',
+          symbol: 'DAI',
+          balance: 333,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetailsByChain', () => {
+    it('falls back to the AssetsContractController using the chain-resolved network client id', async () => {
+      const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+        standard: 'ERC20',
+        decimals: '18',
+        symbol: 'DAI',
+        balance: 333,
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'client',
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ address: '0xabc' }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          '0x1',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalledWith(
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          'mainnet',
+        );
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenSymbol', () => {
+    it('returns the token symbol from the AssetsContractController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockResolvedValue({ standard: 'ERC20', symbol: 'DAI' }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        );
+
+        expect(result).toStrictEqual('DAI');
+      });
+    });
+
+    it('returns null when the lookup throws', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockRejectedValue(new Error('error')),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0xNotInTokenList',
+        );
+
+        expect(result).toStrictEqual(null);
       });
     });
   });
@@ -6472,8 +6687,12 @@ function getMessenger(
       'NetworkEnablementController:enableAllPopularNetworks',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:getAssets',
+      'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
+      'TokenListController:getState',
+      'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'AccountsController:getSelectedAccount',

@@ -7,6 +7,7 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  Provider,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerEnableAllPopularNetworksAction,
@@ -89,14 +90,18 @@ import {
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
 import {
+  AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
+  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
+  TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
   AssetsControllerGetAssetsAction,
+  AssetsControllerGetStateAction,
   AssetsControllerSetSelectedCurrencyAction,
   Caip19AssetId,
 } from '@metamask/assets-controller';
@@ -165,7 +170,12 @@ import {
   SnapInterfaceControllerDeleteInterfaceAction,
 } from '@metamask/snaps-controllers';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC20,
+  ERC721,
+  ERC1155,
+} from '@metamask/controller-utils';
 import {
   MultichainAccountServiceAlignWalletsAction,
   MultichainAccountServiceCreateMultichainAccountWalletAction,
@@ -216,6 +226,14 @@ import {
 } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
+import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+import {
+  fetchTokenBalance,
+  fetchERC1155Balance,
+} from '../../../shared/lib/token-util';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -342,6 +360,45 @@ type HardwareKeyringV2 =
 export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
 
 /**
+ * Token metadata merged from the static token list, the dynamic token list and
+ * the user's tokens, used to decide how a token should be treated.
+ */
+type MergedTokenDetails = {
+  standard?: string;
+  erc20?: boolean;
+  erc721?: boolean;
+  decimals?: number;
+  symbol?: string;
+};
+
+/**
+ * The intermediate token details assembled while resolving a token's standard,
+ * before the final `decimals`/`balance` are normalized to strings.
+ */
+type WorkingTokenDetails = {
+  address?: string;
+  balance?: unknown;
+  standard?: string;
+  decimals?: unknown;
+  symbol?: string;
+  name?: string;
+  tokenURI?: string;
+};
+
+/**
+ * The token standard and details returned to the client.
+ */
+type TokenStandardAndDetails = {
+  address?: string;
+  standard?: string;
+  symbol?: string;
+  name?: string;
+  tokenURI?: string;
+  decimals?: string;
+  balance?: string;
+};
+
+/**
  * The methods that the {@link LegacyBackgroundApiService} exposes to the messenger.
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
@@ -379,6 +436,9 @@ const MESSENGER_EXPOSED_METHODS = [
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'getSentinelNetworkFlags',
+  'getTokenStandardAndDetails',
+  'getTokenStandardAndDetailsByChain',
+  'getTokenSymbol',
   'getTrezorFeatures',
   'handleDefiReferral',
   'handleDefiReferralOnPermittedAccountsAdded',
@@ -453,7 +513,9 @@ type AllowedActions =
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetTrezorModelAction
+  | AssetsContractControllerGetTokenStandardAndDetailsAction
   | AssetsControllerGetAssetsAction
+  | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -541,8 +603,10 @@ type AllowedActions =
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
+  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TokensControllerGetStateAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
@@ -1086,6 +1150,381 @@ export class LegacyBackgroundApiService {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  /**
+   * @deprecated Avoid new references to the global network.
+   *
+   * @returns The provider of the currently selected (global) network client.
+   */
+  #getGlobalProvider(): Provider {
+    const { selectedNetworkClientId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    return this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    ).provider;
+  }
+
+  /**
+   * Returns the `TokensController.allTokens` map, reconstructed from the
+   * `AssetsController` state when the assets unify state feature is enabled.
+   *
+   * @returns The `ChainId -> AccountAddress -> Token[]` map.
+   */
+  #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
+    const { allTokens } = this.#messenger.call('TokensController:getState');
+
+    // When the assets unify state feature is disabled, the selector simply
+    // returns `TokensController.allTokens`; the additional slices are only
+    // needed to reconstruct the token list from the (conditionally registered)
+    // AssetsController state when the feature is enabled.
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return allTokens;
+    }
+
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const { assetsInfo, assetsBalance, customAssets } = this.#messenger.call(
+      'AssetsController:getState',
+    );
+
+    const metamask = {
+      allTokens,
+      internalAccounts,
+      remoteFeatureFlags,
+      assetsInfo,
+      assetsBalance,
+      customAssets,
+    };
+
+    return getTokensControllerAllTokens({ metamask });
+  }
+
+  /**
+   * Gets the standard and details for a token on the globally selected network.
+   *
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
+   * `AssetsContractController` when the token cannot be treated as an ERC20.
+   *
+   * @param address - The token contract address.
+   * @param userAddress - The user account address.
+   * @param tokenId - The token ID (for ERC721/ERC1155).
+   * @returns The token standard and details.
+   */
+  async getTokenStandardAndDetails(
+    address: string,
+    userAddress?: string,
+    tokenId?: string,
+  ): Promise<TokenStandardAndDetails> {
+    const currentChainId = this.getGlobalChainId();
+
+    const { tokensChainsCache } = this.#messenger.call(
+      'TokenListController:getState',
+    );
+    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    const allTokens = this.#getAllTokens();
+
+    const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
+
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    } as MergedTokenDetails;
+
+    // boolean to check if the token is an ERC20
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC20) ||
+      tokenDetails.erc20 === true;
+
+    // boolean to check if the token is an NFT
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC721) &&
+      !tokenDetails.erc721;
+
+    // boolean to check if the token is an ERC20 like
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    // boolean to check if the token can be treated as an ERC20
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details: WorkingTokenDetails | undefined;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = userAddress
+          ? await fetchTokenBalance(
+              address,
+              userAddress,
+              this.#getGlobalProvider(),
+            )
+          : undefined;
+
+        details = {
+          address,
+          balance,
+          standard: ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+        log.warn(`Failed to get token balance. Error: ${String(e)}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `AssetsContractController:getTokenStandardAndDetails`
+    if (details === undefined) {
+      try {
+        details = await this.#messenger.call(
+          'AssetsContractController:getTokenStandardAndDetails',
+          address,
+          userAddress,
+          tokenId,
+        );
+      } catch (e) {
+        log.warn(
+          `Failed to get token standard and details. Error: ${String(e)}`,
+        );
+      }
+    }
+
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard ?? '',
+        ERC1155,
+      );
+
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress as string,
+            tokenId as string,
+            this.#getGlobalProvider(),
+          );
+
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
+
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
+      }
+    }
+
+    return {
+      ...details,
+      decimals: (details?.decimals as number | undefined)?.toString(10),
+      balance: (details?.balance as number | undefined)?.toString(10),
+    };
+  }
+
+  /**
+   * Gets the standard and details for a token on a specific chain.
+   *
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
+   * `AssetsContractController` when the token cannot be treated as an ERC20.
+   *
+   * @param address - The token contract address.
+   * @param userAddress - The user account address.
+   * @param tokenId - The token ID (for ERC721/ERC1155).
+   * @param chainId - The chain ID to resolve the token on.
+   * @returns The token standard and details.
+   */
+  async getTokenStandardAndDetailsByChain(
+    address: string,
+    userAddress?: string,
+    tokenId?: string,
+    chainId?: Hex,
+  ): Promise<TokenStandardAndDetails> {
+    const { tokensChainsCache } = this.#messenger.call(
+      'TokenListController:getState',
+    );
+    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
+
+    const allTokens = this.#getAllTokens();
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const tokens =
+      (chainId && allTokens?.[chainId]?.[selectedAccount.address]) || [];
+
+    let staticTokenListDetails = {};
+    if (chainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
+
+    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    } as MergedTokenDetails;
+
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC20) ||
+      tokenDetails.erc20 === true;
+
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC721) &&
+      !tokenDetails.erc721;
+
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    // boolean to check if the token can be treated as an ERC20
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details: WorkingTokenDetails | undefined;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        let balance = 0;
+        if (this.getGlobalChainId() === chainId) {
+          balance = await fetchTokenBalance(
+            address,
+            userAddress as string,
+            this.#getGlobalProvider(),
+          );
+        }
+
+        details = {
+          address,
+          balance,
+          standard: ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+        log.warn(`Failed to get token balance. Error: ${String(e)}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `AssetsContractController:getTokenStandardAndDetails`
+    if (details === undefined) {
+      try {
+        const { networkConfigurationsByChainId } = this.#messenger.call(
+          'NetworkController:getState',
+        );
+        const networkClientId =
+          chainId &&
+          networkConfigurationsByChainId?.[chainId]?.rpcEndpoints[
+            networkConfigurationsByChainId?.[chainId]?.defaultRpcEndpointIndex
+          ]?.networkClientId;
+
+        details = await this.#messenger.call(
+          'AssetsContractController:getTokenStandardAndDetails',
+          address,
+          userAddress,
+          tokenId,
+          networkClientId || undefined,
+        );
+      } catch (e) {
+        log.warn(
+          `Failed to get token standard and details. Error: ${String(e)}`,
+        );
+      }
+    }
+
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard ?? '',
+        ERC1155,
+      );
+
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress as string,
+            tokenId as string,
+            this.#getGlobalProvider(),
+          );
+
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
+
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
+      }
+    }
+
+    return {
+      ...details,
+      decimals: (details?.decimals as number | undefined)?.toString(10),
+      balance: (details?.balance as number | undefined)?.toString(10),
+    };
+  }
+
+  /**
+   * Gets the symbol of a token via an on-chain lookup through the
+   * `AssetsContractController`.
+   *
+   * @param address - The token contract address.
+   * @returns The token symbol, or `null` if it could not be resolved.
+   */
+  async getTokenSymbol(address: string): Promise<string | null | undefined> {
+    try {
+      const details = await this.#messenger.call(
+        'AssetsContractController:getTokenStandardAndDetails',
+        address,
+      );
+      return details?.symbol;
+    } catch (e) {
+      return null;
+    }
   }
 
   /**

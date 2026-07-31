@@ -267,6 +267,54 @@ export type LegacyBackgroundApiServiceGetGlobalChainIdAction = {
 };
 
 /**
+ * Gets the standard and details for a token on the globally selected network.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction = {
+  type: `LegacyBackgroundApiService:getTokenStandardAndDetails`;
+  handler: LegacyBackgroundApiService['getTokenStandardAndDetails'];
+};
+
+/**
+ * Gets the standard and details for a token on a specific chain.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @param chainId - The chain ID to resolve the token on.
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction =
+  {
+    type: `LegacyBackgroundApiService:getTokenStandardAndDetailsByChain`;
+    handler: LegacyBackgroundApiService['getTokenStandardAndDetailsByChain'];
+  };
+
+/**
+ * Gets the symbol of a token via an on-chain lookup through the
+ * `AssetsContractController`.
+ *
+ * @param address - The token contract address.
+ * @returns The token symbol, or `null` if it could not be resolved.
+ */
+export type LegacyBackgroundApiServiceGetTokenSymbolAction = {
+  type: `LegacyBackgroundApiService:getTokenSymbol`;
+  handler: LegacyBackgroundApiService['getTokenSymbol'];
+};
+
+/**
  * Removes an account from state / storage.
  *
  * @param address - The account address, not CAIP-10 formatted.
@@ -886,6 +934,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetEnabledNetworksAction
   | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction
+  | LegacyBackgroundApiServiceGetTokenSymbolAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
