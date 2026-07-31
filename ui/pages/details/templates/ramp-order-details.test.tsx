@@ -46,9 +46,15 @@ jest.mock('../components/sections', () => ({
   ),
   TokensSection: ({
     tokens,
+    amountPlaceholder,
   }: {
     tokens: { token?: { symbol?: string } }[];
-  }) => <div data-testid="tokens-section">{tokens[0]?.token?.symbol}</div>,
+    amountPlaceholder?: string;
+  }) => (
+    <div data-testid="tokens-section">
+      {amountPlaceholder ?? tokens[0]?.token?.symbol}
+    </div>
+  ),
 }));
 
 jest.mock('../components/block-explorer-button', () => ({
@@ -132,6 +138,14 @@ describe('RampOrderDetails', () => {
 
     expect(getByTestId('tokens-section')).toHaveTextContent('ETH');
     expect(getByTestId('metadata-section')).toBeInTheDocument();
+  });
+
+  it('shows an amount placeholder while the order is pending', () => {
+    const { getByTestId } = render(
+      <RampOrderDetails item={buildItem({ status: 'pending' })} />,
+    );
+
+    expect(getByTestId('tokens-section')).toHaveTextContent('...');
   });
 
   it('formats the fee as a single fiat amount, without duplicating the currency', () => {

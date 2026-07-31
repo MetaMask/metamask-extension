@@ -38,7 +38,6 @@ describe('mapRampsOrderSafely', () => {
     const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
 
     expect(mapped?.hash).toBeUndefined();
-    // Shared contract: order.id ?? providerOrderId — not getInternalOrderCode.
     expect(mapped?.data.id).toBe('/providers/transak/orders/order-abc');
   });
 
@@ -77,26 +76,38 @@ describe('mapRampsOrderSafely', () => {
     );
   });
 
-  it('overlays a stashed preview onto an order with no token/fiat data yet', () => {
+  it('keeps a provider-reported crypto amount while the order is pending', () => {
+    const order = {
+      ...baseOrder,
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.data.token?.amount).toBe('0.013745');
+  });
+
+  it('uses preview currency metadata without using quote-derived amounts', () => {
     setPendingOrderPreview('order-2', {
       cryptoCurrency: { symbol: 'ETH', assetId: 'eip155:1/slip44:60' },
-      cryptoAmount: '0.05',
-      fiatCurrency: { symbol: 'USD' },
-      fiatAmount: 100,
-      totalFeesFiat: 2,
-    } as never);
+    });
     const order = {
       ...baseOrder,
       providerOrderId: 'order-2',
+      cryptoAmount: undefined,
       cryptoCurrency: undefined,
+      fiatAmount: undefined,
       fiatCurrency: undefined,
       status: 'PENDING',
     } as unknown as RampsOrder;
 
     const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
 
-    expect(mapped?.data.token).toMatchObject({ symbol: 'ETH', amount: '0.05' });
-    expect(mapped?.data.fiat).toMatchObject({ amount: '100', currency: 'USD' });
+    expect(mapped?.data.token).toMatchObject({
+      symbol: 'ETH',
+      amount: undefined,
+    });
+    expect(mapped?.data.fiat).toBeUndefined();
   });
 
   it('leaves the order untouched when no preview was stashed for it', () => {
@@ -112,5 +123,50 @@ describe('mapRampsOrderSafely', () => {
 
     expect(mapped?.data.token).toBeUndefined();
     expect(mapped?.data.fiat?.currency).toBeUndefined();
+  });
+
+  it('normalizes a missing txHash so the shared mapper does not throw', () => {
+    const order = {
+      ...baseOrder,
+      txHash: null,
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order)?.type).toBe('rampBuy');
+  });
+
+  it('strips zero crypto and fiat amounts from the mapped item', () => {
+    const order = {
+      ...baseOrder,
+      cryptoAmount: 0,
+      fiatAmount: 0,
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.data.token?.amount).toBeUndefined();
+    expect(mapped?.data.fiat).toBeUndefined();
+  });
+
+  it('does not override a chain resolved from cryptoCurrency.assetId', () => {
+    const order = {
+      ...baseOrder,
+      network: undefined,
+      cryptoCurrency: { assetId: 'eip155:1/slip44:60', symbol: 'ETH' },
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order, 'eip155:137')?.chainId).toBe('eip155:1');
+  });
+
+  it('does not seed network when network is already a non-empty string', () => {
+    const order = {
+      ...baseOrder,
+      network: 'eip155:1',
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order, 'eip155:137')?.chainId).toBe('eip155:1');
   });
 });

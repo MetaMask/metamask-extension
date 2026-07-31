@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionDetails renders a mapped ramps order looked up by id 1`] = `
+<div
+  data-chain-id="eip155:1"
+  data-item-type="rampBuy"
+  data-order-id="order-1"
+  data-testid="template-loader"
+/>
+`;

@@ -1,3 +1,4 @@
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -103,13 +104,10 @@ function getItemHash(item: ActivityListItem) {
 }
 
 /**
- * Stable list / details identifier for an activity item. Pending ramp orders
- * have no on-chain hash yet — fall back to the shared activity `data.id`
- * (`order.id ?? providerOrderId` from mapRampsOrder) so they can still be
- * opened. Prefer truthiness over `??` so an empty-string hash falls through.
+ * Details-route identifier: settlement hash, or internal ramps order code.
  *
  * @param item - The activity item.
- * @returns The hash or shared ramp order id, if any.
+ * @returns The hash or ramp order code, if any.
  */
 export function getActivityItemIdentifier(
   item: ActivityListItem,
@@ -118,7 +116,7 @@ export function getActivityItemIdentifier(
     return item.hash;
   }
   if (item.type === 'rampBuy' || item.type === 'rampSell') {
-    return item.data.id;
+    return item.data.id ? getInternalOrderCode(item.data.id) : undefined;
   }
   return undefined;
 }

@@ -16,9 +16,11 @@ import { TokenRow } from './token-row';
 export function TokensSection({
   tokens,
   showBadge,
+  amountPlaceholder,
 }: {
   tokens: { label?: string; token?: TokenAmount }[];
   showBadge?: boolean;
+  amountPlaceholder?: string;
 }) {
   const visibleTokens = tokens.flatMap(({ label, token }) =>
     token ? [{ label, token }] : [],
@@ -33,7 +35,11 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenRow token={token} showNetworkBadge={showBadge} />
+          <TokenRow
+            token={token}
+            showNetworkBadge={showBadge}
+            amountPlaceholder={amountPlaceholder}
+          />
         </div>
       ))}
     </div>

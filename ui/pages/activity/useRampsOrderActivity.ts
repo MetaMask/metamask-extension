@@ -22,11 +22,9 @@ export function useRampsOrderActivity(filters: ActivityListFilter) {
     if (assetId) {
       return items.filter((item) => activityMatchesAssetId(item, assetId));
     }
-
     if (!networks?.length) {
       return [];
     }
-
     const selectedNetworks = new Set(networks);
     return items.filter(
       (item) => item.chainId && selectedNetworks.has(item.chainId),

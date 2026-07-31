@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createWatchRampsCheckoutTab restores the precreated stub when the callback order cannot be resolved 1`] = `
+exports[`createWatchRampsCheckoutTab leaves the order pending when both the callback and the lookup fail 1`] = `
 [
   [
     {
@@ -9,10 +9,15 @@ exports[`createWatchRampsCheckoutTab restores the precreated stub when the callb
       "walletAddress": "0xabc",
     },
   ],
+]
+`;
+
+exports[`createWatchRampsCheckoutTab retires the stub through the polling path when the callback lookup fails 1`] = `
+[
   [
     {
       "providerOrderId": "c-custom",
-      "status": "PRECREATED",
+      "status": "PENDING",
       "walletAddress": "0xabc",
     },
   ],

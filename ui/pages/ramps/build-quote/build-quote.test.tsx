@@ -278,9 +278,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('stashes the selected token/fiat amount as a best-effort preview for the pending order', async () => {
-    // A freshly precreated order has no token/amount/fees until the provider
-    // fills it in — the details view falls back to what was picked here.
+  it('stashes token metadata without quote-derived amounts', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
@@ -298,13 +296,12 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(getPendingOrderPreview('order-123')).toMatchObject({
+    expect(getPendingOrderPreview('order-123')).toStrictEqual({
       cryptoCurrency: {
         symbol: mockSelectedToken.symbol,
         assetId: mockSelectedToken.assetId,
         decimals: mockSelectedToken.decimals,
       },
-      fiatCurrency: { symbol: 'USD' },
     });
   });
 
@@ -337,8 +334,6 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('normalizes a full-path orderId when stashing the pending-order preview', async () => {
-    // Some providers (e.g. MoonPay) return orderId as a full path
-    // ("providers/moonpay-staging/orders/c-abc123") rather than a bare code.
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'providers/moonpay-staging/orders/c-abc123',
@@ -357,7 +352,7 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(getPendingOrderPreview('c-abc123')).toMatchObject({
-      fiatCurrency: { symbol: 'USD' },
+      cryptoCurrency: { symbol: mockSelectedToken.symbol },
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });

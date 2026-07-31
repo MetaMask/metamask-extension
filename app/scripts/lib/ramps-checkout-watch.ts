@@ -2,7 +2,6 @@ import {
   getInternalOrderCode,
   RampsOrderStatus,
   type RampsController,
-  type RampsOrder,
 } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
@@ -16,9 +15,7 @@ export type WatchRampsCheckoutTabParams = {
    */
   orderAlreadyPrecreated: boolean;
   /**
-   * Internal order code for the precreated stub, when one exists. Used to
-   * optimistically mark the order in-progress on redirect (snappy pending
-   * toast) and to retire the stub once the provider's real order id arrives.
+   * Precreated stub code, when one exists (pending flip + retire).
    */
   orderCode?: string;
 };
@@ -28,9 +25,8 @@ type ActiveWatch = {
 };
 
 /**
- * Watches a provider checkout tab for navigation to the ramps fake-callback
- * URL. Lives in the background so it survives popup unload when the user
- * leaves the extension to finish checkout.
+ * Background watcher for provider checkout tabs navigating to the ramps
+ * callback URL.
  *
  * @param platform - Extension platform (tab listeners / closeTab).
  * @param rampsController - Controller used to resolve redirect-only orders.
@@ -56,23 +52,68 @@ export function createWatchRampsCheckoutTab(
       activeByTabId.delete(tabId);
     };
 
-    const markPrecreatedOrderPending = (): RampsOrder | undefined => {
+    const markPrecreatedOrderPending = (): void => {
       if (!orderCode) {
-        return undefined;
+        return;
       }
       const existing = (rampsController.state?.orders ?? []).find(
         (order) => getInternalOrderCode(order) === orderCode,
       );
       if (!existing || existing.status !== RampsOrderStatus.Precreated) {
-        return undefined;
+        return;
       }
-      // Optimistic in-progress so the UI pending toast fires the moment the
-      // provider tab closes, instead of waiting on the next poll cycle.
+      // Flip PRECREATED → PENDING immediately for the UI toast.
       rampsController.addOrder({
         ...existing,
         status: RampsOrderStatus.Pending,
       });
-      return existing;
+    };
+
+    /**
+     * Removes the stub when the resolved order uses a different code.
+     *
+     * @param resolvedCode - Internal code of the resolved order.
+     */
+    const retireStub = (resolvedCode?: string): void => {
+      if (orderCode && resolvedCode && orderCode !== resolvedCode) {
+        rampsController.removeOrder(orderCode);
+      }
+    };
+
+    const resolveOrder = async (callbackUrl: string): Promise<void> => {
+      // Always resolve via callback URL (provider id may differ from the stub).
+      try {
+        const order = await rampsController.getOrderFromCallback(
+          providerCode,
+          callbackUrl,
+          walletAddress,
+        );
+        rampsController.addOrder(order);
+        retireStub(getInternalOrderCode(order));
+        return;
+      } catch (callbackError) {
+        console.error(
+          'Failed to resolve ramps order from callback',
+          callbackError,
+        );
+      }
+
+      // Fallback: resolve by stub code if the callback request fails.
+      if (!orderCode) {
+        return;
+      }
+
+      try {
+        const order = await rampsController.getOrder(
+          providerCode,
+          orderCode,
+          walletAddress,
+        );
+        retireStub(getInternalOrderCode(order));
+      } catch (error) {
+        // Keep PENDING on failure; do not revert to PRECREATED.
+        console.error('Failed to resolve ramps order by code', error);
+      }
     };
 
     const finish = (callbackUrl?: string) => {
@@ -83,31 +124,8 @@ export function createWatchRampsCheckoutTab(
         return;
       }
 
-      // Fire pending toast / activity update immediately on redirect.
-      const precreatedOrder = markPrecreatedOrderPending();
-
-      // Always resolve from the callback URL — even for precreated checkouts.
-      // Providers like MoonPay put their native transaction id in the redirect;
-      // polling the custom order id alone leaves an orphan PRECREATED stub and
-      // a separate PENDING/COMPLETED row under the native id.
-      rampsController
-        .getOrderFromCallback(providerCode, callbackUrl, walletAddress)
-        .then((order) => {
-          const resolvedCode = getInternalOrderCode(order);
-          rampsController.addOrder(order);
-          if (orderCode && resolvedCode && orderCode !== resolvedCode) {
-            rampsController.removeOrder(orderCode);
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to resolve ramps order from callback', error);
-          // Undo the optimistic flip. A pending stub carrying no provider data
-          // is invisible to `removeStalePrecreatedOrders`, so leaving it would
-          // strand it in state forever.
-          if (precreatedOrder) {
-            rampsController.addOrder(precreatedOrder);
-          }
-        });
+      markPrecreatedOrderPending();
+      resolveOrder(callbackUrl).catch(() => undefined);
     };
 
     function onUpdated(

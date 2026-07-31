@@ -215,21 +215,15 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         ? getInternalOrderCode(widget.orderId)
         : undefined;
 
-      // Durable work first — opening a tab can unload the popup.
+      // Persist order state before opening a tab (popup may unload).
       if (widget.orderId && orderCode) {
         if (selectedToken) {
           setPendingOrderPreview(orderCode, {
-            cryptoAmount: selectedQuote.quote?.amountOut ?? '0',
             cryptoCurrency: {
               symbol: selectedToken.symbol,
               assetId: selectedToken.assetId,
               decimals: selectedToken.decimals,
             },
-            fiatAmount: Number(
-              selectedQuote.quote?.amountOutInFiat ?? debouncedAmount,
-            ),
-            fiatCurrency: { symbol: currency },
-            totalFeesFiat: Number(selectedQuote.quote?.totalFees ?? 0),
           });
         }
         await addPrecreatedOrder({
@@ -252,8 +246,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
       const openedTab = await global.platform.openTab({ url: widget.url });
       if (openedTab.id === undefined) {
-        // Without a tab id the background watcher cannot detect the callback
-        // redirect, so the order would never resolve.
+        // Watcher needs a tab id to observe the callback redirect.
         await cleanupSeededOrder();
         setContinueError(t('rampsBuyWidgetError'));
         return;
@@ -289,8 +282,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   }, [
     addPrecreatedOrder,
     canContinue,
-    currency,
-    debouncedAmount,
     getBuyWidgetData,
     isContinuing,
     navigate,

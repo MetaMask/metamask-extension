@@ -208,8 +208,12 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       }
       case 'rampBuy':
       case 'rampSell': {
-        const { token, fiat } = activity.data;
+        const { token, fiat, provider } = activity.data;
         const symbol = token?.symbol ?? '';
+        const hasCryptoAmount =
+          token?.amount !== undefined &&
+          Number.isFinite(Number(token.amount)) &&
+          Number(token.amount) > 0;
         const fiatAmount =
           fiat?.amount === undefined ? undefined : Number(fiat.amount);
         const orderFiat =
@@ -222,11 +226,12 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [symbol]),
-          primaryAmount: formatTokenAmount(token),
+          subtitle: provider?.name || t(labelKeys.description.key, [symbol]),
+          primaryAmount:
+            activity.status === 'pending' && token && !hasCryptoAmount
+              ? `...${symbol ? ` ${symbol}` : ''}`
+              : formatTokenAmount(token),
           primaryDirection: token?.direction,
-          // Prefer the order's own fiat amount — market-rate conversion of the
-          // token amount is lossy when human units are mistaken for base units.
           secondaryAmount: orderFiat ?? formatAsFiat(token),
         };
       }

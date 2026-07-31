@@ -1,18 +1,8 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
 
-export type PendingOrderPreview = Pick<
-  RampsOrder,
-  | 'cryptoAmount'
-  | 'cryptoCurrency'
-  | 'fiatAmount'
-  | 'fiatCurrency'
-  | 'totalFeesFiat'
->;
+export type PendingOrderPreview = Pick<RampsOrder, 'cryptoCurrency'>;
 
-// ponytail: unbounded in-memory map, keyed by order code — bounded in
-// practice by how many buys a user starts in one session; real order data
-// (see withPendingOrderPreview in mapRampsOrderSafely.ts) supersedes these as
-// soon as it arrives, so stale entries just go unused rather than misrender.
+// Session-scoped preview map; real order data supersedes these entries.
 const previews = new Map<string, PendingOrderPreview>();
 
 export function setPendingOrderPreview(

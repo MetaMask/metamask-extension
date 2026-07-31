@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`groupActivityListItems returns only date-grouped rows when nothing is pending 1`] = `
+[
+  {
+    "date": 1735776000000,
+    "type": "date-header",
+  },
+  {
+    "item": {
+      "chainId": "eip155:1",
+      "data": {
+        "from": "0x1",
+        "to": "0x2",
+      },
+      "hash": "0xabc",
+      "status": "success",
+      "timestamp": 1735819200000,
+      "type": "send",
+    },
+    "type": "item",
+  },
+  {
+    "date": 1735689600000,
+    "type": "date-header",
+  },
+  {
+    "item": {
+      "chainId": "eip155:1",
+      "data": {
+        "from": "0x1",
+        "to": "0x2",
+      },
+      "hash": "0xabc",
+      "status": "success",
+      "timestamp": 1735725600000,
+      "type": "send",
+    },
+    "type": "item",
+  },
+]
+`;

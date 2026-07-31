@@ -6,9 +6,13 @@ import {
   RampsOrderStatus,
   type RampsOrder,
 } from '@metamask/ramps-controller';
-import { ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { mapRampsOrderSafely } from '../../../hooks/ramps/utils/mapRampsOrderSafely';
 import {
   dismissToast,
   showFailedToast,
@@ -35,26 +39,40 @@ const IN_PROGRESS = new Set<RampsOrderStatus>([
 
 const generateToastId = (orderCode: string) => `ramp-${orderCode}`;
 
-function navigateToActivity(navigate: ReturnType<typeof useNavigate>) {
+/**
+ * Navigates to order details, or Activity when chain/id is unknown.
+ *
+ * @param navigate - Router navigate function.
+ * @param order - The order the toast belongs to.
+ */
+function navigateToOrder(
+  navigate: ReturnType<typeof useNavigate>,
+  order: RampsOrder,
+) {
+  const item = mapRampsOrderSafely(order);
+  const identifier = item?.hash ?? getInternalOrderCode(order);
+
+  if (item?.chainId && identifier) {
+    navigate(`${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`);
+    return;
+  }
+
   navigate(ACTIVITY_ROUTE);
 }
 
 /**
- * Watches RampsController orders in Redux and shows pending / success / failed
- * toasts on status transitions. Covers both poll-driven updates (including
- * PRECREATED → PENDING) and redirect-resolved addOrder inserts.
- *
- * Initial PRECREATED seeds from Continue do not toast — that path already
- * showed the "opened in a new tab" toast.
+ * Toasts pending / success / failed on ramps order status transitions.
  */
 export function useRampsOrderEventToasts(): void {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);
   const previousStatusById = useRef<Map<string, RampsOrderStatus>>(new Map());
+  const ordersRef = useRef(orders);
   const navigate = useNavigate();
   const t = useI18nContext();
   const initialized = useRef(false);
 
   useEffect(() => {
+    ordersRef.current = orders;
     const previous = previousStatusById.current;
     const next = new Map<string, RampsOrderStatus>();
 
@@ -66,8 +84,7 @@ export function useRampsOrderEventToasts(): void {
       next.set(orderCode, order.status);
 
       const previousStatus = previous.get(orderCode);
-      // First pass after mount: seed the map without toasting historical
-      // orders already in state (e.g. after unlock / page reload).
+      // Seed existing statuses on mount without toasting them.
       if (!initialized.current) {
         continue;
       }
@@ -78,10 +95,14 @@ export function useRampsOrderEventToasts(): void {
         previousStatus,
         navigate,
         t,
+        // Resolve the navigation target at click time.
+        getLatestOrder: (code: string) =>
+          ordersRef.current.find(
+            (candidate) => getInternalOrderCode(candidate) === code,
+          ),
       });
     }
 
-    // Drop toast phase for orders that disappeared (removed / account switch).
     for (const orderCode of previous.keys()) {
       if (!next.has(orderCode)) {
         clearToastPhase(orderCode);
@@ -100,25 +121,27 @@ function handleOrderStatusChange({
   previousStatus,
   navigate,
   t,
+  getLatestOrder,
 }: {
   order: RampsOrder;
   orderCode: string;
   previousStatus: RampsOrderStatus | undefined;
   navigate: ReturnType<typeof useNavigate>;
   t: ReturnType<typeof useI18nContext>;
+  getLatestOrder: (orderCode: string) => RampsOrder | undefined;
 }) {
   if (previousStatus === order.status) {
     return;
   }
 
   const toastId = generateToastId(orderCode);
-  const onActionClick = () => navigateToActivity(navigate);
+  const onActionClick = () =>
+    navigateToOrder(navigate, getLatestOrder(orderCode) ?? order);
   const action = {
     actionText: t('rampsOrderToastView'),
     onActionClick,
   };
 
-  // Fresh redirect-resolved order, or poll left PRECREATED — pending toast.
   const becameInProgress =
     IN_PROGRESS.has(order.status) &&
     (previousStatus === undefined ||
@@ -134,8 +157,7 @@ function handleOrderStatusChange({
   }
 
   if (order.status === RampsOrderStatus.Completed) {
-    // Seed the pending phase if we never toasted one (e.g. PRECREATED →
-    // COMPLETED in a single poll) so the terminal guard still allows success.
+    // Ensure the pending phase is recorded so a terminal toast is allowed.
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
       showSuccessToast(toastId, {

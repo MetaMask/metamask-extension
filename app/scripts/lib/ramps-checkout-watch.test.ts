@@ -48,6 +48,11 @@ describe('createWatchRampsCheckoutTab', () => {
         providerOrderId: 'native-uuid',
         status: 'PENDING',
       }),
+      getOrder: jest.fn().mockResolvedValue({
+        id: 'moonpay/orders/native-uuid',
+        providerOrderId: 'native-uuid',
+        status: 'PENDING',
+      }),
       addOrder: jest.fn(),
       removeOrder: jest.fn(),
     };
@@ -140,7 +145,7 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(rampsController.removeOrder).toHaveBeenCalledWith('c-custom');
   });
 
-  it('restores the precreated stub when the callback order cannot be resolved', async () => {
+  it('retires the stub through the polling path when the callback lookup fails', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     const stub = {
       providerOrderId: 'c-custom',
@@ -151,7 +156,7 @@ describe('createWatchRampsCheckoutTab', () => {
       orders: [stub],
     });
     rampsController.getOrderFromCallback.mockRejectedValue(
-      new Error('callback lookup failed'),
+      new Error('Failed to fetch'),
     );
 
     watch({
@@ -168,6 +173,51 @@ describe('createWatchRampsCheckoutTab', () => {
       undefined,
     );
 
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(rampsController.getOrder).toHaveBeenCalledWith(
+      'moonpay',
+      'c-custom',
+      '0xabc',
+    );
+    expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
+    expect(rampsController.removeOrder).toHaveBeenCalledWith('c-custom');
+  });
+
+  it('leaves the order pending when both the callback and the lookup fail', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    const stub = {
+      providerOrderId: 'c-custom',
+      status: RampsOrderStatus.Precreated,
+      walletAddress: '0xabc',
+    };
+    const { rampsController, watch, getOnUpdated } = createHarness({
+      orders: [stub],
+    });
+    rampsController.getOrderFromCallback.mockRejectedValue(
+      new Error('Failed to fetch'),
+    );
+    rampsController.getOrder.mockRejectedValue(new Error('Failed to fetch'));
+
+    watch({
+      tabId: 8,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: true,
+      orderCode: 'c-custom',
+    });
+
+    getOnUpdated()?.(
+      8,
+      { url: `${callbackBase}?transactionId=abc` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
 

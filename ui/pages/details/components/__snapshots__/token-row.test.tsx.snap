@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokenRow renders an amount placeholder with the token symbol 1`] = `
+<div>
+  <div
+    class="flex items-center gap-2"
+  >
+    <div
+      data-testid="chain-badge"
+    >
+      <div
+        data-testid="activity-avatar"
+      />
+    </div>
+    <h2
+      class="text-success-default text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+      data-testid="transaction-list-item-primary-currency"
+    >
+      ... ETH
+    </h2>
+  </div>
+</div>
+`;

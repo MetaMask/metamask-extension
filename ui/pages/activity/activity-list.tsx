@@ -73,10 +73,7 @@ export function ActivityList({
   );
 
   const groupedItems = useMemo(() => {
-    // rampsItems first: once a ramp order settles on-chain, its hash can
-    // also surface as a generic local/API tx — dedupeItems keeps whichever
-    // source it saw first for a given hash, and the ramp-specific view is
-    // strictly more informative than the generic classification.
+    // Ramps first so settled orders keep the ramp classification over generic txs.
     return groupActivityListItems(
       dedupeItems(rampsItems, localItems, evmItems, nonEvmItems),
     );

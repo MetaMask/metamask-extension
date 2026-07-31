@@ -21,11 +21,10 @@ import { MetadataSection, TokensSection } from '../components/sections';
 import { Footer, Row, Section } from '../components/shared';
 
 /**
- * Shorten an order id for display, keeping both ends (mobile parity —
- * `providerOrderId` is usually a `<prefix>/orders/<id>` composite, so
- * trailing-only truncation reads as an unhelpful "...w41").
+ * Truncates the middle of long order ids for display.
+ *
  * @param id - The full order id.
- * @returns The shortened id, or the original id if it's already short.
+ * @returns The shortened id, or the original when already short.
  */
 function shortenOrderId(id: string): string {
   return id.length > 14 ? `${id.slice(0, 6)}...${id.slice(-6)}` : id;
@@ -44,8 +43,6 @@ export function RampOrderDetails({
 
   const { fiat, token, provider, statusDescription, paymentDetails } =
     item.data;
-  // Lookup accepts shared data.id as-is (getOrderById normalizes via
-  // getInternalOrderCode). Display/copy uses the canonical internal code.
   const rawOrder = item.data.id ? getOrderById(item.data.id) : undefined;
   const orderId = item.data.id ? getInternalOrderCode(item.data.id) : undefined;
   const paidWith =
@@ -82,7 +79,10 @@ export function RampOrderDetails({
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        <TokensSection tokens={[{ token }]} />
+        <TokensSection
+          tokens={[{ token }]}
+          amountPlaceholder={item.status === 'pending' ? '...' : undefined}
+        />
         <MetadataSection
           item={item}
           statusDescription={

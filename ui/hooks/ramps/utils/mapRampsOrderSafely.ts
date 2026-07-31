@@ -6,10 +6,7 @@ import {
 import { getPendingOrderPreview } from './pendingOrderPreview';
 
 /**
- * Seeds a chain id only when the order has no resolvable network/crypto chain
- * inputs yet (e.g. right after checkout redirect). Callers pass the chain they
- * already know from the URL / selected token. String networks and
- * cryptoCurrency fallbacks are handled by `mapRampsOrder` itself.
+ * Seeds `network.chainId` when the order has no resolvable chain.
  *
  * @param order - The raw ramps order.
  * @param fallbackChainId - Chain to use when the order's is missing.
@@ -19,9 +16,6 @@ function seedNetworkIfNeeded(
   order: RampsOrder,
   fallbackChainId?: string,
 ): RampsOrder {
-  if (!fallbackChainId) {
-    return order;
-  }
   const { network } = order;
   if (typeof network === 'string' && network) {
     return order;
@@ -29,9 +23,25 @@ function seedNetworkIfNeeded(
   if (typeof network === 'object' && network?.chainId) {
     return order;
   }
+
+  // Mapper requires `network` to be defined before reading cryptoCurrency.
   if (order.cryptoCurrency?.chainId || order.cryptoCurrency?.assetId) {
+    if (network !== undefined && network !== null) {
+      return order;
+    }
+    return {
+      ...order,
+      network: {
+        name: '',
+        chainId: order.cryptoCurrency.chainId ?? '',
+      },
+    };
+  }
+
+  if (!fallbackChainId) {
     return order;
   }
+
   return {
     ...order,
     network: {
@@ -42,14 +52,13 @@ function seedNetworkIfNeeded(
 }
 
 /**
- * Overlays build-quote preview amounts onto an order that still lacks
- * token/fiat fields. Real provider fields always win once populated.
+ * Fills missing `cryptoCurrency` from the session preview.
  *
  * @param order - The raw ramps order.
- * @returns The order with preview fields filled when missing.
+ * @returns The order with preview currency filled when missing.
  */
 function withPendingOrderPreview(order: RampsOrder): RampsOrder {
-  if (order.cryptoCurrency && order.fiatCurrency) {
+  if (order.cryptoCurrency) {
     return order;
   }
   const preview = getPendingOrderPreview(getInternalOrderCode(order));
@@ -59,24 +68,25 @@ function withPendingOrderPreview(order: RampsOrder): RampsOrder {
   return {
     ...order,
     cryptoCurrency: order.cryptoCurrency ?? preview.cryptoCurrency,
-    cryptoAmount: order.cryptoCurrency
-      ? order.cryptoAmount
-      : preview.cryptoAmount,
-    fiatCurrency: order.fiatCurrency ?? preview.fiatCurrency,
-    fiatAmount: order.fiatCurrency ? order.fiatAmount : preview.fiatAmount,
-    totalFeesFiat: order.fiatCurrency
-      ? order.totalFeesFiat
-      : preview.totalFeesFiat,
   };
 }
 
 /**
- * Thin extension adapter around shared `mapRampsOrder`. Applies only
- * extension-owned concerns (build-quote preview, details-route chain seed),
- * then returns the shared ActivityItem unchanged.
+ * Coerces a missing `txHash` to `''` for the shared mapper.
+ *
+ * @param order - The raw ramps order.
+ * @returns The order with `txHash` guaranteed to be a string.
+ */
+function withNormalizedTxHash(order: RampsOrder): RampsOrder {
+  const txHash = order.txHash as string | null | undefined;
+  return typeof txHash === 'string' ? order : { ...order, txHash: '' };
+}
+
+/**
+ * Maps a ramps order to an activity item for the extension UI.
  *
  * @param order - The raw ramps order to map.
- * @param fallbackChainId - Optional chain for redirect stubs missing network.
+ * @param fallbackChainId - Optional chain when the order has none yet.
  * @returns The mapped activity item, or undefined when filtered / unmappable.
  */
 export function mapRampsOrderSafely(
@@ -85,10 +95,37 @@ export function mapRampsOrderSafely(
 ): NonNullable<ReturnType<typeof mapRampsOrder>> | undefined {
   try {
     const prepared = seedNetworkIfNeeded(
-      withPendingOrderPreview(order),
+      withNormalizedTxHash(withPendingOrderPreview(order)),
       fallbackChainId,
     );
-    return mapRampsOrder(prepared as unknown as RampsOrderLike) ?? undefined;
+    const item =
+      mapRampsOrder(prepared as unknown as RampsOrderLike) ?? undefined;
+    if (!item || (item.type !== 'rampBuy' && item.type !== 'rampSell')) {
+      return item;
+    }
+
+    const hasCryptoAmount =
+      order.cryptoAmount !== null &&
+      order.cryptoAmount !== undefined &&
+      Number(order.cryptoAmount) > 0;
+    const hasFiatAmount =
+      order.fiatAmount !== null &&
+      order.fiatAmount !== undefined &&
+      Number(order.fiatAmount) > 0;
+
+    return {
+      ...item,
+      data: {
+        ...item.data,
+        token: item.data.token
+          ? {
+              ...item.data.token,
+              amount: hasCryptoAmount ? item.data.token.amount : undefined,
+            }
+          : undefined,
+        fiat: hasFiatAmount ? item.data.fiat : undefined,
+      },
+    };
   } catch {
     return undefined;
   }
