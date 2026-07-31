@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,37 +14,78 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import { isWebUrl } from '../../../shared/lib/url-utils';
+import { validateRpcUrlChainId } from '../../components/multichain/network-list-menu/add-rpc-url-modal/validate-rpc-url';
 
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;
   onAdded: (url: string, name?: string) => void;
+  expectedChainId?: string;
 };
 
 export const AddRpcUrlPageForm = ({
   onCancel,
   onAdded,
+  expectedChainId,
 }: AddRpcUrlPageFormProps) => {
   const t = useI18nContext();
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
+  const [rpcError, setRpcError] = useState<string>();
+  const [isValidatingRpc, setIsValidatingRpc] = useState(false);
+  const trimmedUrl = url.trim();
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextUrl = event.target.value;
+    const nextTrimmedUrl = nextUrl.trim();
 
-  const error = useMemo(() => {
-    if (!url) {
+    setUrl(nextUrl);
+    setRpcError(undefined);
+    setIsValidatingRpc(
+      Boolean(nextTrimmedUrl && isWebUrl(nextTrimmedUrl) && expectedChainId),
+    );
+  };
+
+  const urlError = useMemo(() => {
+    if (!trimmedUrl) {
       return undefined;
     }
 
-    if (isWebUrl(url)) {
+    if (isWebUrl(trimmedUrl)) {
       return undefined;
     }
 
-    if (isWebUrl(`https://${url}`)) {
+    if (isWebUrl(`https://${trimmedUrl}`)) {
       return t('urlErrorMsg');
     }
 
     return t('invalidRPC');
-  }, [t, url]);
+  }, [t, trimmedUrl]);
 
-  const isSubmitDisabled = !url.trim() || Boolean(error);
+  useEffect(() => {
+    if (!trimmedUrl || urlError || !expectedChainId) {
+      return undefined;
+    }
+
+    let isCurrentValidation = true;
+
+    validateRpcUrlChainId({ url: trimmedUrl, expectedChainId, t })
+      .then((validationError) => {
+        if (isCurrentValidation) {
+          setRpcError(validationError);
+        }
+      })
+      .finally(() => {
+        if (isCurrentValidation) {
+          setIsValidatingRpc(false);
+        }
+      });
+
+    return () => {
+      isCurrentValidation = false;
+    };
+  }, [expectedChainId, t, trimmedUrl, urlError]);
+
+  const error = urlError ?? rpcError;
+  const isSubmitDisabled = !trimmedUrl || Boolean(error) || isValidatingRpc;
 
   return (
     <Box
@@ -69,9 +110,7 @@ export const AddRpcUrlPageForm = ({
               id="rpcUrl"
               placeholder={t('enterRpcUrl')}
               value={url}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setUrl(event.target.value)
-              }
+              onChange={handleUrlChange}
               className="rounded-xl border border-border-muted bg-background-muted px-4 py-3"
               style={{ borderRadius: BorderRadius.XL }}
               data-testid="rpc-url-input-test"
@@ -126,7 +165,7 @@ export const AddRpcUrlPageForm = ({
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSubmitDisabled}
-          onClick={() => onAdded(url, name || undefined)}
+          onClick={() => onAdded(trimmedUrl, name || undefined)}
           className="flex-1 rounded-xl"
           data-testid="page-container-footer-next"
         >

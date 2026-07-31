@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   ButtonPrimary,
@@ -19,25 +19,69 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isWebUrl } from '../../../../../shared/lib/url-utils';
+import { validateRpcUrlChainId } from './validate-rpc-url';
 
 const AddRpcUrlModal = ({
   onAdded,
+  expectedChainId,
 }: {
   onAdded: (url: string, name?: string) => void;
+  expectedChainId?: string;
 }) => {
   const t = useI18nContext();
 
   const [url, setUrl] = useState<string>();
-  const [error, setError] = useState<string>();
+  const [rpcError, setRpcError] = useState<string>();
+  const [isValidatingRpc, setIsValidatingRpc] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
+  const trimmedUrl = url?.trim();
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextUrl = event.target.value;
+    const nextTrimmedUrl = nextUrl.trim();
+
+    setUrl(nextUrl);
+    setRpcError(undefined);
+    setIsValidatingRpc(
+      Boolean(nextTrimmedUrl && isWebUrl(nextTrimmedUrl) && expectedChainId),
+    );
+  };
+
+  const urlError = useMemo(() => {
+    if (trimmedUrl && !isWebUrl(trimmedUrl)) {
+      return isWebUrl(`https://${trimmedUrl}`)
+        ? t('urlErrorMsg')
+        : t('invalidRPC');
+    }
+
+    return undefined;
+  }, [t, trimmedUrl]);
 
   useEffect(() => {
-    if (url && !isWebUrl(url)) {
-      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
-    } else {
-      setError(undefined);
+    if (!trimmedUrl || urlError || !expectedChainId) {
+      return undefined;
     }
-  }, [url]);
+
+    let isCurrentValidation = true;
+
+    validateRpcUrlChainId({ url: trimmedUrl, expectedChainId, t })
+      .then((validationError) => {
+        if (isCurrentValidation) {
+          setRpcError(validationError);
+        }
+      })
+      .finally(() => {
+        if (isCurrentValidation) {
+          setIsValidatingRpc(false);
+        }
+      });
+
+    return () => {
+      isCurrentValidation = false;
+    };
+  }, [expectedChainId, t, trimmedUrl, urlError]);
+
+  const error = urlError ?? rpcError;
+  const isSubmitDisabled = !trimmedUrl || Boolean(error) || isValidatingRpc;
 
   return (
     <Box
@@ -62,7 +106,7 @@ const AddRpcUrlModal = ({
           inputProps={{
             'data-testid': 'rpc-url-input-test',
           }}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={handleUrlChange}
           autoFocus
         />
         {error && (
@@ -94,12 +138,12 @@ const AddRpcUrlModal = ({
       >
         <ButtonPrimary
           width={BlockSize.Full}
-          disabled={Boolean(error)}
+          disabled={isSubmitDisabled}
           size={ButtonPrimarySize.Lg}
           data-testid="page-container-footer-next"
           onClick={async () => {
-            if (url && !error && nameRef.current) {
-              onAdded(url, nameRef.current.value || undefined);
+            if (trimmedUrl && !error && nameRef.current) {
+              onAdded(trimmedUrl, nameRef.current.value || undefined);
             }
           }}
         >

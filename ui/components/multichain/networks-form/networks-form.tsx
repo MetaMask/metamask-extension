@@ -146,6 +146,7 @@ export const NetworksForm = ({
 
   const [suggestedName, setSuggestedName] = useState<string>();
   const [suggestedTicker, setSuggestedTicker] = useState<string>();
+  const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
@@ -250,81 +251,43 @@ export const NetworksForm = ({
       }
     }
 
+    let rpcError: [string, string] | undefined;
+    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
+      rpcError = [
+        'endpointReturnedDifferentChainId',
+        t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
+      ];
+    }
+
     setErrors((state) => ({
       ...state,
       chainId: error ? { key: error[0], msg: error[1] } : undefined,
+      rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
     }));
-  }, [chainId, existingNetwork?.chainId]);
+  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
 
-  // Fetch the chain ID from every RPC endpoint when the RPC list changes.
+  // Fetch the chain ID from the selected RPC endpoint when it changes.
   useEffect(() => {
-    const rpcEndpoints = rpcUrls?.rpcEndpoints ?? [];
+    const rpcUrl =
+      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
 
-    if (!rpcEndpoints.length) {
-      setErrors((state) => ({
-        ...state,
-        rpcUrl: undefined,
-      }));
-      return undefined;
+    if (rpcUrl) {
+      jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
+        .then((response) => {
+          setFetchedChainId(response as string);
+        })
+        .catch((err) => {
+          setFetchedChainId(undefined);
+          log.warn('Failed to fetch the chainId from the endpoint.', err);
+          setErrors((state) => ({
+            ...state,
+            rpcUrl: {
+              key: 'failedToFetchChainId',
+              msg: t('failedToFetchChainId'),
+            },
+          }));
+        });
     }
-
-    let isCurrentValidation = true;
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
-
-    const validateRpcEndpoint = async (
-      url: string,
-    ): Promise<[string, string] | undefined> => {
-      try {
-        const fetchedChainId = (await jsonRpcRequest(
-          templateInfuraRpc(url),
-          'eth_chainId',
-        )) as string;
-
-        if (chainIdHex && fetchedChainId !== chainIdHex) {
-          return [
-            'endpointReturnedDifferentChainId',
-            t('endpointReturnedDifferentChainId', [
-              hexToDecimal(fetchedChainId),
-            ]),
-          ];
-        }
-
-        return undefined;
-      } catch (err) {
-        log.warn('Failed to fetch the chainId from the endpoint.', err);
-        return ['failedToFetchChainId', t('failedToFetchChainId')];
-      }
-    };
-
-    const setRpcUrlError = (rpcError: [string, string] | undefined) => {
-      setErrors((state) => ({
-        ...state,
-        rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
-      }));
-    };
-
-    const validateRpcEndpoints = async () => {
-      for (const { url } of rpcEndpoints) {
-        const rpcError = await validateRpcEndpoint(url);
-
-        if (!isCurrentValidation) {
-          return;
-        }
-
-        if (rpcError) {
-          setRpcUrlError(rpcError);
-          return;
-        }
-      }
-
-      setRpcUrlError(undefined);
-    };
-
-    validateRpcEndpoints();
-
-    return () => {
-      isCurrentValidation = false;
-    };
   }, [chainId, rpcUrls]);
 
   const onSubmit = async () => {

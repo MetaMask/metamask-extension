@@ -885,6 +885,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     } else if (actionMode === ACTION_MODE.ADD_RPC) {
       return (
         <AddRpcUrlModal
+          expectedChainId={networkFormState.chainId}
           onAdded={(url, name) => {
             // Note: We could choose to rename the URL if it already exists with a different name
             if (rpcUrls.rpcEndpoints?.every((e) => !URI.equal(e.url, url))) {
