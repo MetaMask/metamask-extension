@@ -7,8 +7,6 @@ import { RawLocator } from '../../common';
  * and customize gas parameters.
  */
 export default class GasFeeModal {
-  private driver: Driver;
-
   private readonly advancedEIP1559Modal: RawLocator =
     '[data-testid="gas-fee-advanced-eip1559-modal"]';
 
@@ -17,6 +15,8 @@ export default class GasFeeModal {
 
   private readonly cancelButton: RawLocator =
     '[data-testid="gas-fee-modal-cancel-button"]';
+
+  private driver: Driver;
 
   private readonly editGasFeeModalTitle = { text: 'Edit gas fee', tag: 'h4' };
 

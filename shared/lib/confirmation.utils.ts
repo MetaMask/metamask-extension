@@ -14,6 +14,7 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.batch,
   TransactionType.contractInteraction,
   TransactionType.deployContract,
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdClaim,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,

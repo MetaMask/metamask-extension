@@ -26,7 +26,6 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   NotificationsSettingsBox,
@@ -58,7 +57,6 @@ export function NotificationsSettingsAllowNotifications({
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
@@ -72,7 +70,7 @@ export function NotificationsSettingsAllowNotifications({
 
   useEffect(() => {
     setToggleValue(isMetamaskNotificationsEnabled);
-  }, [isMetamaskNotificationsEnabled]);
+  }, [isMetamaskNotificationsEnabled, setToggleValue]);
 
   useEffect(() => {
     if (!error && isMetamaskNotificationsEnabled) {
@@ -88,17 +86,11 @@ export function NotificationsSettingsAllowNotifications({
           .addCategory(MetaMetricsEventCategory.NotificationSettings)
           .addProperties({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            settings_type: 'notifications',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            was_profile_syncing_on: isBackupAndSyncEnabled,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            old_value: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_value: false,
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'master',
+            notification_channel: 'all',
+            enabled: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),
       );
@@ -109,17 +101,11 @@ export function NotificationsSettingsAllowNotifications({
           .addCategory(MetaMetricsEventCategory.NotificationSettings)
           .addProperties({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            settings_type: 'notifications',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            was_profile_syncing_on: isBackupAndSyncEnabled,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            old_value: false,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_value: true,
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'master',
+            notification_channel: 'all',
+            enabled: true,
+            /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),
       );
@@ -131,12 +117,12 @@ export function NotificationsSettingsAllowNotifications({
   }, [
     createEventBuilder,
     setLoading,
+    setToggleValue,
     isMetamaskNotificationsEnabled,
     disableNotifications,
     enableNotifications,
     refetchPreferences,
     toggleValue,
-    isBackupAndSyncEnabled,
     trackEvent,
   ]);
 

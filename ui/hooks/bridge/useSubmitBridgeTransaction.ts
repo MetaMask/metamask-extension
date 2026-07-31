@@ -5,7 +5,10 @@ import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponseV1,
+} from '@metamask/bridge-controller';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
@@ -80,7 +83,7 @@ export default function useSubmitBridgeTransaction() {
   } | null>(null);
 
   const submitQuote = async (
-    quoteResponse: QuoteResponse & QuoteMetadata,
+    quoteResponse: QuoteResponseV1 & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -104,7 +107,7 @@ export default function useSubmitBridgeTransaction() {
       const { requestId } = quoteResponse.quote;
       let rpcPromise =
         inFlightSubmitBridgeTxRef.current?.requestId === requestId
-          ? inFlightSubmitBridgeTxRef.current.promise
+          ? inFlightSubmitBridgeTxRef.current?.promise
           : null;
 
       if (!rpcPromise) {
@@ -156,7 +159,7 @@ export default function useSubmitBridgeTransaction() {
   };
 
   const submitBridgeTransaction = async (
-    quoteResponse: QuoteResponse & QuoteMetadata,
+    quoteResponse: QuoteResponseV1 & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => {
     setIsSubmitting(true);

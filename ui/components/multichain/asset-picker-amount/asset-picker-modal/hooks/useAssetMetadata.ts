@@ -49,7 +49,6 @@ export const useAssetMetadata = (
       shouldFetchMetadata &&
       trimmedSearchQuery.length > 30
     ) {
-      // eslint-disable-next-line react-compiler/react-compiler
       abortControllerRef.current = new AbortController();
       const metadata = await fetchAssetMetadata(
         trimmedSearchQuery,

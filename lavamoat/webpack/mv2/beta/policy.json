@@ -830,6 +830,7 @@
         "console.error": true,
         "fetch.bind": true,
         "performance.now": true,
+        "performance.timeOrigin": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -1669,7 +1670,7 @@
     },
     "@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1746,7 +1747,7 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -1765,13 +1766,24 @@
       }
     },
     "@metamask/keyring-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-utils": {
+      "packages": {
+        "@metamask/superstruct": true
       }
     },
     "@metamask/assets-controller>@metamask/keyring-api>@metamask/keyring-utils": {
@@ -2059,7 +2071,6 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
@@ -2074,6 +2085,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
+        "@metamask/perps-controller>bignumber.js": true,
         "uuid": true
       }
     },
@@ -2884,12 +2896,17 @@
         "AbortSignal": true,
         "CustomEvent": true,
         "DOMException": true,
+        "DecompressionStream": true,
         "Event": true,
         "EventTarget": true,
         "Headers": true,
+        "Response": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
+        "atob": true,
         "clearInterval": true,
+        "clearTimeout": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
@@ -2903,11 +2920,14 @@
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "CloseEvent": true,
-        "CustomEvent": true,
+        "DOMException": true,
         "Event": true,
         "EventTarget": true,
         "MessageEvent": true,
+        "TextEncoder": true,
+        "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
@@ -3948,6 +3968,11 @@
         "crypto": true
       }
     },
+    "@metamask/perps-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true
@@ -4979,7 +5004,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -6933,21 +6958,15 @@
         "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
-        "JSONSchema": true,
         "URL": true,
+        "__zod_globalConfig": true,
         "__zod_globalRegistry": true,
         "atob": true,
         "btoa": true,
-        "coerce": true,
-        "core": true,
-        "iso": true,
-        "locales": true,
-        "navigator": true,
-        "regexes": true,
-        "util": true
+        "navigator": true
       }
     }
   }
