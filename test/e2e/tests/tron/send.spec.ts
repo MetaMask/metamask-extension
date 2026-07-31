@@ -74,7 +74,10 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        await sendPage.checkAmountRequiredError();
+        // Empty amount leaves Continue enabled; Tron snap rejects on submit and
+        // surfaces transactionError on the Continue button.
+        await sendPage.pressContinueButton();
+        await sendPage.checkTransactionError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );
@@ -123,7 +126,9 @@ describe('Tron Send', function (this: Suite) {
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         await sendPage.fillAmount('1');
-        await sendPage.checkInsufficientBalanceToCoverFeesError();
+        // Fee validation runs on Continue; Tron surfaces transactionError on the button.
+        await sendPage.pressContinueButton();
+        await sendPage.checkTransactionError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );
