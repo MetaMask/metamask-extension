@@ -165,6 +165,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AppStateController:getAddressSecurityAlertResponse',
       'AppStateController:addAddressSecurityAlertResponse',
       'AppStateController:addSignatureSecurityAlertResponse',
+      'PhishingController:scanAddress',
       'SubscriptionController:getSubscriptionByProduct',
       'AuthenticationController:getBearerToken',
     ],

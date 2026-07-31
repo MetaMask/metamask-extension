@@ -14,7 +14,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
-import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -57,10 +56,20 @@ export function createTrustSignalsMiddleware(
       }
 
       if (isEthSendTransaction(req)) {
-        handleEthSendTransaction(req, appStateController, networkController);
+        handleEthSendTransaction(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
         scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
-        handleEthSignTypedData(req, appStateController, networkController);
+        handleEthSignTypedData(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
         scanUrl(req, phishingController);
       } else if (isConnected(req, getPermittedAccounts)) {
         scanUrl(req, phishingController);
@@ -94,6 +103,7 @@ function handleEthSendTransaction(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
   if (!hasValidTransactionParams(req)) {
     return;
@@ -111,18 +121,13 @@ function handleEthSendTransaction(
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!supportedEVMChain) {
-    console.error('Unsupported chainId:', rawChainId);
-    return;
-  }
-
   // Scan the 'to' address (contract address)
   scanAddressAndAddToCache(
     to,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    supportedEVMChain,
+    rawChainId,
+    phishingController,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for transaction:',
@@ -139,7 +144,8 @@ function handleEthSendTransaction(
         spenderAddress,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
+        rawChainId,
+        phishingController,
       ).catch((error) => {
         console.error(
           '[createTrustSignalsMiddleware] error scanning spender address for approval:',
@@ -154,6 +160,7 @@ function handleEthSignTypedData(
   req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
+  phishingController: PhishingController,
 ) {
   if (
     req.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
@@ -186,18 +193,13 @@ function handleEthSignTypedData(
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!supportedEVMChain) {
-    console.error('Unsupported chainId:', rawChainId);
-    return;
-  }
-
   // Scan the verifying contract address (token contract)
   scanAddressAndAddToCache(
     verifyingContract,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    supportedEVMChain,
+    rawChainId,
+    phishingController,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for signature:',
@@ -219,7 +221,8 @@ function handleEthSignTypedData(
         spenderAddress,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
+        rawChainId,
+        phishingController,
       ).catch((error) => {
         console.error(
           '[createTrustSignalsMiddleware] error scanning spender address for permit:',
@@ -237,7 +240,8 @@ function handleEthSignTypedData(
         delegateAddress,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
-        supportedEVMChain,
+        rawChainId,
+        phishingController,
       ).catch((error) => {
         console.error(
           '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',

@@ -127,6 +127,7 @@ import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerScanAddressAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
 import {
@@ -612,6 +613,7 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
