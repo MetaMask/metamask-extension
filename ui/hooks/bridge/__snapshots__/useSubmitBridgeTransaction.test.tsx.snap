@@ -23,16 +23,6 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
       },
       "estimatedProcessingTimeInSeconds": 15,
       "gasFee": {
-        "effective": {
-          "amount": "12",
-          "usd": "12",
-          "valueInCurrency": "12",
-        },
-        "max": {
-          "amount": "12",
-          "usd": "12",
-          "valueInCurrency": "12",
-        },
         "total": {
           "amount": "12",
           "usd": "12",

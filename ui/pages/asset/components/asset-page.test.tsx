@@ -113,6 +113,14 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useTokenSecurityData', () => ({
+  useTokenSecurityData: jest.fn(() => ({
+    securityData: null,
+    isLoading: false,
+    error: null,
+  })),
+}));
+
 const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

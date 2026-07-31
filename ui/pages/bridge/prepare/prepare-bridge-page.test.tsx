@@ -5,7 +5,7 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
   QuoteStreamCompleteReason,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
@@ -30,12 +30,11 @@ import {
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
-jest.mock('../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+jest.mock('../hooks/useGasIncludedSupport', () => ({
+  useGasIncludedSupport: jest.fn().mockReturnValue({
+    gasIncluded: false,
+    gasIncluded7702: false,
+  }),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -486,7 +485,7 @@ describe('PrepareBridgePage', () => {
       },
       estimatedProcessingTimeInSeconds: 600,
       nonEvmFeesInNative: '0.00000001',
-    } as unknown as QuoteResponse;
+    } as unknown as QuoteResponseV1;
 
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {

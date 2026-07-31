@@ -15,7 +15,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
@@ -79,7 +79,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
-  type SmartTransactionsMetaMaskState,
+  type SmartTransactionsState,
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
@@ -131,7 +131,7 @@ const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
-    SmartTransactionsMetaMaskState['metamask'] &
+    SmartTransactionsState['metamask'] &
     GasFeeState &
     NetworkState &
     AccountsControllerState &
@@ -838,11 +838,12 @@ export const getFormattedPriceImpactPercentage = createSelector(
 
 export const getFormattedPriceImpactFiat = createSelector(
   [
-    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
     getCurrentCurrency,
   ],
-  (activeQuote, currentCurrency) =>
-    formatPriceImpactFiat(activeQuote, currentCurrency),
+  (priceImpact, currentCurrency) =>
+    formatPriceImpactFiat(priceImpact, currentCurrency),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,
@@ -990,18 +991,22 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
 export const isNativeBalanceInsufficientForQuote = (
-  quote: QuoteResponse & QuoteMetadata,
+  quote: QuoteResponseV1 & QuoteMetadata,
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
-): boolean =>
-  isNativeAddress(fromToken.assetId)
+): boolean => {
+  if (!quote.sentAmount?.amount || !quote.totalNetworkFee?.amount) {
+    return false;
+  }
+  return isNativeAddress(fromToken.assetId)
     ? new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
         .sub(minimumBalanceToKeep)
         .lte(0)
     : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+};
 
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
@@ -1019,7 +1024,7 @@ export const resolveMinimumBalanceToKeep = (
     : '0';
 
 export const computeQuoteValidationErrors = (
-  quote: (QuoteMetadata & QuoteResponse) | undefined | null,
+  quote: (QuoteMetadata & QuoteResponseV1) | undefined | null,
   {
     priceImpactThresholds: { warning, error },
     isHardwareWalletAccount,
@@ -1355,20 +1360,6 @@ export const selectNoFeeAssets = createSelector(
   },
 );
 
-const getIsGasIncludedSwapSupported = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    (_, isSendBundleSupportedForChain: boolean) =>
-      isSendBundleSupportedForChain,
-  ],
-  (fromChainId, isSendBundleSupportedForChain) => {
-    if (!fromChainId || isNonEvmChainId(fromChainId)) {
-      return false;
-    }
-    return isSendBundleSupportedForChain;
-  },
-);
-
 export const getIsStxEnabled = createSelector(
   [
     (state: BridgeAppState) => getFromChain(state)?.chainId,
@@ -1380,21 +1371,6 @@ export const getIsStxEnabled = createSelector(
       return false;
     }
     return getIsSmartTransaction(state, hexChainId);
-  },
-);
-
-export const getIsGasIncluded = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    getIsStxEnabled,
-    getIsGasIncludedSwapSupported,
-  ],
-  // Enable gas-included swaps for solana
-  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
-    if (isSolanaChainId(fromChainId)) {
-      return true;
-    }
-    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
 

@@ -592,11 +592,13 @@ describe('PerpsView', () => {
       );
     });
 
-    it('shows partial toast and tracks FAILED status when some positions fail to close', async () => {
+    it('shows partial toast and reports EXECUTED with the count when some positions fail to close', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
+          // Shape the controller actually produces: it sets
+          // `success = successCount > 0`, so a partial batch is success: true.
           return Promise.resolve({
-            success: false,
+            success: true,
             successCount: 1,
             failureCount: 1,
           });
@@ -618,22 +620,64 @@ describe('PerpsView', () => {
         });
       });
 
+      // 9.2.1's batch close event carries status/duration/bulk_action_id but not
+      // number_positions_closed, so the client stays the only source of the
+      // count. The status must match the controller's, which reports EXECUTED
+      // for any batch with successCount > 0 — a client FAILED here would
+      // contradict the controller's event for the same action.
       const closeTxCalls = mockAnalyticsTrackEvent.mock.calls.filter(
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
       expect(closeTxCalls).toHaveLength(1);
-      expect(closeTxCalls[0][0]).toEqual(
+      expect(closeTxCalls[0][0].properties).toEqual(
         expect.objectContaining({
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 1,
-          }),
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 1,
         }),
       );
     });
 
-    it('shows failed toast and tracks FAILED status when all positions fail to close', async () => {
+    it('reports EXECUTED with the full count when every position closes', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePositions') {
+          return Promise.resolve({
+            success: true,
+            successCount: mocks.mockPositions.length,
+            failureCount: 0,
+          });
+        }
+        return Promise.resolve([]);
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseAllSuccess',
+        });
+      });
+
+      const closeTxCalls = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
+      );
+      expect(closeTxCalls).toHaveLength(1);
+      expect(closeTxCalls[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            mocks.mockPositions.length,
+        }),
+      );
+    });
+
+    it('shows failed toast when all positions fail to close and still reports the count', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
           return Promise.resolve({
@@ -663,12 +707,10 @@ describe('PerpsView', () => {
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
       expect(closeTxCalls).toHaveLength(1);
-      expect(closeTxCalls[0][0]).toEqual(
+      expect(closeTxCalls[0][0].properties).toEqual(
         expect.objectContaining({
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
-          }),
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
         }),
       );
     });

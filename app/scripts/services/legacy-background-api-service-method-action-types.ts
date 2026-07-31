@@ -85,6 +85,23 @@ export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
 };
 
 /**
+ * Triggers a safe reload of the extension without disrupting user state.
+ */
+export type LegacyBackgroundApiServiceRequestSafeReloadAction = {
+  type: `LegacyBackgroundApiService:requestSafeReload`;
+  handler: LegacyBackgroundApiService['requestSafeReload'];
+};
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension
+ * reload. Used when an update is available.
+ */
+export type LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction = {
+  type: `LegacyBackgroundApiService:openUpdateTabAndReload`;
+  handler: LegacyBackgroundApiService['openUpdateTabAndReload'];
+};
+
+/**
  * Updates the phishing lists if necessary and then checks whether the given
  * website is a known phishing site.
  *
@@ -207,6 +224,35 @@ export type LegacyBackgroundApiServiceGetSeedPhraseAction = {
 export type LegacyBackgroundApiServiceResetAccountAction = {
   type: `LegacyBackgroundApiService:resetAccount`;
   handler: LegacyBackgroundApiService['resetAccount'];
+};
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
+ * Enables the given network, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ *
+ * @param chainId - The chain ID of the network to enable.
+ */
+export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledNetworks'];
+};
+
+/**
+ * Enables all popular networks, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ */
+export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
 };
 
 /**
@@ -436,6 +482,38 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Resolve a pending approval. For hardware wallet transactions and signatures,
+ * this handles error parsing.
+ *
+ * @param id - The approval ID.
+ * @param value - The value to resolve with (for transactions, contains txMeta).
+ * @param options - Options for the approval.
+ * @param options.walletType - The hardware wallet type (if hardware wallet).
+ * @param options.waitForResult - Whether to wait for the result.
+ */
+export type LegacyBackgroundApiServiceResolvePendingApprovalAction = {
+  type: `LegacyBackgroundApiService:resolvePendingApproval`;
+  handler: LegacyBackgroundApiService['resolvePendingApproval'];
+};
+
+/**
+ * Approve a hardware wallet transaction with retry support.
+ * This is a convenience wrapper around resolvePendingApproval for the
+ * transaction confirmation flow, which passes txMeta in a specific format.
+ *
+ * @param opts - Options for the transaction.
+ * @param opts.txId - The transaction ID to approve.
+ * @param opts.txMeta - The transaction metadata.
+ * @param opts.actionId - The action ID for tracking.
+ * @param opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+ * @throws When hardware wallet error occurs (with recreatedTxId if recreation succeeded).
+ */
+export type LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction = {
+  type: `LegacyBackgroundApiService:approveHardwareWalletTransaction`;
+  handler: LegacyBackgroundApiService['approveHardwareWalletTransaction'];
+};
+
+/**
  * Rejects all pending approval requests.
  *
  * Snap dialogs and account confirmations are accepted with a falsy value and
@@ -613,6 +691,17 @@ export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
 };
 
 /**
+ * Get Sentinel Network flags for the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns The Sentinel network flags for the given chain, or undefined if not found.
+ */
+export type LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction = {
+  type: `LegacyBackgroundApiService:getSentinelNetworkFlags`;
+  handler: LegacyBackgroundApiService['getSentinelNetworkFlags'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -623,6 +712,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceRequestSafeReloadAction
+  | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
   | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
@@ -633,6 +724,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
@@ -653,6 +747,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceResolvePendingApprovalAction
+  | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
@@ -667,4 +763,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceImportMnemonicToVaultAction
   | LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction
   | LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction
-  | LegacyBackgroundApiServiceIsRelaySupportedAction;
+  | LegacyBackgroundApiServiceIsRelaySupportedAction
+  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction;
