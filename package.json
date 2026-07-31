@@ -314,7 +314,8 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
-    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
+    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
+    "@sentry/core@npm:10.38.0": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -477,7 +478,7 @@
     "@scure/base": "^1.2.5",
     "@segment/analytics-node": "^3.0.0",
     "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch",
-    "@sentry/core": "10.38.0",
+    "@sentry/core": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch",
     "@sentry/types": "10.38.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",

@@ -10,6 +10,11 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
+const sentryStackTraceLimitShim = join(
+  rootDir,
+  'app/scripts/load/set-sentry-stack-trace-limit.ts',
+);
+
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
@@ -127,7 +132,10 @@ export const lavamoatPlugin = (args: Args) =>
       } else if (chunk.name === 'service-worker.ts') {
         return {
           mode: 'safe',
-          staticShims: [join(rootDir, 'app/scripts/load/init-state-hooks.ts')],
+          staticShims: [
+            ...(args.sentry ? [sentryStackTraceLimitShim] : []),
+            join(rootDir, 'app/scripts/load/init-state-hooks.ts'),
+          ],
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,
@@ -154,12 +162,15 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           // If snow is enabled, it needs to run before LavaMoat
-          staticShims: args.snow
-            ? [
+          staticShims: [
+            ...(args.sentry ? [sentryStackTraceLimitShim] : []),
+            ...(args.snow
+              ? [
                 require.resolve('@lavamoat/snow/snow.prod.js'),
                 join(rootDir, 'app/scripts/use-snow.js'),
-              ]
-            : [],
+                ]
+              : []),
+          ],
         };
       }
       return { mode: 'safe' };

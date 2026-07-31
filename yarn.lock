@@ -12017,14 +12017,14 @@ __metadata:
 
 "@sentry/browser@patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch":
   version: 10.38.0
-  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch::version=10.38.0&hash=f20d24"
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch::version=10.38.0&hash=bdaa68"
   dependencies:
     "@sentry-internal/browser-utils": "npm:10.38.0"
     "@sentry-internal/feedback": "npm:10.38.0"
     "@sentry-internal/replay": "npm:10.38.0"
     "@sentry-internal/replay-canvas": "npm:10.38.0"
     "@sentry/core": "npm:10.38.0"
-  checksum: 10/9c3dffab539e60519cbfdb241de7c891eba9cb4f781a9030d560c8615bcfe8d00eac50c124e09ac90e5aadeb40b62c8008afe68325b33d6342a965c56d6ff45a
+  checksum: 10/43a69c2e1c87224e52b148a4243f3ba946e9283bc797386806f7f74804599d8c2ec47ea3e682458a9f75799c6b10b30c1a996cd63a038fafadf513a8db8f40da
   languageName: node
   linkType: hard
 
@@ -12135,6 +12135,13 @@ __metadata:
   version: 9.30.0
   resolution: "@sentry/core@npm:9.30.0"
   checksum: 10/2957927aaae6ffafe7f6fffa8bc43631e10d584192fd679ba35b2527ed4f03364f8bebbc0f9a988e3cdb16f67d9fb23f244a796c7851961476270e0ec1dfd57e
+  languageName: node
+  linkType: hard
+
+"@sentry/core@patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch":
+  version: 10.38.0
+  resolution: "@sentry/core@patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch::version=10.38.0&hash=f1537f"
+  checksum: 10/66ee6196b504ceca788109881dae907c721653e161747c283e9500c91655420bfcfdfac92e197f0f17e9b75d9992528c6ff13b50a7fc9e77b97ad09d666ce2ac
   languageName: node
   linkType: hard
 
@@ -32932,7 +32939,7 @@ __metadata:
     "@segment/analytics-node": "npm:^3.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch"
     "@sentry/cli": "npm:^2.56.0"
-    "@sentry/core": "npm:10.38.0"
+    "@sentry/core": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch"
     "@sentry/node": "npm:10.38.0"
     "@sentry/types": "npm:10.38.0"
     "@simplewebauthn/browser": "npm:^13.3.0"
