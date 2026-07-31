@@ -10,14 +10,21 @@ jest.mock('../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (n: number) => `$${n.toFixed(2)}`,
 }));
 
-const store = configureMockStore()({
-  metamask: { currentCurrency: 'usd' },
-  locale: { currentLocale: 'en' },
-});
+const createStore = (privacyMode = false) =>
+  configureMockStore()({
+    metamask: {
+      currentCurrency: 'usd',
+      preferences: { privacyMode },
+    },
+    locale: { currentLocale: 'en' },
+  });
 
-const renderWithProviders = (component: React.ReactElement) =>
+const renderWithProviders = (
+  component: React.ReactElement,
+  { privacyMode = false }: { privacyMode?: boolean } = {},
+) =>
   render(
-    <Provider store={store}>
+    <Provider store={createStore(privacyMode)}>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <I18nContext.Provider value={tEn as any}>
         {component}
@@ -78,5 +85,29 @@ describe('SpendableBalanceSection', () => {
     expect(
       screen.getByText(messages.spendableBalanceBaseReserved.message),
     ).toBeInTheDocument();
+  });
+
+  it('masks balances when privacy mode is enabled', () => {
+    renderWithProviders(<SpendableBalanceSection {...defaultProps} />, {
+      privacyMode: true,
+    });
+
+    const maskedBalance = '•••••••••';
+    expect(
+      screen.getByTestId('spendable-balance-total-balance'),
+    ).toHaveTextContent(maskedBalance);
+    expect(
+      screen.getByTestId('spendable-balance-spendable-balance'),
+    ).toHaveTextContent(maskedBalance);
+    expect(
+      screen.getByTestId('spendable-balance-base-reserved'),
+    ).toHaveTextContent(maskedBalance);
+    expect(
+      screen.getByTestId('spendable-balance-fiat-value'),
+    ).toHaveTextContent(maskedBalance);
+    expect(screen.queryByText('250 XLM')).not.toBeInTheDocument();
+    expect(screen.queryByText('247.5 XLM')).not.toBeInTheDocument();
+    expect(screen.queryByText('2.5 XLM')).not.toBeInTheDocument();
+    expect(screen.queryByText('$105.00')).not.toBeInTheDocument();
   });
 });
