@@ -7,6 +7,7 @@ import type { Token } from '../../../components/app/assets/types';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
+import * as securityTrustUtils from '../utils/security-trust-utils';
 import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
 jest.mock('../../../selectors', () => ({
@@ -29,6 +30,8 @@ const { getIsSecurityTrustTdpEnabled } = jest.requireMock(
 
 const mockUseSelector = jest.fn();
 
+let mockLocationState: Record<string, unknown> | null = null;
+
 let mockRouteParams = {
   chainId: 'eip155:1',
   asset: 'eip155:1/erc20:0xabc',
@@ -41,7 +44,7 @@ jest.mock('react-redux', () => ({
 jest.mock('react-router-dom', () => ({
   useLocation: () => ({
     pathname: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc/security-trust',
-    state: null,
+    state: mockLocationState,
   }),
   useParams: () => mockRouteParams,
 }));
@@ -115,6 +118,9 @@ const routeAsset: Token = {
 describe('useSecurityTrustPageData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
+
+    mockLocationState = null;
 
     mockRouteParams = {
       chainId: 'eip155:1',
@@ -238,6 +244,34 @@ describe('useSecurityTrustPageData', () => {
 
     expect(result.current.chainId).toBe(SolScope.Mainnet);
     expect(result.current.blockExplorerLink?.url).toContain('solscan.io');
+  });
+
+  it('falls back to EVM network config when CAIP chain id is unavailable', () => {
+    jest
+      .spyOn(securityTrustUtils, 'toSecurityTrustChainId')
+      .mockReturnValue(undefined);
+    mockRouteParams = {
+      chainId: '0x1',
+      asset: '0xabc',
+    };
+
+    const { result } = renderHook(() => useSecurityTrustPageData());
+
+    expect(result.current.networkName).toBe('Ethereum Mainnet Hex');
+  });
+
+  it('returns undefined network name when CAIP and hex lookups are unavailable', () => {
+    jest
+      .spyOn(securityTrustUtils, 'toSecurityTrustChainId')
+      .mockReturnValue(undefined);
+    mockRouteParams = {
+      chainId: SolScope.Mainnet,
+      asset: `${SolScope.Mainnet}/spl:So11111111111111111111111111111111111111112`,
+    };
+
+    const { result } = renderHook(() => useSecurityTrustPageData());
+
+    expect(result.current.networkName).toBeUndefined();
   });
 
   it('does not request security data when feature is disabled', () => {
