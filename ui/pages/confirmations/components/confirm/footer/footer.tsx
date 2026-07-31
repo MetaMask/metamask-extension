@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -48,12 +47,14 @@ import {
   useHardwareFooter,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { useDispatch } from '../../../../../store/hooks';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,

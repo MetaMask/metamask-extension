@@ -257,6 +257,31 @@ describe('Privacy Settings Onboarding View', () => {
       expect(invalidErrorMsg).toBeInTheDocument();
     });
 
+    it('should error with ipfs.infura.io IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets as HTMLElement);
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: 'ipfs.infura.io',
+        },
+      };
+
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
+
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
+
+      expect(invalidErrorMsg).toBeInTheDocument();
+    });
+
     it('should error with improper IPFS input', () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <PrivacySettings />,

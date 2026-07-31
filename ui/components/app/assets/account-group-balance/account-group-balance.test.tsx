@@ -8,11 +8,17 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getEnabledNetworksByNamespace,
+  getMultichainNetwork,
   getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getMultichainNativeTokenBalance,
+  selectBalanceBySelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
+} from '../../../../selectors/assets';
+import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import {
   AccountGroupBalance,
@@ -23,8 +29,12 @@ const mockStore = configureMockStore()(mockState);
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
 const MAINNET_CHAIN_ID = '0x1';
+const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
 jest.mock('../../../../selectors/assets');
+jest.mock('../../../../selectors/assets-unify-state', () => ({
+  getIsAssetsUnifyStateEnabled: jest.fn(() => false),
+}));
 jest.mock('../../../../selectors');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');
@@ -45,6 +55,7 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable?: boolean;
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
+    isAssetsUnifyStateEnabled?: boolean;
   };
 
   const arrange = ({
@@ -54,10 +65,19 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable = true,
     showFiatInTestnets = false,
     privacyMode = false,
+    isAssetsUnifyStateEnabled = false,
   }: ArrangeOptions = {}) => {
+    jest
+      .mocked(getIsAssetsUnifyStateEnabled)
+      .mockReturnValue(isAssetsUnifyStateEnabled);
+
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
-      .mockReturnValue(selectedGroupBalance);
+      .mockReturnValue(isAssetsUnifyStateEnabled ? null : selectedGroupBalance);
+
+    jest
+      .mocked(selectUnifiedBalanceBySelectedAccountGroup)
+      .mockReturnValue(isAssetsUnifyStateEnabled ? selectedGroupBalance : null);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -81,6 +101,16 @@ describe('AccountGroupBalance', () => {
     const mockGetShowFiatInTestnets = jest
       .mocked(getShowFiatInTestnets)
       .mockReturnValue(showFiatInTestnets);
+
+    jest.mocked(getMultichainNetwork).mockReturnValue({
+      network: {
+        ticker: 'SOL',
+      },
+    } as ReturnType<typeof getMultichainNetwork>);
+
+    jest.mocked(getMultichainNativeTokenBalance).mockReturnValue({
+      amount: '0',
+    } as ReturnType<typeof getMultichainNativeTokenBalance>);
 
     return {
       mockSelectBalanceBySelectedAccountGroup,
@@ -134,6 +164,18 @@ describe('AccountGroupBalance', () => {
 
   it('renders formatted balance and currency when data available', () => {
     arrange({ selectedGroupBalance: createMockBalance() });
+    actAssertBalanceContent({
+      amount: '$123.45',
+      balance: '1000000000000000000',
+      chainId: MAINNET_CHAIN_ID,
+    });
+  });
+
+  it('uses unified balance selector when assets-unify-state is enabled', () => {
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      isAssetsUnifyStateEnabled: true,
+    });
     actAssertBalanceContent({
       amount: '$123.45',
       balance: '1000000000000000000',
@@ -227,6 +269,23 @@ describe('AccountGroupBalance', () => {
   it('renders skeleton when no networks available and no balance', () => {
     arrange({ anyEnabledNetworksAreAvailable: false });
     actAssertSkeletonPresent();
+  });
+
+  it('renders known zero non-EVM fiat balance when no networks are available', () => {
+    arrange({
+      anyEnabledNetworksAreAvailable: false,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+      enabledNetworksByNamespace: { [SOLANA_CHAIN_ID]: true },
+    });
+
+    actAssertBalanceContent({
+      amount: '$0.00',
+      balance: '0',
+      chainId: SOLANA_CHAIN_ID,
+    });
   });
 
   it('applies cached balance class when balanceIsCached is true', () => {

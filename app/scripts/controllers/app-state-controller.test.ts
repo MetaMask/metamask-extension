@@ -1200,7 +1200,7 @@ describe('AppStateController', () => {
       );
     });
 
-    it('sets lastQrScanCompletedSuccessfully to false when cancelQrCodeScan is called', async () => {
+    it('rejects with UserCancelled when cancelQrCodeScan is called without an error', async () => {
       await withController(
         { state: {} },
         async ({ controller, appStateMessenger }) => {
@@ -1216,7 +1216,61 @@ describe('AppStateController', () => {
 
           expect(controller.state.activeQrCodeScanRequest).toBeNull();
           expect(controller.state.lastQrScanCompletedSuccessfully).toBe(false);
-          await expect(scanPromise).rejects.toThrow('Scan cancelled');
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Scan cancelled',
+            code: 2001,
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a string', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan('Camera permission denied');
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Camera permission denied',
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a serialized hardware wallet error', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan({
+            name: 'HardwareWalletError',
+            message: 'Camera permission blocked by the browser',
+            code: 7301,
+            severity: 'Error',
+            category: 'Configuration',
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            code: 7301,
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
         },
       );
     });

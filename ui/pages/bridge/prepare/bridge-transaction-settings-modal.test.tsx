@@ -78,17 +78,13 @@ const interactWithCustomInput = async (
   getByTestId: (id: string) => HTMLElement,
   action?: (input: HTMLElement) => void | Promise<void>,
 ) => {
-  await act(async () => {
-    await userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-  });
+  await userEvent.click(screen.getByTestId(TX_MODAL.customButton));
   await waitForElementById(TX_MODAL.customInput);
   const input = getByTestId(TX_MODAL.customInput);
-  await act(async () => {
-    if (action) {
-      await action(input);
-    }
-    fireEvent.blur(input);
-  });
+  if (action) {
+    await action(input);
+  }
+  fireEvent.blur(input);
 };
 
 const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
@@ -293,7 +289,8 @@ describe('BridgeTransactionSettingsModal', () => {
   const ACTIONS = [
     [
       'paste',
-      async (_input: HTMLElement, value: string) => {
+      async (input: HTMLElement, value: string) => {
+        await userEvent.click(input);
         await userEvent.paste(value);
       },
     ],

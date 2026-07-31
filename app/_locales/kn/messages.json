@@ -349,9 +349,6 @@
   "networks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
   },
-  "nevermind": {
-    "message": "ಪರವಾಗಿಲ್ಲ"
-  },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"

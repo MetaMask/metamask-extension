@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* eslint-disable import-x/unambiguous -- Jest manual mock uses `module.exports`; ESLint parses this glob as `sourceType: 'module'`. */
 /**
  * Jest stub for `@metamask/perps-controller`.
@@ -168,6 +167,24 @@ const mockTradingDefaults = {
 };
 
 /**
+ * Stub for the dedicated aggregated order-book WebSocket. Keeps controller /
+ * bridge unit tests from opening a real Hyperliquid socket.
+ */
+class MockAggregatedOrderBookConnection {
+  constructor(options) {
+    this.options = options;
+  }
+
+  subscribe(_params) {
+    return () => undefined;
+  }
+
+  close() {
+    return undefined;
+  }
+}
+
+/**
  * Simplified max-amount helper for unit tests (matches controller shape; omits
  * position-size rounding details that are covered by controller tests).
  *
@@ -205,4 +222,5 @@ module.exports = {
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
+  AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };
