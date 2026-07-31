@@ -63,7 +63,7 @@ const mockSecurityData = {
 const token = {
   symbol: 'RAIN',
   name: 'Rain',
-  chainId: '0x1',
+  chainId: 'eip155:1',
   address: '0xabc',
   decimals: 18,
   isNative: false,

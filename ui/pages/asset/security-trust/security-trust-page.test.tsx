@@ -107,7 +107,7 @@ const locationState = {
   decimals: 6,
   isNative: false,
   address: '0xabc',
-  chainId: '0x1',
+  chainId: 'eip155:1',
 };
 
 const createStore = () =>
@@ -135,11 +135,16 @@ const createStore = () =>
               name: 'Ethereum Mainnet',
               defaultBlockExplorerUrlIndex: 0,
               blockExplorerUrls: ['https://etherscan.io'],
-              rpcEndpoints: [],
+              rpcEndpoints: [{ url: 'https://mainnet.infura.io' }],
               defaultRpcEndpointIndex: 0,
             },
           },
-          multichainNetworkConfigurationsByChainId: {},
+          multichainNetworkConfigurationsByChainId: {
+            'eip155:1': {
+              chainId: 'eip155:1',
+              name: 'Ethereum Mainnet',
+            },
+          },
           isEvmSelected: true,
           selectedNetworkClientId: 'mainnet',
           networksMetadata: {},
@@ -228,7 +233,7 @@ describe('SecurityTrustPage', () => {
       decimals: 6,
       isNative: false,
       address: '0xabc',
-      chainId: '0x1',
+      chainId: 'eip155:1',
     };
 
     useTokenSecurityData.mockReturnValue({
@@ -262,7 +267,7 @@ describe('SecurityTrustPage', () => {
         properties: expect.objectContaining({
           severity: 'Verified',
           [SecurityTrustAnalyticsProperty.TokenSymbol]: 'USDC',
-          [SecurityTrustAnalyticsProperty.ChainId]: '0x1',
+          [SecurityTrustAnalyticsProperty.ChainId]: 'eip155:1',
         }),
       }),
     );

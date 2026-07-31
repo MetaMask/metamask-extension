@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import { renderHook } from '@testing-library/react-hooks';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
@@ -10,6 +11,11 @@ import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
 const mockUseSelector = jest.fn();
 
+let mockRouteParams = {
+  chainId: 'eip155:1',
+  asset: 'eip155:1/erc20:0xabc',
+};
+
 jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
@@ -19,10 +25,7 @@ jest.mock('react-router-dom', () => ({
     pathname: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc/security-trust',
     state: null,
   }),
-  useParams: () => ({
-    chainId: 'eip155:1',
-    asset: 'eip155:1/erc20:0xabc',
-  }),
+  useParams: () => mockRouteParams,
 }));
 
 jest.mock('../../../hooks/useTokenSecurityData', () => ({
@@ -94,6 +97,11 @@ const routeAsset: Token = {
 describe('useSecurityTrustPageData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockRouteParams = {
+      chainId: 'eip155:1',
+      asset: 'eip155:1/erc20:0xabc',
+    };
 
     mockUseTokenSecurityData.mockReturnValue({
       securityData: baseSecurityData,
@@ -178,9 +186,31 @@ describe('useSecurityTrustPageData', () => {
     });
   });
 
-  it('derives hex chainId from CAIP route when location state is missing', () => {
+  it('derives CAIP chainId from route when location state is missing', () => {
     const { result } = renderHook(() => useSecurityTrustPageData());
 
-    expect(result.current.chainId).toBe('0x1');
+    expect(result.current.chainId).toBe('eip155:1');
+  });
+
+  it('derives CAIP chainId for non-EVM routes without location state', () => {
+    mockRouteParams = {
+      chainId: SolScope.Mainnet,
+      asset: `${SolScope.Mainnet}/spl:So11111111111111111111111111111111111111112`,
+    };
+
+    mockUseTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+      symbol: 'SOL',
+      decimals: 9,
+      address: 'So11111111111111111111111111111111111111112',
+      isNative: false,
+    });
+
+    const { result } = renderHook(() => useSecurityTrustPageData());
+
+    expect(result.current.chainId).toBe(SolScope.Mainnet);
+    expect(result.current.blockExplorerLink?.url).toContain('solscan.io');
   });
 });
