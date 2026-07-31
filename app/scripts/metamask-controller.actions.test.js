@@ -237,9 +237,15 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result2 = metamaskController.keyringController.state;
 
       // v2 Snap keyrings are created lazily per-snap, so a fresh restore
@@ -266,9 +272,13 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
@@ -279,7 +289,9 @@ describe('MetaMaskController', function () {
     it('creates a vault and returns the seed phrase', async function () {
       const password = 'test@123';
       const encodedSeedPhrase =
-        await metamaskController.createNewVaultAndGetSeedPhrase(password);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndGetSeedPhrase(
+          password,
+        );
       const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
       expect(seedPhrase.split(' ')).toHaveLength(12);
@@ -290,11 +302,15 @@ describe('MetaMaskController', function () {
   describe('#unlockAndGetSeedPhrase', function () {
     it('unlocks the vault and returns the seed phrase', async function () {
       const password = 'test@123';
-      await metamaskController.createNewVaultAndKeychain(password);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        password,
+      );
       await metamaskController.keyringController.setLocked();
 
       const encodedSeedPhrase =
-        await metamaskController.unlockAndGetSeedPhrase(password);
+        await metamaskController.legacyBackgroundApiService.unlockAndGetSeedPhrase(
+          password,
+        );
       const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
       expect(seedPhrase.split(' ')).toHaveLength(12);
