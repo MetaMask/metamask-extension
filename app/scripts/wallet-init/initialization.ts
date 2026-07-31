@@ -6,10 +6,7 @@ import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-c
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import {
-  getNetworkControllerInstanceOptions,
-  setupRpcEndpointMetrics,
-} from './instance-options/network-controller';
+import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
@@ -102,7 +99,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
     },
   });
 
-  setupRpcEndpointMetrics(infuraProjectId, messenger);
   setupTransactionControllerListeners({
     getTransactionMetricsRequest,
     messenger: transactionControllerInitMessenger,
