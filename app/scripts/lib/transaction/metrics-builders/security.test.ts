@@ -43,4 +43,53 @@ describe('security builder', () => {
     );
     expect(result.sensitiveProperties).toStrictEqual({});
   });
+
+  it('returns a cache-driven address alert response for a chain id with no legacy EVM chain mapping', async () => {
+    const getAddressSecurityAlertResponseMock = jest
+      .fn()
+      .mockReturnValue({ result_type: 'Malicious' });
+
+    const result = await getSecurityMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          txParams: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x2222222222222222222222222222222222222222',
+          },
+          chainId: '0x123456789',
+        } as never,
+        transactionMetricsRequest: {
+          ...createBuilderRequest().transactionMetricsRequest,
+          getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
+        } as never,
+      }),
+    );
+
+    expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+      '0x123456789:0x2222222222222222222222222222222222222222',
+    );
+    expect(result.properties.address_alert_response).toBe('Malicious');
+  });
+
+  it('returns a cache-driven Loading address alert response when the chain has not been scanned yet', async () => {
+    const result = await getSecurityMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          txParams: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x2222222222222222222222222222222222222222',
+          },
+          chainId: '0x123456789',
+        } as never,
+        transactionMetricsRequest: {
+          ...createBuilderRequest().transactionMetricsRequest,
+          getAddressSecurityAlertResponse: jest.fn().mockReturnValue(undefined),
+        } as never,
+      }),
+    );
+
+    expect(result.properties.address_alert_response).toBe('Loading');
+  });
 });

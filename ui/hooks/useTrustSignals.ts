@@ -8,7 +8,6 @@ import { getAddressSecurityAlertResponse } from '../selectors';
 import {
   ResultType,
   createCacheKey,
-  mapChainIdToSupportedEVMChain,
 } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 import { useI18nContext } from './useI18nContext';
@@ -78,15 +77,7 @@ export function useTrustSignals(
           };
         }
 
-        const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-        if (!supportedEVMChain) {
-          return {
-            state: TrustSignalDisplayState.Unknown,
-            label: null,
-          };
-        }
-
-        const cacheKey = createCacheKey(supportedEVMChain, value);
+        const cacheKey = createCacheKey(chainId, value);
 
         const securityAlertResponse = getAddressSecurityAlertResponse(
           state,
