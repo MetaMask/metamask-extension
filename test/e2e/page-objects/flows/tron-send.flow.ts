@@ -91,10 +91,7 @@ export async function confirmTronSendAndAssertActivity({
   let usingDialog = false;
 
   try {
-    await driver.waitForWindowWithTitleToBePresent(
-      WINDOW_TITLES.Dialog,
-      5_000,
-    );
+    await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog, 5_000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     usingDialog = true;
   } catch {
