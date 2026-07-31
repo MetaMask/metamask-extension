@@ -27,6 +27,7 @@ export function getNetworkEnablementControllerMessenger(
     actions: [
       'NetworkController:getState',
       'MultichainNetworkController:getState',
+      'ConfigRegistryController:getState',
     ],
     events: [
       'NetworkController:networkAdded',
