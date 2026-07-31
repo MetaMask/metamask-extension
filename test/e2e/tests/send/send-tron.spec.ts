@@ -1,13 +1,13 @@
-import { Mockttp } from "mockttp";
-import { withFixtures } from "../../helpers";
-import FixtureBuilderV2 from "../../fixtures/fixture-builder-v2";
-import { Driver } from "../../webdriver/driver";
-import NonEvmHomepage from "../../page-objects/pages/home/non-evm-homepage";
-import SendPage from "../../page-objects/pages/send/send-page";
-import SnapTransactionConfirmation from "../../page-objects/pages/confirmations/snap-transaction-confirmation";
-import ActivityTab from "../../page-objects/pages/home/activity-tab";
-import { selectTronNetwork } from "../../page-objects/flows/tron-network.flow";
-import { login } from "../../page-objects/flows/login.flow";
+import { Mockttp } from 'mockttp';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { Driver } from '../../webdriver/driver';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import SendPage from '../../page-objects/pages/send/send-page';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   mockTronFeatureFlags,
   mockExchangeRates,
@@ -16,15 +16,15 @@ import {
   mockTronAssets,
   TRON_ACCOUNT_ADDRESS,
   TRON_RECIPIENT_ADDRESS,
-} from "../tron/mocks/common-tron";
-import { proxyTronBlockchainCalls } from "../tron/mocks/local-tron-node-mocks";
-import { TronNode } from "../../seeder/tron/node";
-import { createTronPortfolioNodeOptions } from "../../seeder/tron/profiles";
+} from '../tron/mocks/common-tron';
+import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
+import { TronNode } from '../../seeder/tron/node';
+import { createTronPortfolioNodeOptions } from '../../seeder/tron/profiles';
 
-describe("Send Tron", function () {
+describe('Send Tron', function () {
   this.timeout(180_000);
 
-  it("sends TRX using a local Tron node", async function () {
+  it('sends TRX using a local Tron node', async function () {
     // Captured in afterLocalNodesStart (which runs before the network mocks
     // are set up) so the mock builder can proxy calls to the local node.
     // testSpecificMock itself keeps its single-argument contract.
@@ -34,9 +34,9 @@ describe("Send Tron", function () {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
-          "anvil",
+          'anvil',
           {
-            type: "tron",
+            type: 'tron',
             options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
           },
         ],
@@ -44,9 +44,11 @@ describe("Send Tron", function () {
           localNodes = nodeContext.localNodes;
         },
         testSpecificMock: async (mockServer: Mockttp) => {
-          const tronNode = localNodes.find((node): node is TronNode => node instanceof TronNode);
+          const tronNode = localNodes.find(
+            (node): node is TronNode => node instanceof TronNode,
+          );
           if (!tronNode) {
-            throw new Error("Tron local node was not started");
+            throw new Error('Tron local node was not started');
           }
 
           return [
@@ -69,21 +71,26 @@ describe("Send Tron", function () {
 
         const nonEvmHomepage = new NonEvmHomepage(driver);
         await nonEvmHomepage.checkPageIsLoaded();
-        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed("6.072", "TRX");
-        const snapTransactionConfirmation = new SnapTransactionConfirmation(driver);
+        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed(
+          '6.072',
+          'TRX',
+        );
+        const snapTransactionConfirmation = new SnapTransactionConfirmation(
+          driver,
+        );
         await nonEvmHomepage.clickOnSendButton();
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken("tron:728126428", "TRX");
+        await sendPage.selectToken('tron:728126428', 'TRX');
 
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
-        await sendPage.fillAmount("1");
+        await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
         const activityList = new ActivityTab(driver);
-        await activityList.checkTxAmountInActivity("-1 TRX", 1);
+        await activityList.checkTxAmountInActivity('-1 TRX', 1);
         await activityList.checkNoFailedTransactions();
       },
     );

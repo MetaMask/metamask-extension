@@ -1,52 +1,53 @@
-import { Driver } from "../../../webdriver/driver";
+import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
-  private readonly amountBalance = { testId: "send-amount-balance" };
+  private readonly amountBalance = { testId: 'send-amount-balance' };
 
-  private readonly amountFiatValue = { testId: "send-amount-fiat-value" };
+  private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
 
-  private readonly amountInput = { testId: "send-amount-input" };
+  private readonly amountInput = { testId: 'send-amount-input' };
 
   private readonly amountRequiredError = {
-    text: "Required",
+    text: 'Required',
   };
 
-  private readonly continueButton = { testId: "send-continue-button" };
+  private readonly continueButton = { testId: 'send-continue-button' };
 
-  private readonly continueButtonEnabled = '[data-testid="send-continue-button"]:not([disabled])';
+  private readonly continueButtonEnabled =
+    '[data-testid="send-continue-button"]:not([disabled])';
 
   private readonly driver: Driver;
 
   private readonly header = {
-    tag: "h4",
-    text: "Send",
+    tag: 'h4',
+    text: 'Send',
   };
 
   private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
   private readonly inputRecipient = {
-    testId: "recipient-address-input",
+    testId: 'recipient-address-input',
   };
 
   private readonly insufficientBalanceToCoverFeesError = {
-    text: "Insufficient balance to cover fees",
+    text: 'Insufficient balance to cover fees',
   };
 
   private readonly insufficientFundsError = {
-    text: "Insufficient funds",
+    text: 'Insufficient funds',
   };
 
   private readonly insufficientFundsErrorDetailed = {
-    text: "Insufficient funds",
+    text: 'Insufficient funds',
   };
 
   private readonly invalidAddressError = {
-    text: "Invalid address",
+    text: 'Invalid address',
   };
 
   private readonly maxButton = {
-    text: "Max",
-    tag: "button",
+    text: 'Max',
+    tag: 'button',
   };
 
   private readonly networkName = (networkName: string) => {
@@ -56,17 +57,17 @@ class SendPage {
   };
 
   private readonly networkPicker = {
-    testId: "send-network-filter-toggle",
+    testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientClassRendered = ".break-all";
+  private readonly recipientClassRendered = '.break-all';
 
   private readonly recipientModalButton = {
-    testId: "open-recipient-modal-btn",
+    testId: 'open-recipient-modal-btn',
   };
 
   private readonly recipientValidationError = (errorText: string) => ({
-    css: ".mm-help-text",
+    css: '.mm-help-text',
     text: errorText,
   });
 
@@ -74,7 +75,7 @@ class SendPage {
     '[data-testid="send-alert-modal-acknowledge-button"]';
 
   private readonly solanaNetwork = {
-    text: "Solana",
+    text: 'Solana',
   };
 
   private readonly tokenAsset = (chainId: string, symbol: string) => {
@@ -97,13 +98,13 @@ class SendPage {
         timeout: 2000,
       });
     } catch (error) {
-      if ((error as { name?: string }).name === "TimeoutError") {
-        console.log("No send alert modal to acknowledge");
+      if ((error as { name?: string }).name === 'TimeoutError') {
+        console.log('No send alert modal to acknowledge');
         return;
       }
       throw error;
     }
-    console.log("Acknowledging send alert modal");
+    console.log('Acknowledging send alert modal');
     await this.driver.clickElement(this.sendAlertAcknowledgeButton);
   }
 
@@ -118,7 +119,7 @@ class SendPage {
     await this.driver.waitUntil(
       async () => {
         const inputElement = await this.driver.findElement(this.amountInput);
-        const value = await inputElement.getAttribute("value");
+        const value = await inputElement.getAttribute('value');
         return parseFloat(value) === parseFloat(expectedAmount);
       },
       { interval: 100, timeout: 5000 },
@@ -126,7 +127,7 @@ class SendPage {
   }
 
   async checkAmountRequiredError(): Promise<void> {
-    console.log("Checking for amount required error");
+    console.log('Checking for amount required error');
     await this.driver.waitForSelector(this.amountRequiredError);
   }
 
@@ -136,7 +137,11 @@ class SendPage {
    * @param options - Wait options.
    * @param options.state - Expected button state (`enabled` or `disabled`).
    */
-  async checkContinueButton({ state }: { state: "enabled" | "disabled" }): Promise<void> {
+  async checkContinueButton({
+    state,
+  }: {
+    state: 'enabled' | 'disabled';
+  }): Promise<void> {
     console.log(`Waiting for continue button to be ${state}`);
     await this.driver.waitForSelector(this.continueButton, {
       state,
@@ -144,8 +149,8 @@ class SendPage {
   }
 
   async checkContinueButtonIsDisabled(): Promise<void> {
-    console.log("Checking that Continue button is disabled");
-    await this.checkContinueButton({ state: "disabled" });
+    console.log('Checking that Continue button is disabled');
+    await this.checkContinueButton({ state: 'disabled' });
   }
 
   /**
@@ -155,7 +160,10 @@ class SendPage {
    * @param address - The Ethereum address to which the ENS domain is expected to resolve.
    * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
    */
-  async checkEnsAddressResolution(ensDomain: string, address: string): Promise<void> {
+  async checkEnsAddressResolution(
+    ensDomain: string,
+    address: string,
+  ): Promise<void> {
     console.log(
       `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
     );
@@ -173,17 +181,17 @@ class SendPage {
   }
 
   async checkInsufficientFundsError(): Promise<void> {
-    console.log("Checking for insufficient funds error");
+    console.log('Checking for insufficient funds error');
     await this.driver.waitForSelector(this.insufficientFundsError);
   }
 
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
-    console.log("Checking for detailed insufficient funds error");
+    console.log('Checking for detailed insufficient funds error');
     await this.driver.waitForSelector(this.insufficientFundsErrorDetailed);
   }
 
   async checkInvalidAddressError(): Promise<void> {
-    console.log("Checking for invalid address error");
+    console.log('Checking for invalid address error');
     await this.driver.waitForSelector(this.invalidAddressError);
   }
 
@@ -192,14 +200,17 @@ class SendPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    console.log("Checking if send page is loaded");
+    console.log('Checking if send page is loaded');
     try {
-      await this.driver.waitForMultipleSelectors([this.header, this.networkPicker]);
+      await this.driver.waitForMultipleSelectors([
+        this.header,
+        this.networkPicker,
+      ]);
     } catch (e) {
-      console.log("Timeout while waiting for send page to be loaded", e);
+      console.log('Timeout while waiting for send page to be loaded', e);
       throw e;
     }
-    console.log("Send page is loaded");
+    console.log('Send page is loaded');
   }
 
   /**
@@ -215,11 +226,14 @@ class SendPage {
   }
 
   async checkSendFormIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([this.amountInput, this.inputRecipient]);
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
-    console.log("Checking if Solana network is present");
+    console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
   }
 
@@ -228,11 +242,11 @@ class SendPage {
     await this.driver.waitForSelector({
       text: warningText,
     });
-    console.log("Warning message validation successful");
+    console.log('Warning message validation successful');
   }
 
   async clickMaxButton(): Promise<void> {
-    console.log("Clicking max button");
+    console.log('Clicking max button');
     await this.driver.clickElement(this.maxButton);
   }
 
@@ -247,7 +261,7 @@ class SendPage {
     recipientAddress?: string;
     recipientName?: string;
   }): Promise<void> {
-    console.log("Creating max send request");
+    console.log('Creating max send request');
     await this.selectToken(chainId, symbol);
     if (recipientAddress) {
       await this.fillRecipient({ recipientAddress });
@@ -257,7 +271,7 @@ class SendPage {
     }
     await this.clickMaxButton();
     await this.waitForSendAmountBalance();
-    await this.checkContinueButton({ state: "enabled" });
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -266,7 +280,7 @@ class SendPage {
     symbol,
     recipientAddress,
     recipientName,
-    amount = "0",
+    amount = '0',
   }: {
     chainId: string;
     symbol: string;
@@ -274,7 +288,7 @@ class SendPage {
     recipientName?: string;
     amount: string;
   }): Promise<void> {
-    console.log("Creating send request");
+    console.log('Creating send request');
     await this.selectToken(chainId, symbol);
     if (recipientAddress) {
       await this.fillRecipient({ recipientAddress });
@@ -285,12 +299,12 @@ class SendPage {
     await this.fillAmount(amount);
     await this.checkAmountInputValue(amount);
     await this.waitForSendAmountBalance();
-    await this.checkContinueButton({ state: "enabled" });
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
   async editAmountByKeys(keys: string[]): Promise<void> {
-    console.log("Editing amount value by key presses");
+    console.log('Editing amount value by key presses');
     for (const key of keys) {
       await this.driver.press(this.amountInput, key);
     }
@@ -306,7 +320,7 @@ class SendPage {
     console.log(`Filling hex data`);
     await this.driver.fill(this.hexDataInput, hexData);
     // Tab out of the hex data field to trigger onBlur and ensure React commits the value to state
-    await this.driver.press(this.hexDataInput, "\uE004");
+    await this.driver.press(this.hexDataInput, '\uE004');
   }
 
   async fillRecipient({
@@ -331,7 +345,7 @@ class SendPage {
    * optional send-alert modal when present.
    */
   async pressContinueButton(): Promise<void> {
-    console.log("Pressing continue button");
+    console.log('Pressing continue button');
     await this.waitForContinueButtonStablyEnabled();
     await this.driver.clickElement(this.continueButton);
     await this.acknowledgeSendAlertIfPresent();
@@ -339,7 +353,10 @@ class SendPage {
 
   async pressOnAmountInput(key: string): Promise<void> {
     console.log(`Pressing ${key} on amount input`);
-    await this.driver.press(this.amountInput, this.driver.Key[key as keyof typeof this.driver.Key]);
+    await this.driver.press(
+      this.amountInput,
+      this.driver.Key[key as keyof typeof this.driver.Key],
+    );
   }
 
   async selectAccountFromRecipientModal(accountName: string): Promise<void> {
@@ -372,22 +389,27 @@ class SendPage {
    * enough to avoid clicking during enable/disable flicker from validation.
    */
   async waitForContinueButtonStablyEnabled(): Promise<void> {
-    console.log("Waiting for continue button to be stably enabled");
+    console.log('Waiting for continue button to be stably enabled');
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.isElementPresentAndVisible(this.continueButtonEnabled, 1000);
+        return await this.driver.isElementPresentAndVisible(
+          this.continueButtonEnabled,
+          1000,
+        );
       },
       { timeout: 30000, interval: 500, stableFor: 2000 },
     );
   }
 
   async waitForSendAmountBalance(): Promise<void> {
-    console.log("Waiting for send amount balance to be displayed");
+    console.log('Waiting for send amount balance to be displayed');
     await this.driver.waitForSelector(this.amountBalance);
   }
 
   async waitForSendAmountFiatValue(expectedValue: string): Promise<void> {
-    console.log(`Waiting for send amount fiat value "${expectedValue}" to be displayed`);
+    console.log(
+      `Waiting for send amount fiat value "${expectedValue}" to be displayed`,
+    );
     await this.driver.waitForSelector({
       ...this.amountFiatValue,
       text: expectedValue,
