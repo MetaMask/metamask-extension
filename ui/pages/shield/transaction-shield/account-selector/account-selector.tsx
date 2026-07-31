@@ -14,7 +14,6 @@ import {
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   Modal,
   ModalBody,
@@ -60,8 +59,9 @@ const AccountSelector = ({
             };
           }
           Object.values(wallet.groups).forEach((group) => {
+            // get evm account from group
             const evmAccount = group.accounts.find((account) =>
-              isEvmAccountType(account.type),
+              account.type.startsWith('eip155:'),
             );
             if (evmAccount) {
               acc[walletName].accounts.push({
