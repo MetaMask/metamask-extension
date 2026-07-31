@@ -84,20 +84,32 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   const [pendingSelection, setPendingSelection] = useState<
     QuestionOption | undefined
   >();
+  // Contact Support isn't terminal — the warning stays up afterwards — so it
+  // rides along as a property on whichever terminal event follows.
+  const [contactSupportClicked, setContactSupportClicked] = useState(false);
 
-  const startedRef = useRef(false);
+  // Fire Scam Questionnaire Viewed at most once per question per session.
+  // Backward navigation to a previously viewed question is a no-op — the
+  // impression is already recorded. Aligns with Mixpanel funnel drop-off
+  // analysis (unique users per step, not raw view count).
+  const viewedStepsRef = useRef<Set<0 | 1 | 2>>(new Set());
   useEffect(() => {
-    if (!startedRef.current) {
-      startedRef.current = true;
-      metrics.trackStarted();
+    if (step < TOTAL_QUESTIONS) {
+      const questionStep = step as 0 | 1 | 2;
+      if (!viewedStepsRef.current.has(questionStep)) {
+        viewedStepsRef.current.add(questionStep);
+        metrics.trackViewed(questionStep);
+      }
     }
-  }, [metrics]);
+  }, [step, metrics]);
 
-  const warningShownRef = useRef(false);
+  // Fire Scam Questionnaire Warning Displayed once per session when the
+  // warning screen first renders.
+  const warningDisplayedRef = useRef(false);
   useEffect(() => {
-    if (step === WARNING_STEP && !warningShownRef.current) {
-      warningShownRef.current = true;
-      metrics.trackWarningShown(answers);
+    if (step === WARNING_STEP && !warningDisplayedRef.current) {
+      warningDisplayedRef.current = true;
+      metrics.trackWarningDisplayed(answers);
     }
   }, [step, answers, metrics]);
 
@@ -107,14 +119,18 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       return;
     }
     if (step === 0) {
-      metrics.trackDismissed(0, answers);
+      metrics.trackDismissed({
+        furthestStep: 0,
+        contactSupportClicked,
+        answers,
+      });
       onDismiss();
       return;
     }
     const prevStep = (step - 1) as 0 | 1;
     setPendingSelection(answers[QUESTION_DEFS[prevStep].id]);
     setStep(prevStep);
-  }, [step, answers, metrics, onDismiss]);
+  }, [step, answers, contactSupportClicked, metrics, onDismiss]);
 
   const handleSelect = useCallback((option: QuestionOption) => {
     setPendingSelection(option);
@@ -130,11 +146,6 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       [def.id]: pendingSelection,
     };
     setAnswers(nextAnswers);
-    metrics.trackQuestionAnswered(
-      def.id,
-      pendingSelection.key,
-      pendingSelection.isRedFlag,
-    );
 
     if (step < TOTAL_QUESTIONS - 1) {
       const nextStep = (step + 1) as 0 | 1 | 2;
@@ -147,36 +158,71 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
     if (getRedFlagCount(nextAnswers) > 0) {
       setStep(WARNING_STEP);
     } else {
-      metrics.trackCompletedClean();
+      metrics.trackCompleted({
+        status: 'clean',
+        contactSupportClicked,
+        answers: nextAnswers,
+      });
       onCleanPass();
     }
-  }, [step, pendingSelection, answers, metrics, onCleanPass]);
+  }, [
+    step,
+    pendingSelection,
+    answers,
+    contactSupportClicked,
+    metrics,
+    onCleanPass,
+  ]);
 
   const handleStop = useCallback(() => {
-    metrics.trackWarningStopped(answers);
+    metrics.trackCompleted({
+      status: 'payment_stopped',
+      contactSupportClicked,
+      answers,
+    });
     onReject();
-  }, [answers, metrics, onReject]);
+  }, [answers, contactSupportClicked, metrics, onReject]);
 
   const handleContactSupport = useCallback(() => {
-    metrics.trackWarningContactSupport(answers);
-  }, [answers, metrics]);
+    setContactSupportClicked(true);
+  }, []);
 
   const handleProceed = useCallback(() => {
-    metrics.trackWarningProceeded(answers);
+    metrics.trackCompleted({
+      status: 'proceeded',
+      contactSupportClicked,
+      answers,
+    });
     onBypass();
-  }, [answers, metrics, onBypass]);
+  }, [answers, contactSupportClicked, metrics, onBypass]);
 
   const handleRequestClose = useCallback(() => {
-    metrics.trackDismissed(step, answers);
+    metrics.trackDismissed({
+      furthestStep: step,
+      contactSupportClicked,
+      answers,
+    });
     onDismiss();
-  }, [step, answers, metrics, onDismiss]);
+  }, [step, answers, contactSupportClicked, metrics, onDismiss]);
+
+  // `ModalContent` binds its Escape-key listener once on mount, so the
+  // `onClose` it captures never updates. Route the modal through a ref-backed
+  // wrapper so an Escape press reports the step and answers as of the press
+  // rather than as of the first render.
+  const requestCloseRef = useRef(handleRequestClose);
+  useEffect(() => {
+    requestCloseRef.current = handleRequestClose;
+  }, [handleRequestClose]);
+  const handleModalClose = useCallback(() => {
+    requestCloseRef.current();
+  }, []);
 
   const questionDef = step === WARNING_STEP ? null : QUESTION_DEFS[step];
 
   return (
     <Modal
       isOpen
-      onClose={handleRequestClose}
+      onClose={handleModalClose}
       isClosedOnOutsideClick={false}
       data-testid="scam-questionnaire-modal"
     >
