@@ -26,9 +26,9 @@ describe('security-trust-utils', () => {
 
   describe('getSecurityTrustTokenTypeLabel', () => {
     it('returns Native for native assets', () => {
-      expect(
-        getSecurityTrustTokenTypeLabel('eip155:1/erc20:0xabc', true),
-      ).toBe('Native');
+      expect(getSecurityTrustTokenTypeLabel('eip155:1/erc20:0xabc', true)).toBe(
+        'Native',
+      );
     });
 
     it('returns ERC-20 for EVM fungible tokens', () => {

@@ -94,9 +94,7 @@ export const useSecurityTrustPageData = () => {
     getAllMultichainNetworkConfigurations,
   );
 
-  const caipChainId = toSecurityTrustChainId(
-    locationState?.chainId ?? chainId,
-  );
+  const caipChainId = toSecurityTrustChainId(locationState?.chainId ?? chainId);
 
   const networkName = useMemo(() => {
     if (caipChainId) {

@@ -99,8 +99,7 @@ export const getSecurityTrustBlockExplorerLink = ({
     ? parseCaipAssetType(tokenAddress as CaipAssetType).assetReference
     : tokenAddress;
 
-  const multichainNetworkConfig =
-    multichainNetworkConfigurations[caipChainId];
+  const multichainNetworkConfig = multichainNetworkConfigurations[caipChainId];
 
   if (isEvmChainId(caipChainId)) {
     const evmHexChainId = convertCaipToHexChainId(caipChainId);
