@@ -171,16 +171,17 @@
   },
   "previewBuilds": {
     "@metamask/analytics-controller": {
-      "type": "non-breaking",
-      "previewVersion": "1.2.1-preview-d67bfdbad"
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-07dc55406"
     },
     "@metamask/geolocation-controller": {
-      "type": "non-breaking",
-      "previewVersion": "0.1.3-preview-d67bfdbad"
+      "type": "breaking",
+      "previewVersion": "1.0.0-preview-07dc55406"
     }
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
+    "@metamask/geolocation-controller": "npm:@metamask-previews/geolocation-controller@1.0.0-preview-07dc55406",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",

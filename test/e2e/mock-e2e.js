@@ -1791,14 +1791,12 @@ async function setupMocking(
     'geolocation.api.cx.metamask.io',
     'geolocation.dev-api.cx.metamask.io',
   ]) {
-    await server
-      .forGet(`https://${host}/v2/geolocation`)
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
-        };
-      });
+    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
+      };
+    });
   }
 
   // On Ramp: Countries list (RampsController.init on startup)

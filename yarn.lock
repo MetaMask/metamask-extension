@@ -5584,17 +5584,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@1.2.1-preview-d67bfdbad":
-  version: 1.2.1-preview-d67bfdbad
-  resolution: "@metamask-previews/analytics-controller@npm:1.2.1-preview-d67bfdbad"
+"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@2.0.0-preview-07dc55406":
+  version: 2.0.0-preview-07dc55406
+  resolution: "@metamask-previews/analytics-controller@npm:2.0.0-preview-07dc55406"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/geolocation-controller": "npm:^0.1.3"
+    "@metamask/geolocation-controller": "npm:^1.0.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/15f937a2b77571467fab21a4cc34bb2c8427e7dea5facdcf2f920da39fcaa6a5808859a8fee0bdba6b46dd5b66a147457b80070c610c3aa9687c5f567c66abc2
+  checksum: 10/05f32873adce1ce8e3389a719f71035f595d8aabcccdfc107caea3a6a5f692d5745afa308651d5ad3a7feb248420f5991f27fe5ff14f4a8d6c6e36034f05bd27
+  languageName: node
+  linkType: hard
+
+"@metamask/analytics-controller@npm:^1.1.1":
+  version: 1.2.1
+  resolution: "@metamask/analytics-controller@npm:1.2.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.11.0"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  checksum: 10/378bdfe9663c532587fc397f0e80368d02a51b443b0af89ef7c0b78dd158ad59531415a2ad26673bfde1d302954655561e00fa16d41e3099f67fd3a5bdec3d04
   languageName: node
   linkType: hard
 
@@ -6791,14 +6804,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@0.1.3-preview-d67bfdbad":
-  version: 0.1.3-preview-d67bfdbad
-  resolution: "@metamask-previews/geolocation-controller@npm:0.1.3-preview-d67bfdbad"
+"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@1.0.0-preview-07dc55406":
+  version: 1.0.0-preview-07dc55406
+  resolution: "@metamask-previews/geolocation-controller@npm:1.0.0-preview-07dc55406"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-  checksum: 10/baebd19dfb85823852ec260d28efacf0b829b88afaef87b970254a3d9825332eab8878073ee39d5527c3b3d1782ed38f405835b50d4e27bf700c3a54420d66f3
+  checksum: 10/802ef04e38662ce59fd3a57fb1c5800ca7c5064b246b0577663ea3971333851dc71a469456f80b990aed783088d03b3ed33c714244d3068896eec94a2b9362ae
   languageName: node
   linkType: hard
 
