@@ -26,9 +26,7 @@ import {
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
 import type { SecurityTrustLocationState } from '../../types/security-trust';
-import {
-  SecurityTrustAnalyticsProperty,
-} from './security-trust-analytics-properties';
+import { SecurityTrustAnalyticsProperty } from './security-trust-analytics-properties';
 
 export type SecurityTrustEntryCardToken = {
   symbol: string;

@@ -129,8 +129,7 @@ export const SecurityTrustInfoModal = ({
           severity: sheetParams.severity,
           [SecurityTrustAnalyticsProperty.TokenAddress]:
             sheetParams.tokenAddress,
-          [SecurityTrustAnalyticsProperty.TokenSymbol]:
-            sheetParams.tokenSymbol,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: sheetParams.tokenSymbol,
           [SecurityTrustAnalyticsProperty.ChainId]: sheetParams.chainId,
         })
         .build(),
