@@ -13,11 +13,8 @@ import {
 import { clearToastPhase } from './toast-lifecycle';
 
 const mockNavigate = jest.fn();
-let mockOrders: {
-  providerOrderId: string;
-  status: RampsOrderStatus;
-  [key: string]: unknown;
-}[] = [];
+const mockSelectRampsOrdersForSelectedAccount = jest.fn();
+const mockGetSelectedInternalAccount = jest.fn();
 
 const buyOrder = {
   id: 'moonpay/orders/order-1',
@@ -45,7 +42,16 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('react-redux', () => ({
-  useSelector: () => mockOrders,
+  useSelector: (selector: () => unknown) => selector(),
+}));
+
+jest.mock('../../../selectors/rampsController', () => ({
+  selectRampsOrdersForSelectedAccount: () =>
+    mockSelectRampsOrdersForSelectedAccount(),
+}));
+
+jest.mock('../../../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: () => mockGetSelectedInternalAccount(),
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -62,20 +68,22 @@ jest.mock('./shared', () => ({
 describe('useRampsOrderEventToasts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockOrders = [];
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([]);
+    mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
     clearToastPhase('order-1');
+    clearToastPhase('order-2');
   });
 
   it('does not toast when a precreated order is first seeded', () => {
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Precreated,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -83,12 +91,12 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('shows a pending toast when an order leaves PRECREATED', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Precreated,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
 
     act(() => {
@@ -96,12 +104,12 @@ describe('useRampsOrderEventToasts', () => {
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Pending,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -115,24 +123,24 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('shows a success toast on COMPLETED after a pending phase', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Pending,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Completed,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -145,14 +153,18 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('opens the order details page from the toast action', () => {
-    mockOrders = [{ ...buyOrder, status: RampsOrderStatus.Precreated }];
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+      { ...buyOrder, status: RampsOrderStatus.Precreated },
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [{ ...buyOrder, status: RampsOrderStatus.Pending }];
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        { ...buyOrder, status: RampsOrderStatus.Pending },
+      ]);
       rerender();
     });
 
@@ -162,23 +174,25 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('opens the order details page using state resolved after the toast is shown', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       { ...buyOrder, network: undefined, status: RampsOrderStatus.Precreated },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         { ...buyOrder, network: undefined, status: RampsOrderStatus.Pending },
-      ];
+      ]);
       rerender();
     });
 
     act(() => {
-      mockOrders = [{ ...buyOrder, status: RampsOrderStatus.Pending }];
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        { ...buyOrder, status: RampsOrderStatus.Pending },
+      ]);
       rerender();
     });
 
@@ -188,23 +202,23 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('falls back to activity when the order has no resolvable chain', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       { ...buyOrder, network: undefined, status: RampsOrderStatus.Precreated },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           ...buyOrder,
           network: undefined,
           cryptoCurrency: undefined,
           status: RampsOrderStatus.Pending,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -214,24 +228,24 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('shows a failed toast on FAILED', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Pending,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Failed,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -244,24 +258,24 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('shows a failed toast on CANCELLED', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Pending,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Cancelled,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -274,24 +288,24 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('shows success when an order jumps from PRECREATED to COMPLETED', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Precreated,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Completed,
         },
-      ];
+      ]);
       rerender();
     });
 
@@ -304,19 +318,19 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('dismisses the toast when an order disappears from state', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Pending,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
     });
 
     act(() => {
-      mockOrders = [];
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([]);
       rerender();
     });
 
@@ -324,12 +338,12 @@ describe('useRampsOrderEventToasts', () => {
   });
 
   it('does not toast again when the status is unchanged', () => {
-    mockOrders = [
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {
         providerOrderId: 'order-1',
         status: RampsOrderStatus.Pending,
       },
-    ];
+    ]);
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
     act(() => {
       rerender();
@@ -337,17 +351,81 @@ describe('useRampsOrderEventToasts', () => {
     jest.clearAllMocks();
 
     act(() => {
-      mockOrders = [
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
         {
           providerOrderId: 'order-1',
           status: RampsOrderStatus.Pending,
         },
-      ];
+      ]);
       rerender();
     });
 
     expect(showPendingToast).not.toHaveBeenCalled();
     expect(showSuccessToast).not.toHaveBeenCalled();
     expect(showFailedToast).not.toHaveBeenCalled();
+  });
+
+  it('does not re-toast historical orders when the selected account changes', () => {
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+      {
+        providerOrderId: 'order-1',
+        status: RampsOrderStatus.Completed,
+        orderType: 'buy',
+      },
+    ]);
+    const { rerender } = renderHook(() => useRampsOrderEventToasts());
+    act(() => {
+      rerender();
+    });
+    jest.clearAllMocks();
+
+    act(() => {
+      mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        {
+          providerOrderId: 'order-2',
+          status: RampsOrderStatus.Completed,
+          orderType: 'buy',
+        },
+      ]);
+      rerender();
+    });
+
+    expect(showPendingToast).not.toHaveBeenCalled();
+    expect(showSuccessToast).not.toHaveBeenCalled();
+    expect(showFailedToast).not.toHaveBeenCalled();
+  });
+
+  it('uses sell toast copy for sell orders', () => {
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+      {
+        providerOrderId: 'order-1',
+        status: RampsOrderStatus.Precreated,
+        orderType: 'SELL',
+      },
+    ]);
+    const { rerender } = renderHook(() => useRampsOrderEventToasts());
+    act(() => {
+      rerender();
+    });
+
+    act(() => {
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        {
+          providerOrderId: 'order-1',
+          status: RampsOrderStatus.Pending,
+          orderType: 'SELL',
+        },
+      ]);
+      rerender();
+    });
+
+    expect(showPendingToast).toHaveBeenCalledWith(
+      'ramp-order-1',
+      expect.objectContaining({
+        title: 'rampsOrderToastSellPendingTitle',
+        description: 'rampsOrderToastSellPendingDescription',
+      }),
+    );
   });
 });

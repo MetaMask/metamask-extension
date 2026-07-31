@@ -6,6 +6,7 @@ import {
   RampsOrderStatus,
   type RampsOrder,
 } from '@metamask/ramps-controller';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   ACTIVITY_ROUTE,
   TX_DETAILS_ROUTE,
@@ -39,6 +40,42 @@ const IN_PROGRESS = new Set<RampsOrderStatus>([
 
 const generateToastId = (orderCode: string) => `ramp-${orderCode}`;
 
+function isSellOrder(order: RampsOrder): boolean {
+  return order.orderType?.toUpperCase() === 'SELL';
+}
+
+function getToastCopy(
+  order: RampsOrder,
+  t: ReturnType<typeof useI18nContext>,
+): {
+  pendingTitle: string;
+  pendingDescription: string;
+  successTitle: string;
+  successDescription: string;
+  failedTitle: string;
+  failedDescription: string;
+} {
+  if (isSellOrder(order)) {
+    return {
+      pendingTitle: t('rampsOrderToastSellPendingTitle'),
+      pendingDescription: t('rampsOrderToastSellPendingDescription'),
+      successTitle: t('rampsOrderToastSellSuccessTitle'),
+      successDescription: t('rampsOrderToastSellSuccessDescription'),
+      failedTitle: t('rampsOrderToastSellFailedTitle'),
+      failedDescription: t('rampsOrderToastSellFailedDescription'),
+    };
+  }
+
+  return {
+    pendingTitle: t('rampsOrderToastPendingTitle'),
+    pendingDescription: t('rampsOrderToastPendingDescription'),
+    successTitle: t('rampsOrderToastSuccessTitle'),
+    successDescription: t('rampsOrderToastSuccessDescription'),
+    failedTitle: t('rampsOrderToastFailedTitle'),
+    failedDescription: t('rampsOrderToastFailedDescription'),
+  };
+}
+
 /**
  * Navigates to order details, or Activity when chain/id is unknown.
  *
@@ -65,7 +102,10 @@ function navigateToOrder(
  */
 export function useRampsOrderEventToasts(): void {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccountAddress = selectedAccount?.address?.toLowerCase() ?? '';
   const previousStatusById = useRef<Map<string, RampsOrderStatus>>(new Map());
+  const trackedAccountAddress = useRef(selectedAccountAddress);
   const ordersRef = useRef(orders);
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -73,6 +113,13 @@ export function useRampsOrderEventToasts(): void {
 
   useEffect(() => {
     ordersRef.current = orders;
+
+    if (trackedAccountAddress.current !== selectedAccountAddress) {
+      trackedAccountAddress.current = selectedAccountAddress;
+      previousStatusById.current = new Map();
+      initialized.current = false;
+    }
+
     const previous = previousStatusById.current;
     const next = new Map<string, RampsOrderStatus>();
 
@@ -84,7 +131,7 @@ export function useRampsOrderEventToasts(): void {
       next.set(orderCode, order.status);
 
       const previousStatus = previous.get(orderCode);
-      // Seed existing statuses on mount without toasting them.
+      // Seed existing statuses on mount / account switch without toasting them.
       if (!initialized.current) {
         continue;
       }
@@ -112,7 +159,7 @@ export function useRampsOrderEventToasts(): void {
 
     previousStatusById.current = next;
     initialized.current = true;
-  }, [navigate, orders, t]);
+  }, [navigate, orders, selectedAccountAddress, t]);
 }
 
 function handleOrderStatusChange({
@@ -135,6 +182,7 @@ function handleOrderStatusChange({
   }
 
   const toastId = generateToastId(orderCode);
+  const copy = getToastCopy(order, t);
   const onActionClick = () =>
     navigateToOrder(navigate, getLatestOrder(orderCode) ?? order);
   const action = {
@@ -150,8 +198,8 @@ function handleOrderStatusChange({
   if (becameInProgress && shouldShowPendingToast(orderCode)) {
     showPendingToast(toastId, {
       ...action,
-      title: t('rampsOrderToastPendingTitle'),
-      description: t('rampsOrderToastPendingDescription'),
+      title: copy.pendingTitle,
+      description: copy.pendingDescription,
     });
     return;
   }
@@ -162,8 +210,8 @@ function handleOrderStatusChange({
     if (shouldShowTerminalToast(orderCode)) {
       showSuccessToast(toastId, {
         ...action,
-        title: t('rampsOrderToastSuccessTitle'),
-        description: t('rampsOrderToastSuccessDescription'),
+        title: copy.successTitle,
+        description: copy.successDescription,
       });
     }
     return;
@@ -174,8 +222,8 @@ function handleOrderStatusChange({
     if (shouldShowTerminalToast(orderCode)) {
       showFailedToast(toastId, {
         ...action,
-        title: t('rampsOrderToastFailedTitle'),
-        description: t('rampsOrderToastFailedDescription'),
+        title: copy.failedTitle,
+        description: copy.failedDescription,
       });
     }
   }

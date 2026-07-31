@@ -8203,27 +8203,51 @@
   },
   "rampsOrderToastFailedDescription": {
     "message": "Something went wrong with your order.",
-    "description": "Description for the failed ramp order toast"
+    "description": "Description for the failed ramp buy order toast"
   },
   "rampsOrderToastFailedTitle": {
     "message": "Buy failed",
-    "description": "Title for the failed ramp order toast"
+    "description": "Title for the failed ramp buy order toast"
   },
   "rampsOrderToastPendingDescription": {
     "message": "Your order is being processed.",
-    "description": "Description for the pending ramp order toast"
+    "description": "Description for the pending ramp buy order toast"
   },
   "rampsOrderToastPendingTitle": {
     "message": "Buy in progress",
-    "description": "Title for the pending ramp order toast"
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Something went wrong with your order.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Sell failed",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Your order is being processed.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Sell in progress",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Your funds are on the way.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Sell successful",
+    "description": "Title for the successful ramp sell order toast"
   },
   "rampsOrderToastSuccessDescription": {
     "message": "Your crypto is on the way.",
-    "description": "Description for the successful ramp order toast"
+    "description": "Description for the successful ramp buy order toast"
   },
   "rampsOrderToastSuccessTitle": {
     "message": "Buy successful",
-    "description": "Title for the successful ramp order toast"
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOrderToastView": {
     "message": "View",
