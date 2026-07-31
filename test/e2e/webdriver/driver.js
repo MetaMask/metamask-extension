@@ -1261,6 +1261,30 @@ class Driver {
   }
 
   /**
+   * Waits until the clipboard contains the expected text.
+   * Clipboard writes from the extension are async; reading immediately after
+   * a copy click can race and return stale or empty content.
+   *
+   * @param {string} expectedContent - The expected clipboard text.
+   * @param {object} [options] - Wait options.
+   * @param {number} [options.interval] - Poll interval in milliseconds.
+   * @param {number} [options.timeout] - Maximum wait time in milliseconds.
+   * @returns {Promise<void>}
+   */
+  async waitForClipboardContent(
+    expectedContent,
+    { interval = 100, timeout = this.timeout } = {},
+  ) {
+    await this.waitUntil(
+      async () => {
+        const content = await this.getClipboardContent();
+        return content === expectedContent;
+      },
+      { interval, timeout },
+    );
+  }
+
+  /**
    * Paste a string into a field.
    *
    * @param {string | object} rawLocator  - Element locator
@@ -1985,6 +2009,8 @@ class Driver {
       // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
       // a lock fires mid-flight. No user impact; tracked in #37459.
       'unable to proceed, wallet is locked',
+      // Rive load/cleanup noise (createRoot); not an app regression. See #44516.
+      'Problem loading file; may be corrupt!',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

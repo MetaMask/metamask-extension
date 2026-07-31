@@ -10936,6 +10936,9 @@
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
   },
+  "tutorial": {
+    "message": "Öğretici"
+  },
   "txAlertTitle": {
     "message": "Bu işlem geri alınacak"
   },

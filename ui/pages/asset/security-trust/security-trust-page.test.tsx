@@ -1,57 +1,60 @@
-import React from "react";
-import { fireEvent, screen } from "@testing-library/react";
-import { configureStore } from "@reduxjs/toolkit";
-import type { TokenSecurityData } from "@metamask/assets-controllers";
-import type { CaipAssetType } from "@metamask/utils";
-import { enLocale as messages } from "../../../../test/lib/i18n-helpers";
-import { MOCK_ACCOUNT_EOA } from "../../../../test/data/mock-accounts";
-import { renderWithProvider } from "../../../../test/lib/render-helpers-navigate";
-import SecurityTrustPage from "./security-trust-page";
-import { PREVIOUS_ROUTE } from "../../../helpers/constants/routes";
+import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
+import { configureStore } from '@reduxjs/toolkit';
+import type { TokenSecurityData } from '@metamask/assets-controllers';
+import type { CaipAssetType } from '@metamask/utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../shared/lib/assets/security-trust-feature-flags';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import SecurityTrustPage from './security-trust-page';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 const mockNavigate = jest.fn();
 let mockLocationState: Record<string, unknown> | null = null;
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
   useLocation: () => ({
-    key: "default",
-    pathname: "/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc/security-trust",
-    search: "",
-    hash: "",
+    key: 'default',
+    pathname: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc/security-trust',
+    search: '',
+    hash: '',
     state: mockLocationState,
   }),
   useParams: () => ({
-    chainId: "eip155:1",
-    asset: "eip155:1/erc20:0xabc",
+    chainId: 'eip155:1',
+    asset: 'eip155:1/erc20:0xabc',
   }),
 }));
 
-jest.mock("../../../hooks/useTokenSecurityData", () => ({
+jest.mock('../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: jest.fn(),
 }));
 
-jest.mock("../../../selectors/assets", () => ({
+jest.mock('../../../selectors/assets', () => ({
   getFungibleAssetForRoute: jest.fn(() => null),
 }));
 
-jest.mock("../../../hooks/useTheme", () => ({
-  useTheme: () => "light",
+jest.mock('../../../hooks/useTheme', () => ({
+  useTheme: () => 'light',
 }));
 
-const { useTokenSecurityData } = jest.requireMock("../../../hooks/useTokenSecurityData");
+const { useTokenSecurityData } = jest.requireMock(
+  '../../../hooks/useTokenSecurityData',
+);
 
-const assetId = "eip155:1/erc20:0xabc" as CaipAssetType;
+const assetId = 'eip155:1/erc20:0xabc' as CaipAssetType;
 
 const baseSecurityData: TokenSecurityData = {
-  resultType: "Verified",
-  maliciousScore: "0",
+  resultType: 'Verified',
+  maliciousScore: '0',
   features: [
     {
-      featureId: "VERIFIED_CONTRACT",
-      type: "Info",
-      description: "Published contract",
+      featureId: 'VERIFIED_CONTRACT',
+      type: 'Info',
+      description: 'Published contract',
     },
   ],
   fees: {
@@ -64,9 +67,9 @@ const baseSecurityData: TokenSecurityData = {
     supply: 1000000000,
     topHolders: [
       {
-        label: "Top holder",
-        name: "Example",
-        address: "0x1234567890123456789012345678901234567890",
+        label: 'Top holder',
+        name: 'Example',
+        address: '0x1234567890123456789012345678901234567890',
         holdingPercentage: 35,
       },
     ],
@@ -77,28 +80,40 @@ const baseSecurityData: TokenSecurityData = {
   },
   metadata: {
     externalLinks: {
-      homepage: "https://example.com",
-      twitterPage: "exampletoken",
-      telegramChannelId: "exampletoken",
+      homepage: 'https://example.com',
+      twitterPage: 'exampletoken',
+      telegramChannelId: 'exampletoken',
     },
   },
-  created: "2020-01-15T00:00:00.000Z",
+  created: '2020-01-15T00:00:00.000Z',
 };
 
 const locationState = {
   securityData: baseSecurityData,
-  symbol: "USDC",
+  symbol: 'USDC',
   decimals: 6,
   isNative: false,
-  address: "0xabc",
-  chainId: "0x1",
+  address: '0xabc',
+  chainId: '0x1',
 };
 
-const createStore = () =>
+const enabledSecurityTrustFlag = {
+  enabled: true,
+  minimumVersion: '0.0.0',
+};
+
+const createStore = ({
+  securityTrustTdpFlag = enabledSecurityTrustFlag,
+  useExternalServices = true,
+}: {
+  securityTrustTdpFlag?: boolean | { enabled: boolean; minimumVersion: string };
+  useExternalServices?: boolean;
+} = {}) =>
   configureStore({
     reducer: (
       state = {
         metamask: {
+          useExternalServices,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
             accounts: {
@@ -106,26 +121,27 @@ const createStore = () =>
             },
           },
           remoteFeatureFlags: {
-            solanaAccounts: { enabled: false, minimumVersion: "13.6.0" },
+            [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: securityTrustTdpFlag,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
             solanaTestnetsEnabled: false,
             bitcoinTestnetsEnabled: false,
-            bitcoinAccounts: { enabled: false, minimumVersion: "13.6.0" },
-            tronAccounts: { enabled: false, minimumVersion: "13.6.0" },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            tronAccounts: { enabled: false, minimumVersion: '13.6.0' },
             tronTestnetsEnabled: false,
           },
           networkConfigurationsByChainId: {
-            "0x1": {
-              chainId: "0x1",
-              name: "Ethereum Mainnet",
+            '0x1': {
+              chainId: '0x1',
+              name: 'Ethereum Mainnet',
               defaultBlockExplorerUrlIndex: 0,
-              blockExplorerUrls: ["https://etherscan.io"],
+              blockExplorerUrls: ['https://etherscan.io'],
               rpcEndpoints: [],
               defaultRpcEndpointIndex: 0,
             },
           },
           multichainNetworkConfigurationsByChainId: {},
           isEvmSelected: true,
-          selectedNetworkClientId: "mainnet",
+          selectedNetworkClientId: 'mainnet',
           networksMetadata: {},
           networksWithTransactionActivity: {},
         },
@@ -142,7 +158,9 @@ const renderPage = ({
   isLoading?: boolean;
   prefetchedOnly?: boolean;
 } = {}) => {
-  mockLocationState = prefetchedOnly ? { ...locationState, securityData } : locationState;
+  mockLocationState = prefetchedOnly
+    ? { ...locationState, securityData }
+    : locationState;
 
   useTokenSecurityData.mockReturnValue({
     securityData: prefetchedOnly ? null : securityData,
@@ -153,20 +171,47 @@ const renderPage = ({
   return renderWithProvider(<SecurityTrustPage />, createStore());
 };
 
-describe("SecurityTrustPage", () => {
+describe('SecurityTrustPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationState = locationState;
     globalThis.open = jest.fn();
-    document.querySelector(".app")?.scroll(0, 0);
+    document.querySelector('.app')?.scroll(0, 0);
   });
 
-  it("renders loading state when data is loading and unavailable", () => {
+  it('redirects to asset page when security trust TDP flag is disabled', () => {
+    useTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <SecurityTrustPage />,
+      createStore({ securityTrustTdpFlag: false }),
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc',
+      { replace: true },
+    );
+    expect(useTokenSecurityData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetId: null,
+        prefetchedData: undefined,
+      }),
+    );
+    expect(
+      screen.queryByTestId('security-trust-screen'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders loading state when data is loading and unavailable', () => {
     mockLocationState = {
-      symbol: "USDC",
+      symbol: 'USDC',
       decimals: 6,
       isNative: false,
-      address: "0xabc",
+      address: '0xabc',
     };
 
     useTokenSecurityData.mockReturnValue({
@@ -177,33 +222,43 @@ describe("SecurityTrustPage", () => {
 
     renderWithProvider(<SecurityTrustPage />, createStore());
 
-    expect(screen.getByTestId("security-trust-screen")).toBeInTheDocument();
+    expect(screen.getByTestId('security-trust-screen')).toBeInTheDocument();
     expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
   });
 
-  it("renders verified summary and feature tags", () => {
+  it('renders verified summary and feature tags', () => {
     renderPage();
 
-    expect(screen.getByText(messages.securityTrustVerified.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustSubtitleKnown.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustVerified.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustSubtitleKnown.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(messages.securityTrustFeatureVerifiedContract.message),
     ).toBeInTheDocument();
   });
 
-  it("renders buy and sell tax with no hidden fees banner", () => {
+  it('renders buy and sell tax with no hidden fees banner', () => {
     renderPage();
 
-    expect(screen.getByText(messages.securityTrustBuyTax.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustSellTax.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustTransfer.message)).toBeInTheDocument();
-    expect(screen.getAllByText("0.0%").length).toBeGreaterThanOrEqual(2);
+    expect(
+      screen.getByText(messages.securityTrustBuyTax.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustSellTax.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTransfer.message),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('0.0%').length).toBeGreaterThanOrEqual(2);
     expect(
       screen.getByText(messages.securityTrustNoHiddenFeesDetected.message),
     ).toBeInTheDocument();
   });
 
-  it("omits no hidden fees banner when fees are non-zero", () => {
+  it('omits no hidden fees banner when fees are non-zero', () => {
     renderPage({
       securityData: {
         ...baseSecurityData,
@@ -221,44 +276,56 @@ describe("SecurityTrustPage", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders official links with icons", () => {
+  it('renders official links with icons', () => {
     renderPage();
 
-    expect(screen.getByTestId("security-trust-link-website")).toBeInTheDocument();
-    expect(screen.getByTestId("security-trust-link-twitter")).toBeInTheDocument();
-    expect(screen.getByTestId("security-trust-link-telegram")).toBeInTheDocument();
-    expect(screen.getByTestId("security-trust-link-explorer")).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustWebsite.message)).toBeInTheDocument();
-    expect(screen.getByText("@exampletoken")).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustTelegram.message)).toBeInTheDocument();
+    expect(
+      screen.getByTestId('security-trust-link-website'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('security-trust-link-twitter'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('security-trust-link-telegram'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('security-trust-link-explorer'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustWebsite.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('@exampletoken')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTelegram.message),
+    ).toBeInTheDocument();
   });
 
-  it("opens official links in a new tab", () => {
+  it('opens official links in a new tab', () => {
     renderPage();
 
-    fireEvent.click(screen.getByTestId("security-trust-link-website"));
+    fireEvent.click(screen.getByTestId('security-trust-link-website'));
     expect(globalThis.open).toHaveBeenCalledWith(
-      "https://example.com",
-      "_blank",
-      "noopener,noreferrer",
+      'https://example.com',
+      '_blank',
+      'noopener,noreferrer',
     );
 
-    fireEvent.click(screen.getByTestId("security-trust-link-twitter"));
+    fireEvent.click(screen.getByTestId('security-trust-link-twitter'));
     expect(globalThis.open).toHaveBeenCalledWith(
-      "https://x.com/exampletoken",
-      "_blank",
-      "noopener,noreferrer",
+      'https://x.com/exampletoken',
+      '_blank',
+      'noopener,noreferrer',
     );
   });
 
-  it("navigates back when back button is clicked", () => {
+  it('navigates back when back button is clicked', () => {
     renderPage();
 
-    fireEvent.click(screen.getByTestId("security-trust-back-button"));
+    fireEvent.click(screen.getByTestId('security-trust-back-button'));
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it("renders prefetched security data without loading state", () => {
+  it('renders prefetched security data without loading state', () => {
     useTokenSecurityData.mockReturnValue({
       securityData: null,
       isLoading: true,
@@ -269,8 +336,12 @@ describe("SecurityTrustPage", () => {
 
     renderWithProvider(<SecurityTrustPage />, createStore());
 
-    expect(screen.queryByText(messages.loading.message)).not.toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustVerified.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.loading.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustVerified.message),
+    ).toBeInTheDocument();
     expect(useTokenSecurityData).toHaveBeenCalledWith(
       expect.objectContaining({
         assetId,
@@ -279,15 +350,23 @@ describe("SecurityTrustPage", () => {
     );
   });
 
-  it("renders token distribution and info sections", () => {
+  it('renders token distribution and info sections', () => {
     renderPage();
 
-    expect(screen.getByText(messages.securityTrustTokenDistribution.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustTotalSupply.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustTop10Holders.message)).toBeInTheDocument();
-    expect(screen.getByText("35.0%")).toBeInTheDocument();
-    expect(screen.getByText(messages.securityTrustTokenInfo.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTokenDistribution.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTotalSupply.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTop10Holders.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('35.0%')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTokenInfo.message),
+    ).toBeInTheDocument();
     expect(screen.getByText(messages.network.message)).toBeInTheDocument();
-    expect(screen.getByText("ERC-20")).toBeInTheDocument();
+    expect(screen.getByText('ERC-20')).toBeInTheDocument();
   });
 });

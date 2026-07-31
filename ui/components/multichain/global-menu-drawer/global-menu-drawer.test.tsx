@@ -173,6 +173,35 @@ describe('GlobalMenuDrawer', () => {
     expect(queryByTestId('global-menu-drawer')).not.toBeInTheDocument();
   });
 
+  it('opens in fullscreen when app-root-layout is present', async () => {
+    getEnvironmentType.mockReturnValue('fullscreen');
+    const app = document.createElement('div');
+    app.className = 'app';
+    const rootLayout = document.createElement('div');
+    rootLayout.setAttribute('data-testid', 'app-root-layout');
+    // Intentionally omit max-w-[ classes so only the stable test id matches.
+    app.appendChild(rootLayout);
+    document.body.appendChild(app);
+
+    const { getByTestId } = renderWithProvider(
+      <GlobalMenuDrawer
+        isOpen
+        onClose={() => undefined}
+        data-testid="global-menu-drawer"
+      >
+        <span>Content</span>
+      </GlobalMenuDrawer>,
+      configureStore(mockState),
+      '/',
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('drawer-close-button')).toBeInTheDocument();
+    });
+
+    app.remove();
+  });
+
   it('networks item navigates to the dedicated networks page', async () => {
     const store = configureStore({
       ...mockState,

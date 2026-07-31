@@ -27,6 +27,7 @@ import {
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
@@ -96,6 +97,7 @@ const MemoizedStorageErrorToast = memo(StorageErrorToast);
 
 export function ToastMaster() {
   const location = useLocation();
+  const isUnlocked = useSelector(getIsUnlocked);
 
   // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
@@ -111,7 +113,9 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <MemoizedStorageErrorToast />
-        <MemoizedSurveyToast />
+        {/* SurveyToast must not mount while locked: `/` can flash before /unlock
+            and would consume the first survey mock/API response. */}
+        {isUnlocked ? <MemoizedSurveyToast /> : null}
         <MemoizedPrivacyPolicyToast />
         <MemoizedPermittedNetworkToast />
         <MemoizedInfuraSwitchToast />
