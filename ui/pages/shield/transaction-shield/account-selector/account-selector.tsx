@@ -25,6 +25,7 @@ import {
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { getEvmAccountsGroupedByWallet } from '../../../../helpers/utils/evm-accounts-grouped-by-wallet';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 const AccountSelector = ({
@@ -48,30 +49,13 @@ const AccountSelector = ({
   // Group recipients by wallet name
   const accountsGroupedByWallet: Record<string, AccountSelectorWallet> =
     useMemo(() => {
-      return Object.values(wallets).reduce(
+      return getEvmAccountsGroupedByWallet(wallets).reduce(
         (acc, wallet) => {
-          const walletName = wallet.metadata.name;
-          if (!acc[walletName]) {
-            acc[walletName] = {
-              id: wallet.id,
-              name: wallet.metadata.name,
-              accounts: [],
-            };
-          }
-          Object.values(wallet.groups).forEach((group) => {
-            // get evm account from group
-            const evmAccount = group.accounts.find((account) =>
-              account.type.startsWith('eip155:'),
-            );
-            if (evmAccount) {
-              acc[walletName].accounts.push({
-                id: group.id,
-                name: group.metadata.name,
-                address: evmAccount.address,
-                type: evmAccount.type,
-              });
-            }
-          });
+          acc[wallet.name] = {
+            id: wallet.id,
+            name: wallet.name,
+            accounts: wallet.accounts,
+          };
           return acc;
         },
         {} as Record<string, AccountSelectorWallet>,

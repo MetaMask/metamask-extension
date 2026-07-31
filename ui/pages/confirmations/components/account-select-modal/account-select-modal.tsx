@@ -20,19 +20,8 @@ import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { getEvmAccountsGroupedByWallet } from '../../../../helpers/utils/evm-accounts-grouped-by-wallet';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-type SelectableAccount = {
-  id: string;
-  name: string;
-  address: string;
-};
-
-type SelectableWallet = {
-  id: string;
-  name: string;
-  accounts: SelectableAccount[];
-};
 
 export type AccountSelectModalProps = {
   /**
@@ -41,11 +30,11 @@ export type AccountSelectModalProps = {
   selectedAddress?: string;
   /**
    * Invoked with the chosen account address when the user picks an account.
+   * The consumer is responsible for closing the modal after selection.
    */
   onSelect: (address: string) => void;
   /**
-   * Called when the modal requests to close (backdrop, escape, close button, or
-   * after an account is selected).
+   * Called when the modal requests to close (backdrop, escape, or close button).
    */
   onClose: () => void;
   /**
@@ -61,7 +50,8 @@ export type AccountSelectModalProps = {
  *
  * @param props - Component props.
  * @param props.selectedAddress - Address of the currently selected account.
- * @param props.onSelect - Called with the chosen account address.
+ * @param props.onSelect - Called with the chosen account address. The consumer
+ * must close the modal after handling selection.
  * @param props.onClose - Called when the modal should close.
  * @param props.title - Optional modal title.
  */
@@ -74,35 +64,10 @@ export function AccountSelectModal({
   const t = useI18nContext();
   const wallets = useSelector(getWalletsWithAccounts);
 
-  const accountsGroupedByWallet: SelectableWallet[] = useMemo(() => {
-    return Object.values(wallets).reduce((acc: SelectableWallet[], wallet) => {
-      const accounts: SelectableAccount[] = [];
-
-      Object.values(wallet.groups).forEach((group) => {
-        const evmAccount = group.accounts.find((account) =>
-          account.type.startsWith('eip155:'),
-        );
-
-        if (evmAccount) {
-          accounts.push({
-            id: group.id,
-            name: group.metadata.name,
-            address: evmAccount.address,
-          });
-        }
-      });
-
-      if (accounts.length > 0) {
-        acc.push({
-          id: wallet.id,
-          name: wallet.metadata.name,
-          accounts,
-        });
-      }
-
-      return acc;
-    }, []);
-  }, [wallets]);
+  const accountsGroupedByWallet = useMemo(
+    () => getEvmAccountsGroupedByWallet(wallets),
+    [wallets],
+  );
 
   return (
     <Modal isOpen onClose={onClose} data-testid="account-select-modal">
