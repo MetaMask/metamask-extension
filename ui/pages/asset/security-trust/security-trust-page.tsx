@@ -474,7 +474,11 @@ const SecurityTrustPage = () => {
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
-  const timeSpentStart = useRef(Date.now());
+  const timeSpentStart = useRef(0);
+
+  useEffect(() => {
+    timeSpentStart.current = Date.now();
+  }, []);
   const params = useParams();
   const { assetId } = resolveAssetRouteLookup(processAssetParams(params));
   const useExternalServices = useSelector(getUseExternalServices);

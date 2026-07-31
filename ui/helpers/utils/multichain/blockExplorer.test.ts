@@ -133,6 +133,7 @@ describe('Block Explorer Tests', () => {
           '0x1': {
             chainId: '0x1',
             name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
             defaultBlockExplorerUrlIndex: 0,
             blockExplorerUrls: ['https://etherscan.io'],
             rpcEndpoints: [],
@@ -143,6 +144,10 @@ describe('Block Explorer Tests', () => {
           'eip155:1': {
             chainId: 'eip155:1',
             name: 'Ethereum Mainnet',
+            isEvm: true,
+            nativeCurrency: 'ETH',
+            blockExplorerUrls: ['https://etherscan.io'],
+            defaultBlockExplorerUrlIndex: 0,
           },
         },
         fallbackExplorerLabel: 'Etherscan',
@@ -162,6 +167,8 @@ describe('Block Explorer Tests', () => {
           [MultichainNetworks.SOLANA]: {
             chainId: MultichainNetworks.SOLANA,
             name: 'Solana',
+            isEvm: false,
+            nativeCurrency: `${MultichainNetworks.SOLANA}/slip44:501`,
           },
         },
         fallbackExplorerLabel: 'Etherscan',

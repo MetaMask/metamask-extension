@@ -1,8 +1,8 @@
 import {
   type CaipAssetType,
   type CaipChainId,
-  type Hex,
   isCaipChainId,
+  isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -23,8 +23,8 @@ export const toSecurityTrustChainId = (
     return chainId;
   }
 
-  if (isEvmChainId(chainId)) {
-    return toEvmCaipChainId(chainId as Hex);
+  if (isStrictHexString(chainId) && isEvmChainId(chainId)) {
+    return toEvmCaipChainId(chainId);
   }
 
   return undefined;
