@@ -20,10 +20,10 @@ import {
   getTop10HoldingPct,
 } from '../utils/security-utils';
 import {
-  getSecurityTrustBlockExplorerLink,
   getSecurityTrustTokenTypeLabel,
   toSecurityTrustChainId,
 } from '../utils/security-trust-utils';
+import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
 import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import type { SecurityTrustLocationState } from '../types/security-trust';
 
@@ -182,7 +182,7 @@ export const useSecurityTrustPageData = () => {
 
   const blockExplorerLink = useMemo(
     () =>
-      getSecurityTrustBlockExplorerLink({
+      getFungibleAssetBlockExplorerLink({
         caipChainId,
         tokenAddress,
         isNative,
