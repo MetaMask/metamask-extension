@@ -1,3 +1,4 @@
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../pages/home/activity-tab';
@@ -8,16 +9,22 @@ import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
 import { login } from './login.flow';
 import { selectTronNetwork } from './tron-network.flow';
 
+const TRON_CONFIRM_TIMEOUT_MS = 30_000;
+const TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR =
+  '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="confirmed"]';
+
 export async function landOnTronSendScreen({
   driver,
   symbol,
   assetId,
   expectedNativeBalance = '6.072',
+  expectedTokenBalance,
 }: {
   driver: Driver;
   symbol: 'TRX' | 'USDT' | 'USDD' | 'HTX' | 'SEED';
   assetId?: string;
   expectedNativeBalance?: string | null;
+  expectedTokenBalance?: string;
 }): Promise<SendPage> {
   await login(driver, { validateBalance: false });
   await selectTronNetwork(driver);
@@ -38,6 +45,12 @@ export async function landOnTronSendScreen({
       'TRX',
     );
   }
+  if (expectedTokenBalance) {
+    await home.checkExpectedTokenBalanceIsDisplayed(
+      expectedTokenBalance,
+      symbol,
+    );
+  }
 
   const sendPage = new SendPage(driver);
   const searchParams = new URLSearchParams({ chainId: TRON_CHAIN_ID });
@@ -51,6 +64,21 @@ export async function landOnTronSendScreen({
   return sendPage;
 }
 
+async function waitForTronSendActivity(driver: Driver): Promise<void> {
+  // Local java-tron can confirm before a pending row is observable.
+  console.log('Waiting for Tron send activity (pending or confirmed)');
+  await driver.wait(async () => {
+    try {
+      const activityItems = await driver.findElements(
+        TRON_ACTIVITY_PENDING_OR_CONFIRMED_SELECTOR,
+      );
+      return activityItems.length >= 1;
+    } catch {
+      return false;
+    }
+  }, 30_000);
+}
+
 export async function confirmTronSendAndAssertActivity({
   driver,
   expectedAmount,
@@ -59,15 +87,37 @@ export async function confirmTronSendAndAssertActivity({
   expectedAmount?: string;
 }): Promise<void> {
   const snapConfirmation = new SnapTransactionConfirmation(driver);
-  await snapConfirmation.checkPageIsLoaded();
-  await snapConfirmation.clickFooterConfirmButton();
+  const extensionHandle = await driver.driver.getWindowHandle();
+  let usingDialog = false;
+
+  try {
+    await driver.waitForWindowWithTitleToBePresent(
+      WINDOW_TITLES.Dialog,
+      5_000,
+    );
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    usingDialog = true;
+  } catch {
+    // Unified send may render confirmation inline in the extension popup.
+  }
+
+  await snapConfirmation.checkPageIsLoaded({
+    timeout: TRON_CONFIRM_TIMEOUT_MS,
+  });
+
+  if (usingDialog) {
+    await snapConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+    await driver.switchToWindow(extensionHandle);
+  } else {
+    await snapConfirmation.clickFooterConfirmButton();
+  }
 
   const homePage = new HomePage(driver);
   // Same mitigation as BTC Bug #43641: confirm may leave Assets/Home selected.
   await homePage.goToActivityList();
 
   const activityList = new ActivityTab(driver);
-  await activityList.checkPendingTxNumberDisplayedInActivity(1);
+  await waitForTronSendActivity(driver);
   await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
   if (expectedAmount) {
     await activityList.checkTxAmountInActivity(expectedAmount, 1);

@@ -242,6 +242,13 @@ function txInvolvesAccount(tx: CapturedTx, accountAddress: string): boolean {
   const ownerHex = normalizeMaybeTronAddress(tx.ownerAddress);
   const toHex = normalizeMaybeTronAddress(tx.toAddress);
 
+  // When capture could not recover addresses from the broadcast body / local
+  // node, still surface the tx on every registered account history endpoint so
+  // confirmation isn't lost (E2E fixtures only register sender + recipient).
+  if (!ownerHex && !toHex) {
+    return true;
+  }
+
   return ownerHex === accountHex || toHex === accountHex;
 }
 
@@ -414,6 +421,7 @@ export async function proxyTronBlockchainCalls(
 
   await proxyPostPath('/wallet/getblock');
   await proxyPostPath('/wallet/getaccountresource');
+  await proxyPostPath('/wallet/getaccountnet');
   await proxyPostPath('/wallet/getcontract');
   await proxyPostPath('/wallet/gettransactionbyid');
   await proxyPostPath('/wallet/createtransaction');

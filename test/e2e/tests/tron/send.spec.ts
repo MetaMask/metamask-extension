@@ -204,11 +204,14 @@ describe('Tron Send', function (this: Suite) {
           driver,
           symbol: 'USDT',
           assetId: getTronTrc20AssetId(localNodes, 'USDT'),
+          // Homepage rounds 2.804595 → 2.805 (same as assets.spec.ts).
+          expectedTokenBalance: '2.805',
         });
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         await sendPage.fillAmount('1');
+        await sendPage.waitForSendAmountBalance();
         await sendPage.pressContinueButton();
 
         await confirmTronSendAndAssertActivity({
@@ -239,6 +242,8 @@ describe('Tron Send', function (this: Suite) {
           driver,
           symbol: 'USDT',
           assetId: getTronTrc20AssetId(localNodes, 'USDT'),
+          // Homepage rounds 2.804595 → 2.805 (same as assets.spec.ts).
+          expectedTokenBalance: '2.805',
         });
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
@@ -246,8 +251,10 @@ describe('Tron Send', function (this: Suite) {
         // Seeded USDT balance is 2_804_595 raw = 2.804595 USDT.
         // TRC20 has no fee buffer (fee paid in TRX).
         await sendPage.fillAmount('2.804595');
+        await sendPage.waitForSendAmountBalance();
         await sendPage.pressContinueButton();
 
+        // Activity may round the amount; presence + confirmed status is enough.
         await confirmTronSendAndAssertActivity({ driver });
       },
     );

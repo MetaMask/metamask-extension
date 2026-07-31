@@ -45,13 +45,16 @@ class SnapTransactionConfirmation {
     );
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded({
+    timeout,
+  }: { timeout?: number } = {}): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.header,
-        this.cancelButton,
-        this.confirmButton,
-      ]);
+      const waitOptions =
+        timeout === undefined ? undefined : { timeout };
+      await this.driver.waitForMultipleSelectors(
+        [this.header, this.cancelButton, this.confirmButton],
+        waitOptions,
+      );
     } catch (e) {
       console.log(
         'Timeout while waiting for snap transaction confirmation page to be loaded',
