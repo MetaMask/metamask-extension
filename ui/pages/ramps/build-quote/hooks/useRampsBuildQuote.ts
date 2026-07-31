@@ -19,10 +19,6 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
-import {
-  removePendingOrderPreview,
-  setPendingOrderPreview,
-} from '../../../../hooks/ramps/utils/pendingOrderPreview';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -80,8 +76,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     paymentMethods,
     paymentMethodsStatus,
     getBuyWidgetData,
-    addPrecreatedOrder,
-    removeOrder,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -199,9 +193,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     }
     setContinueError(null);
     setIsContinuing(true);
-    let seededOrderId: string | undefined;
-    let seededOrderCode: string | undefined;
-    let checkoutWatchStarted = false;
     try {
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
@@ -210,44 +201,12 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       }
 
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
-      const orderAlreadyPrecreated = Boolean(widget.orderId);
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
 
-      // Persist order state before opening a tab (popup may unload).
-      if (widget.orderId && orderCode) {
-        if (selectedToken) {
-          setPendingOrderPreview(orderCode, {
-            cryptoCurrency: {
-              symbol: selectedToken.symbol,
-              assetId: selectedToken.assetId,
-              decimals: selectedToken.decimals,
-            },
-          });
-        }
-        await addPrecreatedOrder({
-          orderId: widget.orderId,
-          providerCode,
-          walletAddress,
-          chainId: selectedToken?.chainId,
-        });
-        seededOrderId = widget.orderId;
-        seededOrderCode = orderCode;
-      }
-
-      const cleanupSeededOrder = async () => {
-        if (!seededOrderId || !seededOrderCode) {
-          return;
-        }
-        removePendingOrderPreview(seededOrderCode);
-        await removeOrder(seededOrderId);
-      };
-
       const openedTab = await global.platform.openTab({ url: widget.url });
       if (openedTab.id === undefined) {
-        // Watcher needs a tab id to observe the callback redirect.
-        await cleanupSeededOrder();
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
@@ -256,10 +215,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         tabId: openedTab.id,
         providerCode,
         walletAddress,
-        orderAlreadyPrecreated,
         orderCode,
       });
-      checkoutWatchStarted = true;
 
       navigate(DEFAULT_ROUTE);
       showBuyTabOpenedToast(
@@ -267,28 +224,17 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         t('buyTabOpenedToastDescription'),
       );
     } catch (error) {
-      if (seededOrderId && seededOrderCode && !checkoutWatchStarted) {
-        removePendingOrderPreview(seededOrderCode);
-        try {
-          await removeOrder(seededOrderId);
-        } catch {
-          // Best effort cleanup only.
-        }
-      }
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
     } finally {
       setIsContinuing(false);
     }
   }, [
-    addPrecreatedOrder,
     canContinue,
     getBuyWidgetData,
     isContinuing,
     navigate,
-    removeOrder,
-    selectedProvider?.id,
+    selectedProvider,
     selectedQuote,
-    selectedToken,
     t,
     walletAddress,
   ]);

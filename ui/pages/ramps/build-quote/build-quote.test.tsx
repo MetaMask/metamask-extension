@@ -6,15 +6,12 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { getPendingOrderPreview } from '../../../hooks/ramps/utils/pendingOrderPreview';
 import { RampsBuildQuoteScreen } from './build-quote';
 
 const QUOTE_DEBOUNCE_MS = 500;
 
 const mockNavigate = jest.fn();
 const mockGetBuyWidgetData = jest.fn();
-const mockAddPrecreatedOrder = jest.fn();
-const mockRemoveOrder = jest.fn();
 const mockOpenTab = jest.fn();
 const mockWatchRampsCheckoutTab = jest.fn();
 const mockShowBuyTabOpenedToast = jest.fn();
@@ -128,8 +125,6 @@ const mockControllerState = ({
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
   paymentMethodsStatus: 'success',
   getBuyWidgetData: mockGetBuyWidgetData,
-  addPrecreatedOrder: mockAddPrecreatedOrder,
-  removeOrder: mockRemoveOrder,
 });
 
 describe('RampsBuildQuoteScreen', () => {
@@ -240,7 +235,6 @@ describe('RampsBuildQuoteScreen', () => {
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
     });
-    mockAddPrecreatedOrder.mockResolvedValue(undefined);
     mockOpenTab.mockResolvedValue({ id: 42 });
     mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
 
@@ -258,13 +252,6 @@ describe('RampsBuildQuoteScreen', () => {
       provider: 'transak',
       id: 'quote-1',
     });
-    expect(mockAddPrecreatedOrder).toHaveBeenCalledWith(
-      expect.objectContaining({
-        orderId: 'order-123',
-        walletAddress: '0xabc123',
-        chainId: 'eip155:1',
-      }),
-    );
     expect(mockOpenTab).toHaveBeenCalledWith({
       url: 'https://provider.example/checkout',
     });
@@ -272,40 +259,12 @@ describe('RampsBuildQuoteScreen', () => {
       tabId: 42,
       providerCode: 'transak',
       walletAddress: '0xabc123',
-      orderAlreadyPrecreated: true,
       orderCode: 'order-123',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('stashes token metadata without quote-derived amounts', async () => {
-    mockGetBuyWidgetData.mockResolvedValue({
-      url: 'https://provider.example/checkout',
-      orderId: 'order-123',
-    });
-    mockAddPrecreatedOrder.mockResolvedValue(undefined);
-    mockOpenTab.mockResolvedValue({ id: 42 });
-
-    renderWithProvider(
-      <RampsBuildQuoteScreen />,
-      createStore(),
-      '/ramps/build-quote',
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
-    });
-
-    expect(getPendingOrderPreview('order-123')).toStrictEqual({
-      cryptoCurrency: {
-        symbol: mockSelectedToken.symbol,
-        assetId: mockSelectedToken.assetId,
-        decimals: mockSelectedToken.decimals,
-      },
-    });
-  });
-
-  it('watches redirect-only checkouts without precreating an order', async () => {
+  it('watches redirect-only checkouts without a widget order id', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
     });
@@ -322,23 +281,20 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(mockAddPrecreatedOrder).not.toHaveBeenCalled();
     expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
       tabId: 7,
       providerCode: 'transak',
       walletAddress: '0xabc123',
-      orderAlreadyPrecreated: false,
       orderCode: undefined,
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('normalizes a full-path orderId when stashing the pending-order preview', async () => {
+  it('normalizes a full-path orderId before watching checkout', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'providers/moonpay-staging/orders/c-abc123',
     });
-    mockAddPrecreatedOrder.mockResolvedValue(undefined);
     mockOpenTab.mockResolvedValue({ id: 42 });
 
     renderWithProvider(
@@ -351,8 +307,11 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(getPendingOrderPreview('c-abc123')).toMatchObject({
-      cryptoCurrency: { symbol: mockSelectedToken.symbol },
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      tabId: 42,
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderCode: 'c-abc123',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -383,12 +342,10 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
-  it('cleans up precreated data when the opened tab has no id', async () => {
-    const precreatedOrderId = 'providers/transak/orders/order-no-tab-id';
-    const precreatedOrderCode = 'order-no-tab-id';
+  it('surfaces an error when the opened tab has no id', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
-      orderId: precreatedOrderId,
+      orderId: 'order-123',
     });
     mockOpenTab.mockResolvedValue({});
 
@@ -402,13 +359,11 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(mockAddPrecreatedOrder).toHaveBeenCalledWith(
-      expect.objectContaining({
-        orderId: precreatedOrderId,
-      }),
+    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsBuyWidgetError.message,
     );
-    expect(mockRemoveOrder).toHaveBeenCalledWith(precreatedOrderId);
-    expect(getPendingOrderPreview(precreatedOrderCode)).toBeUndefined();
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {
@@ -425,7 +380,6 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(mockOpenTab).not.toHaveBeenCalled();
-    expect(mockAddPrecreatedOrder).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
       messages.rampsBuyWidgetError.message,

@@ -1,9 +1,5 @@
 import { mapRampsOrder, type RampsOrderLike } from '@metamask/client-utils';
-import {
-  getInternalOrderCode,
-  type RampsOrder,
-} from '@metamask/ramps-controller';
-import { getPendingOrderPreview } from './pendingOrderPreview';
+import type { RampsOrder } from '@metamask/ramps-controller';
 
 /**
  * Seeds `network.chainId` when the order has no resolvable chain.
@@ -52,26 +48,6 @@ function seedNetworkIfNeeded(
 }
 
 /**
- * Fills missing `cryptoCurrency` from the session preview.
- *
- * @param order - The raw ramps order.
- * @returns The order with preview currency filled when missing.
- */
-function withPendingOrderPreview(order: RampsOrder): RampsOrder {
-  if (order.cryptoCurrency) {
-    return order;
-  }
-  const preview = getPendingOrderPreview(getInternalOrderCode(order));
-  if (!preview) {
-    return order;
-  }
-  return {
-    ...order,
-    cryptoCurrency: order.cryptoCurrency ?? preview.cryptoCurrency,
-  };
-}
-
-/**
  * Coerces a missing `txHash` to `''` for the shared mapper.
  *
  * @param order - The raw ramps order.
@@ -95,7 +71,7 @@ export function mapRampsOrderSafely(
 ): NonNullable<ReturnType<typeof mapRampsOrder>> | undefined {
   try {
     const prepared = seedNetworkIfNeeded(
-      withNormalizedTxHash(withPendingOrderPreview(order)),
+      withNormalizedTxHash(order),
       fallbackChainId,
     );
     const item =

@@ -1,7 +1,6 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { mapRampsOrderSafely } from './mapRampsOrderSafely';
-import { setPendingOrderPreview } from './pendingOrderPreview';
 
 type RampOrderItem = Extract<
   ActivityListItem,
@@ -87,33 +86,10 @@ describe('mapRampsOrderSafely', () => {
     expect(mapped?.data.token?.amount).toBe('0.013745');
   });
 
-  it('uses preview currency metadata without using quote-derived amounts', () => {
-    setPendingOrderPreview('order-2', {
-      cryptoCurrency: { symbol: 'ETH', assetId: 'eip155:1/slip44:60' },
-    });
+  it('maps a pending order without crypto currency metadata', () => {
     const order = {
       ...baseOrder,
-      providerOrderId: 'order-2',
-      cryptoAmount: undefined,
-      cryptoCurrency: undefined,
-      fiatAmount: undefined,
-      fiatCurrency: undefined,
-      status: 'PENDING',
-    } as unknown as RampsOrder;
-
-    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
-
-    expect(mapped?.data.token).toMatchObject({
-      symbol: 'ETH',
-      amount: undefined,
-    });
-    expect(mapped?.data.fiat).toBeUndefined();
-  });
-
-  it('leaves the order untouched when no preview was stashed for it', () => {
-    const order = {
-      ...baseOrder,
-      providerOrderId: 'order-without-preview',
+      providerOrderId: 'order-without-currency',
       cryptoCurrency: undefined,
       fiatCurrency: undefined,
       status: 'PENDING',
