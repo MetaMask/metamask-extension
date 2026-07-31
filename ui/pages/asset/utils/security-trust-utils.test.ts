@@ -36,7 +36,16 @@ describe('security-trust-utils', () => {
       ).toBe('ERC-20');
     });
 
-    it('returns SPL for Solana fungible tokens', () => {
+    it('returns SPL for Solana fungible tokens using production CAIP ids', () => {
+      expect(
+        getSecurityTrustTokenTypeLabel(
+          `${SOLANA_MAINNET}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+          false,
+        ),
+      ).toBe('SPL');
+    });
+
+    it('returns SPL for legacy Solana spl namespace ids', () => {
       expect(
         getSecurityTrustTokenTypeLabel(
           `${SOLANA_MAINNET}/spl:TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`,

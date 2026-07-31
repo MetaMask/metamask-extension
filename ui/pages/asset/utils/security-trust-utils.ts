@@ -3,6 +3,7 @@ import {
   type CaipChainId,
   isCaipChainId,
   isStrictHexString,
+  KnownCaipNamespace,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -43,11 +44,15 @@ export const getSecurityTrustTokenTypeLabel = (
   }
 
   try {
-    const { assetNamespace } = parseCaipAssetType(assetId);
+    const { chain, assetNamespace } = parseCaipAssetType(assetId);
     if (assetNamespace === 'erc20') {
       return 'ERC-20';
     }
-    if (assetNamespace === 'spl') {
+    if (
+      assetNamespace === 'spl' ||
+      (chain.namespace === KnownCaipNamespace.Solana &&
+        assetNamespace === 'token')
+    ) {
       return 'SPL';
     }
     return assetNamespace.toUpperCase();
