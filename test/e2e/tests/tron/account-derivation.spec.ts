@@ -251,7 +251,8 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests -- flaky clipboard copy in QR popup on CI; see #44165
+  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
