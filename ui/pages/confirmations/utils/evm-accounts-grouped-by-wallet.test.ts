@@ -1,4 +1,4 @@
-import type { ConsolidatedWallets } from '../../selectors/multichain-accounts/account-tree.types';
+import type { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getEvmAccountsGroupedByWallet } from './evm-accounts-grouped-by-wallet';
 
 const ACCOUNT_1_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
@@ -72,8 +72,8 @@ describe('getEvmAccountsGroupedByWallet', () => {
   });
 
   it('returns an empty array when there are no wallets', () => {
-    expect(getEvmAccountsGroupedByWallet({} as ConsolidatedWallets)).toStrictEqual(
-      [],
-    );
+    expect(
+      getEvmAccountsGroupedByWallet({} as ConsolidatedWallets),
+    ).toStrictEqual([]);
   });
 });

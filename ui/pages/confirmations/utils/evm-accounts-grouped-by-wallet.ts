@@ -1,6 +1,6 @@
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import type { ConsolidatedWallets } from '../../selectors/multichain-accounts/account-tree.types';
+import type { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export type EvmAccountGroupedByWallet = {
   id: AccountGroupId;

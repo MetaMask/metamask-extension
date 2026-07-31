@@ -20,7 +20,7 @@ import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getEvmAccountsGroupedByWallet } from '../../../../helpers/utils/evm-accounts-grouped-by-wallet';
+import { getEvmAccountsGroupedByWallet } from '../../utils/evm-accounts-grouped-by-wallet';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type AccountSelectModalProps = {
