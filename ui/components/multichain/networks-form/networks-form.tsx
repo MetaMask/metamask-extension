@@ -266,7 +266,7 @@ export const NetworksForm = ({
     }));
   }, [chainId, fetchedChainId, existingNetwork?.chainId]);
 
-  // Fetch the chain ID from the selected RPC endpoint when it changes.
+  // Fetch the chain ID from the RPC endpoint when it changes
   useEffect(() => {
     const rpcUrl =
       rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
