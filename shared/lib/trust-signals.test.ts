@@ -27,9 +27,7 @@ describe('mapChainIdToSupportedEVMChain', () => {
   });
 
   it('is case-insensitive on the chainId', () => {
-    expect(mapChainIdToSupportedEVMChain('0X13B2')).toBe(
-      SupportedEVMChain.Arc,
-    );
+    expect(mapChainIdToSupportedEVMChain('0X13B2')).toBe(SupportedEVMChain.Arc);
   });
 
   it('returns undefined for an unknown chainId', () => {
