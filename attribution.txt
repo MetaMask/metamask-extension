@@ -23267,7 +23267,7 @@ authors: Maarten Zuidhoorn <maarten@zuidhoorn.com>
 ******************************
 
 @metamask/account-api
-1.0.4 <https://github.com/MetaMask/accounts>
+1.1.1 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26194,7 +26194,7 @@ SOFTWARE.
 ******************************
 
 @metamask/keyring-snap-sdk
-9.2.0 <https://github.com/MetaMask/accounts>
+9.2.1 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -27679,7 +27679,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snap-account-service
-2.0.0 <https://github.com/MetaMask/core>
+2.1.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -27700,6 +27700,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
