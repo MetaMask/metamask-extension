@@ -1,12 +1,8 @@
 export const TOTAL_QUESTIONS = 3;
 
-// Bumped whenever the questions, answer options, or red-flag verdicts change,
-// so analytics can segment responses by the questionnaire they came from.
+// Bump when the questions, answer options, or red-flag verdicts change.
 export const QUESTIONNAIRE_VERSION = '1';
 
-// Presentation-friendly labels for the question steps, used for the `step`
-// property on Scam Questionnaire Viewed. The warning screen has its own event,
-// so it needs no label here.
 export type StepLabel = 'q1' | 'q2' | 'q3';
 
 export function stepLabelFromIndex(step: 0 | 1 | 2): StepLabel {
@@ -115,14 +111,8 @@ export type AnswerRecord = {
   q3_answer: string | null;
 };
 
-/**
- * Flattens the collected answers into the per-question analytics properties
- * shared by every terminal event. Unanswered questions report `null` so the
- * event still distinguishes "not reached" from "answered".
- *
- * @param answers - The answers collected so far.
- * @returns The per-question answer keys, `null` where unanswered.
- */
+// Unanswered questions report `null` rather than being omitted, so events
+// distinguish "not reached" from "answered".
 export function getAnswerRecord(answers: Answers): AnswerRecord {
   return {
     q1_answer: answers.q1?.key ?? null,

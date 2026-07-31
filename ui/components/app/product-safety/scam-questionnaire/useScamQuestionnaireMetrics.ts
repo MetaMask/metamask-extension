@@ -19,21 +19,10 @@ import {
 
 export type CompletionStatus = 'clean' | 'payment_stopped' | 'proceeded';
 
-/**
- * USD value of the assets leaving the wallet in this confirmation — the funds
- * the questionnaire is standing in front of.
- *
- * Deliberately mirrors the arithmetic behind `simulation_sending_assets_total_value`
- * on transaction events so the two are directly comparable rather than being
- * parallel definitions that drift apart.
- *
- * Returns `undefined` when simulation hasn't produced balance changes or fiat
- * rates are unavailable — Blockaid flagging a recipient doesn't imply a
- * successful simulation. The property is then omitted rather than sent as `0`,
- * so downstream sums read as a lower bound instead of counting free sends.
- *
- * @returns The outgoing USD total, or `undefined` when it can't be determined.
- */
+// Mirrors the arithmetic behind `simulation_sending_assets_total_value` on
+// transaction events so the two stay comparable. `undefined` rather than `0`
+// when rates are unavailable, so the property is omitted instead of reporting
+// the send as free.
 function useValueAtRisk(): number | undefined {
   const transactionMeta = useTransactionMetadataRequest();
   const { value: balanceChanges } = useBalanceChanges({

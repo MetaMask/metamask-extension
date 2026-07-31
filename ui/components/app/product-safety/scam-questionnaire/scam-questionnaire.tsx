@@ -84,10 +84,9 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   const [pendingSelection, setPendingSelection] = useState<
     QuestionOption | undefined
   >();
-  // Fire Scam Questionnaire Viewed at most once per question per session.
-  // Backward navigation to a previously viewed question is a no-op — the
-  // impression is already recorded. Aligns with Mixpanel funnel drop-off
-  // analysis (unique users per step, not raw view count).
+  // Once per question, so the funnel reads as unique users per step rather
+  // than raw view count. A ref, not state: it guards a side effect, and
+  // StrictMode's double-invoked effects would both see a stale `setState`.
   const viewedStepsRef = useRef<Set<0 | 1 | 2>>(new Set());
   useEffect(() => {
     if (step < TOTAL_QUESTIONS) {
@@ -99,8 +98,6 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
     }
   }, [step, metrics]);
 
-  // Fire Scam Questionnaire Warning Displayed once per session when the
-  // warning screen first renders.
   const warningDisplayedRef = useRef(false);
   useEffect(() => {
     if (step === WARNING_STEP && !warningDisplayedRef.current) {
@@ -115,9 +112,8 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       return;
     }
     if (step === 0) {
-      // Backing out doesn't acknowledge the Blockaid alert, so the
-      // questionnaire is re-shown on the next confirm attempt. No terminal
-      // event fires here because nothing has been decided yet.
+      // No event: this doesn't acknowledge the Blockaid alert, so the
+      // questionnaire returns on the next confirm attempt. Nothing decided yet.
       onDismiss();
       return;
     }
