@@ -332,7 +332,7 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 # here would not guarantee Extension Security review.
 /AGENTS.md                                                    @MetaMask/extension-security-team
 /app/scripts/lib/deep-links/deep-link-router.ts               @MetaMask/extension-security-team
-/app/scripts/lib/deep-links/deep-link.router.test.ts           @MetaMask/extension-security-team
+/app/scripts/lib/deep-links/deep-link.router.test.ts          @MetaMask/extension-security-team
 /shared/lib/deep-links/parse*                                 @MetaMask/extension-security-team
 /shared/lib/deep-links/security-policy*                       @MetaMask/extension-security-team
 /shared/lib/deep-links/utils*                                 @MetaMask/extension-security-team
