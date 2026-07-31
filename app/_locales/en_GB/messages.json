@@ -8249,10 +8249,6 @@
     "message": "Buy successful",
     "description": "Title for the successful ramp buy order toast"
   },
-  "rampsOrderToastView": {
-    "message": "View",
-    "description": "Action button on ramp order status toasts that opens Activity"
-  },
   "rampsOtherOptions": {
     "message": "Other options"
   },
