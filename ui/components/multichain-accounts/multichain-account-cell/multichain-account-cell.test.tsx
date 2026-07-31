@@ -47,6 +47,9 @@ describe('MultichainAccountCell', () => {
     expect(cellElement).toBeInTheDocument();
 
     expect(screen.getByText('Test Account')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-cell-name-Test Account'),
+    ).toBeInTheDocument();
     expect(screen.getByText('$2,400.00')).toBeInTheDocument();
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
   });

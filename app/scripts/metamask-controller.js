@@ -14,12 +14,7 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, merge, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import {
-  errorCodes,
-  JsonRpcError,
-  providerErrors,
-  rpcErrors,
-} from '@metamask/rpc-errors';
+import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'async-mutex';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -28,7 +23,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   MethodNames,
@@ -231,10 +225,6 @@ import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import {
-  isUserRejectedHardwareWalletError,
-  toHardwareWalletError,
-} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -3674,9 +3664,14 @@ export default class MetamaskController extends EventEmitter {
       ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
-      resolvePendingApproval: this.resolvePendingApproval,
-      approveHardwareWalletTransaction:
-        this.approveHardwareWalletTransaction.bind(this),
+      resolvePendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resolvePendingApproval',
+      ),
+      approveHardwareWalletTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:approveHardwareWalletTransaction',
+      ),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -3950,6 +3945,10 @@ export default class MetamaskController extends EventEmitter {
       isSendBundleSupported: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
+      ),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
       ),
       openUpdateTabAndReload: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -5656,7 +5655,15 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+    // `createAccounts` derives the account address from the device, so a
+    // locked or unresponsive device can make this call hang indefinitely.
+    // Unlike the pure-read hardware methods (which run on the lock-free
+    // `deviceRead` path), `createAccounts` mutates vault state and must run
+    // under the controller lock, so it cannot use `deviceRead: true`. Wrap
+    // it in the same UX backstop as `#withKeyringForDevice`'s device-read
+    // branch so a wedged device rejects with an actionable error instead of
+    // leaving the UI spinner (and `showLoadingIndication`) stuck forever.
+    const createOperation = this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         const { entropySource } = keyring;
@@ -5740,6 +5747,39 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
+
+    let timeoutHandle;
+    let timedOut = false;
+    let unlockedAccount;
+    try {
+      ({ address: unlockedAccount } = await Promise.race([
+        createOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet account creation timed out for device: ${deviceName}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ]));
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // The abandoned create operation still holds the controller lock until
+        // the device call settles; observe its rejection so it never surfaces
+        // as an unhandled rejection. Mirrors the device-read path in
+        // `#withKeyringForDevice`.
+        createOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware wallet account creation failed after timeout for device: ${deviceName}`,
+            error,
+          ),
+        );
+      }
+    }
 
     const accounts = this.accountsController.listAccounts();
 
@@ -8586,95 +8626,6 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
-  };
-
-  /**
-   * Resolve a pending approval. For hardware wallet transactions and signatures,
-   * this handles error parsing.
-   *
-   * @param {string} id - The approval ID
-   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
-   * @param {object} options - Options for the approval
-   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
-   * @param {boolean} [options.waitForResult] - Whether to wait for the result
-   */
-  resolvePendingApproval = async (id, value, options = {}) => {
-    // RPC params may serialize an omitted argument as `null`, so normalize first
-    // before destructuring to avoid a runtime TypeError.
-    const normalizedOptions = options ?? {};
-    const { walletType, waitForResult } = normalizedOptions;
-    const approvalOptions =
-      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
-
-    try {
-      await this.approvalController.acceptRequest(id, value, approvalOptions);
-    } catch (error) {
-      // Ignore if approval was already handled
-      if (error instanceof ApprovalRequestNotFoundError) {
-        return;
-      }
-
-      if (walletType) {
-        await this.#handleHardwareWalletError(error, walletType);
-        return;
-      }
-
-      throw error;
-    }
-  };
-
-  /**
-   * Handle hardware wallet errors with retry support.
-   * Parses the error, checks if it's retryable, and if so, attempts to recreate
-   * the request (transaction or signature). Always throws an RPC error with
-   * properly formatted data.
-   *
-   * @param {Error} error - The original error from the hardware wallet
-   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} Always throws with hardware wallet error data
-   */
-  async #handleHardwareWalletError(error, walletType) {
-    const hwError = toHardwareWalletError(error, walletType);
-    const createRpcError = isUserRejectedHardwareWalletError(hwError)
-      ? providerErrors.userRejectedRequest
-      : rpcErrors.internal;
-    // Throw a JsonRpcError with hardware wallet error data preserved
-    // This ensures the error properties survive serialization across the RPC boundary
-    throw createRpcError({
-      message: hwError.message,
-      data: {
-        code: hwError.code,
-        severity: hwError.severity,
-        category: hwError.category,
-        userMessage: hwError.userMessage,
-        metadata: hwError.metadata,
-      },
-    });
-  }
-
-  /**
-   * Approve a hardware wallet transaction with retry support.
-   * This is a convenience wrapper around resolvePendingApproval for the
-   * transaction confirmation flow, which passes txMeta in a specific format.
-   *
-   * @param {object} opts - Options for the transaction
-   * @param {string} opts.txId - The transaction ID to approve
-   * @param {object} opts.txMeta - The transaction metadata
-   * @param {string} opts.actionId - The action ID for tracking
-   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
-   */
-  approveHardwareWalletTransaction = async ({
-    txId,
-    txMeta,
-    actionId,
-    walletType,
-  }) => {
-    await this.resolvePendingApproval(
-      String(txId),
-      { txMeta, actionId },
-      { waitForResult: true, walletType },
-    );
   };
 
   async _onAccountChange(newAddress) {

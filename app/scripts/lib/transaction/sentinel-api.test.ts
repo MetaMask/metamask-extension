@@ -42,6 +42,7 @@ const MAINNET_BASE = {
   relayTransactions: true,
   hidden: false,
   sendBundle: true,
+  simulationIncludeFees: true,
 } as const;
 
 const POLYGON_BASE = {
@@ -56,6 +57,7 @@ const POLYGON_BASE = {
   relayTransactions: false,
   hidden: false,
   sendBundle: false,
+  simulationIncludeFees: true,
 } as const;
 
 const MOCK_NETWORKS: Record<string, SentinelNetwork> = {

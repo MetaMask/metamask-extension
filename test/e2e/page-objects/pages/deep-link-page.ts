@@ -20,6 +20,18 @@ export default class DeepLink {
     this.driver = driver;
   }
 
+  /**
+   * Waits for the description box to display the given text.
+   *
+   * @param text - The expected (partial) text to wait for.
+   */
+  async checkDescriptionTextIsDisplayed(text: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.descriptionBox,
+      text,
+    });
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.descriptionBox);

@@ -916,6 +916,7 @@
         "console.error": true,
         "fetch.bind": true,
         "performance.now": true,
+        "performance.timeOrigin": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -1825,7 +1826,7 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -1849,6 +1850,11 @@
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-utils": {
+      "packages": {
+        "@metamask/superstruct": true
       }
     },
     "@metamask/logging-controller": {

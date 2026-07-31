@@ -58,6 +58,11 @@ class SendPage {
     testId: 'open-recipient-modal-btn',
   };
 
+  private readonly recipientValidationError = (errorText: string) => ({
+    css: '.mm-help-text',
+    text: errorText,
+  });
+
   private readonly sendAlertAcknowledgeButton =
     '[data-testid="send-alert-modal-acknowledge-button"]';
 
@@ -184,6 +189,18 @@ class SendPage {
       throw e;
     }
     console.log('Send page is loaded');
+  }
+
+  /**
+   * Waits for a recipient address validation error to be displayed.
+   * Recipient validation is debounced, so callers should expect this to
+   * wait rather than assert instantly.
+   *
+   * @param errorText - The expected (potentially localized) error text.
+   */
+  async checkRecipientValidationError(errorText: string): Promise<void> {
+    console.log(`Checking recipient validation error: ${errorText}`);
+    await this.driver.waitForSelector(this.recipientValidationError(errorText));
   }
 
   async checkSendFormIsLoaded(): Promise<void> {
