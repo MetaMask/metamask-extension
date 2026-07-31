@@ -10,6 +10,7 @@ import { ScamQuestionnaire } from './scam-questionnaire';
 jest.mock('./useScamQuestionnaireMetrics', () => ({
   useScamQuestionnaireMetrics: () => ({
     trackViewed: jest.fn(),
+    trackContactSupport: jest.fn(),
     trackCompleted: jest.fn(),
   }),
 }));

@@ -152,6 +152,10 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
     onReject();
   }, [answers, metrics, onReject]);
 
+  const handleContactSupport = useCallback(() => {
+    metrics.trackContactSupport();
+  }, [metrics]);
+
   const handleProceed = useCallback(() => {
     metrics.trackCompleted({
       status: 'proceeded',
@@ -197,7 +201,11 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
               onContinue={handleContinue}
             />
           ) : (
-            <ScamWarning onStop={handleStop} onProceed={handleProceed} />
+            <ScamWarning
+              onStop={handleStop}
+              onContactSupport={handleContactSupport}
+              onProceed={handleProceed}
+            />
           )}
         </Box>
       </ModalContent>

@@ -78,6 +78,7 @@ jest.mock(
   () => ({
     useScamQuestionnaireMetrics: () => ({
       trackViewed: jest.fn(),
+      trackContactSupport: jest.fn(),
       trackCompleted: jest.fn(),
     }),
   }),

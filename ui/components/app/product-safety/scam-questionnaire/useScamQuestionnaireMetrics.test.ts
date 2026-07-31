@@ -7,7 +7,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createEventBuilder } from '../../../../../shared/lib/analytics/create-event-builder';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
   type BalanceChange,
@@ -83,6 +86,23 @@ describe('useScamQuestionnaireMetrics', () => {
       expect(firedEvent(trackEvent)).toMatchObject({
         name: MetaMetricsEventName.ScamQuestionnaireViewed as string,
         properties: { step: 'warning', questionnaire_version: '1' },
+      });
+    });
+  });
+
+  describe('trackContactSupport', () => {
+    it('fires with no properties beyond the questionnaire version', () => {
+      const { metrics, trackEvent } = setup([buildBalanceChange(-1, 99)]);
+
+      metrics.trackContactSupport();
+
+      const event = firedEvent(trackEvent);
+      expect(event.name).toBe(
+        MetaMetricsEventName.ScamQuestionnaireContactSupport as string,
+      );
+      expect(event.properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Confirmations,
+        questionnaire_version: '1',
       });
     });
   });

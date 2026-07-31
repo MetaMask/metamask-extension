@@ -72,6 +72,9 @@ export function useScamQuestionnaireMetrics() {
           step: stepLabelFromIndex(step),
         }),
 
+      trackContactSupport: () =>
+        fire(MetaMetricsEventName.ScamQuestionnaireContactSupport, {}),
+
       trackCompleted: ({
         status,
         answers,
