@@ -352,13 +352,16 @@ function guardCancelOrder<
     ) {
       // The retry sits on top of an already-resolved failure, so a throwing
       // `init()` must not turn a resolved result into a rejection for the
-      // caller. Fall back to the original result instead.
+      // caller. Fall back to the original result instead. The retried cancel is
+      // deliberately outside this guard: a throw from it is the real failure and
+      // must reach the caller rather than be masked by `ORDER_UNKNOWN_COIN`.
       try {
         await controller.init();
-        return await fn(...args);
       } catch {
         return result;
       }
+
+      return await fn(...args);
     }
 
     return result;

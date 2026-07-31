@@ -685,6 +685,36 @@ describe('CancelOrderModal', () => {
         expect.anything(),
       );
     });
+
+    it('closes the modal without an error when the background throws the same rejection', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error(alreadyClosedError),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Error',
+        expect.anything(),
+      );
+    });
   });
 
   describe('geo-blocking', () => {

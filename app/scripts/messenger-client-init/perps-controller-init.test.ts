@@ -1068,6 +1068,22 @@ describe('PerpsControllerInit', () => {
             error: 'ORDER_UNKNOWN_COIN',
           });
         });
+
+        it('surfaces a throw from the retried cancel instead of the original failure', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder
+            .mockResolvedValueOnce({
+              success: false,
+              error: 'ORDER_UNKNOWN_COIN',
+            })
+            .mockRejectedValueOnce(new Error('WebSocket connection closed'));
+
+          await expect(
+            api.perpsCancelOrder({ orderId: '1', symbol: 'ETH' }),
+          ).rejects.toThrow('WebSocket connection closed');
+          expect(cancelOrder).toHaveBeenCalledTimes(2);
+        });
       });
     });
   });

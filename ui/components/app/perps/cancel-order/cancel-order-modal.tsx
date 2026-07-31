@@ -172,23 +172,10 @@ export const CancelOrderModal = ({
         },
       ]);
       if (!result?.success) {
-        // Controller already emitted cancel submitted/terminal analytics —
-        // surface UI only; do not throw into catch (would duplicate PerpsError).
-        const errorMessage = result?.error ?? t('somethingWentWrong');
-        setError(errorMessage);
-        // The error is DISPLAYED here, so emit the error screen view even though
-        // we intentionally skip the client PerpsError.
-        trackPerpsErrorScreenViewed(
-          track,
-          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
-        );
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
-          description: errorMessage,
-        });
-        setIsSubmitting(false);
-        return;
+        // A `success: false` result carries the same provider prose a rejection
+        // does, so route both through the catch below: it already closes out
+        // quietly for orders no longer on the book and translates the rest.
+        throw new Error(result?.error ?? t('somethingWentWrong'));
       }
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
