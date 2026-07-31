@@ -30,7 +30,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
@@ -109,8 +109,8 @@ export default function OnboardingWelcome() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
+  const consentDecisionMade = useSelector(
+    getConsentDecisionMade,
   );
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
@@ -158,7 +158,7 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
         navigate(
-          completedMetaMetricsOnboarding
+          consentDecisionMade
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
           { replace: true },
@@ -192,7 +192,7 @@ export default function OnboardingWelcome() {
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,

@@ -15,7 +15,7 @@ import {
 import {
   getFirstTimeFlowType,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getIsSocialLoginFlow,
   getIsPasskeyFeatureAvailable,
@@ -76,14 +76,14 @@ export default function CreatePassword({
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const isOptedIn = useSelector(getOptedIn);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
+  const consentDecisionMade = useSelector(
+    getConsentDecisionMade,
   );
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
-    completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
+    consentDecisionMade && isOptedIn && base64AnalyticsId,
   );
   const analyticsIframeQuery = {
     mmi: base64AnalyticsId,
@@ -129,7 +129,7 @@ export default function CreatePassword({
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
-            completedMetaMetricsOnboarding
+            consentDecisionMade
               ? ONBOARDING_COMPLETION_ROUTE
               : ONBOARDING_METAMETRICS,
             { replace: true },
@@ -153,7 +153,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
   ]);

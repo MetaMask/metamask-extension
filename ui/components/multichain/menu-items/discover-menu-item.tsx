@@ -7,7 +7,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -25,11 +25,11 @@ export const DiscoverMenuItem = ({
   metricsLocation: string;
 }) => {
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
+  const consentDecisionMade = useSelector(
+    getConsentDecisionMade,
   );
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();

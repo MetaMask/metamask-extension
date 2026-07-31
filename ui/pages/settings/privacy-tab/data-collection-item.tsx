@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -34,8 +34,8 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
+  const consentDecisionMade = useSelector(
+    getConsentDecisionMade,
   );
   const isOptedIn = useSelector(getOptedIn);
 
@@ -59,7 +59,7 @@ export const DataCollectionToggleItem = () => {
   }, [socialLoginEnabled, dispatch]);
 
   const isDisabled =
-    !useExternalServices || !(completedMetaMetricsOnboarding && isOptedIn);
+    !useExternalServices || !(consentDecisionMade && isOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;

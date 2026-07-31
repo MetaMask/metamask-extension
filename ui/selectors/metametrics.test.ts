@@ -1,4 +1,4 @@
-import { getCompletedMetaMetricsOnboarding, getOptedIn } from './metametrics';
+import { getConsentDecisionMade, getOptedIn } from './metametrics';
 
 describe('MetaMetrics selectors', () => {
   const state = (metamask: Record<string, unknown>) => ({ metamask });
@@ -10,10 +10,10 @@ describe('MetaMetrics selectors', () => {
 
   it('returns whether metrics onboarding has been completed', () => {
     expect(
-      getCompletedMetaMetricsOnboarding(state({ consentDecisionMade: true })),
+      getConsentDecisionMade(state({ consentDecisionMade: true })),
     ).toBe(true);
     expect(
-      getCompletedMetaMetricsOnboarding(state({ consentDecisionMade: false })),
+      getConsentDecisionMade(state({ consentDecisionMade: false })),
     ).toBe(false);
   });
 });
