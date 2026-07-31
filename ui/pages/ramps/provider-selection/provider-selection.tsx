@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
@@ -310,7 +311,7 @@ export function RampsProviderSelectionScreen() {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleProviderSelect = useCallback(
@@ -324,7 +325,7 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);

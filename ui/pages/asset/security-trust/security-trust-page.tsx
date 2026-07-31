@@ -17,6 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { transitionBack } from '../../../components/ui/transition';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useTheme } from '../../../hooks/useTheme';
@@ -475,7 +476,7 @@ const SecurityTrustPage = () => {
     document.querySelector('.app')?.scroll(0, 0);
   }, []);
 
-  const handleBack = () => transitionBack(() => navigate(-1));
+  const handleBack = () => transitionBack(() => navigate(PREVIOUS_ROUTE));
 
   const pageContent =
     isLoading && !securityData ? (

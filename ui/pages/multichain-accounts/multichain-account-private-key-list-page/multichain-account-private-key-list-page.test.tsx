@@ -1,27 +1,28 @@
-import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
-import { AccountGroupId } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
-import { MultichainAccountPrivateKeyListPage } from './multichain-account-private-key-list-page';
+import React from "react";
+import { screen, fireEvent } from "@testing-library/react";
+import { AccountGroupId } from "@metamask/account-api";
+import { renderWithProvider } from "../../../../test/lib/render-helpers-navigate";
+import mockState from "../../../../test/data/mock-state.json";
+import configureStore from "../../../store/store";
+import { MultichainAccountPrivateKeyListPage } from "./multichain-account-private-key-list-page";
+import { PREVIOUS_ROUTE } from "../../../helpers/constants/routes";
 
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
-const backButtonTestId = 'multichain-account-address-list-page-back-button';
+const backButtonTestId = "multichain-account-address-list-page-back-button";
 
 // Use actual group IDs from mock-state.json
-const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+const MOCK_GROUP_ID = "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0" as AccountGroupId;
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
   useLocation: () => mockUseLocation(),
 }));
 
-jest.mock('../../../hooks/useAnalytics', () => {
+jest.mock("../../../hooks/useAnalytics", () => {
   const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
+    "../../../../shared/lib/analytics/create-event-builder",
   );
 
   return {
@@ -32,12 +33,12 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
-describe('MultichainAccountAddressListPage', () => {
+describe("MultichainAccountAddressListPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('handles back button click', () => {
+  it("handles back button click", () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -53,10 +54,10 @@ describe('MultichainAccountAddressListPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it('displays the proper account group name', () => {
+  it("displays the proper account group name", () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -69,9 +70,9 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByText(/Account 1 \/ Private Keys/iu)).toBeInTheDocument();
   });
 
-  it('renders fallback account name when no account is found', () => {
+  it("renders fallback account name when no account is found", () => {
     mockUseLocation.mockReturnValue({
-      search: `?accountGroupId=${encodeURIComponent('invalid-group-id')}`,
+      search: `?accountGroupId=${encodeURIComponent("invalid-group-id")}`,
     });
     const store = configureStore({
       metamask: {
@@ -83,7 +84,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByText(/Account \/ Private Keys/iu)).toBeInTheDocument();
   });
 
-  it('renders warning banner', () => {
+  it("renders warning banner", () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -93,6 +94,6 @@ describe('MultichainAccountAddressListPage', () => {
       },
     });
     renderWithProvider(<MultichainAccountPrivateKeyListPage />, store);
-    expect(screen.getByTestId('backup-state-banner-alert')).toBeInTheDocument();
+    expect(screen.getByTestId("backup-state-banner-alert")).toBeInTheDocument();
   });
 });

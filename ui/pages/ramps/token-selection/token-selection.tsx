@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -100,7 +101,7 @@ export function RampsTokenSelectionScreen() {
     allTokens.length > topTokens.length;
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleAssetSelect = useCallback(

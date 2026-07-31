@@ -57,6 +57,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -1094,10 +1095,10 @@ const PerpsOrderEntryPage = () => {
   // Visible header back button: pop the history stack so the user returns to
   // wherever they came from. Pushing marketDetailPath instead would create a
   // market-detail -> order-entry -> market-detail loop, since the
-  // market-detail back button uses navigate(-1).
+  // market-detail back button uses navigate(PREVIOUS_ROUTE).
   const navigateBack = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
-      navigate(-1);
+      navigate(PREVIOUS_ROUTE);
       return;
     }
     if (decodedSymbol) {

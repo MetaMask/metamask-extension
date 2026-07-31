@@ -56,7 +56,7 @@ export class PerpsActivityPage {
   }
 
   /**
-   * Header back control (`navigate(-1)` in the app — typically returns to Perps home).
+   * Header back control (`navigate(PREVIOUS_ROUTE)` in the app — typically returns to Perps home).
    */
   async clickHeaderBack(): Promise<void> {
     await this.driver.clickElement(this.activityBackButton);
