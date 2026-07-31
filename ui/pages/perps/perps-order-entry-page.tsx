@@ -293,7 +293,10 @@ const PerpsOrderEntryPage = () => {
     ORDER_BOOK_MAX_WIDTH_PCT,
   );
   const [isResizingOrderBook, setIsResizingOrderBook] = useState(false);
-  const bodyRef = useRef<HTMLDivElement>(null);
+  // Callback ref (state) so the ResizeObserver attaches when the body mounts
+  // after the markets-loading skeleton — a plain useRef + [] effect would
+  // see null on the cold-load first commit and never retry.
+  const [bodyEl, setBodyEl] = useState<HTMLDivElement | null>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -1051,11 +1054,10 @@ const PerpsOrderEntryPage = () => {
       return undefined;
     }
     const handleMove = (moveEvent: MouseEvent) => {
-      const container = bodyRef.current;
-      if (!container) {
+      if (!bodyEl) {
         return;
       }
-      const rect = container.getBoundingClientRect();
+      const rect = bodyEl.getBoundingClientRect();
       // Keep the announced max aligned with the live clamp ceiling while
       // dragging (ResizeObserver also refreshes this on container resize).
       setOrderBookMaxWidthPct(getOrderBookMaxWidthPct(rect.width));
@@ -1070,33 +1072,34 @@ const PerpsOrderEntryPage = () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
     };
-  }, [isResizingOrderBook]);
+  }, [isResizingOrderBook, bodyEl]);
 
   // Re-clamp the stored width when the body resizes (popup resize / expand to
   // fullscreen). Without this, a width set on a wide body would exceed the
   // pixel-aware maximum on a narrower body and spill the panel off-screen.
   // Persist that same effective maximum for aria-valuemax so assistive tech
   // announces the reachable ceiling, not the constant percentage max.
+  // Depends on `bodyEl` (callback ref) so setup runs when the body mounts
+  // after the markets-loading skeleton — not only on the first commit.
   useEffect(() => {
-    const container = bodyRef.current;
-    if (!container || typeof ResizeObserver === 'undefined') {
+    if (!bodyEl || typeof ResizeObserver === 'undefined') {
       return undefined;
     }
     const observer = new ResizeObserver(() => {
-      const { width } = container.getBoundingClientRect();
+      const { width } = bodyEl.getBoundingClientRect();
       const maxPct = getOrderBookMaxWidthPct(width);
       setOrderBookMaxWidthPct(maxPct);
       setOrderBookWidthPct((pct) => clampOrderBookWidthPct(pct, width));
     });
-    observer.observe(container);
+    observer.observe(bodyEl);
     return () => observer.disconnect();
-  }, []);
+  }, [bodyEl]);
 
   // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
   // the bounds. The order book is right-aligned, so ArrowLeft widens it.
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      const containerWidth = bodyRef.current?.getBoundingClientRect().width;
+      const containerWidth = bodyEl?.getBoundingClientRect().width;
       const maxPct = getOrderBookMaxWidthPct(containerWidth);
       setOrderBookMaxWidthPct(maxPct);
       switch (event.key) {
@@ -1130,7 +1133,7 @@ const PerpsOrderEntryPage = () => {
           break;
       }
     },
-    [],
+    [bodyEl],
   );
 
   const handleToggleOrderBook = useCallback(() => {
@@ -1819,7 +1822,7 @@ const PerpsOrderEntryPage = () => {
           horizontally as a fallback when a narrow popup cannot fit both
           pixel-floored panes. */}
       <div
-        ref={bodyRef}
+        ref={setBodyEl}
         className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
       >
         <Box

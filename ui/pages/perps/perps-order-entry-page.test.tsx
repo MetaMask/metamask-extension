@@ -1,5 +1,6 @@
 import type {
   AccountState,
+  OrderBookData,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
@@ -279,7 +280,7 @@ const mockLiveMarketData = jest.fn<
 }));
 
 const mockUsePerpsLiveOrderBook = jest.fn(() => ({
-  orderBook: null,
+  orderBook: null as OrderBookData | null,
   isInitialLoading: false,
   connectionStatus: 'connected' as const,
   reconnect: jest.fn(),
@@ -305,8 +306,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     error: null,
     fetchMoreHistory: jest.fn(),
   }),
-  usePerpsLiveOrderBook: (...args: unknown[]) =>
-    mockUsePerpsLiveOrderBook(...args),
+  usePerpsLiveOrderBook: () => mockUsePerpsLiveOrderBook(),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
@@ -744,6 +744,87 @@ describe('PerpsOrderEntryPage', () => {
         expect(divider).toHaveAttribute('aria-valuemax', '37');
         fireEvent.keyDown(divider, { key: 'Home' });
         expect(divider).toHaveAttribute('aria-valuenow', '37');
+      } finally {
+        window.ResizeObserver = OriginalResizeObserver;
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('attaches the body ResizeObserver after markets finish loading (cold-load path)', () => {
+      // Regression: useEffect([], []) ran while marketsLoading showed the
+      // skeleton (bodyRef null) and never retried once the real body mounted.
+      // Callback-ref setup must observe after loading completes.
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 360,
+          width: 360,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        #callback: ResizeObserverCallback;
+
+        constructor(callback: ResizeObserverCallback) {
+          this.#callback = callback;
+        }
+
+        observe(target: Element) {
+          this.#callback(
+            [
+              {
+                target,
+                contentRect: target.getBoundingClientRect(),
+                borderBoxSize: [],
+                contentBoxSize: [],
+                devicePixelContentBoxSize: [],
+              },
+            ],
+            this,
+          );
+        }
+
+        unobserve() {
+          // no-op
+        }
+
+        disconnect() {
+          // no-op
+        }
+      } as typeof ResizeObserver;
+
+      try {
+        mockLiveMarketData.mockReturnValue({
+          markets: [],
+          isInitialLoading: true,
+        });
+        const store = mockStore(createMockState());
+        const { rerender } = renderWithProvider(
+          <PerpsOrderEntryPage />,
+          store,
+        );
+
+        expect(
+          screen.queryByTestId('perps-order-book-toggle'),
+        ).not.toBeInTheDocument();
+
+        mockLiveMarketData.mockReturnValue({
+          markets: [...mockCryptoMarkets, ...mockHip3Markets],
+          isInitialLoading: false,
+        });
+        rerender(<PerpsOrderEntryPage />);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        expect(
+          screen.getByTestId('perps-order-book-resize-handle'),
+        ).toHaveAttribute('aria-valuemax', '37');
       } finally {
         window.ResizeObserver = OriginalResizeObserver;
         rectSpy.mockRestore();
