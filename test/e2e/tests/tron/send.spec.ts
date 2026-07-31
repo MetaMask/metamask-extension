@@ -1,10 +1,11 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { TronNode } from '../../seeder/tron/node';
-import { landOnTronSendScreen } from '../../page-objects/flows/tron-send.flow';
+import {
+  confirmTronSendAndAssertActivity,
+  landOnTronSendScreen,
+} from '../../page-objects/flows/tron-send.flow';
 import { TRON_CHAIN_ID, TRON_RECIPIENT_ADDRESS } from './mocks/common-tron';
 import {
   TRON_LOW_TRX_WITH_USDT_ACCOUNT,
@@ -145,15 +146,10 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
-        const snapConfirmation = new SnapTransactionConfirmation(driver);
-        await snapConfirmation.checkPageIsLoaded();
-        await snapConfirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityTab(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity('-1 TRX', 1);
-        await activityList.checkNoFailedTransactions();
+        await confirmTronSendAndAssertActivity({
+          driver,
+          expectedAmount: '-1 TRX',
+        });
       },
     );
   });
@@ -178,14 +174,7 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillAmount(sendAmount);
         await sendPage.pressContinueButton();
 
-        const snapConfirmation = new SnapTransactionConfirmation(driver);
-        await snapConfirmation.checkPageIsLoaded();
-        await snapConfirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityTab(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkNoFailedTransactions();
+        await confirmTronSendAndAssertActivity({ driver });
       },
     );
   });
@@ -217,15 +206,10 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
-        const snapConfirmation = new SnapTransactionConfirmation(driver);
-        await snapConfirmation.checkPageIsLoaded();
-        await snapConfirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityTab(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity('-1 USDT', 1);
-        await activityList.checkNoFailedTransactions();
+        await confirmTronSendAndAssertActivity({
+          driver,
+          expectedAmount: '-1 USDT',
+        });
       },
     );
   });
@@ -259,14 +243,7 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillAmount('2.804595');
         await sendPage.pressContinueButton();
 
-        const snapConfirmation = new SnapTransactionConfirmation(driver);
-        await snapConfirmation.checkPageIsLoaded();
-        await snapConfirmation.clickFooterConfirmButton();
-
-        const activityList = new ActivityTab(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkNoFailedTransactions();
+        await confirmTronSendAndAssertActivity({ driver });
       },
     );
   });

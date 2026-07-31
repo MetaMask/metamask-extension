@@ -1,4 +1,7 @@
 import { Driver } from '../../webdriver/driver';
+import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
+import ActivityTab from '../pages/home/activity-tab';
+import HomePage from '../pages/home/homepage';
 import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
@@ -46,4 +49,28 @@ export async function landOnTronSendScreen({
   );
   await sendPage.checkSendFormIsLoaded();
   return sendPage;
+}
+
+export async function confirmTronSendAndAssertActivity({
+  driver,
+  expectedAmount,
+}: {
+  driver: Driver;
+  expectedAmount?: string;
+}): Promise<void> {
+  const snapConfirmation = new SnapTransactionConfirmation(driver);
+  await snapConfirmation.checkPageIsLoaded();
+  await snapConfirmation.clickFooterConfirmButton();
+
+  const homePage = new HomePage(driver);
+  // Same mitigation as BTC Bug #43641: confirm may leave Assets/Home selected.
+  await homePage.goToActivityList();
+
+  const activityList = new ActivityTab(driver);
+  await activityList.checkPendingTxNumberDisplayedInActivity(1);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+  if (expectedAmount) {
+    await activityList.checkTxAmountInActivity(expectedAmount, 1);
+  }
+  await activityList.checkNoFailedTransactions();
 }

@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import { landOnTronSendScreen } from '../../page-objects/flows/tron-send.flow';
+import {
+  confirmTronSendAndAssertActivity,
+  landOnTronSendScreen,
+} from '../../page-objects/flows/tron-send.flow';
 import { TRON_RECIPIENT_ADDRESS } from '../tron/mocks/common-tron';
 import { TRON_PORTFOLIO_ACCOUNT } from '../tron/fixtures/environments';
 import { withTronFixtures } from '../tron/fixtures/with-tron-fixtures';
@@ -26,19 +27,10 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
-        const snapTransactionConfirmation = new SnapTransactionConfirmation(
+        await confirmTronSendAndAssertActivity({
           driver,
-        );
-        await snapTransactionConfirmation.checkPageIsLoaded();
-        await snapTransactionConfirmation.clickFooterConfirmButton();
-
-        // Wait for the snap-tracked tx to land before asserting amount. Otherwise
-        // the activity tab can still show the static TronGrid HTX history mock.
-        const activityList = new ActivityTab(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity('-1 TRX', 1);
-        await activityList.checkNoFailedTransactions();
+          expectedAmount: '-1 TRX',
+        });
       },
     );
   });
