@@ -3,8 +3,8 @@ import { DEFAULT_ROUTE } from './route';
 import { trending } from './trending';
 
 describe('trending deep link route', () => {
-  it('uses original query parameters in the QR deeplink', () => {
-    expect(trending.handlerSearchParams).toBe('original');
+  it('forwards only signature-covered query parameters', () => {
+    expect(trending.handlerSearchParams).toBe('canonical');
   });
 
   it('opens the default route with QR modal params for the trending deeplink', () => {

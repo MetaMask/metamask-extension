@@ -3,8 +3,8 @@ import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE } from './route';
 
 describe('predict deep link route', () => {
-  it('uses original query parameters in the QR deeplink', () => {
-    expect(predict.handlerSearchParams).toBe('original');
+  it('forwards only signature-covered query parameters', () => {
+    expect(predict.handlerSearchParams).toBe('canonical');
   });
 
   it('opens the default route with QR modal params and preserves every query parameter in the encoded deeplink', () => {
