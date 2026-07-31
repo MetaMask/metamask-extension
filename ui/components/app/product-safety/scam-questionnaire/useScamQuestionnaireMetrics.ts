@@ -49,7 +49,7 @@ export function useScamQuestionnaireMetrics() {
   return useMemo(() => {
     const fire = (
       event: MetaMetricsEventName,
-      properties: UIMetricsEventPayload['properties'] = {},
+      properties: UIMetricsEventPayload['properties'],
     ) => {
       trackEvent(
         createEventBuilder(event)
