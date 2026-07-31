@@ -654,7 +654,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                   <p
                     class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                   >
-                    You will lose $12.86 on this trade
+                    You will lose $10.33 on this trade
                   </p>
                 </div>
               </div>
@@ -888,7 +888,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
                   <p
                     class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
                   >
-                    You will lose $12.86 on this trade
+                    You will lose $10.33 on this trade
                   </p>
                 </div>
               </div>
