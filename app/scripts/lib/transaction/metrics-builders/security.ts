@@ -40,7 +40,7 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
     transactionMetricsRequest.getSecurityAlertsEnabled();
   if (securityAlertsEnabled) {
     const { to } = transactionMeta.txParams;
-    if (typeof to === 'string') {
+    if (typeof to === 'string' && transactionMeta.chainId) {
       const cacheKey = createCacheKey(transactionMeta.chainId, to);
       const cachedResponse =
         transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);

@@ -310,7 +310,7 @@ describe('createTrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('maps chain IDs to supported EVM chains correctly', async () => {
+    it('passes the raw chain ID through to scanAddressAndAddToCache', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
         MOCK_SCAN_RESPONSES.WARNING,
       );

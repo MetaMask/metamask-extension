@@ -92,4 +92,30 @@ describe('security builder', () => {
 
     expect(result.properties.address_alert_response).toBe('Loading');
   });
+
+  it('returns not_applicable when the transaction has no chainId', async () => {
+    const getAddressSecurityAlertResponseMock = jest
+      .fn()
+      .mockReturnValue({ result_type: 'Malicious' });
+
+    const result = await getSecurityMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          txParams: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x2222222222222222222222222222222222222222',
+          },
+          chainId: undefined,
+        } as never,
+        transactionMetricsRequest: {
+          ...createBuilderRequest().transactionMetricsRequest,
+          getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
+        } as never,
+      }),
+    );
+
+    expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+    expect(result.properties.address_alert_response).toBe('not_applicable');
+  });
 });

@@ -297,6 +297,21 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
+      it('exempts a chain with no slug mapping when the recipient has never been scanned', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            {
+              addressSecurityAlertResponses: {},
+              eip7702SupportedChains: [UNMAPPED_CHAIN_ID],
+            },
+          ),
+        ).toBe(false);
+      });
+
       it('still enforces when the cached verdict is ErrorResult', () => {
         expect(
           isEnforcedSimulationsEligible(
