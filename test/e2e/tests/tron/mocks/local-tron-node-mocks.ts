@@ -566,10 +566,10 @@ export async function proxyTronBlockchainCalls(
         .forGet(tronProviderUrl(`/v1/accounts/${accountAddress}/transactions`))
         .always()
         .thenCallback(async () => {
-          const nativeTxs = captured.filter(
-            (tx) =>
-              tx.contractType !== 'TriggerSmartContract' &&
-              txInvolvesAccount(tx, accountAddress),
+          // Include TriggerSmartContract too: the snap confirms from native
+          // /transactions only, then joins /transactions/trc20 by txID.
+          const nativeTxs = captured.filter((tx) =>
+            txInvolvesAccount(tx, accountAddress),
           );
           const data = nativeTxs.map((tx) => {
             tx.pollsObserved += 1;
