@@ -166,8 +166,8 @@ export const lavamoatPlugin = (args: Args) =>
             ...(args.sentry ? [sentryStackTraceLimitShim] : []),
             ...(args.snow
               ? [
-                require.resolve('@lavamoat/snow/snow.prod.js'),
-                join(rootDir, 'app/scripts/use-snow.js'),
+                  require.resolve('@lavamoat/snow/snow.prod.js'),
+                  join(rootDir, 'app/scripts/use-snow.js'),
                 ]
               : []),
           ],

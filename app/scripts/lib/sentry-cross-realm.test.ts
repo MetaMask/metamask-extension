@@ -82,9 +82,7 @@ describe('Sentry cross-realm error handling', () => {
   });
 
   it('enhances a browser-style fetch TypeError created in another realm', async () => {
-    const foreignError = createForeignError(
-      `new TypeError('Failed to fetch')`,
-    );
+    const foreignError = createForeignError(`new TypeError('Failed to fetch')`);
     expect(foreignError).not.toBeInstanceOf(TypeError);
     const fetchMock = jest.fn().mockRejectedValue(foreignError);
     globalThis.fetch = fetchMock;
