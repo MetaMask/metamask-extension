@@ -194,6 +194,12 @@ describe('SecurityTrustPage', () => {
       '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc',
       { replace: true },
     );
+    expect(useTokenSecurityData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetId: null,
+        prefetchedData: undefined,
+      }),
+    );
     expect(
       screen.queryByTestId('security-trust-screen'),
     ).not.toBeInTheDocument();
