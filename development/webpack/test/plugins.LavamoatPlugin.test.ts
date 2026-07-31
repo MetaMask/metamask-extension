@@ -151,9 +151,9 @@ describe('LavamoatPlugin', () => {
       const disabledRuntimeConfig =
         disabledPlugin.options.runtimeConfigurationPerChunk_experimental;
 
-      const runtimeResult = disabledRuntimeConfig(
-        mockChunk('runtime'),
-      ) as { staticShims: string[] };
+      const runtimeResult = disabledRuntimeConfig(mockChunk('runtime')) as {
+        staticShims: string[];
+      };
       assert.deepStrictEqual(runtimeResult.staticShims, []);
 
       const serviceWorkerResult = disabledRuntimeConfig(
