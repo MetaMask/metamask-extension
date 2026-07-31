@@ -278,8 +278,45 @@ describe('NetworkForm Component', () => {
     const expectedWarning =
       'The RPC URL you have entered returned a different chain ID (56).';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
+  });
 
-    expect(screen.getByText(messages.save.message)).toBeDisabled();
+  it('should disable save when a non-default RPC URL returns a different chain ID', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        chainId: '1',
+        rpcUrls: {
+          defaultRpcEndpointIndex: 1,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+            {
+              url: 'https://rpc.flashbots.net/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+      },
+      existingNetwork: {
+        chainId: '0x1',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://rpc.flashbots.net/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+    });
+    await waitFor(() => {
+      expect(screen.getByText(messages.save.message)).toBeDisabled();
+    });
   });
 
   it('should chainID be a valid number', async () => {
