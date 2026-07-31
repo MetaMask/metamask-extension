@@ -1,7 +1,10 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
-import { handleRampsOrderStatusChanged } from './handleRampsOrderStatusChanged';
+import {
+  handleRampsOrderStatusChanged,
+  trackRampsTerminalOrder,
+} from './handleRampsOrderStatusChanged';
 
 jest.mock('../../controllers/analytics', () => ({
   createEventBuilder: jest.requireActual('../../controllers/analytics')
@@ -67,5 +70,20 @@ describe('handleRampsOrderStatusChanged', () => {
   it('does not track for non-terminal status UNKNOWN', () => {
     handleRampsOrderStatusChanged(makeEvent('UNKNOWN'));
     expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('emits once per order across the callback and polling paths', () => {
+    const order = {
+      providerOrderId: 'order-1',
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    trackRampsTerminalOrder(order);
+    handleRampsOrderStatusChanged({
+      order,
+      previousStatus: 'PENDING' as unknown as RampsOrder['status'],
+    });
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 });

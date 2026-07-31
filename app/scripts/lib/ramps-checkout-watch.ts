@@ -6,6 +6,7 @@ import {
 } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
+import { trackRampsTerminalOrder } from './ramps/handleRampsOrderStatusChanged';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
@@ -121,6 +122,10 @@ export function createWatchRampsCheckoutTab(
         .then((order) => {
           const resolvedCode = getInternalOrderCode(order);
           rampsController.addOrder(order);
+          // Orders resolved already-terminal here publish no
+          // `orderStatusChanged` and are never polled, so the terminal KPI has
+          // to be emitted from this path (deduped inside).
+          trackRampsTerminalOrder(order);
           if (orderCode && resolvedCode && orderCode !== resolvedCode) {
             rampsController.removeOrder(orderCode);
           }

@@ -298,6 +298,41 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
+  it('tracks the terminal KPI for an order resolved already-completed from the callback', async () => {
+    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+      createHarness();
+    rampsController.getOrderFromCallback.mockResolvedValue({
+      id: 'moonpay/orders/already-done',
+      providerOrderId: 'already-done',
+      status: 'COMPLETED',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    });
+
+    watch({
+      tabId: 11,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: false,
+      ...checkoutAnalytics,
+      orderCode: undefined,
+    });
+
+    getOnUpdated()?.(
+      11,
+      { url: `${callbackBase}?transactionId=already-done` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      jest.mocked(trackEvent).mock.calls.map(([event]) => event.name),
+    ).toContain(MetaMetricsEventName.RampsTransactionCompleted);
+  });
+
   it('tracks checkout closed when the user closes the tab before callback', () => {
     const { watch, getOnRemoved, checkoutAnalytics } = createHarness();
 
