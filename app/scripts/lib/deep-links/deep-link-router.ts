@@ -188,9 +188,8 @@ export class DeepLinkRouter extends EventEmitter<{
           source: 'intercepted',
           signatureStatus: parsed.signature,
           requestOrigin,
-          skipDeepLinkInterstitial: Boolean(
-            this.getState().preferences?.skipDeepLinkInterstitial,
-          ),
+          getSkipDeepLinkInterstitial: () =>
+            Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
 
         if (shouldShowInterstitial) {

@@ -77,6 +77,9 @@ describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
   beforeEach(() => {
+    getState.mockReturnValue({
+      preferences: { skipDeepLinkInterstitial: false },
+    } as unknown as ReturnType<MetaMaskController['getState']>);
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
@@ -156,6 +159,8 @@ describe('DeepLinkRouter', () => {
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(getState).toHaveBeenCalledTimes(signed ? 1 : 0);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
         });
@@ -234,6 +239,7 @@ describe('DeepLinkRouter', () => {
             initiator: 'https://metamask.io',
           }),
           expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+          readsPreferences: false,
         },
         {
           name: 'signed links initiated from app.metamask.io (Chrome initiator)',
@@ -242,6 +248,7 @@ describe('DeepLinkRouter', () => {
             initiator: 'https://app.metamask.io',
           }),
           expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+          readsPreferences: false,
         },
         {
           name: 'signed links initiated from metamask.io (Firefox originUrl)',
@@ -250,6 +257,7 @@ describe('DeepLinkRouter', () => {
             originUrl: 'https://metamask.io/portfolio/assets',
           }),
           expectedUrl: `${EXTENSION_HOME}#internal-route?one=two`,
+          readsPreferences: false,
         },
         {
           name: 'unsigned links from a trusted origin',
@@ -258,6 +266,7 @@ describe('DeepLinkRouter', () => {
             initiator: 'https://metamask.io',
           }),
           expectedUrl: `${EXTENSION_HOME}#internal-route?query=param`,
+          readsPreferences: false,
         },
         {
           name: 'signed links from an untrusted origin (shows interstitial)',
@@ -266,14 +275,17 @@ describe('DeepLinkRouter', () => {
             initiator: 'https://evil.com',
           }),
           expectedUrl: `${EXTENSION_HOME}#link?u=%2Ftest-route`, // we are redirecting to #link interstitial page
+          readsPreferences: true,
         },
       ];
 
       it.each(interstitialTestCases)(
         'handles interstitial for $name',
-        async ({ parsed, requestDetails, expectedUrl }) => {
+        async ({ parsed, requestDetails, expectedUrl, readsPreferences }) => {
           parseMock.mockResolvedValue(parsed);
           await onBeforeRequest?.(requestDetails);
+
+          expect(getState).toHaveBeenCalledTimes(readsPreferences ? 1 : 0);
           expect(browser.tabs.update).toHaveBeenCalledWith(
             requestDetails.tabId,
             { url: expectedUrl },
