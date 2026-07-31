@@ -23,9 +23,7 @@ export default function SetupPasskey() {
   const navigate = useNavigate();
   const isFirefox = useIsFirefox();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
 
   const handleNext = useCallback(() => {
     let nextRoute: string;

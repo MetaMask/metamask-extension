@@ -57,9 +57,7 @@ export const FundingMethodModal = ({
   const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
   const analyticsId = useSelector(getAnalyticsId);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
     () => consentDecisionMade && isOptedIn,

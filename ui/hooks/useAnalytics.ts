@@ -32,9 +32,7 @@ type UseAnalyticsResult = {
 
 export function useAnalytics(): UseAnalyticsResult {
   const context = useSegmentContext();
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetricsEnabled = consentDecisionMade && isOptedIn;

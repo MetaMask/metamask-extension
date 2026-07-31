@@ -45,9 +45,7 @@ export default function OnboardingFlowSwitch() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

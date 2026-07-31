@@ -9,11 +9,11 @@ describe('MetaMetrics selectors', () => {
   });
 
   it('returns whether metrics onboarding has been completed', () => {
-    expect(
-      getConsentDecisionMade(state({ consentDecisionMade: true })),
-    ).toBe(true);
-    expect(
-      getConsentDecisionMade(state({ consentDecisionMade: false })),
-    ).toBe(false);
+    expect(getConsentDecisionMade(state({ consentDecisionMade: true }))).toBe(
+      true,
+    );
+    expect(getConsentDecisionMade(state({ consentDecisionMade: false }))).toBe(
+      false,
+    );
   });
 });

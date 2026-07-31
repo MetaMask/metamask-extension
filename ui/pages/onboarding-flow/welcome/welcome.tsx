@@ -109,9 +109,7 @@ export default function OnboardingWelcome() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =

@@ -30,9 +30,7 @@ export const DeleteMetametricsDataItem = () => {
   const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled =
     consentDecisionMade && isOptedIn && Boolean(analyticsId);

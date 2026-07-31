@@ -76,9 +76,7 @@ export default function CreatePassword({
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const isOptedIn = useSelector(getOptedIn);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');

@@ -53,9 +53,7 @@ type ErrorPageProps = {
 
 const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
 

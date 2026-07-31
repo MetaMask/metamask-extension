@@ -37,9 +37,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const analyticsId = useSelector(getAnalyticsId);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);

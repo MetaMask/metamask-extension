@@ -78,9 +78,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const showDataDeletionErrorModal = useSelector(
         getShowDataDeletionErrorModal,
       );
-      const consentDecisionMade = useSelector(
-        getConsentDecisionMade,
-      );
+      const consentDecisionMade = useSelector(getConsentDecisionMade);
       const isOptedIn = useSelector(getOptedIn);
       const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
       let dataDeletionButtonDisabled = !isMetaMetricsEnabled;

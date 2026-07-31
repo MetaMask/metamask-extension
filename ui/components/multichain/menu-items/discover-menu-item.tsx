@@ -25,9 +25,7 @@ export const DiscoverMenuItem = ({
   metricsLocation: string;
 }) => {
   const analyticsId = useSelector(getAnalyticsId);
-  const consentDecisionMade = useSelector(
-    getConsentDecisionMade,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
