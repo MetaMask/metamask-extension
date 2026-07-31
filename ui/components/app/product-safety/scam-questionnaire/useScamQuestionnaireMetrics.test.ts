@@ -121,8 +121,7 @@ describe('useScamQuestionnaireMetrics', () => {
       metrics.trackCompleted({ status: 'proceeded', answers: ANSWERS });
 
       expect(
-        firedEvent(trackEvent).properties
-          .simulation_sending_assets_total_value,
+        firedEvent(trackEvent).properties.simulation_sending_assets_total_value,
       ).toBe(30);
     });
 
