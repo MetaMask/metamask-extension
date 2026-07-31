@@ -1,19 +1,19 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 
 /**
  * Selector to determine if the ramps feature is enabled.
- * Supports version-gated and progressive rollout flag formats, e.g.
- * `{ enabled: true, minimumVersion: '13.41.0' }` or
- * `{ name: 'rollout', value: { enabled: true, minimumVersion: '13.41.0' } }`.
  *
- * @param state - The root Redux state object.
+ * TEST PR (`test/tram-3718-prod-ramps-qa`): force ON so QA does not depend on
+ * client-config `rc`/`prod` (where `rampsEnabled` is currently false).
+ *
+ * @param _state - The root Redux state object.
  * @returns Boolean indicating whether ramps feature is enabled.
  */
 export const getIsRampsEnabled = createSelector(
   getRemoteFeatureFlags,
-  (flags) => getBooleanFeatureFlag(flags?.rampsEnabled, false),
+  // TEST PR override — always enable native ramps for this QA branch.
+  (_flags) => true,
 );
 
 /**

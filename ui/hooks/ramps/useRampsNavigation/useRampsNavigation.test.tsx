@@ -122,7 +122,9 @@ beforeEach(() => {
 });
 
 describe('useRampsNavigation goToBuy', () => {
-  it('flag off → opens Portfolio (no modal, no geolocation lookup)', async () => {
+  // TEST PR: getIsRampsEnabled is forced on, so a remote `false` still takes
+  // the in-app path (geolocation lookup) rather than Portfolio fallback.
+  it('remote flag false still uses in-app path when QA force-on is active', async () => {
     const { result, getModalName } = run(
       buildState({
         remoteFeatureFlags: {
@@ -132,8 +134,7 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(openTab).toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(mockGetGeolocation).toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
