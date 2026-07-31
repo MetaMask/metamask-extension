@@ -11383,13 +11383,13 @@
   "view": {
     "message": "View"
   },
-  "viewAll": {
-    "message": "View all",
-    "description": "Link to show the full list for a Discover search section."
-  },
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "View all",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
