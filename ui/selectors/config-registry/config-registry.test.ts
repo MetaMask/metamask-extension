@@ -1,4 +1,7 @@
-import type { ConfigRegistryControllerState } from '@metamask/config-registry-controller';
+import type {
+  ConfigRegistryControllerState,
+  RegistryNetworkConfig,
+} from '@metamask/config-registry-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
@@ -97,49 +100,50 @@ describe('config-registry selectors', () => {
     });
 
     it('returns dynamic list when flag is on and registry has featured EVM networks', () => {
+      const registryNetwork: RegistryNetworkConfig = {
+        chainId: 'eip155:1329',
+        name: 'Sei Network',
+        imageUrl: 'https://example.com/sei.png',
+        coingeckoPlatformId: 'sei-network',
+        assets: {
+          listUrl: '',
+          native: {
+            assetId: 'eip155:1329',
+            imageUrl: '',
+            name: 'Sei',
+            symbol: 'SEI',
+            decimals: 18,
+            coingeckoCoinId: 'sei-network',
+          },
+        },
+        rpcProviders: {
+          default: {
+            url: 'https://evm-rpc.sei.network',
+            type: 'custom',
+            networkClientId: 'evm-sei-1329',
+          },
+          fallbacks: [],
+        },
+        blockExplorerUrls: {
+          default: 'https://seitrace.com',
+          fallbacks: [],
+        },
+        config: {
+          isActive: true,
+          isTestnet: false,
+          isDefault: false,
+          isFeatured: true,
+          isDeprecated: false,
+          isDeletable: false,
+          priority: 0,
+        },
+      };
       const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
             networks: {
-              'eip155:1329': {
-                chainId: 'eip155:1329',
-                name: 'Sei Network',
-                imageUrl: 'https://example.com/sei.png',
-                coingeckoPlatformId: 'sei-network',
-                assets: {
-                  listUrl: '',
-                  native: {
-                    assetId: 'eip155:1329',
-                    imageUrl: '',
-                    name: 'Sei',
-                    symbol: 'SEI',
-                    decimals: 18,
-                    coingeckoCoinId: 'sei-network',
-                  },
-                },
-                rpcProviders: {
-                  default: {
-                    url: 'https://evm-rpc.sei.network',
-                    type: 'custom',
-                    networkClientId: 'evm-sei-1329',
-                  },
-                  fallbacks: [],
-                },
-                blockExplorerUrls: {
-                  default: 'https://seitrace.com',
-                  fallbacks: [],
-                },
-                config: {
-                  isActive: true,
-                  isTestnet: false,
-                  isDefault: false,
-                  isFeatured: true,
-                  isDeprecated: false,
-                  isDeletable: false,
-                  priority: 0,
-                },
-              },
+              [registryNetwork.chainId]: registryNetwork,
             },
           },
           version: '1',

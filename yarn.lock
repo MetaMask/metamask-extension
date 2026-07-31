@@ -6029,21 +6029,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/config-registry-controller@npm:^0.4.0, @metamask/config-registry-controller@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@metamask/config-registry-controller@npm:0.4.1"
+"@metamask/config-registry-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/config-registry-controller@npm:1.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.1.1"
-    "@metamask/keyring-controller": "npm:^27.0.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/polling-controller": "npm:^16.0.6"
-    "@metamask/profile-sync-controller": "npm:^28.1.1"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/polling-controller": "npm:^16.0.8"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/1ced2d6e45a4707bd1fb7ba13fad9ae5009d3a9bfb245c82c07712e555c73982e7a15f05f36310134385b39246a627622587c276ff7cb468d191d3eecec47a0d
+  checksum: 10/d02172b4b58e74e87c76c067c0197eebf20365d4bccb9d5307e6f275dc6bfb7f65f11286493da4cbc26ed513df6be73db7f02929a3d60a231ea2bc0fee877abd
   languageName: node
   linkType: hard
 
@@ -6096,7 +6096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^12.0.0, @metamask/controller-utils@npm:^12.1.0, @metamask/controller-utils@npm:^12.1.1, @metamask/controller-utils@npm:^12.2.0, @metamask/controller-utils@npm:^12.3.0":
+"@metamask/controller-utils@npm:^12.0.0, @metamask/controller-utils@npm:^12.1.0, @metamask/controller-utils@npm:^12.2.0, @metamask/controller-utils@npm:^12.3.0":
   version: 12.3.0
   resolution: "@metamask/controller-utils@npm:12.3.0"
   dependencies:
@@ -7389,17 +7389,35 @@ __metadata:
   resolution: "@metamask/network-enablement-controller@npm:5.6.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/config-registry-controller": "npm:^0.4.1"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-api": "npm:^23.5.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/multichain-network-controller": "npm:^3.2.1"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^69.2.1"
+    "@metamask/transaction-controller": "npm:^69.0.0"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/a0b7e1bf8596909328175ce666863b86c949365425ef2d522e9126fe34b5122863377e1ccf5198f5e3e52d8bb8a52a2dfe8eb87a126dcd8d432046f1a671c3e8
+  checksum: 10/c4fbedb43bc8331c24794c10a038809ec23b40a6042f589b3d72746a28846951c2e72c359ea6703b18840fc4fae6e5ffa7906979e58a1fb8f16f1fc735bd8514
+  languageName: node
+  linkType: hard
+
+"@metamask/network-enablement-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/network-enablement-controller@npm:6.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/config-registry-controller": "npm:^1.0.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-api": "npm:^23.7.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/multichain-network-controller": "npm:^3.2.1"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/slip44": "npm:^4.3.0"
+    "@metamask/transaction-controller": "npm:^69.3.0"
+    "@metamask/utils": "npm:^11.11.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/51af8efed6887f8f99232ffde46ad82042224a8863606530301eedec6ff2b876c7b1373a981e5ae646a35de4f0623d98e497a6730cc485f68d6929be54923377
   languageName: node
   linkType: hard
 
@@ -32809,7 +32827,7 @@ __metadata:
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/client-utils": "patch:@metamask/client-utils@npm%3A1.2.0#~/.yarn/patches/@metamask-client-utils-npm-1.2.0-1adc40c3f3.patch"
     "@metamask/compliance-controller": "npm:^2.1.0"
-    "@metamask/config-registry-controller": "npm:^0.4.0"
+    "@metamask/config-registry-controller": "npm:^1.0.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -32877,7 +32895,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^7.1.0"
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/network-enablement-controller": "npm:^5.6.0"
+    "@metamask/network-enablement-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^26.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
