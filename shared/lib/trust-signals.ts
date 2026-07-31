@@ -5,6 +5,7 @@ export enum SupportedEVMChain {
   Abstract = 'abstract',
   AbstractTestnet = 'abstract-testnet',
   ApeChain = 'apechain',
+  Arc = 'arc',
   Arbitrum = 'arbitrum',
   Arc = 'arc',
   Avalanche = 'avalanche',

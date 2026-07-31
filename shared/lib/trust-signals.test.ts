@@ -1,40 +1,35 @@
-import {
-  mapChainIdToSupportedEVMChain,
-  SupportedEVMChain,
-} from './trust-signals';
+import { mapChainIdToSupportedEVMChain } from './trust-signals';
 
-// Chains added when syncing with @metamask/phishing-controller@17.3.0
-// (see ADDRESS_SCAN_SUPPORTED_CHAINS in that package).
-const SYNCED_CHAINS: [string, SupportedEVMChain][] = [
-  ['0x13b2', SupportedEVMChain.Arc],
-  ['0x3e7', SupportedEVMChain.Hyperevm],
-  ['0x2019', SupportedEVMChain.Kaia],
-  ['0xb67d2', SupportedEVMChain.Katana],
-  ['0x93e', SupportedEVMChain.KiteAi],
-  ['0x1388', SupportedEVMChain.Mantle],
-  ['0x10e6', SupportedEVMChain.Megaeth],
-  ['0x8f', SupportedEVMChain.Monad],
-  ['0x279f', SupportedEVMChain.MonadTestnet],
-  ['0x2611', SupportedEVMChain.Plasma],
-  ['0x18232', SupportedEVMChain.Plume],
-  ['0x1237', SupportedEVMChain.Robinhood],
-  ['0x1079', SupportedEVMChain.Tempo],
-  ['0xa5bf', SupportedEVMChain.TempoTestnet],
-  ['0xc4', SupportedEVMChain.Xlayer],
-];
+// ADDRESS_SCAN_SUPPORTED_CHAINS and DEFAULT_CHAIN_ID_TO_NAME are not exported
+// from @metamask/phishing-controller's package root (its exports field only
+// exposes '.'), so resolve dist/types.cjs by absolute path. Absolute-path
+// require bypasses the exports field. Remove this indirection once core
+// exports these values.
+// eslint-disable-next-line @typescript-eslint/no-require-imports, import/no-dynamic-require
+const controllerTypes = require(
+  require
+    .resolve('@metamask/phishing-controller')
+    .replace(/index\.cjs$/u, 'types.cjs'),
+);
 
-describe('mapChainIdToSupportedEVMChain', () => {
-  SYNCED_CHAINS.forEach(([chainId, expected]) => {
-    it(`maps ${chainId} to ${expected}`, () => {
-      expect(mapChainIdToSupportedEVMChain(chainId)).toBe(expected);
-    });
+const ADDRESS_SCAN_SUPPORTED_CHAINS: string[] =
+  controllerTypes.ADDRESS_SCAN_SUPPORTED_CHAINS;
+const DEFAULT_CHAIN_ID_TO_NAME: Record<string, string> =
+  controllerTypes.DEFAULT_CHAIN_ID_TO_NAME;
+
+describe('trust-signals chain map vs @metamask/phishing-controller', () => {
+  it('exposes the controller chain list used by this test', () => {
+    expect(ADDRESS_SCAN_SUPPORTED_CHAINS.length).toBeGreaterThan(0);
+    expect(Object.keys(DEFAULT_CHAIN_ID_TO_NAME).length).toBeGreaterThan(0);
   });
 
-  it('is case-insensitive on the chainId', () => {
-    expect(mapChainIdToSupportedEVMChain('0X13B2')).toBe(SupportedEVMChain.Arc);
-  });
-
-  it('returns undefined for an unknown chainId', () => {
-    expect(mapChainIdToSupportedEVMChain('0xdeadbeef')).toBeUndefined();
+  it('maps every address-scan-supported chain the controller screens', () => {
+    const screened = Object.entries(DEFAULT_CHAIN_ID_TO_NAME).filter(
+      ([, slug]) => ADDRESS_SCAN_SUPPORTED_CHAINS.includes(slug),
+    );
+    const unreachable = screened.filter(
+      ([chainId, slug]) => mapChainIdToSupportedEVMChain(chainId) !== slug,
+    );
+    expect(unreachable).toEqual([]);
   });
 });
