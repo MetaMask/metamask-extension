@@ -3946,6 +3946,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
+      ),
       openUpdateTabAndReload: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:openUpdateTabAndReload',
@@ -5651,7 +5655,15 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+    // `createAccounts` derives the account address from the device, so a
+    // locked or unresponsive device can make this call hang indefinitely.
+    // Unlike the pure-read hardware methods (which run on the lock-free
+    // `deviceRead` path), `createAccounts` mutates vault state and must run
+    // under the controller lock, so it cannot use `deviceRead: true`. Wrap
+    // it in the same UX backstop as `#withKeyringForDevice`'s device-read
+    // branch so a wedged device rejects with an actionable error instead of
+    // leaving the UI spinner (and `showLoadingIndication`) stuck forever.
+    const createOperation = this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         const { entropySource } = keyring;
@@ -5735,6 +5747,39 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
+
+    let timeoutHandle;
+    let timedOut = false;
+    let unlockedAccount;
+    try {
+      ({ address: unlockedAccount } = await Promise.race([
+        createOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet account creation timed out for device: ${deviceName}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ]));
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // The abandoned create operation still holds the controller lock until
+        // the device call settles; observe its rejection so it never surfaces
+        // as an unhandled rejection. Mirrors the device-read path in
+        // `#withKeyringForDevice`.
+        createOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware wallet account creation failed after timeout for device: ${deviceName}`,
+            error,
+          ),
+        );
+      }
+    }
 
     const accounts = this.accountsController.listAccounts();
 
