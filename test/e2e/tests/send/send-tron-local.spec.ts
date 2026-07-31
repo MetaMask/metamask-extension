@@ -32,9 +32,13 @@ describe('Send Tron (local blockchain)', function (this: Suite) {
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
 
+        // Wait for the snap-tracked tx to land before asserting amount. Otherwise
+        // the activity tab can still show the static TronGrid HTX history mock.
         const activityList = new ActivityTab(driver);
-        await activityList.checkNoFailedTransactions();
+        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 TRX', 1);
+        await activityList.checkNoFailedTransactions();
       },
     );
   });
