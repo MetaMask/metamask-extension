@@ -672,7 +672,7 @@
         }
       }
     },
-    "country": "null",
+    "country": "string",
     "coverageResults": {},
     "countries": {
       "data": [],
@@ -1334,7 +1334,7 @@
       "gmx": {},
       "hyperliquid": {}
     },
-    "region": "null",
+    "region": "string",
     "requests": {
       "*": {
         "status": "string",
@@ -1545,7 +1545,7 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
-    "timezone": "null",
+    "timezone": "string",
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
