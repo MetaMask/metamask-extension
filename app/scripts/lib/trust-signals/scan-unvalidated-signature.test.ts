@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import { scanUnvalidatedSignatureAddresses } from './scan-unvalidated-signature';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
@@ -65,13 +66,12 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     jest.clearAllMocks();
     mockScan.mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      result_type: 'Benign',
+      result_type: ResultType.Benign,
       label: '',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
+    });
   });
 
-  it('scans a beneficiary address embedded in an unrecognized typed-data message', () => {
+  it('scans an address field embedded in an unrecognized typed-data message', () => {
     run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
       SIGNER,
       buildTypedData({ to: RECIPIENT }, 'ReceiveWithAuthorization'),
@@ -86,7 +86,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     );
   });
 
-  it('scans multiple beneficiary fields and excludes the signer', () => {
+  it('scans multiple address fields and excludes the signer', () => {
     run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
       SIGNER,
       buildTypedData({ spender: SPENDER, recipient: RECIPIENT, from: SIGNER }),

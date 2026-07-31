@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import { useConfirmContext } from '../../context/confirm';
 import { isSignatureTransactionType } from '../../utils';
 import { SignatureRequestType } from '../../types/confirm';
@@ -20,17 +21,26 @@ import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/
 
 /**
  * Generate trust-signal alerts for the address fields of a typed-data
- * signature. `useSpenderAlerts` only covers the permit `spender`, so addresses
- * in other fields are surfaced here using the same alert template.
+ * signature. Every address-typed field is scanned (recipients, tokens, order
+ * makers, non-permit spenders, and so on); the top-level permit `spender` is
+ * left to `useSpenderAlerts` to avoid a duplicate alert.
  *
  * @returns Alerts for any flagged address in the signature.
  */
-export function useSignatureRecipientAlerts(): Alert[] {
+export function useSignatureAddressAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const { addresses: recipientAddresses, overflow } = useMemo(() => {
-    const empty = { addresses: [] as string[], overflow: false };
+  const {
+    addresses: signatureAddresses,
+    fields,
+    overflow,
+  } = useMemo(() => {
+    const empty = {
+      addresses: [] as string[],
+      fields: {} as Record<string, string>,
+      overflow: false,
+    };
 
     if (
       !currentConfirmation ||
@@ -66,7 +76,7 @@ export function useSignatureRecipientAlerts(): Alert[] {
   }, [currentConfirmation]);
 
   const trustSignals = useTrustSignals(
-    recipientAddresses.map((value) => ({
+    signatureAddresses.map((value) => ({
       value,
       type: NameType.ETHEREUM_ADDRESS,
       chainId: currentConfirmation?.chainId,
@@ -76,53 +86,64 @@ export function useSignatureRecipientAlerts(): Alert[] {
   return useMemo(() => {
     const alerts: Alert[] = [];
 
-    // The signature references more addresses than can be checked, so some were
-    // not scanned. Surface a caution rather than failing silently.
+    // The message could not be fully scanned (too many addresses, or traversal
+    // hit its depth or work limit), so surface a caution rather than failing
+    // silently.
     if (overflow) {
       alerts.push({
         actions: [],
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
-        key: 'signatureRecipientAddressCount',
-        message: t('alertMessageSignatureAddressCount'),
-        reason: t('alertReasonSignatureAddressCount'),
+        key: 'signatureAddressScanIncomplete',
+        message: t('alertMessageSignatureAddressScanIncomplete'),
+        reason: t('alertReasonSignatureAddressScanIncomplete'),
         severity: Severity.Warning,
       });
     }
 
-    if (recipientAddresses.length === 0) {
+    if (signatureAddresses.length === 0) {
       return alerts;
     }
 
-    const hasMalicious = trustSignals.some(
+    const maliciousIndex = trustSignals.findIndex(
       ({ state }) => state === TrustSignalDisplayState.Malicious,
     );
-    const hasWarning = trustSignals.some(
+    const warningIndex = trustSignals.findIndex(
       ({ state }) => state === TrustSignalDisplayState.Warning,
     );
 
-    if (hasMalicious) {
+    // Name the flagged address and its field so the message is actionable; the
+    // inline row anchor still shows the verifying contract.
+    if (maliciousIndex !== -1) {
+      const address = signatureAddresses[maliciousIndex];
       alerts.push({
         actions: [],
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
-        key: 'signatureRecipientTrustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
+        key: 'signatureAddressTrustSignalMalicious',
+        message: t('alertMessageSignatureAddressMalicious', [
+          fields[address],
+          shortenAddress(address),
+        ]),
         reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
       });
-    } else if (hasWarning) {
+    } else if (warningIndex !== -1) {
+      const address = signatureAddresses[warningIndex];
       alerts.push({
         actions: [],
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
-        key: 'signatureRecipientTrustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
+        key: 'signatureAddressTrustSignalWarning',
+        message: t('alertMessageSignatureAddressWarning', [
+          fields[address],
+          shortenAddress(address),
+        ]),
         reason: t('nameModalTitleWarning'),
         severity: Severity.Warning,
       });
     }
 
     return alerts;
-  }, [recipientAddresses, overflow, trustSignals, t]);
+  }, [signatureAddresses, fields, overflow, trustSignals, t]);
 }

@@ -1495,8 +1495,16 @@
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
   },
-  "alertMessageSignatureAddressCount": {
-    "message": "This request includes an unusually large number of addresses. Some could not be checked for known threats. Only continue if you trust this site."
+  "alertMessageSignatureAddressMalicious": {
+    "message": "The $1 address $2 has been identified as malicious. If you confirm this request, you will probably lose your assets to a scammer.",
+    "description": "$1 is the message field name and $2 is the shortened address flagged as malicious."
+  },
+  "alertMessageSignatureAddressScanIncomplete": {
+    "message": "Some addresses in this request couldn't be checked for known threats. Only continue if you trust this site."
+  },
+  "alertMessageSignatureAddressWarning": {
+    "message": "The $1 address $2 can't be verified. Only continue if you trust the source.",
+    "description": "$1 is the message field name and $2 is the shortened address that needs review."
   },
   "alertMessageSuggestedGasFeeHigh": {
     "message": "This site is suggesting a higher network fee than necessary. Edit the network fee to pay less."
@@ -1570,8 +1578,8 @@
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
   },
-  "alertReasonSignatureAddressCount": {
-    "message": "Unusual number of addresses"
+  "alertReasonSignatureAddressScanIncomplete": {
+    "message": "Addresses not fully checked"
   },
   "alertReasonSuggestedGasFeeHigh": {
     "message": "High site fee"

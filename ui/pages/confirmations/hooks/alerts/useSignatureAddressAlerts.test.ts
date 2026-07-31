@@ -8,8 +8,9 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import { SignatureRequestType } from '../../types/confirm';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useSignatureRecipientAlerts } from './useSignatureRecipientAlerts';
+import { useSignatureAddressAlerts } from './useSignatureAddressAlerts';
 
 jest.mock('../../../../hooks/useTrustSignals', () => ({
   useTrustSignals: jest.fn(),
@@ -20,8 +21,13 @@ jest.mock('../../../../hooks/useTrustSignals', () => ({
   },
 }));
 
+// Echo any substitutions so tests can assert the flagged field and address are
+// named in the message.
 jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: jest.fn(() => (key: string) => key),
+  useI18nContext: jest.fn(
+    () => (key: string, subs?: string[]) =>
+      subs ? `${key}|${subs.join('|')}` : key,
+  ),
 }));
 
 jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
@@ -92,33 +98,37 @@ const mockTrustSignalsFor = (
   );
 };
 
-const expectedMaliciousAlert = {
+const maliciousAlert = (field: string, address: string) => ({
   actions: [],
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
-  key: 'signatureRecipientTrustSignalMalicious',
-  message: 'alertMessageAddressTrustSignalMalicious',
+  key: 'signatureAddressTrustSignalMalicious',
+  message: `alertMessageSignatureAddressMalicious|${field}|${shortenAddress(
+    address,
+  )}`,
   reason: 'nameModalTitleMalicious',
   severity: Severity.Danger,
-};
+});
 
-const expectedWarningAlert = {
+const warningAlert = (field: string, address: string) => ({
   actions: [],
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
-  key: 'signatureRecipientTrustSignalWarning',
-  message: 'alertMessageAddressTrustSignal',
+  key: 'signatureAddressTrustSignalWarning',
+  message: `alertMessageSignatureAddressWarning|${field}|${shortenAddress(
+    address,
+  )}`,
   reason: 'nameModalTitleWarning',
   severity: Severity.Warning,
-};
+});
 
-const expectedAddressCountAlert = {
+const expectedScanIncompleteAlert = {
   actions: [],
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
-  key: 'signatureRecipientAddressCount',
-  message: 'alertMessageSignatureAddressCount',
-  reason: 'alertReasonSignatureAddressCount',
+  key: 'signatureAddressScanIncomplete',
+  message: 'alertMessageSignatureAddressScanIncomplete',
+  reason: 'alertReasonSignatureAddressScanIncomplete',
   severity: Severity.Warning,
 };
 
@@ -149,12 +159,12 @@ const buildArraySignature = (count: number): SignatureRequestType =>
     },
   }) as SignatureRequestType;
 
-describe('useSignatureRecipientAlerts', () => {
+describe('useSignatureAddressAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('returns a malicious alert for a signature with a malicious `to`', () => {
+  it('names the flagged address and field for a malicious `to`', () => {
     mockTrustSignalsFor({
       [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
     });
@@ -164,14 +174,14 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    expect(result.current).toEqual([expectedMaliciousAlert]);
+    expect(result.current).toEqual([maliciousAlert('to', MALICIOUS_ADDRESS)]);
   });
 
-  it('alerts for a malicious recipient even for an unrecognized primaryType (decode-independent)', () => {
+  it('alerts for a malicious address even for an unrecognized primaryType (decode-independent)', () => {
     mockTrustSignalsFor({
       [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
     });
@@ -181,14 +191,16 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    expect(result.current).toEqual([expectedMaliciousAlert]);
+    expect(result.current).toEqual([
+      maliciousAlert('recipient', MALICIOUS_ADDRESS),
+    ]);
   });
 
-  it('returns a warning alert for a warning recipient', () => {
+  it('returns a warning alert for a warning address', () => {
     mockTrustSignalsFor({
       [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Warning,
     });
@@ -198,14 +210,14 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    expect(result.current).toEqual([expectedWarningAlert]);
+    expect(result.current).toEqual([warningAlert('to', MALICIOUS_ADDRESS)]);
   });
 
-  it('returns an empty array when the recipient is not flagged', () => {
+  it('returns an empty array when the address is not flagged', () => {
     mockTrustSignalsFor({});
 
     const signature = buildTypedSignature('GenericSignatureType', {
@@ -213,7 +225,7 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
@@ -230,11 +242,11 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    // `spender` is excluded, so no beneficiary is scanned and no alert fires.
+    // `spender` is excluded, so no address is scanned and no alert fires.
     expect(result.current).toEqual([]);
     expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
   });
@@ -249,11 +261,13 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    expect(result.current).toEqual([expectedMaliciousAlert]);
+    expect(result.current).toEqual([
+      maliciousAlert('spender', MALICIOUS_ADDRESS),
+    ]);
   });
 
   it('returns an empty array when the security-alerts API is disabled', () => {
@@ -267,7 +281,7 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
@@ -280,11 +294,11 @@ describe('useSignatureRecipientAlerts', () => {
     const signature = buildArraySignature(60);
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
-    expect(result.current).toEqual([expectedAddressCountAlert]);
+    expect(result.current).toEqual([expectedScanIncompleteAlert]);
   });
 
   it('does not surface the address-count caution at or below the cap', () => {
@@ -293,7 +307,7 @@ describe('useSignatureRecipientAlerts', () => {
     const signature = buildArraySignature(50);
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockTypedSignConfirmStateForRequest(signature),
     );
 
@@ -306,7 +320,7 @@ describe('useSignatureRecipientAlerts', () => {
     });
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useSignatureRecipientAlerts(),
+      () => useSignatureAddressAlerts(),
       getMockPersonalSignConfirmStateForRequest(
         unapprovedPersonalSignMsg as SignatureRequestType,
       ),

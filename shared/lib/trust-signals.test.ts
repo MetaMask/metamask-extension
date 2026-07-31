@@ -198,7 +198,7 @@ describe('extractSignatureAddresses', () => {
     expect(addressesOf(data)).toStrictEqual([ADDR_A]);
   });
 
-  it('de-duplicates case-insensitively, preserving first casing', () => {
+  it('canonicalizes to lower case and de-duplicates case-insensitively', () => {
     const lower = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
     const upper = '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD';
     const data = build(
@@ -332,6 +332,61 @@ describe('extractSignatureAddresses', () => {
     const result = extractSignatureAddresses(data);
     expect(result.addresses).toHaveLength(50);
     expect(result.overflow).toBe(true);
+  });
+
+  it('flags overflow when the work budget truncates the walk', () => {
+    // A long run of non-address nodes ahead of a trailing address exhausts the
+    // node budget, so the address is never reached.
+    const pad = Array.from({ length: 6000 }, (_, i) => i);
+    const data = build(
+      'Batch',
+      {
+        Batch: [
+          { name: 'pad', type: 'uint256[]' },
+          { name: 'evil', type: 'address' },
+        ],
+      },
+      { pad, evil: ADDR_A },
+    );
+    const result = extractSignatureAddresses(data);
+    expect(result.addresses).toStrictEqual([]);
+    expect(result.overflow).toBe(true);
+  });
+
+  it('flags overflow when nesting exceeds the depth limit', () => {
+    const depth = 14;
+    const types: Record<string, { name: string; type: string }[]> = {};
+    for (let i = 0; i < depth; i++) {
+      types[`L${i}`] = [
+        i < depth - 1
+          ? { name: 'next', type: `L${i + 1}` }
+          : { name: 'addr', type: 'address' },
+      ];
+    }
+    let message: Record<string, unknown> = { addr: ADDR_A };
+    for (let i = depth - 2; i >= 0; i--) {
+      message = { next: message };
+    }
+    const result = extractSignatureAddresses(build('L0', types, message));
+    expect(result.addresses).toStrictEqual([]);
+    expect(result.overflow).toBe(true);
+  });
+
+  it('reports the field name each address was found under', () => {
+    const data = build(
+      'T',
+      {
+        T: [
+          { name: 'to', type: 'address' },
+          { name: 'spender', type: 'address' },
+        ],
+      },
+      { to: ADDR_A, spender: ADDR_B },
+    );
+    expect(extractSignatureAddresses(data).fields).toStrictEqual({
+      [ADDR_A]: 'to',
+      [ADDR_B]: 'spender',
+    });
   });
 
   it('returns [] for nullish payloads, missing types, or unknown primaryType', () => {

@@ -28,7 +28,7 @@ import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
 import { useSpenderAlerts } from './alerts/useSpenderAlerts';
-import { useSignatureRecipientAlerts } from './alerts/useSignatureRecipientAlerts';
+import { useSignatureAddressAlerts } from './alerts/useSignatureAddressAlerts';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
@@ -136,7 +136,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
   const spenderAlerts = useSpenderAlerts();
-  const signatureRecipientAlerts = useSignatureRecipientAlerts();
+  const signatureAddressAlerts = useSignatureAddressAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
   return useMemo(
@@ -150,7 +150,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
       ...spenderAlerts,
-      ...signatureRecipientAlerts,
+      ...signatureAddressAlerts,
       ...addEthereumChainAlerts,
     ],
     [
@@ -163,7 +163,7 @@ export default function useConfirmationAlerts(): Alert[] {
       addressTrustSignalAlerts,
       originTrustSignalAlerts,
       spenderAlerts,
-      signatureRecipientAlerts,
+      signatureAddressAlerts,
       addEthereumChainAlerts,
     ],
   );

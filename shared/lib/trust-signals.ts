@@ -117,8 +117,12 @@ type Eip712Types = Record<string, Eip712Field[]>;
 export type ExtractedSignatureAddresses = {
   // Distinct canonical addresses to scan, capped at MAX_SIGNATURE_ADDRESSES.
   addresses: string[];
-  // True when the message references more distinct addresses than the cap, so
-  // some were not returned and the caller should surface a caution.
+  // Canonical address -> the field name it was first found under, so a caller
+  // can name the specific field in an alert.
+  fields: Record<string, string>;
+  // True when the message could not be fully walked: more distinct addresses
+  // than the cap, or traversal stopped by the depth or work budget. Some
+  // addresses may be unscanned, so the caller should surface a caution.
   overflow: boolean;
 };
 
@@ -137,26 +141,24 @@ export type ExtractedSignatureAddresses = {
 function normalizeAddress(value: unknown): string | undefined {
   let numeric: bigint;
 
-  try {
-    if (typeof value === 'string') {
-      const trimmed = value.trim();
-      if (
-        !HEX_STRING_REGEX.test(trimmed) &&
-        !DECIMAL_STRING_REGEX.test(trimmed)
-      ) {
-        return undefined;
-      }
-      numeric = BigInt(trimmed);
-    } else if (
-      typeof value === 'number' &&
-      Number.isInteger(value) &&
-      value >= 0
+  // The regexes and integer check below only admit values `BigInt` accepts, so
+  // the conversion cannot throw.
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (
+      !HEX_STRING_REGEX.test(trimmed) &&
+      !DECIMAL_STRING_REGEX.test(trimmed)
     ) {
-      numeric = BigInt(value);
-    } else {
       return undefined;
     }
-  } catch {
+    numeric = BigInt(trimmed);
+  } else if (
+    typeof value === 'number' &&
+    Number.isInteger(value) &&
+    value >= 0
+  ) {
+    numeric = BigInt(value);
+  } else {
     return undefined;
   }
 
@@ -185,7 +187,9 @@ function normalizeAddress(value: unknown): string | undefined {
  * @param options.excludeFields - Top-level field names to skip, used to avoid a
  * duplicate alert for a field already handled elsewhere (e.g. permit
  * `spender`). Only applied to the primary type, not nested structs.
- * @returns De-duplicated canonical addresses and whether the cap was exceeded.
+ * @returns Up to `MAX_SIGNATURE_ADDRESSES` distinct canonical addresses, the
+ * field each was found under, and whether the message could not be fully walked
+ * (address cap, depth limit, or work budget reached).
  */
 export function extractSignatureAddresses(
   typedData:
@@ -206,8 +210,11 @@ export function extractSignatureAddresses(
     !message ||
     typeof message !== 'object'
   ) {
-    return { addresses: [], overflow: false };
+    return { addresses: [], fields: {}, overflow: false };
   }
+
+  // Narrowed alias so the hoisted helpers below see a defined `types`.
+  const schema = types;
 
   const excluded = new Set<string>();
   const zero = normalizeAddress(ZERO_ADDRESS);
@@ -225,21 +232,27 @@ export function extractSignatureAddresses(
     (options.excludeFields ?? []).map((field) => field.toLowerCase()),
   );
 
-  // Canonical addresses, in insertion order.
-  const found = new Set<string>();
+  // Canonical address -> the field name it was first found under.
+  const found = new Map<string, string>();
 
-  // Set once a distinct address beyond the cap is seen.
+  // Set when the message could not be fully walked, so some addresses may be
+  // unscanned: the address cap, the depth limit, or the work budget was hit.
   let overflow = false;
 
   // Total nodes walked, bounded by MAX_TRAVERSAL_NODES.
   let visited = 0;
 
-  // Traversal continues past the address cap so overflow can be detected; only
-  // depth and total work bound it.
-  const budgetExhausted = (depth: number): boolean =>
-    depth > MAX_TRAVERSAL_DEPTH || visited >= MAX_TRAVERSAL_NODES;
+  // Stopping the walk (depth or work budget) leaves later fields unscanned, so
+  // it is treated as overflow the same way the distinct-address cap is.
+  const truncated = (depth: number): boolean => {
+    if (depth > MAX_TRAVERSAL_DEPTH || visited >= MAX_TRAVERSAL_NODES) {
+      overflow = true;
+      return true;
+    }
+    return false;
+  };
 
-  function collect(value: unknown): void {
+  function collect(field: string, value: unknown): void {
     const address = normalizeAddress(value);
     if (!address || excluded.has(address) || found.has(address)) {
       return;
@@ -248,7 +261,7 @@ export function extractSignatureAddresses(
       overflow = true;
       return;
     }
-    found.add(address);
+    found.set(address, field);
   }
 
   function visitStruct(
@@ -256,15 +269,15 @@ export function extractSignatureAddresses(
     value: unknown,
     depth: number,
   ): void {
-    if (budgetExhausted(depth)) {
+    if (truncated(depth)) {
       return;
     }
-    const fields = types[structName];
-    if (!Array.isArray(fields) || !value || typeof value !== 'object') {
+    const structFields = schema[structName];
+    if (!Array.isArray(structFields) || !value || typeof value !== 'object') {
       return;
     }
-    for (const field of fields) {
-      if (budgetExhausted(depth)) {
+    for (const field of structFields) {
+      if (truncated(depth)) {
         return;
       }
       if (
@@ -278,6 +291,7 @@ export function extractSignatureAddresses(
         continue;
       }
       visitField(
+        field.name,
         field.type,
         (value as Record<string, unknown>)[field.name],
         depth,
@@ -285,9 +299,14 @@ export function extractSignatureAddresses(
     }
   }
 
-  function visitField(type: string, value: unknown, depth: number): void {
+  function visitField(
+    field: string,
+    type: string,
+    value: unknown,
+    depth: number,
+  ): void {
     visited += 1;
-    if (budgetExhausted(depth)) {
+    if (truncated(depth)) {
       return;
     }
 
@@ -296,29 +315,33 @@ export function extractSignatureAddresses(
     if (arrayMatch) {
       if (Array.isArray(value)) {
         for (const item of value) {
-          if (budgetExhausted(depth)) {
+          if (truncated(depth)) {
             return;
           }
-          visitField(arrayMatch[1], item, depth + 1);
+          visitField(field, arrayMatch[1], item, depth + 1);
         }
       }
       return;
     }
 
     if (type === 'address') {
-      collect(value);
+      collect(field, value);
       return;
     }
 
     // Recurse into custom struct types; other primitives carry no address.
-    if (Array.isArray(types[type])) {
+    if (Array.isArray(schema[type])) {
       visitStruct(type, value, depth + 1);
     }
   }
 
   visitStruct(primaryType, message, 0);
 
-  return { addresses: Array.from(found.values()), overflow };
+  return {
+    addresses: Array.from(found.keys()),
+    fields: Object.fromEntries(found),
+    overflow,
+  };
 }
 
 export enum ResultType {

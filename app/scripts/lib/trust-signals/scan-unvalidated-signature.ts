@@ -24,10 +24,10 @@ type AppStateCache = Pick<
  *
  * @param options
  * @param options.request - The signature JSON-RPC request.
+ * @param options.request.method - The JSON-RPC method (`eth_signTypedData_v3`/`v4`).
+ * @param options.request.params - The JSON-RPC params, `[signer, typedData]`.
  * @param options.chainId - The chain the signature is scoped to.
  * @param options.appStateController - Address-scan cache accessors.
- * @param options.request.method
- * @param options.request.params
  */
 export function scanUnvalidatedSignatureAddresses({
   request,
