@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../../shared/lib/assets/security-trust-feature-flags';
 import {
   AssetPageSecurityTrustBanner,
   AssetPageSecurityTrustHeaderBadge,
@@ -66,19 +67,41 @@ const mockSecurityData: TokenSecurityData = {
   created: '2020-01-01T00:00:00.000Z',
 };
 
-const createStore = (useExternalServices: boolean) =>
+const enabledSecurityTrustFlag = {
+  enabled: true,
+  minimumVersion: '0.0.0',
+};
+
+const createStore = ({
+  useExternalServices = true,
+  securityTrustTdpFlag = enabledSecurityTrustFlag,
+}: {
+  useExternalServices?: boolean;
+  securityTrustTdpFlag?: boolean | { enabled: boolean; minimumVersion: string };
+} = {}) =>
   configureStore({
-    reducer: (state = { metamask: { useExternalServices } }) => state,
+    reducer: (
+      state = {
+        metamask: {
+          useExternalServices,
+          remoteFeatureFlags: {
+            [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: securityTrustTdpFlag,
+          },
+        },
+      },
+    ) => state,
   });
 
 const renderSlots = ({
   securityData = mockSecurityData,
   useExternalServices = true,
+  securityTrustTdpFlag = enabledSecurityTrustFlag,
   isLoading = false,
   error = null,
 }: {
   securityData?: TokenSecurityData | null;
   useExternalServices?: boolean;
+  securityTrustTdpFlag?: boolean | { enabled: boolean; minimumVersion: string };
   isLoading?: boolean;
   error?: Error | null;
 } = {}) => {
@@ -94,7 +117,7 @@ const renderSlots = ({
       <AssetPageSecurityTrustBanner />
       <AssetPageSecurityTrustSection />
     </AssetPageSecurityTrustProvider>,
-    createStore(useExternalServices),
+    createStore({ useExternalServices, securityTrustTdpFlag }),
   );
 };
 
@@ -174,6 +197,16 @@ describe('AssetPageSecurityTrust', () => {
     expect(queryByTestId('security-trust-section')).not.toBeInTheDocument();
   });
 
+  it('renders nothing when security trust TDP flag is disabled', () => {
+    const { queryByTestId } = renderSlots({
+      useExternalServices: true,
+      securityTrustTdpFlag: false,
+    });
+
+    expect(queryByTestId('security-badge-verified')).not.toBeInTheDocument();
+    expect(queryByTestId('security-trust-section')).not.toBeInTheDocument();
+  });
+
   it('hides badge and banner while security data is loading', () => {
     const { queryByTestId } = renderSlots({
       securityData: null,
@@ -208,7 +241,7 @@ describe('AssetPageSecurityTrust', () => {
       <AssetPageSecurityTrustProvider assetId={assetId} token={token}>
         <CtaGateProbe onGate={onGate} />
       </AssetPageSecurityTrustProvider>,
-      createStore(true),
+      createStore({ useExternalServices: true }),
     );
 
     const gate = onGate.mock.calls.at(-1)?.[0];
@@ -231,7 +264,7 @@ describe('AssetPageSecurityTrust', () => {
       <AssetPageSecurityTrustProvider assetId={assetId} token={token}>
         <CtaGateProbe onGate={onGate} />
       </AssetPageSecurityTrustProvider>,
-      createStore(true),
+      createStore({ useExternalServices: true }),
     );
 
     const gate = onGate.mock.calls.at(-1)?.[0];
