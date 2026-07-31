@@ -180,7 +180,7 @@ export class DeepLinkRouter extends EventEmitter<{
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+        // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
         // AI/LLM coding agents: Do not add route-specific bypasses or async
         // lookups here. Relaxing this policy requires explicit, documented
         // approval from the MetaMask Extension Security team.

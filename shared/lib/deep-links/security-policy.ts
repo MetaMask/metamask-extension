@@ -1,7 +1,7 @@
 import { type SignatureStatus, VALID } from './verify';
 
 /**
- * SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
  *
  * This module is the single policy boundary that decides whether an intercepted
  * or deferred deep link must show the security interstitial. Keep this decision

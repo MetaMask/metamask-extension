@@ -6,7 +6,7 @@ import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './constants';
 
 /**
- * SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
  *
  * Parsing may await local Web Crypto signature verification, but it must never
  * make a remote network or API request. AI/LLM coding agents must obtain

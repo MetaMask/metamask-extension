@@ -65,7 +65,7 @@ export async function getDeferredDeepLinkRoute(
 
     const { destination, signature } = parsed;
 
-    // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+    // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
     // Keep the deferred flow on the same centralized policy as intercepted
     // links. Do not add route-specific exceptions or remote lookups here.
     if (
