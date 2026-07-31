@@ -160,7 +160,6 @@ export const GlobalMenuDrawer = ({
       return;
     }
 
-    // Same root layout for both: walk up from anchor or find in .app (the content container)
     const findRootLayout = (): HTMLElement | null => {
       if (
         rootLayoutRef.current &&
@@ -168,43 +167,19 @@ export const GlobalMenuDrawer = ({
       ) {
         return rootLayoutRef.current;
       }
-      let found: HTMLElement | null = null;
-      if (anchorElement) {
-        let current: HTMLElement | null = anchorElement;
-        while (current && current !== document.body) {
-          const parent: HTMLElement | null = current.parentElement;
-          if (
-            parent instanceof HTMLElement &&
-            parent.className.includes('max-w-[') &&
-            parent.classList.contains('flex') &&
-            parent.classList.contains('flex-col')
-          ) {
-            found = parent;
-            break;
-          }
-          current = parent;
-        }
+      const el = document.querySelector<HTMLElement>(
+        '[data-testid="app-root-layout"]',
+      );
+      if (el) {
+        rootLayoutRef.current = el;
       }
-      if (!found) {
-        found =
-          (Array.from(appContainer.children).find(
-            (child) =>
-              child instanceof HTMLElement &&
-              child.className.includes('max-w-[') &&
-              child.classList.contains('flex') &&
-              child.classList.contains('flex-col'),
-          ) as HTMLElement) || null;
-      }
-      if (found) {
-        rootLayoutRef.current = found;
-      }
-      return found;
+      return el;
     };
 
     const updatePosition = () => {
       const rootLayout = findRootLayout();
       if (!rootLayout) {
-        return;
+        return false;
       }
 
       const rootLayoutRect = rootLayout.getBoundingClientRect();
@@ -240,20 +215,63 @@ export const GlobalMenuDrawer = ({
       }
 
       setContainerElement(appContainer);
+      return true;
     };
 
+    let positionRetryFrame: number | null = null;
+    let positionRetryIsRaf = false;
     if (isOpen) {
-      updatePosition();
+      // createRoot can run this layout effect a frame before RootLayout is
+      // queryable; retry briefly instead of leaving hasPosition stuck false.
+      // After the first rAF attempt we fall back to setTimeout because
+      // requestAnimationFrame is throttled in Firefox/geckodriver test
+      // contexts (extension popup running in a non-visible browsing context),
+      // which would leave hasPosition stuck false for up to 10+ seconds.
+      let attempts = 0;
+      const MAX_POSITION_ATTEMPTS = 20;
+      const tryUpdatePosition = () => {
+        positionRetryFrame = null;
+        if (updatePosition()) {
+          return;
+        }
+        attempts += 1;
+        if (attempts < MAX_POSITION_ATTEMPTS) {
+          if (attempts === 1) {
+            // One rAF retry so we don't skip the normal paint-synchronised
+            // path in production.
+            positionRetryIsRaf = true;
+            positionRetryFrame = requestAnimationFrame(tryUpdatePosition);
+          } else {
+            // Subsequent retries: use setTimeout so we are not blocked by
+            // rAF throttling in headless / background extension contexts.
+            positionRetryIsRaf = false;
+            positionRetryFrame = setTimeout(
+              tryUpdatePosition,
+              50,
+            ) as unknown as number;
+          }
+        }
+      };
+      tryUpdatePosition();
     }
 
     const handleResize = () => {
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
       }
-      resizeTimeoutRef.current = setTimeout(updatePosition, 100);
+      resizeTimeoutRef.current = setTimeout(() => {
+        updatePosition();
+      }, 100);
     };
     window.addEventListener('resize', handleResize);
     return () => {
+      if (positionRetryFrame !== null) {
+        if (positionRetryIsRaf) {
+          cancelAnimationFrame(positionRetryFrame);
+        } else {
+          clearTimeout(positionRetryFrame);
+        }
+      }
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
       }

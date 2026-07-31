@@ -15,7 +15,7 @@ import {
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
 } from '../../../selectors';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
@@ -39,7 +39,7 @@ export function SurveyToast() {
     getCompletedMetaMetricsOnboarding,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
-  const internalAccount = useSelector(getSelectedInternalAccount);
+  const isUnlocked = useSelector(getIsUnlocked);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
 
@@ -49,7 +49,15 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
+    // ToastMaster can mount on `/` while the wallet is still locked (e.g. the
+    // brief DEFAULT_ROUTE flash before redirecting to /unlock). Fetching then
+    // burns the first survey response before the home screen ever sees it.
+    if (
+      !isUnlocked ||
+      !basicFunctionality ||
+      !analyticsId ||
+      !isMetaMetricsEnabled
+    ) {
       return undefined;
     }
 
@@ -94,12 +102,12 @@ export function SurveyToast() {
       controller.abort();
     };
   }, [
-    internalAccount?.address,
+    isUnlocked,
     lastViewedUserSurvey,
     basicFunctionality,
     analyticsId,
     isMetaMetricsEnabled,
-    dispatch,
+    surveyUrl,
   ]);
 
   function handleActionClick() {

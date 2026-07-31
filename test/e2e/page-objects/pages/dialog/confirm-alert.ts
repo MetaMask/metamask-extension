@@ -34,7 +34,9 @@ class ConfirmAlertModal {
   }
 
   async rejectFromAlertModal() {
-    await this.driver.clickElement(this.alertModalCancelButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.alertModalCancelButton,
+    );
   }
 
   async verifyNetworkDisplay(networkName: string): Promise<void> {
