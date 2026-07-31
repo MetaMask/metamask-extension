@@ -313,6 +313,26 @@ describe('enforced-simulations', () => {
         ).toBe(true);
       });
 
+      it('exempts a transaction with no recipient addresses on a chain with no slug mapping', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+              txParams: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: undefined,
+              },
+              nestedTransactions: undefined,
+            },
+            {
+              addressSecurityAlertResponses: {},
+              eip7702SupportedChains: [UNMAPPED_CHAIN_ID],
+            },
+          ),
+        ).toBe(false);
+      });
+
       it('returns false when chainId is undefined', () => {
         expect(
           isEnforcedSimulationsEligible(
