@@ -819,6 +819,41 @@ describe('PerpsOrderEntryPage', () => {
         mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
       ).toHaveBeenCalledTimes(1);
     });
+
+    it('tracks order_book_opened and order_book_closed interactions', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_BOOK_OPENED,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
+        }),
+      );
+
+      mockAnalyticsTrackEvent.mockClear();
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_BOOK_CLOSED,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
+        }),
+      );
+    });
   });
 
   describe('redirects', () => {

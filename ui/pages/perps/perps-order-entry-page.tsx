@@ -1143,16 +1143,17 @@ const PerpsOrderEntryPage = () => {
     const next = !isOrderBookOpen;
     setIsOrderBookOpen(next);
     // Tracking is a side effect and must run outside the state updater (updaters
-    // must be pure and may be invoked more than once).
-    if (next) {
-      track(MetaMetricsEventName.PerpsUiInteraction, {
-        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-        ...(decodedSymbol && {
-          [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-        }),
-      });
-    } else {
+    // must be pure and may be invoked more than once). Specific open/close values
+    // keep dark-launch open-rate measurable (generic TAP cannot).
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]: next
+        ? PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_BOOK_OPENED
+        : PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_BOOK_CLOSED,
+      ...(decodedSymbol && {
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      }),
+    });
+    if (!next) {
       // Closing unmounts PerpsOrderBook, which resets its in-memory grouping
       // selection back to the default. The aggregated book cache, however,
       // outlives the panel, and usePerpsChannel does not clear it on first

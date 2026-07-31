@@ -2,7 +2,6 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useRef,
   useState,
 } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
@@ -163,41 +162,67 @@ export function usePerpsLiveOrderBook(
       ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${reconnectNonce}`
       : undefined;
 
-  const prevActivationKeyRef = useRef<string | undefined>(undefined);
-  const subscriptionIdRef = useRef<string | undefined>(undefined);
+  // Allocated in layout (not render) so the module-level generation counter is
+  // not mutated during a potentially discarded / StrictMode-double render.
+  // `activationKey` on the stored entry lets this render treat a stale id as
+  // absent until the matching layout pass commits the new one — so activate and
+  // resetKey never run against a previous instance's identity.
+  const [aggregatedSubscription, setAggregatedSubscription] = useState<{
+    activationKey: string;
+    subscriptionId: string;
+  } | null>(null);
 
-  if (prevActivationKeyRef.current !== activationKey) {
-    prevActivationKeyRef.current = activationKey;
-    if (activationKey && activeSymbol) {
-      subscriptionIdRef.current = buildOrderBookAggregatedSubscriptionId({
-        symbol: activeSymbol,
-        nSigFigs,
-        mantissa,
-        generation: allocateOrderBookAggregatedSubscriptionGeneration(),
-      });
-    } else {
-      subscriptionIdRef.current = undefined;
-    }
-  }
-
-  const subscriptionId = isAggregated ? subscriptionIdRef.current : undefined;
+  const subscriptionId =
+    isAggregated &&
+    activationKey &&
+    aggregatedSubscription?.activationKey === activationKey
+      ? aggregatedSubscription.subscriptionId
+      : undefined;
   // Reset key clears cached rows the instant the subscription instance changes
   // (grouping, reconnect, or a fresh open after close).
   const resetKey = isAggregated ? subscriptionId : activeSymbol;
 
-  // Register before paint; deregister on unmount / identity change so a closed
-  // panel rejects late packets until the next activation registers.
+  // Allocate + register before paint; deregister on unmount / identity change so
+  // a closed panel rejects late packets until the next activation registers.
   useLayoutEffect(() => {
-    if (!isAggregated || !streamManager) {
+    if (!isAggregated) {
+      setAggregatedSubscription(null);
       return undefined;
     }
-    streamManager.setActiveOrderBookAggregatedSubscriptionId(
-      subscriptionId ?? null,
+    if (!streamManager) {
+      return undefined;
+    }
+
+    const nextSubscriptionId =
+      activationKey && activeSymbol
+        ? buildOrderBookAggregatedSubscriptionId({
+            symbol: activeSymbol,
+            nSigFigs,
+            mantissa,
+            generation: allocateOrderBookAggregatedSubscriptionGeneration(),
+          })
+        : undefined;
+
+    setAggregatedSubscription(
+      activationKey && nextSubscriptionId
+        ? { activationKey, subscriptionId: nextSubscriptionId }
+        : null,
     );
+    streamManager.setActiveOrderBookAggregatedSubscriptionId(
+      nextSubscriptionId ?? null,
+    );
+
     return () => {
       streamManager.setActiveOrderBookAggregatedSubscriptionId(null);
     };
-  }, [isAggregated, streamManager, subscriptionId]);
+  }, [
+    isAggregated,
+    streamManager,
+    activationKey,
+    activeSymbol,
+    nSigFigs,
+    mantissa,
+  ]);
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,
@@ -213,6 +238,11 @@ export function usePerpsLiveOrderBook(
 
   useEffect(() => {
     if (!manageStream || !enabled || !symbol) {
+      return undefined;
+    }
+    // Wait for the layout pass to allocate a matching aggregated identity so we
+    // never activate with a stale subscriptionId from the prior activationKey.
+    if (isAggregated && !subscriptionId) {
       return undefined;
     }
     const activateAction = isAggregated
@@ -245,6 +275,7 @@ export function usePerpsLiveOrderBook(
     nSigFigs,
     mantissa,
     isAggregated,
+    // Raw channel has no subscriptionId; reconnect must still force re-activate.
     reconnectNonce,
     subscriptionId,
   ]);

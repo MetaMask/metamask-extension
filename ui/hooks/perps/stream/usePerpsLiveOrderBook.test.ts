@@ -161,7 +161,9 @@ describe('usePerpsLiveOrderBook', () => {
         }),
       );
 
-      const firstId = mockUsePerpsChannel.mock.calls[0][2];
+      // Identity is allocated in layout, so the first render may pass an
+      // undefined resetKey; the committed id appears on the following render.
+      const firstId = mockUsePerpsChannel.mock.calls.at(-1)?.[2];
       expect(firstId).toBe('BTC:3:2:1');
       unmountFirst();
 
@@ -179,7 +181,7 @@ describe('usePerpsLiveOrderBook', () => {
         }),
       );
 
-      const secondId = mockUsePerpsChannel.mock.calls[0][2];
+      const secondId = mockUsePerpsChannel.mock.calls.at(-1)?.[2];
       expect(secondId).toBe('BTC:3:2:2');
       expect(secondId).not.toBe(firstId);
     });

@@ -1,5 +1,4 @@
 import type { OrderBookData, OrderBookLevel } from '@metamask/perps-controller';
-import { PERFORMANCE_CONFIG } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPositionSize,
@@ -12,14 +11,6 @@ import type {
   OrderBookListCurrency,
   OrderBookListMetric,
 } from './order-book.types';
-
-/**
- * Maximum number of price levels rendered per side. Reuses the shared
- * order-book stream depth that feeds this component so the display depth can
- * never drift from the subscribed book depth.
- */
-export const ORDER_BOOK_DISPLAY_LEVELS =
-  PERFORMANCE_CONFIG.SlippageEstimateBookLevels;
 
 /**
  * Levels requested from (and rendered for) the server-aggregated order-book
@@ -193,12 +184,12 @@ export function selectDefaultGrouping(options: number[]): number {
  * `mantissa`); this helper only prepares the already-bucketed stream for render.
  *
  * @param orderBook - Order book data (typically server-aggregated).
- * @param maxLevels - Max rows to render per side (defaults to the raw display depth).
+ * @param maxLevels - Max rows to render per side.
  * @returns Trimmed bids/asks and maxTotal.
  */
 export function groupOrderBook(
   orderBook: OrderBookData,
-  maxLevels: number = ORDER_BOOK_DISPLAY_LEVELS,
+  maxLevels: number,
 ): { bids: OrderBookLevel[]; asks: OrderBookLevel[]; maxTotal: number } {
   const trimmedBids = orderBook.bids.slice(0, maxLevels);
   const trimmedAsks = orderBook.asks.slice(0, maxLevels);

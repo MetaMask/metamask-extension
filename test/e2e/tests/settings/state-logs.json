@@ -1361,10 +1361,6 @@
         "value": "string"
       }
     },
-    "recentlyViewedMarkets": {
-      "testnet": [],
-      "mainnet": []
-    },
     "rawRemoteFeatureFlags": {
       "feature1": "boolean",
       "feature2": "boolean",

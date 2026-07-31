@@ -14,6 +14,7 @@ import {
   getDepthWidth,
   getOrderBookMaxWidthPct,
   groupOrderBook,
+  ORDER_BOOK_AGGREGATED_LEVELS,
   selectDefaultGrouping,
 } from './order-book.utils';
 
@@ -126,7 +127,7 @@ describe('order-book.utils', () => {
   });
 
   describe('groupOrderBook', () => {
-    it('trims to the display depth and reports the deepest cumulative total', () => {
+    it('trims to maxLevels and reports the deepest cumulative total', () => {
       const bids = Array.from({ length: 15 }, (_, index) =>
         level(
           `${100 - index}`,
@@ -146,19 +147,22 @@ describe('order-book.utils', () => {
         ),
       );
 
-      const grouped = groupOrderBook({
-        bids,
-        asks,
-        spread: '1',
-        spreadPercentage: '0.01',
-        midPrice: '100.5',
-        lastUpdated: 1,
-        maxTotal: '15',
-      });
+      const grouped = groupOrderBook(
+        {
+          bids,
+          asks,
+          spread: '1',
+          spreadPercentage: '0.01',
+          midPrice: '100.5',
+          lastUpdated: 1,
+          maxTotal: '15',
+        },
+        ORDER_BOOK_AGGREGATED_LEVELS,
+      );
 
-      expect(grouped.bids).toHaveLength(10);
-      expect(grouped.asks).toHaveLength(10);
-      expect(grouped.maxTotal).toBe(10);
+      expect(grouped.bids).toHaveLength(ORDER_BOOK_AGGREGATED_LEVELS);
+      expect(grouped.asks).toHaveLength(ORDER_BOOK_AGGREGATED_LEVELS);
+      expect(grouped.maxTotal).toBe(ORDER_BOOK_AGGREGATED_LEVELS);
     });
   });
 

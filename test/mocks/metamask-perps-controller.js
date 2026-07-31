@@ -64,6 +64,14 @@ const mockPerpsEventValueLiterals = {
     TUTORIAL_STARTED: 'tutorial_started',
     TUTORIAL_COMPLETED: 'tutorial_completed',
     TUTORIAL_NAVIGATION: 'tutorial_navigation',
+    CLOSE_ALL_TAPPED: 'close_all_tapped',
+    CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
+    CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    ORDER_BOOK_OPENED: 'order_book_opened',
+    ORDER_BOOK_CLOSED: 'order_book_closed',
+    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
+    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
+    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
@@ -205,25 +213,6 @@ function mockGetMaxAllowedAmount({
     return 0;
   }
   return Math.max(0, Math.floor(spendableBalance * leverage * 0.99));
-}
-
-/**
- * Stub for the dedicated aggregated order-book socket used by
- * `metamask-controller` when wiring `PerpsStreamBridge`. Avoids constructing
- * the real Hyperliquid transport under Jest.
- */
-class MockAggregatedOrderBookConnection {
-  constructor(options) {
-    this.options = options;
-  }
-
-  subscribe(_params) {
-    return () => undefined;
-  }
-
-  close() {
-    return undefined;
-  }
 }
 
 module.exports = {

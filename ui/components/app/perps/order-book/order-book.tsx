@@ -467,7 +467,7 @@ export const PerpsOrderBook = ({
           onClick={() => setIsConfigOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={isConfigOpen}
-          aria-controls={configModalId}
+          {...(isConfigOpen && { 'aria-controls': configModalId })}
           className="-mr-1"
           data-testid={`${dataTestId}-grouping-trigger`}
         />
