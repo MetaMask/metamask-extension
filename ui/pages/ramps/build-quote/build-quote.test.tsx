@@ -230,12 +230,11 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
   });
 
-  it('opens the provider widget, watches the tab, and returns home on continue', async () => {
+  it('opens the provider widget via background watch and returns home on continue', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
     });
-    mockOpenTab.mockResolvedValue({ id: 42 });
     mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
 
     renderWithProvider(
@@ -252,11 +251,9 @@ describe('RampsBuildQuoteScreen', () => {
       provider: 'transak',
       id: 'quote-1',
     });
-    expect(mockOpenTab).toHaveBeenCalledWith({
-      url: 'https://provider.example/checkout',
-    });
+    expect(mockOpenTab).not.toHaveBeenCalled();
     expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
-      tabId: 42,
+      url: 'https://provider.example/checkout',
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: 'order-123',
@@ -268,7 +265,6 @@ describe('RampsBuildQuoteScreen', () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
     });
-    mockOpenTab.mockResolvedValue({ id: 7 });
     mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
 
     renderWithProvider(
@@ -282,7 +278,7 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
-      tabId: 7,
+      url: 'https://provider.example/checkout',
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: undefined,
@@ -295,7 +291,6 @@ describe('RampsBuildQuoteScreen', () => {
       url: 'https://provider.example/checkout',
       orderId: 'providers/moonpay-staging/orders/c-abc123',
     });
-    mockOpenTab.mockResolvedValue({ id: 42 });
 
     renderWithProvider(
       <RampsBuildQuoteScreen />,
@@ -308,7 +303,7 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
-      tabId: 42,
+      url: 'https://provider.example/checkout',
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: 'c-abc123',
@@ -316,13 +311,13 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('surfaces an error and does not navigate when the opened tab has no id', async () => {
-    // Without a tab id the background watcher cannot resolve the order, so the
-    // user must not be sent home believing checkout is being tracked.
+  it('surfaces an error and does not navigate when background openAndWatch fails', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
     });
-    mockOpenTab.mockResolvedValue({});
+    mockWatchRampsCheckoutTab.mockRejectedValue(
+      new Error('Failed to open ramps checkout tab'),
+    );
 
     renderWithProvider(
       <RampsBuildQuoteScreen />,
@@ -334,35 +329,10 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
     expect(mockShowBuyTabOpenedToast).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
-      messages.rampsBuyWidgetError.message,
-    );
-  });
-
-  it('surfaces an error when the opened tab has no id', async () => {
-    mockGetBuyWidgetData.mockResolvedValue({
-      url: 'https://provider.example/checkout',
-      orderId: 'order-123',
-    });
-    mockOpenTab.mockResolvedValue({});
-
-    renderWithProvider(
-      <RampsBuildQuoteScreen />,
-      createStore(),
-      '/ramps/build-quote',
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
-    });
-
-    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
-      messages.rampsBuyWidgetError.message,
+      'Failed to open ramps checkout tab',
     );
   });
 

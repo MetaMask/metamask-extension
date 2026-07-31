@@ -3,7 +3,11 @@ import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
 
 export type WatchRampsCheckoutTabParams = {
-  tabId: number;
+  /**
+   * Provider checkout URL. Opened in the background so popup-mode UI can die
+   * after dispatching this call without losing the tab watcher.
+   */
+  url: string;
   providerCode: string;
   walletAddress: string;
   /**
@@ -21,6 +25,9 @@ type ActiveWatch = {
  * Background watcher for provider checkout tabs navigating to the ramps
  * callback URL.
  *
+ * Opens the checkout tab in the background (so popup-mode UI can close safely),
+ * then watches for navigation to the ramps callback URL.
+ *
  * @param platform - Extension platform (tab listeners / closeTab).
  * @param rampsController - Controller used to resolve redirect-only orders.
  * @returns A `watchRampsCheckoutTab` function suitable for the background API.
@@ -28,15 +35,20 @@ type ActiveWatch = {
 export function createWatchRampsCheckoutTab(
   platform: ExtensionPlatform,
   rampsController: RampsController,
-): (params: WatchRampsCheckoutTabParams) => void {
+): (params: WatchRampsCheckoutTabParams) => Promise<void> {
   const activeByTabId = new Map<number, ActiveWatch>();
 
-  return function watchRampsCheckoutTab({
+  function startWatching({
     tabId,
     providerCode,
     walletAddress,
     orderCode,
-  }: WatchRampsCheckoutTabParams): void {
+  }: {
+    tabId: number;
+    providerCode: string;
+    walletAddress: string;
+    orderCode?: string;
+  }): void {
     activeByTabId.get(tabId)?.cleanup();
 
     const cleanup = () => {
@@ -79,13 +91,25 @@ export function createWatchRampsCheckoutTab(
 
     const finish = (callbackUrl?: string) => {
       cleanup();
-      platform.closeTab(tabId).catch(() => undefined);
 
-      if (!callbackUrl) {
-        return;
-      }
+      // Resolve first, then open MetaMask UI before closing the checkout tab.
+      // Closing the only open tab would quit Chrome and drop the in-memory
+      // order before the user can see toasts / Activity.
+      (async () => {
+        if (callbackUrl) {
+          await resolveOrder(callbackUrl);
+        }
 
-      resolveOrder(callbackUrl).catch(() => undefined);
+        try {
+          await platform.openTab({
+            url: platform.getExtensionURL('/activity'),
+          });
+        } catch {
+          // Best-effort UI reopen; still close the checkout tab below.
+        }
+
+        await platform.closeTab(tabId).catch(() => undefined);
+      })().catch(() => undefined);
     };
 
     function onUpdated(
@@ -115,5 +139,24 @@ export function createWatchRampsCheckoutTab(
     activeByTabId.set(tabId, { cleanup });
     platform.addTabUpdatedListener(onUpdated);
     platform.addTabRemovedListener(onRemoved);
+  }
+
+  return async function watchRampsCheckoutTab({
+    url,
+    providerCode,
+    walletAddress,
+    orderCode,
+  }: WatchRampsCheckoutTabParams): Promise<void> {
+    const openedTab = await platform.openTab({ url });
+    if (openedTab.id === undefined) {
+      throw new Error('Failed to open ramps checkout tab');
+    }
+
+    startWatching({
+      tabId: openedTab.id,
+      providerCode,
+      walletAddress,
+      orderCode,
+    });
   };
 }

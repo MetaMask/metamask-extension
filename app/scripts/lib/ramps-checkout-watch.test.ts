@@ -29,6 +29,12 @@ describe('createWatchRampsCheckoutTab', () => {
       removeTabUpdatedListener: jest.fn(),
       removeTabRemovedListener: jest.fn(),
       closeTab: jest.fn().mockResolvedValue(undefined),
+      openTab: jest.fn().mockResolvedValue({ id: 9 }),
+      getExtensionURL: jest.fn((route?: string | null) =>
+        route
+          ? `chrome-extension://mm/home.html#${route}`
+          : 'chrome-extension://mm/home.html',
+      ),
     };
 
     const rampsController = {
@@ -61,13 +67,17 @@ describe('createWatchRampsCheckoutTab', () => {
     };
   }
 
-  it('closes the tab and resolves the order from the callback URL', async () => {
+  it('opens the checkout tab then watches for the callback URL', async () => {
     const { platform, rampsController, watch, getOnUpdated } = createHarness();
 
-    watch({
-      tabId: 9,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
+    });
+
+    expect(platform.openTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
     });
 
     getOnUpdated()?.(
@@ -78,8 +88,9 @@ describe('createWatchRampsCheckoutTab', () => {
 
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
-    expect(platform.closeTab).toHaveBeenCalledWith(9);
     expect(rampsController.getOrderFromCallback).toHaveBeenCalledWith(
       'moonpay',
       `${callbackBase}?transactionId=abc`,
@@ -91,25 +102,29 @@ describe('createWatchRampsCheckoutTab', () => {
         status: 'PENDING',
       }),
     );
+    expect(platform.openTab).toHaveBeenCalledWith({
+      url: 'chrome-extension://mm/home.html#/activity',
+    });
+    expect(platform.closeTab).toHaveBeenCalledWith(9);
     expect(rampsController.getOrder).not.toHaveBeenCalled();
   });
 
   it('falls back to getOrder by widget code when the callback lookup fails', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    const { rampsController, watch, getOnUpdated } = createHarness();
+    const { platform, rampsController, watch, getOnUpdated } = createHarness();
     rampsController.getOrderFromCallback.mockRejectedValue(
       new Error('Failed to fetch'),
     );
 
-    watch({
-      tabId: 7,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
       orderCode: 'c-custom',
     });
 
     getOnUpdated()?.(
-      7,
+      9,
       { url: `${callbackBase}?transactionId=abc` },
       undefined,
     );
@@ -131,6 +146,7 @@ describe('createWatchRampsCheckoutTab', () => {
       }),
     );
     expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
+    expect(platform.closeTab).toHaveBeenCalledWith(9);
   });
 
   it('does not add an order when both the callback and the lookup fail', async () => {
@@ -141,15 +157,15 @@ describe('createWatchRampsCheckoutTab', () => {
     );
     rampsController.getOrder.mockRejectedValue(new Error('Failed to fetch'));
 
-    watch({
-      tabId: 8,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
       orderCode: 'c-custom',
     });
 
     getOnUpdated()?.(
-      8,
+      9,
       { url: `${callbackBase}?transactionId=abc` },
       undefined,
     );
@@ -163,16 +179,29 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
   });
 
-  it('tears down listeners when the user closes the checkout tab', () => {
+  it('throws when the opened checkout tab has no id', async () => {
+    const { platform, watch } = createHarness();
+    platform.openTab.mockResolvedValue({});
+
+    await expect(
+      watch({
+        url: 'https://provider.example/checkout',
+        providerCode: 'moonpay',
+        walletAddress: '0xabc',
+      }),
+    ).rejects.toThrow('Failed to open ramps checkout tab');
+  });
+
+  it('tears down listeners when the user closes the checkout tab', async () => {
     const { platform, watch, getOnRemoved } = createHarness();
 
-    watch({
-      tabId: 5,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
     });
 
-    getOnRemoved()?.(5);
+    getOnRemoved()?.(9);
 
     expect(platform.removeTabUpdatedListener).toHaveBeenCalled();
     expect(platform.removeTabRemovedListener).toHaveBeenCalled();

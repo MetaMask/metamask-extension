@@ -205,14 +205,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         ? getInternalOrderCode(widget.orderId)
         : undefined;
 
-      const openedTab = await global.platform.openTab({ url: widget.url });
-      if (openedTab.id === undefined) {
-        setContinueError(t('rampsBuyWidgetError'));
-        return;
-      }
-
+      // Open + watch in the background so popup-mode UI can close when the
+      // provider tab opens without losing the callback listener.
       await watchRampsCheckoutTab({
-        tabId: openedTab.id,
+        url: widget.url,
         providerCode,
         walletAddress,
         orderCode,
