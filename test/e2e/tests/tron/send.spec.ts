@@ -126,9 +126,9 @@ describe('Tron Send', function (this: Suite) {
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
         await sendPage.fillAmount('1');
-        // Fee validation runs on Continue; Tron surfaces transactionError on the button.
+        // With 1 sun TRX, Continuetrial builds the TRC20 tx then fails fee cover.
         await sendPage.pressContinueButton();
-        await sendPage.checkTransactionError();
+        await sendPage.checkInsufficientBalanceToCoverFeesError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );
