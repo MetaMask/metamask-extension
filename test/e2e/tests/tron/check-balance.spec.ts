@@ -10,6 +10,30 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
 
 describe('Check balance', function (this: Suite) {
+  it('Just created Tron account shows 0 USD when native token is not enabled', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockTronApis(mockServer, true),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$0',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
+      },
+    );
+  });
+
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {

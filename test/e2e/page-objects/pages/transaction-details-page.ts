@@ -71,6 +71,17 @@ class TransactionDetailsPage {
     await this.driver.waitForSelector(this.baseFee(fee));
   }
 
+  /**
+   * Asserts the block explorer button points at the full explorer URL.
+   * Use for explorers that do not follow `{base}/tx/{hash}` (e.g. Tronscan).
+   * @param explorerUrl
+   */
+  async checkExplorerUrl(explorerUrl: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: `[data-testid="${this.explorerTestId}"][data-explorer-url="${explorerUrl}"]`,
+    });
+  }
+
   async checkFromToLink(address: string): Promise<void> {
     await this.driver.waitForSelector(this.addressLink(address));
   }
