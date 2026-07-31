@@ -96,9 +96,15 @@ export const getFungibleAssetBlockExplorerLink = ({
         : (evmNetworkConfig?.blockExplorerUrls?.[defaultIdx] ?? '');
 
     return {
-      url: getTokenTrackerLink(contractAddress, evmHexChainId, '', walletAddress, {
-        blockExplorerUrl,
-      }),
+      url: getTokenTrackerLink(
+        contractAddress,
+        evmHexChainId,
+        '',
+        walletAddress,
+        {
+          blockExplorerUrl,
+        },
+      ),
       name:
         multichainNetworkConfig?.name ??
         evmNetworkConfig?.name ??
@@ -162,7 +168,5 @@ export const getAssetDetailsAccountUrl = (
   const { blockExplorerFormatUrls } =
     network.network as MultichainProviderConfig;
 
-  return (
-    getNonEvmAssetBlockExplorerUrl(blockExplorerFormatUrls, address) ?? ''
-  );
+  return getNonEvmAssetBlockExplorerUrl(blockExplorerFormatUrls, address) ?? '';
 };
