@@ -66,13 +66,13 @@ describe('ToastContent', () => {
     render(
       <ToastContent
         title="Buy in progress"
-        actionText="View"
+        actionText="test-action"
         onActionClick={onActionClick}
         onClick={onClick}
       />,
     );
 
-    fireEvent.click(screen.getByText('View'));
+    fireEvent.click(screen.getByText('test-action'));
 
     expect(onActionClick).toHaveBeenCalledTimes(1);
     expect(onClick).not.toHaveBeenCalled();
