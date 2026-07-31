@@ -6,7 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
-import { CachedScanAddressResponse, ResultType } from '../trust-signals';
+import {
+  CachedScanAddressResponse,
+  createCacheKey,
+  ResultType,
+} from '../trust-signals';
 import {
   DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
   EnforcedSimulationsState,
@@ -19,7 +23,8 @@ const UNSUPPORTED_CHAIN_ID: Hex = '0xdeadbeef';
 const TO_ADDRESS = '0xRecipientAddress';
 const NESTED_ADDRESS_A = '0xNestedAddressA';
 const NESTED_ADDRESS_B = '0xNestedAddressB';
-const CACHE_KEY = `ethereum:${TO_ADDRESS.toLowerCase()}`;
+const UNMAPPED_CHAIN_ID: Hex = '0x1237';
+const CACHE_KEY = createCacheKey(ETHEREUM_CHAIN_ID, TO_ADDRESS);
 
 const BASE_TRANSACTION_META: TransactionMeta = {
   id: 'test-tx-id',
@@ -55,11 +60,12 @@ function buildCacheEntry(resultType: ResultType) {
 
 function buildState(
   resultType: ResultType,
-  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
+  eip7702SupportedChains: Hex[] = [ETHEREUM_CHAIN_ID],
+  chainId: Hex = ETHEREUM_CHAIN_ID,
 ): EnforcedSimulationsState {
   return {
     addressSecurityAlertResponses: {
-      [CACHE_KEY]: buildCacheEntry(resultType),
+      [createCacheKey(chainId, TO_ADDRESS)]: buildCacheEntry(resultType),
     },
     eip7702SupportedChains,
   };
@@ -67,12 +73,13 @@ function buildState(
 
 function buildStateForAddresses(
   entries: Record<string, ResultType>,
-  eip7702SupportedChains = [ETHEREUM_CHAIN_ID],
+  eip7702SupportedChains: Hex[] = [ETHEREUM_CHAIN_ID],
+  chainId: Hex = ETHEREUM_CHAIN_ID,
 ): EnforcedSimulationsState {
   const responses: Record<string, CachedScanAddressResponse> = {};
 
   for (const [address, resultType] of Object.entries(entries)) {
-    const key = `ethereum:${address.toLowerCase()}`;
+    const key = createCacheKey(chainId, address);
     responses[key] = buildCacheEntry(resultType);
   }
 
@@ -258,14 +265,50 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns true when chain is not supported by trust signals', () => {
+      it('returns true when a chain with no slug mapping has a non-trusted cached result', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
               chainId: UNSUPPORTED_CHAIN_ID,
             },
-            buildState(ResultType.Benign, [UNSUPPORTED_CHAIN_ID]),
+            buildState(
+              ResultType.Benign,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(true);
+      });
+
+      it('treats a chain with no slug mapping as cache-driven, not auto-enforced', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.Trusted,
+              [UNMAPPED_CHAIN_ID],
+              UNMAPPED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it('still enforces when the cached verdict is ErrorResult', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNMAPPED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.ErrorResult,
+              [UNMAPPED_CHAIN_ID],
+              UNMAPPED_CHAIN_ID,
+            ),
           ),
         ).toBe(true);
       });
@@ -281,7 +324,10 @@ describe('enforced-simulations', () => {
 
       it('uses txParamsOriginal.to when container wrapping changed txParams.to', () => {
         const trustedDelegationManager = '0xTrustedDelegationManager';
-        const trustedCacheKey = `ethereum:${trustedDelegationManager.toLowerCase()}`;
+        const trustedCacheKey = createCacheKey(
+          ETHEREUM_CHAIN_ID,
+          trustedDelegationManager,
+        );
 
         expect(
           isEnforcedSimulationsEligible(
