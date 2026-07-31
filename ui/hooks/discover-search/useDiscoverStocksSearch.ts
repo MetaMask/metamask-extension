@@ -56,14 +56,14 @@ export const useDiscoverStocksSearch = ({
     [hasQuery],
   );
 
-  const stocksQuery = useQuery({
+  const stocksQuery = useQuery<TrendingAsset[], Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
       trimmedQuery,
       chainIds,
-    ],
-    queryFn: async () => {
+    ] as const,
+    queryFn: async (): Promise<TrendingAsset[]> => {
       const response = await fetchRwas({
         chainIds,
         query: hasQuery ? trimmedQuery : undefined,
@@ -75,12 +75,12 @@ export const useDiscoverStocksSearch = ({
     },
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
+    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   return {
     data: stocksQuery.data ?? [],
-    isLoading: stocksQuery.isPending || stocksQuery.isFetching,
+    isLoading: stocksQuery.isLoading || stocksQuery.isFetching,
     error: stocksQuery.error ?? null,
   };
 };

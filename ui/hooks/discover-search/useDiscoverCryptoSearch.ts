@@ -55,14 +55,14 @@ export const useDiscoverCryptoSearch = ({
   const trimmedQuery = query.trim();
   const isSearch = trimmedQuery.length > 0;
 
-  const trendingQuery = useQuery({
+  const trendingQuery = useQuery<TrendingAsset[], Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
       'trending',
       DISCOVER_SEARCH_CHAIN_IDS,
-    ],
-    queryFn: () =>
+    ] as const,
+    queryFn: async (): Promise<TrendingAsset[]> =>
       getTrendingTokens({
         chainIds: DISCOVER_SEARCH_CHAIN_IDS,
         sort: 'h24_trending',
@@ -71,18 +71,18 @@ export const useDiscoverCryptoSearch = ({
       }),
     enabled: enabled && !isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
+    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
-  const searchQuery = useQuery({
+  const searchQuery = useQuery<TrendingAsset[], Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
       'search',
       trimmedQuery,
       DISCOVER_SEARCH_CHAIN_IDS,
-    ],
-    queryFn: async () => {
+    ] as const,
+    queryFn: async (): Promise<TrendingAsset[]> => {
       const response = await searchTokens(
         DISCOVER_SEARCH_CHAIN_IDS,
         trimmedQuery,
@@ -102,20 +102,20 @@ export const useDiscoverCryptoSearch = ({
     },
     enabled: enabled && isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
+    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   if (isSearch) {
     return {
       data: searchQuery.data ?? [],
-      isLoading: searchQuery.isPending || searchQuery.isFetching,
+      isLoading: searchQuery.isLoading || searchQuery.isFetching,
       error: searchQuery.error ?? null,
     };
   }
 
   return {
     data: trendingQuery.data ?? [],
-    isLoading: trendingQuery.isPending || trendingQuery.isFetching,
+    isLoading: trendingQuery.isLoading || trendingQuery.isFetching,
     error: trendingQuery.error ?? null,
   };
 };

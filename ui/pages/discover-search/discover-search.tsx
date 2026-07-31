@@ -208,7 +208,7 @@ export const DiscoverSearchPage = () => {
         market={market}
         onPress={handlePerpsPress}
         displayMetric="volume"
-        data-testid={`discover-perps-row-${market.symbol.replace(/:/gu, '-')}`}
+        data-testid={`discover-perps-row-${market.symbol.replaceAll(':', '-')}`}
       />
     ));
   };
