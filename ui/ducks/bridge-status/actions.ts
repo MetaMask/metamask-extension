@@ -39,8 +39,8 @@ export const submitBridgeTx = (
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
   location: MetaMetricsSwapsEventSource,
   tokenSecurityTypeDestination: string | null,
-) => {
-  return callBridgeStatusControllerMethod<
+) =>
+  callBridgeStatusControllerMethod<
     [
       string,
       QuoteResponse,
@@ -61,7 +61,6 @@ export const submitBridgeTx = (
     undefined,
     tokenSecurityTypeDestination,
   ]);
-};
 
 /**
  * Submit an intent quote through the bridge status controller.

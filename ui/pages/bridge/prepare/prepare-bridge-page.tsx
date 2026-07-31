@@ -132,6 +132,7 @@ const PrepareBridgePage = ({
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
@@ -446,8 +447,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
-                const previousDestAmount =
-                  unvalidatedQuote?.quote.dest.normalizedAmount;
+                const previousDestAmount = dest?.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -540,7 +540,7 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              (unvalidatedQuote?.quote.dest.valueInCurrency ?? '') +
+              (dest?.valueInCurrency ?? '') +
                 (BRIDGE_DEBUG_ENABLED
                   ? `(${unvalidatedQuote?.toTokenAmount?.valueInCurrency?.slice(0, 8) ?? '0'})`
                   : '') || undefined
@@ -549,14 +549,11 @@ const PrepareBridgePage = ({
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.quote.dest.normalizedAmount
-                ? formatTokenAmount(
-                    locale,
-                    unvalidatedQuote.quote.dest.normalizedAmount,
-                  )
+              value: dest?.normalizedAmount
+                ? formatTokenAmount(locale, dest.normalizedAmount)
                 : '0',
               autoFocus: false,
-              className: unvalidatedQuote?.quote.dest.normalizedAmount
+              className: dest?.normalizedAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}

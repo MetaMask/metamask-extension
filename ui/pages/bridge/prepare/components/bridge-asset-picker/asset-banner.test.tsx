@@ -1,13 +1,11 @@
 import React from 'react';
-import {
-  BridgeAssetSecurityDataType,
-  getNativeAssetForChainId,
-} from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   en,
   renderWithLocalization,
 } from '../../../../../../test/lib/render-helpers-navigate';
 import { toBridgeToken } from '../../../../../ducks/bridge/utils';
+import { BridgeAssetSecurityDataType } from '../../../utils/tokens';
 import { AssetBanner } from './asset-banner';
 
 const BASE_ASSET = toBridgeToken(getNativeAssetForChainId('0x1'));

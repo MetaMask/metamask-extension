@@ -1,5 +1,4 @@
 import {
-  BridgeAssetV2,
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -15,6 +14,7 @@ import {
   computeHasSufficientGasForQuoteForMetrics,
   useHasSufficientGasForQuoteForMetrics,
 } from './useHasSufficientGasForQuoteForMetrics';
+import type { BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),

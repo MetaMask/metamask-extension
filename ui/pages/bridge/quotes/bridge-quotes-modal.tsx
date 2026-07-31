@@ -43,6 +43,11 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useDispatch } from '../../../store/hooks';
+import {
+  getGasFees,
+  getPriceImpactNumber,
+  getTotalNetworkFee,
+} from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -68,7 +73,6 @@ export const BridgeQuotesModal = ({
 
   const handleQuoteSelected = useCallback(
     (quote: QuoteResponse) => {
-      const networkFee = sumAmounts(quote.quote.feeData.network);
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -86,7 +90,7 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(networkFee?.usd ?? 0),
+              usd_quoted_gas: Number(getGasFees(quote)?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
@@ -96,9 +100,7 @@ export const BridgeQuotesModal = ({
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              price_impact: Number(
-                quote.quote?.priceData?.priceImpact?.amount ?? '0',
-              ),
+              price_impact: getPriceImpactNumber(quote) ?? 0,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: Boolean(quote.quote?.gasIncluded),
@@ -144,10 +146,8 @@ export const BridgeQuotesModal = ({
                 toTokenAmount,
                 quote: { dest, protocols, requestId },
               } = quote;
-              const totalNetworkFee = sumAmounts(
-                quote.quote.feeData.network,
-                quote.quote.feeData.relayer,
-              );
+              const totalNetworkFee = getTotalNetworkFee(quote);
+              const { priceImpact } = quote.quote.priceData ?? {};
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
 
@@ -223,10 +223,9 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          quote.quote.priceData?.priceImpact?.valueInCurrency
+                          priceImpact?.valueInCurrency
                             ? formatCurrencyAmount(
-                                quote.quote.priceData.priceImpact
-                                  .valueInCurrency,
+                                priceImpact.valueInCurrency,
                                 currency,
                                 2,
                               ) +
@@ -268,7 +267,7 @@ export const BridgeQuotesModal = ({
                       style={{ whiteSpace: 'nowrap' }}
                     >
                       {(formatCurrencyAmount(
-                        quote.quote.dest.valueInCurrency,
+                        dest.valueInCurrency,
                         currency,
                         2,
                       ) ?? '') +

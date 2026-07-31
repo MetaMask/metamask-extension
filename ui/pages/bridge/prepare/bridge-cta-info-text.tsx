@@ -16,7 +16,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
 import { readMmFee } from '../utils/quote';
-import { KnownCaipNamespace } from '@metamask/utils';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
@@ -28,18 +27,9 @@ export const BridgeCTAInfoText = () => {
     shallowEqual,
   );
 
-  const hasMMFee = new BigNumber(
-    activeQuote
-      ? (sumAmounts(activeQuote.quote.feeData.metabridge)?.amount ?? '0')
-      : '0',
-  ).gt(0);
-
-  const hasApproval =
-    activeQuote &&
-    (activeQuote.namespace === KnownCaipNamespace.Eip155 ||
-      activeQuote.namespace === KnownCaipNamespace.Tron)
-      ? activeQuote.approval
-      : undefined;
+  const mmFee =
+    activeQuote && sumAmounts(activeQuote?.quote.feeData.metabridge)?.amount;
+  const hasMMFee = new BigNumber(mmFee ?? '0').gt(0);
 
   if (!activeQuote) {
     return null;

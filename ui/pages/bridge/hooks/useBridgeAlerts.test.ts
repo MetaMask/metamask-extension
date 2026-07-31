@@ -20,14 +20,16 @@ import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
-import * as priceImpactUtils from '../utils/price-impact';
 
 jest.mock('../../../hooks/useI18nContext');
 jest.mock('../../../hooks/useMultichainSelector');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
 jest.mock('./useSecurityAlerts');
 jest.mock('./useAssetSecurityData');
-jest.mock('../utils/quote');
+jest.mock('../utils/quote', () => ({
+  ...jest.requireActual('../utils/quote'),
+  isQuoteExpiredOrInvalid: jest.fn(),
+}));
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),
@@ -682,9 +684,6 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactWarning: true,
       } as never);
-      jest
-        .spyOn(priceImpactUtils, 'formatPriceImpactPercentage')
-        .mockReturnValue('7.0%' as never);
 
       const { result } = renderHook();
 
@@ -712,9 +711,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isPriceImpactError: true,
       } as never);
-      jest
-        .spyOn(priceImpactUtils, 'formatPriceImpactPercentage')
-        .mockReturnValue('90.0%' as never);
+      jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('90.0%');
 
       const { result } = renderHook();
 
@@ -744,7 +741,7 @@ describe('useBridgeAlerts', () => {
         isPriceImpactError: true,
       } as never);
       jest
-        .spyOn(priceImpactUtils, 'formatPriceImpactFiat')
+        .mocked(getFormattedPriceImpactFiat)
         .mockReturnValue('$12.34' as never);
 
       const { result } = renderHook();

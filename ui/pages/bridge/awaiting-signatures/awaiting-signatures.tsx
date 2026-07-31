@@ -40,7 +40,7 @@ export default function AwaitingSignatures() {
 
   // Navigate to activity tab when QR scan is completed
   useNavigateOnQrScanComplete();
-  const fromAmount = activeQuote?.quote.src.normalizedAmount;
+  const { src, dest } = activeQuote?.quote ?? {};
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
@@ -74,10 +74,10 @@ export default function AwaitingSignatures() {
         .addSensitiveProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_from_amount: activeQuote?.quote.src.amount ?? '',
+          token_from_amount: src?.amount ?? '',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_to_amount: activeQuote?.quote.dest.amount ?? '',
+          token_to_amount: dest?.amount ?? '',
         })
         .build(),
     );
@@ -126,11 +126,7 @@ export default function AwaitingSignatures() {
                   isSwap
                     ? 'unifiedSwapAllowSwappingOf'
                     : 'bridgeAllowSwappingOf',
-                  [
-                    activeQuote.quote.src.normalizedAmount,
-                    fromToken?.symbol,
-                    fromChain?.name,
-                  ],
+                  [src?.normalizedAmount, fromToken?.symbol, fromChain?.name],
                 )}
               </li>
               <li>
@@ -143,7 +139,7 @@ export default function AwaitingSignatures() {
                   2
                 </AvatarBase>
                 {t(isSwap ? 'unifiedSwapFromTo' : 'bridgeFromTo', [
-                  fromAmount,
+                  src?.normalizedAmount,
                   fromToken?.symbol,
                   isSwap ? toToken?.symbol : toChain?.name,
                 ])}

@@ -42,6 +42,7 @@ import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
+import { getDestChainId } from '../../pages/bridge/utils/quote';
 
 export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
@@ -178,9 +179,7 @@ export default function useSubmitBridgeTransaction() {
         );
       }
 
-      const destChainId = parseCaipAssetType(
-        quoteResponse.quote.dest.asset.assetId,
-      ).chainId;
+      const destChainId = getDestChainId(quoteResponse);
 
       if (isCrossChain(quoteResponse.chainId, destChainId)) {
         enableMissingNetwork(destChainId);

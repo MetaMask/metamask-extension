@@ -89,12 +89,6 @@ export function buildBatchSellControllerResult(
   recommendedQuotes: QuoteResponse[] = [],
 ): ReturnType<typeof selectBatchSellQuotes> {
   const destAmountSum = sumAmounts(recommendedQuotes.map((q) => q.quote?.dest));
-  console.log(
-    'buildBatchSellControllerResult',
-    recommendedQuotes.map((q) => ({
-      dest: q.quote?.dest,
-    })),
-  );
 
   return {
     recommendedQuotes,

@@ -5864,7 +5864,7 @@ __metadata:
 
 "@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
   version: 78.0.1
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=ce5a43&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=c60407&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5891,7 +5891,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/f28f2e43278afa97365b7970e659f5f5e464ffd5b6cca0a1134c3b6d83f277b709b673f6eab78a8bb05adce67f52b579d586b26c2db834f70dbb054d308f5276
+  checksum: 10/22bf49f64206bfd3a597843d15ad83225bc2dd82a103f501cfc73bcd5b498a6683a4df105a2ee4c0bedadb05c0427a14ba2357c8277acfe2d64545ff1dbe5b38
   languageName: node
   linkType: hard
 

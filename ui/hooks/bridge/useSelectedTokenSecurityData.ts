@@ -4,7 +4,7 @@ import type { TokenAsset } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BridgeToken } from '../../ducks/bridge/types';
 import { getUseExternalServices } from '../../selectors';
-import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
+import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import {
   fetchCachedTokenAssets,
   getTokenSecurityAssetKey,

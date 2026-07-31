@@ -7,7 +7,7 @@ import type { CaipAssetType } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { toBridgeToken } from '../../ducks/bridge/utils';
-import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
+import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import { useSelectedTokenSecurityData } from './useSelectedTokenSecurityData';
 
 const mockFetchCachedTokenAssets = jest.fn();
