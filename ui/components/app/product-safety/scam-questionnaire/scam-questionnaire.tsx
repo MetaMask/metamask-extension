@@ -153,8 +153,8 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   }, [answers, metrics, onReject]);
 
   const handleContactSupport = useCallback(() => {
-    metrics.trackContactSupport();
-  }, [metrics]);
+    metrics.trackContactSupport(answers);
+  }, [answers, metrics]);
 
   const handleProceed = useCallback(() => {
     metrics.trackCompleted({

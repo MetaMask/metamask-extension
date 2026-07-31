@@ -91,18 +91,22 @@ describe('useScamQuestionnaireMetrics', () => {
   });
 
   describe('trackContactSupport', () => {
-    it('fires with no properties beyond the questionnaire version', () => {
+    it('reports the answers, red flag count and outgoing USD total', () => {
       const { metrics, trackEvent } = setup([buildBalanceChange(-1, 99)]);
 
-      metrics.trackContactSupport();
+      metrics.trackContactSupport(ANSWERS);
 
-      const event = firedEvent(trackEvent);
-      expect(event.name).toBe(
-        MetaMetricsEventName.ScamQuestionnaireContactSupport as string,
-      );
-      expect(event.properties).toStrictEqual({
-        category: MetaMetricsEventCategory.Confirmations,
-        questionnaire_version: '1',
+      expect(firedEvent(trackEvent)).toMatchObject({
+        name: MetaMetricsEventName.ScamQuestionnaireContactSupport as string,
+        properties: {
+          category: MetaMetricsEventCategory.Confirmations,
+          q1_answer: 'q1_yes',
+          q2_answer: null,
+          q3_answer: null,
+          red_flag_count: 1,
+          simulation_sending_assets_total_value: 99,
+          questionnaire_version: '1',
+        },
       });
     });
   });
