@@ -332,7 +332,7 @@ const PerpsMarketDetailPage = () => {
       return;
     }
 
-    // Primary: read from shared toast context (set by order entry via navigate(PREVIOUS_ROUTE) flow).
+    // Primary: read from shared toast context (set by order entry via navigate(-1) flow).
     // Fallback: read from location.state for any remaining route-state-based navigation.
     const routeState = location.state as Record<string, unknown> | null;
     const pendingSymbol =

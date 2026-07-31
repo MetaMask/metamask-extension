@@ -30,7 +30,6 @@ import { createHardwareWalletError } from '../../../contexts/hardware-wallets/er
 import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import configureStore from '../../../store/store';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import ConnectHardwareForm, {
   LEDGER_HD_PATHS,
   LATTICE_HD_PATHS,
@@ -469,7 +468,7 @@ describe('ConnectHardwareForm', () => {
       const closeButton = screen.getByTestId('hardware-connect-close-btn');
       fireEvent.click(closeButton);
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('navigates to choose wallet type page on initial page load', () => {

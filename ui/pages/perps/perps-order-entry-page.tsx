@@ -832,7 +832,7 @@ const PerpsOrderEntryPage = () => {
   // Visible header back button: pop the history stack so the user returns to
   // wherever they came from. Pushing marketDetailPath instead would create a
   // market-detail -> order-entry -> market-detail loop, since the
-  // market-detail back button uses navigate(PREVIOUS_ROUTE).
+  // market-detail back button uses navigate(-1).
   const navigateBack = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
       navigate(PREVIOUS_ROUTE);

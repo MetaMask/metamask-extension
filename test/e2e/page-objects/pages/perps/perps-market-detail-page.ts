@@ -307,7 +307,7 @@ export class PerpsMarketDetailPage {
    * Clicks the back control on the market detail header (navigates to wallet default route).
    *
    * The market detail page has a `useEffect` that calls `navigate(currentPath, { replace: true })`
-   * to clean up toast route-state. This effect can fire during the `navigate(PREVIOUS_ROUTE)` transition,
+   * to clean up toast route-state. This effect can fire during the `navigate(-1)` transition,
    * cancelling the back navigation and requiring a second click. We retry once if the page
    * is still visible after the first click.
    */

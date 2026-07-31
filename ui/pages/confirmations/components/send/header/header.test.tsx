@@ -1,21 +1,22 @@
-import React from "react";
-import { fireEvent } from "@testing-library/dom";
+import React from 'react';
+import { fireEvent } from '@testing-library/dom';
 
-import mockState from "../../../../../../test/data/mock-state.json";
-import { renderWithProvider } from "../../../../../../test/lib/render-helpers-navigate";
-import { enLocale as messages } from "../../../../../../test/lib/i18n-helpers";
-import configureStore from "../../../../../store/store";
-import { Header } from "./header";
-import { PREVIOUS_ROUTE } from "../../../../../helpers/constants/routes";
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../../store/store';
+import { Header } from './header';
 
 const mockUseNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
-  useLocation: () => ({ pathname: "/send/asset" }),
+  useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest
     .fn()
-    .mockReturnValue([{ get: () => null, toString: () => "searchParams=dummy" }]),
+    .mockReturnValue([
+      { get: () => null, toString: () => 'searchParams=dummy' },
+    ]),
 }));
 
 const render = (args?: Record<string, unknown>) => {
@@ -24,17 +25,17 @@ const render = (args?: Record<string, unknown>) => {
   return renderWithProvider(<Header />, store);
 };
 
-describe("Header", () => {
-  it("should render correctly", () => {
+describe('Header', () => {
+  it('should render correctly', () => {
     const { getByText } = render();
 
     expect(getByText(messages.send.message)).toBeInTheDocument();
   });
 
-  it("go to previous page when previous button is clicked", () => {
+  it('go to previous page when previous button is clicked', () => {
     const { getByRole } = render();
 
-    fireEvent.click(getByRole("button"));
-    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    fireEvent.click(getByRole('button'));
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 });

@@ -1,46 +1,45 @@
-import React from "react";
-import { screen, fireEvent } from "@testing-library/react";
-import { AccountGroupId } from "@metamask/account-api";
-import { renderWithProvider } from "../../../../test/lib/render-helpers-navigate";
-import { enLocale as messages } from "../../../../test/lib/i18n-helpers";
-import mockState from "../../../../test/data/mock-state.json";
-import configureStore from "../../../store/store";
-import { MultichainAccountAddressListPage } from "./multichain-account-address-list-page";
-import { PREVIOUS_ROUTE } from "../../../helpers/constants/routes";
+import React from 'react';
+import { screen, fireEvent } from '@testing-library/react';
+import { AccountGroupId } from '@metamask/account-api';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
+import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
-jest.mock("../../../../shared/lib/trace", () => {
-  const actual = jest.requireActual("../../../../shared/lib/trace");
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
   return {
     ...actual,
     endTrace: jest.fn(),
   };
 });
 
-const addressRowsListSearchTestId = "multichain-address-rows-list-search";
-const addressRowsListTestId = "multichain-address-rows-list";
-const backButtonTestId = "multichain-account-address-list-page-back-button";
+const addressRowsListSearchTestId = 'multichain-address-rows-list-search';
+const addressRowsListTestId = 'multichain-address-rows-list';
+const backButtonTestId = 'multichain-account-address-list-page-back-button';
 
 // Use actual group IDs from mock-state.json
-const MOCK_GROUP_ID = "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0" as AccountGroupId;
-const MOCK_GROUP_NAME = "Account 1";
+const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+const MOCK_GROUP_NAME = 'Account 1';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
-jest.mock("react-router-dom", () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual("react-router-dom"),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
   };
 });
 
-describe("MultichainAccountAddressListPage", () => {
+describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLocation.mockReturnValue({ search: "" });
+    mockUseLocation.mockReturnValue({ search: '' });
   });
 
-  it("renders the page with correct components", () => {
+  it('renders the page with correct components', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -54,7 +53,9 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Check header shows group name from mock state (Account 1)
-    expect(screen.getByText(`${MOCK_GROUP_NAME} / Addresses`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).toBeInTheDocument();
 
     // Check back button is present
     expect(screen.getByTestId(backButtonTestId)).toBeInTheDocument();
@@ -66,7 +67,7 @@ describe("MultichainAccountAddressListPage", () => {
     expect(screen.getByTestId(addressRowsListSearchTestId)).toBeInTheDocument();
   });
 
-  it("navigates back when back button is clicked", () => {
+  it('navigates back when back button is clicked', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -82,12 +83,12 @@ describe("MultichainAccountAddressListPage", () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it("displays fallback text when account group does not exist", () => {
+  it('displays fallback text when account group does not exist', () => {
     mockUseLocation.mockReturnValue({
-      search: `?accountGroupId=${encodeURIComponent("non-existent-group")}`,
+      search: `?accountGroupId=${encodeURIComponent('non-existent-group')}`,
     });
 
     const store = configureStore({
@@ -99,13 +100,13 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show fallback text when group doesn't exist
-    expect(screen.getByText("Account / Addresses")).toBeInTheDocument();
+    expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
 
     // Should still render the address list component (even if empty)
     expect(screen.getByTestId(addressRowsListTestId)).toBeInTheDocument();
   });
 
-  it("decodes and renders account group with encoded ID", () => {
+  it('decodes and renders account group with encoded ID', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -119,13 +120,15 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should still render correctly with encoded ID
-    expect(screen.getByText(`${MOCK_GROUP_NAME} / Addresses`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).toBeInTheDocument();
 
     // Check address list component is rendered
     expect(screen.getByTestId(addressRowsListTestId)).toBeInTheDocument();
   });
 
-  it("shows receiving address title in receive mode", () => {
+  it('shows receiving address title in receive mode', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}&source=receive`,
     });
@@ -139,11 +142,15 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show "Receiving address" instead of "Account 1 / Addresses"
-    expect(screen.getByText(messages.receivingAddress.message)).toBeInTheDocument();
-    expect(screen.queryByText(`${MOCK_GROUP_NAME} / Addresses`)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.receivingAddress.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).not.toBeInTheDocument();
   });
 
-  it("renders correctly with multiple accounts in group", () => {
+  it('renders correctly with multiple accounts in group', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
@@ -157,14 +164,17 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Check that the page renders correctly
-    expect(screen.getByText(`${MOCK_GROUP_NAME} / Addresses`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).toBeInTheDocument();
 
     // The MultichainAddressRowsList component should receive the accounts
     expect(screen.getByTestId(addressRowsListTestId)).toBeInTheDocument();
   });
 
-  it("decodes and renders account group with special characters in ID", () => {
-    const specialGroupId = "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0" as AccountGroupId;
+  it('decodes and renders account group with special characters in ID', () => {
+    const specialGroupId =
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(specialGroupId)}`,
@@ -179,10 +189,12 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should decode and handle the special characters correctly
-    expect(screen.getByText(`${MOCK_GROUP_NAME} / Addresses`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).toBeInTheDocument();
   });
 
-  it("renders with different query parameters correctly", () => {
+  it('renders with different query parameters correctly', () => {
     mockUseLocation.mockReturnValue({
       search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}&source=other`,
     });
@@ -196,15 +208,19 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show normal title (not receiving address)
-    expect(screen.getByText(`${MOCK_GROUP_NAME} / Addresses`)).toBeInTheDocument();
     expect(
-      screen.queryByText(messages.destinationAccountPickerSearchPlaceholderToSolana.message),
+      screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.destinationAccountPickerSearchPlaceholderToSolana.message,
+      ),
     ).not.toBeInTheDocument();
   });
 
-  it("displays fallback text when account group ID is null", () => {
+  it('displays fallback text when account group ID is null', () => {
     mockUseLocation.mockReturnValue({
-      search: "",
+      search: '',
     });
 
     const store = configureStore({
@@ -216,12 +232,12 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show fallback text
-    expect(screen.getByText("Account / Addresses")).toBeInTheDocument();
+    expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
   });
 
-  it("displays fallback text when account group ID is missing", () => {
+  it('displays fallback text when account group ID is missing', () => {
     mockUseLocation.mockReturnValue({
-      search: "?other=param",
+      search: '?other=param',
     });
 
     const store = configureStore({
@@ -233,11 +249,11 @@ describe("MultichainAccountAddressListPage", () => {
     renderWithProvider(<MultichainAccountAddressListPage />, store);
 
     // Should show fallback text
-    expect(screen.getByText("Account / Addresses")).toBeInTheDocument();
+    expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
   });
 
-  describe("tracing", () => {
-    it("ends ShowAccountAddressList trace on mount", () => {
+  describe('tracing', () => {
+    it('ends ShowAccountAddressList trace on mount', () => {
       mockUseLocation.mockReturnValue({
         search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
       });
@@ -246,7 +262,7 @@ describe("MultichainAccountAddressListPage", () => {
 
       renderWithProvider(<MultichainAccountAddressListPage />, store);
 
-      const traceLib = jest.requireMock("../../../../shared/lib/trace");
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
       expect(traceLib.endTrace).toHaveBeenCalledWith(
         expect.objectContaining({
           name: traceLib.TraceName.ShowAccountAddressList,

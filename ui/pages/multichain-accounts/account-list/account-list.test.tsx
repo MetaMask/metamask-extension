@@ -6,10 +6,7 @@ import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useA
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
-  PREVIOUS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { AccountList } from './account-list';
 
 const mockUseNavigate = jest.fn();
@@ -89,7 +86,7 @@ describe('AccountList', () => {
     const backButton = screen.getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('navigates to home when location.key is default', () => {

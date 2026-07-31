@@ -68,7 +68,7 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Clicks the market list header back control (`navigate(PREVIOUS_ROUTE)`), typically returning to Perps home.
+   * Clicks the market list header back control (`navigate(-1)`), typically returning to Perps home.
    */
   async clickBack(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.headerBackButton);
