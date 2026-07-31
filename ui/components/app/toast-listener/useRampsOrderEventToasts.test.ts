@@ -396,6 +396,36 @@ describe('useRampsOrderEventToasts', () => {
     expect(showFailedToast).not.toHaveBeenCalled();
   });
 
+  it('dismisses prior-account toasts when the selected account changes', () => {
+    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+      {
+        providerOrderId: 'order-1',
+        status: RampsOrderStatus.Pending,
+        orderType: 'buy',
+      },
+    ]);
+    const { rerender } = renderHook(() => useRampsOrderEventToasts());
+    act(() => {
+      rerender();
+    });
+    jest.clearAllMocks();
+
+    act(() => {
+      mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        {
+          providerOrderId: 'order-2',
+          status: RampsOrderStatus.Pending,
+          orderType: 'buy',
+        },
+      ]);
+      rerender();
+    });
+
+    expect(dismissToast).toHaveBeenCalledWith('ramp-order-1');
+    expect(showPendingToast).not.toHaveBeenCalled();
+  });
+
   it('uses sell toast copy for sell orders', () => {
     mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       {

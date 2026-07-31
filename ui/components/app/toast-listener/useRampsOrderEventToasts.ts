@@ -115,6 +115,10 @@ export function useRampsOrderEventToasts(): void {
     ordersRef.current = orders;
 
     if (trackedAccountAddress.current !== selectedAccountAddress) {
+      for (const orderCode of previousStatusById.current.keys()) {
+        clearToastPhase(orderCode);
+        dismissToast(generateToastId(orderCode));
+      }
       trackedAccountAddress.current = selectedAccountAddress;
       previousStatusById.current = new Map();
       initialized.current = false;
