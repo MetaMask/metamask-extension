@@ -520,19 +520,13 @@ const PerpsOrderEntryPage = () => {
       // Controller not ready
     });
 
-    // Drop any previous symbol's cached order book so late-mounting consumers
-    // (e.g. the order-book panel) and the immediate subscribe replay below never
-    // render the prior market's book before this symbol's first update arrives.
-    // The aggregated channel must be cleared too: the panel unmounts while
-    // closed, so on reopen its hook remounts fresh and would otherwise read the
-    // previous market's cached aggregated ladder (its reset key does not clear
-    // on first mount). Clear the status channel with it — a stale `error` would
-    // otherwise suppress the loading skeleton in favour of "connection lost"
-    // until the fresh subscription reports a new status.
+    // Drop any previous symbol's cached raw order book so late-mounting
+    // consumers and the immediate subscribe replay below never render the prior
+    // market's book before this symbol's first update arrives. Aggregated book
+    // + status caches are cleared by usePerpsLiveOrderBook's layout cleanup
+    // (same commit that nulls the active subscription identity).
     const streamManager = getPerpsStreamManager();
     streamManager.orderBook.clearCache();
-    streamManager.orderBookAggregated.clearCache();
-    streamManager.orderBookAggregatedStatus.clearCache();
 
     // Subscribe to order book updates from the stream manager
     const unsubscribe = streamManager.orderBook.subscribe((orderBook) => {
@@ -1153,22 +1147,6 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
     });
-    if (!next) {
-      // Closing unmounts PerpsOrderBook, which resets its in-memory grouping
-      // selection back to the default. The aggregated book cache, however,
-      // outlives the panel, and usePerpsChannel does not clear it on first
-      // mount — so a reopen would render the previous grouping's rows under the
-      // reset default label until the next stream update lands. Clear the
-      // aggregated cache on close so a reopen starts from a clean slate. Clear
-      // the status channel too — a prior `error` would otherwise restore
-      // "connection lost" instead of the loading skeleton until a new status
-      // arrives. This is distinct from the cross-market clear in the order-book
-      // stream effect (that one guards against showing the *prior symbol's*
-      // book).
-      const streamManager = getPerpsStreamManager();
-      streamManager.orderBookAggregated.clearCache();
-      streamManager.orderBookAggregatedStatus.clearCache();
-    }
   }, [isOrderBookOpen, track, decodedSymbol]);
 
   // Tapping an order-book price turns the order into a limit order prefilled

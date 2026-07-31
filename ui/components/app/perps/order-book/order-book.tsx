@@ -298,9 +298,19 @@ export const PerpsOrderBook = ({
     return null;
   }, [rawOrderBook?.midPrice, marketPrice]);
 
+  // Grouping ladder is keyed off price magnitude (log10 decade), not the tick
+  // mid. `calculateGroupingOptions` only depends on that magnitude — memoizing
+  // on midPriceValue would rebuild the array every tick and, on a decade
+  // crossing, drop the user's selected grouping and re-subscribe the stream.
+  const priceMagnitude =
+    midPriceValue && midPriceValue > 0
+      ? Math.floor(Math.log10(midPriceValue))
+      : null;
+
   const groupingOptions = useMemo(
     () => calculateGroupingOptions(midPriceValue ?? 0),
-    [midPriceValue],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- magnitude-stable; see above
+    [priceMagnitude],
   );
 
   const currentGrouping = useMemo(() => {

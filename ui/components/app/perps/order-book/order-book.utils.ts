@@ -91,9 +91,6 @@ const MAX_PRICE_DECIMALS = PERPS_MAX_PRICE_DECIMALS;
 const USD_COMPACT_MILLIONS_THRESHOLD = 1_000_000;
 const USD_COMPACT_THOUSANDS_THRESHOLD = 10_000;
 
-/** Decimal places kept when rendering the spread as a percentage. */
-const SPREAD_PERCENT_DECIMALS = 3;
-
 /** Shown when a value has not loaded / cannot be parsed. */
 const ORDER_BOOK_FALLBACK_DISPLAY = PERPS_FALLBACK_DATA_DISPLAY;
 
@@ -280,9 +277,9 @@ export function formatColumnValue(
 }
 
 /**
- * Format the bid/ask spread as a percentage string (e.g. "0.003%"), matching
- * the compact spread row in the design. Small spreads are kept to a few decimal
- * places with trailing zeros stripped.
+ * Format the bid/ask spread as a percentage string (e.g. "0.0027%"), matching
+ * the compact spread row in the design. Uses significant digits so tight
+ * liquid-book spreads (e.g. $0.01 on ETH) do not collapse to a misleading "0%".
  *
  * @param spreadPercentage - Spread as a percentage (e.g. 0.0027 for 0.0027%).
  * @returns Formatted percentage string (with `%`), or the fallback display.
@@ -291,7 +288,7 @@ export function formatSpreadPercent(spreadPercentage: number): string {
   if (!Number.isFinite(spreadPercentage)) {
     return ORDER_BOOK_FALLBACK_DISPLAY;
   }
-  const rounded = Number(spreadPercentage.toFixed(SPREAD_PERCENT_DECIMALS));
+  const rounded = Number(spreadPercentage.toPrecision(2));
   return `${rounded}%`;
 }
 

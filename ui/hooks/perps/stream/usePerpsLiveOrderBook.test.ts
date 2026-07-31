@@ -23,6 +23,8 @@ const mockUsePerpsChannel = jest.mocked(usePerpsChannel);
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 const mockUsePerpsStreamManager = jest.mocked(usePerpsStreamManager);
 const mockSetActiveOrderBookAggregatedSubscriptionId = jest.fn();
+const mockClearAggregatedCache = jest.fn();
+const mockClearAggregatedStatusCache = jest.fn();
 
 describe('usePerpsLiveOrderBook', () => {
   beforeEach(() => {
@@ -37,6 +39,10 @@ describe('usePerpsLiveOrderBook', () => {
       streamManager: {
         setActiveOrderBookAggregatedSubscriptionId:
           mockSetActiveOrderBookAggregatedSubscriptionId,
+        orderBookAggregated: { clearCache: mockClearAggregatedCache },
+        orderBookAggregatedStatus: {
+          clearCache: mockClearAggregatedStatusCache,
+        },
       } as never,
       isInitializing: false,
       error: null,
@@ -191,6 +197,36 @@ describe('usePerpsLiveOrderBook', () => {
 
       const resetKey = mockUsePerpsChannel.mock.calls[0][2];
       expect(resetKey).toBe('BTC');
+    });
+
+    it('does not reset the aggregated status channel for raw consumers', () => {
+      renderHook(() => usePerpsLiveOrderBook({ symbol: 'BTC' }));
+
+      // Second usePerpsChannel call is the status channel — raw path must pass
+      // undefined so a symbol change cannot clear the shared aggregated status.
+      expect(mockUsePerpsChannel.mock.calls[1][2]).toBeUndefined();
+    });
+
+    it('clears aggregated caches when the subscription identity is torn down', () => {
+      const { unmount } = renderHook(() =>
+        usePerpsLiveOrderBook({
+          symbol: 'BTC',
+          channel: 'orderBookAggregated',
+          nSigFigs: 3,
+        }),
+      );
+
+      mockClearAggregatedCache.mockClear();
+      mockClearAggregatedStatusCache.mockClear();
+      mockSetActiveOrderBookAggregatedSubscriptionId.mockClear();
+
+      unmount();
+
+      expect(
+        mockSetActiveOrderBookAggregatedSubscriptionId,
+      ).toHaveBeenCalledWith(null);
+      expect(mockClearAggregatedCache).toHaveBeenCalledTimes(1);
+      expect(mockClearAggregatedStatusCache).toHaveBeenCalledTimes(1);
     });
 
     it('reads status from the orderBookAggregatedStatus channel', () => {

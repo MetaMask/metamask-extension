@@ -278,6 +278,13 @@ const mockLiveMarketData = jest.fn<
   isInitialLoading: false,
 }));
 
+const mockUsePerpsLiveOrderBook = jest.fn(() => ({
+  orderBook: null,
+  isInitialLoading: false,
+  connectionStatus: 'connected' as const,
+  reconnect: jest.fn(),
+}));
+
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => mockLivePositions(),
   usePerpsLiveOrders: () => ({
@@ -298,10 +305,8 @@ jest.mock('../../hooks/perps/stream', () => ({
     error: null,
     fetchMoreHistory: jest.fn(),
   }),
-  usePerpsLiveOrderBook: () => ({
-    orderBook: null,
-    isInitialLoading: false,
-  }),
+  usePerpsLiveOrderBook: (...args: unknown[]) =>
+    mockUsePerpsLiveOrderBook(...args),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
@@ -406,6 +411,12 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveMarketData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
+    });
+    mockUsePerpsLiveOrderBook.mockReturnValue({
+      orderBook: null,
+      isInitialLoading: false,
+      connectionStatus: 'connected',
+      reconnect: jest.fn(),
     });
     mockUsePerpsEstimatedSlippage.mockReturnValue({
       estimatedSlippageBps: 50,
@@ -760,66 +771,6 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('clears the aggregated order book cache when the market symbol changes', () => {
-      // Regression: the panel unmounts while closed, so on reopen its aggregated
-      // hook remounts fresh and (without this clear) would render the previous
-      // market's cached aggregated ladder until the new symbol streams in.
-      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
-      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
-
-      mockUseParams.mockReturnValue({ symbol: 'BTC' });
-      const store = mockStore(createMockState());
-      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expect(
-        mockStreamManagerBase.orderBookAggregated.clearCache,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
-      ).toHaveBeenCalledTimes(1);
-
-      mockUseParams.mockReturnValue({ symbol: 'ETH' });
-      rerender(<PerpsOrderEntryPage />);
-
-      expect(
-        mockStreamManagerBase.orderBookAggregated.clearCache,
-      ).toHaveBeenCalledTimes(2);
-      expect(
-        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
-      ).toHaveBeenCalledTimes(2);
-    });
-
-    it('clears aggregated book and status caches when the order book panel is closed', () => {
-      // Regression: closing clears book data but must also clear status. On
-      // reopen, usePerpsChannel does not clear on first mount, so a prior
-      // `error` would show "connection lost" instead of the loading skeleton.
-      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
-      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      // Symbol-change effect clears once on mount — ignore that baseline.
-      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
-      mockStreamManagerBase.orderBookAggregatedStatus.clearCache.mockClear();
-
-      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
-      expect(
-        mockStreamManagerBase.orderBookAggregated.clearCache,
-      ).not.toHaveBeenCalled();
-      expect(
-        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
-      ).not.toHaveBeenCalled();
-
-      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
-      expect(
-        mockStreamManagerBase.orderBookAggregated.clearCache,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        mockStreamManagerBase.orderBookAggregatedStatus.clearCache,
-      ).toHaveBeenCalledTimes(1);
-    });
-
     it('tracks order_book_opened and order_book_closed interactions', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -853,6 +804,63 @@ describe('PerpsOrderEntryPage', () => {
           }),
         }),
       );
+    });
+
+    it('switches to a limit order prefilled with the tapped ask price', () => {
+      // Coverage for the market→limit type switch landing in the same commit as
+      // the limit-price prefill (most existing form tests mount already on limit).
+      const orderBook = {
+        bids: [
+          {
+            price: '3499',
+            size: '1',
+            total: '1',
+            notional: '3499',
+            totalNotional: '3499',
+          },
+        ],
+        asks: [
+          {
+            price: '3501',
+            size: '1',
+            total: '1',
+            notional: '3501',
+            totalNotional: '3501',
+          },
+        ],
+        spread: '2',
+        spreadPercentage: '0.057',
+        midPrice: '3500',
+        lastUpdated: 1,
+        maxTotal: '1',
+      };
+      mockUsePerpsLiveOrderBook.mockReturnValue({
+        orderBook,
+        isInitialLoading: false,
+        connectionStatus: 'connected',
+        reconnect: jest.fn(),
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      fireEvent.click(screen.getByTestId('perps-order-book-ask-row-0'));
+
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      const limitInput = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      expect(limitInput).toHaveValue('3501');
     });
   });
 

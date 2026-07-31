@@ -49,10 +49,6 @@ const PERPS_CONSTANTS = {
   ZeroAmountDetailedDisplay: '$0.00',
 } as const;
 
-/** Display when price data is unavailable (mirrors mobile `FallbackPriceDisplay`). */
-export const PERPS_FALLBACK_PRICE_DISPLAY =
-  PERPS_CONSTANTS.FallbackPriceDisplay;
-
 /** Display when non-price data is unavailable (mirrors mobile `FallbackDataDisplay`). */
 export const PERPS_FALLBACK_DATA_DISPLAY = PERPS_CONSTANTS.FallbackDataDisplay;
 

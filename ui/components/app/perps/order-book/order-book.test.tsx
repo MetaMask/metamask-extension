@@ -249,8 +249,8 @@ describe('PerpsOrderBook', () => {
 
       const spread = screen.getByTestId('perps-order-book-spread');
       expect(spread).toHaveTextContent(messages.perpsOrderBookSpread.message);
-      // spread 2, spreadPercentage 0.0027 → "$2.00 (0.003%)".
-      expect(spread).toHaveTextContent('0.003%');
+      // spread 2, spreadPercentage 0.0027 → "$2.00 (0.0027%)".
+      expect(spread).toHaveTextContent('0.0027%');
       // The prominent mid price is no longer shown in the spread row.
       expect(spread).not.toHaveTextContent('73,776');
     });

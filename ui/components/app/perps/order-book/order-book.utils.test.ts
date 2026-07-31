@@ -212,10 +212,13 @@ describe('order-book.utils', () => {
   });
 
   describe('formatSpreadPercent', () => {
-    it('formats a spread percentage to three decimals with a percent sign', () => {
-      expect(formatSpreadPercent(0.0027)).toBe('0.003%');
+    it('formats with two significant digits so tight spreads stay visible', () => {
+      // ETH ~$3500 with a $0.01 spread ≈ 0.000286% — fixed 3dp would show "0%".
+      expect(formatSpreadPercent(0.000286)).toBe('0.00029%');
+      expect(formatSpreadPercent(0.0027)).toBe('0.0027%');
       expect(formatSpreadPercent(0.05)).toBe('0.05%');
       expect(formatSpreadPercent(1)).toBe('1%');
+      expect(formatSpreadPercent(1.2345)).toBe('1.2%');
     });
 
     it('strips trailing zeros', () => {

@@ -244,12 +244,17 @@ export const PerpsOrderBookConfigModal = ({
   const [draftMetric, setDraftMetric] = useState<OrderBookListMetric>(metric);
   const [draftGrouping, setDraftGrouping] = useState<number | null>(grouping);
 
+  // Seed drafts only on the rising edge of isOpen. Re-running while open would
+  // overwrite an in-progress selection if a parent prop (e.g. grouping after a
+  // price-decade ladder shift) changes mid-interaction.
+  const wasOpenRef = useRef(false);
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !wasOpenRef.current) {
       setDraftCurrency(currency);
       setDraftMetric(metric);
       setDraftGrouping(grouping);
     }
+    wasOpenRef.current = isOpen;
   }, [isOpen, currency, metric, grouping]);
 
   const environmentType = getEnvironmentType();
@@ -411,4 +416,3 @@ export const PerpsOrderBookConfigModal = ({
   );
 };
 
-export default PerpsOrderBookConfigModal;

@@ -208,7 +208,12 @@ export function usePerpsLiveOrderBook(
     );
 
     return () => {
+      // Null the identity and drop cached rows/status in the same commit so a
+      // late packet cannot repopulate the cache between clear and deregister.
+      // Page-level clears are unnecessary once this owns both.
       streamManager.setActiveOrderBookAggregatedSubscriptionId(null);
+      streamManager.orderBookAggregated.clearCache();
+      streamManager.orderBookAggregatedStatus.clearCache();
     };
   }, [
     isAggregated,
@@ -228,7 +233,9 @@ export function usePerpsLiveOrderBook(
   const { data: connectionStatus } = usePerpsChannel<OrderBookConnectionStatus>(
     getOrderBookAggregatedStatusChannel,
     'connecting',
-    resetKey,
+    // Raw-channel consumers must not reset the shared aggregated status cache
+    // when their symbol changes — only aggregated instances own that channel.
+    isAggregated ? resetKey : undefined,
   );
 
   useEffect(() => {
