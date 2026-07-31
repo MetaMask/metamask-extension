@@ -45,6 +45,28 @@ const getCaipChainIdForLookup = (
   return undefined;
 };
 
+const getAnalyticsChainId = (
+  locationStateChainId: string | undefined,
+  routeChainId: Hex | CaipChainId | undefined,
+  caipChainIdForLookup: CaipChainId | undefined,
+): string | undefined => {
+  if (locationStateChainId) {
+    return locationStateChainId;
+  }
+
+  if (!routeChainId) {
+    return undefined;
+  }
+
+  if (isStrictHexString(routeChainId)) {
+    return routeChainId;
+  }
+
+  return caipChainIdForLookup
+    ? convertCaipToHexChainId(caipChainIdForLookup)
+    : undefined;
+};
+
 export const useSecurityTrustPageData = () => {
   const t = useI18nContext();
   const location = useLocation();
@@ -256,9 +278,11 @@ export const useSecurityTrustPageData = () => {
     otherPct,
     symbol,
     decimals,
-    chainId:
-      locationState?.chainId ??
-      (chainId && isStrictHexString(chainId) ? chainId : undefined),
+    chainId: getAnalyticsChainId(
+      locationState?.chainId,
+      chainId,
+      caipChainIdForLookup,
+    ),
     formattedCreatedDate,
     tokenAgeDisplay,
     tokenType,

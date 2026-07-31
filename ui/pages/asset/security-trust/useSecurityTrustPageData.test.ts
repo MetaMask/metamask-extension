@@ -177,4 +177,10 @@ describe('useSecurityTrustPageData', () => {
       prefetchedData: undefined,
     });
   });
+
+  it('derives hex chainId from CAIP route when location state is missing', () => {
+    const { result } = renderHook(() => useSecurityTrustPageData());
+
+    expect(result.current.chainId).toBe('0x1');
+  });
 });
