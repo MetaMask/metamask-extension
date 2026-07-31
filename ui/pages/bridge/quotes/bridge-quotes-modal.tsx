@@ -144,6 +144,10 @@ export const BridgeQuotesModal = ({
                 toTokenAmount,
                 quote: { dest, protocols, requestId },
               } = quote;
+              const totalNetworkFee = sumAmounts(
+                quote.quote.feeData.network,
+                quote.quote.feeData.relayer,
+              );
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
 
@@ -188,13 +192,6 @@ export const BridgeQuotesModal = ({
                       }}
                     >
                       {startCase(protocols[0])}
-                      {BRIDGE_DEBUG_ENABLED
-                        ? quote.quote?.gasIncluded7702
-                          ? '(7702)'
-                          : quote.quote?.gasIncluded
-                            ? '(gasIncluded)'
-                            : ''
-                        : ''}
                     </Text>
                     {/* DEST AMOUNT */}
                     <Text
@@ -226,32 +223,25 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          !quote.quote.priceData?.priceImpact
-                            ?.valueInCurrency &&
-                          sumAmounts(
-                            quote.quote.feeData.network,
-                            quote.quote.feeData.relayer,
-                          )?.normalizedAmount
-                            ? formatTokenAmount(
-                                locale,
-                                sumAmounts(
-                                  quote.quote.feeData.network,
-                                  quote.quote.feeData.relayer,
-                                )?.normalizedAmount,
-                                nativeCurrency,
-                              ) +
-                              (BRIDGE_DEBUG_ENABLED
-                                ? ` (${quote.totalNetworkFee?.amount?.slice(0, 10) ?? '0'})`
-                                : '')
-                            : formatCurrencyAmount(
-                                quote.quote.priceData?.priceImpact
-                                  ?.valueInCurrency ?? '0',
+                          quote.quote.priceData?.priceImpact?.valueInCurrency
+                            ? formatCurrencyAmount(
+                                quote.quote.priceData.priceImpact
+                                  .valueInCurrency,
                                 currency,
                                 2,
                               ) +
                               (BRIDGE_DEBUG_ENABLED
                                 ? ` (${quote.cost?.valueInCurrency?.slice(0, 6) ?? '0'})`
-                                : ''),
+                                : '')
+                            : totalNetworkFee?.normalizedAmount &&
+                              formatTokenAmount(
+                                locale,
+                                totalNetworkFee.normalizedAmount,
+                                nativeCurrency,
+                              ) +
+                                (BRIDGE_DEBUG_ENABLED
+                                  ? ` (${quote.totalNetworkFee?.amount?.slice(0, 10) ?? '0'})`
+                                  : ''),
                         ])}
                       </Text>
                       {isRecommended && (

@@ -2,6 +2,7 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseCaipAssetType } from '@metamask/utils';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
@@ -27,7 +28,7 @@ jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  quotes: QuoteResponseV1[],
+  quotes: QuoteResponse[],
   priceImpact: string = '0.05',
   variant?: 'submit-cta' | 'alert-details',
   stateOverrides?: Record<string, unknown>,
@@ -272,7 +273,7 @@ describe('BridgeAlertModal', () => {
         _condition: string,
         priceImpact: string,
         stateOverrides: Record<string, unknown>,
-        quotes: QuoteResponseV1[],
+        quotes: QuoteResponse[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
           renderModal(

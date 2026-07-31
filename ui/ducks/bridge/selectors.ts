@@ -20,9 +20,6 @@ import {
   RequestStatus,
   isNonEvmChainId,
   sumAmounts,
-  selectExchangeRateByAssetId,
-  ChainId,
-  validateQuoteResponse,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -753,15 +750,6 @@ export const getBridgeQuotes = createSelector(
       migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
 
-    // console.log(
-    //   '======selectExchangeRateByAssetId',
-    //   validateQuoteResponse(quotes.activeQuote),
-    //   quotes.activeQuote?.quote.dest.asset.assetId,
-    //   selectExchangeRateByAssetId(
-    //     controllerStates,
-    //     quotes.activeQuote?.quote.dest.asset.assetId, //getNativeAssetForChainId(ChainId.POLYGON).assetId,
-    //   ),
-    // );
     return quotes;
   },
 );
@@ -828,7 +816,6 @@ export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 export const getActiveQuotePriceData = (state: BridgeAppState) =>
   getBridgeQuotes(state).activeQuote?.quote?.priceData;
 
-//deprecated
 export const getPriceImpact = createSelector(
   [
     (state: BridgeAppState) =>
@@ -841,23 +828,6 @@ export const getPriceImpact = createSelector(
     }
     return priceImpactNumber;
   },
-);
-
-//deprecated
-export const getFormattedPriceImpactPercentage = createSelector(
-  [getPriceImpact],
-  (priceImpact) => formatPriceImpactPercentage(priceImpact),
-);
-//deprecated
-export const getFormattedPriceImpactFiat = createSelector(
-  [
-    (state: BridgeAppState) =>
-      getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact
-        ?.valueInCurrency,
-    getCurrentCurrency,
-  ],
-  (priceImpact, currentCurrency) =>
-    formatPriceImpactFiat(priceImpact, currentCurrency),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,
@@ -940,19 +910,18 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
       activeQuote?.quote?.feeData?.network,
       activeQuote?.quote?.feeData?.relayer,
     )?.normalizedAmount;
+    const sentAmountString = activeQuote?.quote?.src?.normalizedAmount;
 
     if (
       isBitcoinNativeReserveChain &&
       totalNetworkFee &&
-      activeQuote?.quote?.src?.normalizedAmount &&
+      sentAmountString &&
       nativeBalance &&
       validatedSrcAmount &&
       new BigNumber(totalNetworkFee).gt(0)
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
-      const sentAmount = new BigNumber(
-        activeQuote.quote?.src?.normalizedAmount,
-      );
+      const sentAmount = new BigNumber(sentAmountString);
 
       if (
         nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
@@ -1037,7 +1006,7 @@ export const isNativeBalanceInsufficientForQuote = (
         sumAmounts(
           quote?.quote?.feeData?.network,
           quote?.quote?.feeData?.relayer,
-        ).normalizedAmount ?? '0',
+        )?.normalizedAmount ?? '0',
       );
 };
 /**

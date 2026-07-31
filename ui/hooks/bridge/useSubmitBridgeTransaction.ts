@@ -80,7 +80,7 @@ export default function useSubmitBridgeTransaction() {
   } | null>(null);
 
   const submitQuote = async (
-    quoteResponse: QuoteResponseV1 & QuoteMetadata,
+    quoteResponse: QuoteResponse,
     options?: { rpcTimeoutMs?: number },
   ) => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;

@@ -1,5 +1,4 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
-import type { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';

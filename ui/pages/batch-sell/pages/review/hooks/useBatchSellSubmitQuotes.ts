@@ -11,10 +11,8 @@ import {
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
-import type { MetaMaskReduxDispatch } from '../../../../../store/store';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
-import { parseCaipAssetType } from '@metamask/utils';
 
 type UseBatchSellSubmitQuotesArgs = {
   quoteResponses: (QuoteResponse | null)[];
@@ -39,7 +37,7 @@ export default function useBatchSellSubmitQuotes({
   receivedAsset,
 }: UseBatchSellSubmitQuotesArgs) {
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const srcChainId = quoteResponses.find((q) => q)?.chainId;
   const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>

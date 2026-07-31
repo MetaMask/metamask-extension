@@ -7,8 +7,6 @@ import {
   type BridgeAppState,
   getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
-  getFormattedPriceImpactFiat,
-  getFormattedPriceImpactPercentage,
   getFromChain,
   getToToken,
   getValidationErrors,
@@ -96,8 +94,6 @@ export const useBridgeAlerts = () => {
   );
   const formattedPriceImpactFiat = formatPriceImpactFiat(
     activeQuote?.quote.priceData?.priceImpact?.valueInCurrency,
-    // ??
-    //   activeQuote?.priceImpact?.valueInCurrency,
     currentCurrency,
   );
 

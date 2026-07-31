@@ -5634,7 +5634,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.2.1, @metamask/assets-controller@npm:^11.3.0":
+"@metamask/assets-controller@npm:^11.2.1, @metamask/assets-controller@npm:^11.3.0, @metamask/assets-controller@npm:^11.3.1":
   version: 11.3.1
   resolution: "@metamask/assets-controller@npm:11.3.1"
   dependencies:
@@ -5850,7 +5850,7 @@ __metadata:
 
 "@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
   version: 78.0.1
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=c38dbe&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=192be8&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5858,8 +5858,8 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/accounts-controller": "npm:^39.0.5"
-    "@metamask/assets-controller": "npm:^11.3.0"
-    "@metamask/assets-controllers": "npm:^110.0.1"
+    "@metamask/assets-controller": "npm:^11.3.1"
+    "@metamask/assets-controllers": "npm:^110.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/gas-fee-controller": "npm:^26.3.0"
@@ -5877,13 +5877,13 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/06ce3bfb60fc0b7d5d5863e262fc24c6cc9f35414ea21d7739c227c4142728a9bf78fec136f298fd756dd02220c0837c1523241b10147246e015883b594c5ec6
+  checksum: 10/b965f53e10e30f8faf29c04a0e4312645c6e5e8518a7880fe3c9632867c0a994a5905a06920d34a1fbc2f83133702eea82d44ba8ebc43519e75ca4c700698946
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
+"@metamask/bridge-status-controller@npm:^74.6.0":
   version: 74.6.0
-  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=e8d146&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-status-controller@npm:74.6.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5897,11 +5897,11 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^69.3.0"
+    "@metamask/transaction-controller": "npm:^69.2.1"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/dc1bdb2d6e731dc50c2d0cf9d2e9f5cba092815e472f3e394257c8c9091c8b8a7025f61b75d660a98c3c7a1f15dde5386541252fa7d1a10d68662f064bb87522
+  checksum: 10/5a60c7580f6e021062395a8967a9740e02a230ee8b88ef18899ed23827c6a1f44567b02494c1965043657020a88dee2d0fae2b8cd387615cfdc45d83672ab923
   languageName: node
   linkType: hard
 

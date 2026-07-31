@@ -18,14 +18,14 @@ export function buildBatchSellAsset(
 ): BatchSellAsset {
   return {
     assetId: BATCH_SELL_ASSET_IDS.USDC,
+    symbol: 'USDC',
     name: 'USD Coin',
     decimals: 6,
     chainId: BATCH_SELL_CHAIN_ID,
     balance: '100',
     iconUrl: 'https://example.com/usdc.png',
     ...overrides,
-    symbol: overrides.symbol ?? 'USDC',
-  };
+  } as unknown as BatchSellAsset;
 }
 
 export function buildSendAssetEntry(
