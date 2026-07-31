@@ -73,6 +73,11 @@ export async function scanAddressAndAddToCache(
   };
   addAddressSecurityAlertResponse(cacheKey, loadingResponse);
 
+  // With the real PhishingController, scanAddress never rejects; every
+  // failure (including unsupported chains) resolves to an ErrorResult. This
+  // catch only guards against a malformed or nonconforming controller
+  // instance (e.g. in tests) — do not remove it as "dead code", and note
+  // that callers' `.catch` handlers will not fire under normal operation.
   try {
     const result = mapAddressScanResult(
       await phishingController.scanAddress(chainId, address),
