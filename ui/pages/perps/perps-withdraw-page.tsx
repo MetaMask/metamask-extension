@@ -291,20 +291,31 @@ const PerpsWithdrawPage = () => {
       );
       const requestedNum = parsePerpsAmountInput(cleanAmount);
 
-      if (
-        freshAccountState &&
+      const hasUsableFreshRead =
+        Boolean(freshAccountState) &&
         !isPartialRead &&
-        Number.isFinite(freshAvailableNum) &&
-        freshAvailableNum < requestedNum
-      ) {
+        Number.isFinite(freshAvailableNum);
+
+      // A read that cannot move `availableNum` is not worth a state write.
+      const isFreshReadRedundant = freshBalance
+        ? freshBalance.streamed === streamedAvailableNum &&
+          freshBalance.available === freshAvailableNum
+        : freshAvailableNum === streamedAvailableNum;
+
+      if (hasUsableFreshRead && !isFreshReadRedundant) {
         // Adopting the fresh figure surfaces the insufficient-balance message
         // through the normal validation path and re-arms Max against the real
         // balance, so the block is actionable instead of contradicting the
-        // screen.
+        // screen. Adopted on every usable read, not only the blocking one, so a
+        // balance that recovers while the stream stays stale is not left pinned
+        // to the earlier, lower figure.
         setFreshBalance({
           streamed: streamedAvailableNum,
           available: freshAvailableNum,
         });
+      }
+
+      if (hasUsableFreshRead && freshAvailableNum < requestedNum) {
         // The guard is the fix for the ticket's largest withdraw bucket and
         // returns before `perpsWithdraw`, so the controller emits nothing for
         // it — report it here or prevented failures silently leave the funnel.
@@ -370,6 +381,7 @@ const PerpsWithdrawPage = () => {
   }, [
     account,
     amount,
+    freshBalance,
     hasValidInputs,
     isSubmitting,
     navigate,
@@ -550,15 +562,25 @@ const PerpsWithdrawPage = () => {
             />
 
             {validationMessage ? (
-              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-                {validationMessage}
-              </Text>
+              <Box role="alert">
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
+                >
+                  {validationMessage}
+                </Text>
+              </Box>
             ) : null}
 
             {submitError ? (
-              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-                {submitError}
-              </Text>
+              <Box role="alert">
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
+                >
+                  {submitError}
+                </Text>
+              </Box>
             ) : null}
           </Box>
         </Box>

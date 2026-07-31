@@ -569,9 +569,11 @@ describe('PerpsWithdrawPage', () => {
 
     await awaitSubmitPromisesForMethod('perpsGetAccountState');
 
-    expect(
-      await screen.findByText(messages.perpsWithdrawInsufficient.message),
-    ).toBeInTheDocument();
+    // The block has no other feedback, so the message must reach a screen
+    // reader rather than only appearing on screen.
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      messages.perpsWithdrawInsufficient.message,
+    );
     expect(mockSubmit).not.toHaveBeenCalledWith(
       'perpsWithdraw',
       expect.any(Array),
@@ -802,6 +804,83 @@ describe('PerpsWithdrawPage', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
+  });
+
+  it('refreshes the adopted fresh balance when a later read recovers', async () => {
+    const user = userEvent.setup();
+    let accountStateReads = 0;
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        accountStateReads += 1;
+        return Promise.resolve({
+          withdrawableBalance: accountStateReads === 1 ? '20' : '100',
+        });
+      }
+      if (method === 'perpsWithdraw') {
+        return Promise.resolve({ success: true, withdrawalId: 'hl_test' });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+    expect(
+      await screen.findByText(
+        `${messages.perpsAvailableBalance.message}$20.00`,
+      ),
+    ).toBeInTheDocument();
+
+    await waitForBlockedWithdrawSettled();
+
+    // The balance recovers while the stream stays pinned at its stale figure, so
+    // only the fresh read can release the adopted $20.
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '20');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
+    await awaitSubmitPromisesForMethod('perpsWithdraw');
+
+    expect(
+      await screen.findByText(
+        `${messages.perpsAvailableBalance.message}$100.00`,
+      ),
+    ).toBeInTheDocument();
+
+    await waitForWithdrawHandlerSettled();
+
+    await act(async () => {
+      await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
+    });
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '100.00',
+    );
   });
 
   it('submits the withdrawal when the fresh balance read fails', async () => {

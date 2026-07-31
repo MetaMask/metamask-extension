@@ -350,8 +350,15 @@ function guardCancelOrder<
       result?.success === false &&
       result.error === PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN
     ) {
-      await controller.init();
-      return await fn(...args);
+      // The retry sits on top of an already-resolved failure, so a throwing
+      // `init()` must not turn a resolved result into a rejection for the
+      // caller. Fall back to the original result instead.
+      try {
+        await controller.init();
+        return await fn(...args);
+      } catch {
+        return result;
+      }
     }
 
     return result;
