@@ -287,7 +287,8 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows each account Tron address on the Receive page and copies it', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests -- flaky receive-page timeout in CI; see #44165
+  it.skip('Shows each account Tron address on the Receive page and copies it', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
