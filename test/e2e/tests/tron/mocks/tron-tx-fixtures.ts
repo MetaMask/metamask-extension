@@ -161,6 +161,77 @@ export function trc20TransferTx(opts: {
 }
 
 /**
+ * Outgoing TRC20 sends require BOTH raw TriggerSmartContract and trc20 Transfer
+ * halves — the snap's `fetchNewTransactionsForAccount` early-returns when
+ * rawTransactions is empty, so trc20-only fixtures never surface in activity.
+ *
+ * @param opts
+ * @param opts.symbol
+ * @param opts.amount
+ * @param opts.to
+ * @param opts.status
+ * @param opts.timestamp
+ */
+export function trc20SendTx(opts: {
+  symbol: Trc20Symbol;
+  amount: string;
+  to: string;
+  status: TronTxStatus;
+  timestamp?: number;
+}): {
+  raw: ReturnType<typeof buildTrc20SendRawTx>;
+  trc20: ReturnType<typeof trc20TransferTx>;
+} {
+  const trc20 = trc20TransferTx({
+    symbol: opts.symbol,
+    amount: opts.amount,
+    from: TRON_ACCOUNT_ADDRESS,
+    to: opts.to,
+    status: opts.status,
+    timestamp: opts.timestamp,
+  });
+  const blockTimestamp = trc20.block_timestamp;
+  return {
+    raw: buildTrc20SendRawTx({
+      symbol: opts.symbol,
+      status: opts.status,
+      txID: trc20.transaction_id,
+      blockTimestamp,
+    }),
+    trc20,
+  };
+}
+
+function buildTrc20SendRawTx(opts: {
+  symbol: Trc20Symbol;
+  status: TronTxStatus;
+  txID: string;
+  blockTimestamp: number;
+}) {
+  return {
+    ret: ret(opts.status),
+    txID: opts.txID,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
+    block_timestamp: opts.blockTimestamp,
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              owner_address: ownerHex(TRON_ACCOUNT_ADDRESS),
+              contract_address: ownerHex(TRC20_INFO[opts.symbol].address),
+            },
+            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+          },
+          type: 'TriggerSmartContract',
+        },
+      ],
+      ...rawDataMeta(opts.blockTimestamp),
+    },
+  };
+}
+
+/**
  * A TRC20 Approval lives in BOTH the rawTransactions list (TriggerSmartContract)
  * and the trc20Transactions list (with type='Approval'). The snap's
  * `fetchNewTransactionsForAccount` early-returns when no rawTransactions are

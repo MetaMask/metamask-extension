@@ -15,7 +15,7 @@ import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 import {
   trxSendTx,
-  trc20TransferTx,
+  trc20SendTx,
 } from './mocks/tron-tx-fixtures';
 
 const TRON_EXPLORER_BASE = 'https://tronscan.org';
@@ -83,10 +83,9 @@ describe('Tron - Activity', function (this: Suite) {
   });
 
   it('shows confirmed USDT transfer in activity list and details', async function () {
-    const usdtTransfer = trc20TransferTx({
+    const usdtSend = trc20SendTx({
       symbol: 'USDT',
       amount: '1000000',
-      from: TRON_ACCOUNT_ADDRESS,
       to: TRON_RECIPIENT_ADDRESS,
       status: 'Confirmed',
     });
@@ -96,7 +95,10 @@ describe('Tron - Activity', function (this: Suite) {
         accounts: [
           {
             ...TRON_PORTFOLIO_ACCOUNT,
-            transactions: { raw: [], trc20: [usdtTransfer] },
+            transactions: {
+              raw: [usdtSend.raw],
+              trc20: [usdtSend.trc20],
+            },
           },
         ],
         fixtures: new FixtureBuilderV2().build(),
@@ -120,7 +122,7 @@ describe('Tron - Activity', function (this: Suite) {
         await details.checkStatusByTestId('success');
         await details.checkAmount('-1 USDT');
         await details.checkExplorerUrl(
-          `${TRON_EXPLORER_BASE}/#/transaction/${usdtTransfer.transaction_id}`,
+          `${TRON_EXPLORER_BASE}/#/transaction/${usdtSend.trc20.transaction_id}`,
         );
         await details.checkViewDetailsLink();
       },
@@ -169,10 +171,9 @@ describe('Tron - Activity', function (this: Suite) {
   });
 
   it('shows failed USDT transfer in activity list and details', async function () {
-    const failedUsdt = trc20TransferTx({
+    const failedUsdt = trc20SendTx({
       symbol: 'USDT',
       amount: '1000000',
-      from: TRON_ACCOUNT_ADDRESS,
       to: TRON_RECIPIENT_ADDRESS,
       status: 'Failed',
     });
@@ -182,7 +183,10 @@ describe('Tron - Activity', function (this: Suite) {
         accounts: [
           {
             ...TRON_PORTFOLIO_ACCOUNT,
-            transactions: { raw: [], trc20: [failedUsdt] },
+            transactions: {
+              raw: [failedUsdt.raw],
+              trc20: [failedUsdt.trc20],
+            },
           },
         ],
         fixtures: new FixtureBuilderV2().build(),
@@ -203,7 +207,7 @@ describe('Tron - Activity', function (this: Suite) {
         await details.checkPageIsLoaded();
         await details.checkStatusByTestId('failed');
         await details.checkExplorerUrl(
-          `${TRON_EXPLORER_BASE}/#/transaction/${failedUsdt.transaction_id}`,
+          `${TRON_EXPLORER_BASE}/#/transaction/${failedUsdt.trc20.transaction_id}`,
         );
         await details.checkViewDetailsLink();
       },
