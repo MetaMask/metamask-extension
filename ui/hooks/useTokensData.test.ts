@@ -1,6 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { handleFetch } from '@metamask/controller-utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import {
   useTokensData,
   MAX_BATCH_SIZE,
@@ -11,6 +12,13 @@ jest.mock('@metamask/controller-utils', () => ({
   handleFetch: jest.fn(),
 }));
 
+jest.mock('@metamask/utils', () => ({
+  ...jest.requireActual('@metamask/utils'),
+  parseCaipAssetType: jest.fn(
+    jest.requireActual('@metamask/utils').parseCaipAssetType,
+  ),
+}));
+
 jest.mock('../../shared/lib/asset-utils', () => ({
   getAssetImageUrl: jest.fn(
     (assetId: string, chainId: string) =>
@@ -19,6 +27,7 @@ jest.mock('../../shared/lib/asset-utils', () => ({
 }));
 
 const mockHandleFetch = handleFetch as jest.Mock;
+const mockParseCaipAssetType = parseCaipAssetType as jest.Mock;
 const { getAssetImageUrl: mockGetAssetImageUrl } = jest.requireMock(
   '../../shared/lib/asset-utils',
 ) as { getAssetImageUrl: jest.Mock };
@@ -173,6 +182,31 @@ describe('useTokensData', () => {
       });
 
       expect(result.current[assetId].iconUrl).toBe(apiIconUrl);
+      expect(mockGetAssetImageUrl).not.toHaveBeenCalled();
+    });
+
+    it('keeps the token unchanged when parseCaipAssetType throws', async () => {
+      const address = uniqueAddress();
+      const assetId = buildAssetId(address);
+      const token = buildTokenAsset({
+        assetId,
+        name: 'Broken Icon Token',
+        symbol: 'BIT',
+        iconUrl: '',
+      });
+
+      mockParseCaipAssetType.mockImplementationOnce(() => {
+        throw new Error('Invalid CAIP asset type.');
+      });
+      mockHandleFetch.mockResolvedValue([token]);
+
+      const { result } = renderHook(() => useTokensData([assetId]));
+
+      await waitFor(() => {
+        expect(result.current[assetId]).toBeDefined();
+      });
+
+      expect(result.current[assetId]).toStrictEqual(token);
       expect(mockGetAssetImageUrl).not.toHaveBeenCalled();
     });
   });

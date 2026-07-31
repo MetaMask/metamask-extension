@@ -43,11 +43,16 @@ function withIconUrlFallback(token: TokenAsset): TokenAsset {
     return token;
   }
 
-  const { chainId } = parseCaipAssetType(token.assetId);
-  return {
-    ...token,
-    iconUrl: getAssetImageUrl(token.assetId, chainId) ?? '',
-  };
+  try {
+    const { chainId } = parseCaipAssetType(token.assetId);
+    return {
+      ...token,
+      iconUrl: getAssetImageUrl(token.assetId, chainId) ?? '',
+    };
+  } catch {
+    // Unexpected malformed CAIP asset id — keep the API token as-is.
+    return token;
+  }
 }
 
 function fetchTokenBatch(assetIds: string[]): Promise<TokenAsset[]> {
