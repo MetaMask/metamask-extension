@@ -1,12 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConnectAccountConfirmation {
-  private readonly accountListItem = (accountName: string) => {
-    return {
-      css: '.multichain-account-cell__account-name',
-      text: accountName,
-    };
-  };
+  private readonly accountListItem = (accountName: string) => ({
+    testId: `multichain-account-cell-name-${accountName}`,
+  });
 
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
@@ -66,19 +63,11 @@ class ConnectAccountConfirmation {
   async checkPageIsLoaded({
     origin = '127.0.0.1',
   }: { origin?: string } = {}): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.connectAccountConfirmationTitle,
-        this.connectAccountConfirmationButton,
-        this.originHeader(origin),
-      ]);
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for Connect Account confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
+    await this.driver.waitForMultipleSelectors([
+      this.connectAccountConfirmationTitle,
+      this.connectAccountConfirmationButton,
+      this.originHeader(origin),
+    ]);
     console.log(`Connect Account confirmation page is loaded`);
   }
 
