@@ -18,6 +18,10 @@ import {
  * Verdicts outside the controller's declared union (e.g. 'Trusted') are
  * passed through unchanged — the controller forwards the API's result_type
  * without validation.
+ *
+ * @param result - The PhishingController address-scan result to translate
+ * @param result.result_type - The controller's security assessment verdict
+ * @param result.label - Additional label or description for the result
  */
 export function mapAddressScanResult(result: {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
