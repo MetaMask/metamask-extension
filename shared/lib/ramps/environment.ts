@@ -9,7 +9,8 @@ import { RampsEnvironment } from '@metamask/ramps-controller';
  * Build CI emits `METAMASK_ENVIRONMENT` from
  * `shared/constants/build-environment.json`. Release-branch dist builds use
  * `release-candidate` (not the shorthand `rc`), so that value must map to
- * Production or RC Chrome builds incorrectly talk to Staging.
+ * Production or RC Chrome builds incorrectly talk to Staging. `rc` is kept as
+ * a legacy / shorthand alias for the same Production mapping.
  *
  * @returns The ramps environment for API requests.
  */
@@ -18,9 +19,7 @@ export function getRampsEnvironment(): RampsEnvironment {
   switch (metamaskEnvironment) {
     case 'production':
     case 'beta':
-    // Legacy / shorthand — kept for compatibility.
     case 'rc':
-    // Actual value emitted for `release/*` CI builds (`yarn build dist`).
     case 'release-candidate':
       return RampsEnvironment.Production;
     case 'development':
