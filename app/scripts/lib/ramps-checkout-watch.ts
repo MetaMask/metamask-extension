@@ -76,6 +76,7 @@ export function createWatchRampsCheckoutTab(
     };
 
     let stepIndex = 0;
+    let lastCountedUrl: string | undefined;
 
     const cleanup = () => {
       platform.removeTabUpdatedListener(onUpdated);
@@ -155,7 +156,15 @@ export function createWatchRampsCheckoutTab(
         return;
       }
 
-      stepIndex += 1;
+      // `tabs.onUpdated` fires repeatedly for one page load (loading, title,
+      // favicon, complete), and the status-only updates still resolve a URL via
+      // `tab.url`. Count a step only when the URL actually changes, so
+      // `step_index` measures checkout progress rather than event volume.
+      if (candidateUrl !== lastCountedUrl) {
+        lastCountedUrl = candidateUrl;
+        stepIndex += 1;
+      }
+
       if (!candidateUrl.startsWith(getRampCallbackBaseUrl())) {
         return;
       }

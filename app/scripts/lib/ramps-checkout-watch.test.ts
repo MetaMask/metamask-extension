@@ -298,6 +298,32 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
+  it('counts one step per navigation, not per tab update event', () => {
+    const { watch, getOnUpdated, checkoutAnalytics } = createHarness();
+
+    watch({
+      tabId: 9,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: false,
+      ...checkoutAnalytics,
+    });
+
+    const providerUrl = 'https://provider.example/checkout/kyc';
+    // One provider page load: the URL arrives with `status: 'loading'`, then
+    // further updates (complete, title, favicon) carry no URL of their own.
+    getOnUpdated()?.(9, { url: providerUrl }, { url: providerUrl });
+    getOnUpdated()?.(9, {}, { url: providerUrl });
+    getOnUpdated()?.(9, {}, { url: providerUrl });
+
+    const callbackUrl = `${callbackBase}?transactionId=abc`;
+    getOnUpdated()?.(9, { url: callbackUrl }, { url: callbackUrl });
+
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
+      step_index: 2,
+    });
+  });
+
   it('tracks the terminal KPI for an order resolved already-completed from the callback', async () => {
     const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
       createHarness();
