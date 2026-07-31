@@ -7848,149 +7848,6 @@
   "publicAddress": {
     "message": "Δημόσια διεύθυνση"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 είναι τώρα ανοιχτή.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 είναι τώρα ανοιχτή.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Η εντολή ορίου εκτελέστηκε"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Η θέση ρευστοποιήθηκε"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Η αξίωσή σας δημιουργήθηκε"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Η αξίωση δημιουργήθηκε"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Η αξίωσή σας ενημερώθηκε"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Η αξίωση ενημερώθηκε"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Μάθε περισσότερα"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Η συνδρομή σας είναι πλέον ενεργή."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Η συνδρομή σας έχει τεθεί σε παύση λόγω αποτυχίας πληρωμής."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask Transaction Shield"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "Ενημέρωση πληρωμής"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε με περιορισμό ζημίας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε με περιορισμό ζημίας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Ενεργοποιήθηκε ο περιορισμός ζημιάς"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Η θέση αγοράς σας σε $1 έκλεισε με το σημείο κέρδους σας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Η θέση πώλησής σας σε $1 έκλεισε με το σημείο κέρδους σας.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Ενεργοποιήθηκε η λήψη κέρδους"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Λάβατε $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Λάβατε μερικά tokens"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Ελήφθη κεφάλαια"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Στείλατε με επιτυχία $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Στείλατε επιτυχώς μερικά tokens"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Στάλθηκαν κεφάλαια"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Λάβατε νέα NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Ελήφθησαν NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Στείλατε επιτυχώς ένα NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Στάλθηκαν NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Το ποντάρισμά σας στο Lido ήταν επιτυχές"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Ολοκλήρωση πονταρίσματος"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Το ποντάρισμά σας στο Lido είναι τώρα έτοιμο για ανάληψη"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Έτοιμο το ποντάρισμα για ανάληψη"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Η ανάληψή σας από το Lido ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Η ανάληψη ολοκληρώθηκε"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Υποβλήθηκε το αίτημα ανάληψης από το Lido"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Αίτημα ανάληψης"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Το ποντάρισμά σας στο RocketPool ήταν επιτυχές"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Ολοκλήρωση πονταρίσματος"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Η ακύρωση του πονταρίσματός σας από το RocketPool ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Ολοκλήρωση ακύρωσης πονταρίσματος"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Η ανταλλαγή σας στο MetaMask ήταν επιτυχής"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Η ανταλλαγή ολοκληρώθηκε"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -10312,18 +10169,6 @@
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά την προσθήκη αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά την αφαίρεση αυτής της γραμμής εμπιστοσύνης. Προσπαθήστε ξανά.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Έχετε ακόμη $1 $2 σε αυτό το πορτοφόλι. Πρέπει να τα στείλετε ή να τα ανταλλάξετε όλα πριν απενεργοποιήσετε αυτό το περιουσιακό στοιχείο στο Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Ακόμα συνδέεται με το $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -11082,9 +10927,6 @@
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
-  },
-  "tutorial": {
-    "message": "Εκμάθηση"
   },
   "txAlertTitle": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί"

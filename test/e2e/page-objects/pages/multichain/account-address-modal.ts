@@ -1,11 +1,11 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AccountAddressModal {
-  private driver: Driver;
-
   private readonly accountAddress = '[data-testid="account-address"]';
 
   private readonly backButton = '[aria-label="Close"]';
+
+  private driver: Driver;
 
   private readonly viewOnEtherscanButton = {
     css: 'button',
@@ -37,6 +37,14 @@ class AccountAddressModal {
   }
 
   /**
+   * Verify the View on Etherscan button is present
+   */
+  async checkViewOnEtherscanButton(): Promise<void> {
+    console.log('Verifying View on Etherscan button');
+    await this.driver.findElement(this.viewOnEtherscanButton);
+  }
+
+  /**
    * Get the account address from the modal
    */
   async getAccountAddress(): Promise<string> {
@@ -56,14 +64,6 @@ class AccountAddressModal {
    */
   async goBack(): Promise<void> {
     await this.driver.clickElement(this.backButton);
-  }
-
-  /**
-   * Verify the View on Etherscan button is present
-   */
-  async checkViewOnEtherscanButton(): Promise<void> {
-    console.log('Verifying View on Etherscan button');
-    await this.driver.findElement(this.viewOnEtherscanButton);
   }
 }
 
