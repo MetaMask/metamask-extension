@@ -15,16 +15,12 @@ class ActivityTab extends HomePage {
 
   private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 
-  private readonly completedTransactionItems =
-    '.transaction-list__completed-transactions .activity-list-item';
-
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = '[data-tx-status="confirmed"]';
 
   private readonly copyTransactionHashButton = {
-    text: 'Copy transaction ID',
-    tag: 'button',
+    testId: 'transaction-id',
   };
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
@@ -471,7 +467,7 @@ class ActivityTab extends HomePage {
     );
     await this.driver.wait(async () => {
       const confirmedTxes = await this.driver.findElements(
-        this.completedTransactionItems,
+        this.completedTransactions,
       );
       return confirmedTxes.length === expectedNumber;
     }, 10000);
@@ -629,7 +625,7 @@ class ActivityTab extends HomePage {
     amount: string;
   }): Promise<void> {
     await this.goToActivityList();
-    await this.driver.waitForSelector(this.completedTransactionItems);
+    await this.driver.waitForSelector(this.completedTransactions);
 
     const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;
     await this.driver.waitForSelector({ tag: 'p', text: swapLabel });

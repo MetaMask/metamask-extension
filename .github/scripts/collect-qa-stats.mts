@@ -667,7 +667,7 @@ function parseMochaSkipped(rawXml: string): number {
 }
 
 /**
- * Downloads all Chrome E2E shard artifacts except the explicit browserify run,
+ * Downloads all Chrome E2E shard artifacts,
  * reads the `skipped` attribute from each JUnit XML file's `<testsuites>` root
  * element, and returns the total skipped count.
  *
@@ -679,7 +679,6 @@ async function getE2eSkippedFromXml(): Promise<number> {
   const shardArtifacts = artifacts.filter(
     (a) =>
       a.name.startsWith('test-e2e-chrome-') &&
-      !a.name.startsWith('test-e2e-chrome-browserify') &&
       a.name !== 'test-e2e-chrome-report',
   );
 
@@ -712,19 +711,13 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
 
   const chromeRuns = await getE2eReport();
 
-  // Explicitly excluded run: the browserify build is superseded by webpack.
-  // All other Chrome runs (webpack, flask, rpc, dist, multiple-providers, etc.)
-  // contribute to the totals.
-  const EXCLUDED_CHROME_RUN = 'test-e2e-chrome-browserify';
-
   // --- Main channel (Chrome, canonical) ---
-  // Counts every Chrome run except the explicit browserify job and flask
-  // (flask is tracked separately below).
+  // Counts every Chrome run except flask (flask is tracked separately below).
   let mainChromeTotal = 0;
   const folderCounts: Record<string, number> = {};
 
   for (const run of chromeRuns.filter(
-    (r) => r.name !== EXCLUDED_CHROME_RUN && r.name !== 'test-e2e-chrome-flask',
+    (r) => r.name !== 'test-e2e-chrome-flask-webpack',
   )) {
     for (const file of run.testFiles ?? []) {
       const ran = (file.tests ?? 0) - (file.skipped ?? 0);
@@ -739,7 +732,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
   let flaskChromeTotal = 0;
 
   for (const run of chromeRuns.filter(
-    (r) => r.name === 'test-e2e-chrome-flask',
+    (r) => r.name === 'test-e2e-chrome-flask-webpack',
   )) {
     for (const file of run.testFiles ?? []) {
       flaskChromeTotal += (file.tests ?? 0) - (file.skipped ?? 0);
@@ -754,7 +747,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     const firefoxRuns = await getE2eFirefoxReport();
 
     for (const run of firefoxRuns.filter(
-      (r) => r.name === 'test-e2e-firefox-browserify',
+      (r) => r.name === 'test-e2e-firefox-webpack',
     )) {
       for (const file of run.testFiles ?? []) {
         mainFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);
@@ -763,7 +756,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     console.log(`[e2e/main/firefox] total: ${mainFirefoxTotal}`);
 
     for (const run of firefoxRuns.filter(
-      (r) => r.name === 'test-e2e-firefox-flask',
+      (r) => r.name === 'test-e2e-firefox-flask-webpack',
     )) {
       for (const file of run.testFiles ?? []) {
         flaskFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);

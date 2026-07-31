@@ -31,8 +31,6 @@ import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const DefaultHeadingSkeleton = () => (
   <>
     <Skeleton
@@ -54,7 +52,6 @@ const DefaultHeadingSkeleton = () => (
   </>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SendHeadingSkeleton = () => (
   <div
     data-testid="confirmation__send_info_skeleton"
@@ -76,7 +73,6 @@ const SendHeadingSkeleton = () => (
   </div>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SectionSkeletons = () => (
   <>
     <Skeleton

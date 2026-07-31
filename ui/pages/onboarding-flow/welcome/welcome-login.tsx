@@ -17,8 +17,6 @@ import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeLogin({
   onLogin,
   isAnimationComplete,

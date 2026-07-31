@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { merge } from 'lodash';
@@ -280,18 +279,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 
@@ -371,18 +362,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 

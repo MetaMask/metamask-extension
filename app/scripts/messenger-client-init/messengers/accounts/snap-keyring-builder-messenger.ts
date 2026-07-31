@@ -47,7 +47,6 @@ export function getSnapKeyringBuilderMessenger(
       'SnapController:isMinimumPlatformVersion',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
-      'MetaMetricsController:trackEvent',
       'LegacyBackgroundApiService:removeAccount',
     ],
   });

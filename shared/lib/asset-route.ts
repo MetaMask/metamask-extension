@@ -1,5 +1,3 @@
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   type CaipAssetType,
   type CaipChainId,
@@ -9,7 +7,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 
-import { isEvmChainId, toAssetId } from './asset-utils';
+import { isEvmChainId } from './asset-utils';
 
 export const ASSET_ROUTE = '/asset';
 
@@ -30,88 +28,12 @@ export const buildAssetRoutePath = (assetId: CaipAssetType): string => {
   return `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(assetId)}`;
 };
 
-const tryBuildAssetRoutePath = (
-  assetId: CaipAssetType | string | undefined,
-): string | undefined => {
-  if (!assetId || !isCaipAssetType(assetId)) {
-    return undefined;
-  }
-
-  try {
-    return buildAssetRoutePath(assetId);
-  } catch {
-    return undefined;
-  }
-};
-
 const decodeRouteParam = (value: string): string => {
   try {
     return decodeURIComponent(value);
   } catch {
     return value;
   }
-};
-
-type BuildAssetRoutePathFromPartsOptions = {
-  assetId?: CaipAssetType;
-  isNative?: boolean;
-};
-
-/**
- * Builds a CAIP-19 asset page path from chain and address parts.
- * @param chainId
- * @param address
- * @param options
- */
-export const buildAssetRoutePathFromParts = (
-  chainId: Hex | CaipChainId,
-  address?: string,
-  options?: BuildAssetRoutePathFromPartsOptions,
-): string | undefined => {
-  if (options?.assetId) {
-    const pathFromAssetId = tryBuildAssetRoutePath(options.assetId);
-    if (pathFromAssetId) {
-      return pathFromAssetId;
-    }
-
-    const normalizedAssetId = toAssetId(options.assetId, chainId);
-    const pathFromNormalized = tryBuildAssetRoutePath(normalizedAssetId);
-    if (pathFromNormalized) {
-      return pathFromNormalized;
-    }
-  }
-
-  const isNative = options?.isNative ?? !address;
-
-  if (isNative) {
-    const pathFromAddress = tryBuildAssetRoutePath(address);
-    if (pathFromAddress) {
-      return pathFromAddress;
-    }
-
-    const caipChainId = isCaipChainId(chainId)
-      ? chainId
-      : toEvmCaipChainId(chainId as Hex);
-
-    try {
-      const nativeAssetId = getNativeAssetForChainId(caipChainId)?.assetId;
-      return tryBuildAssetRoutePath(nativeAssetId);
-    } catch {
-      return undefined;
-    }
-  }
-
-  if (!address) {
-    return undefined;
-  }
-
-  const pathFromAddress = tryBuildAssetRoutePath(address);
-  if (pathFromAddress) {
-    return pathFromAddress;
-  }
-
-  const assetId = toAssetId(address, chainId);
-  return tryBuildAssetRoutePath(assetId);
 };
 
 export type AssetRouteParams = Partial<{
