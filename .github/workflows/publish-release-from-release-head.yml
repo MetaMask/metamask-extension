@@ -146,7 +146,9 @@ jobs:
       - build-flask-mv2-webpack
     runs-on: ubuntu-latest
     environment: release-branch
-    timeout-minutes: 45
+    # Publish work is ~10 min; the AMO reviewer step adds two full cold
+    # production builds (main + Flask) for the reproducible-build comparison.
+    timeout-minutes: 90
     env:
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
       RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
