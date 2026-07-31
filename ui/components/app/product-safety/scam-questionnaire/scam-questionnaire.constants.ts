@@ -3,16 +3,22 @@ export const TOTAL_QUESTIONS = 3;
 // Bump when the questions, answer options, or red-flag verdicts change.
 export const QUESTIONNAIRE_VERSION = '1';
 
-export type StepLabel = 'q1' | 'q2' | 'q3';
+// Steps 0-2 are the questions; the final index is the warning screen.
+export type Step = 0 | 1 | 2 | 3;
 
-export function stepLabelFromIndex(step: 0 | 1 | 2): StepLabel {
+export type StepLabel = 'q1' | 'q2' | 'q3' | 'warning';
+
+export function stepLabelFromIndex(step: Step): StepLabel {
   if (step === 0) {
     return 'q1';
   }
   if (step === 1) {
     return 'q2';
   }
-  return 'q3';
+  if (step === 2) {
+    return 'q3';
+  }
+  return 'warning';
 }
 
 // Seconds the bypass ("continue anyway") link stays disabled on the scam

@@ -13,6 +13,7 @@ import {
   Q3_OPTIONS,
   QuestionId,
   QuestionOption,
+  type Step,
   TOTAL_QUESTIONS,
   getRedFlagCount,
 } from './scam-questionnaire.constants';
@@ -32,8 +33,6 @@ export type ScamQuestionnaireProps = {
   onDismiss: () => void;
 };
 
-// Steps 0-2 are the questions; the final index is the warning screen.
-type Step = 0 | 1 | 2 | 3;
 const WARNING_STEP = TOTAL_QUESTIONS;
 
 const QUESTION_DEFS: Record<
@@ -84,27 +83,16 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   const [pendingSelection, setPendingSelection] = useState<
     QuestionOption | undefined
   >();
-  // Once per question, so the funnel reads as unique users per step rather
-  // than raw view count. A ref, not state: it guards a side effect, and
+  // Once per step, so the funnel reads as unique users per step rather than
+  // raw view count. A ref, not state: it guards a side effect, and
   // StrictMode's double-invoked effects would both see a stale `setState`.
-  const viewedStepsRef = useRef<Set<0 | 1 | 2>>(new Set());
+  const viewedStepsRef = useRef<Set<Step>>(new Set());
   useEffect(() => {
-    if (step < TOTAL_QUESTIONS) {
-      const questionStep = step as 0 | 1 | 2;
-      if (!viewedStepsRef.current.has(questionStep)) {
-        viewedStepsRef.current.add(questionStep);
-        metrics.trackViewed(questionStep);
-      }
+    if (!viewedStepsRef.current.has(step)) {
+      viewedStepsRef.current.add(step);
+      metrics.trackViewed(step);
     }
   }, [step, metrics]);
-
-  const warningDisplayedRef = useRef(false);
-  useEffect(() => {
-    if (step === WARNING_STEP && !warningDisplayedRef.current) {
-      warningDisplayedRef.current = true;
-      metrics.trackWarningDisplayed(answers);
-    }
-  }, [step, answers, metrics]);
 
   const handleBack = useCallback(() => {
     if (step === WARNING_STEP) {

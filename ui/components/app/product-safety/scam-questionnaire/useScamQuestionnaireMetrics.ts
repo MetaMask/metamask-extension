@@ -12,6 +12,7 @@ import { calculateTotalFiat } from '../../../../pages/confirmations/components/s
 import {
   Answers,
   QUESTIONNAIRE_VERSION,
+  type Step,
   getAnswerRecord,
   getRedFlagCount,
   stepLabelFromIndex,
@@ -62,15 +63,13 @@ export function useScamQuestionnaireMetrics() {
     };
 
     return {
-      trackViewed: (step: 0 | 1 | 2) =>
+      // `step: 'warning'` covers the warning screen, so reaching it and never
+      // resolving is still visible as a funnel step. Answers live on
+      // `Completed` only — here they'd lag a step, since a step's answer isn't
+      // committed until the user leaves it.
+      trackViewed: (step: Step) =>
         fire(MetaMetricsEventName.ScamQuestionnaireViewed, {
           step: stepLabelFromIndex(step),
-        }),
-
-      trackWarningDisplayed: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamQuestionnaireWarningDisplayed, {
-          ...getAnswerRecord(answers),
-          red_flag_count: getRedFlagCount(answers),
         }),
 
       trackCompleted: ({

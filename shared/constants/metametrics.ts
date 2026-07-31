@@ -1007,7 +1007,6 @@ export enum MetaMetricsEventName {
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   ScamQuestionnaireCompleted = 'Scam Questionnaire Completed',
   ScamQuestionnaireViewed = 'Scam Questionnaire Viewed',
-  ScamQuestionnaireWarningDisplayed = 'Scam Questionnaire Warning Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
