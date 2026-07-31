@@ -6,6 +6,14 @@ import { scanAddressAndAddToCache } from './security-alerts-api';
 
 jest.mock('./security-alerts-api');
 
+jest.mock('../ppom/security-alerts-api', () => ({
+  isSecurityAlertsAPIEnabled: jest.fn(() => true),
+}));
+
+const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
+  '../ppom/security-alerts-api',
+).isSecurityAlertsAPIEnabled;
+
 const SIGNER = '0xabcdef0123456789012345678901234567890123';
 const RECIPIENT = '0x1234567890123456789012345678901234567890';
 const SPENDER = '0x9876543210987654321098765432109876543210';
@@ -96,6 +104,15 @@ describe('scanUnvalidatedSignatureAddresses', () => {
 
   it('is a no-op when params are missing the typed data payload', () => {
     run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [SIGNER]);
+    expect(mockScan).not.toHaveBeenCalled();
+  });
+
+  it('is a no-op when the security-alerts API is disabled', () => {
+    mockIsSecurityAlertsAPIEnabled.mockReturnValueOnce(false);
+    run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+      SIGNER,
+      buildTypedData({ to: RECIPIENT }),
+    ]);
     expect(mockScan).not.toHaveBeenCalled();
   });
 

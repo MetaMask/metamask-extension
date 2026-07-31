@@ -1495,6 +1495,9 @@
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
   },
+  "alertMessageSignatureAddressCount": {
+    "message": "This request includes an unusually large number of addresses. Some could not be checked for known threats. Only continue if you trust this site."
+  },
   "alertMessageSuggestedGasFeeHigh": {
     "message": "This site is suggesting a higher network fee than necessary. Edit the network fee to pay less."
   },
@@ -1566,6 +1569,9 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonSignatureAddressCount": {
+    "message": "Unusual number of addresses"
   },
   "alertReasonSuggestedGasFeeHigh": {
     "message": "High site fee"

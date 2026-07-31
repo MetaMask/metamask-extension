@@ -25,6 +25,16 @@ const build = (
   message,
 });
 
+const addressesOf = (
+  ...args: Parameters<typeof extractSignatureAddresses>
+): string[] => extractSignatureAddresses(...args).addresses;
+
+const nAddresses = (count: number): string[] =>
+  Array.from(
+    { length: count },
+    (_, i) => `0x${(i + 1).toString(16).padStart(2, '0').repeat(20)}`,
+  );
+
 describe('extractSignatureAddresses', () => {
   it('extracts a permit `spender` from the schema', () => {
     const data = build(
@@ -38,9 +48,7 @@ describe('extractSignatureAddresses', () => {
       },
       { owner: SIGNER, spender: ADDR_A, value: '1' },
     );
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
-      ADDR_A,
-    ]);
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([ADDR_A]);
   });
 
   it('extracts an EIP-3009 `to`', () => {
@@ -55,9 +63,7 @@ describe('extractSignatureAddresses', () => {
       },
       { from: SIGNER, to: ADDR_A, value: '1' },
     );
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
-      ADDR_A,
-    ]);
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([ADDR_A]);
   });
 
   it('extracts an address field with a protocol-specific name', () => {
@@ -87,9 +93,7 @@ describe('extractSignatureAddresses', () => {
         ],
       },
     };
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
-      ADDR_A,
-    ]);
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([ADDR_A]);
   });
 
   it('extracts EVERY address field in a Seaport order (offerer/zone/token/recipient), nested structs + arrays', () => {
@@ -121,7 +125,7 @@ describe('extractSignatureAddresses', () => {
         startTime: '0',
       },
     );
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([
       ADDR_A,
       ADDR_B,
       ADDR_C,
@@ -152,7 +156,7 @@ describe('extractSignatureAddresses', () => {
         sigDeadline: '0',
       },
     );
-    expect(extractSignatureAddresses(data)).toEqual([ADDR_A, ADDR_B, ADDR_C]);
+    expect(addressesOf(data)).toStrictEqual([ADDR_A, ADDR_B, ADDR_C]);
   });
 
   it('extracts an `address[]` field', () => {
@@ -161,7 +165,7 @@ describe('extractSignatureAddresses', () => {
       { Airdrop: [{ name: 'recipients', type: 'address[]' }] },
       { recipients: [ADDR_A, ADDR_B] },
     );
-    expect(extractSignatureAddresses(data)).toEqual([ADDR_A, ADDR_B]);
+    expect(addressesOf(data)).toStrictEqual([ADDR_A, ADDR_B]);
   });
 
   it('extracts an arbitrarily-named address field in an unknown schema', () => {
@@ -175,9 +179,7 @@ describe('extractSignatureAddresses', () => {
       },
       { maker: SIGNER, superSecretSink: ADDR_A },
     );
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
-      ADDR_A,
-    ]);
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([ADDR_A]);
   });
 
   it('ignores non-address typed fields even if the value looks like an address', () => {
@@ -193,7 +195,7 @@ describe('extractSignatureAddresses', () => {
       // notAnAddress carries an address-shaped string but is typed uint256.
       { owner: ADDR_A, notAnAddress: ADDR_B, blob: `0x${'ab'.repeat(32)}` },
     );
-    expect(extractSignatureAddresses(data)).toEqual([ADDR_A]);
+    expect(addressesOf(data)).toStrictEqual([ADDR_A]);
   });
 
   it('de-duplicates case-insensitively, preserving first casing', () => {
@@ -209,7 +211,7 @@ describe('extractSignatureAddresses', () => {
       },
       { to: lower, recipient: upper },
     );
-    expect(extractSignatureAddresses(data)).toEqual([lower]);
+    expect(addressesOf(data)).toStrictEqual([lower]);
   });
 
   it('excludes the zero address and provided addresses', () => {
@@ -224,9 +226,7 @@ describe('extractSignatureAddresses', () => {
       },
       { a: ZERO, b: SIGNER, c: ADDR_A },
     );
-    expect(extractSignatureAddresses(data, { exclude: [SIGNER] })).toEqual([
-      ADDR_A,
-    ]);
+    expect(addressesOf(data, { exclude: [SIGNER] })).toStrictEqual([ADDR_A]);
   });
 
   it('honors excludeFields (e.g. spender handled by another hook)', () => {
@@ -240,36 +240,112 @@ describe('extractSignatureAddresses', () => {
       },
       { spender: ADDR_A, to: ADDR_B },
     );
-    expect(
-      extractSignatureAddresses(data, { excludeFields: ['spender'] }),
-    ).toEqual([ADDR_B]);
+    expect(addressesOf(data, { excludeFields: ['spender'] })).toStrictEqual([
+      ADDR_B,
+    ]);
   });
 
-  it('caps the number of returned addresses', () => {
-    const many = Array.from(
-      { length: 20 },
-      (_, i) => `0x${(i + 1).toString(16).padStart(2, '0').repeat(20)}`,
+  it('only excludes fields at the top level', () => {
+    const data = build(
+      'Order',
+      {
+        Order: [
+          { name: 'spender', type: 'address' },
+          { name: 'inner', type: 'Inner' },
+        ],
+        Inner: [{ name: 'spender', type: 'address' }],
+      },
+      { spender: ADDR_A, inner: { spender: ADDR_B } },
     );
+    expect(addressesOf(data, { excludeFields: ['spender'] })).toStrictEqual([
+      ADDR_B,
+    ]);
+  });
+
+  it('normalizes decimal and non-canonical hex address encodings', () => {
+    const data = build(
+      'Batch',
+      {
+        Batch: [
+          { name: 'a', type: 'address' },
+          { name: 'b', type: 'address' },
+        ],
+      },
+      { a: BigInt(ADDR_A).toString(10), b: '0x1' },
+    );
+    expect(addressesOf(data)).toStrictEqual([
+      ADDR_A,
+      '0x0000000000000000000000000000000000000001',
+    ]);
+  });
+
+  it('canonicalizes mixed-case addresses to lower case', () => {
+    const mixed = '0xAbCdEf0000000000000000000000000000000001';
+    const data = build(
+      'X',
+      { X: [{ name: 'a', type: 'address' }] },
+      { a: mixed },
+    );
+    expect(addressesOf(data)).toStrictEqual([mixed.toLowerCase()]);
+  });
+
+  it('reduces an oversized decimal-encoded address to the signed address', () => {
+    // The signer reduces an `address` mod 2^160, so `value + 2^160` signs as
+    // `value`. The extractor must resolve it to the same address.
+    const oversized = (BigInt(ADDR_A) + 2n ** 160n).toString(10);
+    const data = build(
+      'X',
+      { X: [{ name: 'a', type: 'address' }] },
+      { a: oversized },
+    );
+    expect(addressesOf(data)).toStrictEqual([ADDR_A]);
+  });
+
+  it('bounds traversal work for a very large array', () => {
+    const huge = Array.from({ length: 100000 }, () => ADDR_A);
+    const data = build(
+      'Batch',
+      { Batch: [{ name: 'recipients', type: 'address[]' }] },
+      { recipients: huge },
+    );
+    // Returns the distinct address without walking every element.
+    expect(addressesOf(data)).toStrictEqual([ADDR_A]);
+  });
+
+  it('does not flag overflow at exactly the cap', () => {
     const data = build(
       'Airdrop',
       { Airdrop: [{ name: 'recipients', type: 'address[]' }] },
-      { recipients: many },
+      { recipients: nAddresses(50) },
     );
-    expect(extractSignatureAddresses(data)).toHaveLength(10);
+    const result = extractSignatureAddresses(data);
+    expect(result.addresses).toHaveLength(50);
+    expect(result.overflow).toBe(false);
+  });
+
+  it('caps returned addresses and flags overflow past the cap', () => {
+    const data = build(
+      'Airdrop',
+      { Airdrop: [{ name: 'recipients', type: 'address[]' }] },
+      { recipients: nAddresses(60) },
+    );
+    const result = extractSignatureAddresses(data);
+    expect(result.addresses).toHaveLength(50);
+    expect(result.overflow).toBe(true);
   });
 
   it('returns [] for nullish payloads, missing types, or unknown primaryType', () => {
-    expect(extractSignatureAddresses(undefined)).toEqual([]);
-    expect(extractSignatureAddresses(null)).toEqual([]);
+    expect(addressesOf(undefined)).toStrictEqual([]);
+    expect(addressesOf(null)).toStrictEqual([]);
     expect(
-      extractSignatureAddresses({ primaryType: 'X', message: { to: ADDR_A } }),
-    ).toEqual([]);
+      addressesOf({ primaryType: 'X', message: { to: ADDR_A } }),
+    ).toStrictEqual([]);
     expect(
-      extractSignatureAddresses({
+      addressesOf({
         types: { Y: [{ name: 'to', type: 'address' }] },
         primaryType: 'X',
         message: { to: ADDR_A },
       }),
-    ).toEqual([]);
+    ).toStrictEqual([]);
   });
 });

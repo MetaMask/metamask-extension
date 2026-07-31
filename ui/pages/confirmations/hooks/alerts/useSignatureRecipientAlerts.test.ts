@@ -24,6 +24,14 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
 
+jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
+  isSecurityAlertsAPIEnabled: jest.fn(() => true),
+}));
+
+const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
+  '../../../../../app/scripts/lib/ppom/security-alerts-api',
+).isSecurityAlertsAPIEnabled;
+
 const mockUseTrustSignals = jest.requireMock(
   '../../../../hooks/useTrustSignals',
 ).useTrustSignals;
@@ -103,6 +111,43 @@ const expectedWarningAlert = {
   reason: 'nameModalTitleWarning',
   severity: Severity.Warning,
 };
+
+const expectedAddressCountAlert = {
+  actions: [],
+  field: RowAlertKey.InteractingWith,
+  isBlocking: false,
+  key: 'signatureRecipientAddressCount',
+  message: 'alertMessageSignatureAddressCount',
+  reason: 'alertReasonSignatureAddressCount',
+  severity: Severity.Warning,
+};
+
+const buildArraySignature = (count: number): SignatureRequestType =>
+  ({
+    ...unapprovedTypedSignMsgV4,
+    msgParams: {
+      ...unapprovedTypedSignMsgV4.msgParams,
+      data: JSON.stringify({
+        domain: {
+          name: 'Airdrop',
+          version: '1',
+          chainId: 1,
+          verifyingContract: TOKEN_CONTRACT,
+        },
+        primaryType: 'Airdrop',
+        message: {
+          recipients: Array.from(
+            { length: count },
+            (_, i) => `0x${(i + 1).toString(16).padStart(2, '0').repeat(20)}`,
+          ),
+        },
+        types: {
+          EIP712Domain: [{ name: 'name', type: 'string' }],
+          Airdrop: [{ name: 'recipients', type: 'address[]' }],
+        },
+      }),
+    },
+  }) as SignatureRequestType;
 
 describe('useSignatureRecipientAlerts', () => {
   beforeEach(() => {
@@ -192,6 +237,67 @@ describe('useSignatureRecipientAlerts', () => {
     // `spender` is excluded, so no beneficiary is scanned and no alert fires.
     expect(result.current).toEqual([]);
     expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
+  });
+
+  it('alerts on a `spender` field when the primaryType is not a permit', () => {
+    mockTrustSignalsFor({
+      [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
+    });
+
+    const signature = buildTypedSignature('ClaimOrder', {
+      spender: MALICIOUS_ADDRESS,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureRecipientAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([expectedMaliciousAlert]);
+  });
+
+  it('returns an empty array when the security-alerts API is disabled', () => {
+    mockIsSecurityAlertsAPIEnabled.mockReturnValueOnce(false);
+    mockTrustSignalsFor({
+      [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
+    });
+
+    const signature = buildTypedSignature('GenericSignatureType', {
+      to: MALICIOUS_ADDRESS,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureRecipientAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('surfaces a caution when the signature exceeds the address cap', () => {
+    mockTrustSignalsFor({});
+
+    const signature = buildArraySignature(60);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureRecipientAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([expectedAddressCountAlert]);
+  });
+
+  it('does not surface the address-count caution at or below the cap', () => {
+    mockTrustSignalsFor({});
+
+    const signature = buildArraySignature(50);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureRecipientAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([]);
   });
 
   it('does not surface an alert for non-typed-data signatures', () => {

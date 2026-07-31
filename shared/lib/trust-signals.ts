@@ -92,17 +92,80 @@ export function createCacheKey(chain: SupportedEVMChain, address: string) {
   return `${chain.toLowerCase()}:${address.toLowerCase()}`;
 }
 
-const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/u;
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-// Cap the number of addresses returned for a single signature.
-const MAX_SIGNATURE_ADDRESSES = 10;
+const HEX_STRING_REGEX = /^0x[0-9a-fA-F]+$/u;
+const DECIMAL_STRING_REGEX = /^[0-9]+$/u;
+// The address space (2^160). Values are reduced into it, as the signer does.
+const ADDRESS_MODULUS = 2n ** 160n;
+
+// Cap the number of addresses returned for a single signature. A legitimate
+// signature references far fewer; exceeding this is treated as unusual and
+// surfaced to the user rather than scanned in full.
+const MAX_SIGNATURE_ADDRESSES = 50;
 
 // Limit recursion depth when walking nested types.
 const MAX_TRAVERSAL_DEPTH = 12;
 
+// Limit total nodes walked so a large or highly-repetitive payload cannot stall
+// traversal, independent of how many distinct addresses are found.
+const MAX_TRAVERSAL_NODES = 5000;
+
 type Eip712Field = { name: string; type: string };
 type Eip712Types = Record<string, Eip712Field[]>;
+
+export type ExtractedSignatureAddresses = {
+  // Distinct canonical addresses to scan, capped at MAX_SIGNATURE_ADDRESSES.
+  addresses: string[];
+  // True when the message references more distinct addresses than the cap, so
+  // some were not returned and the caller should surface a caution.
+  overflow: boolean;
+};
+
+/**
+ * Reduce an `address`-typed value to canonical 20-byte hex.
+ *
+ * The signer accepts more than canonical hex for an `address` field (hex of any
+ * length, or a decimal string) and reduces it into the 20-byte address space,
+ * so matching only `0x` + 40 hex would miss an address encoded in another form.
+ * Values are reduced the same way the signer does and returned in a single
+ * canonical form for de-duping.
+ *
+ * @param value - The raw field value from the message.
+ * @returns Canonical lower-case address, or undefined if not address-like.
+ */
+function normalizeAddress(value: unknown): string | undefined {
+  let numeric: bigint;
+
+  try {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (
+        !HEX_STRING_REGEX.test(trimmed) &&
+        !DECIMAL_STRING_REGEX.test(trimmed)
+      ) {
+        return undefined;
+      }
+      numeric = BigInt(trimmed);
+    } else if (
+      typeof value === 'number' &&
+      Number.isInteger(value) &&
+      value >= 0
+    ) {
+      numeric = BigInt(value);
+    } else {
+      return undefined;
+    }
+  } catch {
+    return undefined;
+  }
+
+  // Reduce into the 20-byte address space, matching how the signer encodes an
+  // `address` field, so non-canonical encodings resolve to the signed address.
+  numeric %= ADDRESS_MODULUS;
+
+  return `0x${numeric.toString(16).padStart(40, '0')}`;
+}
 
 /**
  * Collect every `address`-typed value in an EIP-712 message.
@@ -117,11 +180,12 @@ type Eip712Types = Record<string, Eip712Field[]>;
  *
  * @param typedData - Parsed EIP-712 payload (`types`, `primaryType`, `message`).
  * @param options - Optional configuration.
- * @param options.exclude - Addresses to skip (e.g. the signer), compared
- * case-insensitively. The zero address is always excluded.
- * @param options.excludeFields - Field names to skip, used to avoid a duplicate
- * alert for a field already handled elsewhere (e.g. permit `spender`).
- * @returns De-duplicated address values in original casing.
+ * @param options.exclude - Addresses to skip (e.g. the signer). The zero
+ * address is always excluded.
+ * @param options.excludeFields - Top-level field names to skip, used to avoid a
+ * duplicate alert for a field already handled elsewhere (e.g. permit
+ * `spender`). Only applied to the primary type, not nested structs.
+ * @returns De-duplicated canonical addresses and whether the cap was exceeded.
  */
 export function extractSignatureAddresses(
   typedData:
@@ -129,7 +193,7 @@ export function extractSignatureAddresses(
     | null
     | undefined,
   options: { exclude?: string[]; excludeFields?: string[] } = {},
-): string[] {
+): ExtractedSignatureAddresses {
   const types = typedData?.types as Eip712Types | undefined;
   const primaryType = typedData?.primaryType as string | undefined;
   const message = typedData?.message;
@@ -142,13 +206,18 @@ export function extractSignatureAddresses(
     !message ||
     typeof message !== 'object'
   ) {
-    return [];
+    return { addresses: [], overflow: false };
   }
 
-  const excluded = new Set<string>([ZERO_ADDRESS]);
+  const excluded = new Set<string>();
+  const zero = normalizeAddress(ZERO_ADDRESS);
+  if (zero) {
+    excluded.add(zero);
+  }
   for (const address of options.exclude ?? []) {
-    if (typeof address === 'string' && address) {
-      excluded.add(address.toLowerCase());
+    const normalized = normalizeAddress(address);
+    if (normalized) {
+      excluded.add(normalized);
     }
   }
 
@@ -156,24 +225,38 @@ export function extractSignatureAddresses(
     (options.excludeFields ?? []).map((field) => field.toLowerCase()),
   );
 
-  // Lower-cased address -> original casing, in insertion order.
-  const found = new Map<string, string>();
+  // Canonical addresses, in insertion order.
+  const found = new Set<string>();
 
-  const collect = (value: unknown): void => {
-    if (typeof value === 'string' && EVM_ADDRESS_REGEX.test(value)) {
-      const lower = value.toLowerCase();
-      if (!excluded.has(lower) && !found.has(lower)) {
-        found.set(lower, value);
-      }
+  // Set once a distinct address beyond the cap is seen.
+  let overflow = false;
+
+  // Total nodes walked, bounded by MAX_TRAVERSAL_NODES.
+  let visited = 0;
+
+  // Traversal continues past the address cap so overflow can be detected; only
+  // depth and total work bound it.
+  const budgetExhausted = (depth: number): boolean =>
+    depth > MAX_TRAVERSAL_DEPTH || visited >= MAX_TRAVERSAL_NODES;
+
+  function collect(value: unknown): void {
+    const address = normalizeAddress(value);
+    if (!address || excluded.has(address) || found.has(address)) {
+      return;
     }
-  };
+    if (found.size >= MAX_SIGNATURE_ADDRESSES) {
+      overflow = true;
+      return;
+    }
+    found.add(address);
+  }
 
-  const visitStruct = (
+  function visitStruct(
     structName: string,
     value: unknown,
     depth: number,
-  ): void => {
-    if (found.size >= MAX_SIGNATURE_ADDRESSES || depth > MAX_TRAVERSAL_DEPTH) {
+  ): void {
+    if (budgetExhausted(depth)) {
       return;
     }
     const fields = types[structName];
@@ -181,11 +264,16 @@ export function extractSignatureAddresses(
       return;
     }
     for (const field of fields) {
+      if (budgetExhausted(depth)) {
+        return;
+      }
       if (
         !field ||
         typeof field.name !== 'string' ||
         typeof field.type !== 'string' ||
-        excludedFields.has(field.name.toLowerCase())
+        // Field exclusions only apply to the primary type (depth 0), matching
+        // the top-level field a dedicated hook already covers.
+        (depth === 0 && excludedFields.has(field.name.toLowerCase()))
       ) {
         continue;
       }
@@ -195,10 +283,11 @@ export function extractSignatureAddresses(
         depth,
       );
     }
-  };
+  }
 
-  const visitField = (type: string, value: unknown, depth: number): void => {
-    if (found.size >= MAX_SIGNATURE_ADDRESSES || depth > MAX_TRAVERSAL_DEPTH) {
+  function visitField(type: string, value: unknown, depth: number): void {
+    visited += 1;
+    if (budgetExhausted(depth)) {
       return;
     }
 
@@ -207,6 +296,9 @@ export function extractSignatureAddresses(
     if (arrayMatch) {
       if (Array.isArray(value)) {
         for (const item of value) {
+          if (budgetExhausted(depth)) {
+            return;
+          }
           visitField(arrayMatch[1], item, depth + 1);
         }
       }
@@ -222,11 +314,11 @@ export function extractSignatureAddresses(
     if (Array.isArray(types[type])) {
       visitStruct(type, value, depth + 1);
     }
-  };
+  }
 
   visitStruct(primaryType, message, 0);
 
-  return Array.from(found.values());
+  return { addresses: Array.from(found.values()), overflow };
 }
 
 export enum ResultType {

@@ -7,6 +7,7 @@ import { isSignatureTransactionType } from '../../utils';
 import { SignatureRequestType } from '../../types/confirm';
 import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
 import { extractSignatureAddresses } from '../../../../../shared/lib/trust-signals';
+import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -14,10 +15,8 @@ import {
   useTrustSignals,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
-
-// `spender` is handled by `useSpenderAlerts`; exclude it here to avoid a
-// duplicate alert.
-const EXCLUDED_ALERT_FIELDS = ['spender'];
+// eslint-disable-next-line import-x/no-restricted-paths
+import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
 /**
  * Generate trust-signal alerts for the address fields of a typed-data
@@ -30,30 +29,39 @@ export function useSignatureRecipientAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const recipientAddresses = useMemo(() => {
+  const { addresses: recipientAddresses, overflow } = useMemo(() => {
+    const empty = { addresses: [] as string[], overflow: false };
+
     if (
       !currentConfirmation ||
       !isSignatureTransactionType(currentConfirmation) ||
-      currentConfirmation.type !== 'eth_signTypedData'
+      currentConfirmation.type !== 'eth_signTypedData' ||
+      !isSecurityAlertsAPIEnabled()
     ) {
-      return [];
+      return empty;
     }
 
     const signatureRequest = currentConfirmation as SignatureRequestType;
     const msgData = signatureRequest.msgParams?.data as string;
     if (!msgData) {
-      return [];
+      return empty;
     }
 
     try {
       const parsed = parseTypedDataMessage(msgData);
       const signer = signatureRequest.msgParams?.from as string | undefined;
+      // `useSpenderAlerts` covers the top-level `spender` only for permit
+      // types, so exclude it here only in that same case to avoid a duplicate
+      // alert while still scanning `spender` fields it does not cover.
+      const isPermit = PRIMARY_TYPES_PERMIT.some(
+        (type) => type === parsed.primaryType,
+      );
       return extractSignatureAddresses(parsed, {
         exclude: signer ? [signer] : [],
-        excludeFields: EXCLUDED_ALERT_FIELDS,
+        excludeFields: isPermit ? ['spender'] : [],
       });
     } catch {
-      return [];
+      return empty;
     }
   }, [currentConfirmation]);
 
@@ -66,8 +74,24 @@ export function useSignatureRecipientAlerts(): Alert[] {
   );
 
   return useMemo(() => {
+    const alerts: Alert[] = [];
+
+    // The signature references more addresses than can be checked, so some were
+    // not scanned. Surface a caution rather than failing silently.
+    if (overflow) {
+      alerts.push({
+        actions: [],
+        field: RowAlertKey.InteractingWith,
+        isBlocking: false,
+        key: 'signatureRecipientAddressCount',
+        message: t('alertMessageSignatureAddressCount'),
+        reason: t('alertReasonSignatureAddressCount'),
+        severity: Severity.Warning,
+      });
+    }
+
     if (recipientAddresses.length === 0) {
-      return [];
+      return alerts;
     }
 
     const hasMalicious = trustSignals.some(
@@ -76,8 +100,6 @@ export function useSignatureRecipientAlerts(): Alert[] {
     const hasWarning = trustSignals.some(
       ({ state }) => state === TrustSignalDisplayState.Warning,
     );
-
-    const alerts: Alert[] = [];
 
     if (hasMalicious) {
       alerts.push({
@@ -102,5 +124,5 @@ export function useSignatureRecipientAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [recipientAddresses, trustSignals, t]);
+  }, [recipientAddresses, overflow, trustSignals, t]);
 }

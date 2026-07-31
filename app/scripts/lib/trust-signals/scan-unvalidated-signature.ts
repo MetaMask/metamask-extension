@@ -6,6 +6,7 @@ import {
   mapChainIdToSupportedEVMChain,
   extractSignatureAddresses,
 } from '../../../../shared/lib/trust-signals';
+import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
 type AppStateCache = Pick<
@@ -25,6 +26,8 @@ type AppStateCache = Pick<
  * @param options.request - The signature JSON-RPC request.
  * @param options.chainId - The chain the signature is scoped to.
  * @param options.appStateController - Address-scan cache accessors.
+ * @param options.request.method
+ * @param options.request.params
  */
 export function scanUnvalidatedSignatureAddresses({
   request,
@@ -42,7 +45,13 @@ export function scanUnvalidatedSignatureAddresses({
     return;
   }
 
-  const params = request.params;
+  // The scan posts to the external security-alerts API; skip it when that API
+  // is disabled, matching the trust-signals middleware.
+  if (!isSecurityAlertsAPIEnabled()) {
+    return;
+  }
+
+  const { params } = request;
   if (!Array.isArray(params) || params[1] === undefined || params[1] === null) {
     return;
   }
@@ -64,7 +73,7 @@ export function scanUnvalidatedSignatureAddresses({
 
   const signerAddress = typeof params[0] === 'string' ? params[0] : undefined;
 
-  const addresses = extractSignatureAddresses(typedDataMessage, {
+  const { addresses } = extractSignatureAddresses(typedDataMessage, {
     exclude: signerAddress ? [signerAddress] : [],
   });
 
