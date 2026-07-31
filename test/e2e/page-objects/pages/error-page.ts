@@ -4,30 +4,30 @@ const FEEDBACK_MESSAGE =
   'Message: Unable to find value of key "debug" for locale "en"';
 
 class ErrorPage {
+  private readonly contactSupportButton =
+    '[data-testid="error-page-contact-support-button"]';
+
   private readonly driver: Driver;
+
+  private readonly errorMessage = '[data-testid="error-page-error-message"]';
 
   // Locators
   private readonly errorPageTitle = '[data-testid="error-page-title"]';
 
-  private readonly errorMessage = '[data-testid="error-page-error-message"]';
-
   private readonly sendReportToSentryButton =
     '[data-testid="error-page-describe-what-happened-button"]';
-
-  private readonly sentryReportForm =
-    '[data-testid="error-page-sentry-feedback-modal"]';
-
-  private readonly contactSupportButton =
-    '[data-testid="error-page-contact-support-button"]';
-
-  private readonly sentryFeedbackTextarea =
-    '[data-testid="error-page-sentry-feedback-textarea"]';
 
   private readonly sentryFeedbackSubmitButton =
     '[data-testid="error-page-sentry-feedback-submit-button"]';
 
   private readonly sentryFeedbackSuccessModal =
     '[data-testid="error-page-sentry-feedback-success-modal"]';
+
+  private readonly sentryFeedbackTextarea =
+    '[data-testid="error-page-sentry-feedback-textarea"]';
+
+  private readonly sentryReportForm =
+    '[data-testid="error-page-sentry-feedback-modal"]';
 
   private readonly visitSupportDataConsentModal =
     '[data-testid="visit-support-data-consent-modal"]';
@@ -50,23 +50,6 @@ class ErrorPage {
       throw e;
     }
     console.log('Error page is loaded');
-  }
-
-  async validateErrorMessage(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Message: Unable to find value of key "debug" for locale "en"`,
-      css: this.errorMessage,
-    });
-  }
-
-  async submitToSentryUserFeedbackForm(): Promise<void> {
-    console.log(`Open sentry user feedback form in error page`);
-    await this.driver.clickElement(this.sendReportToSentryButton);
-    await this.driver.waitForSelector(this.sentryReportForm);
-    await this.driver.fill(this.sentryFeedbackTextarea, FEEDBACK_MESSAGE);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.sentryFeedbackSubmitButton,
-    );
   }
 
   async clickContactButton(): Promise<void> {
@@ -93,6 +76,23 @@ class ErrorPage {
       this.visitSupportDataConsentModalRejectButton,
     );
     await this.driver.waitUntilXWindowHandles(2);
+  }
+
+  async submitToSentryUserFeedbackForm(): Promise<void> {
+    console.log(`Open sentry user feedback form in error page`);
+    await this.driver.clickElement(this.sendReportToSentryButton);
+    await this.driver.waitForSelector(this.sentryReportForm);
+    await this.driver.fill(this.sentryFeedbackTextarea, FEEDBACK_MESSAGE);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.sentryFeedbackSubmitButton,
+    );
+  }
+
+  async validateErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Message: Unable to find value of key "debug" for locale "en"`,
+      css: this.errorMessage,
+    });
   }
 
   async waitForSentrySuccessModal(): Promise<void> {

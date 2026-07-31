@@ -16,6 +16,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
 import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -55,6 +56,8 @@ type MetamaskOverrides = Partial<{
   countries: ResourceState<Country[]>;
   providers: ResourceState<Provider[], Provider | null>;
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
+  subjects: Record<string, unknown>;
+  permissionHistory: Record<string, unknown>;
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
@@ -75,6 +78,8 @@ const buildState = (over: MetamaskOverrides = {}) => ({
       isLoading: false,
       error: null,
     },
+    subjects: {},
+    permissionHistory: {},
     ...over,
   },
 });
@@ -129,6 +134,55 @@ describe('useRampsNavigation goToBuy', () => {
     await goToBuy(result);
     expect(openTab).toHaveBeenCalled();
     expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
+  it('flag on + ever connected to Portfolio → opens Portfolio (skips in-app)', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        subjects: {
+          [PORTFOLIO_ORIGINS[0]]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      }),
+    );
+    const opened = await goToBuy(result);
+    expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(true);
+    expect(openTab).toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
+  it('flag on + never connected to Portfolio → in-app token selection', async () => {
+    const { result, getModalName } = run(buildState());
+    const opened = await goToBuy(result);
+    expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 

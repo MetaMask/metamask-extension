@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponseV1,
+} from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import {
@@ -16,7 +19,7 @@ import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
 
 type UseBatchSellSubmitQuotesArgs = {
-  quoteResponses: ((QuoteResponse & QuoteMetadata) | null)[];
+  quoteResponses: ((QuoteResponseV1 & QuoteMetadata) | null)[];
   receivedAsset: BatchSellAsset;
 };
 
@@ -42,7 +45,9 @@ export default function useBatchSellSubmitQuotes({
   const srcChainId = quoteResponses.find((q) => q)?.quote.srcChainId;
   const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),
+    srcChainIdHex
+      ? getIsSmartTransaction(state as BridgeAppState, srcChainIdHex)
+      : false,
   );
   const fromAccount = useSelector(getFromAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);

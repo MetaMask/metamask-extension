@@ -1,12 +1,12 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SolanaTxresultPage {
-  private driver: Driver;
-
   private readonly closeButton = {
     text: 'Close',
     tag: 'span',
   };
+
+  private driver: Driver;
 
   private readonly viewTransactionLink = {
     text: 'View transaction',
@@ -67,16 +67,16 @@ class SolanaTxresultPage {
     }
   }
 
+  async clickOnClose(): Promise<void> {
+    await this.driver.clickElement(this.closeButton);
+  }
+
   async isTransactionDetailDisplayed(text: string): Promise<boolean> {
     const detail = await this.driver.waitForSelector({
       text,
       tag: 'p',
     });
     return await detail.isDisplayed();
-  }
-
-  async clickOnClose(): Promise<void> {
-    await this.driver.clickElement(this.closeButton);
   }
 }
 

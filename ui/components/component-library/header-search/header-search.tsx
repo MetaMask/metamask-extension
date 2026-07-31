@@ -29,7 +29,7 @@ function adaptTextFieldSearchProps(
   return {
     ...rest,
     size,
-    className: classnames('app-text-field-search', className),
+    className: classnames('w-full', className),
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       onChangeText?.(e.target.value);
       onChange?.(e);

@@ -253,6 +253,7 @@
     "methodData": "object",
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
+    "mode": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
@@ -322,6 +323,7 @@
     },
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
+    "proLayoutPreferences": "object",
     "productTour": "accountIcon",
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
@@ -340,6 +342,7 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "rawRemoteFeatureFlags": "object",
+    "recentlyViewedMarkets": "object",
     "recoveryPhraseReminderHasBeenShown": false,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",

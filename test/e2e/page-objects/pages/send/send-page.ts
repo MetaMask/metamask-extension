@@ -1,21 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
-  private readonly driver: Driver;
-
-  private readonly amountInput = { testId: 'send-amount-input' };
-
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
+
+  private readonly amountInput = { testId: 'send-amount-input' };
 
   private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly continueButtonEnabled =
     '[data-testid="send-continue-button"]:not([disabled])';
 
-  private readonly sendAlertAcknowledgeButton =
-    '[data-testid="send-alert-modal-acknowledge-button"]';
+  private readonly driver: Driver;
 
   private readonly header = {
     tag: 'h4',
@@ -45,6 +42,12 @@ class SendPage {
     tag: 'button',
   };
 
+  private readonly networkName = (networkName: string) => {
+    return {
+      testId: networkName,
+    };
+  };
+
   private readonly networkPicker = {
     testId: 'send-network-filter-toggle',
   };
@@ -55,6 +58,14 @@ class SendPage {
     testId: 'open-recipient-modal-btn',
   };
 
+  private readonly recipientValidationError = (errorText: string) => ({
+    css: '.mm-help-text',
+    text: errorText,
+  });
+
+  private readonly sendAlertAcknowledgeButton =
+    '[data-testid="send-alert-modal-acknowledge-button"]';
+
   private readonly solanaNetwork = {
     text: 'Solana',
   };
@@ -62,12 +73,6 @@ class SendPage {
   private readonly tokenAsset = (chainId: string, symbol: string) => {
     return {
       testId: `token-asset-${chainId}-${symbol}`,
-    };
-  };
-
-  private readonly networkName = (networkName: string) => {
-    return {
-      testId: networkName,
     };
   };
 
@@ -184,6 +189,18 @@ class SendPage {
       throw e;
     }
     console.log('Send page is loaded');
+  }
+
+  /**
+   * Waits for a recipient address validation error to be displayed.
+   * Recipient validation is debounced, so callers should expect this to
+   * wait rather than assert instantly.
+   *
+   * @param errorText - The expected (potentially localized) error text.
+   */
+  async checkRecipientValidationError(errorText: string): Promise<void> {
+    console.log(`Checking recipient validation error: ${errorText}`);
+    await this.driver.waitForSelector(this.recipientValidationError(errorText));
   }
 
   async checkSendFormIsLoaded(): Promise<void> {
@@ -312,23 +329,6 @@ class SendPage {
     await this.acknowledgeSendAlertIfPresent();
   }
 
-  /**
-   * Waits until the Continue button is visible, enabled, and remains so long
-   * enough to avoid clicking during enable/disable flicker from validation.
-   */
-  async waitForContinueButtonStablyEnabled(): Promise<void> {
-    console.log('Waiting for continue button to be stably enabled');
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          this.continueButtonEnabled,
-          1000,
-        );
-      },
-      { timeout: 30000, interval: 500, stableFor: 2000 },
-    );
-  }
-
   async pressOnAmountInput(key: string): Promise<void> {
     console.log(`Pressing ${key} on amount input`);
     await this.driver.press(
@@ -358,6 +358,23 @@ class SendPage {
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
     await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+  }
+
+  /**
+   * Waits until the Continue button is visible, enabled, and remains so long
+   * enough to avoid clicking during enable/disable flicker from validation.
+   */
+  async waitForContinueButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for continue button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.continueButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
+    );
   }
 
   async waitForSendAmountBalance(): Promise<void> {

@@ -2897,6 +2897,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionTrustAndSecurityTdp: {
+    name: 'extensionTrustAndSecurityTdp',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.40.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   stxMigrationBatchStatus: {
     name: 'stxMigrationBatchStatus',
     type: FeatureFlagType.Remote,

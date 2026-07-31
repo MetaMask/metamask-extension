@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -32,6 +33,18 @@ jest.mock('../../../components/app/chain-badge/chain-badge', () => ({
   ),
 }));
 
+const mockGetDisplayName = jest.fn((address?: string): string =>
+  address ? '0x11111...11111' : '',
+);
+
+jest.mock('../../../hooks/useGetDisplayName', () => ({
+  useGetDisplayName: jest.fn(() => mockGetDisplayName),
+}));
+
+const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
+  typeof useGetDisplayName
+>;
+
 const STELLAR_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
@@ -53,6 +66,13 @@ const buildActivity = (type: 'assetActivation' | 'assetDeactivation') =>
   }) as unknown as ActivityListItem;
 
 describe('useActivityRowContent', () => {
+  beforeEach(() => {
+    mockGetDisplayName.mockImplementation((address?: string) =>
+      address ? '0x11111...11111' : '',
+    );
+    mockUseGetDisplayName.mockReturnValue(mockGetDisplayName);
+  });
+
   it('derives the activation title and subtitle from the token symbol', () => {
     const { result } = renderHookWithProvider(() =>
       useActivityRowContent(buildActivity('assetActivation')),
@@ -140,5 +160,71 @@ describe('useActivityRowContent', () => {
       'activity_swap_success_title',
     );
     expect(result.current.subtitle).toBe('ETH → USDC');
+  });
+
+  it('shows the display name in send To: subtitles', () => {
+    const toAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    mockGetDisplayName.mockReturnValue('Alice');
+
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        to: toAddress,
+        token: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(mockGetDisplayName).toHaveBeenCalledWith(toAddress);
+    expect(result.current.subtitle).toBe(
+      'activity_send_success_description|Alice',
+    );
+  });
+
+  it('shows the display name in receive From: subtitles', () => {
+    const fromAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    mockGetDisplayName.mockReturnValue('Bob');
+
+    const activity = {
+      type: 'receive',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: fromAddress,
+        to: '0x2222222222222222222222222222222222222222',
+        token: {
+          direction: 'in',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(mockGetDisplayName).toHaveBeenCalledWith(fromAddress);
+    expect(result.current.subtitle).toBe(
+      'activity_receive_success_description|Bob',
+    );
   });
 });

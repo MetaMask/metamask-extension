@@ -1,6 +1,6 @@
 import {
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 
 const mockQuotes = [
@@ -330,4 +330,4 @@ const mockQuotes = [
   },
 ];
 
-export default mockQuotes as unknown as QuoteResponse[];
+export default mockQuotes as unknown as QuoteResponseV1[];

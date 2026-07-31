@@ -20,7 +20,7 @@
 
 /** @type {Record<string, string>} Minimal mock property keys for tests (subset of the real package). */
 const mockPerpsEventPropertyKeys = {
-  TIMESTAMP: 'perps_timestamp',
+  TIMESTAMP: 'timestamp',
   SCREEN_TYPE: 'screen_type',
   INTERACTION_TYPE: 'interaction_type',
   PREVIOUS_SCREEN: 'previous_screen',
@@ -38,11 +38,80 @@ const mockPerpsEventPropertyKeys = {
   ERROR_TYPE: 'error_type',
   ERROR_MESSAGE: 'error_message',
   LEVERAGE: 'leverage',
+  UTM_SOURCE: 'utm_source',
+  SCREEN_NAME: 'screen_name',
+  SOURCE: 'source',
+  HAS_PERP_BALANCE: 'has_perp_balance',
+  BUTTON_LOCATION: 'button_location',
+  BUTTON_TYPE: 'button_type',
+  OPEN_POSITION: 'open_position',
+  OPEN_ORDER: 'open_order',
+  MAX_SLIPPAGE_PCT: 'max_slippage_pct',
+  MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
+  ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
+  SETTING_TYPE: 'setting_type',
+  ACTION_TYPE: 'action_type',
+  ORDER_TIMESTAMP: 'order_timestamp',
+  ENTRY_POINT: 'entry_point',
+  DISCOVERY_SOURCE: 'discovery_source',
+  PERP_DISCOVERY_SOURCE: 'perp_discovery_source',
+  HL_FEE_RATE: 'hl_fee_rate',
+  BULK_ACTION_ID: 'bulk_action_id',
+  METAMASK_FEE: 'metamask_fee',
+  SIZE: 'size',
+  ACTION: 'action',
+  TYPE: 'type',
+  MARKET_CATEGORY_FILTER: 'market_category_filter',
+  NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
+  // UTM attribution.
+  UTM_MEDIUM: 'utm_medium',
+  UTM_CAMPAIGN: 'utm_campaign',
+  UTM_CONTENT: 'utm_content',
+  UTM_TERM: 'utm_term',
+  // Watchlist membership at event time.
+  WATCHLISTED: 'watchlisted',
+  // Sort / filter.
+  SORT_FIELD: 'sort_field',
+  SORT_DIRECTION: 'sort_direction',
+  FILTER_CATEGORY: 'filter_category',
+  // Client environment.
+  ENVIRONMENT_TYPE: 'environment_type',
+  // Order funnel + defaults.
+  ORDER_CONTEXT: 'order_context',
+  ORDER_SIZE: 'order_size',
+  ORDER_SIZE_PERCENT: 'order_size_percent',
+  INPUT_METHOD: 'input_method',
+  ORDER_HAS_TP: 'order_has_tp',
+  ORDER_HAS_SL: 'order_has_sl',
+  TRADE_WITH_TOKEN: 'trade_with_token',
+  SAVED_ORDER: 'saved_order',
+  DEFAULT_PAYMENT_TOKEN: 'default_payment_token',
+  DEFAULT_SIZE_AMOUNT: 'default_size_amount',
+  DEFAULT_LEVERAGE: 'default_leverage',
+  DEFAULT_AUTO_CLOSE: 'default_auto_close',
+  QUOTE_LATENCY_MS: 'quote_latency_ms',
+  ORDER_EXECUTION_LATENCY_MS: 'order_execution_latency_ms',
+  ERROR_REASON: 'error_reason',
+  LEVERAGE_USED: 'leverage_used',
+  MARGIN_USED: 'margin_used',
+  // Market search funnel.
+  SEARCH_QUERY: 'search_query',
+  RESULTS_COUNT: 'results_count',
+  RESULT_COUNT: 'result_count',
+  RESULT_RANK: 'result_rank',
+  MODE: 'mode',
+  // Abandonment.
+  TIME_ON_SCREEN_MS: 'time_on_screen_ms',
+  FROM_TOKEN: 'from_token',
+  FROM_CHAIN: 'from_chain',
+  TO_TOKEN: 'to_token',
+  TO_CHAIN: 'to_chain',
 };
 
 /** @type {Record<string, Record<string, string>>} Minimal mock enum-like values for tests (subset of the real package). */
 const mockPerpsEventValueLiterals = {
   SCREEN_TYPE: {
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
     ASSET_DETAILS: 'asset_details',
@@ -52,6 +121,20 @@ const mockPerpsEventValueLiterals = {
     ADD_MARGIN: 'add_margin',
     REMOVE_MARGIN: 'remove_margin',
     INCREASE_EXPOSURE: 'increase_exposure',
+    COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
+    FLIP_POSITION: 'flip_position',
+    ERROR: 'error',
+    GEO_BLOCK_NOTIF: 'geo_block_notif',
+    SEARCH_RESULTS_SHOWN: 'search_results_shown',
+    SEARCH_NO_RESULTS: 'search_no_results',
+    CREATE_TPSL: 'create_tpsl',
+    EDIT_TPSL: 'edit_tpsl',
+  },
+  SCREEN_NAME: {
+    PERPS_HOME: 'perps_home',
+    PERPS_MARKET_DETAILS: 'perps_market_details',
+    PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
+    PERPS_ORDER: 'perps_order',
   },
   INTERACTION_TYPE: {
     ORDER_TYPE_SELECTED: 'order_type_selected',
@@ -61,13 +144,48 @@ const mockPerpsEventValueLiterals = {
     CANDLE_PERIOD_CHANGED: 'candle_period_changed',
     FAVORITE_TOGGLED: 'favorite_toggled',
     SEARCH_CLICKED: 'search_clicked',
+    SEARCH_RESULT_TAPPED: 'search_result_tapped',
     TUTORIAL_STARTED: 'tutorial_started',
     TUTORIAL_COMPLETED: 'tutorial_completed',
     TUTORIAL_NAVIGATION: 'tutorial_navigation',
+    CLOSE_ALL_TAPPED: 'close_all_tapped',
+    CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
+    CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
+    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
+    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
+    SORT_APPLIED: 'sort_applied',
+    FILTER_APPLIED: 'filter_applied',
+    PAYMENT_TOKEN_SELECTOR_DISMISSED: 'payment_token_selector_dismissed',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
     WITHDRAW: 'withdraw',
+    TRADE: 'place_order',
+    PLACE_ORDER: 'place_order',
+    CLOSE: 'close',
+    ADD_MARGIN: 'add_margin',
+    REMOVE_MARGIN: 'remove_margin',
+    MARGIN: 'margin',
+    INCREASE_EXPOSURE: 'increase_exposure',
+    REDUCE_EXPOSURE: 'reduce_exposure',
+    TUTORIAL: 'tutorial',
+    SUPPORT: 'support',
+    FEEDBACK: 'give_feedback',
+    GIVE_FEEDBACK: 'give_feedback',
+  },
+  MAX_SLIPPAGE_SOURCE: {
+    DEFAULT: 'default',
+    USER_CONFIGURED: 'user_configured',
+  },
+  SETTING_TYPE: {
+    SLIPPAGE: 'slippage',
+  },
+  PERPS_HISTORY_TABS: {
+    TRADES: 'trades',
+  },
+  ACTION_TYPE: {
+    ADL_LEARN_MORE: 'adl_learn_more',
   },
   DIRECTION: {
     LONG: 'long',
@@ -76,9 +194,46 @@ const mockPerpsEventValueLiterals = {
   STATUS: {
     FAILED: 'failed',
     SUCCESS: 'success',
+    SUBMITTED: 'submitted',
+    EXECUTED: 'executed',
   },
   ERROR_TYPE: {
     BACKEND: 'backend',
+    VALIDATION: 'validation',
+    WARNING: 'warning',
+    NETWORK: 'network',
+  },
+  SOURCE: {
+    HOMESCREEN_TAB: 'homescreen_tab',
+    MARKET_LIST: 'perps_market_list_all',
+    ASSET_DETAILS: 'asset_detail_screen',
+    TRADING: 'trade_screen',
+    DEEPLINK: 'deeplink',
+    TRADE_SCREEN: 'trade_screen',
+    WALLET_HOME_PERPS_TAB: 'homescreen_tab',
+    ASSET_DETAIL_SCREEN: 'asset_detail_screen',
+    PERPS_MARKET_LIST_ALL: 'perps_market_list_all',
+    PERP_MARKET_SEARCH: 'perp_market_search',
+  },
+  ACTION: {
+    CREATE_POSITION: 'create_position',
+    INCREASE_EXPOSURE: 'increase_exposure',
+    FLIP_LONG_TO_SHORT: 'flip_long_to_short',
+    FLIP_SHORT_TO_LONG: 'flip_short_to_long',
+    ADD_MARGIN: 'add_margin',
+    REMOVE_MARGIN: 'remove_margin',
+    CREATE_TP_SL: 'create_tp_sl',
+    EDIT_TP_SL: 'edit_tp_sl',
+    TP: 'tp',
+    SL: 'sl',
+    ABANDON_ORDER: 'abandon_order',
+  },
+  BUTTON_LOCATION: {
+    MARKET_LIST: 'market_list',
+    ASSET_DETAILS: 'asset_details',
+    TRADING: 'trading',
+    WALLET_HOME_PERPS_TAB: 'perps_tab',
+    PERPS_TAB: 'perps_tab',
   },
 };
 
@@ -167,6 +322,24 @@ const mockTradingDefaults = {
 };
 
 /**
+ * Stub for the dedicated aggregated order-book WebSocket. Keeps controller /
+ * bridge unit tests from opening a real Hyperliquid socket.
+ */
+class MockAggregatedOrderBookConnection {
+  constructor(options) {
+    this.options = options;
+  }
+
+  subscribe(_params) {
+    return () => undefined;
+  }
+
+  close() {
+    return undefined;
+  }
+}
+
+/**
  * Simplified max-amount helper for unit tests (matches controller shape; omits
  * position-size rounding details that are covered by controller tests).
  *
@@ -204,4 +377,5 @@ module.exports = {
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
+  AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };
