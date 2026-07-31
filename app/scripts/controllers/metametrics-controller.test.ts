@@ -3305,10 +3305,13 @@ async function withController<ReturnValue>(
       ...mockAnalyticsControllerState,
     }));
 
-    messenger.registerActionHandler('AnalyticsController:optIn', () => {
-      mockAnalyticsControllerState.optedIn = true;
-      mockAnalyticsControllerState.consentDecisionMade = true;
-    });
+    messenger.registerActionHandler(
+      'AnalyticsController:optIn',
+      async () => {
+        mockAnalyticsControllerState.optedIn = true;
+        mockAnalyticsControllerState.consentDecisionMade = true;
+      },
+    );
 
     messenger.registerActionHandler('AnalyticsController:optOut', () => {
       mockAnalyticsControllerState.optedIn = false;
