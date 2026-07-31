@@ -6,6 +6,7 @@ import {
   getIsConfigRegistryApiEnabled,
   getFeaturedEvmNetworks,
 } from './config-registry';
+import { CaipChainId } from '@metamask/utils';
 
 /** State shape that satisfies both config-registry and remote feature flag selectors. */
 describe('config-registry selectors', () => {
@@ -103,7 +104,7 @@ describe('config-registry selectors', () => {
           configs: {
             networks: {
               'eip155:1329': {
-                chainId: 'eip155:1329',
+                chainId: 'eip155:1329' as CaipChainId,
                 name: 'Sei Network',
                 imageUrl: 'https://example.com/sei.png',
                 coingeckoPlatformId: 'sei-network',
@@ -164,7 +165,7 @@ describe('config-registry selectors', () => {
           configs: {
             networks: {
               'eip155:1329': {
-                chainId: 'eip155:1329',
+                chainId: 'eip155:1329' as CaipChainId,
                 name: 'Sei Network',
                 imageUrl: 'http://example.com/sei.png',
                 coingeckoPlatformId: 'sei-network',
