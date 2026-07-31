@@ -860,6 +860,111 @@ export type LegacyBackgroundApiServiceHandleDefiReferralAction = {
 };
 
 /**
+ * Adds a permitted account for the given origin.
+ *
+ * @param origin - The origin to add the permitted account for.
+ * @param address - The address of the account to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedAccountAction = {
+  type: `LegacyBackgroundApiService:addPermittedAccount`;
+  handler: LegacyBackgroundApiService['addPermittedAccount'];
+};
+
+/**
+ * Adds permitted accounts for the given origin.
+ *
+ * @param origin - The origin to add the permitted accounts for.
+ * @param addresses - The addresses of the accounts to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedAccountsAction = {
+  type: `LegacyBackgroundApiService:addPermittedAccounts`;
+  handler: LegacyBackgroundApiService['addPermittedAccounts'];
+};
+
+/**
+ * Removes a permitted account for the given origin.
+ *
+ * @param origin - The origin to remove the permitted account for.
+ * @param address - The address of the account to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermittedAccountAction = {
+  type: `LegacyBackgroundApiService:removePermittedAccount`;
+  handler: LegacyBackgroundApiService['removePermittedAccount'];
+};
+
+/**
+ * Sets the permitted accounts for the given origin, syncing chain scopes for
+ * each account's namespace. Revokes the entire permission when no accounts
+ * are provided.
+ *
+ * @param origin - The origin to set the permitted accounts for.
+ * @param caipAccountIds - The CAIP account ids to permit.
+ */
+export type LegacyBackgroundApiServiceSetPermittedAccountsAction = {
+  type: `LegacyBackgroundApiService:setPermittedAccounts`;
+  handler: LegacyBackgroundApiService['setPermittedAccounts'];
+};
+
+/**
+ * Adds a permitted chain for the given origin.
+ *
+ * @param origin - The origin to add the permitted chain for.
+ * @param chainId - The chain id to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedChainAction = {
+  type: `LegacyBackgroundApiService:addPermittedChain`;
+  handler: LegacyBackgroundApiService['addPermittedChain'];
+};
+
+/**
+ * Adds permitted chains for the given origin.
+ *
+ * @param origin - The origin to add the permitted chains for.
+ * @param chainIds - The chain ids to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedChainsAction = {
+  type: `LegacyBackgroundApiService:addPermittedChains`;
+  handler: LegacyBackgroundApiService['addPermittedChains'];
+};
+
+/**
+ * Removes a permitted chain for the given origin.
+ *
+ * @param origin - The origin to remove the permitted chain for.
+ * @param chainId - The chain id to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermittedChainAction = {
+  type: `LegacyBackgroundApiService:removePermittedChain`;
+  handler: LegacyBackgroundApiService['removePermittedChain'];
+};
+
+/**
+ * Sets the permitted chains for the given origin, preserving existing
+ * permitted accounts. Revokes the entire permission when no chains are
+ * provided (unless the origin is a Snap).
+ *
+ * @param origin - The origin to set the permitted chains for.
+ * @param chainIds - The chain ids to permit.
+ */
+export type LegacyBackgroundApiServiceSetPermittedChainsAction = {
+  type: `LegacyBackgroundApiService:setPermittedChains`;
+  handler: LegacyBackgroundApiService['setPermittedChains'];
+};
+
+/**
+ * Requests `eth_accounts` and `endowment:permitted-chains` permissions via an
+ * approval flow and returns the id of the created request.
+ *
+ * @param origin - The origin requesting the permissions.
+ * @returns The id of the created approval request.
+ */
+export type LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction =
+  {
+    type: `LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId`;
+    handler: LegacyBackgroundApiService['requestAccountsAndChainPermissionsWithId'];
+  };
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -935,4 +1040,13 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsRelaySupportedAction
   | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction
   | LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction
-  | LegacyBackgroundApiServiceHandleDefiReferralAction;
+  | LegacyBackgroundApiServiceHandleDefiReferralAction
+  | LegacyBackgroundApiServiceAddPermittedAccountAction
+  | LegacyBackgroundApiServiceAddPermittedAccountsAction
+  | LegacyBackgroundApiServiceRemovePermittedAccountAction
+  | LegacyBackgroundApiServiceSetPermittedAccountsAction
+  | LegacyBackgroundApiServiceAddPermittedChainAction
+  | LegacyBackgroundApiServiceAddPermittedChainsAction
+  | LegacyBackgroundApiServiceRemovePermittedChainAction
+  | LegacyBackgroundApiServiceSetPermittedChainsAction
+  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction;

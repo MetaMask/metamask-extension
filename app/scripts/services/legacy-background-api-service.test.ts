@@ -33,8 +33,15 @@ import {
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
@@ -68,6 +75,8 @@ import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMid
 import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
 import { trackEvent } from '../controllers/analytics';
+import { flushPromises } from '../../../test/lib/timer-helpers';
+import * as NetworkSelectors from '../../../shared/lib/selectors/networks';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
@@ -127,6 +136,15 @@ jest.mock('../../../shared/lib/trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
 }));
+
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
+  getNetworkConfigurationsByCaipChainId: jest.fn(),
+}));
+
+const mockGetNetworkConfigurationsByCaipChainId = jest.mocked(
+  NetworkSelectors.getNetworkConfigurationsByCaipChainId,
+);
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -6403,6 +6421,807 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('permission background API methods', () => {
+    const MOCK_NETWORK_CONFIG = {} as never;
+
+    beforeEach(() => {
+      mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({});
+    });
+
+    /**
+     * Registers the controller action handlers used by the permission methods.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param handlers - Optional handler mocks to override the defaults.
+     * @param handlers.getCaveat - Mock for `PermissionController:getCaveat`.
+     * @param handlers.updateCaveat - Mock for `PermissionController:updateCaveat`.
+     * @param handlers.revokePermission - Mock for `PermissionController:revokePermission`.
+     * @param handlers.grantPermissions - Mock for `PermissionController:grantPermissions`.
+     * @param handlers.addAndShowApprovalRequest - Mock for `ApprovalController:addAndShowApprovalRequest`.
+     * @param handlers.getAccountByAddress - Mock for `AccountsController:getAccountByAddress`.
+     * @returns The registered handler mocks.
+     */
+    function registerPermissionHandlers(
+      rootMessenger: RootMessenger,
+      handlers: {
+        getCaveat?: jest.Mock;
+        updateCaveat?: jest.Mock;
+        revokePermission?: jest.Mock;
+        grantPermissions?: jest.Mock;
+        addAndShowApprovalRequest?: jest.Mock;
+        getAccountByAddress?: jest.Mock;
+      } = {},
+    ) {
+      const mocks = {
+        getCaveat: handlers.getCaveat ?? jest.fn(),
+        updateCaveat: handlers.updateCaveat ?? jest.fn(),
+        revokePermission: handlers.revokePermission ?? jest.fn(),
+        grantPermissions: handlers.grantPermissions ?? jest.fn(),
+        addAndShowApprovalRequest:
+          handlers.addAndShowApprovalRequest ?? jest.fn(),
+        getAccountByAddress: handlers.getAccountByAddress ?? jest.fn(),
+      };
+      rootMessenger.registerActionHandler(
+        'PermissionController:getCaveat',
+        mocks.getCaveat,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:updateCaveat',
+        mocks.updateCaveat,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:revokePermission',
+        mocks.revokePermission,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        mocks.grantPermissions,
+      );
+      rootMessenger.registerActionHandler(
+        'ApprovalController:addAndShowApprovalRequest',
+        mocks.addAndShowApprovalRequest,
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        mocks.getAccountByAddress,
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getState',
+        jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+      );
+      rootMessenger.registerActionHandler(
+        'MultichainNetworkController:getState',
+        jest
+          .fn()
+          .mockReturnValue({ multichainNetworkConfigurationsByChainId: {} }),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getState',
+        jest.fn().mockReturnValue({
+          internalAccounts: { accounts: {}, selectedAccount: '' },
+        }),
+      );
+      rootMessenger.registerActionHandler(
+        'SnapController:getState',
+        jest.fn().mockReturnValue({ snaps: {} }),
+      );
+      return mocks;
+    }
+
+    describe('addPermittedAccount', () => {
+      it('gets the CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { getCaveat } = registerPermissionHandlers(rootMessenger);
+
+          try {
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            );
+          } catch {
+            // noop
+          }
+
+          expect(getCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+          );
+        });
+      });
+
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow(
+            'Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('re-throws if getCaveat fails unexpectedly', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new Error('unexpected getCaveat error');
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow('unexpected getCaveat error');
+        });
+      });
+
+      it('updates the caveat with the account and all matching scopes added', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: [] },
+                },
+                optionalScopes: {
+                  'bip122:000000000019d6689c085ae165831e93': {
+                    accounts: [
+                      'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                    ],
+                  },
+                },
+                isMultichainOrigin: true,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x4',
+              scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': MOCK_NETWORK_CONFIG,
+            'solana:foo': MOCK_NETWORK_CONFIG,
+            'solana:bar': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x4',
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: [] },
+              },
+              optionalScopes: {
+                'bip122:000000000019d6689c085ae165831e93': {
+                  accounts: [
+                    'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                  ],
+                },
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                  accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x4'],
+                },
+                'solana:foo': {
+                  accounts: ['solana:foo:0x4'],
+                },
+                'solana:bar': {
+                  accounts: ['solana:bar:0x4'],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+
+      it('triggers the DeFi referral flow when a new CAIP account id is added', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const handleDefiReferralSpy = jest
+            .spyOn(service, 'handleDefiReferralOnPermittedAccountsAdded')
+            .mockReturnValue(undefined);
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x1'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: false,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x2',
+              scopes: ['eip155:1'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'eip155:1': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x2',
+          );
+
+          expect(handleDefiReferralSpy).toHaveBeenCalledWith({
+            origin: 'foo.com',
+            newCaipAccountIds: ['eip155:1:0x2'],
+          });
+        });
+      });
+
+      it('does not trigger the DeFi referral flow when the account was already permitted', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const handleDefiReferralSpy = jest
+            .spyOn(service, 'handleDefiReferralOnPermittedAccountsAdded')
+            .mockReturnValue(undefined);
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x2'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: false,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x2',
+              scopes: ['eip155:1'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'eip155:1': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x2',
+          );
+
+          expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('addPermittedAccounts', () => {
+      it('gets the accounts for each passed in address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { getAccountByAddress } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          try {
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccounts',
+              'foo.com',
+              ['0x4', '0x5'],
+            );
+          } catch {
+            // noop
+          }
+
+          expect(getAccountByAddress).toHaveBeenCalledWith('0x4');
+          expect(getAccountByAddress).toHaveBeenCalledWith('0x5');
+        });
+      });
+
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccounts',
+              'foo.com',
+              ['0x1'],
+            ),
+          ).toThrow(
+            'Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+    });
+
+    describe('removePermittedAccount', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:removePermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow(
+            'Cannot remove account "0x1": No permissions exist for origin "foo.com".',
+          );
+        });
+      });
+
+      it('does nothing if the account being removed does not exist', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat, revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': {
+                      accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                    },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+              getAccountByAddress: jest.fn().mockReturnValue({
+                address: '0xdeadbeef',
+                scopes: ['eip155:0'],
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedAccount',
+            'foo.com',
+            '0xdeadbeef',
+          );
+
+          expect(updateCaveat).not.toHaveBeenCalled();
+          expect(revokePermission).not.toHaveBeenCalled();
+        });
+      });
+
+      it('revokes the entire permission if the removed account is the only account', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': { accounts: ['eip155:10:0x1'] },
+                  },
+                  optionalScopes: {
+                    'bip122:000000000019d6689c085ae165831e93': { accounts: [] },
+                  },
+                  isMultichainOrigin: true,
+                },
+              }),
+              getAccountByAddress: jest.fn().mockReturnValue({
+                address: '0x1',
+                scopes: ['eip155:0'],
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedAccount',
+            'foo.com',
+            '0x1',
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('setPermittedAccounts', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:setPermittedAccounts',
+              'foo.com',
+              ['eip155:1:0x1'],
+            ),
+          ).toThrow(
+            'Cannot set account permissions "eip155:1:0x1" for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('revokes the entire permission if no accounts are set', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': { accounts: ['eip155:10:0x1'] },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setPermittedAccounts',
+            'foo.com',
+            [],
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('addPermittedChain', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedChain',
+              'foo.com',
+              'eip155:1',
+            ),
+          ).toThrow(
+            'Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('updates the caveat with the chain added and accounts synced across scopes', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: [] },
+                  'eip155:10': { accounts: ['eip155:10:0x1'] },
+                },
+                optionalScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x2'] },
+                },
+                isMultichainOrigin: true,
+              },
+            }),
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedChain',
+            'foo.com',
+            'eip155:1337',
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1', 'eip155:1:0x2'] },
+                'eip155:10': { accounts: ['eip155:10:0x1', 'eip155:10:0x2'] },
+              },
+              optionalScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1', 'eip155:1:0x2'] },
+                'eip155:1337': {
+                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+    });
+
+    describe('addPermittedChains', () => {
+      it('updates the caveat with the chains added', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x1'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: true,
+              },
+            }),
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedChains',
+            'foo.com',
+            ['eip155:4', 'eip155:5'],
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1'] },
+              },
+              optionalScopes: {
+                'eip155:4': { accounts: ['eip155:4:0x1'] },
+                'eip155:5': { accounts: ['eip155:5:0x1'] },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+    });
+
+    describe('removePermittedChain', () => {
+      it('does nothing if the chain being removed does not exist', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat, revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:1': { accounts: [] },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedChain',
+            'foo.com',
+            'eip155:12345',
+          );
+
+          expect(updateCaveat).not.toHaveBeenCalled();
+          expect(revokePermission).not.toHaveBeenCalled();
+        });
+      });
+
+      it('revokes the entire permission if the removed chain is the only scope', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: { 'eip155:1': {} },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedChain',
+            'foo.com',
+            'eip155:1',
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('setPermittedChains', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:setPermittedChains',
+              'foo.com',
+              ['eip155:1'],
+            ),
+          ).toThrow(
+            'Cannot set permission for chainIds "eip155:1": No permissions exist for origin "foo.com".',
+          );
+        });
+      });
+
+      it('revokes the entire permission if no chains are set', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: { 'eip155:1': {} },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setPermittedChains',
+            'foo.com',
+            [],
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('requestAccountsAndChainPermissionsWithId', () => {
+      const approvedPermissions = {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0xdeadbeef'] },
+                },
+                isMultichainOrigin: false,
+              },
+            },
+          ],
+        },
+      };
+
+      it('requests approval and returns the request id', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { addAndShowApprovalRequest } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              addAndShowApprovalRequest: jest
+                .fn()
+                .mockResolvedValue({ permissions: approvedPermissions }),
+            },
+          );
+
+          const result = rootMessenger.call(
+            'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
+            'foo.com',
+          );
+
+          const { id } = addAndShowApprovalRequest.mock.calls[0][0];
+          expect(result).toStrictEqual(id);
+          expect(addAndShowApprovalRequest).toHaveBeenCalledWith({
+            id,
+            origin: 'foo.com',
+            requestData: {
+              metadata: { id, origin: 'foo.com' },
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {},
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+            type: MethodNames.RequestPermissions,
+          });
+        });
+      });
+
+      it('grants the approved CAIP-25 permission', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { grantPermissions } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              addAndShowApprovalRequest: jest
+                .fn()
+                .mockResolvedValue({ permissions: approvedPermissions }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
+            'foo.com',
+          );
+
+          await flushPromises();
+
+          expect(grantPermissions).toHaveBeenCalledWith({
+            subject: { origin: 'foo.com' },
+            approvedPermissions,
+          });
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -6512,6 +7331,13 @@ function getMessenger(
       'PermissionController:rejectPermissionsRequest',
       'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
+      'PermissionController:getCaveat',
+      'PermissionController:updateCaveat',
+      'PermissionController:grantPermissions',
+      'PermissionController:revokePermission',
+      'ApprovalController:addAndShowApprovalRequest',
+      'MultichainNetworkController:getState',
+      'SnapController:getState',
       'PreferencesController:getState',
       'PreferencesController:addReferralApprovedAccount',
       'PreferencesController:addReferralDeclinedAccount',
