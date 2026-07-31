@@ -2,7 +2,7 @@
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 import { base58AddressToHex } from '../../../seeder/tron/assets';
-import { TRON_ACCOUNT_ADDRESS } from './common-tron';
+import { SUN_PER_TRX, TRON_ACCOUNT_ADDRESS } from './common-tron';
 
 export type TronTxStatus = 'Confirmed' | 'Pending' | 'Failed';
 
@@ -11,6 +11,9 @@ const STATUS_TO_CONTRACT_RET: Record<TronTxStatus, string> = {
   Pending: '',
   Failed: 'OUT_OF_ENERGY',
 };
+
+// Stable block number used for confirmed transaction fixtures.
+export const MOCK_TRON_BLOCK_NUMBER = 77_000_000;
 
 // SunSwap router is a real, checksum-valid Tron address used as a stand-in for
 // any DEX/bridge contract. Tron seeder asserts base58 checksums when converting
@@ -81,7 +84,7 @@ export function trxSendTx(opts: {
   return {
     ret: ret(opts.status),
     txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
     block_timestamp: blockTimestamp,
     raw_data: {
       contract: [
@@ -113,7 +116,7 @@ export function trxReceiveTx(opts: {
   return {
     ret: ret(opts.status),
     txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
     block_timestamp: blockTimestamp,
     raw_data: {
       contract: [
@@ -200,7 +203,7 @@ function buildApproveRawTx(opts: {
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
@@ -283,11 +286,11 @@ function buildSwapRawTx(opts: {
   blockTimestamp: number;
 }) {
   const callValue =
-    opts.srcSymbol === 'TRX' ? Number(opts.srcAmount) * 1_000_000 : undefined;
+    opts.srcSymbol === 'TRX' ? Number(opts.srcAmount) * SUN_PER_TRX : undefined;
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
@@ -371,7 +374,7 @@ function buildBridgeRawTx(opts: {
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === 'Pending' ? undefined : MOCK_TRON_BLOCK_NUMBER,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
