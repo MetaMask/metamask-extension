@@ -272,5 +272,9 @@ class Confirmation {
       timeout: 5000,
     });
   }
+
+  async waitForInlineAlert(): Promise<void> {
+    await this.driver.waitForSelector(this.inlineAlertButton);
+  }
 }
 export default Confirmation;

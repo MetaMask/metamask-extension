@@ -37,7 +37,7 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2,
+      "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
@@ -114,17 +114,19 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-toggle.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 7,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/onboarding/import-wallet.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/onboarding/wallet-created.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
