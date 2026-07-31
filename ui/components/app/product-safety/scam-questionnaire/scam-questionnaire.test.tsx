@@ -12,7 +12,6 @@ jest.mock('./useScamQuestionnaireMetrics', () => ({
     trackViewed: jest.fn(),
     trackWarningDisplayed: jest.fn(),
     trackCompleted: jest.fn(),
-    trackDismissed: jest.fn(),
   }),
 }));
 

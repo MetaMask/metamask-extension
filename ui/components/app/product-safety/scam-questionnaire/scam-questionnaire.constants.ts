@@ -4,22 +4,19 @@ export const TOTAL_QUESTIONS = 3;
 // so analytics can segment responses by the questionnaire they came from.
 export const QUESTIONNAIRE_VERSION = '1';
 
-// Presentation-friendly labels for step IDs. Used both for the `step`
-// property on Scam Questionnaire Viewed and the `furthest_step` property
-// on Scam Questionnaire Dismissed.
-export type StepLabel = 'q1' | 'q2' | 'q3' | 'warning';
+// Presentation-friendly labels for the question steps, used for the `step`
+// property on Scam Questionnaire Viewed. The warning screen has its own event,
+// so it needs no label here.
+export type StepLabel = 'q1' | 'q2' | 'q3';
 
-export function stepLabelFromIndex(step: number): StepLabel {
+export function stepLabelFromIndex(step: 0 | 1 | 2): StepLabel {
   if (step === 0) {
     return 'q1';
   }
   if (step === 1) {
     return 'q2';
   }
-  if (step === 2) {
-    return 'q3';
-  }
-  return 'warning';
+  return 'q3';
 }
 
 // Seconds the bypass ("continue anyway") link stays disabled on the scam

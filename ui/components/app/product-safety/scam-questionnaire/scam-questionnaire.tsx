@@ -84,10 +84,6 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   const [pendingSelection, setPendingSelection] = useState<
     QuestionOption | undefined
   >();
-  // Contact Support isn't terminal — the warning stays up afterwards — so it
-  // rides along as a property on whichever terminal event follows.
-  const [contactSupportClicked, setContactSupportClicked] = useState(false);
-
   // Fire Scam Questionnaire Viewed at most once per question per session.
   // Backward navigation to a previously viewed question is a no-op — the
   // impression is already recorded. Aligns with Mixpanel funnel drop-off
@@ -119,18 +115,16 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       return;
     }
     if (step === 0) {
-      metrics.trackDismissed({
-        furthestStep: 0,
-        contactSupportClicked,
-        answers,
-      });
+      // Backing out doesn't acknowledge the Blockaid alert, so the
+      // questionnaire is re-shown on the next confirm attempt. No terminal
+      // event fires here because nothing has been decided yet.
       onDismiss();
       return;
     }
     const prevStep = (step - 1) as 0 | 1;
     setPendingSelection(answers[QUESTION_DEFS[prevStep].id]);
     setStep(prevStep);
-  }, [step, answers, contactSupportClicked, metrics, onDismiss]);
+  }, [step, answers, onDismiss]);
 
   const handleSelect = useCallback((option: QuestionOption) => {
     setPendingSelection(option);
@@ -160,69 +154,34 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
     } else {
       metrics.trackCompleted({
         status: 'clean',
-        contactSupportClicked,
         answers: nextAnswers,
       });
       onCleanPass();
     }
-  }, [
-    step,
-    pendingSelection,
-    answers,
-    contactSupportClicked,
-    metrics,
-    onCleanPass,
-  ]);
+  }, [step, pendingSelection, answers, metrics, onCleanPass]);
 
   const handleStop = useCallback(() => {
     metrics.trackCompleted({
       status: 'payment_stopped',
-      contactSupportClicked,
       answers,
     });
     onReject();
-  }, [answers, contactSupportClicked, metrics, onReject]);
-
-  const handleContactSupport = useCallback(() => {
-    setContactSupportClicked(true);
-  }, []);
+  }, [answers, metrics, onReject]);
 
   const handleProceed = useCallback(() => {
     metrics.trackCompleted({
       status: 'proceeded',
-      contactSupportClicked,
       answers,
     });
     onBypass();
-  }, [answers, contactSupportClicked, metrics, onBypass]);
-
-  const handleRequestClose = useCallback(() => {
-    metrics.trackDismissed({
-      furthestStep: step,
-      contactSupportClicked,
-      answers,
-    });
-    onDismiss();
-  }, [step, answers, contactSupportClicked, metrics, onDismiss]);
-
-  // `ModalContent` binds its Escape-key listener once on mount, so the
-  // `onClose` it captures never updates. Route the modal through a ref-backed
-  // wrapper so an Escape press reports the step and answers as of the press
-  // rather than as of the first render.
-  const requestCloseRef = useRef(handleRequestClose);
-  useEffect(() => {
-    requestCloseRef.current = handleRequestClose;
-  }, [handleRequestClose]);
-  const handleModalClose = useCallback(() => {
-    requestCloseRef.current();
-  }, []);
+  }, [answers, metrics, onBypass]);
 
   const questionDef = step === WARNING_STEP ? null : QUESTION_DEFS[step];
 
   return (
     <Modal
       isOpen
-      onClose={handleModalClose}
+      onClose={onDismiss}
       isClosedOnOutsideClick={false}
       data-testid="scam-questionnaire-modal"
     >
@@ -254,11 +213,7 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
               onContinue={handleContinue}
             />
           ) : (
-            <ScamWarning
-              onStop={handleStop}
-              onContactSupport={handleContactSupport}
-              onProceed={handleProceed}
-            />
+            <ScamWarning onStop={handleStop} onProceed={handleProceed} />
           )}
         </Box>
       </ModalContent>

@@ -19,13 +19,11 @@ import { PROCEED_DELAY_SECONDS } from './scam-questionnaire.constants';
 
 export type ScamWarningProps = {
   onStop: () => void;
-  onContactSupport: () => void;
   onProceed: () => void;
 };
 
 export const ScamWarning: React.FC<ScamWarningProps> = ({
   onStop,
-  onContactSupport,
   onProceed,
 }) => {
   const t = useI18nContext();
@@ -48,11 +46,10 @@ export const ScamWarning: React.FC<ScamWarningProps> = ({
   }, [secondsRemaining]);
 
   const handleContactSupport = useCallback(() => {
-    onContactSupport();
     if (SUPPORT_LINK) {
       global.platform?.openTab({ url: SUPPORT_LINK });
     }
-  }, [onContactSupport]);
+  }, []);
 
   return (
     <Box className="flex h-full flex-col">

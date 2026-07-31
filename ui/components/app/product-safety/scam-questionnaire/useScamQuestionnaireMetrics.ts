@@ -67,10 +67,6 @@ export function useScamQuestionnaireMetrics() {
           .addProperties({
             ...properties,
             questionnaire_version: QUESTIONNAIRE_VERSION,
-            // Constant for the confirmation, so every event carries it: the
-            // outcome events alone can't be read without the impression
-            // events supplying the denominator.
-            simulation_sending_assets_total_value: valueAtRisk,
           })
           .build(),
       );
@@ -90,34 +86,20 @@ export function useScamQuestionnaireMetrics() {
 
       trackCompleted: ({
         status,
-        contactSupportClicked,
         answers,
       }: {
         status: CompletionStatus;
-        contactSupportClicked: boolean;
         answers: Answers;
       }) =>
         fire(MetaMetricsEventName.ScamQuestionnaireCompleted, {
           status,
-          contact_support_clicked: contactSupportClicked,
           ...getAnswerRecord(answers),
           red_flag_count: getRedFlagCount(answers),
-        }),
-
-      trackDismissed: ({
-        furthestStep,
-        contactSupportClicked,
-        answers,
-      }: {
-        furthestStep: number;
-        contactSupportClicked: boolean;
-        answers: Answers;
-      }) =>
-        fire(MetaMetricsEventName.ScamQuestionnaireDismissed, {
-          furthest_step: stepLabelFromIndex(furthestStep),
-          contact_support_clicked: contactSupportClicked,
-          ...getAnswerRecord(answers),
-          red_flag_count_so_far: getRedFlagCount(answers),
+          // Carried only here. This is the one questionnaire event that fires
+          // at most once per confirmation, so it's the only one whose amounts
+          // are safe to sum. Denominators come from the transaction's own
+          // events, which already carry the same property.
+          simulation_sending_assets_total_value: valueAtRisk,
         }),
     };
   }, [createEventBuilder, trackEvent, valueAtRisk]);
