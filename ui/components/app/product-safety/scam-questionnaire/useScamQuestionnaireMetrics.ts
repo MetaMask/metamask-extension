@@ -95,10 +95,6 @@ export function useScamQuestionnaireMetrics() {
           status,
           ...getAnswerRecord(answers),
           red_flag_count: getRedFlagCount(answers),
-          // Carried only here. This is the one questionnaire event that fires
-          // at most once per confirmation, so it's the only one whose amounts
-          // are safe to sum. Denominators come from the transaction's own
-          // events, which already carry the same property.
           simulation_sending_assets_total_value: valueAtRisk,
         }),
     };
