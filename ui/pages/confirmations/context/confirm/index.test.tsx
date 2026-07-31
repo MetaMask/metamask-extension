@@ -59,7 +59,7 @@ function createStore() {
 
 function renderContextProvider(store: ReturnType<typeof createStore>) {
   return renderHook(() => useConfirmContext(), {
-    wrapper: ({ children }: { children: React.ReactElement }) => (
+    wrapper: ({ children }: { children: React.ReactNode }) => (
       <Provider store={store}>
         <ConfirmContextProvider>
           {children as React.ReactElement}
@@ -119,7 +119,7 @@ describe('ConfirmContextProvider', () => {
     };
 
     const { rerender } = renderHook(() => useConfirmContext(), {
-      wrapper: ({ children }: { children: React.ReactElement }) => (
+      wrapper: ({ children }: { children: React.ReactNode }) => (
         <Provider store={store}>
           <ConfirmContextProvider
             currentConfirmationOverride={override as never}

@@ -667,10 +667,10 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First mount — fetches from API
-    const {
-      result: firstResult,
-      unmount,
-    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
+    const { result: firstResult, unmount } = renderHook(
+      () => useMerklRewards(hookArgs),
+      { wrapper },
+    );
 
     await waitFor(() => {
       expect(firstResult.current.hasClaimableReward).toBe(true);

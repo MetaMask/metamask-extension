@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactNode } from 'react';
 import { renderHook, act, render, fireEvent } from '@testing-library/react';
 import { GasModalType } from '../../constants/gas';
 import {
@@ -24,7 +24,7 @@ jest.mock('../../components/modals/gas-fee-modal/gas-fee-modal', () => ({
 }));
 
 describe('GasFeeModalContext', () => {
-  const wrapper = ({ children }: { children: ReactElement }) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <GasFeeModalContextProvider>{children}</GasFeeModalContextProvider>
   );
 
