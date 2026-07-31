@@ -153,7 +153,6 @@ import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
-
 const Lock = mmLazy(() => import('../lock/index.ts'));
 const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
