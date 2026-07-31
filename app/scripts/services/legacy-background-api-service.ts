@@ -172,7 +172,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
-import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import {
+  getSentinelNetworkFlags,
+  isSendBundleSupported,
+  type SentinelNetwork,
+} from '../lib/transaction/sentinel-api';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
@@ -231,6 +235,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
+  'getSentinelNetworkFlags',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
@@ -1991,5 +1996,17 @@ export class LegacyBackgroundApiService {
    */
   async isRelaySupported(chainId: Hex): Promise<boolean> {
     return isRelaySupported(chainId);
+  }
+
+  /**
+   * Get Sentinel Network flags for the given chain.
+   *
+   * @param chainId - The chain ID to check for relay support.
+   * @returns The Sentinel network flags for the given chain, or undefined if not found.
+   */
+  async getSentinelNetworkFlags(
+    chainId: Hex,
+  ): Promise<SentinelNetwork | undefined> {
+    return getSentinelNetworkFlags(chainId);
   }
 }
