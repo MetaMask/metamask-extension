@@ -9,7 +9,9 @@ import { useLocation, useParams } from 'react-router-dom';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
+import { getUseExternalServices } from '../../../selectors';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
+import { getIsSecurityTrustTdpEnabled } from '../../../selectors/multichain/feature-flags';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import {
   getFeatureTags,
@@ -40,6 +42,11 @@ export const useSecurityTrustPageData = () => {
   const routeAsset = useSelector((state) =>
     getFungibleAssetForRoute(state, { assetId, chainId, decodedAsset }),
   );
+  const useExternalServices = useSelector(getUseExternalServices);
+  const isSecurityTrustTdpEnabled = useSelector(getIsSecurityTrustTdpEnabled);
+  const isEnabled = useExternalServices && isSecurityTrustTdpEnabled;
+  const resolvedAssetId =
+    isEnabled && assetId ? (assetId as CaipAssetType) : null;
 
   const {
     securityData: fetchedSecurityData,
@@ -49,8 +56,10 @@ export const useSecurityTrustPageData = () => {
     address: fetchedAddress,
     isNative: fetchedIsNative,
   } = useTokenSecurityData({
-    assetId: (assetId ?? null) as CaipAssetType | null,
-    prefetchedData: locationState?.securityData ?? undefined,
+    assetId: resolvedAssetId,
+    prefetchedData: isEnabled
+      ? (locationState?.securityData ?? undefined)
+      : undefined,
   });
 
   const parsedAssetMetadata = useMemo(() => {
@@ -70,7 +79,8 @@ export const useSecurityTrustPageData = () => {
   }, [assetId]);
 
   const securityData =
-    fetchedSecurityData ?? locationState?.securityData ?? null;
+    fetchedSecurityData ??
+    (isEnabled ? (locationState?.securityData ?? null) : null);
   const symbol =
     locationState?.symbol ?? fetchedSymbol ?? routeAsset?.symbol ?? '';
   const decimals =

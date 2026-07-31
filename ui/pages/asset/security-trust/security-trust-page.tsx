@@ -15,17 +15,21 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { transitionBack } from '../../../components/ui/transition';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTheme } from '../../../hooks/useTheme';
 import { SecurityTrustAnalyticsProperty } from '../components/security-trust/security-trust-analytics-properties';
+import { getUseExternalServices } from '../../../selectors';
+import { getIsSecurityTrustTdpEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   formatCompactSupply,
   formatFeePercent,
@@ -38,6 +42,7 @@ import type {
   TokenSecurityMetadata,
 } from '../types/security-trust';
 import type { ResultTypeConfig } from '../utils/security-utils';
+import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
 const OTHER_HOLDERS_BAR_BG_LIGHT = 'bg-[rgba(133,139,154,0.77)]';
@@ -470,10 +475,28 @@ const SecurityTrustPage = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
   const timeSpentStart = useRef(Date.now());
+  const params = useParams();
+  const { assetId } = resolveAssetRouteLookup(processAssetParams(params));
+  const useExternalServices = useSelector(getUseExternalServices);
+  const isSecurityTrustTdpEnabled = useSelector(getIsSecurityTrustTdpEnabled);
+  const isFeatureEnabled = useExternalServices && isSecurityTrustTdpEnabled;
   const otherHoldersBarClassName =
     theme === ThemeType.dark
       ? OTHER_HOLDERS_BAR_BG_DARK
       : OTHER_HOLDERS_BAR_BG_LIGHT;
+
+  useEffect(() => {
+    if (isFeatureEnabled) {
+      return;
+    }
+
+    if (assetId) {
+      navigate(buildAssetRoutePath(assetId), { replace: true });
+      return;
+    }
+
+    navigate(-1);
+  }, [assetId, isFeatureEnabled, navigate]);
 
   const {
     t,
@@ -562,6 +585,10 @@ const SecurityTrustPage = () => {
     );
     transitionBack(() => navigate(-1));
   };
+
+  if (!isFeatureEnabled) {
+    return null;
+  }
 
   const pageContent =
     isLoading && !securityData ? (

@@ -10928,9 +10928,6 @@
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
   },
-  "tutorial": {
-    "message": "Tutoriel"
-  },
   "txAlertTitle": {
     "message": "Cette transaction sera annulée"
   },

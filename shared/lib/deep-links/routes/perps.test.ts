@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention -- deeplink URL query params use snake_case */
+import { parse } from '../parse';
 import { perps } from './perps';
 import {
   DEFAULT_ROUTE,
@@ -69,7 +71,9 @@ describe('perpsRoute', () => {
 
       assertPathDestination(result);
       expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/ETH`);
-      expect(result.query.toString()).toBe('');
+      // Every deeplink entry is marked source=deeplink for attribution.
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBeNull();
     });
 
     it('navigates to the market detail route for a HIP-3 symbol', () => {
@@ -150,6 +154,81 @@ describe('perpsRoute', () => {
       assertPathDestination(result);
       expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);
       expect(result.query.get('filter')).toBeNull();
+    });
+  });
+
+  describe('deeplink attribution passthrough', () => {
+    it('marks source=deeplink and forwards utm_* on the asset destination', () => {
+      const result = perps.handler(
+        new URLSearchParams({
+          screen: 'asset',
+          symbol: 'ETH',
+          utm_source: 'ads',
+          utm_medium: 'cpc',
+          utm_campaign: 'summer',
+          utm_content: 'banner',
+          utm_term: 'perps',
+        }),
+      );
+
+      assertPathDestination(result);
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
+      expect(result.query.get('utm_medium')).toBe('cpc');
+      expect(result.query.get('utm_campaign')).toBe('summer');
+      expect(result.query.get('utm_content')).toBe('banner');
+      expect(result.query.get('utm_term')).toBe('perps');
+    });
+
+    it('marks source=deeplink and keeps the filter on the market-list destination', () => {
+      const result = perps.handler(
+        new URLSearchParams({
+          screen: 'market-list',
+          tab: 'crypto',
+          utm_source: 'ads',
+        }),
+      );
+
+      assertPathDestination(result);
+      expect(result.query.get('filter')).toBe('crypto');
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
+    });
+
+    it('marks source=deeplink and keeps tab=perps on the home destination', () => {
+      const result = perps.handler(new URLSearchParams({ utm_source: 'ads' }));
+
+      assertPathDestination(result);
+      expect(result.query.get('tab')).toBe('perps');
+      expect(result.query.get('source')).toBe('deeplink');
+      expect(result.query.get('utm_source')).toBe('ads');
+    });
+  });
+
+  // Regression: a signed deeplink lists only its routing params in `sig_params`,
+  // so `parse` canonicalizes the URL down to those params before the handler
+  // runs. Campaign `utm_*` are appended unsigned and were stripped by that step,
+  // so `withDeeplinkAttribution` forwarded `source=deeplink` but never the utm.
+  // `handlerSearchParams: 'original'` on the perps route restores them.
+  describe('utm passthrough on a signed link (parse integration)', () => {
+    it('forwards utm_* even when they are absent from sig_params', async () => {
+      const url = new URL(
+        'https://link.metamask.io/perps?screen=asset&symbol=ETH' +
+          '&sig=deadbeef&sig_params=screen,symbol' +
+          '&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch',
+      );
+
+      const parsed = await parse(url, { verify: false });
+      // parse only returns false when no route matches the pathname; /perps does.
+      expect(parsed).not.toBe(false);
+      const { destination } = parsed as Exclude<typeof parsed, false>;
+      assertPathDestination(destination);
+
+      expect(destination.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/ETH`);
+      expect(destination.query.get('source')).toBe('deeplink');
+      expect(destination.query.get('utm_source')).toBe('cdp_test');
+      expect(destination.query.get('utm_medium')).toBe('push');
+      expect(destination.query.get('utm_campaign')).toBe('q3_launch');
     });
   });
 });

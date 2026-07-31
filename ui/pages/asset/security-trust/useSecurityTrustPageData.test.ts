@@ -9,6 +9,24 @@ import { getAllMultichainNetworkConfigurations } from '../../../selectors/multic
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
 import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
+jest.mock('../../../selectors', () => ({
+  getUseExternalServices: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  getIsSecurityTrustTdpEnabled: jest.fn(),
+}));
+
+const { getUseExternalServices } = jest.requireMock('../../../selectors') as {
+  getUseExternalServices: jest.Mock;
+};
+
+const { getIsSecurityTrustTdpEnabled } = jest.requireMock(
+  '../../../selectors/multichain/feature-flags',
+) as {
+  getIsSecurityTrustTdpEnabled: jest.Mock;
+};
+
 const mockUseSelector = jest.fn();
 
 let mockRouteParams = {
@@ -114,6 +132,14 @@ describe('useSecurityTrustPageData', () => {
     });
 
     mockUseSelector.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return true;
+      }
+
+      if (selector === getIsSecurityTrustTdpEnabled) {
+        return true;
+      }
+
       if (selector === getAllMultichainNetworkConfigurations) {
         return multichainNetworks;
       }
@@ -212,5 +238,99 @@ describe('useSecurityTrustPageData', () => {
 
     expect(result.current.chainId).toBe(SolScope.Mainnet);
     expect(result.current.blockExplorerLink?.url).toContain('solscan.io');
+  });
+
+  it('does not request security data when feature is disabled', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return true;
+      }
+
+      if (selector === getIsSecurityTrustTdpEnabled) {
+        return false;
+      }
+
+      if (selector === getAllMultichainNetworkConfigurations) {
+        return multichainNetworks;
+      }
+
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x1': {
+            chainId: '0x1',
+            name: 'Ethereum Mainnet Hex',
+            defaultBlockExplorerUrlIndex: 0,
+            blockExplorerUrls: ['https://etherscan.io'],
+          },
+        };
+      }
+
+      if (typeof selector === 'function') {
+        return getFungibleAssetForRoute(
+          { metamask: {} },
+          {
+            assetId,
+            chainId: 'eip155:1',
+            decodedAsset: '0xabc',
+          },
+        );
+      }
+
+      return undefined;
+    });
+
+    renderHook(() => useSecurityTrustPageData());
+
+    expect(mockUseTokenSecurityData).toHaveBeenCalledWith({
+      assetId: null,
+      prefetchedData: undefined,
+    });
+  });
+
+  it('does not request security data when external services are disabled', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return false;
+      }
+
+      if (selector === getIsSecurityTrustTdpEnabled) {
+        return true;
+      }
+
+      if (selector === getAllMultichainNetworkConfigurations) {
+        return multichainNetworks;
+      }
+
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x1': {
+            chainId: '0x1',
+            name: 'Ethereum Mainnet Hex',
+            defaultBlockExplorerUrlIndex: 0,
+            blockExplorerUrls: ['https://etherscan.io'],
+          },
+        };
+      }
+
+      if (typeof selector === 'function') {
+        return getFungibleAssetForRoute(
+          { metamask: {} },
+          {
+            assetId,
+            chainId: 'eip155:1',
+            decodedAsset: '0xabc',
+          },
+        );
+      }
+
+      return undefined;
+    });
+
+    renderHook(() => useSecurityTrustPageData());
+
+    expect(mockUseTokenSecurityData).toHaveBeenCalledWith({
+      assetId: null,
+      prefetchedData: undefined,
+    });
   });
 });
