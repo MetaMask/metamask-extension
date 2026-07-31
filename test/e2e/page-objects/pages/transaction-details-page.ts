@@ -77,9 +77,9 @@ class TransactionDetailsPage {
    * @param explorerUrl
    */
   async checkExplorerUrl(explorerUrl: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: `[data-testid="${this.explorerTestId}"][data-explorer-url="${explorerUrl}"]`,
-    });
+    await this.driver.waitForSelector(
+      `[data-testid="${this.explorerTestId}"][data-explorer-url="${explorerUrl}"]`,
+    );
   }
 
   async checkFromToLink(address: string): Promise<void> {
