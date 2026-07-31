@@ -5829,6 +5829,9 @@
   "turnOnTokenDetection": {
     "message": "Cuir feabhas ar bhrath comharthaí i bhfeidhm"
   },
+  "tutorial": {
+    "message": "Rang teagaisc"
+  },
   "txAlertTitle": {
     "message": "Déanfar an t-idirbheart seo a aisiompú"
   },
