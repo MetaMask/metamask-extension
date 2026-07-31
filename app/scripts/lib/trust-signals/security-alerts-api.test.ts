@@ -16,6 +16,7 @@ describe('mapAddressScanResult', () => {
   it('maps controller ErrorResult wire value to extension ErrorResult wire value', () => {
     expect(
       mapAddressScanResult({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: AddressScanResultType.ErrorResult, // 'ErrorResult'
         label: '',
       }).result_type,
@@ -29,7 +30,11 @@ describe('mapAddressScanResult', () => {
       AddressScanResultType.Benign,
     ]) {
       expect(
-        mapAddressScanResult({ result_type: value, label: 'x' }).result_type,
+        mapAddressScanResult({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: value,
+          label: 'x',
+        }).result_type,
       ).toBe(value as string);
     }
   });
@@ -37,10 +42,15 @@ describe('mapAddressScanResult', () => {
   it('passes a Trusted verdict through even though the controller type omits it', () => {
     expect(
       mapAddressScanResult({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: 'Trusted' as AddressScanResultType,
         label: 'Uniswap',
       }),
-    ).toEqual({ result_type: ResultType.Trusted, label: 'Uniswap' });
+    ).toEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Trusted,
+      label: 'Uniswap',
+    });
   });
 });
 
@@ -55,7 +65,11 @@ describe('scanAddressAndAddToCache', () => {
   });
 
   it('returns the cached response without calling the controller', async () => {
-    const cached = { result_type: ResultType.Benign, label: '' };
+    const cached = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: '',
+    };
     const result = await scanAddressAndAddToCache(
       ADDRESS_MOCK,
       jest.fn().mockReturnValue(cached),
@@ -70,6 +84,7 @@ describe('scanAddressAndAddToCache', () => {
   it('writes a Loading entry keyed by chainId before the controller resolves', async () => {
     const addMock = jest.fn();
     scanAddressMock.mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Benign,
       label: '',
     });
@@ -81,6 +96,7 @@ describe('scanAddressAndAddToCache', () => {
       phishingControllerMock,
     );
     expect(addMock).toHaveBeenNthCalledWith(1, CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Loading,
       label: '',
     });
@@ -89,6 +105,7 @@ describe('scanAddressAndAddToCache', () => {
   it('caches the mapped controller result and returns it', async () => {
     const addMock = jest.fn();
     scanAddressMock.mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Malicious,
       label: 'scam',
     });
@@ -100,8 +117,13 @@ describe('scanAddressAndAddToCache', () => {
       phishingControllerMock,
     );
     expect(scanAddressMock).toHaveBeenCalledWith(CHAIN_ID_MOCK, ADDRESS_MOCK);
-    expect(result).toEqual({ result_type: ResultType.Malicious, label: 'scam' });
+    expect(result).toEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Malicious,
+      label: 'scam',
+    });
     expect(addMock).toHaveBeenNthCalledWith(2, CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Malicious,
       label: 'scam',
     });
@@ -120,6 +142,7 @@ describe('scanAddressAndAddToCache', () => {
       ),
     ).rejects.toThrow('network');
     expect(addMock).toHaveBeenNthCalledWith(2, CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.ErrorResult,
       label: '',
     });
