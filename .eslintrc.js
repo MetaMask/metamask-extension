@@ -65,8 +65,6 @@ module.exports = defineConfig([
       '.eslintrc.*.js',
       '.mocharc.js',
       '*.config.js',
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
       'development/**/*.js',
       'test/e2e/**/*.js',
       'test/helpers/*.js',
@@ -115,7 +113,6 @@ module.exports = defineConfig([
       'test/stub/**/*.js',
       'test/unit-global/**/*.js',
     ],
-    ignores: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
     extends: [
       eslintConfig,
       baseConfig,
@@ -672,22 +669,6 @@ module.exports = defineConfig([
     rules: {
       'n/no-process-exit': 'off',
       'n/hashbang': 'off',
-    },
-  },
-  /**
-   * Lockdown files
-   */
-  {
-    files: [
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
-      'test/helpers/protect-intrinsics-helpers.js',
-    ],
-    languageOptions: {
-      globals: {
-        harden: 'readonly',
-        Compartment: 'readonly',
-      },
     },
   },
   /**
