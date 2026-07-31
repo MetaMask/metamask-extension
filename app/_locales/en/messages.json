@@ -11347,9 +11347,6 @@
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "This transaction will be reverted"
   },
