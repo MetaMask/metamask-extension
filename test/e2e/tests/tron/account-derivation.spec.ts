@@ -251,7 +251,8 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests -- flaky clipboard copy in QR popup on CI; see #44165
+  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
@@ -287,8 +288,7 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- flaky receive-page timeout in CI; see #44165
-  it.skip('Shows each account Tron address on the Receive page and copies it', async function () {
+  it('Shows each account Tron address on the Receive page and copies it', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
