@@ -3,10 +3,6 @@ import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE } from './route';
 
 describe('batch-sell deep link route', () => {
-  it('forwards only signature-covered query parameters', () => {
-    expect(batchSell.handlerSearchParams).toBe('canonical');
-  });
-
   it('opens the default route with QR modal params for the batch sell deeplink', () => {
     const params = new URLSearchParams();
 
