@@ -26,7 +26,9 @@ export function buildRampsTransactionCompletedProperties(
   return {
     ramp_type: RAMPS_RAMP_TYPE,
     ramp_routing: RAMPS_RAMP_ROUTING,
-    // Join key back to the provider order — never emit an empty string.
+    // Join key back to the provider order — the provider-scoped order code (not
+    // the namespaced canonical id), read together with `provider_onramp`, and
+    // matching the `order_id` the checkout events emit. Never an empty string.
     ...(order.providerOrderId
       ? { provider_order_id: order.providerOrderId }
       : {}),

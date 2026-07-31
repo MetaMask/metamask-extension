@@ -16,25 +16,31 @@ import {
 type RampsOrderStatusChangedEventPayload =
   RampsControllerOrderStatusChangedEvent['payload'][0];
 
-// ponytail: unbounded in theory, one entry per terminal order per background
-// session in practice; swap for an LRU if that ever stops being true.
 const emittedTerminalOrders = new Set<string>();
 
 /**
  * Fires the ramps buy-flow terminal-outcome KPI (completed / failed) for an
- * order that reached a terminal status, from either source: the polling
- * `orderStatusChanged` transition or an order resolved already-terminal from
- * the checkout callback (which publishes no event and is never polled, since
- * polling skips terminal orders). Deduped by order code so a callback emit and
- * an in-flight poll emit for the same order can't double-count.
+ * order that reached a terminal status, from either source: the polled
+ * `orderStatusChanged` transition, or an order resolved already-terminal from
+ * the checkout callback — which publishes no event and is never polled, since
+ * polling skips terminal orders.
  *
- * ponytail: COMPLETED/FAILED only, canceled deferred.
+ * Only COMPLETED and FAILED are emitted; canceled is deferred.
  *
  * @param order - The order to evaluate.
  */
 export function trackRampsTerminalOrder(order?: RampsOrder): void {
+  // Dedupe on the canonical `{providerId}/orders/{orderCode}` id so a callback
+  // emit and an in-flight poll emit for one order can't double-count. Not on the
+  // bare order code: that is only unique within a single provider (and can be a
+  // custom id we generated), so it would swallow another provider's order.
   const orderCode = order && getInternalOrderCode(order);
-  if (orderCode && emittedTerminalOrders.has(orderCode)) {
+  const orderKey =
+    order?.id ??
+    (orderCode
+      ? `${order?.provider?.id ?? ''}/orders/${orderCode}`
+      : undefined);
+  if (orderKey && emittedTerminalOrders.has(orderKey)) {
     return;
   }
 
@@ -58,8 +64,8 @@ export function trackRampsTerminalOrder(order?: RampsOrder): void {
     return;
   }
 
-  if (orderCode) {
-    emittedTerminalOrders.add(orderCode);
+  if (orderKey) {
+    emittedTerminalOrders.add(orderKey);
   }
 }
 

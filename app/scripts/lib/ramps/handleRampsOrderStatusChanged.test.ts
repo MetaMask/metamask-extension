@@ -74,6 +74,7 @@ describe('handleRampsOrderStatusChanged', () => {
 
   it('emits once per order across the callback and polling paths', () => {
     const order = {
+      id: '/providers/moonpay/orders/order-1',
       providerOrderId: 'order-1',
       status: 'COMPLETED',
     } as unknown as RampsOrder;
@@ -85,5 +86,20 @@ describe('handleRampsOrderStatusChanged', () => {
     });
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('emits for both orders when two distinct orders share an order code', () => {
+    const shared = { status: 'COMPLETED', providerOrderId: 'same-code' };
+
+    trackRampsTerminalOrder({
+      ...shared,
+      id: '/providers/moonpay/orders/same-code',
+    } as unknown as RampsOrder);
+    trackRampsTerminalOrder({
+      ...shared,
+      id: '/providers/transak/orders/same-code',
+    } as unknown as RampsOrder);
+
+    expect(trackEvent).toHaveBeenCalledTimes(2);
   });
 });
