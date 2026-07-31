@@ -829,10 +829,7 @@ describe('PerpsOrderEntryPage', () => {
           isInitialLoading: true,
         });
         const store = mockStore(createMockState());
-        const { rerender } = renderWithProvider(
-          <PerpsOrderEntryPage />,
-          store,
-        );
+        const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
 
         expect(
           screen.queryByTestId('perps-order-book-toggle'),

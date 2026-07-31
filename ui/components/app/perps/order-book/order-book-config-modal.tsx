@@ -415,4 +415,3 @@ export const PerpsOrderBookConfigModal = ({
     </Modal>
   );
 };
-
