@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { DISCOVER_SEARCH_ROUTE } from '../../helpers/constants/routes';
 import { DiscoverSearchPage } from './discover-search';
 
@@ -99,7 +100,7 @@ describe('DiscoverSearchPage', () => {
         <DiscoverSearchPage />
       </QueryClientProvider>,
       store,
-      { initialEntries: [DISCOVER_SEARCH_ROUTE] },
+      DISCOVER_SEARCH_ROUTE,
     );
   };
 
@@ -111,7 +112,9 @@ describe('DiscoverSearchPage', () => {
     expect(screen.getByTestId('discover-tab-all')).toBeInTheDocument();
     expect(screen.getByTestId('discover-tab-crypto')).toBeInTheDocument();
     expect(screen.getByTestId('discover-tab-stocks')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Stock1')).toBeInTheDocument();
   });
 
