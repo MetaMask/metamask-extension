@@ -649,20 +649,24 @@ const PerpsWithdrawPage = () => {
                 (invalid → below minimum → exceeds balance), and an assertive
                 region would interrupt a screen reader mid-word on each change.
                 The submit error below is a discrete result, so it stays
-                assertive. */}
-            {validationMessage ? (
-              <Box
-                aria-live="polite"
-                data-testid="perps-withdraw-validation-error"
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                >
-                  {validationMessage}
-                </Text>
-              </Box>
-            ) : null}
+                assertive.
+
+                The region stays mounted and only its contents are conditional:
+                a live region inserted together with its text is commonly missed
+                by assistive tech, which watches regions already present in the
+                accessibility tree for changes. */}
+            <Box aria-live="polite">
+              {validationMessage ? (
+                <Box data-testid="perps-withdraw-validation-error">
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.ErrorDefault}
+                  >
+                    {validationMessage}
+                  </Text>
+                </Box>
+              ) : null}
+            </Box>
 
             {/* One line, not two: when the amount is invalid against the
                 current balance that message is the more specific one. */}

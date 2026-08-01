@@ -617,9 +617,14 @@ describe('PerpsWithdrawPage', () => {
     const validationAlert = await screen.findByTestId(
       'perps-withdraw-validation-error',
     );
-    expect(validationAlert).toHaveAttribute('aria-live', 'polite');
     expect(validationAlert).toHaveTextContent(
       messages.perpsWithdrawInsufficient.message,
+    );
+    // The live region must be the wrapper, not this node: a region inserted
+    // together with its text is commonly never announced.
+    expect(validationAlert.parentElement).toHaveAttribute(
+      'aria-live',
+      'polite',
     );
     expect(mockSubmit).not.toHaveBeenCalledWith(
       'perpsWithdraw',
@@ -1010,9 +1015,12 @@ describe('PerpsWithdrawPage', () => {
     expect(
       await screen.findByText(messages.perpsWithdrawFailed.message),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-withdraw-submit-error'),
-    ).toBeInTheDocument();
+    // Assertive, unlike the typing-driven validation line: a stopped submit is a
+    // discrete result and is this page's only feedback for it.
+    expect(screen.getByTestId('perps-withdraw-submit-error')).toHaveAttribute(
+      'role',
+      'alert',
+    );
     expect(
       screen.queryByText(messages.perpsWithdrawInsufficient.message),
     ).not.toBeInTheDocument();
