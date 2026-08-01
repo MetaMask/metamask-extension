@@ -1278,6 +1278,84 @@ describe('PerpsWithdrawPage', () => {
       await waitForBlockedWithdrawSettled();
     });
 
+    it('reports the shortfall against the adopted balance, never negative', async () => {
+      const user = userEvent.setup();
+      let accountStateReads = 0;
+      mockUsePerpsLiveAccount.mockReturnValue({
+        // Stream pinned low, so a later read is what the block is decided on.
+        account: { spendableBalance: '10' } as never,
+        isInitialLoading: false,
+      });
+      mockSubmit.mockImplementation((method: string) => {
+        if (method === 'perpsGetWithdrawalRoutes') {
+          return Promise.resolve([
+            {
+              assetId:
+                'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: 'eip155:42161',
+              contractAddress:
+                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+              constraints: { minAmount: '1.01' },
+            },
+          ]);
+        }
+        if (method === 'perpsGetAccountState') {
+          accountStateReads += 1;
+          return Promise.resolve({
+            withdrawableBalance: accountStateReads === 1 ? '100' : '50',
+          });
+        }
+        if (method === 'perpsWithdraw') {
+          return Promise.resolve({ success: false, error: 'nope' });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+      await settleInitialWithdrawRoutesFetch();
+
+      // First submit adopts the fresh $100; the withdrawal itself fails, so the
+      // page stays put with $100 adopted over the streamed $10.
+      const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+      await act(async () => {
+        await user.clear(amountInput);
+        await user.type(amountInput, '8');
+        await user.click(screen.getByTestId('perps-withdraw-submit'));
+      });
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
+      await awaitSubmitPromisesForMethod('perpsWithdraw');
+      await waitForWithdrawHandlerSettled();
+      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+
+      expect(
+        await screen.findByText(
+          `${messages.perpsAvailableBalance.message}$100.00`,
+        ),
+      ).toBeInTheDocument();
+
+      // Second submit is blocked by a $50 read. Measured against the streamed
+      // $10 the reported shortfall would be -40.
+      await act(async () => {
+        await user.clear(amountInput);
+        await user.type(amountInput, '60');
+        await user.click(screen.getByTestId('perps-withdraw-submit'));
+      });
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith('Perp Error', {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'validation',
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'insufficient_balance',
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: 'stale_streamed_balance',
+          [PERPS_EVENT_PROPERTY.SIZE]: '60',
+          [PERPS_EXTENSION_EVENT_PROPERTY.STALE_BALANCE_SHORTFALL]: 50,
+        });
+      });
+
+      await waitForBlockedWithdrawSettled();
+    });
+
     it('fires PerpsError when withdrawal throws an exception', async () => {
       const user = userEvent.setup();
       mockSubmit.mockImplementation((method: string) => {

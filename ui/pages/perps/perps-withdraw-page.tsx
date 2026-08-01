@@ -303,6 +303,21 @@ const PerpsWithdrawPage = () => {
       // total, which would block a withdrawal HyperLiquid accepts. Fail open
       // there too. Sub-account keys are named differently by the stream and by
       // this read, so completeness is compared by count.
+      //
+      // KNOWN GAP: this only covers the perps leg. `getAccountState` fans out
+      // over three reads — spot, per-dex perps, and the HL abstraction mode —
+      // and only the perps leg affects the sub-account count. If the spot or
+      // abstraction read fails transiently, the call still resolves and this
+      // check still says "complete", but `addSpotBalanceToAccountState` folds
+      // in no free spot USDC (it returns early on `spotBalance === 0`, and
+      // fold is disabled while the mode is unresolved). A Unified-mode user
+      // with free spot then sees a fresh figure below the streamed one and can
+      // be blocked from a withdrawal HyperLiquid would accept. It self-heals on
+      // the next stream tick, which releases the adopted balance. It is not
+      // detectable here: `AccountState` exposes no read-completeness signal and
+      // no spot component to compare against, so the real fix belongs in the
+      // controller — see the TAT-3490 report for why a second confirming read
+      // was rejected as a workaround.
       const isPartialRead =
         countSubAccounts(freshAccountState) < countSubAccounts(account);
       const freshAvailableNum = parsePerpsAmountInput(
@@ -353,10 +368,13 @@ const PerpsWithdrawPage = () => {
             PERPS_EVENT_VALUE.ERROR_MESSAGE_KEY.INSUFFICIENT_BALANCE,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: STALE_BALANCE_FAILURE_REASON,
           [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+          // Measured against the figure the block was actually decided on, not
+          // the streamed one: once an earlier read has been adopted,
+          // `availableNum` is that adopted figure, and subtracting from the
+          // streamed value there reports a negative "shortfall".
           [PERPS_EXTENSION_EVENT_PROPERTY.STALE_BALANCE_SHORTFALL]:
             Math.round(
-              (streamedAvailableNum - freshAvailableNum) *
-                SHORTFALL_CENTS_ROUNDING,
+              (availableNum - freshAvailableNum) * SHORTFALL_CENTS_ROUNDING,
             ) / SHORTFALL_CENTS_ROUNDING,
         });
         return;
@@ -408,6 +426,7 @@ const PerpsWithdrawPage = () => {
   }, [
     account,
     amount,
+    availableNum,
     freshBalance,
     hasValidInputs,
     isSubmitting,

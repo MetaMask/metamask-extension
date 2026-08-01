@@ -193,12 +193,16 @@ export const CancelOrderModal = ({
       // removed with its position). The user wanted it gone and it is gone, so
       // close out quietly instead of surfacing a failure they cannot act on.
       if (isOrderNoLongerOpenError(err)) {
-        // Deliberately no analytics here. `TradingService.cancelOrder` already
-        // emitted `Perp Order Cancel Transaction` (submitted, then failed with
-        // the provider's message) for this attempt, so it is in the funnel and
-        // identifiable; a UI event would be a second, contradictory-status row
-        // under the same name for one user action. Same reasoning the withdraw
-        // half applies when it drops its UI-side transaction events.
+        // Deliberately no analytics on THIS path. `TradingService.cancelOrder`
+        // already emitted `Perp Order Cancel Transaction` (submitted, then
+        // failed with the provider's message) for this attempt, so it is in the
+        // funnel and identifiable; a UI event here would be a second,
+        // contradictory-status row under the same name for one user action.
+        //
+        // The success (~line 169) and generic-failure (~line 198) paths below do
+        // still emit their own copies and duplicate the controller the same way.
+        // They predate this PR and removing them is a separate analytics change —
+        // do not "resolve" the inconsistency by re-adding an event here.
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
           dataTestId: 'perps-toast-cancel-order-already-closed',
