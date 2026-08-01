@@ -1,0 +1,75 @@
+name: Sync upstream daily
+
+on:
+  schedule:
+    # Runs at 06:00 UTC every day. Adjust the cron if you want a different time.
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  sync-upstream:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote and fetch
+        run: |
+          # Add the official MetaMask upstream remote if it doesn't exist
+          git remote add upstream https://github.com/MetaMask/metamask-extension.git || true
+          git fetch upstream --prune --tags
+
+      - name: Determine upstream default branch
+        id: upstream
+        run: |
+          UPSTREAM_DEFAULT_BRANCH=$(git remote show upstream | sed -nE 's/.*HEAD branch: (.*)/\1/p')
+          if [ -z "$UPSTREAM_DEFAULT_BRANCH" ]; then
+            echo "Could not determine upstream default branch, defaulting to 'main'"
+            UPSTREAM_DEFAULT_BRANCH=main
+          fi
+          echo "upstream_branch=$UPSTREAM_DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create sync branch and merge upstream
+        id: create_branch
+        env:
+          UPSTREAM_BRANCH: ${{ steps.upstream.outputs.upstream_branch }}
+        run: |
+          set -euo pipefail
+          DATE=$(date -u +%Y%m%d)
+          BRANCH=sync/upstream-${DATE}
+
+          # Create a new branch from the current default (assumes default is main)
+          git checkout -b "$BRANCH"
+
+          # Merge upstream default branch. If merge conflicts occur, the step will fail
+          git merge --no-edit "upstream/${UPSTREAM_BRANCH}"
+
+          # Push the new branch to the fork
+          git push origin "$BRANCH"
+
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create pull request for the merge
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: ${{ steps.create_branch.outputs.branch }}
+          title: "chore(sync): merge upstream MetaMask changes (${{ steps.create_branch.outputs.branch }})"
+          body: |
+            Automated sync from upstream repository MetaMask/metamask-extension.
+
+            This PR was created by an automated workflow that runs daily to keep the fork up to date with the upstream main branch.
+
+            If the merge has conflicts the workflow will fail and a human will need to resolve them.
+          draft: true
+          labels: automated, sync, upstream
