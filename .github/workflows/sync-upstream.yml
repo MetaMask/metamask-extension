@@ -63,7 +63,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          head: ${{ steps.create_branch.outputs.branch }}
+          branch: ${{ steps.create_branch.outputs.branch }}
           title: "chore(sync): merge upstream MetaMask changes (${{ steps.create_branch.outputs.branch }})"
           body: |
             Automated sync from upstream repository MetaMask/metamask-extension.
