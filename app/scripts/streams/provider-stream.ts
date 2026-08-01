@@ -20,7 +20,7 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
-import { setupSidepanelListener } from '../sidepanel/listener';
+import { onRequestOpenSidepanel } from '../sidepanel/content-script';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
@@ -360,7 +360,9 @@ export const initStreams = () => {
 
   browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
 
-  setupSidepanelListener();
+  if (!process.env.IN_TEST) {
+    browser.runtime.onMessage.addListener(onRequestOpenSidepanel);
+  }
 };
 
 // TODO:LegacyProvider: Delete

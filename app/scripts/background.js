@@ -115,7 +115,7 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
-import { createSidepanelOpener } from './sidepanel/opener';
+import { createSidepanelOpener } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -231,13 +231,7 @@ const senderOriginMapping = {};
 const tabOriginMapping = {};
 const frameIdMapping = {};
 
-// Coordinates opening the side panel through the content script's user gesture.
-// triggerUi calls requestSidePanelOpenFromTab when a real confirmation exists.
-const { requestSidePanelOpenFromTab } = createSidepanelOpener({
-  isSidepanelPreferred: () =>
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true,
-});
+const requestOpenSidepanel = createSidepanelOpener();
 
 if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -2122,6 +2116,12 @@ export function setupController(
 // Etc...
 //
 
+async function getCurrentTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true };
+  const [tab] = await chrome.tabs.query(queryOptions);
+  return tab;
+}
+
 /**
  * Opens the browser popup for user confirmation
  */
@@ -2140,19 +2140,17 @@ async function triggerUi() {
   const sidepanelPreferred =
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
-  const sidepanelSupported = Boolean(browser?.sidePanel?.open);
+  const sidepanelSupported = Boolean(chrome.sidePanel?.open);
 
-  // Confirmation exists: try opening the side panel from the focused window's
-  // active tab (not getActiveTabs()[0], which can be another window). Fallback
-  // to the notification window if the round-trip fails or there is no gesture.
+  // Attempt to open the sidepanel with a roundtrip request
   if (sidepanelPreferred && sidepanelSupported) {
-    const [focusedWindowActiveTab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    const activeTabId = focusedWindowActiveTab?.id;
-    if (activeTabId && (await requestSidePanelOpenFromTab(activeTabId))) {
-      return;
+    const tab = await getCurrentTab();
+    if (tab?.id) {
+      const opened = await requestOpenSidepanel(tab.id);
+      if (opened) {
+        return;
+      }
+      // If the sidepanel failed to open, fall back to opening the popup
     }
   }
 
@@ -2160,7 +2158,8 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0
+    openSidePanelCount === 0 &&
+    true
   ) {
     uiIsTriggering = true;
     try {
