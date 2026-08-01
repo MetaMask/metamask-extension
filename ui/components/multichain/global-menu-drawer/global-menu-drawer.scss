@@ -1,56 +1,73 @@
-// Native <dialog> enter/exit: animate the dialog + ::backdrop themselves
-// (not children), with display/overlay + allow-discrete + @starting-style.
-// See https://developer.chrome.com/blog/entry-exit-animations
+// Native <dialog> enter/exit via the CSS entry/exit model:
+// individual transform (`translate`), `display`/`overlay` + allow-discrete,
+// and `@starting-style`. See:
+// https://developer.chrome.com/blog/entry-exit-animations
 
 .global-menu-drawer {
-  // Panel sits on the right edge of the centered shell column
+  // Sit on the right edge of the centered shell column
+  box-sizing: border-box;
   width: min(var(--drawer-width, 400px), 100%);
   max-width: 100%;
   height: 100%;
   max-height: 100%;
-  margin: 0;
-  margin-right: max(0px, calc((100vw - var(--width-max)) / 2));
-  margin-left: auto;
+  margin-block: 0;
+  margin-inline-start: auto;
+  margin-inline-end: max(0px, calc((100vw - var(--width-max)) / 2));
   padding: 0;
   border: none;
-  overflow: hidden;
+  overflow: clip;
   background: transparent;
 
-  // EXIT / closed state
-  transform: translateX(100%);
-  transition:
-    transform 300ms ease-in-out,
-    display 300ms ease-in-out allow-discrete,
-    overlay 300ms ease-in-out allow-discrete;
+  // Closed / exit target (sidepanel / popup — dialog itself slides)
+  translate: 100% 0;
 
-  // OPEN state
+  transition-property: translate, display, overlay;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+  transition-behavior: allow-discrete;
+
   &[open] {
-    transform: translateX(0);
+    translate: 0 0;
   }
 
-  // Fullscreen: keep fox logo visible above the drawer
+  // Fullscreen: dialog is a fixed clip stencil (never translates). An inner
+  // `.global-menu-drawer__frame` does the slide so overflow:clip can contain it.
   &--fullscreen {
     top: 90px;
     height: calc(100% - 90px);
     max-height: calc(100% - 90px);
+    // Stay put — clipping box must not move with the slide
+    translate: none;
+
+    &[open] {
+      translate: none;
+    }
+
+    // Only discrete top-layer props on the dialog; slide lives on `__frame`
+    transition-property: display, overlay;
   }
 
   &--instant {
     transition-duration: 0.01ms;
+
+    .global-menu-drawer__frame {
+      transition-duration: 0.01ms;
+      animation-duration: 0.01ms;
+    }
 
     &::backdrop {
       transition-duration: 0.01ms;
     }
   }
 
-  // Dimmed backdrop (fullscreen / sidepanel only)
+  // Dimmed backdrop (fullscreen / sidepanel)
   &--backdrop::backdrop {
     background: var(--color-overlay-default);
     opacity: 0;
-    transition:
-      opacity 300ms ease-linear,
-      display 300ms ease-linear allow-discrete,
-      overlay 300ms ease-linear allow-discrete;
+    transition-property: opacity, display, overlay;
+    transition-duration: 300ms;
+    transition-timing-function: linear;
+    transition-behavior: allow-discrete;
   }
 
   &--backdrop[open]::backdrop {
@@ -62,10 +79,48 @@
   }
 }
 
-// ENTRY: before-open starting point
+@keyframes global-menu-drawer-slide-in {
+  from {
+    translate: 100% 0;
+  }
+
+  to {
+    translate: 0 0;
+  }
+}
+
+// Fullscreen slide surface — clipped by the stationary dialog
+.global-menu-drawer__frame {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+
+  // Exit / closed (when dialog loses [open], allow-discrete keeps dialog
+  // painted so this transition can finish)
+  translate: 100% 0;
+  transition-property: translate;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+.global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
+  translate: 0 0;
+  // Enter: keyframes + backwards beat @starting-style for nested paint-in
+  animation: global-menu-drawer-slide-in 300ms ease-in-out backwards;
+}
+
+// Before-open snapshots — paired with allow-discrete on display/overlay
 @starting-style {
   .global-menu-drawer[open] {
-    transform: translateX(100%);
+    translate: 100% 0;
+  }
+
+  .global-menu-drawer--fullscreen[open] {
+    translate: none;
+  }
+
+  .global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
+    translate: 100% 0;
   }
 
   .global-menu-drawer--backdrop[open]::backdrop {
@@ -79,14 +134,19 @@
     .global-menu-drawer {
       width: 100%;
       max-width: 100%;
-      margin: 0;
+      margin-inline: 0;
     }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .global-menu-drawer,
+  .global-menu-drawer__frame,
   .global-menu-drawer--backdrop::backdrop {
-    transition: none;
+    transition-duration: 0.01ms;
+  }
+
+  .global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
+    animation: none;
   }
 }

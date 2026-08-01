@@ -78,6 +78,43 @@ export const GlobalMenuDrawer = ({
     .filter(Boolean)
     .join(' ');
 
+  const panel = (
+    <Box
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
+      backgroundColor={
+        isPureBlack
+          ? BoxBackgroundColor.BackgroundAlternative
+          : BoxBackgroundColor.BackgroundDefault
+      }
+    >
+      {showCloseButton && (
+        <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Md}
+            ariaLabel={title || t('close')}
+            onClick={requestClose}
+            data-testid="drawer-close-button"
+            className="text-icon-alternative"
+            iconProps={{ color: IconColor.IconAlternative }}
+          />
+          {title && (
+            <span className="sr-only" id={titleId}>
+              {title}
+            </span>
+          )}
+        </Box>
+      )}
+
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
+      >
+        {children}
+      </Box>
+    </Box>
+  );
+
   return (
     <dialog
       ref={dialogRef}
@@ -89,40 +126,11 @@ export const GlobalMenuDrawer = ({
       onClose={handleDialogClose}
       style={{ '--drawer-width': width } as React.CSSProperties}
     >
-      <Box
-        className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
-        backgroundColor={
-          isPureBlack
-            ? BoxBackgroundColor.BackgroundAlternative
-            : BoxBackgroundColor.BackgroundDefault
-        }
-      >
-        {showCloseButton && (
-          <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Md}
-              ariaLabel={title || t('close')}
-              onClick={requestClose}
-              data-testid="drawer-close-button"
-              className="text-icon-alternative"
-              iconProps={{ color: IconColor.IconAlternative }}
-            />
-            {title && (
-              <span className="sr-only" id={titleId}>
-                {title}
-              </span>
-            )}
-          </Box>
-        )}
-
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
-        >
-          {children}
-        </Box>
-      </Box>
+      {isFullscreen ? (
+        <div className="global-menu-drawer__frame">{panel}</div>
+      ) : (
+        panel
+      )}
     </dialog>
   );
 };
