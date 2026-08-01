@@ -199,10 +199,10 @@ export const CancelOrderModal = ({
         // funnel and identifiable; a UI event here would be a second,
         // contradictory-status row under the same name for one user action.
         //
-        // The success (~line 169) and generic-failure (~line 198) paths below do
-        // still emit their own copies and duplicate the controller the same way.
-        // They predate this PR and removing them is a separate analytics change —
-        // do not "resolve" the inconsistency by re-adding an event here.
+        // The success path above and the generic-failure path below do still
+        // emit their own copies and duplicate the controller the same way. They
+        // predate this PR and removing them is a separate analytics change — do
+        // not "resolve" the inconsistency by re-adding an event here.
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
           dataTestId: 'perps-toast-cancel-order-already-closed',

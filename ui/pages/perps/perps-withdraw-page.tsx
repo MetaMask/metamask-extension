@@ -108,7 +108,15 @@ const PerpsWithdrawPage = () => {
   const [amount, setAmount] = useState('0');
   const [withdrawalRoutes, setWithdrawalRoutes] = useState<AssetRoute[]>([]);
   const [routesError, setRoutesError] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  // `fromStaleBalanceGuard` marks the message as derived from one reading of the
+  // balance, so a newer reading can retire it. Everything else — a provider
+  // rejection, a thrown withdrawal, no account selected — is about the attempt
+  // itself and outlives any balance change: on this page that message is the
+  // only feedback such a failure has.
+  const [submitError, setSubmitError] = useState<{
+    message: string;
+    fromStaleBalanceGuard: boolean;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [freshBalance, setFreshBalance] = useState<{
     streamRevision: number;
@@ -139,11 +147,15 @@ const PerpsWithdrawPage = () => {
       available: streamedAvailableNum,
       revision: streamReading.revision + 1,
     });
-    // A new reading retires the previous submit's verdict along with the
-    // adopted balance it was reached against. Without this the error is a latch:
-    // it outlives the balance that justified it and ends up rendered next to a
-    // higher balance and an enabled Submit button.
-    setSubmitError(null);
+    // A new reading retires the stale-balance guard's verdict along with the
+    // adopted balance it was reached against; otherwise that message is a latch
+    // and ends up rendered next to a higher balance and an enabled Submit
+    // button. Only that message: a withdrawal that actually failed is not about
+    // the balance, and clearing it here would leave the failure with no surface
+    // at all on the next price tick.
+    setSubmitError((current) =>
+      current?.fromStaleBalanceGuard ? null : current,
+    );
   }
   const streamRevision = streamReading.revision;
 
@@ -280,13 +292,19 @@ const PerpsWithdrawPage = () => {
     const cleanAmount = amount.replace(/,/gu, '.').trim();
 
     if (!selectedAccount?.address) {
-      setSubmitError(t('perpsWithdrawNoAccount'));
+      setSubmitError({
+        message: t('perpsWithdrawNoAccount'),
+        fromStaleBalanceGuard: false,
+      });
       setIsSubmitting(false);
       return;
     }
 
     if (!isValidPerpsWithdrawAmount(cleanAmount)) {
-      setSubmitError(t('perpsWithdrawInvalidAmount'));
+      setSubmitError({
+        message: t('perpsWithdrawInvalidAmount'),
+        fromStaleBalanceGuard: false,
+      });
       setIsSubmitting(false);
       return;
     }
@@ -370,7 +388,10 @@ const PerpsWithdrawPage = () => {
         // higher balance and an enabled button. The precise message is left to
         // `validationMessage`, which is derived from the current figure and so
         // clears itself.
-        setSubmitError(t('perpsWithdrawFailed'));
+        setSubmitError({
+          message: t('perpsWithdrawFailed'),
+          fromStaleBalanceGuard: true,
+        });
         // The guard is the fix for the ticket's largest withdraw bucket and
         // returns before `perpsWithdraw`, so the controller emits nothing for
         // it — report it here or prevented failures silently leave the funnel.
@@ -408,14 +429,15 @@ const PerpsWithdrawPage = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
       });
-      setSubmitError(
-        result?.error
+      setSubmitError({
+        message: result?.error
           ? (translatePerpsError(
               new Error(result.error),
               t as (key: string) => string,
             ) ?? t('perpsWithdrawFailed'))
           : t('perpsWithdrawFailed'),
-      );
+        fromStaleBalanceGuard: false,
+      });
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
@@ -426,10 +448,12 @@ const PerpsWithdrawPage = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
-      setSubmitError(
-        translatePerpsError(error, t as (key: string) => string) ??
+      setSubmitError({
+        message:
+          translatePerpsError(error, t as (key: string) => string) ??
           t('perpsWithdrawFailed'),
-      );
+        fromStaleBalanceGuard: false,
+      });
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
@@ -621,8 +645,16 @@ const PerpsWithdrawPage = () => {
               rowVariant={ConfirmInfoRowSize.Small}
             />
 
+            {/* Polite, not assertive: this line re-derives as the user types
+                (invalid → below minimum → exceeds balance), and an assertive
+                region would interrupt a screen reader mid-word on each change.
+                The submit error below is a discrete result, so it stays
+                assertive. */}
             {validationMessage ? (
-              <Box role="alert" data-testid="perps-withdraw-validation-error">
+              <Box
+                aria-live="polite"
+                data-testid="perps-withdraw-validation-error"
+              >
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.ErrorDefault}
@@ -640,7 +672,7 @@ const PerpsWithdrawPage = () => {
                   variant={TextVariant.BodySm}
                   color={TextColor.ErrorDefault}
                 >
-                  {submitError}
+                  {submitError.message}
                 </Text>
               </Box>
             ) : null}

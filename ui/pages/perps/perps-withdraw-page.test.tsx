@@ -612,8 +612,13 @@ describe('PerpsWithdrawPage', () => {
     await awaitSubmitPromisesForMethod('perpsGetAccountState');
 
     // The block has no other feedback, so the message must reach a screen
-    // reader rather than only appearing on screen.
-    expect(await screen.findByRole('alert')).toHaveTextContent(
+    // reader rather than only appearing on screen. Polite rather than
+    // assertive: this line re-derives while the user is still typing.
+    const validationAlert = await screen.findByTestId(
+      'perps-withdraw-validation-error',
+    );
+    expect(validationAlert).toHaveAttribute('aria-live', 'polite');
+    expect(validationAlert).toHaveTextContent(
       messages.perpsWithdrawInsufficient.message,
     );
     expect(mockSubmit).not.toHaveBeenCalledWith(
@@ -1165,7 +1170,10 @@ describe('PerpsWithdrawPage', () => {
       return Promise.resolve(undefined);
     });
 
-    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+    const { rerender } = renderWithProvider(
+      <PerpsWithdrawPage />,
+      createMockStore(),
+    );
 
     await settleInitialWithdrawRoutesFetch();
 
@@ -1200,6 +1208,25 @@ describe('PerpsWithdrawPage', () => {
 
     await waitForWithdrawHandlerSettled();
     await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+
+    // A price tick must not take the message with it. `withdrawableBalance`
+    // moves with unrealized PnL, so for anyone holding a position this fires
+    // constantly — and this message is the only feedback a failed withdrawal
+    // has on this page.
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: makeAccountState({ spendableBalance: '100.01' }),
+      isInitialLoading: false,
+    });
+    await act(async () => {
+      rerender(<PerpsWithdrawPage />);
+    });
+
+    expect(
+      screen.getByText(messages.perpsWithdrawFailed.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-withdraw-submit-error'),
+    ).toBeInTheDocument();
   });
 
   it('survives withdrawal routes fetch rejection', async () => {
