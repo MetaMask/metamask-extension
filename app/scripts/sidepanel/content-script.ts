@@ -5,6 +5,8 @@ import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
  * Re-emits the open action when the background signals a REQUEST_OPEN_SIDEPANEL.
  *
  * @param message - The message received from the background script.
+ * @param message.type - The message type.
+ * @param message.nonce - The nonce correlating the open request.
  */
 export function onRequestOpenSidepanel(message: {
   type?: string;

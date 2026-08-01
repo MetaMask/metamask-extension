@@ -2119,7 +2119,7 @@ export function setupController(
 
 async function getCurrentTab() {
   const queryOptions = { active: true, lastFocusedWindow: true };
-  const [tab] = await chrome.tabs.query(queryOptions);
+  const [tab] = await browser.tabs.query(queryOptions);
   return tab;
 }
 
@@ -2141,7 +2141,7 @@ async function triggerUi() {
   const sidepanelPreferred =
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
-  const sidepanelSupported = Boolean(chrome.sidePanel?.open);
+  const sidepanelSupported = Boolean(browser.sidePanel?.open);
   const dappOpenSidepanelEnabled = getBooleanFeatureFlag(
     controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
       ?.dappOpenSidepanel,
