@@ -139,6 +139,11 @@ const PerpsWithdrawPage = () => {
       available: streamedAvailableNum,
       revision: streamReading.revision + 1,
     });
+    // A new reading retires the previous submit's verdict along with the
+    // adopted balance it was reached against. Without this the error is a latch:
+    // it outlives the balance that justified it and ends up rendered next to a
+    // higher balance and an enabled Submit button.
+    setSubmitError(null);
   }
   const streamRevision = streamReading.revision;
 
@@ -617,7 +622,7 @@ const PerpsWithdrawPage = () => {
             />
 
             {validationMessage ? (
-              <Box role="alert">
+              <Box role="alert" data-testid="perps-withdraw-validation-error">
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.ErrorDefault}
@@ -630,7 +635,7 @@ const PerpsWithdrawPage = () => {
             {/* One line, not two: when the amount is invalid against the
                 current balance that message is the more specific one. */}
             {submitError && !validationMessage ? (
-              <Box role="alert">
+              <Box role="alert" data-testid="perps-withdraw-submit-error">
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.ErrorDefault}

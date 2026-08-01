@@ -519,6 +519,9 @@ describe('PerpsWithdrawPage', () => {
     expect(
       await screen.findByText(messages.perpsWithdrawInsufficient.message),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-withdraw-validation-error'),
+    ).toBeInTheDocument();
   });
 
   it('allows withdrawal even when user is geo-blocked', async () => {
@@ -847,10 +850,19 @@ describe('PerpsWithdrawPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
     // The block is over, so its message must go with it — otherwise the page
-    // shows "Amount exceeds your available Perps balance." beside an enabled
-    // Submit button.
+    // shows an error beside an enabled Submit button. Both the precise and the
+    // generic copy: the latch, not the wording, is what has to clear.
     expect(
       screen.queryByText(messages.perpsWithdrawInsufficient.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsWithdrawFailed.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-withdraw-validation-error'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-withdraw-submit-error'),
     ).not.toBeInTheDocument();
   });
 
@@ -992,6 +1004,9 @@ describe('PerpsWithdrawPage', () => {
     // and would still be sitting there after the balance recovered.
     expect(
       await screen.findByText(messages.perpsWithdrawFailed.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-withdraw-submit-error'),
     ).toBeInTheDocument();
     expect(
       screen.queryByText(messages.perpsWithdrawInsufficient.message),
