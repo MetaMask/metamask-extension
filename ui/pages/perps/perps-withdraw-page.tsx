@@ -350,14 +350,22 @@ const PerpsWithdrawPage = () => {
       }
 
       if (hasUsableFreshRead && freshAvailableNum < requestedNum) {
-        // Say why the submit stopped instead of relying on the adopted balance
-        // to surface it through `validationMessage`: the adoption is keyed on
-        // the stream revision captured when the click started, so a balance
-        // pushed while this read was in flight leaves it inert — and waking the
-        // service worker to run this read is itself a common trigger for such a
-        // push. Without this the button would just re-enable and the click
-        // would look like it did nothing.
-        setSubmitError(t('perpsWithdrawInsufficient'));
+        // Say the submit stopped, rather than relying on the adopted balance to
+        // surface it through `validationMessage`: the adoption is keyed on the
+        // stream revision captured when the click started, so a balance pushed
+        // while this read was in flight leaves it inert — and waking the service
+        // worker to run this read is itself a common trigger for such a push.
+        // Without this the button would just re-enable and the click would look
+        // like it did nothing.
+        //
+        // Deliberately the generic "could not be completed" rather than
+        // `perpsWithdrawInsufficient`: this message outlives the reading it came
+        // from, and once the stream catches up with a funded balance a latched
+        // "Amount exceeds your available Perps balance" would sit next to a
+        // higher balance and an enabled button. The precise message is left to
+        // `validationMessage`, which is derived from the current figure and so
+        // clears itself.
+        setSubmitError(t('perpsWithdrawFailed'));
         // The guard is the fix for the ticket's largest withdraw bucket and
         // returns before `perpsWithdraw`, so the controller emits nothing for
         // it — report it here or prevented failures silently leave the funnel.
@@ -619,9 +627,9 @@ const PerpsWithdrawPage = () => {
               </Box>
             ) : null}
 
-            {/* Suppressed when the validation line already says the same thing:
-                a blocked withdrawal sets both once the fresh balance is adopted. */}
-            {submitError && submitError !== validationMessage ? (
+            {/* One line, not two: when the amount is invalid against the
+                current balance that message is the more specific one. */}
+            {submitError && !validationMessage ? (
               <Box role="alert">
                 <Text
                   variant={TextVariant.BodySm}

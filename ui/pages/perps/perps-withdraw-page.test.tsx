@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { AccountState } from '@metamask/perps-controller';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
@@ -135,6 +136,44 @@ const mockUsePerpsLiveAccount = usePerpsLiveAccount as jest.MockedFunction<
 >;
 
 /**
+ * Build a complete `AccountState` from the few fields a test cares about.
+ *
+ * Typed rather than `{ … } as never`, so a shape change in the controller's
+ * `AccountState` surfaces here instead of being silenced.
+ *
+ * @param partial - Fields this test needs; everything else defaults to '0'.
+ */
+function makeAccountState(partial: Partial<AccountState> = {}): AccountState {
+  const spendableBalance = partial.spendableBalance ?? '0';
+  return {
+    totalBalance: spendableBalance,
+    spendableBalance,
+    // Mirrors spendable unless the caller sets it. `getTradeableBalance` prefers
+    // `withdrawableBalance ?? spendableBalance`, so a literal '0' default here
+    // would zero the balance for every test that only sets spendable.
+    withdrawableBalance: spendableBalance,
+    marginUsed: '0',
+    unrealizedPnl: '0',
+    returnOnEquity: '0',
+    ...partial,
+  };
+}
+
+/**
+ * A `subAccountBreakdown` entry. Only the key count matters to the page, but the
+ * balances are required by the type.
+ */
+function makeSubAccount(): NonNullable<
+  AccountState['subAccountBreakdown']
+>[string] {
+  return {
+    spendableBalance: '0',
+    withdrawableBalance: '0',
+    totalBalance: '0',
+  };
+}
+
+/**
  * Await every promise returned for a given `submitRequestToBackground` method so
  * `.then()` handlers (e.g. `setWithdrawalRoutes`) run inside `act`. Handles more
  * than one call (e.g. effect re-run).
@@ -237,7 +276,7 @@ describe('PerpsWithdrawPage', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { spendableBalance: '100' } as never,
+      account: makeAccountState({ spendableBalance: '100' }),
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
@@ -517,10 +556,10 @@ describe('PerpsWithdrawPage', () => {
   it('uses available-to-trade balance for withdraw max and validation', async () => {
     const user = userEvent.setup();
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: {
+      account: makeAccountState({
         spendableBalance: '0',
         withdrawableBalance: '100',
-      } as never,
+      }),
       isInitialLoading: false,
     });
 
@@ -586,10 +625,13 @@ describe('PerpsWithdrawPage', () => {
   it('submits the withdrawal when the fresh balance read omits a sub-account', async () => {
     const user = userEvent.setup();
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: {
+      account: makeAccountState({
         spendableBalance: '100',
-        subAccountBreakdown: { main: {}, builderdex: {} },
-      } as never,
+        subAccountBreakdown: {
+          main: makeSubAccount(),
+          builderdex: makeSubAccount(),
+        },
+      }),
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
@@ -642,10 +684,10 @@ describe('PerpsWithdrawPage', () => {
   it('blocks the withdrawal when the fresh read sees a sub-account the stream has not cached', async () => {
     const user = userEvent.setup();
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: {
+      account: makeAccountState({
         spendableBalance: '100',
-        subAccountBreakdown: { main: {} },
-      } as never,
+        subAccountBreakdown: { main: makeSubAccount() },
+      }),
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
@@ -793,7 +835,7 @@ describe('PerpsWithdrawPage', () => {
     // The stream catches up with a genuinely funded balance: the adopted figure
     // must be released, otherwise the page pins $20 for the rest of its mount.
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { spendableBalance: '150' } as never,
+      account: makeAccountState({ spendableBalance: '150' }),
       isInitialLoading: false,
     });
     rerender(<PerpsWithdrawPage />);
@@ -804,6 +846,12 @@ describe('PerpsWithdrawPage', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
+    // The block is over, so its message must go with it — otherwise the page
+    // shows "Amount exceeds your available Perps balance." beside an enabled
+    // Submit button.
+    expect(
+      screen.queryByText(messages.perpsWithdrawInsufficient.message),
+    ).not.toBeInTheDocument();
   });
 
   it('does not re-pin the released fresh balance when the stream reports the earlier value again', async () => {
@@ -853,7 +901,7 @@ describe('PerpsWithdrawPage', () => {
 
     // The stream moves on, releasing the adopted $20.
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { spendableBalance: '150' } as never,
+      account: makeAccountState({ spendableBalance: '150' }),
       isInitialLoading: false,
     });
     rerender(<PerpsWithdrawPage />);
@@ -870,7 +918,7 @@ describe('PerpsWithdrawPage', () => {
     // which the user cannot refresh from this page because submit is capped at
     // the pinned figure and the fresh read only runs from the submit handler.
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { spendableBalance: '100' } as never,
+      account: makeAccountState({ spendableBalance: '100' }),
       isInitialLoading: false,
     });
     rerender(<PerpsWithdrawPage />);
@@ -926,7 +974,7 @@ describe('PerpsWithdrawPage', () => {
     // adoption is keyed on the revision captured at click time, so it can no
     // longer apply — the block must still reach the user.
     mockUsePerpsLiveAccount.mockReturnValue({
-      account: { spendableBalance: '150' } as never,
+      account: makeAccountState({ spendableBalance: '150' }),
       isInitialLoading: false,
     });
     await act(async () => {
@@ -939,9 +987,15 @@ describe('PerpsWithdrawPage', () => {
     });
     await waitForBlockedWithdrawSettled();
 
+    // Generic copy, not "Amount exceeds your available Perps balance": the
+    // stream now says $150, so the precise message would contradict the screen
+    // and would still be sitting there after the balance recovered.
     expect(
-      await screen.findByText(messages.perpsWithdrawInsufficient.message),
+      await screen.findByText(messages.perpsWithdrawFailed.message),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsWithdrawInsufficient.message),
+    ).not.toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalledWith(
       'perpsWithdraw',
       expect.anything(),
@@ -1283,7 +1337,7 @@ describe('PerpsWithdrawPage', () => {
       let accountStateReads = 0;
       mockUsePerpsLiveAccount.mockReturnValue({
         // Stream pinned low, so a later read is what the block is decided on.
-        account: { spendableBalance: '10' } as never,
+        account: makeAccountState({ spendableBalance: '10' }),
         isInitialLoading: false,
       });
       mockSubmit.mockImplementation((method: string) => {
