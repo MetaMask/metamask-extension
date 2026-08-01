@@ -10,10 +10,7 @@ export const RootLayout = () => {
   const showBottomNav = useBottomNavBar();
 
   return (
-    <div
-      className={cn('w-full h-full flex flex-col', width)}
-      data-testid="app-root-layout"
-    >
+    <div className={cn('w-full h-full flex flex-col', width)}>
       <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
         <Outlet />
       </div>
