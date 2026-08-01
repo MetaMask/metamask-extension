@@ -883,6 +883,71 @@ describe('PerpsWithdrawPage', () => {
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
   });
 
+  it('still tells the user why the withdrawal stopped when the stream ticks mid-read', async () => {
+    const user = userEvent.setup();
+    let resolveAccountState!: (value: { withdrawableBalance: string }) => void;
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        return new Promise((resolve) => {
+          resolveAccountState = resolve as typeof resolveAccountState;
+        });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    const { rerender } = renderWithProvider(
+      <PerpsWithdrawPage />,
+      createMockStore(),
+    );
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    // Serving the read woke the service worker, which reconnected the account
+    // socket and pushed a new balance while the read was still in flight. The
+    // adoption is keyed on the revision captured at click time, so it can no
+    // longer apply — the block must still reach the user.
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: { spendableBalance: '150' } as never,
+      isInitialLoading: false,
+    });
+    await act(async () => {
+      rerender(<PerpsWithdrawPage />);
+    });
+
+    await act(async () => {
+      resolveAccountState({ withdrawableBalance: '20' });
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
+    });
+    await waitForBlockedWithdrawSettled();
+
+    expect(
+      await screen.findByText(messages.perpsWithdrawInsufficient.message),
+    ).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalledWith(
+      'perpsWithdraw',
+      expect.anything(),
+    );
+  });
+
   it('refreshes the adopted fresh balance when a later read recovers', async () => {
     const user = userEvent.setup();
     let accountStateReads = 0;

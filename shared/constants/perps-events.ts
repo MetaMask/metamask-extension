@@ -131,20 +131,10 @@ export const PERPS_EVENT_VALUE = {
  *
  * The perps controller exposes no canonical key for the gap between the
  * streamed (cached) balance and the freshly read one, which the withdraw page
- * reports when it blocks a withdrawal the provider would reject (TAT-3490), nor
- * for the cancel that resolves because the order was already off the book.
+ * reports when it blocks a withdrawal the provider would reject (TAT-3490).
  * Kept out of `PERPS_EVENT_PROPERTY` so the "must mirror the controller" rule
  * above stays unambiguous.
  */
 export const PERPS_EXTENSION_EVENT_PROPERTY = {
   STALE_BALANCE_SHORTFALL: 'stale_balance_shortfall',
-  CANCEL_OUTCOME: 'cancel_outcome',
-} as const;
-
-/** Values for `PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME`. */
-export const PERPS_EXTENSION_CANCEL_OUTCOME = {
-  /** The provider cancelled the order. */
-  CANCELLED: 'cancelled',
-  /** The order was already filled, cancelled elsewhere, or removed with its position. */
-  ALREADY_CLOSED: 'already_closed',
 } as const;

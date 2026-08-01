@@ -891,7 +891,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/perps/perps-withdraw-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 147
+      "React: Act warnings (component updates not wrapped)": 148
     },
     "ui/pages/routes/routes.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 4,

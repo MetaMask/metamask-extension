@@ -3,11 +3,7 @@ import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EXTENSION_CANCEL_OUTCOME,
-  PERPS_EXTENSION_EVENT_PROPERTY,
-} from '../../../../../shared/constants/perps-events';
+import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
@@ -619,8 +615,6 @@ describe('CancelOrderModal', () => {
             asset: baseOrder.symbol,
             status: 'success',
             [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
-            [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
-              PERPS_EXTENSION_CANCEL_OUTCOME.CANCELLED,
           }),
         );
       });
@@ -706,16 +700,12 @@ describe('CancelOrderModal', () => {
         'Perp Error',
         expect.anything(),
       );
-      // Quiet for the user, but still in the funnel and distinguishable from a
-      // cancel the provider actually performed.
-      expect(mockTrack).toHaveBeenCalledWith(
+      // No UI-side transaction event either: the controller already emitted
+      // `Perp Order Cancel Transaction` for this attempt, so one here would be a
+      // second, contradictory-status row for a single user action.
+      expect(mockTrack).not.toHaveBeenCalledWith(
         'Perp Order Cancel Transaction',
-        expect.objectContaining({
-          [PERPS_EVENT_PROPERTY.ASSET]: baseOrder.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: 'success',
-          [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
-            PERPS_EXTENSION_CANCEL_OUTCOME.ALREADY_CLOSED,
-        }),
+        expect.anything(),
       );
     });
 
@@ -747,16 +737,12 @@ describe('CancelOrderModal', () => {
         'Perp Error',
         expect.anything(),
       );
-      // Quiet for the user, but still in the funnel and distinguishable from a
-      // cancel the provider actually performed.
-      expect(mockTrack).toHaveBeenCalledWith(
+      // No UI-side transaction event either: the controller already emitted
+      // `Perp Order Cancel Transaction` for this attempt, so one here would be a
+      // second, contradictory-status row for a single user action.
+      expect(mockTrack).not.toHaveBeenCalledWith(
         'Perp Order Cancel Transaction',
-        expect.objectContaining({
-          [PERPS_EVENT_PROPERTY.ASSET]: baseOrder.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: 'success',
-          [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
-            PERPS_EXTENSION_CANCEL_OUTCOME.ALREADY_CLOSED,
-        }),
+        expect.anything(),
       );
     });
   });
