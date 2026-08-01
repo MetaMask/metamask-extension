@@ -1002,6 +1002,10 @@ describe('Multichain Selectors', () => {
       expect(getImageForChainId(CHAIN_IDS.MAINNET)).toBe(ETH_TOKEN_IMAGE_URL);
     });
 
+    it('returns an image URL for a known EVM CAIP chain id', () => {
+      expect(getImageForChainId('eip155:1')).toBe(ETH_TOKEN_IMAGE_URL);
+    });
+
     it('returns undefined for an unknown chain id', () => {
       expect(getImageForChainId('unknown:chain')).toBeUndefined();
     });

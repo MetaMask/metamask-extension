@@ -31,7 +31,13 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -85,6 +91,8 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
@@ -95,14 +103,23 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
+import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
+import { AssetActivateCard } from './asset-activation-card';
+import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+import {
+  AssetPageSecurityTrustBanner,
+  AssetPageSecurityTrustHeaderBadge,
+  AssetPageSecurityTrustProvider,
+  AssetPageSecurityTrustSection,
+} from './security-trust';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -120,30 +137,57 @@ const AssetPage = ({
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
-  const caipChainId = isCaipChainId(asset.chainId)
-    ? asset.chainId
-    : formatChainIdToCaip(asset.chainId);
-  const selectedAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  const caipChainId = useMemo(
+    () =>
+      isCaipChainId(asset.chainId)
+        ? asset.chainId
+        : formatChainIdToCaip(asset.chainId),
+    [asset.chainId],
+  );
+  const selectSelectedAccount = useMemo(
+    () =>
+      (
+        state: Parameters<
+          typeof getInternalAccountBySelectedAccountGroupAndCaip
+        >[0],
+      ) =>
+        getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+    [caipChainId],
+  );
+  const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
   }, []);
 
   const { chainId, type, symbol, name, image } = asset;
+  const tokenAddress =
+    asset.type === AssetType.token ? asset.address : undefined;
+  const aggregators =
+    asset.type === AssetType.token ? asset.aggregators : undefined;
 
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, chainId),
+  const selectIsSwapsChain = useMemo(
+    () => (state: Parameters<typeof getIsSwapsChain>[0]) =>
+      getIsSwapsChain(state, chainId),
+    [chainId],
   );
+  const isSwapsChain = useSelector(selectIsSwapsChain);
+  const selectIsBridgeChain = useMemo(
+    () => (state: Parameters<typeof getIsBridgeChain>[0]) =>
+      getIsBridgeChain(state, chainId),
+    [chainId],
+  );
+  const isBridgeChain = useSelector(selectIsBridgeChain);
 
-  const isSigningEnabled =
-    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-    selectedAccount.type === TrxAccountType.Eoa;
+  const isSigningEnabled = useMemo(
+    () =>
+      selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+      selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+      selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+      selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+      selectedAccount.type === TrxAccountType.Eoa,
+    [selectedAccount.methods, selectedAccount.type],
+  );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -164,27 +208,30 @@ const AssetPage = ({
     getCompletedMetaMetricsOnboarding,
   );
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = useMemo(
+    () => completedMetaMetricsOnboarding && isOptedIn,
+    [completedMetaMetricsOnboarding, isOptedIn],
+  );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const analyticsId = useSelector(getAnalyticsId);
 
   let address =
     (() => {
-      if (type === AssetType.token) {
-        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      if (tokenAddress) {
+        return isEvm ? toChecksumHexAddress(tokenAddress) : tokenAddress;
       }
       return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
-  const contractAddress = (() => {
-    if (shouldShowContractAddress) {
+  const contractAddress = useMemo(() => {
+    if (shouldShowContractAddress && tokenAddress) {
       return isEvm
-        ? toChecksumHexAddress(asset.address)
+        ? toChecksumHexAddress(tokenAddress)
         : parseCaipAssetType(address as CaipAssetType).assetReference;
     }
     return '';
-  })();
+  }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
   const { currentPrice } = useCurrentPrice(asset);
 
@@ -229,10 +276,29 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+
+  const securityTrustToken = useMemo(
+    () => ({
+      symbol,
+      name,
+      chainId: String(chainId),
+      address,
+      decimals: asset.decimals,
+      isNative: type === AssetType.native,
+      image,
+    }),
+    [address, asset.decimals, chainId, image, name, symbol, type],
+  );
+
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
-  const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+  const selectBip44Asset = useMemo(
+    () => (state: Parameters<typeof getAsset>[0]) =>
+      getAsset(state, address, chainId),
+    [address, chainId],
+  );
+  const bip44Asset = useSelector(selectBip44Asset);
   const rwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
   const updatedAsset: Asset = {
@@ -245,41 +311,82 @@ const AssetPage = ({
     },
   };
 
-  const tokenWithFiatAmount = {
-    address: isEvm ? address : assetId,
-    chainId,
-    symbol,
-    image,
-    title: name ?? symbol,
-    tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-    string: balance ? balance.toString() : '',
-    decimals: asset.decimals,
-    aggregators:
-      type === AssetType.token && asset.aggregators ? asset.aggregators : [],
-    isNative: type === AssetType.native,
-    balance,
-    secondary: balance ? Number(balance) : 0,
-    accountType: bip44Asset?.accountType,
-    assetId: bip44Asset?.assetId ?? assetId,
-    rwaData,
-  };
+  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+
+  const isAssetInactive = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId: resolvedAssetId,
+    }),
+  );
+
+  const spendableBalanceData = useSpendableBalance({
+    assetId: resolvedAssetId,
+  });
+  const showSpendableBalance = spendableBalanceData.hasSpendableBalance;
+
+  const tokenWithFiatAmount = useMemo(
+    () => ({
+      address: isEvm ? address : assetId,
+      chainId,
+      symbol,
+      image,
+      title: name ?? symbol,
+      tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+      string: balance ? balance.toString() : '',
+      decimals: asset.decimals,
+      aggregators: aggregators ?? [],
+      isNative: type === AssetType.native,
+      balance,
+      secondary: balance ? Number(balance) : 0,
+      accountType: bip44Asset?.accountType,
+      assetId: bip44Asset?.assetId ?? assetId,
+      rwaData,
+    }),
+    [
+      isEvm,
+      address,
+      assetId,
+      chainId,
+      symbol,
+      image,
+      name,
+      showFiat,
+      tokenFiatAmount,
+      balance,
+      asset.decimals,
+      aggregators,
+      type,
+      bip44Asset,
+      rwaData,
+    ],
+  );
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName =
-    name && symbol && name !== symbol
-      ? `${name} (${symbol})`
-      : (name ?? symbol);
+  const assetDisplayName = useMemo(
+    () =>
+      name && symbol && name !== symbol
+        ? `${name} (${symbol})`
+        : (name ?? symbol),
+    [name, symbol],
+  );
   const assetNameElement = (
-    <Text
-      variant={TextVariant.BodyMd}
-      fontWeight={FontWeight.Medium}
-      color={TextColor.TextAlternative}
-      data-testid="asset-name"
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={2}
     >
-      {assetDisplayName}
-    </Text>
+      <Text
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
+        data-testid="asset-name"
+      >
+        {assetDisplayName}
+      </Text>
+      <AssetPageSecurityTrustHeaderBadge />
+    </Box>
   );
 
   // Check if we should show Tron resources
@@ -288,11 +395,14 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
-  const isMusdAssetPage =
-    type === AssetType.token &&
-    isEvm &&
-    isMusdToken((asset as { address?: Hex }).address) &&
-    isMusdFlowEnabled;
+  const isMusdAssetPage = useMemo(
+    () =>
+      type === AssetType.token &&
+      isEvm &&
+      isMusdToken((asset as { address?: Hex }).address) &&
+      isMusdFlowEnabled,
+    [type, isEvm, asset, isMusdFlowEnabled],
+  );
 
   const {
     aggregatedFiat: aggregatedMusdFiat,
@@ -300,302 +410,332 @@ const AssetPage = ({
   } = useMusdMerklPosition(isMusdAssetPage);
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
-  const handleOpenMarketClosedModal = () => {
+  const handleOpenMarketClosedModal = useCallback(() => {
     setIsMarketClosedModalOpen(true);
-  };
+  }, []);
 
   return (
-    <Box className="asset__content">
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        paddingBottom={3}
-        paddingLeft={2}
-        paddingRight={4}
-        className="pt-4 sticky top-0 z-10 bg-background-default"
-      >
-        <Box flexDirection={BoxFlexDirection.Row}>
-          <ButtonIcon
-            color={IconColor.IconDefault}
-            size={ButtonIconSize.Md}
-            ariaLabel={t('back') as string}
-            iconName={IconName.ArrowLeft}
-            onClick={() => transitionBack(() => navigate(-1))}
-            className="asset-page__back-button"
-          />
+    <AssetPageSecurityTrustProvider
+      assetId={caipAssetId as CaipAssetType}
+      token={securityTrustToken}
+    >
+      <Box className="asset__content">
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          paddingBottom={3}
+          paddingLeft={2}
+          paddingRight={4}
+          className="pt-4 sticky top-0 z-10 bg-background-default"
+        >
+          <Box flexDirection={BoxFlexDirection.Row}>
+            <ButtonIcon
+              color={IconColor.IconDefault}
+              size={ButtonIconSize.Md}
+              ariaLabel={t('back') as string}
+              iconName={IconName.ArrowLeft}
+              onClick={() => transitionBack(() => navigate(-1))}
+              className="asset-page__back-button"
+            />
+          </Box>
+          {optionsButton}
         </Box>
-        {optionsButton}
-      </Box>
-      <Box paddingLeft={4}>
-        {isStockToken ? (
-          <Box alignItems={BoxAlignItems.Center} gap={2}>
-            {assetNameElement}
-            <StockBadge isMarketClosed={isMarketClosed} />
-          </Box>
-        ) : (
-          assetNameElement
-        )}
-      </Box>
-      <AssetChart
-        chainId={chainId}
-        address={address}
-        currentPrice={currentPrice}
-        currency={currency}
-        asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
-      />
-      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isUpdatedAssetNative ? (
-          <CoinButtons
-            {...{
-              account: selectedAccount,
-              trackingLocation: 'asset-page',
-              isSigningEnabled,
-              isSwapsChain,
-              isBridgeChain,
-              chainId,
-              disableSendForNonEvm: true,
-              buyAssetId: caipAssetId,
-            }}
+        {isAssetInactive && (
+          <AssetActivateCard
+            asset={tokenAsset as Asset}
+            chainName={networkName}
           />
-        ) : null}
-        {tokenAsset ? (
-          <TokenButtons
-            token={tokenAsset}
-            disableSendForNonEvm
-            isMarketClosed={isMarketClosed}
-          />
-        ) : null}
-        {isMarketClosed && tokenAsset ? (
-          <Box marginTop={4}>
-            <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
-          </Box>
-        ) : null}
-      </Box>
-      <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
-        {showTronResources && (
-          <Box>
-            <TronDailyResources
-              account={selectedAccount}
-              chainId={chainId}
-              t={t}
-            />
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              className="asset-page__divider"
-            />
-          </Box>
         )}
-        {isMusdAssetPage ? (
-          <>
-            <MusdPositionSection
-              balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
-              fiatValue={tokenFiatAmount}
-              showFiat={showFiat}
+        <Box paddingLeft={4}>
+          {isStockToken || isAssetInactive ? (
+            <Box alignItems={BoxAlignItems.Center} gap={2}>
+              {assetNameElement}
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+              >
+                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+                {isAssetInactive && <AssetInactiveBadge />}
+              </Box>
+            </Box>
+          ) : (
+            assetNameElement
+          )}
+        </Box>
+        <AssetPageSecurityTrustBanner />
+        <AssetChart
+          chainId={chainId}
+          address={address}
+          currentPrice={currentPrice}
+          currency={currency}
+          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
+        />
+        <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+          {isUpdatedAssetNative ? (
+            <CoinButtons
+              {...{
+                account: selectedAccount,
+                trackingLocation: 'asset-page',
+                isSigningEnabled,
+                isSwapsChain,
+                isBridgeChain,
+                chainId,
+                disableSendForNonEvm: true,
+                buyAssetId: caipAssetId,
+              }}
             />
-            {isMerklClaimingEnabled ? (
-              <>
+          ) : null}
+          {tokenAsset ? (
+            <TokenButtons
+              token={tokenAsset}
+              disableSendForNonEvm
+              isMarketClosed={isMarketClosed}
+            />
+          ) : null}
+          {isMarketClosed && tokenAsset ? (
+            <Box marginTop={4}>
+              <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
+            </Box>
+          ) : null}
+        </Box>
+        <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
+          {showTronResources && (
+            <Box>
+              <TronDailyResources
+                account={selectedAccount}
+                chainId={chainId}
+                t={t}
+              />
+              <Box
+                marginTop={2}
+                marginBottom={2}
+                className="asset-page__divider"
+              />
+            </Box>
+          )}
+          {isMusdAssetPage ? (
+            <>
+              <MusdPositionSection
+                balanceDisplay={balance ? `${balance} ${t('musdSymbol')}` : '0'}
+                fiatValue={tokenFiatAmount}
+                showFiat={showFiat}
+              />
+              {isMerklClaimingEnabled ? (
+                <>
+                  <Box
+                    marginTop={5}
+                    marginBottom={5}
+                    className="asset-page__divider"
+                  />
+                  <MusdBonusSection
+                    chainId={chainId as Hex}
+                    tokenAddress={(asset as { address: Hex }).address}
+                    positionFiatValue={showFiat ? aggregatedMusdFiat : null}
+                    showFiat={showFiat}
+                    hasPositiveBalance={hasAnyMusdBalance}
+                  />
+                  <Box
+                    marginTop={5}
+                    marginBottom={5}
+                    className="asset-page__divider"
+                  />
+                </>
+              ) : (
                 <Box
                   marginTop={5}
                   marginBottom={5}
                   className="asset-page__divider"
                 />
-                <MusdBonusSection
-                  chainId={chainId as Hex}
-                  tokenAddress={(asset as { address: Hex }).address}
-                  positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                  showFiat={showFiat}
-                  hasPositiveBalance={hasAnyMusdBalance}
-                />
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-              </>
-            ) : (
+              )}
+              <MusdConvertSection />
               <Box
                 marginTop={5}
                 marginBottom={5}
                 className="asset-page__divider"
               />
-            )}
-            <MusdConvertSection />
-            <Box
-              marginTop={5}
-              marginBottom={5}
-              className="asset-page__divider"
+            </>
+          ) : null}
+          {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
+            <SpendableBalanceSection
+              minimumReserveBalance={spendableBalanceData.minimumReserveBalance}
+              spendableBalance={spendableBalanceData.spendableBalance}
+              totalBalance={String(balance)}
+              symbol={symbol}
+              fiatValue={showFiat ? tokenFiatAmount : null}
             />
-          </>
-        ) : (
-          <>
-            <Text
-              variant={TextVariant.HeadingSm}
-              className="asset-page__balance-heading"
-            >
-              {t('yourBalance')}
-            </Text>
-            {[AssetType.token, AssetType.native].includes(type) && (
-              <TokenCell
-                key={`${symbol}-${address}`}
-                token={tokenWithFiatAmount as TokenWithFiatAmount}
-                safeChains={safeChains}
-                musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
-              />
-            )}
-          </>
-        )}
-        {/* mUSD Conversion CTA - shows for eligible stablecoins */}
-        {!isNativeAsset(updatedAsset) &&
-          type === AssetType.token &&
-          isEvm &&
-          !isMusdAssetPage &&
-          checkMusdCtaVisibility({
-            address: (asset as { address: Hex }).address,
-            chainId,
-            symbol,
-          }) && (
-            <Box marginTop={2} paddingLeft={4} paddingRight={4}>
-              <MusdAssetCta
-                token={{
-                  address: (asset as { address: Hex }).address,
-                  chainId: chainId as string,
-                  symbol,
-                  balance: String(balance),
-                  fiatBalance: String(tokenFiatAmount),
-                }}
-                variant="card"
-              />
-            </Box>
-          )}
-        <Box marginTop={6} flexDirection={BoxFlexDirection.Column} gap={4}>
-          {[AssetType.token, AssetType.native].includes(type) && (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              paddingLeft={4}
-              paddingRight={4}
-            >
+          ) : null}
+          {!isMusdAssetPage && !showSpendableBalance ? (
+            <>
               <Text
                 variant={TextVariant.HeadingSm}
-                className="asset-page__details-heading"
+                className="asset-page__balance-heading"
               >
-                {t('tokenDetails')}
+                {t('yourBalance')}
               </Text>
-              <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-                {renderRow(
-                  t('network'),
-                  <Box
-                    flexDirection={BoxFlexDirection.Row}
-                    alignItems={BoxAlignItems.Center}
-                    gap={2}
-                    data-testid="asset-network"
-                  >
-                    <AvatarNetwork
-                      src={tokenChainImage}
-                      name={networkName}
-                      size={AvatarNetworkSize.Xs}
-                    />
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
+              {[AssetType.token, AssetType.native].includes(type) && (
+                <TokenCell
+                  key={`${symbol}-${address}`}
+                  token={tokenWithFiatAmount as TokenWithFiatAmount}
+                  safeChains={safeChains}
+                  musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+                />
+              )}
+            </>
+          ) : null}
+          {/* mUSD Conversion CTA - shows for eligible stablecoins */}
+          {!isNativeAsset(updatedAsset) &&
+            type === AssetType.token &&
+            isEvm &&
+            !isMusdAssetPage &&
+            checkMusdCtaVisibility({
+              address: (asset as { address: Hex }).address,
+              chainId,
+              symbol,
+            }) && (
+              <Box marginTop={2} paddingLeft={4} paddingRight={4}>
+                <MusdAssetCta
+                  token={{
+                    address: (asset as { address: Hex }).address,
+                    chainId: chainId as string,
+                    symbol,
+                    balance: String(balance),
+                    fiatBalance: String(tokenFiatAmount),
+                  }}
+                  variant="card"
+                />
+              </Box>
+            )}
+          <Box marginTop={6} flexDirection={BoxFlexDirection.Column} gap={4}>
+            <AssetPageSecurityTrustSection />
+            {[AssetType.token, AssetType.native].includes(type) && (
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                paddingLeft={4}
+                paddingRight={4}
+              >
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  className="asset-page__details-heading"
+                >
+                  {t('tokenDetails')}
+                </Text>
+                <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                  {renderRow(
+                    t('network'),
+                    <Box
+                      flexDirection={BoxFlexDirection.Row}
+                      alignItems={BoxAlignItems.Center}
+                      gap={2}
+                      data-testid="asset-network"
                     >
-                      {networkName}
-                    </Text>
-                  </Box>,
-                )}
-                {shouldShowContractAddress && (
-                  <Box>
-                    {renderRow(
-                      t('contractAddress'),
-                      <AddressCopyButton address={contractAddress} shorten />,
-                    )}
-                    <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-                      {isMusdAssetPage
-                        ? renderRow(
-                            t('tokenStandard'),
+                      <AvatarNetwork
+                        src={tokenChainImage}
+                        name={networkName}
+                        size={AvatarNetworkSize.Xs}
+                      />
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {networkName}
+                      </Text>
+                    </Box>,
+                  )}
+                  {shouldShowContractAddress && (
+                    <Box>
+                      {renderRow(
+                        t('contractAddress'),
+                        <AddressCopyButton address={contractAddress} shorten />,
+                      )}
+                      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                        {isMusdAssetPage
+                          ? renderRow(
+                              t('tokenStandard'),
+                              <Text
+                                variant={TextVariant.BodyMd}
+                                fontWeight={FontWeight.Medium}
+                              >
+                                ERC-20
+                              </Text>,
+                            )
+                          : null}
+                        {asset.decimals !== undefined &&
+                          renderRow(
+                            t('tokenDecimal'),
                             <Text
                               variant={TextVariant.BodyMd}
                               fontWeight={FontWeight.Medium}
                             >
-                              ERC-20
+                              {asset.decimals}
                             </Text>,
-                          )
-                        : null}
-                      {asset.decimals !== undefined &&
-                        renderRow(
-                          t('tokenDecimal'),
-                          <Text
-                            variant={TextVariant.BodyMd}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {asset.decimals}
-                          </Text>,
+                          )}
+                        {aggregators && aggregators.length > 0 && (
+                          <Box>
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              fontWeight={FontWeight.Medium}
+                              color={TextColor.TextAlternative}
+                            >
+                              {t('tokenList')}
+                            </Text>
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              fontWeight={FontWeight.Medium}
+                            >
+                              {aggregators
+                                .map((agg) =>
+                                  agg.replace(/^metamask$/iu, 'MetaMask'),
+                                )
+                                .join(', ')}
+                            </Text>
+                          </Box>
                         )}
-                      {asset.aggregators && asset.aggregators.length > 0 && (
-                        <Box>
-                          <Text
-                            variant={TextVariant.BodyMd}
-                            fontWeight={FontWeight.Medium}
-                            color={TextColor.TextAlternative}
-                          >
-                            {t('tokenList')}
-                          </Text>
-                          <Text
-                            variant={TextVariant.BodyMd}
-                            fontWeight={FontWeight.Medium}
-                          >
-                            {asset.aggregators
-                              .map((agg) =>
-                                agg.replace(/^metamask$/iu, 'MetaMask'),
-                              )
-                              .join(', ')}
-                          </Text>
-                        </Box>
-                      )}
+                      </Box>
                     </Box>
-                  </Box>
-                )}
-                {shouldShowSpendingCaps &&
-                  renderRow(
-                    t('spendingCaps'),
-                    <TextButton size={TextButtonSize.BodyMd} asChild>
-                      <a
-                        className="asset-page__spending-caps"
-                        href={portfolioSpendingCapsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('editInPortfolio')}
-                      </a>
-                    </TextButton>,
                   )}
+                  {shouldShowSpendingCaps &&
+                    renderRow(
+                      t('spendingCaps'),
+                      <TextButton size={TextButtonSize.BodyMd} asChild>
+                        <a
+                          className="asset-page__spending-caps"
+                          href={portfolioSpendingCapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t('editInPortfolio')}
+                        </a>
+                      </TextButton>,
+                    )}
+                </Box>
               </Box>
-            </Box>
-          )}
-          <AssetMarketDetails asset={updatedAsset} address={address} />
-          <Box className="asset-page__divider" />
-          <Box marginBottom={4}>
-            <Text
-              variant={TextVariant.HeadingSm}
-              className="asset-page__activity-heading"
-            >
-              {t('yourActivity')}
-            </Text>
-            {caipAssetId && (
-              <ActivityList
-                filter={{
-                  assetId: caipAssetId,
-                }}
-              />
             )}
+            <AssetMarketDetails asset={updatedAsset} address={address} />
+            <Box className="asset-page__divider" />
+            <Box marginBottom={4}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                className="asset-page__activity-heading"
+              >
+                {t('yourActivity')}
+              </Text>
+              {caipAssetId && (
+                <ActivityList
+                  filter={{
+                    assetId: caipAssetId,
+                  }}
+                />
+              )}
+            </Box>
           </Box>
         </Box>
+        <MarketClosedModal
+          isOpen={isMarketClosedModalOpen}
+          onClose={() => setIsMarketClosedModalOpen(false)}
+        />
       </Box>
-      <MarketClosedModal
-        isOpen={isMarketClosedModalOpen}
-        onClose={() => setIsMarketClosedModalOpen(false)}
-      />
-    </Box>
+    </AssetPageSecurityTrustProvider>
   );
 };
 

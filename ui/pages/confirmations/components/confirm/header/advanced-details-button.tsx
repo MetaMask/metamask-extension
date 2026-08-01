@@ -48,6 +48,7 @@ export const AdvancedDetailsButton = () => {
       style={
         currentConfirmation?.type ===
           TransactionType.shieldSubscriptionApprove ||
+        currentConfirmation?.type === TransactionType.moneyAccountDeposit ||
         currentConfirmation?.type === TransactionType.perpsDeposit ||
         currentConfirmation?.type === TransactionType.perpsWithdraw
           ? { visibility: 'hidden' }
