@@ -125,6 +125,20 @@ describe('mapRampsOrderSafely', () => {
     expect(mapped?.data.fiat).toBeUndefined();
   });
 
+  it('strips non-finite crypto and fiat amounts from the mapped item', () => {
+    const order = {
+      ...baseOrder,
+      cryptoAmount: NaN,
+      fiatAmount: Infinity,
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.data.token?.amount).toBeUndefined();
+    expect(mapped?.data.fiat).toBeUndefined();
+  });
+
   it('does not override a chain resolved from cryptoCurrency.assetId', () => {
     const order = {
       ...baseOrder,

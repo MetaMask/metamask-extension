@@ -10,15 +10,16 @@ import {
 } from '@metamask/design-system-react';
 import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { isCaipAssetType } from '@metamask/utils';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { useRampsOrders } from '../../../hooks/ramps/useRampsOrders';
-import { BlockExplorerButton } from '../components/block-explorer-button';
-import { MetadataSection, TokensSection } from '../components/sections';
-import { Footer, Row, Section } from '../components/shared';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
+import { formatRampCurrencyAmount } from '../../../../hooks/ramps/utils/formatRampCurrencyAmount';
+import { BlockExplorerButton } from '../../components/block-explorer-button';
+import { MetadataSection, TokensSection } from '../../components/sections';
+import { Footer, Row, Section } from '../../components/shared';
 
 /**
  * Truncates the middle of long order ids for display.
@@ -49,15 +50,17 @@ export function RampOrderDetails({
     rawOrder?.paymentMethod?.name ?? rawOrder?.paymentMethod?.shortName;
   const showStatusDescription =
     Boolean(statusDescription) && item.status !== 'success';
-  const fiatTotal =
-    fiat?.amount && fiat.currency && Number.isFinite(Number(fiat.amount))
-      ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
-      : null;
+  const fiatTotal = formatRampCurrencyAmount(
+    fiat?.amount,
+    fiat?.currency,
+    formatCurrencyWithMinThreshold,
+  );
   const fee = item.data.fees?.[0];
-  const feeTotal =
-    fee?.amount && fee.symbol && Number.isFinite(Number(fee.amount))
-      ? formatCurrencyWithMinThreshold(Number(fee.amount), fee.symbol)
-      : null;
+  const feeTotal = formatRampCurrencyAmount(
+    fee?.amount,
+    fee?.symbol,
+    formatCurrencyWithMinThreshold,
+  );
   const providerFeeLabel = provider?.name
     ? t('rampsOrderDetailsProviderFee', [provider.name])
     : t('rampsOrderDetailsFees');

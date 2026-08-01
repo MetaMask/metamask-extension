@@ -1,5 +1,6 @@
 import { mapRampsOrder, type RampsOrderLike } from '@metamask/client-utils';
 import type { RampsOrder } from '@metamask/ramps-controller';
+import { hasPositiveNumericAmount } from './hasPositiveNumericAmount';
 
 /**
  * Seeds `network.chainId` when the order has no resolvable chain.
@@ -80,14 +81,8 @@ export function mapRampsOrderSafely(
       return item;
     }
 
-    const hasCryptoAmount =
-      order.cryptoAmount !== null &&
-      order.cryptoAmount !== undefined &&
-      Number(order.cryptoAmount) > 0;
-    const hasFiatAmount =
-      order.fiatAmount !== null &&
-      order.fiatAmount !== undefined &&
-      Number(order.fiatAmount) > 0;
+    const hasCryptoAmount = hasPositiveNumericAmount(order.cryptoAmount);
+    const hasFiatAmount = hasPositiveNumericAmount(order.fiatAmount);
 
     return {
       ...item,

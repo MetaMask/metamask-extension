@@ -20,6 +20,7 @@ import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
+import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
@@ -33,7 +34,6 @@ import {
 import { useActivityScreenViewed } from './useActivityScreenViewed';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
-import { useRampsOrderActivity } from './useRampsOrderActivity';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 62;

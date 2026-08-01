@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
+import { useRampsOrderEventToasts } from '../../../hooks/ramps/useRampsOrderEventToasts';
 
 export function RampsOrderToastListener() {
   useRampsOrderEventToasts();

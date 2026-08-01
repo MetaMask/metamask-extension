@@ -3,14 +3,14 @@
  */
 import { renderHook, act } from '@testing-library/react-hooks';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
-import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
 import {
   dismissToast,
   showFailedToast,
   showPendingToast,
   showSuccessToast,
-} from './shared';
-import { clearToastPhase } from './toast-lifecycle';
+} from '../../components/app/toast-listener/shared';
+import { clearToastPhase } from '../../components/app/toast-listener/toast-lifecycle';
+import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
 
 const mockNavigate = jest.fn();
 const mockSelectRampsOrdersForSelectedAccount = jest.fn();
@@ -45,20 +45,20 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
 }));
 
-jest.mock('../../../selectors/rampsController', () => ({
+jest.mock('../../selectors/rampsController', () => ({
   selectRampsOrdersForSelectedAccount: () =>
     mockSelectRampsOrdersForSelectedAccount(),
 }));
 
-jest.mock('../../../../shared/lib/selectors/accounts', () => ({
+jest.mock('../../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: () => mockGetSelectedInternalAccount(),
 }));
 
-jest.mock('../../../hooks/useI18nContext', () => ({
+jest.mock('../useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('./shared', () => ({
+jest.mock('../../components/app/toast-listener/shared', () => ({
   showPendingToast: jest.fn(),
   showSuccessToast: jest.fn(),
   showFailedToast: jest.fn(),

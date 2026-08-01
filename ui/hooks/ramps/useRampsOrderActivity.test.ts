@@ -1,8 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import {
-  createRampsMockStore,
-  createRampsTestWrapper,
-} from '../../hooks/ramps/test-utils';
+import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
 import { useRampsOrderActivity } from './useRampsOrderActivity';
 
 const buyOrderData = {

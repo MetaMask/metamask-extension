@@ -1,6 +1,6 @@
 import type { RampsController } from '@metamask/ramps-controller';
-import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
-import type ExtensionPlatform from '../platforms/extension';
+import { getRampCallbackBaseUrl } from '../../../../shared/lib/ramps/callback-url';
+import type ExtensionPlatform from '../../platforms/extension';
 
 export type WatchRampsCheckoutTabParams = {
   /**

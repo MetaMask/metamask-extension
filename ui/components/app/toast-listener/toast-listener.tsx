@@ -8,8 +8,8 @@ import {
 } from '../../../hooks/musd';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
+import { RampsOrderToastListener } from '../ramps/ramps-order-toast-listener';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
-import { RampsOrderToastListener } from './ramps-order-toast-listener';
 
 // Carried over from custom mUSD toasts. Should move telemetry out of toasts into a more appropriate location.
 const MusdTelemetry = () => {

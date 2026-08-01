@@ -17,6 +17,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
+import { formatRampCurrencyAmount } from '../../../hooks/ramps/utils/formatRampCurrencyAmount';
+import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import type { ActivityRowProps } from '../types';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
@@ -210,18 +213,12 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'rampSell': {
         const { token, fiat, provider } = activity.data;
         const symbol = token?.symbol ?? '';
-        const hasCryptoAmount =
-          token?.amount !== undefined &&
-          Number.isFinite(Number(token.amount)) &&
-          Number(token.amount) > 0;
-        const fiatAmount =
-          fiat?.amount === undefined ? undefined : Number(fiat.amount);
-        const orderFiat =
-          fiatAmount !== undefined &&
-          Number.isFinite(fiatAmount) &&
-          fiat?.currency
-            ? formatCurrencyWithMinThreshold(fiatAmount, fiat.currency)
-            : undefined;
+        const hasCryptoAmount = hasPositiveNumericAmount(token?.amount);
+        const orderFiat = formatRampCurrencyAmount(
+          fiat?.amount,
+          fiat?.currency,
+          formatCurrencyWithMinThreshold,
+        );
 
         return {
           avatarTokens: [token?.assetId],
@@ -229,7 +226,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           subtitle: provider?.name || t(labelKeys.description.key, [symbol]),
           primaryAmount:
             activity.status === 'pending' && token && !hasCryptoAmount
-              ? `...${symbol ? ` ${symbol}` : ''}`
+              ? formatPendingRampTokenLabel(symbol)
               : formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: orderFiat ?? formatAsFiat(token),

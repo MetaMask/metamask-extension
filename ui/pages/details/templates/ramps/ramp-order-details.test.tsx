@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampOrderDetails } from './ramp-order-details';
 
 const mockHandleCopy = jest.fn();
 const mockGoToBuy = jest.fn();
 const mockOpenTab = jest.fn();
 
-jest.mock('../../../hooks/useI18nContext', () => ({
+jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) =>
     args ? `${key}:${args.join(',')}` : key,
 }));
@@ -16,23 +16,26 @@ const mockFormatCurrencyWithMinThreshold = jest.fn(
   (amount: number, currency?: string) => `${amount} ${currency ?? ''}`.trim(),
 );
 
-jest.mock('../../../hooks/useFormatters', () => ({
+jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyWithMinThreshold: mockFormatCurrencyWithMinThreshold,
   }),
 }));
 
-jest.mock('../../../hooks/useCopyToClipboard', () => ({
+jest.mock('../../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: () => [{ copied: false }, mockHandleCopy],
 }));
 
-jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy }),
-}));
+jest.mock(
+  '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => ({ goToBuy: mockGoToBuy }),
+  }),
+);
 
-jest.mock('../../../hooks/ramps/useRampsOrders', () => ({
+jest.mock('../../../../hooks/ramps/useRampsOrders', () => ({
   useRampsOrders: () => ({
     getOrderById: () => ({
       paymentMethod: { name: 'VISA **** 4242' },
@@ -40,7 +43,7 @@ jest.mock('../../../hooks/ramps/useRampsOrders', () => ({
   }),
 }));
 
-jest.mock('../components/sections', () => ({
+jest.mock('../../components/sections', () => ({
   MetadataSection: ({ statusDescription }: { statusDescription?: string }) => (
     <div data-testid="metadata-section">{statusDescription}</div>
   ),
@@ -57,7 +60,7 @@ jest.mock('../components/sections', () => ({
   ),
 }));
 
-jest.mock('../components/block-explorer-button', () => ({
+jest.mock('../../components/block-explorer-button', () => ({
   BlockExplorerButton: ({
     chainId,
     txHash,
@@ -73,7 +76,7 @@ jest.mock('../components/block-explorer-button', () => ({
   ),
 }));
 
-jest.mock('../components/shared', () => ({
+jest.mock('../../components/shared', () => ({
   Footer: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="footer">{children}</div>
   ),

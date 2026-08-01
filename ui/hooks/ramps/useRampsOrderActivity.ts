@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
-import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
-import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
+import {
+  activityMatchesAssetId,
+  type ActivityListFilter,
+} from '../../pages/activity/helpers';
+import { mapRampsOrderSafely } from './utils/mapRampsOrderSafely';
 
 export function useRampsOrderActivity(filters: ActivityListFilter) {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);

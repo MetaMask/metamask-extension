@@ -41,7 +41,7 @@ jest.mock('./transaction-event-toast-listener', () => ({
   TransactionEventToastListener: () => null,
 }));
 
-jest.mock('./ramps-order-toast-listener', () => ({
+jest.mock('../ramps/ramps-order-toast-listener', () => ({
   RampsOrderToastListener: () => null,
 }));
 

@@ -1,5 +1,5 @@
 import type { RampsController } from '@metamask/ramps-controller';
-import { createWatchRampsCheckoutTab } from './ramps-checkout-watch';
+import { createWatchRampsCheckoutTab } from './checkout-watch';
 
 describe('createWatchRampsCheckoutTab', () => {
   const callbackBase =

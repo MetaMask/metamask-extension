@@ -27,7 +27,7 @@ jest.mock('./useNonEvmTransactions', () => ({
   useNonEvmTransactions: () => [],
 }));
 
-jest.mock('./useRampsOrderActivity', () => ({
+jest.mock('../../hooks/ramps/useRampsOrderActivity', () => ({
   useRampsOrderActivity: () => mockUseRampsOrderActivity(),
 }));
 

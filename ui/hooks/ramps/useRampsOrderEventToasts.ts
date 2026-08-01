@@ -6,25 +6,25 @@ import {
   RampsOrderStatus,
   type RampsOrder,
 } from '@metamask/ramps-controller';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   ACTIVITY_ROUTE,
   TX_DETAILS_ROUTE,
-} from '../../../helpers/constants/routes';
-import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { mapRampsOrderSafely } from '../../../hooks/ramps/utils/mapRampsOrderSafely';
+} from '../../helpers/constants/routes';
+import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
 import {
   dismissToast,
   showFailedToast,
   showPendingToast,
   showSuccessToast,
-} from './shared';
+} from '../../components/app/toast-listener/shared';
 import {
   clearToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
-} from './toast-lifecycle';
+} from '../../components/app/toast-listener/toast-lifecycle';
+import { useI18nContext } from '../useI18nContext';
+import { mapRampsOrderSafely } from './utils/mapRampsOrderSafely';
 
 const TERMINAL_FAILED = new Set<RampsOrderStatus>([
   RampsOrderStatus.Failed,
