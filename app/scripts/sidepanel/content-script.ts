@@ -1,8 +1,11 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 
-// Content-script side: re-emits the open when the background signals a REQUEST_OPEN_SIDEPANEL,
-// since only this context holds the gesture chrome.sidePanel.open() needs
+/**
+ * Re-emits the open action when the background signals a REQUEST_OPEN_SIDEPANEL.
+ *
+ * @param message - The message received from the background script.
+ */
 export function onRequestOpenSidepanel(message: {
   type?: string;
   nonce?: string;
@@ -23,9 +26,8 @@ export function onRequestOpenSidepanel(message: {
       nonce: message.nonce,
     })
     .catch((err) => {
-      // If activation has expired or the background is unreachable, the open
-      // simply won't happen and triggerUi falls back to the notification window.
-      console.log('Failed to send request to background', err);
+      // triggerUi falls back to the notification window
+      console.log('Failed to reply to background', err);
     });
 
   return undefined;

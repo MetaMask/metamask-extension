@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 
-// How long to wait for the request to open sidepanel before falling back to notification
+// How long to wait for the request to open sidepanel before falling back to notification window
 const roundtripTimeoutMs = 500;
 
 type PendingOpen = {
@@ -9,8 +9,11 @@ type PendingOpen = {
   timer: ReturnType<typeof setTimeout>;
 };
 
-// Background side: registers the OPEN_SIDEPANEL handler and
-// returns a callback which sends the REQUEST_OPEN_SIDEPANEL message
+/**
+ * Creates a sidepanel opener.
+ *
+ * @returns A function that sends a REQUEST_OPEN_SIDEPANEL message to the specified tab indicating whether the sidepanel was successfully opened
+ */
 export function createSidepanelOpener() {
   if (process.env.IN_TEST) {
     return () => Promise.resolve(false);
@@ -66,7 +69,7 @@ export function createSidepanelOpener() {
         nonce,
       })
       .catch((err) => {
-        // Fail fast so triggerUi can open the notification without waiting out
+        // Fail fast so triggerUi can open the notification window
         const entry = pendingOpens.get(nonce);
         if (!entry) {
           return;
