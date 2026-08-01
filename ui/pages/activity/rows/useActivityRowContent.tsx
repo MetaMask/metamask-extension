@@ -360,6 +360,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const content = getContent();
   const { primaryAmount, primaryDirection, secondaryAmount, avatarTokens } =
     content;
+  const hasPrimaryAmount =
+    primaryAmount !== undefined &&
+    primaryAmount !== null &&
+    primaryAmount !== '';
 
   return {
     avatar: (
@@ -378,11 +382,11 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       </span>
     ),
     subtitle: content.subtitle,
-    primaryAmount: (
+    primaryAmount: hasPrimaryAmount ? (
       <span className={cn(primaryDirection === 'in' && 'text-success-default')}>
         {primaryAmount}
       </span>
-    ),
+    ) : undefined,
     secondaryAmount,
   };
 }
