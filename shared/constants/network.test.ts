@@ -24,10 +24,14 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BEAR_NETWORK_CHAIN]).toBe(
+      'Bear Network Chain Mainnet',
+    );
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
+        'Bear Network Chain Mainnet': CHAIN_IDS.BEAR_NETWORK_CHAIN,
         Arbitrum: CHAIN_IDS.ARBITRUM,
         Avalanche: CHAIN_IDS.AVALANCHE,
         'BNB Chain': CHAIN_IDS.BSC,

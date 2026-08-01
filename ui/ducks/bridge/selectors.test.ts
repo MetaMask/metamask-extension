@@ -289,7 +289,9 @@ describe('Bridge selectors', () => {
           // toToken: toBridgeToken(getNativeAssetForChainId(10)),
         },
         metamaskStateOverrides: {
-          ...mockNetworkState(FEATURED_RPCS[1]),
+          ...mockNetworkState(
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM)!,
+          ),
           ...mockNetworkState({ chainId: CHAIN_IDS.ARBITRUM }),
         },
       });
@@ -486,10 +488,10 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET }, // eth
-            FEATURED_RPCS[0], // linea
-            FEATURED_RPCS[1], // arb
-            FEATURED_RPCS[3], // bsc
-            FEATURED_RPCS[4], // opt
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.LINEA_MAINNET)!, // linea
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM)!, // arb
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.BSC)!, // bsc
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.OPTIMISM)!, // opt
           ),
           internalAccounts: {
             selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
@@ -762,10 +764,10 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET }, // eth
-            FEATURED_RPCS[0], // linea
-            FEATURED_RPCS[1], // arb
-            FEATURED_RPCS[3], // bsc
-            FEATURED_RPCS[4], // opt
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.LINEA_MAINNET)!, // linea
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM)!, // arb
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.BSC)!, // bsc
+            FEATURED_RPCS.find((rpc) => rpc.chainId === CHAIN_IDS.OPTIMISM)!, // opt
           ),
           internalAccounts: {
             selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
