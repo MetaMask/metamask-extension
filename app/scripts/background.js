@@ -60,6 +60,7 @@ import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
@@ -2141,9 +2142,14 @@ async function triggerUi() {
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
   const sidepanelSupported = Boolean(chrome.sidePanel?.open);
+  const dappOpenSidepanelEnabled = getBooleanFeatureFlag(
+    controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
+      ?.dappOpenSidepanel,
+    false,
+  );
 
   // Attempt to open the sidepanel with a roundtrip request
-  if (sidepanelPreferred && sidepanelSupported) {
+  if (sidepanelPreferred && sidepanelSupported && dappOpenSidepanelEnabled) {
     const tab = await getCurrentTab();
     if (tab?.id) {
       const opened = await requestOpenSidepanel(tab.id);
