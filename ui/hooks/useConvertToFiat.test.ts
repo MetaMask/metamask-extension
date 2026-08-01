@@ -6,8 +6,9 @@ import type { CaipChainId, Hex } from '@metamask/utils';
 import { useConvertToFiat } from './useConvertToFiat';
 
 const solAssetId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
-const solChainId =
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId;
+const solChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId;
+const fakeSolSplAssetId =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112';
 const usdcAssetId =
   'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 
@@ -127,6 +128,54 @@ describe('useConvertToFiat', () => {
         symbol: 'ETH',
         assetId: 'eip155:1/erc20:0x1111111111111111111111111111111111111111',
         decimals: 0,
+        direction: 'out',
+      }),
+    ).toBeUndefined();
+  });
+
+  it('uses currencyRates for non-EVM natives when higher sources miss', () => {
+    const { result } = renderHookWithState(
+      {
+        metamask: {
+          assetsPrice: {},
+          conversionRates: {},
+          currencyRates: {
+            SOL: { conversionRate: 150 },
+          },
+        },
+      },
+      solChainId,
+    );
+
+    expect(
+      result.current({
+        amount: '2',
+        symbol: 'SOL',
+        assetId: solAssetId,
+        direction: 'out',
+      }),
+    ).toBe(300);
+  });
+
+  it('does not use currencyRates by symbol for non-native non-EVM tokens', () => {
+    const { result } = renderHookWithState(
+      {
+        metamask: {
+          assetsPrice: {},
+          conversionRates: {},
+          currencyRates: {
+            SOL: { conversionRate: 150 },
+          },
+        },
+      },
+      solChainId,
+    );
+
+    expect(
+      result.current({
+        amount: '2',
+        symbol: 'SOL',
+        assetId: fakeSolSplAssetId,
         direction: 'out',
       }),
     ).toBeUndefined();

@@ -122,13 +122,17 @@ export function useConvertToFiat(chainId?: Hex | CaipChainId) {
 
       if (token.assetId) {
         try {
-          const { chain } = parseCaipAssetType(
+          const { chain, assetNamespace } = parseCaipAssetType(
             token.assetId as `${string}:${string}/${string}:${string}`,
           );
 
-          // 3. currencyRates — non-EVM natives by symbol only (skip EVM to
-          // avoid ERC-20 ticker collisions with ETH/etc.).
-          if (chain.namespace !== 'eip155' && token.symbol) {
+          // 3. currencyRates — non-EVM natives only (slip44). Symbol match is
+          // unsafe for SPL/etc. tokens that reuse native tickers.
+          if (
+            chain.namespace !== 'eip155' &&
+            assetNamespace === 'slip44' &&
+            token.symbol
+          ) {
             const rate = getPositiveRate(
               currencyRates?.[token.symbol]?.conversionRate,
             );
