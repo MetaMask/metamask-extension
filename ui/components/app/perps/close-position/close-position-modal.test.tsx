@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import {
   act,
@@ -176,6 +177,32 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
     mockUsePerpsOrderFees(options),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// button_clicked / button_location props the modal forwards.
+const mockCloseScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
+const mockCloseImperativeTrack = jest.fn();
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockCloseScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: mockCloseImperativeTrack };
+  },
+}));
+
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
@@ -216,6 +243,7 @@ const basePosition = mockPositions[0];
 describe('ClosePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCloseScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.00145,
@@ -266,6 +294,85 @@ describe('ClosePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
 
       expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('abandon tracking', () => {
+    it('reports leverage_used when the modal is dismissed without submitting', async () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      // Dismissing without submitting is the real abandonment path: the host
+      // unmounts the modal and the hook's cleanup emits (deferred one macrotask
+      // so a StrictMode probe can cancel it).
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      const abandonCall = mockCloseImperativeTrack.mock.calls.find(
+        ([event, properties]) =>
+          event === 'Perp UI Interaction' &&
+          properties?.action === 'abandon_order',
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({
+          asset: basePosition.symbol,
+          leverage_used: basePosition.leverage.value,
+        }),
+      );
+    });
+  });
+
+  describe('position_close screen view', () => {
+    it('surfaces button_clicked and button_location from props', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+          buttonClicked="reduce_exposure"
+          buttonLocation="asset_details"
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties).toEqual(
+        expect.objectContaining({
+          button_clicked: 'reduce_exposure',
+          button_location: 'asset_details',
+        }),
+      );
+    });
+
+    it('defaults button_clicked to close when no trigger prop is passed', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const screenView = mockCloseScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'position_close',
+      );
+
+      expect(screenView?.properties?.button_clicked).toBe('close');
     });
   });
 
@@ -434,6 +541,17 @@ describe('ClosePositionModal', () => {
           screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
+
+      // The error is DISPLAYED on the success:false path, so the error screen
+      // view must fire there too — not only in the throw/catch path.
+      expect(mockCloseImperativeTrack).toHaveBeenCalledWith(
+        'Perp Screen Viewed',
+        expect.objectContaining({
+          screen_type: 'error',
+          error_type: 'backend',
+          screen_name: 'perps_market_details',
+        }),
+      );
     });
   });
 
