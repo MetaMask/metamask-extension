@@ -39,6 +39,8 @@ import { MetaMetricsEventName } from '../../../../../shared/constants/metametric
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  PERPS_EXTENSION_CANCEL_OUTCOME,
+  PERPS_EXTENSION_EVENT_PROPERTY,
 } from '../../../../../shared/constants/perps-events';
 import {
   usePerpsEligibility,
@@ -48,7 +50,10 @@ import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
 import { isClosingOrder, isOrderNoLongerOpenError } from '../utils/orderUtils';
-import { translatePerpsError } from '../utils/translate-perps-error';
+import {
+  CANCEL_ORDER_I18N_KEY_OVERRIDES,
+  translatePerpsError,
+} from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -177,6 +182,13 @@ export const CancelOrderModal = ({
         // quietly for orders no longer on the book and translates the rest.
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
+      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: order.orderType,
+        [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
+          PERPS_EXTENSION_CANCEL_OUTCOME.CANCELLED,
+      });
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
       onClose();
@@ -185,6 +197,17 @@ export const CancelOrderModal = ({
       // removed with its position). The user wanted it gone and it is gone, so
       // close out quietly instead of surfacing a failure they cannot act on.
       if (isOrderNoLongerOpenError(err)) {
+        // Still report it: the outcome the user got is success, but quietly
+        // returning here would drop the attempt out of the cancel funnel
+        // entirely. `cancel_outcome` separates it from a provider-performed
+        // cancel so the two are not conflated on the dashboard.
+        track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.ORDER_TYPE]: order.orderType,
+          [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
+            PERPS_EXTENSION_CANCEL_OUTCOME.ALREADY_CLOSED,
+        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
           dataTestId: 'perps-toast-cancel-order-already-closed',
@@ -211,8 +234,11 @@ export const CancelOrderModal = ({
       // on. Raw provider prose (`ORDER_UNKNOWN_COIN`, `cancel 0: …`) reaches
       // this branch, and the retry above makes it more reachable than before.
       const displayedError =
-        translatePerpsError(err, t as (key: string) => string) ??
-        t('perpsCancelOrderFailed');
+        translatePerpsError(
+          err,
+          t as (key: string) => string,
+          CANCEL_ORDER_I18N_KEY_OVERRIDES,
+        ) ?? t('perpsCancelOrderFailed');
       setError(displayedError);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,

@@ -111,7 +111,7 @@ const PerpsWithdrawPage = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [freshBalance, setFreshBalance] = useState<{
-    streamed: number;
+    streamRevision: number;
     available: number;
   } | null>(null);
 
@@ -123,12 +123,31 @@ const PerpsWithdrawPage = () => {
     ? streamedBalance
     : 0;
 
+  // Counts distinct streamed readings so an adopted fresh balance can be tied
+  // to the exact reading it was taken against. The value itself cannot do this:
+  // it cannot distinguish "the stream is still stale" from "the stream moved
+  // away and later reported that number again", and re-adopting on the latter
+  // re-pins an older, lower figure the user cannot refresh from this page —
+  // submit is capped at the pinned balance, and the fresh read only runs from
+  // the submit handler.
+  const [streamReading, setStreamReading] = useState({
+    available: streamedAvailableNum,
+    revision: 0,
+  });
+  if (streamReading.available !== streamedAvailableNum) {
+    setStreamReading({
+      available: streamedAvailableNum,
+      revision: streamReading.revision + 1,
+    });
+  }
+  const streamRevision = streamReading.revision;
+
   // A fresh account-state read overrides the streamed balance until the stream
   // catches up, so the displayed balance, the percentage buttons, the
   // validation message and the submit guard all agree on one figure instead of
   // rejecting an amount the screen still presents as available.
   const availableNum =
-    freshBalance && freshBalance.streamed === streamedAvailableNum
+    freshBalance && freshBalance.streamRevision === streamRevision
       ? freshBalance.available
       : streamedAvailableNum;
 
@@ -298,7 +317,7 @@ const PerpsWithdrawPage = () => {
 
       // A read that cannot move `availableNum` is not worth a state write.
       const isFreshReadRedundant = freshBalance
-        ? freshBalance.streamed === streamedAvailableNum &&
+        ? freshBalance.streamRevision === streamRevision &&
           freshBalance.available === freshAvailableNum
         : freshAvailableNum === streamedAvailableNum;
 
@@ -310,7 +329,7 @@ const PerpsWithdrawPage = () => {
         // balance that recovers while the stream stays stale is not left pinned
         // to the earlier, lower figure.
         setFreshBalance({
-          streamed: streamedAvailableNum,
+          streamRevision,
           available: freshAvailableNum,
         });
       }
@@ -386,6 +405,7 @@ const PerpsWithdrawPage = () => {
     isSubmitting,
     navigate,
     selectedAccount?.address,
+    streamRevision,
     streamedAvailableNum,
     t,
     track,

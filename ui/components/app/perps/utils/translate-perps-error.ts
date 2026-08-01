@@ -101,6 +101,19 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
 };
 
 /**
+ * Cancel-flow remapping of the keys above.
+ *
+ * Every `ORDER_*` code funnels into `perpsOrderFailed` ("Order could not be
+ * placed."), which is the wrong verb on a screen where the user just pressed
+ * Cancel order — `ORDER_UNKNOWN_COIN` reaches it through the cancel retry.
+ * Remapping the resolved key rather than enumerating codes keeps this correct
+ * as the controller adds more `ORDER_*` codes.
+ */
+export const CANCEL_ORDER_I18N_KEY_OVERRIDES: Record<string, string> = {
+  perpsOrderFailed: 'perpsCancelOrderFailed',
+};
+
+/**
  * Regex patterns that match raw HyperLiquid API error strings to a PerpsErrorCode.
  * These are protocol-specific (not platform-specific) and should stay in sync with mobile.
  * Listed in priority order — first match wins.
@@ -177,12 +190,17 @@ export const API_ERROR_PATTERNS: {
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
+ * @param i18nKeyOverrides - Optional flow-specific remapping of the resolved
+ * message key, e.g. `CANCEL_ORDER_I18N_KEY_OVERRIDES`.
  * @returns A translated user-facing string, or `null` if no specific translation found.
  */
 export function translatePerpsError(
   error: unknown,
   t: (key: string) => string,
+  i18nKeyOverrides?: Record<string, string>,
 ): string | null {
+  const translate = (i18nKey: string) =>
+    t(i18nKeyOverrides?.[i18nKey] ?? i18nKey);
   const errorObj = error instanceof Error ? error : null;
   const errorCode =
     errorObj &&
@@ -194,14 +212,14 @@ export function translatePerpsError(
   // 1. Code-first lookup — narrow to PerpsErrorCode only after membership check
   if (errorCode && errorCode in ERROR_CODE_TO_I18N_KEY) {
     const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode as PerpsErrorCode];
-    return t(i18nKey);
+    return translate(i18nKey);
   }
 
   // 2. Message-as-code lookup — handles plain strings that ARE error codes
   //    (e.g. WithdrawResult.error wrapped in `new Error(code)`)
   const message = errorObj?.message ?? '';
   if (message && message in ERROR_CODE_TO_I18N_KEY) {
-    return t(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
+    return translate(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
   }
 
   // 3. Pattern match against raw error message
@@ -209,7 +227,7 @@ export function translatePerpsError(
     for (const { pattern, code } of API_ERROR_PATTERNS) {
       if (pattern.test(message)) {
         const i18nKey = ERROR_CODE_TO_I18N_KEY[code];
-        return t(i18nKey);
+        return translate(i18nKey);
       }
     }
   }

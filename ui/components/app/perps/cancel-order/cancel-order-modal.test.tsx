@@ -3,7 +3,11 @@ import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EXTENSION_CANCEL_OUTCOME,
+  PERPS_EXTENSION_EVENT_PROPERTY,
+} from '../../../../../shared/constants/perps-events';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
@@ -514,10 +518,15 @@ describe('CancelOrderModal', () => {
       });
 
       await waitFor(() => {
+        // Cancel copy, not the placement copy the shared map resolves
+        // ORDER_UNKNOWN_COIN to — the user pressed Cancel order, not Place.
         expect(
-          screen.getByText(messages.perpsOrderFailed.message),
+          screen.getByText(messages.perpsCancelOrderFailed.message),
         ).toBeInTheDocument();
       });
+      expect(
+        screen.queryByText(messages.perpsOrderFailed.message),
+      ).not.toBeInTheDocument();
       expect(screen.queryByText('ORDER_UNKNOWN_COIN')).not.toBeInTheDocument();
     });
 
@@ -604,6 +613,19 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'success',
+            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
+            [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
+              PERPS_EXTENSION_CANCEL_OUTCOME.CANCELLED,
+          }),
+        );
+      });
+
+      await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
 
@@ -684,6 +706,17 @@ describe('CancelOrderModal', () => {
         'Perp Error',
         expect.anything(),
       );
+      // Quiet for the user, but still in the funnel and distinguishable from a
+      // cancel the provider actually performed.
+      expect(mockTrack).toHaveBeenCalledWith(
+        'Perp Order Cancel Transaction',
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ASSET]: baseOrder.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: 'success',
+          [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
+            PERPS_EXTENSION_CANCEL_OUTCOME.ALREADY_CLOSED,
+        }),
+      );
     });
 
     it('closes the modal without an error when the background throws the same rejection', async () => {
@@ -713,6 +746,17 @@ describe('CancelOrderModal', () => {
       expect(mockTrack).not.toHaveBeenCalledWith(
         'Perp Error',
         expect.anything(),
+      );
+      // Quiet for the user, but still in the funnel and distinguishable from a
+      // cancel the provider actually performed.
+      expect(mockTrack).toHaveBeenCalledWith(
+        'Perp Order Cancel Transaction',
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ASSET]: baseOrder.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: 'success',
+          [PERPS_EXTENSION_EVENT_PROPERTY.CANCEL_OUTCOME]:
+            PERPS_EXTENSION_CANCEL_OUTCOME.ALREADY_CLOSED,
+        }),
       );
     });
   });
