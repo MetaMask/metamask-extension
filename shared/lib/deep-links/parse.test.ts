@@ -193,6 +193,26 @@ describe('parse', () => {
     );
   });
 
+  it('passes arbitrary signed keys and strips every unsigned key before the handler', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockVerify.mockResolvedValue(VALID);
+
+    const url = new URL(
+      'https://example.com/test?utm_source=partner&utm_campaign=launch' +
+        '&sig_params=utm_source,utm_campaign&sig=signature' +
+        '&redirectTo=https://evil.example&utm_medium=unsigned',
+    );
+
+    await parse(url);
+
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([
+        ['utm_campaign', 'launch'],
+        ['utm_source', 'partner'],
+      ]),
+    );
+  });
+
   it('passes original query parameters to routes that opt in', async () => {
     mockRoutes.set('/test', {
       handler: mockHandler,

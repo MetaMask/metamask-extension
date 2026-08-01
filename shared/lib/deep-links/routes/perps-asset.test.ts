@@ -13,7 +13,7 @@ describe('perpsAssetRoute', () => {
 
     assertPathDestination(result);
     expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/BTC`);
-    expect(result.query.toString()).toBe('');
+    expect(result.query.get('source')).toBe('deeplink');
   });
 
   it('navigates to the market detail route for a HIP-3 symbol', () => {
