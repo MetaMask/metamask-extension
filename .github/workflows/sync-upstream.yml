@@ -10,10 +10,13 @@ jobs:
   sync-upstream:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -59,7 +62,7 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Create pull request for the merge
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
