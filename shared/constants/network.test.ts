@@ -28,6 +28,7 @@ describe('NetworkConstants', () => {
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
+        'Bear Network Chain Mainnet': CHAIN_IDS.BEAR_NETWORK_CHAIN,
         Arbitrum: CHAIN_IDS.ARBITRUM,
         Avalanche: CHAIN_IDS.AVALANCHE,
         'BNB Chain': CHAIN_IDS.BSC,
