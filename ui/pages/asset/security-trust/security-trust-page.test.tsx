@@ -5,6 +5,7 @@ import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../shared/lib/assets/security-trust-feature-flags';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
 
@@ -95,11 +96,23 @@ const locationState = {
   chainId: '0x1',
 };
 
-const createStore = () =>
+const enabledSecurityTrustFlag = {
+  enabled: true,
+  minimumVersion: '0.0.0',
+};
+
+const createStore = ({
+  securityTrustTdpFlag = enabledSecurityTrustFlag,
+  useExternalServices = true,
+}: {
+  securityTrustTdpFlag?: boolean | { enabled: boolean; minimumVersion: string };
+  useExternalServices?: boolean;
+} = {}) =>
   configureStore({
     reducer: (
       state = {
         metamask: {
+          useExternalServices,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
             accounts: {
@@ -107,6 +120,7 @@ const createStore = () =>
             },
           },
           remoteFeatureFlags: {
+            [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: securityTrustTdpFlag,
             solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
             solanaTestnetsEnabled: false,
             bitcoinTestnetsEnabled: false,
@@ -162,6 +176,33 @@ describe('SecurityTrustPage', () => {
     mockLocationState = locationState;
     globalThis.open = jest.fn();
     document.querySelector('.app')?.scroll(0, 0);
+  });
+
+  it('redirects to asset page when security trust TDP flag is disabled', () => {
+    useTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <SecurityTrustPage />,
+      createStore({ securityTrustTdpFlag: false }),
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc',
+      { replace: true },
+    );
+    expect(useTokenSecurityData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetId: null,
+        prefetchedData: undefined,
+      }),
+    );
+    expect(
+      screen.queryByTestId('security-trust-screen'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders loading state when data is loading and unavailable', () => {
