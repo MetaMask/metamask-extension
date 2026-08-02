@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
-import { verify, type SignatureStatus } from './verify';
+import { VALID, verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './constants';
 
@@ -33,6 +33,13 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
     return false;
   }
 
+  const signatureRequiredSearchParams =
+    route.signatureRequiredSearchParams ?? [];
+  let signature: SignatureStatus | undefined;
+  if (options?.verify !== false && signatureRequiredSearchParams.length > 0) {
+    signature = await verify(url);
+  }
+
   let destination: Destination;
   try {
     const canonicalUrl = new URL(canonicalize(url));
@@ -48,6 +55,16 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
         ? new URLSearchParams(url.searchParams)
         : canonicalSearchParams;
 
+    const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
+    const explicitlySignedParams = new Set(
+      sigParams === null ? [] : sigParams.split(','),
+    );
+    for (const param of signatureRequiredSearchParams) {
+      if (signature !== VALID || !explicitlySignedParams.has(param)) {
+        handlerSearchParams.delete(param);
+      }
+    }
+
     destination = route.handler(handlerSearchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
@@ -60,6 +77,6 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
     return { destination, route } as ParsedDeepLink<Options>;
   }
 
-  const signature = await verify(url);
+  signature ??= await verify(url);
   return { destination, signature, route } as ParsedDeepLink<Options>;
 }

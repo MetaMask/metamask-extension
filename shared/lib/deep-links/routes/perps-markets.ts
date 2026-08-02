@@ -1,4 +1,4 @@
-import { withDeeplinkAttribution } from './perps-attribution';
+import { UTM_PARAMS, withDeeplinkAttribution } from './perps-attribution';
 import { DEFAULT_ROUTE, Route } from './route';
 
 /**
@@ -12,6 +12,7 @@ import { DEFAULT_ROUTE, Route } from './route';
  */
 export const perpsMarkets = new Route({
   pathname: '/perps-markets',
+  signatureRequiredSearchParams: UTM_PARAMS,
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();

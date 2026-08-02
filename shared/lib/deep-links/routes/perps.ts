@@ -1,5 +1,5 @@
 import { normalizeMarketFilter } from '../../../constants/perps';
-import { withDeeplinkAttribution } from './perps-attribution';
+import { UTM_PARAMS, withDeeplinkAttribution } from './perps-attribution';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -45,6 +45,7 @@ import {
  */
 export const perps = new Route({
   pathname: '/perps',
+  signatureRequiredSearchParams: UTM_PARAMS,
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(params: URLSearchParams) {
     const screen = params.get('screen');

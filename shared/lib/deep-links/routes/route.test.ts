@@ -37,9 +37,21 @@ describe('Route', () => {
     expect(route.handlerSearchParams).toBe('canonical');
   });
 
+  it('defaults signatureRequiredSearchParams to empty', () => {
+    expect(route.signatureRequiredSearchParams).toStrictEqual([]);
+  });
+
   it('assigns handlerSearchParams from options', () => {
     route = new Route({ ...options, handlerSearchParams: 'original' });
     expect(route.handlerSearchParams).toBe('original');
+  });
+
+  it('assigns signatureRequiredSearchParams from options', () => {
+    route = new Route({
+      ...options,
+      signatureRequiredSearchParams: ['utm_source'],
+    });
+    expect(route.signatureRequiredSearchParams).toStrictEqual(['utm_source']);
   });
 
   it('should call getTitle with URLSearchParams', () => {

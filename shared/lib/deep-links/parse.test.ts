@@ -213,6 +213,57 @@ describe('parse', () => {
     );
   });
 
+  it('passes signature-required params only after valid explicit authorization', async () => {
+    mockRoutes.set('/test', {
+      handler: mockHandler,
+      signatureRequiredSearchParams: ['utm_source'],
+    } as unknown as Route);
+    mockVerify.mockResolvedValue(VALID);
+
+    await parse(
+      new URL(
+        'https://example.com/test?utm_source=partner' +
+          '&sig_params=utm_source&sig=signature',
+      ),
+    );
+
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([['utm_source', 'partner']]),
+    );
+  });
+
+  it('removes signature-required params from legacy signatures without sig_params', async () => {
+    mockRoutes.set('/test', {
+      handler: mockHandler,
+      signatureRequiredSearchParams: ['utm_source'],
+    } as unknown as Route);
+    mockVerify.mockResolvedValue(VALID);
+
+    await parse(
+      new URL('https://example.com/test?utm_source=legacy&sig=signature'),
+    );
+
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
+  });
+
+  it('removes signature-required params when verification fails or is skipped', async () => {
+    mockRoutes.set('/test', {
+      handler: mockHandler,
+      signatureRequiredSearchParams: ['utm_source'],
+    } as unknown as Route);
+    const url = new URL(
+      'https://example.com/test?utm_source=partner' +
+        '&sig_params=utm_source&sig=signature',
+    );
+    mockVerify.mockResolvedValue(INVALID);
+
+    await parse(url);
+    await parse(url, { verify: false });
+
+    expect(mockHandler).toHaveBeenNthCalledWith(1, new URLSearchParams());
+    expect(mockHandler).toHaveBeenNthCalledWith(2, new URLSearchParams());
+  });
+
   it('passes original query parameters to routes that opt in', async () => {
     mockRoutes.set('/test', {
       handler: mockHandler,

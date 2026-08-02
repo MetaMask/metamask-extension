@@ -1,4 +1,4 @@
-const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign'] as const;
+export const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign'] as const;
 
 const UTM_VALUE_PATTERN = /^[A-Za-z0-9._~-]{1,128}$/u;
 
