@@ -70,7 +70,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
-  - **Bear Network Chain 客製版正式封裝專用指令（Windows）：`yarn.cmd dist`** — 詳見 [docs/bearnetwork-packaging.md](./docs/bearnetwork-packaging.md)
+  - **Bear Network Chain 客製版正式封裝專用指令（Windows）：`yarn.cmd dist`** — 詳見 [docs/bearnetworkchain-packaging.md](./docs/bearnetworkchain-packaging.md)
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
