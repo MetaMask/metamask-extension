@@ -729,7 +729,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Bear Network Chain Mainnet logo"
+                          alt="BearNetworkChain logo"
                           class="mm-avatar-network__network-image"
                           src="./images/bearnetworkchain.svg"
                         />
@@ -740,7 +740,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Bear Network Chain Mainnet
+                          BearNetworkChain
                         </p>
                       </div>
                     </div>
@@ -1189,7 +1189,7 @@ exports[`NetworkListMenu renders properly 1`] = `
     id="rfd-hidden-text-:r0:-hidden-text-:r1:"
     style="display: none;"
   >
-    
+
   Press space bar to start a drag.
   When dragging you can use the arrow keys to move the item around and escape to cancel.
   Some screen readers may require you to be in focus mode or to use your pass through key
@@ -2200,7 +2200,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Bear Network Chain Mainnet logo"
+                          alt="BearNetworkChain logo"
                           class="mm-avatar-network__network-image"
                           src="./images/bearnetworkchain.svg"
                         />
@@ -2211,7 +2211,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         <p
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
-                          Bear Network Chain Mainnet
+                          BearNetworkChain
                         </p>
                       </div>
                     </div>
@@ -2660,7 +2660,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
     id="rfd-hidden-text-:r8:-hidden-text-:r9:"
     style="display: none;"
   >
-    
+
   Press space bar to start a drag.
   When dragging you can use the arrow keys to move the item around and escape to cancel.
   Some screen readers may require you to be in focus mode or to use your pass through key

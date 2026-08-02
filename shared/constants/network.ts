@@ -409,7 +409,7 @@ export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 export const ARC_DISPLAY_NAME = 'Arc';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
-export const BEAR_NETWORK_CHAIN_DISPLAY_NAME = 'Bear Network Chain Mainnet';
+export const BEAR_NETWORK_CHAIN_DISPLAY_NAME = 'BearNetworkChain';
 
 /**
  * The Arc USDC ERC20 token contract. On Arc the native gas token is USDC, so
