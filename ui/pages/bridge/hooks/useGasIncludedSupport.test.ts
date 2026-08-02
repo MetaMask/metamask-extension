@@ -224,14 +224,14 @@ describe.each([
                         // Render the hook
                         const { result } = renderUseGasIncludedSupport();
 
-                        await waitFor(async () => {
-                          if (!isNonEvmChainId(validFromToken.chainId)) {
-                            const prevUpdate0 = result.current;
-                            await waitFor(() => {
-                              expect(result.current).not.toBe(prevUpdate0);
-                            });
-                          }
-                        });
+                        // EVM paths fetch sentinel flags async; capture prev outside
+                        // waitFor so retries do not re-snapshot the baseline value.
+                        if (!isNonEvmChainId(validFromToken.chainId)) {
+                          const prevUpdate0 = result.current;
+                          await waitFor(() => {
+                            expect(result.current).not.toBe(prevUpdate0);
+                          });
+                        }
 
                         // HW + 7702 is not supported
                         if (isUsingHardwareWallet) {
