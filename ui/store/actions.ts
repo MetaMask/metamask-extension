@@ -1319,20 +1319,36 @@ export function generateSecretEscrowExportChallenge(): Promise<{
 }
 
 /**
- * Recovers the wallet password via secret escrow and unlocks.
+ * Recovers the wallet password via secret escrow, then unlocks/restores using
+ * the same path as password unlock (social rehydration vs normal unlock).
  *
  * @param assertion - Escrow assertion (credential id + challenge, or full WebAuthn JSON).
  */
 export function recoverPasswordWithSecretEscrow(
   assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     dispatch(showLoadingIndication());
     try {
-      await submitRequestToBackground('recoverPasswordWithSecretEscrow', [
-        assertion,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
+      const password = await submitRequestToBackground<string>(
+        'recoverPasswordWithSecretEscrow',
+        [assertion],
+      );
+
+      const state = getState();
+      const isSocialImportRehydration =
+        getFirstTimeFlowType(state) === FirstTimeFlowType.socialImport &&
+        !getCompletedOnboarding(state);
+
+      if (isSocialImportRehydration) {
+        // Same path as password unlock on /onboarding/unlock after wipe.
+        await dispatch(restoreSocialBackupAndGetSeedPhrase(password));
+      } else {
+        await dispatch(tryUnlockMetamask(password));
+      }
     } finally {
       dispatch(hideLoadingIndication());
     }

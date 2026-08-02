@@ -4514,23 +4514,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Recovers the wallet password via secret escrow after a WebAuthn assertion,
-   * then unlocks with that password.
+   * Recovers the wallet password via secret escrow after a WebAuthn assertion.
+   * Does not unlock — callers must run the appropriate unlock/restore path with
+   * the returned password (e.g. social rehydration vs normal unlock).
    *
    * @param {import('@metamask/secret-escrow-client').EscrowAssertion} assertion
-   * @returns {Promise<void>}
+   * @returns {Promise<string>} Recovered wallet password.
    */
   async recoverPasswordWithSecretEscrow(assertion) {
-    const password =
-      await this.secretEscrowController.recoverPassword(assertion);
-    try {
-      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
-        password,
-      });
-    } finally {
-      // best-effort wipe of the recovered password string (immutable in JS)
-      password.replace?.(/./gu, '\0');
-    }
+    return await this.secretEscrowController.recoverPassword(assertion);
   }
 
   /**
