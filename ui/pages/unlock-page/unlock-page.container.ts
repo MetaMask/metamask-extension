@@ -70,6 +70,14 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     getIsSecretEscrowPasskeyEnrolled(state) &&
     isOnboardingCompleted;
   const isPasskeyActive = isVaultPasskeyActive || useSecretEscrowPasskey;
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  // Vault: defer only for known-bad authenticators (e.g. Google Password Manager).
+  // Escrow: always defer in sidepanel — WebAuthn often never prompts there.
+  const mustDeferPasskeyToBrowserTab =
+    isSidePanel &&
+    ((isVaultPasskeyActive &&
+      getIsEnrolledPasskeyIncompatibleWithSidepanel(state)) ||
+      useSecretEscrowPasskey);
   const firstTimeFlowType = getFirstTimeFlowType(state);
   const accountTypeForMetrics = getAccountTypeForOnboardingMetrics(state);
   return {
@@ -80,10 +88,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     isPasskeyActive,
     useSecretEscrowPasskey,
-    mustDeferPasskeyToBrowserTab:
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
-      getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
-      isVaultPasskeyActive,
+    mustDeferPasskeyToBrowserTab,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
     accountTypeForMetrics,
   };

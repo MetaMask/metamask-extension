@@ -97,7 +97,7 @@ type UnlockPageProps = UnlockPageContext & {
   accountTypeForMetrics?: string;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
-  /** When true, passkey ceremony must run in a browser tab (sidepanel + incompatible AAGUID). */
+  /** When true, passkey ceremony must run in a browser tab (sidepanel deferral). */
   mustDeferPasskeyToBrowserTab: boolean;
 };
 
@@ -231,7 +231,8 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      */
     passkeyAutoUnlockSuppressed: PropTypes.bool,
     /**
-     * When true, passkey unlock UI defers ceremony to a full extension tab (sidepanel + incompatible AAGUID).
+     * When true, passkey unlock UI defers ceremony to a full extension tab
+     * (sidepanel + incompatible AAGUID, or social escrow in sidepanel).
      */
     mustDeferPasskeyToBrowserTab: PropTypes.bool,
     /**

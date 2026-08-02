@@ -386,5 +386,25 @@ describe('UnlockPasskeySection', () => {
       expect(openExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
       expect(onUnlockWithPasskey).not.toHaveBeenCalled();
     });
+
+    it('opens extension in browser for secret escrow unlock without starting the ceremony', async () => {
+      const onUnlockWithSecretEscrow = jest.fn().mockResolvedValue(undefined);
+
+      const { getByTestId } = renderWithProvider(
+        <UnlockPasskeySection
+          {...baseProps}
+          useSecretEscrowPasskey
+          mustDeferPasskeyToBrowserTab
+          onUnlockWithSecretEscrow={onUnlockWithSecretEscrow}
+        />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.click(getByTestId('unlock-passkey-button'));
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
+      expect(onUnlockWithSecretEscrow).not.toHaveBeenCalled();
+    });
   });
 });
