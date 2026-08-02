@@ -2009,8 +2009,6 @@ class Driver {
       // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
       // a lock fires mid-flight. No user impact; tracked in #37459.
       'unable to proceed, wallet is locked',
-      // Rive load/cleanup noise (createRoot); not an app regression. See #44516.
-      'Problem loading file; may be corrupt!',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
