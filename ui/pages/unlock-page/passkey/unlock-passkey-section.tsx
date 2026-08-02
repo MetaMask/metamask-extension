@@ -47,7 +47,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyDerivationMethod,
   getSecretEscrowPasskeyCredentialId,
-  getSecretEscrowPasskeyRpId,
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
@@ -85,7 +84,6 @@ export const UnlockPasskeySection = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const escrowCredentialId = useSelector(getSecretEscrowPasskeyCredentialId);
-  const escrowRpId = useSelector(getSecretEscrowPasskeyRpId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -154,9 +152,11 @@ export const UnlockPasskeySection = ({
           }
 
           const { challenge } = await generateSecretEscrowExportChallenge();
+          // Omit rpId: PasskeyController also uses undefined so Chromium accepts
+          // chrome-extension:// pages. An explicit extension-id rpId is rejected
+          // as an invalid domain.
           const authenticationResponse = await startPasskeyAuthentication({
             challenge,
-            ...(escrowRpId ? { rpId: escrowRpId } : {}),
             allowCredentials: [
               {
                 id: escrowCredentialId,
@@ -265,7 +265,6 @@ export const UnlockPasskeySection = ({
       onUnlockWithPasskey,
       onUnlockWithSecretEscrow,
       escrowCredentialId,
-      escrowRpId,
       passkeyMethodLabel,
       passkeyDerivationMethod,
       t,

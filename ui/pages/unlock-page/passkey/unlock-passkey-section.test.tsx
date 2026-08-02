@@ -272,6 +272,9 @@ describe('UnlockPasskeySection', () => {
         }),
       );
     });
+    expect(passkeyCeremony.startPasskeyAuthentication).toHaveBeenCalledWith(
+      expect.not.objectContaining({ rpId: expect.anything() }),
+    );
     expect(
       actionsModule.generatePasskeyAuthenticationOptions,
     ).not.toHaveBeenCalled();

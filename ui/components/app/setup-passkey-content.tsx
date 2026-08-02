@@ -232,11 +232,14 @@ export default function SetupPasskeyContent({
           );
         }
         currentStep = 'enroll';
+        // Match PasskeyControllerInit: store the extension origin for escrow
+        // assertion verification metadata. Do not derive an rpId host from it —
+        // WebAuthn ceremonies omit rpId on extension pages.
         const extensionOrigin = globalThis.location?.origin ?? '';
         await enrollSecretEscrowPasskey(
           {
             type: 'webauthn',
-            rpId: extensionOrigin.replace(/^https?:\/\//u, '') || 'metamask',
+            rpId: extensionOrigin || 'metamask',
             origins: extensionOrigin ? [extensionOrigin] : ['metamask'],
             credentialId: registrationResponse.id,
             // Mock escrow verifies credential id + challenge only; real backends
