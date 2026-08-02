@@ -3030,6 +3030,55 @@ export function getIsPasskeyFeatureAvailable(state) {
 }
 
 /**
+ * Whether social-login secret-escrow passkey recovery is available on this client.
+ *
+ * Distinct from {@link getIsPasskeyFeatureAvailable}: social users use escrow
+ * (password wrap) instead of local vault-key wrapping.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsSecretEscrowPasskeyAvailable(state) {
+  return Boolean(
+    getIsPasskeyFeatureEnabled() &&
+    isWebAuthnSupported() &&
+    getIsSocialLoginFlow(state) &&
+    !isFirefoxBrowser() &&
+    getDeviceType() !== DEVICE_TYPE.MOBILE,
+  );
+}
+
+/**
+ * Whether a secret-escrow passkey factor is enrolled (with wrapped password).
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsSecretEscrowPasskeyEnrolled(state) {
+  return Boolean(state.metamask?.escrowRecord?.wrappedPassword);
+}
+
+/**
+ * Credential id for the enrolled secret-escrow WebAuthn factor.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getSecretEscrowPasskeyCredentialId(state) {
+  return state.metamask?.escrowRecord?.factor?.credentialId;
+}
+
+/**
+ * Relying-party id for the enrolled secret-escrow WebAuthn factor.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getSecretEscrowPasskeyRpId(state) {
+  return state.metamask?.escrowRecord?.factor?.rpId;
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state

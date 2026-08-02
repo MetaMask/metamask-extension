@@ -170,6 +170,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/secret-escrow-client": "portal:../core/packages/secret-escrow-client",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
@@ -444,6 +445,8 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
+    "@metamask/secret-escrow-client": "portal:../core/packages/secret-escrow-client",
+    "@metamask/secret-escrow-controller": "portal:../core/packages/secret-escrow-controller",
     "@metamask/seedless-onboarding-controller": "^10.1.0",
     "@metamask/selected-network-controller": "^26.1.4",
     "@metamask/sentinel-api-service": "^1.0.0",

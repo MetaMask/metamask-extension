@@ -1291,6 +1291,62 @@ export function protectVaultKeyWithPasskey(
 }
 
 /**
+ * Enrolls a social-login passkey with the secret escrow and wraps the wallet password.
+ *
+ * @param factor - Public WebAuthn factor metadata for the escrow.
+ * @param password - Current wallet password.
+ * @param factorId - Escrow factor id (defaults to `"passkey"`).
+ */
+export function enrollSecretEscrowPasskey(
+  factor: import('@metamask/secret-escrow-client').WebAuthnEscrowFactor,
+  password: string,
+  factorId?: string,
+): Promise<void> {
+  return submitRequestToBackground('enrollSecretEscrowPasskey', [
+    factor,
+    password,
+    factorId,
+  ]);
+}
+
+/**
+ * Starts a secret-escrow export ceremony (returns the WebAuthn challenge).
+ */
+export function generateSecretEscrowExportChallenge(): Promise<{
+  challenge: string;
+}> {
+  return submitRequestToBackground('generateSecretEscrowExportChallenge');
+}
+
+/**
+ * Recovers the wallet password via secret escrow and unlocks.
+ *
+ * @param assertion - Escrow assertion (credential id + challenge, or full WebAuthn JSON).
+ */
+export function recoverPasswordWithSecretEscrow(
+  assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('recoverPasswordWithSecretEscrow', [
+        assertion,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Revokes secret-escrow passkey enrollment.
+ */
+export function revokeSecretEscrowPasskey(): Promise<void> {
+  return submitRequestToBackground('revokeSecretEscrowPasskey');
+}
+
+/**
  * Removes the passkey from the vault using the passkey authentication response.
  *
  * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.

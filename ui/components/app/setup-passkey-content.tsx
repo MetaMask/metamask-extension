@@ -26,6 +26,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
+  getIsSecretEscrowPasskeyEnrolled,
   getIsSocialLoginFlow,
   getPasskeyDerivationMethod,
   getSocialLoginType,
@@ -48,6 +49,7 @@ import {
 import { captureException } from '../../../shared/lib/sentry';
 import {
   protectVaultKeyWithPasskey,
+  enrollSecretEscrowPasskey,
   generatePasskeyRegistrationOptions,
   generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
@@ -95,8 +97,14 @@ export default function SetupPasskeyContent({
   );
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isSecretEscrowPasskeyEnrolled = useSelector(
+    getIsSecretEscrowPasskeyEnrolled,
+  );
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
+  const isAlreadyEnrolled = isSocialLoginFlow
+    ? isSecretEscrowPasskeyEnrolled
+    : isPasskeyRegistered;
 
   const accountTypeForMetrics = useMemo(() => {
     const baseType =
@@ -152,7 +160,7 @@ export default function SetupPasskeyContent({
   }, []);
 
   useEffect(() => {
-    if (isPasskeyRegistered || hasTrackedView.current) {
+    if (isAlreadyEnrolled || hasTrackedView.current) {
       return;
     }
 
@@ -166,15 +174,15 @@ export default function SetupPasskeyContent({
         })
         .build(),
     );
-  }, [baseProperties, isPasskeyRegistered, trackEvent, createEventBuilder]);
+  }, [baseProperties, isAlreadyEnrolled, trackEvent, createEventBuilder]);
 
   useEffect(() => {
-    if (!isPasskeyRegistered || isEnrollmentInProgress) {
+    if (!isAlreadyEnrolled || isEnrollmentInProgress) {
       return;
     }
 
     goToNextStep();
-  }, [goToNextStep, isEnrollmentInProgress, isPasskeyRegistered]);
+  }, [goToNextStep, isEnrollmentInProgress, isAlreadyEnrolled]);
 
   const handleMaybeLater = () => {
     trackEvent(
@@ -217,42 +225,86 @@ export default function SetupPasskeyContent({
       setRegisterStepPhase('success');
       setVerifyStepPhase('loading');
 
-      currentStep = 'verify';
-      const postRegAuthOptions =
-        await generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
+      if (isSocialLoginFlow) {
+        if (!password) {
+          throw new Error(
+            'Password is required to enroll a social-login escrow passkey',
+          );
+        }
+        currentStep = 'enroll';
+        const extensionOrigin = globalThis.location?.origin ?? '';
+        await enrollSecretEscrowPasskey(
+          {
+            type: 'webauthn',
+            rpId: extensionOrigin.replace(/^https?:\/\//u, '') || 'metamask',
+            origins: extensionOrigin ? [extensionOrigin] : ['metamask'],
+            credentialId: registrationResponse.id,
+            // Mock escrow verifies credential id + challenge only; real backends
+            // need the attestation public key as a P-256 JWK.
+            publicKey: {
+              kty: 'EC',
+              crv: 'P-256',
+              x: 'mock',
+              y: 'mock',
+            },
+          },
+          password,
         );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
+        await forceUpdateMetamaskState(dispatch);
+        setVerifyStepPhase('success');
+        currentStep = 'complete';
 
-      currentStep = 'enroll';
-      await protectVaultKeyWithPasskey(
-        registrationResponse,
-        postRegAuthenticationResponse,
-        password,
-      );
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PasskeySetup)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              ...baseProperties,
+              status: 'completed',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              derivation_method: 'secret_escrow',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: Date.now() - enrollmentStartedAt,
+            })
+            .build(),
+        );
+      } else {
+        currentStep = 'verify';
+        const postRegAuthOptions =
+          await generatePasskeyPostRegistrationAuthenticationOptions(
+            registrationResponse,
+          );
+        const postRegAuthenticationResponse =
+          await startPasskeyAuthentication(postRegAuthOptions);
 
-      const newMetamaskState = await forceUpdateMetamaskState(dispatch);
-      setVerifyStepPhase('success');
+        currentStep = 'enroll';
+        await protectVaultKeyWithPasskey(
+          registrationResponse,
+          postRegAuthenticationResponse,
+          password,
+        );
 
-      currentStep = 'complete';
-      const derivationMethod = getPasskeyDerivationMethod({
-        metamask: newMetamaskState,
-      });
+        const newMetamaskState = await forceUpdateMetamaskState(dispatch);
+        setVerifyStepPhase('success');
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            ...baseProperties,
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: derivationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
-          })
-          .build(),
-      );
+        currentStep = 'complete';
+        const derivationMethod = getPasskeyDerivationMethod({
+          metamask: newMetamaskState,
+        });
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PasskeySetup)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              ...baseProperties,
+              status: 'completed',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              derivation_method: derivationMethod,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: Date.now() - enrollmentStartedAt,
+            })
+            .build(),
+        );
+      }
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -329,6 +381,7 @@ export default function SetupPasskeyContent({
     baseProperties,
     dispatch,
     goToNextStep,
+    isSocialLoginFlow,
     t,
     passkeyMethodLabel,
     trackEvent,
@@ -336,7 +389,7 @@ export default function SetupPasskeyContent({
     password,
   ]);
 
-  if (isPasskeyRegistered && !isEnrollmentInProgress) {
+  if (isAlreadyEnrolled && !isEnrollmentInProgress) {
     return null;
   }
 

@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import type { EscrowAssertion } from '@metamask/secret-escrow-client';
 import {
   Box,
   Text,
@@ -33,41 +34,58 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
+import {
+  generatePasskeyAuthenticationOptions,
+  generateSecretEscrowExportChallenge,
+} from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPasskeyDerivationMethod } from '../../../selectors';
+import {
+  getPasskeyDerivationMethod,
+  getSecretEscrowPasskeyCredentialId,
+  getSecretEscrowPasskeyRpId,
+} from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
   isPasskeyActive: boolean;
+  /**
+   * When true, unlock uses secret-escrow export (social) instead of vault-key
+   * passkey authentication.
+   */
+  useSecretEscrowPasskey?: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
   ) => Promise<void>;
+  onUnlockWithSecretEscrow?: (assertion: EscrowAssertion) => Promise<void>;
   onUsePassword: () => void;
 };
 
 export const UnlockPasskeySection = ({
   logoSection,
   isPasskeyActive,
+  useSecretEscrowPasskey = false,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
   isPasswordInProgress,
   onUnlockWithPasskey,
+  onUnlockWithSecretEscrow,
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const escrowCredentialId = useSelector(getSecretEscrowPasskeyCredentialId);
+  const escrowRpId = useSelector(getSecretEscrowPasskeyRpId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -107,10 +125,13 @@ export const UnlockPasskeySection = ({
       }
 
       const startedAt = Date.now();
+      const derivationMethod = useSecretEscrowPasskey
+        ? 'secret_escrow'
+        : passkeyDerivationMethod;
       const baseProperties = {
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         is_auto_prompt: isAutoPrompt,
-        derivation_method: passkeyDerivationMethod,
+        derivation_method: derivationMethod,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
@@ -124,11 +145,40 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
-        const authOptions = await generatePasskeyAuthenticationOptions();
-        const authenticationResponse =
-          await startPasskeyAuthentication(authOptions);
+        if (useSecretEscrowPasskey) {
+          if (!onUnlockWithSecretEscrow) {
+            throw new Error('Secret escrow unlock handler is not configured');
+          }
+          if (!escrowCredentialId) {
+            throw new Error('Secret escrow credential is not enrolled');
+          }
 
-        await onUnlockWithPasskey(authenticationResponse);
+          const { challenge } = await generateSecretEscrowExportChallenge();
+          const authenticationResponse = await startPasskeyAuthentication({
+            challenge,
+            ...(escrowRpId ? { rpId: escrowRpId } : {}),
+            allowCredentials: [
+              {
+                id: escrowCredentialId,
+                type: 'public-key',
+              },
+            ],
+            userVerification: 'preferred',
+            timeout: 60_000,
+          });
+
+          await onUnlockWithSecretEscrow({
+            id: authenticationResponse.id,
+            challenge,
+            response: authenticationResponse.response,
+          });
+        } else {
+          const authOptions = await generatePasskeyAuthenticationOptions();
+          const authenticationResponse =
+            await startPasskeyAuthentication(authOptions);
+
+          await onUnlockWithPasskey(authenticationResponse);
+        }
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)
@@ -211,7 +261,11 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
+      useSecretEscrowPasskey,
       onUnlockWithPasskey,
+      onUnlockWithSecretEscrow,
+      escrowCredentialId,
+      escrowRpId,
       passkeyMethodLabel,
       passkeyDerivationMethod,
       t,
@@ -234,14 +288,22 @@ export const UnlockPasskeySection = ({
         .addProperties({
           status: 'use_password_selected',
           /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
-          derivation_method: passkeyDerivationMethod,
+          derivation_method: useSecretEscrowPasskey
+            ? 'secret_escrow'
+            : passkeyDerivationMethod,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent, createEventBuilder, passkeyDerivationMethod]);
+  }, [
+    onUsePassword,
+    trackEvent,
+    createEventBuilder,
+    passkeyDerivationMethod,
+    useSecretEscrowPasskey,
+  ]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();

@@ -109,6 +109,7 @@ import {
 import { PerpsController } from '@metamask/perps-controller';
 import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
+import { SecretEscrowController } from '@metamask/secret-escrow-controller';
 import { AnalyticsController } from '@metamask/analytics-controller';
 import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { OnboardingController } from '../controllers/onboarding';
@@ -190,6 +191,7 @@ export type MessengerClient =
   | OAuthService
   | OnboardingController
   | PasskeyController
+  | SecretEscrowController
   | PermissionController<
       PermissionSpecificationConstraint,
       CaveatSpecificationConstraint
@@ -299,6 +301,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
   PasskeyController['state'] &
+  SecretEscrowController['state'] &
   PermissionController<
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint

@@ -3,6 +3,9 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getIsSecretEscrowPasskeyAvailable,
+  getIsSecretEscrowPasskeyEnrolled,
+  getSecretEscrowPasskeyCredentialId,
   getPasskeyDerivationMethod,
 } from './selectors';
 
@@ -133,6 +136,70 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getDeviceType.mockReturnValue(DEVICE_TYPE.MOBILE);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
+  });
+});
+
+describe('getIsSecretEscrowPasskeyAvailable', () => {
+  const mockState = {} as Parameters<typeof getIsSecretEscrowPasskeyAvailable>[0];
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('returns true for social login on desktop Chromium with WebAuthn', () => {
+    getIsPasskeyFeatureEnabled.mockReturnValue(true);
+    isWebAuthnSupported.mockReturnValue(true);
+    getIsSocialLoginFlow.mockReturnValue(true);
+    isFirefoxBrowser.mockReturnValue(false);
+    getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
+
+    expect(getIsSecretEscrowPasskeyAvailable(mockState)).toBe(true);
+  });
+
+  it('returns false for non-social login', () => {
+    getIsPasskeyFeatureEnabled.mockReturnValue(true);
+    isWebAuthnSupported.mockReturnValue(true);
+    getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
+    getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
+
+    expect(getIsSecretEscrowPasskeyAvailable(mockState)).toBe(false);
+  });
+});
+
+describe('getIsSecretEscrowPasskeyEnrolled', () => {
+  it('returns true when a wrapped password escrow record exists', () => {
+    expect(
+      getIsSecretEscrowPasskeyEnrolled({
+        metamask: {
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+          },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when no escrow record exists', () => {
+    expect(
+      getIsSecretEscrowPasskeyEnrolled({
+        metamask: { escrowRecord: null },
+      }),
+    ).toBe(false);
+  });
+});
+
+describe('getSecretEscrowPasskeyCredentialId', () => {
+  it('returns the enrolled credential id', () => {
+    expect(
+      getSecretEscrowPasskeyCredentialId({
+        metamask: {
+          escrowRecord: {
+            factor: { credentialId: 'cred-1' },
+          },
+        },
+      }),
+    ).toBe('cred-1');
   });
 });
 

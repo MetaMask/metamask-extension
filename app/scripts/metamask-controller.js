@@ -433,6 +433,7 @@ import { UserOperationControllerInit } from './messenger-client-init/confirmatio
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
+import { SecretEscrowControllerInit } from './messenger-client-init/secret-escrow-controller-init';
 import {
   QrSyncControllerInit,
   QrSyncDataServiceInit,
@@ -654,6 +655,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
+      SecretEscrowController: SecretEscrowControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -899,6 +901,8 @@ export default class MetamaskController extends EventEmitter {
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
     this.passkeyController = messengerClientsByName.PasskeyController;
+    this.secretEscrowController =
+      messengerClientsByName.SecretEscrowController;
     this.configRegistryController =
       messengerClientsByName.ConfigRegistryController;
     this.backup = new Backup({
@@ -2943,6 +2947,14 @@ export default class MetamaskController extends EventEmitter {
       changePasswordWithPasskeyVerification:
         this.changePasswordWithPasskeyVerification.bind(this),
 
+      // secret escrow passkey recovery (social login; mock backend for now)
+      generateSecretEscrowExportChallenge:
+        this.generateSecretEscrowExportChallenge.bind(this),
+      enrollSecretEscrowPasskey: this.enrollSecretEscrowPasskey.bind(this),
+      recoverPasswordWithSecretEscrow:
+        this.recoverPasswordWithSecretEscrow.bind(this),
+      revokeSecretEscrowPasskey: this.revokeSecretEscrowPasskey.bind(this),
+
       // network management
       setActiveNetwork: async (id) => {
         // The multichain network controller will proxy the call to the network controller
@@ -3999,6 +4011,7 @@ export default class MetamaskController extends EventEmitter {
 
     // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
     this.passkeyController.clearState();
+    this.secretEscrowController.clearState();
 
     // stop subscription polling
     this.subscriptionController.stopAllPolling();
@@ -4424,6 +4437,83 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     await this.submitEncryptionKey(vaultKey);
+  }
+
+  /**
+   * Returns the seedless social user id used as the escrow userid, or throws.
+   *
+   * @returns {string}
+   */
+  #getSecretEscrowUserId() {
+    const { userId, socialLoginEmail } = this.seedlessOnboardingController.state;
+    const escrowUserId = userId || socialLoginEmail;
+    if (!escrowUserId) {
+      throw new Error(
+        'Social login user id is required for secret escrow passkey',
+      );
+    }
+    return escrowUserId;
+  }
+
+  /**
+   * Issues a WebAuthn challenge for secret-escrow export / password recovery.
+   *
+   * @returns {Promise<{ challenge: string }>}
+   */
+  async generateSecretEscrowExportChallenge() {
+    return this.secretEscrowController.startExport();
+  }
+
+  /**
+   * Enrolls a WebAuthn factor with the (mock) escrow and wraps the wallet password.
+   *
+   * @param {import('@metamask/secret-escrow-client').WebAuthnEscrowFactor} factor
+   * @param {string} password - Current wallet password (TOPRF factor).
+   * @param {string} [factorId]
+   * @returns {Promise<void>}
+   */
+  async enrollSecretEscrowPasskey(factor, password, factorId = 'passkey') {
+    if (!this.onboardingController.getIsSocialLoginFlow()) {
+      throw new Error(
+        'Secret escrow passkey enrollment is only available for social login',
+      );
+    }
+    await this.keyringController.verifyPassword(password);
+    await this.secretEscrowController.enrollAndWrapPassword({
+      userId: this.#getSecretEscrowUserId(),
+      factorId,
+      factor,
+      password,
+    });
+  }
+
+  /**
+   * Recovers the wallet password via secret escrow after a WebAuthn assertion,
+   * then unlocks with that password.
+   *
+   * @param {import('@metamask/secret-escrow-client').EscrowAssertion} assertion
+   * @returns {Promise<void>}
+   */
+  async recoverPasswordWithSecretEscrow(assertion) {
+    const password =
+      await this.secretEscrowController.recoverPassword(assertion);
+    try {
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
+    } finally {
+      // best-effort wipe of the recovered password string (immutable in JS)
+      password.replace?.(/./gu, '\0');
+    }
+  }
+
+  /**
+   * Revokes secret-escrow enrollment (remote mock + local state).
+   *
+   * @returns {Promise<void>}
+   */
+  async revokeSecretEscrowPasskey() {
+    await this.secretEscrowController.revoke();
   }
 
   /**

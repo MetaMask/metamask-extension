@@ -143,6 +143,7 @@ import {
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+import { getSecretEscrowControllerMessenger } from './secret-escrow-controller-messenger';
 import {
   getQrSyncControllerMessenger,
   getQrSyncDataServiceMessenger,
@@ -270,6 +271,7 @@ export {
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+export { getSecretEscrowControllerMessenger } from './secret-escrow-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export {
   getQrSyncControllerMessenger,
@@ -554,6 +556,10 @@ export const MESSENGER_FACTORIES = {
   },
   PasskeyController: {
     getMessenger: getPasskeyControllerMessenger,
+    getInitMessenger: noop,
+  },
+  SecretEscrowController: {
+    getMessenger: getSecretEscrowControllerMessenger,
     getInitMessenger: noop,
   },
   PermissionController: {

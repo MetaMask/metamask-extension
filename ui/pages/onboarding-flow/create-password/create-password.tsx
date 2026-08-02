@@ -19,6 +19,7 @@ import {
   getOptedIn,
   getIsSocialLoginFlow,
   getIsPasskeyFeatureAvailable,
+  getIsSecretEscrowPasskeyAvailable,
   getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
@@ -72,6 +73,9 @@ export default function CreatePassword({
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const isSecretEscrowPasskeyAvailable = useSelector(
+    getIsSecretEscrowPasskeyAvailable,
+  );
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
@@ -118,6 +122,15 @@ export default function CreatePassword({
       }
 
       if (
+        isSecretEscrowPasskeyAvailable &&
+        (firstTimeFlowType === FirstTimeFlowType.socialImport ||
+          firstTimeFlowType === FirstTimeFlowType.socialCreate)
+      ) {
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
+        return;
+      }
+
+      if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
@@ -156,6 +169,7 @@ export default function CreatePassword({
     completedMetaMetricsOnboarding,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
+    isSecretEscrowPasskeyAvailable,
   ]);
 
   useEffect(() => {
@@ -207,6 +221,11 @@ export default function CreatePassword({
 
     if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
+    } else if (isSecretEscrowPasskeyAvailable) {
+      navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, {
+        replace: true,
+        state: { password },
+      });
     } else if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
@@ -280,7 +299,14 @@ export default function CreatePassword({
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
       }
-      navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
+      if (isSecretEscrowPasskeyAvailable) {
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, {
+          replace: true,
+          state: { password },
+        });
+      } else {
+        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
+      }
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
     } else {

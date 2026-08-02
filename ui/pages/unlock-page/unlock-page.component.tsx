@@ -79,8 +79,12 @@ type UnlockPageProps = UnlockPageContext & {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: () => Promise<void>;
   isPasskeyActive: boolean;
+  useSecretEscrowPasskey?: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
+  ) => Promise<void>;
+  onUnlockWithSecretEscrow?: (
+    assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
   ) => Promise<void>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
@@ -215,9 +219,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      */
     isWalletResetInProgress: PropTypes.bool,
     /**
-     * True when passkey unlock is available (feature on, registered, not social rehydration, onboarding done).
+     * True when passkey unlock is available (SRP vault wrap or social escrow).
      */
     isPasskeyActive: PropTypes.bool,
+    /**
+     * When true, unlock uses secret-escrow export instead of vault-key passkey auth.
+     */
+    useSecretEscrowPasskey: PropTypes.bool,
     /**
      * When true, do not auto-start WebAuthn (after UI-initiated lock; background + timer).
      */
@@ -227,9 +235,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      */
     mustDeferPasskeyToBrowserTab: PropTypes.bool,
     /**
-     * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
+     * Completes SRP passkey unlock and navigates after success.
      */
     onUnlockWithPasskey: PropTypes.func,
+    /**
+     * Completes social secret-escrow passkey unlock and navigates after success.
+     */
+    onUnlockWithSecretEscrow: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -589,6 +601,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     await this.props.navigateAfterUnlock();
   };
 
+  handleUnlockWithSecretEscrow = async (
+    assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
+  ) => {
+    await this.props.onUnlockWithSecretEscrow?.(assertion);
+    await this.props.navigateAfterUnlock();
+  };
+
   onForgotPasswordOrLoginWithDiffMethods = async () => {
     const {
       isSocialLoginFlow,
@@ -840,6 +859,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             <UnlockPasskeySection
               logoSection={this.renderLogoSection(isRehydrationFlow)}
               isPasskeyActive={this.props.isPasskeyActive}
+              useSecretEscrowPasskey={this.props.useSecretEscrowPasskey}
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed
               }
@@ -848,6 +868,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
               }
               isPasswordInProgress={isSubmitting}
               onUnlockWithPasskey={this.handleUnlockWithPasskey}
+              onUnlockWithSecretEscrow={this.handleUnlockWithSecretEscrow}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

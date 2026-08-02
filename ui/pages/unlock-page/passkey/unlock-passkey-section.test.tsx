@@ -230,6 +230,53 @@ describe('UnlockPasskeySection', () => {
     });
   });
 
+  it('unlocks via secret escrow when useSecretEscrowPasskey is set', async () => {
+    jest
+      .spyOn(actionsModule, 'generateSecretEscrowExportChallenge')
+      .mockResolvedValue({ challenge: 'escrow-challenge' });
+
+    const onUnlockWithSecretEscrow = jest.fn().mockResolvedValue(undefined);
+    const escrowStore = configureMockStore([thunk])({
+      metamask: {
+        ...mockStore.getState().metamask,
+        escrowRecord: {
+          factor: {
+            type: 'webauthn',
+            rpId: 'localhost',
+            origins: ['http://localhost'],
+            credentialId: 'escrow-cred',
+            publicKey: { kty: 'EC', crv: 'P-256', x: 'mock', y: 'mock' },
+          },
+          wrappedPassword: { ciphertext: 'x', iv: 'y' },
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection
+        {...baseProps}
+        useSecretEscrowPasskey
+        onUnlockWithSecretEscrow={onUnlockWithSecretEscrow}
+      />,
+      escrowStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(onUnlockWithSecretEscrow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'cred',
+          challenge: 'escrow-challenge',
+        }),
+      );
+    });
+    expect(
+      actionsModule.generatePasskeyAuthenticationOptions,
+    ).not.toHaveBeenCalled();
+  });
+
   it('opens troubleshoot modal from the side panel while passkey is in progress', async () => {
     getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
     let resolveCeremony: (value: unknown) => void;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import type { EscrowAssertion } from '@metamask/secret-escrow-client';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -12,6 +13,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
   tryUnlockMetamaskWithPasskey,
+  recoverPasswordWithSecretEscrow,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
@@ -23,6 +25,8 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getIsSecretEscrowPasskeyAvailable,
+  getIsSecretEscrowPasskeyEnrolled,
   getAccountTypeForOnboardingMetrics,
 } from '../../selectors';
 import {
@@ -56,11 +60,16 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   } = state;
   const isSocialLoginFlow = getIsSocialLoginFlow(state);
   const isOnboardingCompleted = getCompletedOnboarding(state);
-  const isPasskeyActive =
+  const isVaultPasskeyActive =
     getIsPasskeyFeatureAvailable(state) &&
     getIsPasskeyRegistered(state) &&
     !isSocialLoginFlow &&
     isOnboardingCompleted;
+  const useSecretEscrowPasskey =
+    getIsSecretEscrowPasskeyAvailable(state) &&
+    getIsSecretEscrowPasskeyEnrolled(state) &&
+    isOnboardingCompleted;
+  const isPasskeyActive = isVaultPasskeyActive || useSecretEscrowPasskey;
   const firstTimeFlowType = getFirstTimeFlowType(state);
   const accountTypeForMetrics = getAccountTypeForOnboardingMetrics(state);
   return {
@@ -70,10 +79,11 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     firstTimeFlowType,
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     isPasskeyActive,
+    useSecretEscrowPasskey,
     mustDeferPasskeyToBrowserTab:
       getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
       getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
-      isPasskeyActive,
+      isVaultPasskeyActive,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
     accountTypeForMetrics,
   };
@@ -86,6 +96,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     tryUnlockMetamaskWithPasskey: (
       authenticationResponse: PasskeyAuthenticationResponse,
     ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
+    recoverPasswordWithSecretEscrow: (assertion: EscrowAssertion) =>
+      dispatch(recoverPasswordWithSecretEscrow(assertion)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
@@ -103,6 +115,7 @@ const mergeProps = (
   const {
     tryUnlockMetamask: propsTryUnlockMetamask,
     tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
+    recoverPasswordWithSecretEscrow: propsRecoverPasswordWithSecretEscrow,
     ...restDispatchProps
   } = dispatchProps;
   const {
@@ -140,12 +153,17 @@ const mergeProps = (
     await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
   };
 
+  const onUnlockWithSecretEscrow = async (assertion: EscrowAssertion) => {
+    await propsRecoverPasswordWithSecretEscrow(assertion);
+  };
+
   return {
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
+    onUnlockWithSecretEscrow,
     navigateAfterUnlock:
       ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,
