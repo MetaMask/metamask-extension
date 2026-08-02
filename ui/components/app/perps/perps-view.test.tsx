@@ -58,6 +58,11 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
 jest.mock('./perps-toast', () => ({
   PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="perps-toast-provider-mock">{children}</div>
