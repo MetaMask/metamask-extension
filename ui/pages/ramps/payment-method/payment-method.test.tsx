@@ -6,8 +6,8 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { RampsPaymentMethodScreen } from './payment-method';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { RampsPaymentMethodScreen } from './payment-method';
 
 const mockNavigate = jest.fn();
 const mockSetSelectedPaymentMethod = jest.fn().mockResolvedValue(undefined);

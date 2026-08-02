@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
@@ -12,6 +11,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';

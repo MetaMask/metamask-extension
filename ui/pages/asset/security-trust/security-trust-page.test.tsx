@@ -7,8 +7,8 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../shared/lib/assets/security-trust-feature-flags';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import SecurityTrustPage from './security-trust-page';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import SecurityTrustPage from './security-trust-page';
 
 const mockNavigate = jest.fn();
 let mockLocationState: Record<string, unknown> | null = null;

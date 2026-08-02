@@ -10,8 +10,8 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { RampsProviderSelectionScreen } from './provider-selection';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { RampsProviderSelectionScreen } from './provider-selection';
 
 const mockNavigate = jest.fn();
 const mockSetSelectedProvider = jest.fn().mockResolvedValue(undefined);

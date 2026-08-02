@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';

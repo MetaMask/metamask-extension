@@ -10,8 +10,8 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
-import { MarketListView } from '.';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
 
