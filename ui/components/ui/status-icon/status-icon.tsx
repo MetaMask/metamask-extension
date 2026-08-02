@@ -1,4 +1,4 @@
-import { useRive } from '@rive-app/react-canvas';
+import { useRive, useStateMachineInput } from '@rive-app/react-canvas';
 import React, { useEffect } from 'react';
 import cn from 'clsx';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -23,22 +23,20 @@ export function StatusIcon({ state, className }: Props) {
     stateMachines: riveFile ? stateMachine : undefined,
     autoplay: true,
   });
+  const darkInput = useStateMachineInput(rive, stateMachine, 'Dark');
 
   useEffect(() => {
-    if (!rive) {
+    if (!darkInput) {
       return;
     }
 
     try {
-      const inputs = rive.stateMachineInputs(stateMachine);
-      const darkInput = inputs?.find((input) => input.name === 'Dark');
-      if (darkInput) {
-        darkInput.value = isDark;
-      }
+      // eslint-disable-next-line react-hooks/immutability
+      darkInput.value = isDark;
     } catch {
       // Rive WASM runtime may have been cleaned up
     }
-  }, [rive, isDark]);
+  }, [rive, darkInput, isDark]);
 
   useEffect(() => {
     if (!rive) {
@@ -54,7 +52,11 @@ export function StatusIcon({ state, className }: Props) {
     }
   }, [rive, state]);
 
-  // useRive owns instance cleanup on unmount / instance change.
+  useEffect(() => {
+    return () => {
+      rive?.cleanup();
+    };
+  }, [rive]);
 
   if (fileStatus !== 'success') {
     return null;
