@@ -7,10 +7,10 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { useAsyncResult } from '../../hooks/useAsync';
 
 const RIVE_WASM_URL = new URL(
   '@rive-app/canvas/rive.wasm',
@@ -18,39 +18,74 @@ const RIVE_WASM_URL = new URL(
   import.meta.url,
 );
 
+/**
+ * Module-level WASM init. Survives createRoot/StrictMode remounts of
+ * RiveWasmProvider so isWasmReady is not stuck false after the first
+ * in-flight load is abandoned on unmount.
+ */
+let riveWasmInitPromise: Promise<void> | null = null;
+
+function ensureRiveWasmLoaded(): Promise<void> {
+  if (!riveWasmInitPromise) {
+    riveWasmInitPromise = (async () => {
+      if (typeof RuntimeLoader === 'undefined') {
+        return;
+      }
+      const response = await fetch(RIVE_WASM_URL);
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! status while fetching rive.wasm: ${response.status}`,
+        );
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
+        arrayBuffer;
+      // Easier to debug if something goes wrong and a fetch is attempted.
+      RuntimeLoader.setWasmUrl('should not fetch wasm');
+      await RuntimeLoader.awaitInstance();
+    })().catch((error) => {
+      // Allow a later mount to retry after a failed init.
+      riveWasmInitPromise = null;
+      throw error;
+    });
+  }
+
+  return riveWasmInitPromise;
+}
+
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(false);
+  const [error, setError] = useState<Error | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
-  const result = useAsyncResult(async () => {
-    if (isWasmReady) {
-      return true;
-    }
+  useEffect(() => {
+    let cancelled = false;
 
-    if (typeof RuntimeLoader === 'undefined') {
-      setIsWasmReady(true);
-      return true;
-    }
-    const response = await fetch(RIVE_WASM_URL);
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error! status while fetching rive.wasm: ${response.status}`,
-      );
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-      arrayBuffer;
-    RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
+    ensureRiveWasmLoaded()
+      .then(() => {
+        if (!cancelled) {
+          setIsWasmReady(true);
+          setLoading(false);
+          setError(undefined);
+        }
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          setIsWasmReady(false);
+          setLoading(false);
+          setError(err);
+        }
+      });
 
-    // Preload the WASM
-    await RuntimeLoader.awaitInstance();
-    setIsWasmReady(true);
-    return true;
-  }, [isWasmReady, setIsWasmReady]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return {
     isWasmReady,
-    loading: result.pending,
-    error: result.error,
+    loading,
+    error,
   };
 };
 
@@ -145,26 +180,81 @@ export const useRiveWasmContext = () => {
   return context;
 };
 
+/** Module caches so .riv bytes survive StrictMode provider remounts. */
+const rivBufferCache = new Map<string, ArrayBuffer>();
+const rivBufferPromises = new Map<string, Promise<ArrayBuffer>>();
+
+function loadRivBuffer(url: string): Promise<ArrayBuffer> {
+  const cached = rivBufferCache.get(url);
+  if (cached) {
+    return Promise.resolve(cached);
+  }
+
+  const inFlight = rivBufferPromises.get(url);
+  if (inFlight) {
+    return inFlight;
+  }
+
+  const promise = fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}, url: ${url}`);
+      }
+      return response.arrayBuffer();
+    })
+    .then((buffer) => {
+      rivBufferCache.set(url, buffer);
+      rivBufferPromises.delete(url);
+      return buffer;
+    })
+    .catch((error) => {
+      rivBufferPromises.delete(url);
+      throw error;
+    });
+
+  rivBufferPromises.set(url, promise);
+  return promise;
+}
+
 export const useRiveWasmFile = (url: string) => {
-  const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
+  const { urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
+  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(
+    () => urlBufferMap[url] ?? rivBufferCache.get(url),
+  );
+  const [loading, setLoading] = useState(() => !buffer);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
-  const cachedBuffer = urlBufferMap[url];
-
-  const result = useAsyncResult(async () => {
-    if (!isWasmReady) {
+  useEffect(() => {
+    let cancelled = false;
+    const cached = urlBufferMap[url] ?? rivBufferCache.get(url);
+    if (cached) {
+      setBuffer(cached);
+      setLoading(false);
+      setError(undefined);
       return undefined;
     }
-    if (cachedBuffer) {
-      return cachedBuffer;
-    }
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}, url: ${url}`);
-    }
-    const newArrayBuffer = await response.arrayBuffer();
-    setUrlBufferCache(url, newArrayBuffer);
-    return newArrayBuffer;
-  }, [isWasmReady, url, setUrlBufferCache, cachedBuffer]);
 
-  return { buffer: result.value, loading: result.pending, error: result.error };
+    setLoading(true);
+    loadRivBuffer(url)
+      .then((loaded) => {
+        if (!cancelled) {
+          setUrlBufferCache(url, loaded);
+          setBuffer(loaded);
+          setLoading(false);
+          setError(undefined);
+        }
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          setLoading(false);
+          setError(err);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url, urlBufferMap, setUrlBufferCache]);
+
+  return { buffer, loading, error };
 };
