@@ -7,6 +7,7 @@ jest.mock('@rive-app/react-canvas', () => ({
     rive: null,
     RiveComponent: () => <div data-testid="rive-component" />,
   }),
+  useStateMachineInput: () => null,
 }));
 
 jest.mock('../../../hooks/useTheme', () => ({

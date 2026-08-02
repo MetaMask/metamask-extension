@@ -22,13 +22,6 @@ export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(false);
 
   const result = useAsyncResult(async () => {
-    // E2E/unit builds: skip Rive WASM. createRoot unmount can free the
-    // runtime mid-frame and crash the UI before `.controller-loaded` is set
-    // (see MetaMask/metamask-extension#44516).
-    if (process.env.IN_TEST) {
-      return false;
-    }
-
     if (isWasmReady) {
       return true;
     }
@@ -56,8 +49,8 @@ export const useRiveWasmReady = () => {
 
   return {
     isWasmReady,
-    loading: process.env.IN_TEST ? false : result.pending,
-    error: process.env.IN_TEST ? undefined : result.error,
+    loading: result.pending,
+    error: result.error,
   };
 };
 
