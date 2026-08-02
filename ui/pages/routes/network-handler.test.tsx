@@ -1,13 +1,12 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
 
 import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { NetworkHandler } from './network-handler';
 
@@ -17,11 +16,10 @@ const { render } = jest.requireActual<typeof import('@testing-library/react')>(
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
-jest.mock('../../store/store', () => ({
-  ...jest.requireActual('../../store/store'),
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 

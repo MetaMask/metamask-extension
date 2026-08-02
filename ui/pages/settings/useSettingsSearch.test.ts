@@ -137,7 +137,7 @@ describe('useSettingsSearch', () => {
         },
       });
 
-      return React.createElement(Provider, { store }, children);
+      return React.createElement(Provider, { store, children });
     };
 
   it('returns empty results for queries shorter than 3 characters', () => {

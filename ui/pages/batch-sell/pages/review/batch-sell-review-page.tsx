@@ -8,6 +8,9 @@ import {
 } from '../../../../constants/batch-sell';
 import { BATCH_SELL_SELECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getBatchSellTrades } from '../../../../ducks/batch-sell/selectors';
+import { getMaybeHexChainId } from '../../../../ducks/bridge/utils';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
 import { useBatchSellHighRateAlertModal } from '../../hooks/useBatchSellHighRateAlertModal';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { Header } from './components/header';
@@ -63,6 +66,17 @@ export const BatchSellReviewPage = () => {
   );
 
   const batchSellChain = entries[0]?.asset.chainId ?? '';
+
+  const batchSellHexChainId = useMemo(
+    () => getMaybeHexChainId(selectedReceiveAsset.chainId),
+    [selectedReceiveAsset.chainId],
+  );
+
+  // STX availability is gated on per-chain liveness, which is only fetched for
+  // chains the wallet has visited. Refresh it for the batch-sell source chain
+  // so the flag above isn't a false negative when that chain differs from the
+  // globally selected network.
+  useRefreshSmartTransactionsLiveness(batchSellHexChainId);
 
   useBatchSellTradesFetching(
     { data, entries, quotesLastFetchedMs, chain: batchSellChain },

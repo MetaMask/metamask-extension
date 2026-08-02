@@ -3,31 +3,44 @@ import { Driver } from '../../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../../constants';
 
 class OnboardingPasswordPage {
-  private driver: Driver;
-
-  private readonly newPasswordInput =
-    '[data-testid="create-password-new-input"]';
-
   private readonly confirmPasswordInput =
     '[data-testid="create-password-confirm-input"]';
 
-  private readonly passwordTerms = '[data-testid="create-password-terms"]';
+  private readonly createPasswordButton =
+    '[data-testid="create-password-submit"]';
 
   private readonly createPasswordMessage = {
     text: 'MetaMask password',
     tag: 'h2',
   };
 
-  private readonly createPasswordButton =
-    '[data-testid="create-password-submit"]';
+  private driver: Driver;
 
   private readonly incorrectPasswordWarningMessage = {
     text: "Passwords don't match",
     testId: 'confirm-password-error',
   };
 
+  private readonly newPasswordInput =
+    '[data-testid="create-password-new-input"]';
+
+  private readonly passwordTerms = '[data-testid="create-password-terms"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkConfirmPasswordButtonIsDisabled(): Promise<void> {
+    console.log('Check the confirm password button is disabled');
+    const confirmPasswordButton = await this.driver.findElement(
+      this.createPasswordButton,
+    );
+    assert.equal(await confirmPasswordButton.isEnabled(), false);
+  }
+
+  async checkIncorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
+    console.log('Check the incorrect password warning message is displayed');
+    await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -74,19 +87,6 @@ class OnboardingPasswordPage {
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
-  }
-
-  async checkConfirmPasswordButtonIsDisabled(): Promise<void> {
-    console.log('Check the confirm password button is disabled');
-    const confirmPasswordButton = await this.driver.findElement(
-      this.createPasswordButton,
-    );
-    assert.equal(await confirmPasswordButton.isEnabled(), false);
-  }
-
-  async checkIncorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
-    console.log('Check the incorrect password warning message is displayed');
-    await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }
 }
 

@@ -17,6 +17,8 @@ import {
 } from '../../../../shared/constants/app';
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
+const sidepanelCompactMaxWidth = 490;
+
 export const GlobalMenuDrawer = ({
   isOpen,
   onClose,
@@ -33,10 +35,34 @@ export const GlobalMenuDrawer = ({
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const showBackdrop = isFullscreen || isSidepanel;
+  const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
+    useState(false);
+  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+  const isLargeDrawer =
+    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   // Skip enter when mounted already open (e.g. back with ?drawerOpen=true)
   const [skipEnterAnimation, setSkipEnterAnimation] = useState(isOpen);
+
+  useLayoutEffect(() => {
+    if (!isSidepanel || typeof window.matchMedia !== 'function') {
+      setIsCompactSidepanelDrawer(false);
+      return;
+    }
+
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${sidepanelCompactMaxWidth}px)`,
+    );
+    const updateCompact = () => {
+      setIsCompactSidepanelDrawer(mediaQuery.matches);
+    };
+    updateCompact();
+    mediaQuery.addEventListener('change', updateCompact);
+    return () => {
+      mediaQuery.removeEventListener('change', updateCompact);
+    };
+  }, [isSidepanel]);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -46,7 +72,12 @@ export const GlobalMenuDrawer = ({
 
     if (isOpen) {
       if (!dialog.open) {
-        dialog.showModal();
+        if (typeof dialog.showModal === 'function') {
+          dialog.showModal();
+        } else {
+          // jsdom does not implement HTMLDialogElement.showModal
+          dialog.setAttribute('open', '');
+        }
       }
       // Sidepanel/popup: drop instant after enter so exit uses full duration.
       // Fullscreen: keep until close — it only disables enter keyframes.
@@ -57,7 +88,12 @@ export const GlobalMenuDrawer = ({
     }
 
     if (dialog.open) {
-      dialog.close();
+      if (typeof dialog.close === 'function') {
+        dialog.close();
+      } else {
+        dialog.removeAttribute('open');
+        dialog.dispatchEvent(new Event('close'));
+      }
     }
     // After close() so fullscreen doesn't briefly re-apply enter keyframes
     setSkipEnterAnimation(false);
@@ -70,7 +106,16 @@ export const GlobalMenuDrawer = ({
   }, [isOpen, onClose]);
 
   const requestClose = useCallback(() => {
-    dialogRef.current?.close();
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+    if (typeof dialog.close === 'function') {
+      dialog.close();
+      return;
+    }
+    dialog.removeAttribute('open');
+    dialog.dispatchEvent(new Event('close'));
   }, []);
 
   const titleId = 'global-menu-drawer-title';
@@ -85,9 +130,9 @@ export const GlobalMenuDrawer = ({
 
   const panel = (
     <Box
-      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
       backgroundColor={
-        isPureBlack
+        isPureBlack && isLargeDrawer
           ? BoxBackgroundColor.BackgroundAlternative
           : BoxBackgroundColor.BackgroundDefault
       }
@@ -125,7 +170,8 @@ export const GlobalMenuDrawer = ({
       ref={dialogRef}
       aria-labelledby={title ? titleId : undefined}
       className={className}
-      // @ts-expect-error Missing in React types
+      // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
+      // @ts-expect-error closedby missing in React types
       closedby="any"
       data-testid={dataTestId}
       onClose={handleDialogClose}

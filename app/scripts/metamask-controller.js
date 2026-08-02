@@ -14,12 +14,7 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, merge, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import {
-  errorCodes,
-  JsonRpcError,
-  providerErrors,
-  rpcErrors,
-} from '@metamask/rpc-errors';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'async-mutex';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -28,7 +23,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   MethodNames,
@@ -55,8 +49,6 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
 import {
@@ -65,17 +57,11 @@ import {
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import {
-  isEvmAccountType,
-  SolAccountType,
-  TrxAccountType,
-  BtcAccountType,
-} from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
   createDeferredPromise,
@@ -119,17 +105,11 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
-import {
-  SecretType,
-  RecoveryError,
-  EncAccountDataType,
-  SeedlessOnboardingMigrationVersion,
-  InvalidPrimarySecretDataTypeError,
-} from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
@@ -200,21 +180,13 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
-import {
-  trace,
-  endTrace,
-  TraceName,
-  TraceOperation,
-  getPerformanceTimestamp,
-} from '../../shared/lib/trace';
+import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsSeedlessOnboardingFeatureEnabled,
   getIsPerpsIncludedInBuild,
   getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
@@ -226,16 +198,10 @@ import {
   updatePreferencesAndMetricsForShieldSubscription,
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
-import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import {
-  isUserRejectedHardwareWalletError,
-  toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -380,11 +346,11 @@ import { AuthenticationControllerInit } from './messenger-client-init/identity/a
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
-import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
@@ -461,7 +427,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
-import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
+import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -594,10 +560,10 @@ export default class MetamaskController extends EventEmitter {
     // Do not modify directly. Use the associated methods.
     this.connections = {};
 
-    // lock to ensure only one vault created at once
-    this.createVaultMutex = new Mutex();
-
     // lock to ensure only one seedless onboarding operation is running at once
+    // Shared with LegacyBackgroundApiService until
+    // changePasswordWithPasskeyVerification is migrated (the only remaining
+    // MetamaskController user of this mutex).
     this.seedlessOperationMutex = new Mutex();
 
     // timer to reset passkey auto unlock suppressed state
@@ -664,6 +630,11 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
+      // GeolocationController must init before AnalyticsController, which
+      // resolves geolocation during its own init via
+      // GeolocationController:getGeolocationData.
+      GeolocationApiService: GeolocationApiServiceInit,
+      GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -682,8 +653,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
-      GeolocationApiService: GeolocationApiServiceInit,
-      GeolocationController: GeolocationControllerInit,
+      SentinelApiService: SentinelApiServiceInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
       RampsService: RampsServiceInit,
@@ -732,6 +702,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
@@ -880,6 +851,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
       messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
@@ -1071,10 +1044,16 @@ export default class MetamaskController extends EventEmitter {
             for (const {
               metadata: { id: entropySource },
             } of this.getHDKeyringObjects()) {
-              await this.discoverAndCreateAccounts(entropySource);
+              await this.controllerMessenger.call(
+                'LegacyBackgroundApiService:discoverAndCreateAccounts',
+                entropySource,
+              );
             }
           } else {
-            await this.discoverAndCreateAccounts(id);
+            await this.controllerMessenger.call(
+              'LegacyBackgroundApiService:discoverAndCreateAccounts',
+              id,
+            );
           }
 
           this.postOnboardingInitialization();
@@ -1476,6 +1455,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -1543,6 +1523,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -1739,23 +1720,6 @@ export default class MetamaskController extends EventEmitter {
     if (this.preferencesController.state.useExternalServices) {
       this.messengerClientApi.startRampsLifecycle?.();
     }
-  }
-
-  /**
-   * Gathers metadata (primarily connectivity status) about the globally selected
-   * network as well as each enabled network and persists it to state.
-   */
-  async lookupSelectedNetworks() {
-    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
-      this._getMetaMaskState(),
-    );
-
-    await Promise.allSettled([
-      this.networkController.lookupNetwork(),
-      ...enabledNetworkClientIds.map(async (networkClientId) => {
-        return await this.networkController.lookupNetwork(networkClientId);
-      }),
-    ]);
   }
 
   triggerNetworkrequests() {
@@ -2572,7 +2536,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       const addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      await this.lookupSelectedNetworks();
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      );
       return addedNetwork;
     } catch (error) {
       // `addNetwork` rejected, so `networkAdded` was not published
@@ -2742,8 +2708,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        this.notificationManager.markAsAutomaticallyClosed.bind(
-          this.notificationManager,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
       getCode: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3324,14 +3291,22 @@ export default class MetamaskController extends EventEmitter {
       resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
         this.seedlessOnboardingController,
       ),
-      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      createSeedPhraseBackup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createSeedPhraseBackup',
+      ),
       storeKeyringEncryptionKey:
         this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
           this.seedlessOnboardingController,
         ),
-      restoreSocialBackupAndGetSeedPhrase:
-        this.restoreSocialBackupAndGetSeedPhrase.bind(this),
-      syncSeedPhrases: this.syncSeedPhrases.bind(this),
+      restoreSocialBackupAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
+      ),
+      syncSeedPhrases: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:syncSeedPhrases',
+      ),
       changePassword: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:changePassword',
@@ -3364,12 +3339,26 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:setLocked',
       ),
-      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
-      createNewVaultAndGetSeedPhrase:
-        this.createNewVaultAndGetSeedPhrase.bind(this),
-      unlockAndGetSeedPhrase: this.unlockAndGetSeedPhrase.bind(this),
-      createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      importMnemonicToVault: this.importMnemonicToVault.bind(this),
+      createNewVaultAndKeychain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndKeychain',
+      ),
+      createNewVaultAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
+      ),
+      unlockAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
+      ),
+      createNewVaultAndRestore: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndRestore',
+      ),
+      importMnemonicToVault: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:importMnemonicToVault',
+      ),
       exportAccount: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:exportAccount',
@@ -3517,9 +3506,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'AccountOrderController:updateAccountsList',
       ),
-      setEnabledNetworks: this.setEnabledNetworks.bind(this),
-      setEnabledAllPopularNetworks:
-        this.setEnabledAllPopularNetworks.bind(this),
+      setEnabledNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledNetworks',
+      ),
+      setEnabledAllPopularNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+      ),
       updateHiddenAccountsList: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'AccountOrderController:updateHiddenAccountsList',
@@ -3658,12 +3652,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController,
       ),
 
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
-
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
         metaMetricsController,
@@ -3683,9 +3671,14 @@ export default class MetamaskController extends EventEmitter {
       ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
-      resolvePendingApproval: this.resolvePendingApproval,
-      approveHardwareWalletTransaction:
-        this.approveHardwareWalletTransaction.bind(this),
+      resolvePendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resolvePendingApproval',
+      ),
+      approveHardwareWalletTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:approveHardwareWalletTransaction',
+      ),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -3960,14 +3953,26 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
-      openUpdateTabAndReload: () =>
-        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
-      requestSafeReload: this.requestSafeReload.bind(this),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
+      ),
+      openUpdateTabAndReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:openUpdateTabAndReload',
+      ),
+      requestSafeReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:requestSafeReload',
+      ),
       applyTransactionContainersExisting: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:applyTransactionContainersExisting',
       ),
-      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
+      lookupSelectedNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      ),
       resetWallet: this.resetWallet.bind(this),
     };
   }
@@ -4297,85 +4302,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Creates a PRIMARY seed phrase backup for the user.
-   *
-   * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
-   * Save the encrypted seed phrase in the metadata store.
-   *
-   * @param {string} password - The user's password.
-   * @param {number[]} encodedSeedPhrase - The seed phrase to backup.
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   */
-  async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
-    let createSeedPhraseBackupSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-
-      const seedPhrase =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-      await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
-        password,
-        seedPhrase,
-        keyringId,
-      );
-      createSeedPhraseBackupSuccess = true;
-
-      // Set migration version for new users so migration never runs
-      this.seedlessOnboardingController.setMigrationVersion(
-        SeedlessOnboardingMigrationVersion.V1,
-      );
-
-      await this.legacyBackgroundApiService.syncKeyringEncryptionKey();
-    } catch (error) {
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          TraceName.OnboardingCreateKeyAndBackupSrpError,
-          error,
-        ),
-      );
-
-      log.error('[createSeedPhraseBackup] error', error);
-      throw error;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        data: { success: createSeedPhraseBackupSuccess },
-      });
-    }
-  }
-
-  /**
-   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
-   *
-   * @param {string} password - The user's password.
-   * @returns {Promise<SecretMetadata[]>} Array of secret metadata items.
-   */
-  async fetchAllSecretData(password) {
-    let fetchAllSeedPhrasesSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSecretData(password);
-      fetchAllSeedPhrasesSuccess = true;
-
-      return allSeedPhrases;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        data: { success: fetchAllSeedPhrasesSuccess },
-      });
-    }
-  }
-
-  /**
    * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
    * If `completedOnboarding`, `password` is required and verified first.
    *
@@ -4619,653 +4545,9 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  /**
-   * Syncs the seed phrases with the social login flow.
-   *
-   * @returns {Promise<void>}
-   */
-  async syncSeedPhrases() {
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-
-      if (!isSocialLoginFlow) {
-        throw new Error(
-          'Syncing seed phrases is only available for social login flow',
-        );
-      }
-
-      // 1. fetch all seed phrases
-      const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
-      if (!rootSecret) {
-        throw new Error('No root SRP found');
-      }
-
-      for (const secret of otherSecrets) {
-        // import SRP secret
-        // Get the SRP hash, and find the hash in the local state
-        const srpHash =
-          this.seedlessOnboardingController.getSecretDataBackupState(
-            secret.data,
-            secret.type,
-          );
-
-        if (!srpHash) {
-          // import private key secret
-          if (secret.type === SecretType.PrivateKey) {
-            await this.controllerMessenger.call(
-              'LegacyBackgroundApiService:importAccountWithStrategy',
-              'privateKey',
-              [bytesToHex(secret.data)],
-              {
-                shouldCreateSocialBackup: false,
-                shouldSelectAccount: false,
-              },
-            );
-            continue;
-          }
-
-          // If SRP is not in the local state, import it to the vault
-          // convert the seed phrase to a mnemonic (string)
-          const encodedSrp = convertEnglishWordlistIndicesToCodepoints(
-            secret.data,
-          );
-          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-          // import the new mnemonic to the current vault
-          await this.importMnemonicToVault(mnemonicToRestore, {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          });
-        }
-      }
-    } catch (error) {
-      log.error('error while syncing seed phrases', error);
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError('Error while syncing seed phrases', error),
-      );
-
-      throw error;
-    }
-  }
-
-  /**
-   * Adds a new seed phrase backup for the user.
-   *
-   * If `syncWithSocial` is false, it will only update the local state,
-   * and not sync the seed phrase to the server.
-   *
-   * @param {string} mnemonic - The mnemonic to derive the seed phrase from.
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {boolean} syncWithSocial - whether to skip syncing with social login
-   */
-  async addNewSeedPhraseBackup(mnemonic, keyringId, syncWithSocial = true) {
-    const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
-
-    const seedPhraseAsUint8Array =
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      let addNewSeedPhraseBackupSuccess = false;
-      try {
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-
-        // Run data type migration before adding new SRP to ensure data consistency.
-        await runSeedlessOnboardingMigrations(this.controllerMessenger);
-
-        await this.seedlessOnboardingController.addNewSecretData(
-          seedPhraseAsUint8Array,
-          EncAccountDataType.ImportedSrp,
-          {
-            keyringId,
-          },
-        );
-        addNewSeedPhraseBackupSuccess = true;
-      } catch (err) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(TraceName.OnboardingAddSrpError, err),
-        );
-
-        throw err;
-      } finally {
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          data: { success: addNewSeedPhraseBackupSuccess },
-        });
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: seedPhraseAsUint8Array,
-        type: SecretType.Mnemonic,
-      });
-    }
-  }
-
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
-
-  /**
-   * Creates a new Vault and create a new keychain.
-   *
-   * A vault, or KeyringController, is a controller that contains
-   * many different account strategies, currently called Keyrings.
-   * Creating it new means wiping all previous keyrings.
-   *
-   * A keychain, or keyring, controls many accounts with a single backup and signing strategy.
-   * For example, a mnemonic phrase can generate many accounts, and is a keyring.
-   *
-   * @param {string} password
-   * @returns {object} created keyring object
-   */
-  async createNewVaultAndKeychain(password) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      return await this._createNewVaultAndKeychainUnderLock(password);
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Creates a new vault and returns the seed phrase in a single atomic operation.
-   * Holding the vault mutex through seed export avoids races where concurrent
-   * keyring mutations leave no HD keyring available for export.
-   *
-   * @param {string} password
-   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
-   */
-  async createNewVaultAndGetSeedPhrase(password) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      await this._createNewVaultAndKeychainUnderLock(password);
-      return await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:getSeedPhrase',
-        password,
-      );
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Unlocks the vault and returns the seed phrase in a single atomic operation.
-   * Holding the vault mutex through seed export avoids races where concurrent
-   * keyring mutations leave no HD keyring available for export.
-   *
-   * @param {string} password
-   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
-   */
-  async unlockAndGetSeedPhrase(password) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
-        password,
-      });
-      return await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:getSeedPhrase',
-        password,
-      );
-    } finally {
-      releaseLock();
-    }
-  }
-
-  async _createNewVaultAndKeychainUnderLock(password) {
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
-    if (isWalletResetInProgress) {
-      // clear permissions
-      this.permissionController.clearState();
-
-      // Clear snap state
-      await this.snapController.clearState();
-
-      // Clear account tree state
-      this.accountTreeController.clearState();
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.accountOrderController.updateHiddenAccountsList([]);
-
-      this.txController.clearUnapprovedTransactions();
-    }
-
-    await this.multichainAccountService.createMultichainAccountWallet({
-      type: 'create',
-      password,
-    });
-
-    // set is resetting wallet in progress to false, after new vault and keychain are created
-    this.appStateController.setIsWalletResetInProgress(false);
-
-    const primaryKeyring = this.keyringController.state.keyrings[0];
-
-    // Once we have our first HD keyring available, we re-create the internal list of
-    // accounts (they should be up-to-date already, but we still run `updateAccounts` as
-    // there are some account migration happening in that function).
-    await this.accountsController.updateAccounts();
-
-    // Then we can build the initial tree.
-    this.accountTreeController.reinit();
-
-    return primaryKeyring;
-  }
-
-  /**
-   * Counts the number of accounts discovered by provider.
-   *
-   * @param {Array} accounts - The discovered accounts to count by provider.
-   */
-  getDiscoveryCountByProvider(accounts) {
-    // count includes Bitcoin to maintain return type for the ImportSRP component
-    const counts = {
-      Bitcoin: 0,
-      Solana: 0,
-      Tron: 0,
-    };
-
-    const solanaAccountTypes = Object.values(SolAccountType);
-    const bitcoinAccountTypes = Object.values(BtcAccountType);
-    const tronAccountTypes = Object.values(TrxAccountType);
-
-    for (const account of accounts) {
-      // Newly supported account types should be added here
-      // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
-      if (solanaAccountTypes.includes(account.type)) {
-        counts.Solana += 1;
-      }
-      if (bitcoinAccountTypes.includes(account.type)) {
-        counts.Bitcoin += 1;
-      }
-      if (tronAccountTypes.includes(account.type)) {
-        counts.Tron += 1;
-      }
-    }
-
-    return counts;
-  }
-
-  /**
-   * Discovers and creates accounts for the given keyring id.
-   *
-   * @param {string} id - The keyring id to discover and create accounts for.
-   * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
-   */
-  async discoverAndCreateAccounts(id) {
-    // Hold the start time so the span can be backdated if discovery does real
-    // work. The common no-op discovery (every login, per keyring) is not traced.
-    const startTime = getPerformanceTimestamp();
-    try {
-      // If no keyring id is provided, we assume one keyring was added to the vault
-      const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0]?.metadata.id;
-
-      if (!keyringIdToDiscover) {
-        throw new Error('No keyring id to discover accounts for');
-      }
-
-      const wallet = this.multichainAccountService.getMultichainAccountWallet({
-        entropySource: keyringIdToDiscover,
-      });
-
-      const result = await wallet.discoverAccounts();
-
-      const counts = this.getDiscoveryCountByProvider(result);
-
-      // Only emit a span when discovery actually created accounts.
-      if (result.length > 0) {
-        trace({
-          name: TraceName.DiscoverAccounts,
-          op: TraceOperation.AccountDiscover,
-          startTime,
-        });
-        endTrace({
-          name: TraceName.DiscoverAccounts,
-        });
-      }
-
-      return counts;
-    } catch (error) {
-      log.warn(`Failed to add accounts with balance. ${error}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    }
-  }
-
-  /**
-   * Imports a new mnemonic to the vault.
-   *
-   * @param {string} mnemonic - The mnemonic to import.
-   * @param {object} options - The options for the import.
-   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
-   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   * @returns {Promise<void>}
-   */
-  async importMnemonicToVault(
-    mnemonic,
-    options = {
-      shouldCreateSocialBackup: true,
-      shouldSelectAccount: true,
-    },
-  ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const { entropySource: id } =
-        await this.multichainAccountService.createMultichainAccountWallet({
-          type: 'import',
-          mnemonic: this._convertMnemonicToWordlistIndices(
-            Buffer.from(mnemonic, 'utf8'),
-          ),
-        });
-
-      const [newAccount] = await this.keyringController.withKeyringV2(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-
-      if (this.onboardingController.getIsSocialLoginFlow()) {
-        try {
-          // if social backup is requested, add the seed phrase backup
-          await this.addNewSeedPhraseBackup(
-            mnemonic,
-            id,
-            shouldCreateSocialBackup,
-          );
-        } catch (err) {
-          await this.multichainAccountService.removeMultichainAccountWallet(
-            id,
-            newAccount.address,
-          );
-          throw err;
-        }
-      }
-
-      if (shouldSelectAccount) {
-        const account = this.accountsController.getAccountByAddress(
-          newAccount.address,
-        );
-        this.accountsController.setSelectedAccount(account.id);
-      }
-
-      const syncAndDiscoverAccounts = async () => {
-        // We want to trigger a full sync of the account tree after importing a new SRP
-        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-        await this.accountTreeController.syncWithUserStorage();
-
-        const discoveredAccounts = await this.discoverAndCreateAccounts(id);
-
-        const newHdEntropyIndex = this.getHDEntropyIndex();
-
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
-            .addProperties({
-              status: 'completed',
-              hd_entropy_index: newHdEntropyIndex,
-              number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-              number_of_bitcoin_accounts_discovered:
-                discoveredAccounts?.Bitcoin,
-            })
-            .build(),
-        );
-      };
-
-      const { completedOnboarding } = this.onboardingController.state;
-      // In order to avoid premature sync and avoid potential race condition, for the actual B&S full sync after the onboarding is completed.
-      // We only sync and discover accounts if the onboarding is completed.
-      // i.e we don't sync and discover accounts for `socialImport` flow before the onboarding is completed.
-      if (completedOnboarding) {
-        // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-        // eslint-disable-next-line no-void
-        void syncAndDiscoverAccounts();
-      }
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Restores an array of seed phrases to the vault.
-   *
-   * @param {SecretMetadata[]} secretDatas - The secret metadata items to restore.
-   * @returns {Promise<void>}
-   */
-  async restoreSeedPhrasesToVault(secretDatas) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    if (!isSocialLoginFlow) {
-      // import the restored seed phrase (mnemonics) to the vault
-      // this is only available for social login flow
-      return; // or throw error here?
-    }
-
-    // These mnemonics are restored from the Social Backup, so we don't need to do it again
-    const shouldCreateSocialBackup = false;
-    // This is used to select the new account in the wallet.
-    // During the restore seed phrases, we just do the import, but don't change the selected account.
-    // Just let the user select the account manually after the restore.
-    const shouldSetSelectedAccount = false;
-
-    for (const secret of secretDatas) {
-      // import SRP secret
-      // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(
-          secret.data,
-          secret.type,
-        );
-      if (srpHash) {
-        // If SRP is in the local state, skip it
-        continue;
-      }
-
-      if (secret.type === SecretType.PrivateKey) {
-        await this.controllerMessenger.call(
-          'LegacyBackgroundApiService:importAccountWithStrategy',
-          'privateKey',
-          [bytesToHex(secret.data)],
-          {
-            shouldCreateSocialBackup,
-            shouldSelectAccount: shouldSetSelectedAccount,
-          },
-        );
-        continue;
-      }
-
-      // If SRP is not in the local state, import it to the vault
-      // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = convertEnglishWordlistIndicesToCodepoints(secret.data);
-      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-      // import the new mnemonic to the vault
-      await this.importMnemonicToVault(mnemonicToRestore, {
-        shouldCreateSocialBackup,
-        shouldSelectAccount: shouldSetSelectedAccount,
-      });
-    }
-  }
-
-  /**
-   * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
-   *
-   * @param {string} password - The password.
-   * @returns The seed phrase.
-   */
-  async restoreSocialBackupAndGetSeedPhrase(password) {
-    try {
-      // get the first seed phrase from the array, this is the oldest seed phrase
-      // and we will use it to create the initial vault
-      const [firstSecretData, ...remainingSecretData] =
-        await this.fetchAllSecretData(password);
-
-      const firstSeedPhrase = convertEnglishWordlistIndicesToCodepoints(
-        firstSecretData.data,
-      );
-      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-      const encodedSeedPhrase = Array.from(
-        Buffer.from(mnemonic, 'utf8').values(),
-      );
-      // restore the vault using the root seed phrase
-      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
-
-      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-      if (remainingSecretData.length > 0) {
-        await this.restoreSeedPhrasesToVault(remainingSecretData);
-      }
-
-      return mnemonic;
-    } catch (error) {
-      if (error instanceof RecoveryError) {
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
-
-      if (error instanceof InvalidPrimarySecretDataTypeError) {
-        const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
-        log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
-        this.controllerMessenger?.captureException?.(
-          createSentryError(errorMessage, error),
-        );
-        throw error;
-      }
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          'Failed to restore social backup and get seed phrase',
-          error,
-        ),
-      );
-
-      throw error;
-    }
-  }
-
-  /**
-   * Create a new Vault and restore an existent keyring.
-   *
-   * @param {string} password
-   * @param {number[]} encodedSeedPhrase - The seed phrase, encoded as an array
-   * of UTF-8 bytes.
-   */
-  async createNewVaultAndRestore(password, encodedSeedPhrase) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const { completedOnboarding } = this.onboardingController.state;
-
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-
-      // clear permissions
-      this.permissionController.clearState();
-
-      // Clear snap state
-      await this.snapController.clearState();
-
-      // Clear account tree state
-      this.accountTreeController.clearState();
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.accountOrderController.updateHiddenAccountsList([]);
-
-      this.txController.clearUnapprovedTransactions();
-
-      if (completedOnboarding) {
-        this.tokenDetectionController.enable();
-      }
-
-      // create new vault
-      const seedPhraseAsUint8Array =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-      const { entropySource: id } =
-        await this.multichainAccountService.createMultichainAccountWallet({
-          type: 'restore',
-          password,
-          mnemonic: seedPhraseAsUint8Array,
-        });
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
-
-      // We re-created the vault, meaning we only have 1 new HD keyring
-      // now. We re-create the internal list of accounts (which is
-      // not an expensive operation, since we should only have 1 HD
-      // keyring that has one default account.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      await this.accountsController.updateAccounts();
-
-      // Init multichain accounts after creating internal accounts.
-      await this.multichainAccountService.init();
-
-      // And we re-init the account tree controller too, to use the
-      // newly created accounts.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      this.accountTreeController.reinit();
-
-      if (completedOnboarding) {
-        // check if external services are enabled
-        const { useExternalServices } = this.preferencesController.state;
-        if (useExternalServices) {
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        }
-        await this.discoverAndCreateAccounts(id);
-      }
-
-      if (getIsSeedlessOnboardingFeatureEnabled()) {
-        const isSocialLoginFlow =
-          this.onboardingController.getIsSocialLoginFlow();
-        if (isSocialLoginFlow) {
-          // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
-          const primaryKeyringId =
-            this.keyringController.state.keyrings[0].metadata.id;
-          this.seedlessOnboardingController.updateBackupMetadataState({
-            keyringId: primaryKeyringId,
-            data: seedPhraseAsUint8Array,
-            type: SecretType.Mnemonic,
-          });
-
-          await this.controllerMessenger.call(
-            'LegacyBackgroundApiService:syncKeyringEncryptionKey',
-          );
-        }
-      }
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
-   *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
-   */
-  _convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  }
 
   /**
    * Get an account balance from the AccountTrackerController or request it directly from the network.
@@ -5469,6 +4751,10 @@ export default class MetamaskController extends EventEmitter {
         deviceRead: true,
       },
       async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no isUnlocked(); pairing is reported via getMode().
+          return Boolean(keyring.getMode());
+        }
         return keyring.isUnlocked();
       },
     );
@@ -5653,7 +4939,15 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+    // `createAccounts` derives the account address from the device, so a
+    // locked or unresponsive device can make this call hang indefinitely.
+    // Unlike the pure-read hardware methods (which run on the lock-free
+    // `deviceRead` path), `createAccounts` mutates vault state and must run
+    // under the controller lock, so it cannot use `deviceRead: true`. Wrap
+    // it in the same UX backstop as `#withKeyringForDevice`'s device-read
+    // branch so a wedged device rejects with an actionable error instead of
+    // leaving the UI spinner (and `showLoadingIndication`) stuck forever.
+    const createOperation = this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         const { entropySource } = keyring;
@@ -5737,6 +5031,39 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
+
+    let timeoutHandle;
+    let timedOut = false;
+    let unlockedAccount;
+    try {
+      ({ address: unlockedAccount } = await Promise.race([
+        createOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet account creation timed out for device: ${deviceName}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ]));
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // The abandoned create operation still holds the controller lock until
+        // the device call settles; observe its rejection so it never surfaces
+        // as an unhandled rejection. Mirrors the device-read path in
+        // `#withKeyringForDevice`.
+        createOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware wallet account creation failed after timeout for device: ${deviceName}`,
+            error,
+          ),
+        );
+      }
+    }
 
     const accounts = this.accountsController.listAccounts();
 
@@ -6744,14 +6071,14 @@ export default class MetamaskController extends EventEmitter {
     const {
       analyticsId,
       dataCollectionForMarketing,
-      completedMetaMetricsOnboarding,
+      consentDecisionMade,
       optedIn,
     } = this.getState();
 
     if (
       analyticsId &&
       dataCollectionForMarketing &&
-      completedMetaMetricsOnboarding &&
+      consentDecisionMade &&
       optedIn
     ) {
       // setup multiplexing
@@ -6840,6 +6167,15 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;
+    // Dedicated Hyperliquid WebSocket for the order-book panel's aggregated
+    // (`nSigFigs`) subscription, isolated from the controller's shared socket so
+    // the raw and aggregated `l2Book` streams for the same coin cannot
+    // cross-contaminate (the SDK dispatches `l2Book` events by coin only).
+    const aggregatedOrderBookConnection = perpsController
+      ? new AggregatedOrderBookConnection({
+          isTestnet: () => Boolean(perpsController.state?.isTestnet),
+        })
+      : null;
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
@@ -6869,6 +6205,8 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          subscribeAggregatedOrderBook: (params) =>
+            aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
             const { remoteFeatureFlags } = this.controllerMessenger.call(
               'RemoteFeatureFlagController:getState',
@@ -6964,6 +6302,7 @@ export default class MetamaskController extends EventEmitter {
         patchStore.destroy();
         messengerSubscriptions.clear();
         perpsStream?.destroy();
+        aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen
           // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
@@ -8226,10 +7565,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: (payload, options) => {
         trackEvent(
@@ -8573,117 +7910,6 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
-  };
-
-  setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  setEnabledAllPopularNetworks = async () => {
-    try {
-      this.networkEnablementController.enableAllPopularNetworks();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  /**
-   * Resolve a pending approval. For hardware wallet transactions and signatures,
-   * this handles error parsing.
-   *
-   * @param {string} id - The approval ID
-   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
-   * @param {object} options - Options for the approval
-   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
-   * @param {boolean} [options.waitForResult] - Whether to wait for the result
-   */
-  resolvePendingApproval = async (id, value, options = {}) => {
-    // RPC params may serialize an omitted argument as `null`, so normalize first
-    // before destructuring to avoid a runtime TypeError.
-    const normalizedOptions = options ?? {};
-    const { walletType, waitForResult } = normalizedOptions;
-    const approvalOptions =
-      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
-
-    try {
-      await this.approvalController.acceptRequest(id, value, approvalOptions);
-    } catch (error) {
-      // Ignore if approval was already handled
-      if (error instanceof ApprovalRequestNotFoundError) {
-        return;
-      }
-
-      if (walletType) {
-        await this.#handleHardwareWalletError(error, walletType);
-        return;
-      }
-
-      throw error;
-    }
-  };
-
-  /**
-   * Handle hardware wallet errors with retry support.
-   * Parses the error, checks if it's retryable, and if so, attempts to recreate
-   * the request (transaction or signature). Always throws an RPC error with
-   * properly formatted data.
-   *
-   * @param {Error} error - The original error from the hardware wallet
-   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} Always throws with hardware wallet error data
-   */
-  async #handleHardwareWalletError(error, walletType) {
-    const hwError = toHardwareWalletError(error, walletType);
-    const createRpcError = isUserRejectedHardwareWalletError(hwError)
-      ? providerErrors.userRejectedRequest
-      : rpcErrors.internal;
-    // Throw a JsonRpcError with hardware wallet error data preserved
-    // This ensures the error properties survive serialization across the RPC boundary
-    throw createRpcError({
-      message: hwError.message,
-      data: {
-        code: hwError.code,
-        severity: hwError.severity,
-        category: hwError.category,
-        userMessage: hwError.userMessage,
-        metadata: hwError.metadata,
-      },
-    });
-  }
-
-  /**
-   * Approve a hardware wallet transaction with retry support.
-   * This is a convenience wrapper around resolvePendingApproval for the
-   * transaction confirmation flow, which passes txMeta in a specific format.
-   *
-   * @param {object} opts - Options for the transaction
-   * @param {string} opts.txId - The transaction ID to approve
-   * @param {object} opts.txMeta - The transaction metadata
-   * @param {string} opts.actionId - The action ID for tracking
-   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
-   */
-  approveHardwareWalletTransaction = async ({
-    txId,
-    txMeta,
-    actionId,
-    walletType,
-  }) => {
-    await this.resolvePendingApproval(
-      String(txId),
-      { txMeta, actionId },
-      { waitForResult: true, walletType },
-    );
   };
 
   async _onAccountChange(newAddress) {
@@ -9282,21 +8508,26 @@ export default class MetamaskController extends EventEmitter {
       getFlatState: this.getState.bind(this),
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
       getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
+      requestSafeReload: this.requestSafeReload.bind(this),
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      // Temporarily get the mutex from `MetamaskController` until we can
-      // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
-      // TODO: Remove this once the migration is complete.
+      // Temporarily inject this mutex until changePasswordWithPasskeyVerification
+      // is migrated to LegacyBackgroundApiService (the only remaining
+      // MetamaskController user of this mutex).
+      // TODO: Remove this once that migration is complete.
       seedlessOperationMutex: this.seedlessOperationMutex,
-      createVaultMutex: this.createVaultMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
