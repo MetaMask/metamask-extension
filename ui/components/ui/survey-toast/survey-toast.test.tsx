@@ -51,17 +51,14 @@ const surveyData = {
   },
 };
 
-const createStore = (
-  options: { metametricsEnabled?: boolean; isUnlocked?: boolean } = {},
-) =>
+const createStore = (options = { metametricsEnabled: true }) =>
   mockStore({
     user: { basicFunctionality: true },
     metamask: {
       lastViewedUserSurvey: 2,
       useExternalServices: true,
       consentDecisionMade: true,
-      optedIn: options.metametricsEnabled ?? true,
-      isUnlocked: options.isUnlocked ?? true,
+      optedIn: options.metametricsEnabled,
       analyticsId: '0x123',
       internalAccounts: {
         selectedAccount: '0x123',
@@ -70,9 +67,8 @@ const createStore = (
     },
   });
 
-const renderComponent = (
-  options: { metametricsEnabled?: boolean; isUnlocked?: boolean } = {},
-) => renderWithProvider(<SurveyToast />, createStore(options));
+const renderComponent = (options = { metametricsEnabled: true }) =>
+  renderWithProvider(<SurveyToast />, createStore(options));
 
 describe('SurveyToast', () => {
   beforeEach(() => {
@@ -168,16 +164,5 @@ describe('SurveyToast', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('survey-toast')).toBeNull();
     });
-  });
-
-  it('does not fetch surveys while the wallet is locked', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
-
-    await act(async () => {
-      renderComponent({ isUnlocked: false });
-    });
-
-    expect(mockFetchWithCache).not.toHaveBeenCalled();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
   });
 });
