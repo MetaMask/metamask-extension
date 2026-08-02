@@ -714,6 +714,46 @@ describe('PerpsView', () => {
         }),
       );
     });
+
+    it('reports the displayed error when close all throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('Close transport failed'),
+      );
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseAllFailed',
+        });
+      });
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsError,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Close transport failed',
+          }),
+        }),
+      );
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+            [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+              PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+          }),
+        }),
+      );
+    });
   });
 
   describe('geo-blocking', () => {
