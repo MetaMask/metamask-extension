@@ -146,12 +146,21 @@ yarn build:test:mv2        # Firefox MV2 test build
 yarn download-builds --build-type test
 ```
 
+**Bear Network Chain 客製版正式封裝（Windows PowerShell）：**
+
+```powershell
+yarn.cmd dist
+```
+
+See [docs/bearnetwork-packaging.md](./docs/bearnetwork-packaging.md) for the full packaging checklist (Infura key, LavaMoat fetch endowments, ZIP output under `builds/`).
+
 **Build System Notes:**
 
 - `yarn start` uses Webpack (faster, development)
 - `yarn dist` uses Webpack + LavaMoat (production)
 - `yarn start` skips LavaMoat by default for speed; use `yarn start:lavamoat` to enable it
 - Test builds are required for E2E tests (not dev builds)
+- `yarn dist` runs `lavamoat:check-fetch-endowments` first (required for working RPC under LavaMoat)
 
 ### Testing
 

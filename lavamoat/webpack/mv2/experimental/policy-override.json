@@ -142,6 +142,10 @@
     "@metamask/network-controller": {
       "packages": {
         "cockatiel": true
+      },
+      "globals": {
+        "fetch": true,
+        "btoa": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util": {
@@ -301,6 +305,16 @@
       "globals": {
         "__zod_globalRegistry": "write",
         "__zod_globalConfig": "write"
+      }
+    },
+    "@metamask/assets-controller": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "@metamask/snaps-controllers": {
+      "globals": {
+        "fetch": true
       }
     }
   }

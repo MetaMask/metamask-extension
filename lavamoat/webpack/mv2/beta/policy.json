@@ -829,7 +829,7 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch.bind": true,
+        "fetch": true,
         "performance.now": true,
         "performance.timeOrigin": true,
         "setInterval": true,
@@ -1901,8 +1901,8 @@
       "globals": {
         "Intl.NumberFormat": true,
         "URL": true,
-        "btoa.bind": true,
-        "fetch.bind": true,
+        "btoa": true,
+        "fetch": true,
         "setTimeout": true
       },
       "meta": {
@@ -2365,7 +2365,7 @@
         "WebSocket": true,
         "clearTimeout": true,
         "document.getElementById": true,
-        "fetch.bind": true,
+        "fetch": true,
         "setTimeout": true
       },
       "meta": {
@@ -5177,7 +5177,7 @@
     },
     "@open-rpc/test-coverage>isomorphic-fetch": {
       "globals": {
-        "fetch.bind": true
+        "fetch": true
       },
       "packages": {
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
