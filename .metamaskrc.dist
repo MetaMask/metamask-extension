@@ -21,6 +21,11 @@ ASSETS_UNIFIED_STATE_ENABLED='false'
 ; Set this to `true` to enable Passkey/Biometrics unlock for SRP wallets
 PASSKEY_ENABLED='false'
 
+; Local secret-escrow mock for Social + Passkey wipe/rehydration testing.
+; Start the server: yarn secret-escrow:mock-server
+; Then set:
+;SECRET_ESCROW_URL=http://127.0.0.1:8787
+
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'

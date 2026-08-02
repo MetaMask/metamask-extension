@@ -1,4 +1,7 @@
-import { MockSecretEscrowClient } from '@metamask/secret-escrow-client';
+import {
+  HttpSecretEscrowClient,
+  MockSecretEscrowClient,
+} from '@metamask/secret-escrow-client';
 import {
   SecretEscrowController,
   SecretEscrowControllerMessenger,
@@ -6,10 +9,11 @@ import {
 import { MessengerClientInitFunction } from './types';
 
 /**
- * Initialize the secret escrow controller with an in-memory mock backend.
+ * Initialize the secret escrow controller.
  *
- * Replace {@link MockSecretEscrowClient} with a real HTTP/CubeSigner client
- * when the escrow service is available.
+ * When `SECRET_ESCROW_URL` is set (e.g. `http://127.0.0.1:8787`), uses the
+ * file-backed HTTP mock so enrollment survives wallet wipe. Otherwise uses the
+ * in-memory {@link MockSecretEscrowClient}.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
@@ -20,10 +24,16 @@ export const SecretEscrowControllerInit: MessengerClientInitFunction<
   SecretEscrowController,
   SecretEscrowControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
+  const escrowUrl = process.env.SECRET_ESCROW_URL;
+  const client =
+    typeof escrowUrl === 'string' && escrowUrl.length > 0
+      ? new HttpSecretEscrowClient({ baseUrl: escrowUrl })
+      : new MockSecretEscrowClient();
+
   const messengerClient = new SecretEscrowController({
     state: persistedState.SecretEscrowController,
     messenger: controllerMessenger,
-    client: new MockSecretEscrowClient(),
+    client,
   });
 
   return {

@@ -2954,6 +2954,8 @@ export default class MetamaskController extends EventEmitter {
       recoverPasswordWithSecretEscrow:
         this.recoverPasswordWithSecretEscrow.bind(this),
       revokeSecretEscrowPasskey: this.revokeSecretEscrowPasskey.bind(this),
+      hydrateSecretEscrowEnrollment:
+        this.hydrateSecretEscrowEnrollment.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -4456,11 +4458,33 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Restores local escrow enrollment from the remote mock/API after wipe.
+   *
+   * @returns {Promise<boolean>} True when local state was hydrated.
+   */
+  async hydrateSecretEscrowEnrollment() {
+    if (!this.onboardingController.getIsSocialLoginFlow()) {
+      return false;
+    }
+    try {
+      return await this.secretEscrowController.hydrateFromRemote(
+        this.#getSecretEscrowUserId(),
+      );
+    } catch (error) {
+      log.warn('hydrateSecretEscrowEnrollment failed', error);
+      return false;
+    }
+  }
+
+  /**
    * Issues a WebAuthn challenge for secret-escrow export / password recovery.
    *
    * @returns {Promise<{ challenge: string }>}
    */
   async generateSecretEscrowExportChallenge() {
+    if (!this.secretEscrowController.isEnrolled()) {
+      await this.hydrateSecretEscrowEnrollment();
+    }
     return this.secretEscrowController.startExport();
   }
 
@@ -4478,10 +4502,12 @@ export default class MetamaskController extends EventEmitter {
         'Secret escrow passkey enrollment is only available for social login',
       );
     }
+    // Port IPC may turn omitted args into `null`; coalesce before use.
+    const resolvedFactorId = factorId || 'passkey';
     await this.keyringController.verifyPassword(password);
     await this.secretEscrowController.enrollAndWrapPassword({
       userId: this.#getSecretEscrowUserId(),
-      factorId,
+      factorId: resolvedFactorId,
       factor,
       password,
     });

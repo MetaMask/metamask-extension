@@ -1300,7 +1300,7 @@ export function protectVaultKeyWithPasskey(
 export function enrollSecretEscrowPasskey(
   factor: import('@metamask/secret-escrow-client').WebAuthnEscrowFactor,
   password: string,
-  factorId?: string,
+  factorId: string = 'passkey',
 ): Promise<void> {
   return submitRequestToBackground('enrollSecretEscrowPasskey', [
     factor,
@@ -1344,6 +1344,28 @@ export function recoverPasswordWithSecretEscrow(
  */
 export function revokeSecretEscrowPasskey(): Promise<void> {
   return submitRequestToBackground('revokeSecretEscrowPasskey');
+}
+
+/**
+ * Restores secret-escrow enrollment from the remote mock/API after wallet wipe.
+ *
+ * @returns True when local enrollment was hydrated from remote.
+ */
+export function hydrateSecretEscrowEnrollment(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const hydrated = await submitRequestToBackground<boolean>(
+      'hydrateSecretEscrowEnrollment',
+    );
+    if (hydrated) {
+      await forceUpdateMetamaskState(dispatch);
+    }
+    return hydrated;
+  };
 }
 
 /**

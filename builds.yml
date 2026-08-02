@@ -437,6 +437,10 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+  # Local file-backed secret escrow mock (Social + Passkey wipe recovery).
+  # Start with: yarn secret-escrow:mock-server
+  # Then set SECRET_ESCROW_URL=http://127.0.0.1:8787 in .metamaskrc
+  - SECRET_ESCROW_URL: null
 
   # Basic Functionality toggle (required for onboarding)
   - BFT_CONSOLIDATION_ENABLED: false

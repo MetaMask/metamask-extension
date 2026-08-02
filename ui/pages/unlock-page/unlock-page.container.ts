@@ -14,6 +14,7 @@ import {
   tryUnlockMetamask,
   tryUnlockMetamaskWithPasskey,
   recoverPasswordWithSecretEscrow,
+  hydrateSecretEscrowEnrollment,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
@@ -67,8 +68,8 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isOnboardingCompleted;
   const useSecretEscrowPasskey =
     getIsSecretEscrowPasskeyAvailable(state) &&
-    getIsSecretEscrowPasskeyEnrolled(state) &&
-    isOnboardingCompleted;
+    getIsSecretEscrowPasskeyEnrolled(state);
+  // Allow during social rehydration (onboarding not completed yet) and after.
   const isPasskeyActive = isVaultPasskeyActive || useSecretEscrowPasskey;
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   // Vault: defer only for known-bad authenticators (e.g. Google Password Manager).
@@ -103,6 +104,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     recoverPasswordWithSecretEscrow: (assertion: EscrowAssertion) =>
       dispatch(recoverPasswordWithSecretEscrow(assertion)),
+    hydrateSecretEscrowEnrollment: () =>
+      dispatch(hydrateSecretEscrowEnrollment()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>

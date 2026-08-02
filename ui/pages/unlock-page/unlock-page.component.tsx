@@ -86,6 +86,7 @@ type UnlockPageProps = UnlockPageContext & {
   onUnlockWithSecretEscrow?: (
     assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
   ) => Promise<void>;
+  hydrateSecretEscrowEnrollment?: () => Promise<boolean>;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
@@ -243,6 +244,10 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      * Completes social secret-escrow passkey unlock and navigates after success.
      */
     onUnlockWithSecretEscrow: PropTypes.func,
+    /**
+     * Restores escrow enrollment from remote after wipe (social rehydration).
+     */
+    hydrateSecretEscrowEnrollment: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -311,6 +316,16 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         return;
       }
     }
+
+    // After wipe, restore escrow enrollment from the persistent mock/API so
+    // Social + Passkey unlock can appear on rehydration.
+    if (isSocialLoginFlow && this.props.hydrateSecretEscrowEnrollment) {
+      const hydrated = await this.props.hydrateSecretEscrowEnrollment();
+      if (hydrated) {
+        this.setState({ isPasswordUnlockMode: false });
+      }
+    }
+
     if (
       this.props.isWalletResetInProgress &&
       this.props.firstTimeFlowType === null
