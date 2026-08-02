@@ -1,6 +1,10 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import {
+  BEAR_NETWORK_CHAIN_DISPLAY_NAME,
+  BEAR_NETWORK_CHAIN_FEATURED,
+} from './bearnetworkchain';
+import {
   CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -24,14 +28,16 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
+    // BearNetworkChain customization: assert via independent constants
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BEAR_NETWORK_CHAIN]).toBe(
-      'BearNetworkChain',
+      BEAR_NETWORK_CHAIN_DISPLAY_NAME,
     );
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
-        'BearNetworkChain': CHAIN_IDS.BEAR_NETWORK_CHAIN,
+        // BearNetworkChain customization
+        [BEAR_NETWORK_CHAIN_DISPLAY_NAME]: BEAR_NETWORK_CHAIN_FEATURED.chainId,
         Arbitrum: CHAIN_IDS.ARBITRUM,
         Avalanche: CHAIN_IDS.AVALANCHE,
         'BNB Chain': CHAIN_IDS.BSC,

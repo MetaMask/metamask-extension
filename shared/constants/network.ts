@@ -11,6 +11,15 @@ import {
 } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from './multichain/networks';
+// BearNetworkChain customization: independent constants (low-conflict fork layer)
+import {
+  BEAR_NETWORK_CHAIN_FEATURED,
+  BEAR_NETWORK_CHAIN_IDS,
+  BEAR_NETWORK_CHAIN_IMAGE_MAP,
+  BEAR_NETWORK_CHAIN_TO_CURRENCY_SYMBOL_MAP,
+  BEAR_NETWORK_CHAIN_TO_NAME_MAP,
+  BEAR_NETWORK_CURRENCY_SYMBOLS,
+} from './bearnetworkchain';
 
 /**
  * A type representing built-in network types, used as an identifier.
@@ -231,7 +240,8 @@ export const CHAIN_IDS = {
   ARC: '0x13b2',
   ROBINHOOD_CHAIN: '0x1237',
   STABLE: '0x3dc',
-  BEAR_NETWORK_CHAIN: '0x9c8ce',
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CHAIN_IDS,
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -409,7 +419,6 @@ export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 export const ARC_DISPLAY_NAME = 'Arc';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
-export const BEAR_NETWORK_CHAIN_DISPLAY_NAME = 'BearNetworkChain';
 
 /**
  * The Arc USDC ERC20 token contract. On Arc the native gas token is USDC, so
@@ -518,7 +527,8 @@ export const CURRENCY_SYMBOLS = {
   MANTLE: 'MNT',
   KONET: 'KONET',
   ARC: 'USDC',
-  BRNKC: 'BRNKC',
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CURRENCY_SYMBOLS,
 } as const;
 
 // Non-EVM currency symbols
@@ -763,7 +773,6 @@ export const KONET_IMAGE_URL = './images/konet.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
-export const BEAR_NETWORK_CHAIN_IMAGE_URL = './images/bearnetworkchain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -953,7 +962,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
   [CHAIN_IDS.ARC]: ARC_DISPLAY_NAME,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
-  [CHAIN_IDS.BEAR_NETWORK_CHAIN]: BEAR_NETWORK_CHAIN_DISPLAY_NAME,
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CHAIN_TO_NAME_MAP,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1127,7 +1137,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
   [CHAIN_IDS.ARC]: CURRENCY_SYMBOLS.ARC,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
-  [CHAIN_IDS.BEAR_NETWORK_CHAIN]: CURRENCY_SYMBOLS.BRNKC,
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CHAIN_TO_CURRENCY_SYMBOL_MAP,
 } as const;
 
 /**
@@ -1322,7 +1333,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
-  [CHAIN_IDS.BEAR_NETWORK_CHAIN]: BEAR_NETWORK_CHAIN_IMAGE_URL,
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CHAIN_IMAGE_MAP,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1423,7 +1435,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.BEAR_NETWORK_CHAIN]: BEAR_NETWORK_CHAIN_IMAGE_URL,
+  // BearNetworkChain customization
+  ...BEAR_NETWORK_CHAIN_IMAGE_MAP,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1597,21 +1610,8 @@ export function getFailoverUrlsForInfuraNetwork(
 }
 
 export const FEATURED_RPCS: AddNetworkFields[] = [
-  {
-    chainId: CHAIN_IDS.BEAR_NETWORK_CHAIN,
-    name: BEAR_NETWORK_CHAIN_DISPLAY_NAME,
-    nativeCurrency: CURRENCY_SYMBOLS.BRNKC,
-    rpcEndpoints: [
-      {
-        url: 'https://brnkc-mainnet.bearnetwork.net',
-        failoverUrls: [],
-        type: RpcEndpointType.Custom,
-      },
-    ],
-    defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://brnkscan.bearnetwork.net'],
-    defaultBlockExplorerUrlIndex: 0,
-  },
+  // BearNetworkChain customization: first for discoverability (see ./bearnetworkchain.ts)
+  BEAR_NETWORK_CHAIN_FEATURED,
   {
     chainId: CHAIN_IDS.LINEA_MAINNET,
     name: LINEA_MAINNET_DISPLAY_NAME,
