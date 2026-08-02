@@ -47,17 +47,21 @@
     transition-property: display, overlay;
   }
 
-  &--instant {
+  // Sidepanel/popup: near-zero transitions for mount-already-open enter only
+  // (cleared before close so exit can slide).
+  &--instant:not(.global-menu-drawer--fullscreen) {
     transition-duration: 0.01ms;
-
-    .global-menu-drawer__frame {
-      transition-duration: 0.01ms;
-      animation-duration: 0.01ms;
-    }
 
     &::backdrop {
       transition-duration: 0.01ms;
     }
+  }
+
+  // Fullscreen: only suppress the enter keyframes — leave transitions alone
+  // so slide-out still runs when --instant remains until close().
+  &--instant.global-menu-drawer--fullscreen[open] > .global-menu-drawer__frame {
+    animation: none;
+    translate: 0 0;
   }
 
   // Dimmed backdrop (fullscreen / sidepanel)

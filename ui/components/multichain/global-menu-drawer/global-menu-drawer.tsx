@@ -35,7 +35,8 @@ export const GlobalMenuDrawer = ({
   const showBackdrop = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [instantOpen, setInstantOpen] = useState(isOpen);
+  // Skip enter when mounted already open (e.g. back with ?drawerOpen=true)
+  const [skipEnterAnimation, setSkipEnterAnimation] = useState(isOpen);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -47,8 +48,10 @@ export const GlobalMenuDrawer = ({
       if (!dialog.open) {
         dialog.showModal();
       }
-      if (instantOpen) {
-        setInstantOpen(false);
+      // Sidepanel/popup: drop instant after enter so exit uses full duration.
+      // Fullscreen: keep until close — it only disables enter keyframes.
+      if (skipEnterAnimation && !isFullscreen) {
+        setSkipEnterAnimation(false);
       }
       return;
     }
@@ -56,7 +59,9 @@ export const GlobalMenuDrawer = ({
     if (dialog.open) {
       dialog.close();
     }
-  }, [isOpen, instantOpen]);
+    // After close() so fullscreen doesn't briefly re-apply enter keyframes
+    setSkipEnterAnimation(false);
+  }, [isOpen, skipEnterAnimation, isFullscreen]);
 
   const handleDialogClose = useCallback(() => {
     if (isOpen) {
@@ -73,7 +78,7 @@ export const GlobalMenuDrawer = ({
     'global-menu-drawer',
     showBackdrop ? 'global-menu-drawer--backdrop' : '',
     isFullscreen ? 'global-menu-drawer--fullscreen' : '',
-    instantOpen ? 'global-menu-drawer--instant' : '',
+    skipEnterAnimation ? 'global-menu-drawer--instant' : '',
   ]
     .filter(Boolean)
     .join(' ');
