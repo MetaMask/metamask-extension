@@ -1,4 +1,8 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  dismissObstructingToastsBeforeClick,
+  dismissVisibleToasts,
+} from '../flows/toast.flow';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -214,9 +218,27 @@ class NetworkManager {
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.networkListItemByName(networkName),
-    );
+    const locator = this.networkListItemByName(networkName);
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await dismissObstructingToastsBeforeClick(this.driver);
+      try {
+        await this.driver.clickElement(locator, { retries: 1 });
+        await dismissVisibleToasts(this.driver);
+        return;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === 'ElementClickInterceptedError' &&
+          attempt < 4
+        ) {
+          await dismissVisibleToasts(this.driver);
+          await this.driver.delay(500);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   async selectTab(tabName: string): Promise<void> {
