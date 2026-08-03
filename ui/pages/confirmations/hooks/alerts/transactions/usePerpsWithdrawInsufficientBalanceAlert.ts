@@ -37,6 +37,9 @@ type FreshBalance =
   | { status: 'loading' }
   | SettledBalance;
 
+/** Why the withdrawal is blocked, or `null` when it is not. */
+type BlockReason = 'exceedsBalance' | 'balanceUnavailable' | null;
+
 /**
  * Reads the Perps account state the provider itself validates withdrawals
  * against, instead of the streamed WebSocket cache.
@@ -46,6 +49,11 @@ type FreshBalance =
  * restart it reads empty — and it can hold a stale balance while the provider
  * sees a newer one. Basing a blocking decision on it lets the confirmation and
  * the provider disagree in both directions.
+ *
+ * "Fresh" means fresh as of mount, not live: the read runs once per
+ * `[enabled, perpsCacheKey]` and is never refreshed, which is enough for a
+ * short-lived confirmation and keeps the confirmation off the HL request
+ * budget. The provider re-validates the amount at submit time.
  *
  * @param enabled - Only true for `perpsWithdraw` confirmations. While false,
  * nothing is requested, so unrelated confirmations never initialize or query
@@ -88,7 +96,15 @@ function useFreshPerpsWithdrawableBalance(enabled: boolean): FreshBalance {
             : { status: 'unavailable' },
         ),
       )
-      .catch(() => resolve({ status: 'unavailable' }));
+      // Surfaced to the user as a blocking alert, but log it too: otherwise a
+      // withdrawal blocked by an unreachable provider leaves no trace.
+      .catch((error) => {
+        console.error(
+          '[usePerpsWithdrawInsufficientBalanceAlert] Failed to fetch account',
+          error,
+        );
+        resolve({ status: 'unavailable' });
+      });
 
     return () => {
       cancelled = true;
@@ -124,50 +140,58 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
   const freshBalance = useFreshPerpsWithdrawableBalance(isPerpsWithdraw);
   const enteredAmountFiat = primaryRequiredToken?.amountFiat ?? '0';
 
-  const exceedsBalance = useMemo(() => {
+  const blockReason = useMemo((): BlockReason => {
     if (!isPerpsWithdraw) {
-      return false;
+      return null;
     }
 
     const enteredAmount = new BigNumber(enteredAmountFiat);
     if (!enteredAmount.gt(0)) {
-      return false;
+      return null;
     }
 
     if (freshBalance.status === 'loaded') {
       return exceedsPerpsWithdrawBalance(
         enteredAmount,
         new BigNumber(freshBalance.balance),
-      );
+      )
+        ? 'exceedsBalance'
+        : null;
     }
 
     // Degraded read: block rather than approve an amount we could not verify.
-    // The provider would reject it anyway.
+    // The provider would reject it anyway. The copy has to say that, though —
+    // we do not know the balance, so we cannot claim the funds are insufficient.
     if (freshBalance.status === 'unavailable') {
-      return true;
+      return 'balanceUnavailable';
     }
 
     // Idle or still in flight: nothing to compare against yet, and blocking
     // here would flag a valid withdrawal for as long as the read runs.
-    return false;
+    return null;
   }, [enteredAmountFiat, freshBalance, isPerpsWithdraw]);
 
   return useMemo(() => {
-    if (!exceedsBalance) {
+    if (!blockReason) {
       return [];
     }
+
+    const message =
+      blockReason === 'exceedsBalance'
+        ? t('alertInsufficientPayTokenBalance')
+        : t('alertPerpsWithdrawBalanceUnavailable');
 
     return [
       {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: AlertsName.InsufficientPayTokenBalance,
-        message: t('alertInsufficientPayTokenBalance'),
-        reason: t('alertInsufficientPayTokenBalance'),
+        message,
+        reason: message,
         severity: Severity.Danger,
       },
     ];
-  }, [exceedsBalance, t]);
+  }, [blockReason, t]);
 }
 
 function exceedsPerpsWithdrawBalance(

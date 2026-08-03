@@ -11,6 +11,7 @@ import {
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { resetCoalesceCacheForTests } from '../../../../../hooks/perps/coalesceBackgroundRequest';
+import { usePerpsCacheKey } from '../../../../../hooks/perps/usePerpsCacheKey';
 import { getPerpsStreamManager } from '../../../../../providers/perps';
 import { submitRequestToBackground } from '../../../../../store/background-connection';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
@@ -27,18 +28,23 @@ jest.mock('../../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../../store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
+jest.mock('../../../../../hooks/perps/usePerpsCacheKey');
 jest.mock('../../pay/useTransactionPayData');
+
+const PERPS_CACHE_KEY = 'hyperliquid:testnet:0x1';
+const OTHER_PERPS_CACHE_KEY = 'hyperliquid:testnet:0x2';
 
 const mockGetPerpsStreamManager = jest.mocked(getPerpsStreamManager);
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockUsePerpsCacheKey = jest.mocked(usePerpsCacheKey);
 const mockUsePrimaryRequiredToken = jest.mocked(
   useTransactionPayPrimaryRequiredToken,
 );
 
 /**
- * Balance the streamed WebSocket cache would have reported. The hook must
- * never read it — every case here sets it to a value that would produce the
- * opposite decision from the fresh account state.
+ * Balance the streamed WebSocket cache would have reported. The Perps cases
+ * seed it with a value that would produce the opposite decision and assert
+ * the singleton is never consulted, which is what the pre-fix hook did.
  * @param withdrawableBalance
  */
 function setStreamedBalance(withdrawableBalance: string | null) {
@@ -79,6 +85,14 @@ const EXPECTED_ALERT = {
   severity: Severity.Danger,
 };
 
+/** Blocked because the balance could not be read — not because it is short. */
+const UNAVAILABLE_COPY = "Couldn't check your Perps balance. Try again.";
+const EXPECTED_UNAVAILABLE_ALERT = {
+  ...EXPECTED_ALERT,
+  message: UNAVAILABLE_COPY,
+  reason: UNAVAILABLE_COPY,
+};
+
 function buildPerpsWithdrawState() {
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation(),
@@ -115,6 +129,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     resetCoalesceCacheForTests();
+    mockUsePerpsCacheKey.mockReturnValue(PERPS_CACHE_KEY);
     setStreamedBalance(null);
     setFreshBalance('100');
     setEnteredAmount('10');
@@ -211,7 +226,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
   });
 
   describe('fresh balance source', () => {
-    it('fresh balance source: blocks a withdrawal the stale streamed cache would have allowed', async () => {
+    it('blocks a withdrawal the stale streamed cache would have allowed', async () => {
       // Stale-high: the WebSocket cache still reports the pre-trade balance,
       // while the account the provider validates against only holds $20.
       setStreamedBalance('500');
@@ -223,9 +238,12 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       await waitFor(() =>
         expect(result.current).toStrictEqual([EXPECTED_ALERT]),
       );
+      // The pre-fix hook read this cache on exactly this confirmation type;
+      // the fresh read must not consult it at all.
+      expect(mockGetPerpsStreamManager).not.toHaveBeenCalled();
     });
 
-    it('fresh balance source: allows a withdrawal the stale streamed cache would have blocked', async () => {
+    it('allows a withdrawal the stale streamed cache would have blocked', async () => {
       // Stale-low: the singleton cache was rebuilt empty after an MV3
       // restart, but the account really does hold $763.276429.
       setStreamedBalance(null);
@@ -237,7 +255,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       await waitFor(() => expect(result.current).toStrictEqual([]));
     });
 
-    it('fresh balance source: allows a withdrawal equal to the fresh balance', async () => {
+    it('allows a withdrawal equal to the fresh balance', async () => {
       setStreamedBalance('10');
       setFreshBalance('250.5');
       setEnteredAmount('250.5');
@@ -247,7 +265,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       await waitFor(() => expect(result.current).toStrictEqual([]));
     });
 
-    it('fresh balance source: returns no alert while the fresh read is still in flight', async () => {
+    it('returns no alert while the fresh read is still in flight', async () => {
       // Never resolves: the hook must not block on an unknown balance, which
       // is exactly what the empty streamed cache used to do.
       setStreamedBalance(null);
@@ -269,7 +287,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
   });
 
   describe('perps scope', () => {
-    it('perps scope: does not query the perps controller for non-perps confirmations', async () => {
+    it('does not query the perps controller for non-perps confirmations', async () => {
       setStreamedBalance('500');
       setEnteredAmount('150');
       const contractInteraction =
@@ -283,21 +301,68 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
 
       await waitFor(() => expect(result.current).toStrictEqual([]));
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-      expect(mockGetPerpsStreamManager).not.toHaveBeenCalled();
     });
 
-    it('perps scope: blocks without inventing a balance when the fresh read fails', async () => {
+    it('blocks without inventing a balance when the fresh read fails', async () => {
       // Degraded read: the streamed cache still claims $500, but nothing
-      // confirms the account can cover the withdrawal, so it is blocked.
+      // confirms the account can cover the withdrawal, so it is blocked —
+      // and the copy says the balance is unknown, not that funds are short.
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
       setStreamedBalance('500');
-      setFreshAccountRejects(new Error('perps provider unreachable'));
+      const error = new Error('perps provider unreachable');
+      setFreshAccountRejects(error);
       setEnteredAmount('100');
 
       const result = await runSettledHook(buildPerpsWithdrawState());
 
       await waitFor(() =>
+        expect(result.current).toStrictEqual([EXPECTED_UNAVAILABLE_ALERT]),
+      );
+      // A blocked withdrawal has to be diagnosable.
+      expect(consoleError).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to fetch account'),
+        error,
+      );
+      consoleError.mockRestore();
+    });
+
+    it('blocks without inventing a balance when the fresh read returns no account', async () => {
+      // Treating a missing account as $0 would block with "Insufficient
+      // funds", which claims a balance nothing confirmed.
+      setStreamedBalance('500');
+      setFreshAccount(null);
+      setEnteredAmount('100');
+
+      const result = await runSettledHook(buildPerpsWithdrawState());
+
+      await waitFor(() =>
+        expect(result.current).toStrictEqual([EXPECTED_UNAVAILABLE_ALERT]),
+      );
+    });
+
+    it('falls back to loading rather than the previous scope balance when the account scope changes', async () => {
+      // First scope holds $50, so $100 is blocked there.
+      setStreamedBalance('500');
+      setFreshAccount({ withdrawableBalance: '50' });
+      setEnteredAmount('100');
+
+      const { result, rerender } = runHook(buildPerpsWithdrawState());
+      await waitFor(() =>
         expect(result.current).toStrictEqual([EXPECTED_ALERT]),
       );
+
+      // Switching account/network/provider changes the scope key. Until the
+      // new read settles the previous scope's balance says nothing about this
+      // one, so the hook must go back to loading instead of reusing it.
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise(() => undefined),
+      );
+      mockUsePerpsCacheKey.mockReturnValue(OTHER_PERPS_CACHE_KEY);
+      rerender();
+
+      await waitFor(() => expect(result.current).toStrictEqual([]));
     });
   });
 });
