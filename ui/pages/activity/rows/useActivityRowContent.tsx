@@ -18,7 +18,7 @@ import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { ActivityRowProps } from '../types';
-import { useFormatFiatAmount } from './useFormatFiatAmount';
+import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 
 type ActivityContent = {
@@ -53,7 +53,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const chainId = activity.chainId
     ? getChainDisplay(activity.chainId).chainId
     : undefined;
-  const formatAsFiat = useFormatFiatAmount(chainId);
+  const formatAsFiat = useFormatAsFiat(chainId);
   const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,

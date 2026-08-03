@@ -13,8 +13,8 @@ jest.mock('./useFormatTokenAmount', () => ({
   useFormatTokenAmount: () => jest.fn(),
 }));
 
-jest.mock('./useFormatFiatAmount', () => ({
-  useFormatFiatAmount: () => jest.fn(),
+jest.mock('../../../hooks/useFormatAsFiat', () => ({
+  useFormatAsFiat: () => jest.fn(),
 }));
 
 jest.mock('../../../hooks/useFormatters', () => ({
