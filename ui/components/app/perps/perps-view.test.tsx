@@ -17,6 +17,32 @@ import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
+let mockExposeCancelAllOrders = false;
+jest.mock('./perps-positions-orders', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const actual = jest.requireActual('./perps-positions-orders');
+
+  return {
+    ...actual,
+    PerpsPositionsOrders: (
+      props: import('./perps-positions-orders').PerpsPositionsOrdersProps,
+    ) => (
+      <ReactActual.Fragment>
+        <actual.PerpsPositionsOrders {...props} />
+        {mockExposeCancelAllOrders ? (
+          <button
+            data-testid="invoke-cancel-all-orders"
+            onClick={props.onCancelAllOrders}
+            type="button"
+          >
+            Cancel all
+          </button>
+        ) : null}
+      </ReactActual.Fragment>
+    ),
+  };
+});
+
 const mockAnalyticsTrackEvent = jest.fn();
 const mockUsePerpsBottomNavSource = jest.fn<
   typeof PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR | undefined,
@@ -200,6 +226,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockExposeCancelAllOrders = false;
     mockUsePerpsBottomNavSource.mockReturnValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockComplianceGate.mockImplementation(async (action: () => unknown) =>
@@ -594,6 +621,46 @@ describe('PerpsView', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsCancelOrders',
         [{ cancelAll: true }],
+      );
+    });
+
+    it('reports the displayed error screen when cancel all returns success: false', async () => {
+      mockExposeCancelAllOrders = true;
+      mockSubmitRequestToBackground.mockResolvedValue({ success: false });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('invoke-cancel-all-orders'));
+
+      await waitFor(() => {
+        expect(screen.getByText("We couldn't load this page.")).toBeVisible();
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsCancelOrders',
+        [{ cancelAll: true }],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetOpenOrders',
+        [],
+      );
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+            [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+              PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+          }),
+        }),
+      );
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ name: MetaMetricsEventName.PerpsError }),
+      );
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsOrderCancelTransaction,
+        }),
       );
     });
 
