@@ -406,8 +406,10 @@ function isInfuraEndpoint(rpcEndpoint: {
 
   // Check if URL matches Infura pattern
   // All featured networks that use Infura get added as custom RPC
-  // endpoints, not Infura RPC endpoints, so we need to check the URL pattern
-  const infuraUrlPattern = /^https:\/\/(.+?)\.infura\.io\/v3\//u;
+  // endpoints, not Infura RPC endpoints, so we need to check the URL pattern.
+  // The subdomain group excludes `/` so `.infura.io` can only match inside the
+  // hostname, never in a path segment (e.g. https://evil.com/.infura.io/v3/).
+  const infuraUrlPattern = /^https:\/\/([^/]+?)\.infura\.io\/v3\//u;
   const match = rpcEndpoint.url.match(infuraUrlPattern);
 
   if (!match) {

@@ -205,6 +205,21 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.has('NetworkController')).toBe(false);
   });
 
+  it('does not treat a URL with .infura.io in the path as an Infura endpoint', async () => {
+    const oldStorage = baseStorage({
+      [BSC_CHAIN_ID]: infuraNetworkConfiguration(
+        BSC_CHAIN_ID,
+        `https://evil.example/.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`,
+      ),
+    });
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.has('NetworkController')).toBe(false);
+  });
+
   it('adds the QuickNode failover to the Tempo default (rpc.tempo.xyz) endpoint', async () => {
     const oldStorage = baseStorage({
       [TEMPO_CHAIN_ID]: infuraNetworkConfiguration(
