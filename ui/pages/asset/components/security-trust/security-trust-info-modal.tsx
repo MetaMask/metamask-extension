@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   BannerAlertSeverity,
   Box,
@@ -26,11 +26,17 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   getFeatureTags,
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
 import { SecurityBanner } from './security-banner';
+import {
+  getSheetAnalyticsSource,
+  SecurityTrustAnalyticsProperty,
+} from './security-trust-analytics-properties';
 import type { SecurityTrustSheetParams } from './security-trust-sheet-types';
 
 const FEATURE_TAG_MAX = 5;
@@ -49,6 +55,8 @@ export const SecurityTrustInfoModal = ({
   sheetParams,
 }: SecurityTrustInfoModalProps) => {
   const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedOpen = useRef(false);
 
   const environmentType = getEnvironmentType();
   const isCompactSheet =
@@ -103,6 +111,67 @@ export const SecurityTrustInfoModal = ({
     return tags.slice(0, FEATURE_TAG_MAX);
   }, [sheetParams?.features, severity, t]);
 
+  useEffect(() => {
+    if (!isOpen || !sheetParams) {
+      hasTrackedOpen.current = false;
+      return;
+    }
+
+    if (hasTrackedOpen.current) {
+      return;
+    }
+
+    hasTrackedOpen.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SecurityTrustBottomSheetOpened)
+        .addProperties({
+          source: getSheetAnalyticsSource(sheetParams.source),
+          severity: sheetParams.severity,
+          [SecurityTrustAnalyticsProperty.TokenAddress]:
+            sheetParams.tokenAddress,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: sheetParams.tokenSymbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: sheetParams.chainId,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, isOpen, sheetParams, trackEvent]);
+
+  const trackBottomSheetAction = useCallback(
+    (action: 'proceed' | 'cancel') => {
+      if (!onProceed || !sheetParams) {
+        return;
+      }
+
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.SecurityTrustBottomSheetActionTaken,
+        )
+          .addProperties({
+            action,
+            source: getSheetAnalyticsSource(sheetParams.source),
+            severity: sheetParams.severity,
+            [SecurityTrustAnalyticsProperty.TokenAddress]:
+              sheetParams.tokenAddress,
+            [SecurityTrustAnalyticsProperty.TokenSymbol]:
+              sheetParams.tokenSymbol,
+            [SecurityTrustAnalyticsProperty.ChainId]: sheetParams.chainId,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, onProceed, sheetParams, trackEvent],
+  );
+
+  const handleProceed = useCallback(() => {
+    trackBottomSheetAction('proceed');
+    onProceed?.();
+  }, [onProceed, trackBottomSheetAction]);
+
+  const handleCloseWithMetrics = useCallback(() => {
+    trackBottomSheetAction('cancel');
+    onClose();
+  }, [onClose, trackBottomSheetAction]);
+
   if (!isOpen || !sheetParams) {
     return null;
   }
@@ -129,7 +198,7 @@ export const SecurityTrustInfoModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={showProceedActions ? handleCloseWithMetrics : onClose}
       autoFocus={false}
       data-testid="security-trust-info-modal"
     >
@@ -143,7 +212,7 @@ export const SecurityTrustInfoModal = ({
         }}
       >
         <ModalHeader
-          onClose={onClose}
+          onClose={showProceedActions ? handleCloseWithMetrics : onClose}
           closeButtonProps={{ ariaLabel: t('close') }}
         />
         <ModalBody className="px-4 pb-4">
@@ -245,7 +314,7 @@ export const SecurityTrustInfoModal = ({
                   variant={ButtonVariant.Secondary}
                   size={ButtonSize.Lg}
                   isFullWidth
-                  onClick={onProceed}
+                  onClick={handleProceed}
                   className={
                     isMalicious
                       ? 'bg-error-default text-primary-inverse hover:bg-error-default-hover active:bg-error-default-pressed'
@@ -259,7 +328,7 @@ export const SecurityTrustInfoModal = ({
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}
                   isFullWidth
-                  onClick={onClose}
+                  onClick={handleCloseWithMetrics}
                   data-testid="security-trust-info-modal-cancel"
                 >
                   {t('cancel')}
