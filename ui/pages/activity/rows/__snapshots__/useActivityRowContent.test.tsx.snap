@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useActivityRowContent renders without crashing when chainId is missing 1`] = `
+{
+  "subtitle": "activity_send_pending_description|0x11111...11111",
+  "title": "activity_send_pending_title|ETH",
+}
+`;

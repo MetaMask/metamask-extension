@@ -39,6 +39,65 @@ exports[`MetadataSection renders status without a description and omits network 
 </div>
 `;
 
+exports[`MetadataSection renders the network row when chainId is present 1`] = `
+<div>
+  <div
+    data-testid="section"
+  >
+    <div
+      data-label="status"
+      data-testid="row"
+    >
+      <span
+        data-testid="transaction-status"
+      >
+        success
+      </span>
+    </div>
+    <div
+      data-label="date"
+      data-testid="row"
+    >
+      formatted-date
+    </div>
+    <div
+      data-label="from"
+      data-testid="row"
+    >
+      <span
+        data-testid="account-name"
+      >
+        0xabc
+      </span>
+    </div>
+    <div
+      data-label="to"
+      data-testid="row"
+    >
+      <span
+        data-testid="account-name"
+      >
+        0xdef
+      </span>
+    </div>
+    <div
+      data-label="network"
+      data-testid="row"
+    >
+      <span
+        data-testid="network-name"
+      >
+        eip155:1
+      </span>
+    </div>
+    <div
+      data-label="transactionIdLabel"
+      data-testid="row"
+    />
+  </div>
+</div>
+`;
+
 exports[`TokensSection renders labeled token rows 1`] = `
 <div>
   <div

@@ -96,4 +96,24 @@ describe('MetadataSection', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('renders the network row when chainId is present', () => {
+    const item = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: { from: '0xabc', to: '0xdef' },
+    } as ActivityListItem;
+
+    const { container } = render(
+      <MetadataSection
+        item={item}
+        addressRows={{ from: '0xabc', to: '0xdef' }}
+      />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
 });

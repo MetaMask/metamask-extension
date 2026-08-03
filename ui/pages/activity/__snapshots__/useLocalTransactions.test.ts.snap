@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useLocalTransactions excludes items without a chainId when filtering by networks 1`] = `
+[
+  {
+    "chainId": "eip155:1",
+    "data": {
+      "from": "0x1",
+      "to": "0x2",
+      "token": {
+        "amount": "1",
+        "direction": "out",
+        "symbol": "ETH",
+      },
+    },
+    "hash": "0x1",
+    "status": "success",
+    "timestamp": 1,
+    "type": "send",
+  },
+]
+`;

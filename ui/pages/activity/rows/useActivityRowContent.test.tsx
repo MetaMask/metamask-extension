@@ -227,4 +227,31 @@ describe('useActivityRowContent', () => {
       'activity_receive_success_description|Bob',
     );
   });
+
+  it('renders without crashing when chainId is missing', () => {
+    const activity = {
+      type: 'send',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        to: '0x1111111111111111111111111111111111111111',
+        token: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect({
+      title: result.current.title.props.children,
+      subtitle: result.current.subtitle,
+    }).toMatchSnapshot();
+  });
 });
