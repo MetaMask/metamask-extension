@@ -302,9 +302,7 @@ describe('BridgeInputGroup', () => {
     expect(setSelectionRangeSpy).not.toHaveBeenCalled();
 
     act(() => {
-      view.rerender(
-        <InputGroup mockState={mockState} amountInputPrefix="$" />,
-      );
+      view.rerender(<InputGroup mockState={mockState} amountInputPrefix="$" />);
     });
 
     expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);

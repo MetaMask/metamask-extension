@@ -59,9 +59,8 @@ export const useSourceInputAmount = ({
   const dispatch = useDispatch();
   const persistedDenomination = useSelector(getInputPrimaryDenomination);
   const selectedDenominationRef = useRef<InputPrimaryDenomination>();
-  const [lastEdited, setLastEdited] = useState<
-    [string | null, number | null | undefined]
-  >();
+  const [lastEdited, setLastEdited] =
+    useState<[string | null, number | null | undefined]>();
   const [selectedDenomination, setSelectedDenomination] =
     useState<InputPrimaryDenomination>(persistedDenomination);
   const [fiatAmount, setFiatAmount] = useState<string | undefined>(() =>
@@ -78,10 +77,10 @@ export const useSourceInputAmount = ({
 
   const canToggle = Boolean(
     enabled &&
-      sourceToken &&
-      sourceToken.decimals !== undefined &&
-      conversionRate &&
-      conversionRate > 0,
+    sourceToken &&
+    sourceToken.decimals !== undefined &&
+    conversionRate &&
+    conversionRate > 0,
   );
   const isFiatPrimary = canToggle && selectedDenomination === 'fiat_value';
 
@@ -178,7 +177,7 @@ export const useSourceInputAmount = ({
   ]);
 
   return {
-    amount: isFiatPrimary ? displayedFiatAmount : sourceAmount ?? undefined,
+    amount: isFiatPrimary ? displayedFiatAmount : (sourceAmount ?? undefined),
     tokenAmount: sourceAmount,
     selectedDenomination,
     isFiatPrimary,

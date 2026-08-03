@@ -55,8 +55,9 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const { submitBridgeTransaction, isSubmitting } =
-    useSubmitBridgeTransaction(inputPrimaryDenomination);
+  const { submitBridgeTransaction, isSubmitting } = useSubmitBridgeTransaction(
+    inputPrimaryDenomination,
+  );
 
   const {
     isNoQuotesAvailable,

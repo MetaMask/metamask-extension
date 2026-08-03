@@ -154,9 +154,7 @@ describe('PrepareBridgePage', () => {
     );
 
     await act(async () => {
-      await userEvent.click(
-        getByTestId('bridge-input-denomination-toggle'),
-      );
+      await userEvent.click(getByTestId('bridge-input-denomination-toggle'));
     });
 
     expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');

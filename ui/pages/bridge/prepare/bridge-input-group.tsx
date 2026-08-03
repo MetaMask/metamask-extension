@@ -190,12 +190,7 @@ export const BridgeInputGroup = ({
     }
 
     previousHasAmountInputPrefix.current = hasAmountInputPrefix;
-  }, [
-    amountFieldProps?.value,
-    hasAmountInputPrefix,
-    isAmountReadOnly,
-    token,
-  ]);
+  }, [amountFieldProps?.value, hasAmountInputPrefix, isAmountReadOnly, token]);
 
   useEffect(() => {
     return () => {

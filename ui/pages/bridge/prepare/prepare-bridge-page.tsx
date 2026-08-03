@@ -123,8 +123,9 @@ const PrepareBridgePage = ({
   const fromAmount = useSelector(getFromAmount);
   const validatedFromValue = useSelector(getValidatedFromValue);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
-  const fromTokenConversionRate =
-    useSelector(getFromTokenConversionRate).valueInCurrency;
+  const fromTokenConversionRate = useSelector(
+    getFromTokenConversionRate,
+  ).valueInCurrency;
   const isFiatToggleEnabled = useSelector(getIsFiatToggleEnabled);
   const currency = useSelector(getCurrentCurrency);
 

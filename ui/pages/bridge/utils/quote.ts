@@ -45,8 +45,12 @@ export const convertTokenAmountToFiat = (
   tokenAmount: string | null | undefined,
   conversionRate: number | null | undefined,
 ) => {
-  if (!tokenAmount || !conversionRate) {return;}
-  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {return;}
+  if (!tokenAmount || !conversionRate) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
 
   try {
     const amount = new BigNumber(tokenAmount).times(conversionRate.toString());
@@ -61,8 +65,12 @@ export const convertFiatToTokenAmount = (
   conversionRate: number | null | undefined,
   tokenDecimals: number | undefined,
 ) => {
-  if (!fiatAmount || !conversionRate || tokenDecimals === undefined) {return;}
-  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {return;}
+  if (!fiatAmount || !conversionRate || tokenDecimals === undefined) {
+    return;
+  }
+  if (!Number.isFinite(conversionRate) || conversionRate <= 0) {
+    return;
+  }
 
   try {
     const amount = new BigNumber(fiatAmount).div(conversionRate.toString());
