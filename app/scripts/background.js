@@ -60,7 +60,6 @@ import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
@@ -116,7 +115,10 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
-import { createSidepanelOpener } from './sidepanel/background';
+import {
+  createSidepanelOpener,
+  shouldUseSidepanel,
+} from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -2138,18 +2140,12 @@ async function triggerUi() {
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
 
-  const sidepanelPreferred =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  const sidepanelSupported = Boolean(browser.sidePanel?.open);
-  const dappOpenSidepanelEnabled = getBooleanFeatureFlag(
-    controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
-      ?.dappOpenSidepanelEnabled,
-    false,
-  );
+  if (openSidePanelCount > 0) {
+    return;
+  }
 
   // Attempt to open the sidepanel with a roundtrip request
-  if (sidepanelPreferred && sidepanelSupported && dappOpenSidepanelEnabled) {
+  if (shouldUseSidepanel(controller)) {
     const tab = await getCurrentTab();
     if (tab?.id) {
       const opened = await requestOpenSidepanel(tab.id);
@@ -2163,9 +2159,7 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0 &&
-    true
+    !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
     try {

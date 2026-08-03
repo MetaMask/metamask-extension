@@ -1,5 +1,10 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import type { Preferences } from '../../../shared/types/preferences';
 
 // How long to wait for the request to open sidepanel before falling back to notification window
 const roundtripTimeoutMs = 500;
@@ -8,6 +13,37 @@ type PendingOpen = {
   resolve: (opened: boolean) => void;
   timer: ReturnType<typeof setTimeout>;
 };
+
+export function shouldUseSidepanel(
+  controller: {
+    preferencesController?: {
+      state?: {
+        preferences?: Pick<Preferences, 'useSidePanelAsDefault'>;
+      };
+    };
+    remoteFeatureFlagController?: {
+      state?: Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>;
+    };
+  } | null,
+): boolean {
+  const isPreferred =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true;
+  const isSupported = Boolean(chrome.sidePanel?.open);
+  const remoteFeatureFlags = getRemoteFeatureFlags({
+    metamask: {
+      remoteFeatureFlags:
+        controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags ??
+        {},
+    },
+  });
+  const isFlagEnabled = getBooleanFeatureFlag(
+    remoteFeatureFlags.dappOpenSidepanelEnabled,
+    false,
+  );
+
+  return isPreferred && isSupported && isFlagEnabled;
+}
 
 /**
  * Creates a sidepanel opener.
@@ -45,7 +81,7 @@ export function createSidepanelOpener() {
       .then(() => entry.resolve(true))
       .catch((err: unknown) => {
         entry.resolve(false);
-        console.log('Failed to open sidepanel', err);
+        log.warn('Failed to open sidepanel', err);
       });
 
     return undefined;
@@ -78,7 +114,7 @@ export function createSidepanelOpener() {
         pendingOpens.delete(nonce);
         entry.resolve(false);
 
-        console.log('Failed to send request to tab', tabId, err);
+        log.warn('Failed to send request to tab', tabId, err);
       });
 
     return openPromise;

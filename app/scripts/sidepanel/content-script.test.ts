@@ -12,16 +12,11 @@ describe('onRequestOpenSidepanel', () => {
   const sendMessageMock = browser.runtime.sendMessage as jest.Mock;
   const originalUserActivation = navigator.userActivation;
 
-  beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
-  });
-
   afterEach(() => {
     Object.defineProperty(navigator, 'userActivation', {
       value: originalUserActivation,
       configurable: true,
     });
-    jest.restoreAllMocks();
   });
 
   it('ignores REQUEST_OPEN_SIDEPANEL when there is no user gesture', () => {

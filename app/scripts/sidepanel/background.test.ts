@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { createSidepanelOpener } from './background';
+import * as manifestFlags from '../../../shared/lib/manifestFlags';
+import { createSidepanelOpener, shouldUseSidepanel } from './background';
 
 const messageListeners: ((
   message: { type?: string; nonce?: string },
@@ -20,6 +21,73 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+jest.mock('loglevel', () => ({
+  warn: jest.fn(),
+}));
+
+describe('shouldUseSidepanel', () => {
+  const createController = ({
+    useSidePanelAsDefault = true,
+    dappOpenSidepanelEnabled = true,
+  } = {}) => ({
+    preferencesController: {
+      state: {
+        preferences: {
+          useSidePanelAsDefault,
+        },
+      },
+    },
+    remoteFeatureFlagController: {
+      state: {
+        remoteFeatureFlags: {
+          dappOpenSidepanelEnabled,
+        },
+      },
+    },
+  });
+
+  let getManifestFlagsMock: jest.SpyInstance;
+  let originalChrome: typeof globalThis.chrome;
+
+  beforeEach(() => {
+    getManifestFlagsMock = jest
+      .spyOn(manifestFlags, 'getManifestFlags')
+      .mockReturnValue({});
+    originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      sidePanel: {
+        open: jest.fn(),
+      },
+    } as unknown as typeof chrome;
+  });
+
+  afterEach(() => {
+    getManifestFlagsMock.mockRestore();
+    globalThis.chrome = originalChrome;
+  });
+
+  it('returns true when preferred, supported, and flag-enabled', () => {
+    expect(shouldUseSidepanel(createController())).toBe(true);
+  });
+
+  it('returns false when the user prefers popup', () => {
+    expect(
+      shouldUseSidepanel(createController({ useSidePanelAsDefault: false })),
+    ).toBe(false);
+  });
+
+  it('returns false when sidePanel API is unavailable', () => {
+    globalThis.chrome = {} as typeof chrome;
+    expect(shouldUseSidepanel(createController())).toBe(false);
+  });
+
+  it('returns false when the remote flag is disabled', () => {
+    expect(
+      shouldUseSidepanel(createController({ dappOpenSidepanelEnabled: false })),
+    ).toBe(false);
+  });
+});
+
 describe('createSidepanelOpener', () => {
   const sendMessageMock = browser.tabs.sendMessage as jest.Mock;
   const originalInTest = process.env.IN_TEST;
@@ -37,8 +105,6 @@ describe('createSidepanelOpener', () => {
         open: sidePanelOpenMock,
       },
     } as unknown as typeof chrome;
-
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
   afterEach(() => {

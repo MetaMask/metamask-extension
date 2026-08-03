@@ -18,7 +18,6 @@ export function onRequestOpenSidepanel(message: {
 
   // Background browser.tabs.sendMessage hits every frame, but only the one that made the request holds the gesture
   if (!navigator.userActivation?.isActive) {
-    console.log('Request to open sidepanel ignored');
     return undefined;
   }
 
@@ -27,10 +26,8 @@ export function onRequestOpenSidepanel(message: {
       type: EXTENSION_MESSAGES.OPEN_SIDEPANEL,
       nonce: message.nonce,
     })
-    .catch((err) => {
-      // triggerUi falls back to the notification window
-      console.log('Failed to reply to background', err);
-    });
+    // triggerUi falls back to the notification window on failure
+    .catch(() => undefined);
 
   return undefined;
 }
