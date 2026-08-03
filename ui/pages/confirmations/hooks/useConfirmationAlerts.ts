@@ -14,6 +14,7 @@ import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsuffici
 import { useAccountNoFundsAlert } from './alerts/transactions/useAccountNoFundsAlert';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
+import { useTransactionDepositLimitAlert } from './alerts/transactions/useTransactionDepositLimitAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
@@ -50,6 +51,7 @@ function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
+  const depositLimitAlerts = useTransactionDepositLimitAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -79,6 +81,7 @@ function useTransactionAlerts(): Alert[] {
       ...accountTypeUpgradeAlerts,
       ...addressPoisoningAlert,
       ...burnAddressAlert,
+      ...depositLimitAlerts,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -105,6 +108,7 @@ function useTransactionAlerts(): Alert[] {
       accountTypeUpgradeAlerts,
       addressPoisoningAlert,
       burnAddressAlert,
+      depositLimitAlerts,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,

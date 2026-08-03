@@ -1443,6 +1443,10 @@
   "alertContentMultipleApprovals": {
     "message": "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction."
   },
+  "alertDepositLimit": {
+    "message": "Max deposit: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
