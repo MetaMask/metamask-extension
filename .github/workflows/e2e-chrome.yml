@@ -108,7 +108,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-playwright
       build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test
       playwright-browsers: chromium
       test-command: E2E_DEBUG=true yarn test:e2e:playwright:chrome
       builds-from-run: ${{ inputs.builds-from-run }}

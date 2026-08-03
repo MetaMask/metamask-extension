@@ -70,7 +70,7 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-playwright
       build-artifact: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2
+      build-command: yarn build:test:mv2
       playwright-browsers: firefox
       test-command: E2E_DEBUG=true yarn test:e2e:playwright:firefox
       builds-from-run: ${{ inputs.builds-from-run }}
