@@ -375,15 +375,15 @@ describe('useShieldRewards', () => {
       );
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.isRewardsSeason).toBe(false);
-    expect(result.current.pending).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isRewardsSeason).toBe(false);
+      expect(result.current.pending).toBe(false);
+    });
   });
 
   // useShieldRewards now hard-returns disabled state without invoking
@@ -399,12 +399,15 @@ describe('useShieldRewards', () => {
       throw new Error('Network error');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       shieldState,
     );
 
-    await waitForNextUpdate();
+    const prevUpdate0 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate0);
+    });
 
     // seasonError triggers the error fallback, returning default values
     expect(result.current.isRewardsSeason).toBe(false);
@@ -431,12 +434,15 @@ describe('useShieldRewards', () => {
       throw new Error('Points estimation failed: 500');
     });
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useShieldRewards(),
       stateWithKeyrings,
     );
 
-    await waitForNextUpdate();
+    const prevUpdate1 = result.current;
+    await waitFor(() => {
+      expect(result.current).not.toBe(prevUpdate1);
+    });
 
     // Points estimation error is caught gracefully, returning null values
     expect(result.current.pointsMonthly).toBeNull();
