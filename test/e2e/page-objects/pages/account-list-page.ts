@@ -532,6 +532,42 @@ class AccountListPage {
   }
 
   /**
+   * Check that the SRP is imported through a single field, rather than one
+   * input per word.
+   */
+  async checkImportSrpInputIsDisplayed(): Promise<void> {
+    console.log('Check that the import SRP input is displayed');
+    await this.driver.waitForSelector(this.importSrpInput);
+  }
+
+  /**
+   * Wait until the import SRP input displays the expected value. A textarea
+   * holds its value as a property rather than an attribute, so this polls the
+   * value instead of matching it with a locator.
+   *
+   * @param expectedValue - The expected value.
+   */
+  async checkImportSrpInputValue(expectedValue: string): Promise<void> {
+    console.log(`Check that the import SRP input value is "${expectedValue}"`);
+    let actualValue: string | null = null;
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const srpInput = await this.driver.findElement(this.importSrpInput);
+          actualValue = await srpInput.getAttribute('value');
+          return actualValue === expectedValue;
+        },
+        { interval: 100, timeout: this.driver.timeout },
+      );
+    } catch (error: unknown) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Import SRP input value should match the typed word. Expected "${expectedValue}", got "${actualValue}". ${reason}`,
+      );
+    }
+  }
+
+  /**
    * Checks that the account balance is displayed on the multichain account list page
    * for a specific account, optionally scoped under a specific wallet.
    *
@@ -601,6 +637,23 @@ class AccountListPage {
       `Check that multichain account label ${expectedLabel} is displayed on account list page`,
     );
     await this.driver.waitForSelector({
+      css: this.multichainAccountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  /**
+   * Checks that the multichain account label is not displayed on the multichain account list page.
+   *
+   * @param expectedLabel - The label that should not be displayed.
+   */
+  async checkMultichainAccountNameNotDisplayed(
+    expectedLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is not displayed on account list page`,
+    );
+    await this.driver.assertElementNotPresent({
       css: this.multichainAccountListItem,
       text: expectedLabel,
     });
@@ -945,6 +998,17 @@ class AccountListPage {
       css: this.accountListItem,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Type into the import SRP input.
+   *
+   * @param text - The text to type.
+   */
+  async typeIntoImportSrpInput(text: string): Promise<void> {
+    console.log(`Type "${text}" into the import SRP input`);
+    const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
+    await srpInput.sendKeys(text);
   }
 
   async unhideAccount(): Promise<void> {

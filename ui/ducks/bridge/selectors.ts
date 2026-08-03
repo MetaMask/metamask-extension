@@ -80,7 +80,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
-  type SmartTransactionsMetaMaskState,
+  type SmartTransactionsState,
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
@@ -132,7 +132,7 @@ const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
-    SmartTransactionsMetaMaskState['metamask'] &
+    SmartTransactionsState['metamask'] &
     GasFeeState &
     NetworkState &
     AccountsControllerState &
@@ -1373,20 +1373,6 @@ export const selectNoFeeAssets = createSelector(
   },
 );
 
-const getIsGasIncludedSwapSupported = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    (_, isSendBundleSupportedForChain: boolean) =>
-      isSendBundleSupportedForChain,
-  ],
-  (fromChainId, isSendBundleSupportedForChain) => {
-    if (!fromChainId || isNonEvmChainId(fromChainId)) {
-      return false;
-    }
-    return isSendBundleSupportedForChain;
-  },
-);
-
 export const getIsStxEnabled = createSelector(
   [
     (state: BridgeAppState) => getFromChain(state)?.chainId,
@@ -1398,21 +1384,6 @@ export const getIsStxEnabled = createSelector(
       return false;
     }
     return getIsSmartTransaction(state, hexChainId);
-  },
-);
-
-export const getIsGasIncluded = createSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    getIsStxEnabled,
-    getIsGasIncludedSwapSupported,
-  ],
-  // Enable gas-included swaps for solana
-  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
-    if (isSolanaChainId(fromChainId)) {
-      return true;
-    }
-    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
 
