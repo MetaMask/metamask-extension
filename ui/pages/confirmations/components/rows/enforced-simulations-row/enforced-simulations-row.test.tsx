@@ -313,9 +313,7 @@ describe('EnforcedSimulationsRow', () => {
       expect.any(String),
       [],
     );
-    expect(
-      incrementTransactionEventFragmentPropertyMock,
-    ).toHaveBeenCalledWith(
+    expect(incrementTransactionEventFragmentPropertyMock).toHaveBeenCalledWith(
       'enforced_simulation_toggle_count',
       expect.any(String),
     );

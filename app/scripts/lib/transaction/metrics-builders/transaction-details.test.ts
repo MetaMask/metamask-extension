@@ -56,8 +56,7 @@ describe('transaction-details builder', () => {
           ...createBuilderRequest().transactionMeta,
           revert: {
             receipt: {
-              message:
-                'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+              message: 'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
             },
           },
         } as never,

@@ -40,7 +40,8 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
   const securityAlertsEnabled =
     transactionMetricsRequest.getSecurityAlertsEnabled();
   if (securityAlertsEnabled) {
-    const to = transactionMeta.txParamsOriginal?.to ?? transactionMeta.txParams.to;
+    const to =
+      transactionMeta.txParamsOriginal?.to ?? transactionMeta.txParams.to;
     if (typeof to === 'string') {
       const supportedEVMChain = mapChainIdToSupportedEVMChain(
         transactionMeta.chainId,

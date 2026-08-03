@@ -55,9 +55,7 @@ describe('enforced simulations builder', () => {
       }),
     );
 
-    expect(result.properties.enforced_simulation_submitted_enabled).toBe(
-      false,
-    );
+    expect(result.properties.enforced_simulation_submitted_enabled).toBe(false);
   });
 
   for (const eventName of [
