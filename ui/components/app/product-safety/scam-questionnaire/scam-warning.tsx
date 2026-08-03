@@ -47,8 +47,6 @@ export const ScamWarning: React.FC<ScamWarningProps> = ({
     return () => clearInterval(intervalId);
   }, [secondsRemaining]);
 
-  // Notify before opening the tab: taking focus closes the extension popup, so
-  // anything dispatched after this point may not survive.
   const handleContactSupport = useCallback(() => {
     onContactSupport();
     if (SUPPORT_LINK) {
