@@ -171,7 +171,6 @@ export function SurveyToast() {
     );
   }, [dismissSurvey, handleActionClick, lastViewedUserSurvey, survey]);
 
-
   useEffect(() => {
     return () => {
       toast.dismiss(toastId);

@@ -1,7 +1,7 @@
 import React, { type CSSProperties } from 'react';
 import {
-  toast,
   type Toast,
+  toast,
   ToastBar,
   Toaster as ToasterBase,
 } from 'react-hot-toast';
