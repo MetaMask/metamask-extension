@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { pick } from 'lodash';
 import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
-import { largeDelayMs, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -123,7 +123,23 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.checkPageIsLoaded();
 
         await testDapp.revokeSession();
-        await driver.delay(largeDelayMs);
+        /**
+         * `revokeSession()` only clicks the revoke button; wait until
+         * `wallet_getSession` returns empty scopes so revoke has finished
+         * before calling `wallet_invokeMethod`. Each `getSession` poll adds a
+         * result row, so increment `numberOfResultItems` on every attempt.
+         */
+        let numberOfResultItems = 3; // create + revoke + getSession
+        await driver.waitUntil(
+          async () => {
+            const { sessionScopes } = await testDapp.getSession({
+              numberOfResultItems,
+            });
+            numberOfResultItems += 1;
+            return Object.keys(sessionScopes).length === 0;
+          },
+          { timeout: 10000, interval: 1000 },
+        );
 
         for (const scope of EVM_SCOPES) {
           const request = {
