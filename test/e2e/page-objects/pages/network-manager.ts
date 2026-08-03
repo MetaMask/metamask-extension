@@ -1,5 +1,4 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { dismissVisibleToasts } from '../flows/toast.flow';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -215,13 +214,8 @@ class NetworkManager {
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
-    // Dismiss any toast that may cover the list item, then click and wait for
-    // the modal to close. clickElement retries ElementClickInterceptedError;
-    // clickElementAndWaitToDisappear does not, so dismiss first (Perps pattern).
-    await dismissVisibleToasts(this.driver);
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
-      15_000,
     );
   }
 

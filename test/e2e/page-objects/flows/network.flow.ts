@@ -1,7 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
-import { dismissVisibleToasts } from './toast.flow';
 
 // TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created
 // asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
@@ -27,34 +26,13 @@ export const switchToNetworkFromNetworkSelect = async (
     await driver.delay(NON_EVM_SNAP_READY_DELAY_MS);
   }
 
-  // Pending tx toasts can appear during the snap delay; dismiss before opening
-  // the picker so they cannot intercept tab/network clicks (Perps pattern).
-  await dismissVisibleToasts(driver, 5_000);
   await tokensTab.openNetworksFilter();
-  await dismissVisibleToasts(driver);
   await networkManager.selectTab(networkCategory);
-  await dismissVisibleToasts(driver);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
 
 export async function waitForNetworkManagerBackdropToClear(
   driver: Driver,
 ): Promise<void> {
-  await dismissVisibleToasts(driver);
-  const backdropStillPresent = await driver.isElementPresentAndVisible(
-    '.modal__backdrop',
-    1_000,
-  );
-  if (backdropStillPresent) {
-    // Selection sometimes leaves the modal open (e.g. toast raced the click).
-    // Close it explicitly so later home-page clicks are not blocked.
-    const networkManager = new NetworkManager(driver);
-    try {
-      await networkManager.closeNetworkManager();
-    } catch {
-      await dismissVisibleToasts(driver);
-      await networkManager.closeNetworkManager();
-    }
-  }
-  await driver.assertElementNotPresent('.modal__backdrop', { timeout: 15_000 });
+  await driver.assertElementNotPresent('.modal__backdrop');
 }
