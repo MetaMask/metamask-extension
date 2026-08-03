@@ -1,10 +1,16 @@
 import type { SecretEscrowFactorKind } from '../../../shared/constants/secret-escrow-factors';
+import { SecretEscrowFactorKind as FactorKind } from '../../../shared/constants/secret-escrow-factors';
 
 /**
  * Holds vault password + user-chosen factor state during social-create
  * unlock setup so passkey enroll / password add can run without re-prompting.
  *
  * Cleared when onboarding leaves the factor flow. Not persisted.
+ *
+ * Note: Passkey / TOTP "set up" status for the manage UI should prefer Redux
+ * escrow factors ({@link resolveEnrolledSecretEscrowFactors}). This module
+ * tracks the typed-password choice because passkey-first also registers a
+ * technical password factor the user never chose.
  */
 
 let socialCreateWalletPassword: string | null = null;
@@ -37,6 +43,15 @@ export function markSocialCreateUserFactor(
   factor: SecretEscrowFactorKind,
 ): void {
   socialCreateUserFactors.add(factor);
+}
+
+/**
+ * Whether the user explicitly chose a typed password during social create.
+ *
+ * @returns True when password was user-chosen (not only auto-generated).
+ */
+export function getSocialCreateUserChoseTypedPassword(): boolean {
+  return socialCreateUserFactors.has(FactorKind.Password);
 }
 
 /**

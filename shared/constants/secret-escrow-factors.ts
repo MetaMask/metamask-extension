@@ -188,3 +188,47 @@ export function isPasswordFactor(factor: SecretEscrowFactorKind): boolean {
 export function isTotpFactor(factor: SecretEscrowFactorKind): boolean {
   return factor === SecretEscrowFactorKind.Totp;
 }
+
+export type EscrowFactorPublicLike = {
+  type?: string;
+  credentialId?: string;
+};
+
+/**
+ * Resolves which factors to show as "set up" on the manage screen.
+ *
+ * Passkey / TOTP come from escrow public state. Password is included only when
+ * the user explicitly chose a typed password (passkey-first registers a
+ * technical password factor that must stay hidden).
+ *
+ * @param params - Escrow factors + session password choice.
+ * @param params.escrowFactors - Public factors map from controller state.
+ * @param params.userChoseTypedPassword - True when the user set a known password.
+ * @returns Ordered enrolled factor kinds for the UI.
+ */
+export function resolveEnrolledSecretEscrowFactors(params: {
+  escrowFactors: Record<string, EscrowFactorPublicLike>;
+  userChoseTypedPassword: boolean;
+}): SecretEscrowFactorKind[] {
+  const enrolled: SecretEscrowFactorKind[] = [];
+  const values = Object.values(params.escrowFactors);
+
+  const hasPasskey = values.some(
+    (factor) =>
+      factor?.type === 'webauthn' || Boolean(factor?.credentialId),
+  );
+  if (hasPasskey || params.escrowFactors.passkey) {
+    enrolled.push(SecretEscrowFactorKind.Passkey);
+  }
+
+  if (params.userChoseTypedPassword) {
+    enrolled.push(SecretEscrowFactorKind.Password);
+  }
+
+  const hasTotp = values.some((factor) => factor?.type === 'totp');
+  if (hasTotp || params.escrowFactors.totp) {
+    enrolled.push(SecretEscrowFactorKind.Totp);
+  }
+
+  return enrolled;
+}

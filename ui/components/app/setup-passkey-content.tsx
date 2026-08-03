@@ -56,6 +56,9 @@ import {
 } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
+import { SecretEscrowFactorKind } from '../../../shared/constants/secret-escrow-factors';
+ 
+import { markSocialCreateUserFactor } from '../../pages/onboarding-flow/social-create-wallet-password';
 
 import {
   PasskeyEnrollmentSteps,
@@ -260,6 +263,7 @@ export default function SetupPasskeyContent({
           },
           password,
         );
+        markSocialCreateUserFactor(SecretEscrowFactorKind.Passkey);
         await forceUpdateMetamaskState(dispatch);
         setVerifyStepPhase('success');
         currentStep = 'complete';

@@ -1230,6 +1230,12 @@ describe('Onboarding Create Password', () => {
           isSeedlessOnboardingUserAuthenticated: true,
           authConnection: 'google',
           socialLoginEmail: 'user@example.com',
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factors: {
+              password: { type: 'password' },
+            },
+          },
         },
       });
 
@@ -1247,6 +1253,7 @@ describe('Onboarding Create Password', () => {
       });
       expect(getByTestId('unlock-factor-enrolled-password')).toBeInTheDocument();
       expect(getByTestId('unlock-factor-option-passkey')).toBeInTheDocument();
+      expect(getByTestId('unlock-factor-option-totp')).toBeInTheDocument();
       fireEvent.click(getByTestId('unlock-factor-continue-button'));
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_DOWNLOAD_APP_ROUTE,
@@ -1338,6 +1345,55 @@ describe('Onboarding Create Password', () => {
       expect(queryByTestId('unlock-factor-option-totp')).not.toBeInTheDocument();
     });
 
+    it('shows enrolled passkey from escrow state and offers TOTP', async () => {
+      const { setSocialCreateWalletPassword } = jest.requireActual(
+        '../social-create-wallet-password',
+      ) as typeof import('../social-create-wallet-password');
+      setSocialCreateWalletPassword('12345678');
+      mockUseLocation.mockReturnValue({
+        pathname: '/onboarding/create-password',
+        state: { manageFactors: true },
+        key: '',
+        search: '',
+        hash: '',
+      });
+
+      const store = configureMockStore([thunk])({
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          isSeedlessOnboardingUserAuthenticated: true,
+          authConnection: 'google',
+          socialLoginEmail: 'user@example.com',
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factors: {
+              password: { type: 'password' },
+              passkey: { type: 'webauthn', credentialId: 'cred-1' },
+            },
+          },
+        },
+      });
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('unlock-factor-manager')).toBeInTheDocument();
+      });
+      expect(getByTestId('unlock-factor-enrolled-passkey')).toBeInTheDocument();
+      expect(queryByTestId('unlock-factor-enrolled-password')).toBeNull();
+      expect(getByTestId('unlock-factor-option-totp')).toBeInTheDocument();
+      expect(getByTestId('unlock-factor-option-password')).toBeInTheDocument();
+    });
+
     it('offers TOTP from the manage screen after a local factor', async () => {
       const {
         markSocialCreateUserFactor,
@@ -1366,6 +1422,13 @@ describe('Onboarding Create Password', () => {
           isSeedlessOnboardingUserAuthenticated: true,
           authConnection: 'google',
           socialLoginEmail: 'user@example.com',
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factors: {
+              password: { type: 'password' },
+              passkey: { type: 'webauthn', credentialId: 'cred-1' },
+            },
+          },
         },
       });
 

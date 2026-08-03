@@ -49,7 +49,9 @@ export default function SetupPasskey() {
       isSocialLoginFlow &&
       firstTimeFlowType === FirstTimeFlowType.socialCreate
     ) {
-      if (isSecretEscrowPasskeyEnrolled) {
+      // Prefer Redux enrollment, but always mark when this was a required
+      // passkey step — manage UI also derives passkey from escrow factors.
+      if (isSecretEscrowPasskeyEnrolled || requirePasskey) {
         markSocialCreateUserFactor(SecretEscrowFactorKind.Passkey);
       }
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, {
@@ -89,6 +91,7 @@ export default function SetupPasskey() {
     navigate,
     completedMetaMetricsOnboarding,
     returnToManageFactors,
+    requirePasskey,
   ]);
 
   return (

@@ -29,6 +29,7 @@ import {
   getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
   getSocialLoginEmail,
+  getSecretEscrowFactors,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { generateWalletPassword } from '../../../../shared/lib/generate-wallet-password';
@@ -38,6 +39,7 @@ import {
   isPasskeyFactor,
   isPasswordFactor,
   isTotpFactor,
+  resolveEnrolledSecretEscrowFactors,
   SecretEscrowFactorKind,
   type SecretEscrowFactorOption,
 } from '../../../../shared/constants/secret-escrow-factors';
@@ -70,6 +72,7 @@ import UnlockFactorPicker from '../unlock-factor-picker';
 import SetupTotp from '../setup-totp';
 import {
   clearSocialCreateFactorSession,
+  getSocialCreateUserChoseTypedPassword,
   getSocialCreateUserFactors,
   getSocialCreateWalletPassword,
   markSocialCreateUserFactor,
@@ -114,9 +117,8 @@ export default function CreatePassword({
     useState<SecretEscrowFactorOption | null>(null);
   const [addingPasswordAfterCreate, setAddingPasswordAfterCreate] =
     useState(false);
-  const [enrolledUserFactors, setEnrolledUserFactors] = useState(() =>
-    getSocialCreateUserFactors(),
-  );
+  /** Bumped when session factor marks change so manage UI re-reads them. */
+  const [factorSessionRevision, setFactorSessionRevision] = useState(0);
   const location = useLocation();
   const manageFromNavigation = Boolean(location.state?.manageFactors);
   const [socialCreateStep, setSocialCreateStep] = useState<SocialCreateStep>(
@@ -139,6 +141,7 @@ export default function CreatePassword({
   const isSecretEscrowPasskeyAvailable = useSelector(
     getIsSecretEscrowPasskeyAvailable,
   );
+  const escrowFactors = useSelector(getSecretEscrowFactors);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
@@ -174,10 +177,16 @@ export default function CreatePassword({
       ? 'manage-factors'
       : socialCreateStep;
 
-  const displayedEnrolledFactors =
-    manageFromNavigation || resolvedSocialCreateStep === 'manage-factors'
-      ? getSocialCreateUserFactors()
-      : enrolledUserFactors;
+  const displayedEnrolledFactors = useMemo(
+    () =>
+      resolveEnrolledSecretEscrowFactors({
+        escrowFactors,
+        userChoseTypedPassword: getSocialCreateUserChoseTypedPassword(),
+      }),
+    // factorSessionRevision forces recompute after session password marks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- session module is not reactive
+    [escrowFactors, factorSessionRevision],
+  );
 
   const showFactorPicker = isSocialCreateFactorFlow && !currentKeyring;
   const showFactorManager =
@@ -185,7 +194,8 @@ export default function CreatePassword({
     Boolean(currentKeyring) &&
     (resolvedSocialCreateStep === 'manage-factors' ||
       displayedEnrolledFactors.length > 0 ||
-      Boolean(getSocialCreateWalletPassword()));
+      Boolean(getSocialCreateWalletPassword()) ||
+      manageFromNavigation);
 
   const factorAvailability = useMemo(
     () => ({
@@ -208,8 +218,8 @@ export default function CreatePassword({
     [factorAvailability, displayedEnrolledFactors],
   );
 
-  const syncEnrolledFactorsFromSession = useCallback(() => {
-    setEnrolledUserFactors(getSocialCreateUserFactors());
+  const syncFactorSessionRevision = useCallback(() => {
+    setFactorSessionRevision((revision) => revision + 1);
   }, []);
 
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
@@ -362,12 +372,12 @@ export default function CreatePassword({
   };
 
   const goToManageFactors = useCallback(() => {
-    syncEnrolledFactorsFromSession();
+    syncFactorSessionRevision();
     setAddingPasswordAfterCreate(false);
     setSelectedFactorOption(null);
     setSocialCreateStep('manage-factors');
     setNewAccountCreationInProgress(false);
-  }, [syncEnrolledFactorsFromSession]);
+  }, [syncFactorSessionRevision]);
 
   const handleCreateNewWallet = async (
     password: string,
@@ -532,6 +542,11 @@ export default function CreatePassword({
     termsChecked: boolean,
   ) => {
     setSocialCreateWalletPassword(password);
+    if (isPasswordFactor(option.factor)) {
+      // Mark before create so manage UI shows Password as set up immediately.
+      markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+      syncFactorSessionRevision();
+    }
 
     await handleCreateNewWallet(password, termsChecked, {
       // Always register a password factor (typed or generated) so later
@@ -540,11 +555,6 @@ export default function CreatePassword({
       setupPasskey: isPasskeyFactor(option.factor),
       requirePasskey: isPasskeyFactor(option.factor),
     });
-
-    if (isPasswordFactor(option.factor)) {
-      markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
-      syncEnrolledFactorsFromSession();
-    }
   };
 
   const handleFactorOptionSelect = async (option: SecretEscrowFactorOption) => {
@@ -625,6 +635,7 @@ export default function CreatePassword({
     await addSecretEscrowUserPasswordFactor(currentPassword, newPassword);
     setSocialCreateWalletPassword(newPassword);
     markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+    syncFactorSessionRevision();
     await forceUpdateMetamaskState(dispatch);
     goToManageFactors();
   };
@@ -632,6 +643,7 @@ export default function CreatePassword({
   const handleTotpEnrollComplete = async (totpSecret: string) => {
     await enrollSecretEscrowTotpFactor(totpSecret);
     markSocialCreateUserFactor(SecretEscrowFactorKind.Totp);
+    syncFactorSessionRevision();
     await forceUpdateMetamaskState(dispatch);
     goToManageFactors();
   };

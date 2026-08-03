@@ -5,6 +5,7 @@ import {
   isPasskeyFactor,
   isPasswordFactor,
   isTotpFactor,
+  resolveEnrolledSecretEscrowFactors,
   SecretEscrowFactorKind,
   SecretEscrowFactorOptionId,
   SECRET_ESCROW_FACTOR_OPTIONS,
@@ -54,6 +55,31 @@ describe('secret-escrow-factors', () => {
     ).toStrictEqual([
       SecretEscrowFactorOptionId.Password,
       SecretEscrowFactorOptionId.Totp,
+    ]);
+  });
+
+  it('resolves enrolled factors from escrow state and typed-password choice', () => {
+    expect(
+      resolveEnrolledSecretEscrowFactors({
+        escrowFactors: {
+          password: { type: 'password' },
+          passkey: { type: 'webauthn', credentialId: 'cred' },
+        },
+        userChoseTypedPassword: false,
+      }),
+    ).toStrictEqual([SecretEscrowFactorKind.Passkey]);
+
+    expect(
+      resolveEnrolledSecretEscrowFactors({
+        escrowFactors: {
+          password: { type: 'password' },
+          totp: { type: 'totp' },
+        },
+        userChoseTypedPassword: true,
+      }),
+    ).toStrictEqual([
+      SecretEscrowFactorKind.Password,
+      SecretEscrowFactorKind.Totp,
     ]);
   });
 
