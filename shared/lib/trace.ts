@@ -94,6 +94,9 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  // Perps user-perceived critical flows
+  PerpsEntryToLiveMarketList = 'Perps Entry To Live Market List',
+  PerpsMarketDetailLive = 'Perps Market Detail Live',
 }
 
 /**
@@ -111,6 +114,7 @@ export enum TraceOperation {
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  PerpsOperation = 'perps.operation',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
