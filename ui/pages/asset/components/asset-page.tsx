@@ -281,13 +281,13 @@ const AssetPage = ({
     () => ({
       symbol,
       name,
-      chainId: String(chainId),
+      chainId: caipChainId,
       address,
       decimals: asset.decimals,
       isNative: type === AssetType.native,
       image,
     }),
-    [address, asset.decimals, chainId, image, name, symbol, type],
+    [address, asset.decimals, caipChainId, image, name, symbol, type],
   );
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
