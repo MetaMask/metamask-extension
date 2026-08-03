@@ -1041,10 +1041,17 @@ const PerpsOrderEntryPage = () => {
   // Draggable divider between the order form and the order book panel. Width is
   // tracked as a percentage of the body so the split stays proportional when the
   // window is resized. Clamped so neither side collapses.
-  const handleOrderBookResizeStart = useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    setIsResizingOrderBook(true);
-  }, []);
+  const handleOrderBookResizeStart = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      // preventDefault suppresses text selection during the drag, but it also
+      // suppresses the browser's default focus, so focus the divider explicitly:
+      // a mouse user can then fine-tune the split with the arrow keys.
+      event.preventDefault();
+      event.currentTarget.focus();
+      setIsResizingOrderBook(true);
+    },
+    [],
+  );
 
   // Window listeners are driven by the resizing state so they are always
   // removed on unmount, when resizing stops, or if the mouseup is missed —

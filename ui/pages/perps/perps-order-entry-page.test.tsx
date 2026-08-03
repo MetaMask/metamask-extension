@@ -603,6 +603,21 @@ describe('PerpsOrderEntryPage', () => {
       expect(divider).toHaveAttribute('aria-valuenow', '22');
     });
 
+    it('focuses the divider on mousedown so arrow keys can fine-tune the drag', () => {
+      // Regression (a11y): preventDefault on mousedown also suppresses the
+      // browser's default focus, leaving keyboard nudges unreachable after a drag.
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+      expect(divider).not.toHaveFocus();
+
+      fireEvent.mouseDown(divider);
+
+      expect(divider).toHaveFocus();
+    });
+
     it('resizes the split within bounds by dragging the divider with the mouse', () => {
       // JSDOM reports a zero-sized rect by default; stub a real body geometry so
       // the pointer math produces a meaningful width percentage.
