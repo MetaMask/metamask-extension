@@ -1583,6 +1583,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Couldn't check your Perps balance. Try again."
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
   },
