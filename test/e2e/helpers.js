@@ -717,14 +717,15 @@ async function withFixtures(options, testSuite) {
         shutdownTasks.push(bundlerServer.stop());
       }
 
-      if (webDriver) {
-        shutdownTasks.push(driver.quit());
-      }
       if (playwrightCleanup) {
-        // Removes the temporary user-data-dir created by the Playwright
-        // harness. Calling after driver.quit() is safe since context.close()
-        // is idempotent.
+        // Closes the context and then removes the temporary user-data-dir
+        // created by the Playwright harness. It performs the `driver.quit()`
+        // itself, so it must not be paired with a separate concurrent
+        // `driver.quit()`: profile removal would race with context shutdown
+        // and leak temp profiles or browser processes.
         shutdownTasks.push(playwrightCleanup());
+      } else if (webDriver) {
+        shutdownTasks.push(driver.quit());
       }
       if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {

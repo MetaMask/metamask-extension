@@ -128,9 +128,10 @@ export default class MochaCompatJunitReporter implements Reporter {
   readonly #outputFile: string | undefined;
 
   /**
-   * One entry per logical test (keyed by `TestCase.id`). Overwritten on
-   * every `onTestEnd` so retried tests collapse to their final outcome
-   * before we render the suite buckets at `onEnd`.
+   * One entry per `TestCase.id`. Overwritten on every `onTestEnd` so retried
+   * tests collapse to their final outcome before we render the suite buckets
+   * at `onEnd`. `--repeat-each` repetitions get distinct ids, so they are
+   * collapsed separately by `#collapseRepetitions`.
    */
   readonly #testRecords = new Map<string, TestRecord>();
 
@@ -229,15 +230,46 @@ export default class MochaCompatJunitReporter implements Reporter {
   }
 
   /**
-   * Folds the per-test records (one per logical test, post-retry-dedupe)
-   * into per-spec-file buckets and sorts the buckets alphabetically.
+   * Collapses `--repeat-each` repetitions of the same logical test into a
+   * single record. The e2e quality gate runs changed specs with
+   * `--repeat-each`, and PW assigns each repetition its own `TestCase.id`, so
+   * without this every repetition would be emitted as its own `<testcase>` and
+   * inflate the `tests`/`passed` counts in the aggregated e2e report. The
+   * Selenium quality gate reports one outcome per test, so match that: a
+   * failure in any repetition wins, otherwise the first non-skipped outcome.
+   *
+   * @returns One record per logical test, keyed by spec file plus full title.
+   */
+  #collapseRepetitions(): Map<string, TestRecord> {
+    const isFailure = (status: TestResult['status']) =>
+      status !== 'passed' && status !== 'skipped';
+
+    const collapsed = new Map<string, TestRecord>();
+    for (const record of this.#testRecords.values()) {
+      const key = `${record.filePath}\u0000${record.fullName}`;
+      const existing = collapsed.get(key);
+      if (
+        !existing ||
+        (!isFailure(existing.status) &&
+          (isFailure(record.status) || existing.status === 'skipped'))
+      ) {
+        collapsed.set(key, record);
+      }
+    }
+    return collapsed;
+  }
+
+  /**
+   * Folds the per-test records (one per logical test, post-retry- and
+   * post-repetition-dedupe) into per-spec-file buckets and sorts the buckets
+   * alphabetically.
    *
    * @returns The bucketed suite data the XML renderer consumes.
    */
   #foldRecordsIntoBuckets(): SpecBucket[] {
     const buckets = new Map<string, SpecBucket>();
 
-    for (const record of this.#testRecords.values()) {
+    for (const record of this.#collapseRepetitions().values()) {
       let bucket = buckets.get(record.filePath);
       if (!bucket) {
         bucket = {
