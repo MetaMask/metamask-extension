@@ -23,12 +23,138 @@ import { getAssetsPrice, getAssetsRates } from '../selectors/assets';
 import { getShowFiatInTestnets, getUseCurrencyRateCheck } from '../selectors';
 import { getMultichainShouldShowFiat } from '../selectors/multichain';
 import { useAppSelector } from '../store/hooks';
+import type { MetaMaskReduxState } from '../store/store';
+
+type AssetsPriceMap = Record<
+  string,
+  { assetPriceType?: string; price?: number } | undefined
+>;
+type ConversionRatesMap = Record<
+  string,
+  { rate?: string | number } | undefined
+>;
+type CurrencyRatesMap = Record<string, { conversionRate?: number } | undefined>;
 
 function getPositiveRate(value: unknown): number | undefined {
   const rate = Number(value);
   if (Number.isFinite(rate) && rate > 0) {
     return rate;
   }
+  return undefined;
+}
+
+function getFiniteTokenQuantity(
+  token: TokenAmount,
+): { humanAmount: string; quantity: number } | undefined {
+  const humanAmount = getHumanReadableTokenAmount(token);
+  if (humanAmount === undefined) {
+    return undefined;
+  }
+
+  const quantity = Number(humanAmount);
+  if (!Number.isFinite(quantity)) {
+    return undefined;
+  }
+
+  return { humanAmount, quantity };
+}
+
+function shouldShowFiatForChain(
+  state: MetaMaskReduxState,
+  chainId: Hex | CaipChainId | undefined,
+): boolean {
+  if (chainId === undefined) {
+    return true;
+  }
+
+  if (!isNonEvmChainId(chainId)) {
+    return getMultichainShouldShowFiat(state, undefined, chainId);
+  }
+
+  if (!getUseCurrencyRateCheck(state)) {
+    return false;
+  }
+
+  return MULTICHAIN_TESTNET_NETWORKS.includes(chainId as MultichainNetworks)
+    ? getShowFiatInTestnets(state)
+    : true;
+}
+
+function fiatFromAssetsPrice(
+  token: TokenAmount,
+  assetsPrice: AssetsPriceMap,
+  quantity: number,
+): number | undefined {
+  if (!token.assetId) {
+    return undefined;
+  }
+
+  const priceEntry = assetsPrice[token.assetId];
+  if (priceEntry?.assetPriceType !== 'fungible') {
+    return undefined;
+  }
+
+  const rate = getPositiveRate(priceEntry.price);
+  return rate === undefined ? undefined : quantity * rate;
+}
+
+function fiatFromConversionRates(
+  token: TokenAmount,
+  conversionRates: ConversionRatesMap,
+  quantity: number,
+): number | undefined {
+  if (!token.assetId) {
+    return undefined;
+  }
+
+  const rate = getPositiveRate(conversionRates[token.assetId]?.rate);
+  return rate === undefined ? undefined : quantity * rate;
+}
+
+function fiatFromCurrencyOrMarketRates(
+  token: TokenAmount,
+  currencyRates: CurrencyRatesMap,
+  marketRates: ReturnType<typeof selectMarketRates>,
+  humanAmount: string,
+  quantity: number,
+): number | undefined {
+  if (!token.assetId) {
+    return undefined;
+  }
+
+  try {
+    const { chain, assetNamespace } = parseCaipAssetType(
+      token.assetId as `${string}:${string}/${string}:${string}`,
+    );
+
+    // Non-EVM natives only (slip44). Symbol match is unsafe for SPL/etc.
+    // tokens that reuse native tickers.
+    if (
+      chain.namespace !== 'eip155' &&
+      assetNamespace === 'slip44' &&
+      token.symbol
+    ) {
+      const rate = getPositiveRate(
+        currencyRates?.[token.symbol]?.conversionRate,
+      );
+      if (rate !== undefined) {
+        return quantity * rate;
+      }
+    }
+
+    if (chain.namespace === 'eip155') {
+      const hexChainId = decimalToPrefixedHex(chain.reference) as Hex;
+      const lookupToken = toMarketRateLookupToken(token, hexChainId);
+      return calculateFiatFromMarketRates(
+        humanAmount,
+        lookupToken,
+        marketRates,
+      );
+    }
+  } catch {
+    return undefined;
+  }
+
   return undefined;
 }
 
@@ -52,26 +178,13 @@ function getPositiveRate(value: unknown): number | undefined {
  * `undefined` when fiat should be hidden or no rate is available.
  */
 export function useConvertToFiat(chainId?: Hex | CaipChainId) {
-  const assetsPrice = useSelector(getAssetsPrice);
-  const conversionRates = useSelector(getAssetsRates);
-  const currencyRates = useSelector(getCurrencyRates);
+  const assetsPrice = useSelector(getAssetsPrice) as AssetsPriceMap;
+  const conversionRates = useSelector(getAssetsRates) as ConversionRatesMap;
+  const currencyRates = useSelector(getCurrencyRates) as CurrencyRatesMap;
   const marketRates = useSelector(selectMarketRates);
-  const shouldShowFiat = useAppSelector((state) => {
-    if (chainId === undefined) {
-      return true;
-    }
-
-    if (isNonEvmChainId(chainId)) {
-      if (!getUseCurrencyRateCheck(state)) {
-        return false;
-      }
-      return MULTICHAIN_TESTNET_NETWORKS.includes(chainId as MultichainNetworks)
-        ? getShowFiatInTestnets(state)
-        : true;
-    }
-
-    return getMultichainShouldShowFiat(state, undefined, chainId);
-  });
+  const shouldShowFiat = useAppSelector((state) =>
+    shouldShowFiatForChain(state, chainId),
+  );
 
   return useCallback(
     (token: TokenAmount | undefined): number | undefined => {
@@ -79,84 +192,23 @@ export function useConvertToFiat(chainId?: Hex | CaipChainId) {
         return undefined;
       }
 
-      const humanAmount = getHumanReadableTokenAmount(token);
-      if (humanAmount === undefined) {
+      const parsed = getFiniteTokenQuantity(token);
+      if (!parsed) {
         return undefined;
       }
 
-      const quantity = Number(humanAmount);
-      if (!Number.isFinite(quantity)) {
-        return undefined;
-      }
-
-      // 1. assetsPrice — all chains, already in user's currency.
-      if (token.assetId) {
-        const priceEntry = (
-          assetsPrice as Record<
-            string,
-            { assetPriceType?: string; price?: number } | undefined
-          >
-        )[token.assetId];
-        if (priceEntry?.assetPriceType === 'fungible') {
-          const rate = getPositiveRate(priceEntry.price);
-          if (rate !== undefined) {
-            return quantity * rate;
-          }
-        }
-      }
-
-      // 2. conversionRates — MultichainAssetsRatesController by CAIP assetId.
-      if (token.assetId) {
-        const rate = getPositiveRate(
-          (
-            conversionRates as Record<
-              string,
-              { rate?: string | number } | undefined
-            >
-          )[token.assetId]?.rate,
-        );
-        if (rate !== undefined) {
-          return quantity * rate;
-        }
-      }
-
-      if (token.assetId) {
-        try {
-          const { chain, assetNamespace } = parseCaipAssetType(
-            token.assetId as `${string}:${string}/${string}:${string}`,
-          );
-
-          // 3. currencyRates — non-EVM natives only (slip44). Symbol match is
-          // unsafe for SPL/etc. tokens that reuse native tickers.
-          if (
-            chain.namespace !== 'eip155' &&
-            assetNamespace === 'slip44' &&
-            token.symbol
-          ) {
-            const rate = getPositiveRate(
-              currencyRates?.[token.symbol]?.conversionRate,
-            );
-            if (rate !== undefined) {
-              return quantity * rate;
-            }
-          }
-
-          // 4. EVM marketRates fallback.
-          if (chain.namespace === 'eip155') {
-            const hexChainId = decimalToPrefixedHex(chain.reference) as Hex;
-            const lookupToken = toMarketRateLookupToken(token, hexChainId);
-            return calculateFiatFromMarketRates(
-              humanAmount,
-              lookupToken,
-              marketRates,
-            );
-          }
-        } catch {
-          return undefined;
-        }
-      }
-
-      return undefined;
+      const { humanAmount, quantity } = parsed;
+      return (
+        fiatFromAssetsPrice(token, assetsPrice, quantity) ??
+        fiatFromConversionRates(token, conversionRates, quantity) ??
+        fiatFromCurrencyOrMarketRates(
+          token,
+          currencyRates,
+          marketRates,
+          humanAmount,
+          quantity,
+        )
+      );
     },
     [shouldShowFiat, assetsPrice, conversionRates, currencyRates, marketRates],
   );
