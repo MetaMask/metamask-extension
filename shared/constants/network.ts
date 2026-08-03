@@ -231,6 +231,7 @@ export const CHAIN_IDS = {
   ARC: '0x13b2',
   ROBINHOOD_CHAIN: '0x1237',
   STABLE: '0x3dc',
+  ZERO_G: '0x4115',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -408,6 +409,7 @@ export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 export const ARC_DISPLAY_NAME = 'Arc';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
+export const ZERO_G_DISPLAY_NAME = '0G';
 
 /**
  * The Arc USDC ERC20 token contract. On Arc the native gas token is USDC, so
@@ -516,6 +518,7 @@ export const CURRENCY_SYMBOLS = {
   MANTLE: 'MNT',
   KONET: 'KONET',
   ARC: 'USDC',
+  ZERO_G: '0G',
 } as const;
 
 // Non-EVM currency symbols
@@ -751,6 +754,7 @@ export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
+export const ZERO_G_IMAGE_URL = './images/0g.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -949,6 +953,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
   [CHAIN_IDS.ARC]: ARC_DISPLAY_NAME,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1122,6 +1127,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
   [CHAIN_IDS.ARC]: CURRENCY_SYMBOLS.ARC,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
+  [CHAIN_IDS.ZERO_G]: CURRENCY_SYMBOLS.ZERO_G,
 } as const;
 
 /**
@@ -1316,6 +1322,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1416,6 +1423,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
