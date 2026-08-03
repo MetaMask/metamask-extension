@@ -2,15 +2,29 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { SecurityTrustEntryCard } from './security-trust-entry-card';
 
 const mockNavigate = jest.fn();
+const mockTrackEvent = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockSecurityData = {
   resultType: 'Benign',
@@ -49,7 +63,7 @@ const mockSecurityData = {
 const token = {
   symbol: 'RAIN',
   name: 'Rain',
-  chainId: '0x1',
+  chainId: 'eip155:1',
   address: '0xabc',
   decimals: 18,
   isNative: false,
@@ -60,6 +74,24 @@ const token = {
 describe('SecurityTrustEntryCard', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockTrackEvent.mockClear();
+  });
+
+  it('tracks section viewed once when security data loads', () => {
+    renderWithProvider(
+      <SecurityTrustEntryCard
+        securityData={mockSecurityData}
+        isLoading={false}
+        token={token}
+      />,
+    );
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetailsSecuritySectionViewed,
+      }),
+    );
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
   });
 
   it('renders loading skeleton', () => {
@@ -81,6 +113,11 @@ describe('SecurityTrustEntryCard', () => {
 
     fireEvent.click(getByTestId('security-trust-entry-card'));
 
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetailsSecuritySectionClicked,
+      }),
+    );
     expect(mockNavigate).toHaveBeenCalledWith(
       '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc/security-trust',
       expect.objectContaining({
