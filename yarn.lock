@@ -5987,7 +5987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:^1.4.0":
+"@metamask/client-utils@npm:^1.5.0":
   version: 1.5.0
   resolution: "@metamask/client-utils@npm:1.5.0"
   dependencies:
@@ -32780,7 +32780,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
-    "@metamask/client-utils": "npm:^1.4.0"
+    "@metamask/client-utils": "npm:^1.5.0"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^0.4.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
