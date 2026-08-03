@@ -1,6 +1,7 @@
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
+// eslint-disable-next-line @typescript-eslint/naming-convention -- caches global AMD `define`
 let __define: unknown;
 
 const globalObject = global as typeof globalThis & {
@@ -104,30 +105,21 @@ if (shouldInjectProvider()) {
    *
    * This is intentional because:
    *
-   * 1. CONTEXT DIFFERENCE:
-   *    - inpage.js runs in PAGE CONTEXT (web pages)
-   *    - Background streams run in EXTENSION CONTEXT (persistent background)
-   *
-   * 2. AUTOMATIC CLEANUP:
-   *    - When a page navigates/unloads, the browser automatically destroys the entire
-   *      script execution context, including all streams and event listeners
-   *    - No explicit cleanup is needed - the browser handles it naturally
-   *
-   * 3. AVOIDING PREMATURE DISCONNECTION:
-   *    - Adding handlers that call mux.end() or connectionStream.end() can actually
-   *      CAUSE disconnection errors when pages navigate to external URLs
-   *    - Tests showed that explicit handlers in page context trigger "Disconnected from
-   *      MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
-   *
-   * 4. DIFFERENT ERROR SOURCE:
-   *    - "Premature close" errors in page context are typically harmless - they occur
-   *      during normal page navigation and don't indicate a real problem
-   *    - The critical "Premature close" issues (3.8M/month in Sentry) come from the
-   *      BACKGROUND streams that persist across page loads
+   * 1. CONTEXT DIFFERENCE: inpage runs in PAGE CONTEXT (web pages); background
+   * streams run in EXTENSION CONTEXT (persistent background).
+   * 2. AUTOMATIC CLEANUP: When a page navigates/unloads, the browser destroys the
+   * entire script execution context, including streams and listeners. No explicit
+   * cleanup is needed.
+   * 3. AVOIDING PREMATURE DISCONNECTION: Handlers that call mux.end() or
+   * connectionStream.end() can cause disconnection errors when pages navigate to
+   * external URLs (e.g. deep links).
+   * 4. DIFFERENT ERROR SOURCE: "Premature close" in page context is usually
+   * harmless during navigation; critical cases come from BACKGROUND streams that
+   * persist across page loads.
    *
    * For context on the "Premature close" issue, see:
-   * - https://github.com/MetaMask/metamask-extension/issues/26337
-   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   * https://github.com/MetaMask/metamask-extension/issues/26337
+   * https://github.com/MetaMask/metamask-extension/issues/35241
    */
   pipeline(metamaskStream, mux, metamaskStream, (error: Error | null) => {
     let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;

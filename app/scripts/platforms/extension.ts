@@ -124,7 +124,7 @@ export default class ExtensionPlatform {
   ): void {
     const extensionURL = this.getExtensionURL(route, queryString);
 
-    void this.openTab({ url: extensionURL });
+    this.openTab({ url: extensionURL }).catch(() => undefined);
 
     if (
       getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
@@ -295,7 +295,7 @@ export default class ExtensionPlatform {
 
   _viewOnEtherscan(url: string): void {
     if (url.startsWith('https://')) {
-      void browser.tabs.create({ url });
+      browser.tabs.create({ url }).catch(() => undefined);
     }
   }
 }

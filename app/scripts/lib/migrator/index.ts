@@ -28,10 +28,10 @@ export type V2Migration = {
 
 export type Migration = LegacyMigration | V2Migration;
 
-export interface MigratorOptions {
+export type MigratorOptions = {
   migrations?: Migration[];
   defaultVersion?: number;
-}
+};
 
 export type MigrateDataResult = {
   state: MigrationState;

@@ -137,7 +137,7 @@ export default function setupSentry(): typeof Sentry | undefined {
  * @param report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
  * @returns Cloned report, or original reference on failure.
  */
-function safeCloneReport<T>(report: T): T {
+function safeCloneReport<Report>(report: Report): Report {
   try {
     return cloneDeep(report);
   } catch (err) {
@@ -462,8 +462,8 @@ export function sanitizeBreadcrumbsInReport(report: SentryReport): void {
   if (!Array.isArray(report.breadcrumbs)) {
     return;
   }
-  for (let i = 0; i < report.breadcrumbs.length; i++) {
-    removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
+  for (const breadcrumb of report.breadcrumbs) {
+    removeUrlsFromBreadCrumb(breadcrumb);
   }
 }
 
@@ -649,12 +649,12 @@ function sanitizeAddressesFromString(text: string): string {
  * so shared references stay consistent and cyclic structures terminate.
  * @returns The sanitized value (a copy for objects/arrays).
  */
-function sanitizeAddressesFromObject<T>(
-  value: T,
+function sanitizeAddressesFromObject<Value>(
+  value: Value,
   seen: WeakMap<object, unknown> = new WeakMap(),
-): T {
+): Value {
   if (typeof value === 'string') {
-    return sanitizeAddressesFromString(value) as T;
+    return sanitizeAddressesFromString(value) as Value;
   }
   // Leave primitives (and null) untouched.
   if (value === null || typeof value !== 'object') {
@@ -666,7 +666,7 @@ function sanitizeAddressesFromObject<T>(
   // Reuse the sanitized copy for any reference we've already processed, so shared
   // references stay consistent and cyclic structures don't loop forever.
   if (seen.has(objectValue)) {
-    return seen.get(objectValue) as T;
+    return seen.get(objectValue) as Value;
   }
 
   if (Array.isArray(value)) {
@@ -675,7 +675,7 @@ function sanitizeAddressesFromObject<T>(
     for (let i = 0; i < value.length; i++) {
       copy[i] = sanitizeAddressesFromObject(value[i], seen);
     }
-    return copy as T;
+    return copy as Value;
   }
 
   const copy: Record<string, unknown> = {};
@@ -700,7 +700,7 @@ function sanitizeAddressesFromObject<T>(
   for (const key of Object.keys(recordValue)) {
     copy[key] = sanitizeAddressesFromObject(recordValue[key], seen);
   }
-  return copy as T;
+  return copy as Value;
 }
 
 /**
@@ -829,7 +829,7 @@ function addDebugListeners(): void {
 
 type SessionEnvelope = [
   unknown,
-  Array<[{ type?: string }, { status?: string }]>?,
+  [{ type?: string }, { status?: string }][]?,
 ];
 
 function isCompletedSessionEnvelope(envelope: unknown): boolean {

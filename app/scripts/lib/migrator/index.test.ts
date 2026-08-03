@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import liveMigrations from '../../migrations';
@@ -154,8 +153,7 @@ describe('migrations', () => {
       expect(migrate).toHaveBeenCalledTimes(1);
       expect(migrate.mock.calls[0]).toHaveLength(2);
       expect(migratedData.state).not.toBe(initialState);
-      // toStrictEqual won't work
-      // eslint-disable-next-line jest/prefer-strict-equal
+      // toStrictEqual won't work for this deep comparison
       expect(migratedData.state.data).toEqual({
         hello: 'world',
         foo: 'bar',

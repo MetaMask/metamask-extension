@@ -11,7 +11,7 @@ import {
 type TestBreadcrumb = ReturnType<typeof removeUrlsFromBreadCrumb> & {
   data?: {
     address?: string;
-    arguments?: Array<Error | string | Record<string, unknown>>;
+    arguments?: (Error | string | Record<string, unknown>)[];
     from?: string;
     logger?: string;
     to?: string;
@@ -28,9 +28,9 @@ type TestReport = Parameters<typeof rewriteReport>[0] & {
     };
   };
   exception?: {
-    values?: Array<{
+    values?: {
       value?: string;
-    }>;
+    }[];
   };
   extra?: {
     accountAddress?: string;
@@ -47,11 +47,11 @@ type TestReport = Parameters<typeof rewriteReport>[0] & {
   request?: {
     url?: string;
   };
-  spans?: Array<{
+  spans?: {
     description?: string;
     name?: string;
     op?: string;
-  }>;
+  }[];
   transaction?: string;
   type?: string;
 };

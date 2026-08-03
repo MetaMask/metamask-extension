@@ -78,9 +78,13 @@ export const persistenceManager = new PersistenceManager({ localStore })
       event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
       category: MetaMetricsEventCategory.Error,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment event property
         persistence_event: payload.event,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment event property
         first_error_message: payload.firstErrorMessage,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment event property
         first_error_name: payload.firstErrorName,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment event property
         retry_delay_ms: payload.retryDelayMs,
       },
     });

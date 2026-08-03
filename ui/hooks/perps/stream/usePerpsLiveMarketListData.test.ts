@@ -69,6 +69,39 @@ describe('usePerpsLiveMarketListData', () => {
     });
   });
 
+  it('does not activate live market streams when disabled', () => {
+    const refresh = jest.fn();
+    const market = createMockMarket({ symbol: 'BTC' });
+
+    mockUsePerpsLiveMarketData.mockReturnValue({
+      markets: [market],
+      cryptoMarkets: [market],
+      hip3Markets: [],
+      isInitialLoading: false,
+      error: null,
+      refresh,
+    });
+    mockUsePerpsLivePrices.mockReturnValue({
+      prices: {},
+      isInitialLoading: false,
+    });
+
+    renderHook(() => usePerpsLiveMarketListData({ activateStream: false }));
+
+    expect(mockUsePerpsLiveMarketData).toHaveBeenCalledWith({
+      autoSubscribe: false,
+    });
+    expect(mockUsePerpsLivePrices).toHaveBeenCalledWith({
+      symbols: ['BTC'],
+      activateStream: false,
+      includeMarketData: false,
+    });
+
+    jest.advanceTimersByTime(30000);
+
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
   it('overlays live price and 24h change onto the market list', () => {
     const market = createMockMarket({ symbol: 'BTC' });
 

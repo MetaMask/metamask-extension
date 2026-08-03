@@ -52,7 +52,7 @@ export const PageHeaderWithSearch = ({
     return (
       <HeaderSearch
         variant={HeaderSearchVariant.Inline}
-        className="app-text-field-search"
+        className="w-full"
         padding={3}
         paddingHorizontal={4}
         onClickCancelButton={() => {

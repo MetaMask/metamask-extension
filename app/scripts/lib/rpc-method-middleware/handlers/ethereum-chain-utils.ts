@@ -92,7 +92,7 @@ export function validateChainId(chainId: unknown): Hex {
     typeof chainId === 'string' ? chainId.toLowerCase() : null;
   if (!isPrefixedFormattedHexString(lowercasedChainId)) {
     throw rpcErrors.invalidParams({
-      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
+      message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${String(chainId)}`,
     });
   }
 
@@ -100,7 +100,7 @@ export function validateChainId(chainId: unknown): Hex {
 
   if (!isSafeChainId(parseInt(validatedChainId, 16))) {
     throw rpcErrors.invalidParams({
-      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${String(chainId)}`,
     });
   }
 
@@ -125,7 +125,7 @@ export function validateSwitchEthereumChainParams(req: {
     throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
-      )}`,
+      ).join(', ')}`,
     });
   }
 
@@ -158,14 +158,14 @@ export function validateAddEthereumChainParams(
 
   if (otherKeys.length > 0) {
     throw rpcErrors.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys.join(', ')}`,
     });
   }
 
   const validatedChainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
     });
   }
 
@@ -188,7 +188,7 @@ export function validateAddEthereumChainParams(
 
   if (!firstValidRPCUrl) {
     throw rpcErrors.invalidParams({
-      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${JSON.stringify(rpcUrls)}`,
     });
   }
 
@@ -204,7 +204,7 @@ export function validateAddEthereumChainParams(
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
       throw rpcErrors.invalidParams({
-        message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
+        message: `Expected null or object 'nativeCurrency'. Received:\n${JSON.stringify(nativeCurrency)}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
@@ -244,10 +244,27 @@ export function validateAddEthereumChainParams(
  * otherwise requests approval to update permission first.
  *
  * @param response - The JSON RPC request's response object.
+ * @param response.result - The response result set on success.
  * @param end - The JSON RPC request's end callback.
  * @param chainId - The chainId being switched to.
  * @param networkClientId - The network client being switched to.
  * @param hooks - The hooks object.
+ * @param hooks.origin - Request origin.
+ * @param hooks.isAddFlow - Whether this is part of an add-chain flow.
+ * @param hooks.isSwitchFlow - Whether this is part of a switch-chain flow.
+ * @param hooks.autoApprove - Whether permission updates may be auto-approved.
+ * @param hooks.setActiveNetwork - Sets the active network client.
+ * @param hooks.getCaveat - Reads a permission caveat.
+ * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin - Requests
+ * incremental chain permissions for the origin.
+ * @param hooks.setTokenNetworkFilter - Updates the token network filter.
+ * @param hooks.setEnabledNetworks - Enables a network by chain id.
+ * @param hooks.getEnabledNetworks - Gets enabled networks for a namespace.
+ * @param hooks.rejectApprovalRequestsForOrigin - Rejects pending approvals.
+ * @param hooks.requestUserApproval - Requests user approval.
+ * @param hooks.hasApprovalRequestsForOrigin - Whether the origin has approvals.
+ * @param hooks.toNetworkConfiguration - Destination network configuration.
+ * @param hooks.fromNetworkConfiguration - Source network configuration.
  * @returns A null response on success or an error on failure.
  */
 export async function switchChain(

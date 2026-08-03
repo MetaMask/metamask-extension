@@ -19,6 +19,11 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  BtcAccountType,
+  SolAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
@@ -27,6 +32,7 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
@@ -40,12 +46,24 @@ import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
+
+const mockToHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
+
+jest.mock('../../../shared/lib/hardware-wallets', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
+  toHardwareWalletError: (...args: unknown[]) =>
+    mockToHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
 
@@ -63,6 +81,11 @@ jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
 jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -3231,6 +3254,236 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('resolvePendingApproval', () => {
+    beforeEach(() => {
+      mockToHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).resolves.not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+
+    it('normalizes null options before calling ApprovalController:acceptRequest', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          null,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          undefined,
+        );
+      });
+    });
+
+    it('passes only waitForResult to ApprovalController:acceptRequest options', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          {
+            waitForResult: true,
+            walletType: HardwareWalletType.Ledger,
+          },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          { waitForResult: true },
+        );
+      });
+    });
+
+    it('transforms hardware wallet errors to internal JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Ledger transport disconnected');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'Device disconnected',
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Please reconnect your device',
+          metadata: {
+            transport: 'usb',
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x3' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: -32603,
+          data: {
+            code: ErrorCode.DeviceDisconnected,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Please reconnect your device',
+            metadata: {
+              transport: 'usb',
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+
+        expect(mockToHardwareWalletError).toHaveBeenCalledWith(
+          error,
+          HardwareWalletType.Ledger,
+        );
+      });
+    });
+
+    it('transforms user-rejected hardware wallet errors to user-rejected JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('User rejected on device');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'User rejected',
+          code: ErrorCode.UserRejected,
+          severity: Severity.Info,
+          category: Category.UserAction,
+          userMessage: 'Request rejected',
+          metadata: {
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+        mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x4' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: 4001,
+          data: {
+            code: ErrorCode.UserRejected,
+            severity: Severity.Info,
+            category: Category.UserAction,
+            userMessage: 'Request rejected',
+            metadata: {
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+      });
+    });
+  });
+
+  describe('approveHardwareWalletTransaction', () => {
+    it('delegates to resolvePendingApproval with transaction payload and hardware wallet options', async () => {
+      await withService(async ({ service }) => {
+        const resolvePendingApprovalSpy = jest
+          .spyOn(service, 'resolvePendingApproval')
+          .mockResolvedValue();
+
+        const txMeta = {
+          id: '42',
+          txParams: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        };
+
+        await service.approveHardwareWalletTransaction({
+          txId: 42,
+          txMeta,
+          actionId: 'action-id',
+          walletType: HardwareWalletType.Ledger,
+        });
+
+        expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
+          '42',
+          { txMeta, actionId: 'action-id' },
+          { waitForResult: true, walletType: HardwareWalletType.Ledger },
+        );
+      });
+    });
+  });
+
   describe('rejectAllPendingApprovals', () => {
     it('accepts snap dialog approvals with null and deletes their interface', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -3731,6 +3984,251 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('createSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+
+    it('captures the error and rethrows when backup creation fails', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('backup failed');
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
+
+          await expect(
+            service.createSeedPhraseBackup(
+              'password',
+              encodedSeedPhrase,
+              'keyring-id',
+            ),
+          ).rejects.toThrow('backup failed');
+
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(
+              TraceName.OnboardingCreateKeyAndBackupSrpError,
+              error,
+            ),
+          );
+        },
+      );
+    });
+  });
+
+  describe('createNewVaultAndKeychain', () => {
+    it('clears wallet state when a wallet reset is in progress', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const clearPermissionState = jest.fn();
+        const clearSnapState = jest.fn().mockResolvedValue(undefined);
+        const clearAccountTreeState = jest.fn();
+        const updateHiddenAccountsList = jest.fn();
+        const clearUnapprovedTransactions = jest.fn();
+        const createWallet = jest.fn().mockResolvedValue(undefined);
+        const setIsWalletResetInProgress = jest.fn();
+        const updateAccounts = jest.fn().mockResolvedValue(undefined);
+        const reinit = jest.fn();
+        const primaryKeyring = {
+          type: 'HD Key Tree',
+          accounts: ['0xabc'],
+          metadata: { id: 'kr1' },
+        };
+
+        rootMessenger.registerActionHandler(
+          'AppStateController:getIsWalletResetInProgress',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'PermissionController:clearState',
+          clearPermissionState,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapController:clearState',
+          clearSnapState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:clearState',
+          clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountOrderController:updateHiddenAccountsList',
+          updateHiddenAccountsList,
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:clearUnapprovedTransactions',
+          clearUnapprovedTransactions,
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createMultichainAccountWallet',
+          createWallet,
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setIsWalletResetInProgress',
+          setIsWalletResetInProgress,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ keyrings: [primaryKeyring] }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:updateAccounts',
+          updateAccounts,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:reinit',
+          reinit,
+        );
+
+        const result = await service.createNewVaultAndKeychain('password');
+
+        expect(clearPermissionState).toHaveBeenCalled();
+        expect(clearSnapState).toHaveBeenCalled();
+        expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
+        expect(clearUnapprovedTransactions).toHaveBeenCalled();
+        expect(createWallet).toHaveBeenCalledWith({
+          type: 'create',
+          password: 'password',
+        });
+        expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
+        expect(result).toStrictEqual(primaryKeyring);
+      });
+    });
+  });
+
+  describe('syncSeedPhrases', () => {
+    it('imports private key secrets that are not backed up locally', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const privateKeyData = new Uint8Array(32).fill(1);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:fetchAllSecretData',
+          jest.fn().mockResolvedValue([
+            { data: new Uint8Array([1]), type: SecretType.Mnemonic },
+            { data: privateKeyData, type: SecretType.PrivateKey },
+          ]),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getSecretDataBackupState',
+          jest.fn().mockReturnValue(null),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+
+        const importSpy = jest
+          .spyOn(service, 'importAccountWithStrategy')
+          .mockResolvedValue(undefined);
+
+        await service.syncSeedPhrases();
+
+        expect(importSpy).toHaveBeenCalledWith(
+          AccountImportStrategy.privateKey,
+          [expect.any(String)],
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
+      });
+    });
+  });
+
+  describe('addNewSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+    it('captures the error and rethrows when adding secret data fails', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('add failed');
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getState',
+            jest.fn().mockReturnValue({ completedOnboarding: false }),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:addNewSecretData',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
+
+          await expect(
+            service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
+          ).rejects.toThrow('add failed');
+
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(TraceName.OnboardingAddSrpError, error),
+          );
+        },
+      );
+    });
+  });
+
+  describe('discoverAndCreateAccounts', () => {
+    it('counts discovered accounts by provider', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([
+                { type: SolAccountType.DataAccount },
+                { type: BtcAccountType.P2wpkh },
+                { type: TrxAccountType.Eoa },
+              ]),
+          }),
+        );
+
+        const counts = await service.discoverAndCreateAccounts();
+
+        expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
+      });
+    });
+  });
+
   describe('isRelaySupported', () => {
     const isRelaySupportedMock = jest.mocked(isRelaySupported);
 
@@ -3819,12 +4317,15 @@ function getMessenger(
       'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
+      'KeyringController:getState',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
       'ApprovalController:acceptRequest',
       'SnapInterfaceController:deleteInterface',
+      'SnapController:clearState',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
+      'TransactionController:clearUnapprovedTransactions',
       'ApprovalController:rejectRequest',
       'TransactionController:wipeTransactions',
       'SmartTransactionsController:wipeSmartTransactions',
@@ -3839,10 +4340,15 @@ function getMessenger(
       'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
+      'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+      'SeedlessOnboardingController:fetchAllSecretData',
+      'SeedlessOnboardingController:getSecretDataBackupState',
       'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:clearState',
       'PermissionController:rejectPermissionsRequest',
       'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
+      'PreferencesController:getState',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
@@ -3864,9 +4370,19 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountOrderController:updateHiddenAccountsList',
+      'AccountTreeController:clearState',
       'AccountTreeController:init',
+      'AccountTreeController:reinit',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountTreeController:syncWithUserStorage',
+      'AccountTreeController:syncWithUserStorageAtLeastOnce',
+      'AppStateController:getIsWalletResetInProgress',
+      'AppStateController:setIsWalletResetInProgress',
+      'MultichainAccountService:createMultichainAccountWallet',
+      'MultichainAccountService:getMultichainAccountWallet',
       'MultichainAccountService:init',
+      'MultichainAccountService:removeMultichainAccountWallet',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
       'SubscriptionController:stopAllPolling',
@@ -3929,7 +4445,6 @@ async function withService<ReturnValue>(
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
-    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

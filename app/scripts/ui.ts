@@ -373,7 +373,7 @@ async function queryCurrentActiveTab(
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
+ * @param connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
 function connectSubstreams(
@@ -395,7 +395,7 @@ function connectSubstreams(
 /**
  * Establishes a streamed connection to a Web3 provider
  *
- * @param {Substream} connectionStream - PortStream instance establishing a background connection
+ * @param connectionStream - PortStream instance establishing a background connection
  */
 async function setupProviderConnection(
   connectionStream: Substream,
