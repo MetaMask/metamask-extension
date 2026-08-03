@@ -183,6 +183,15 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.getByTestId('discover-search-no-results-illustration'),
     ).toHaveAttribute('src', './images/empty-state-activity-light.png');
+    expect(
+      screen.getByTestId('discover-search-popular-asset-eth-network'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('discover-search-popular-asset-btc-network'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('discover-search-popular-asset-sol-network'),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('discover-search-popular-asset-btc'));
 
