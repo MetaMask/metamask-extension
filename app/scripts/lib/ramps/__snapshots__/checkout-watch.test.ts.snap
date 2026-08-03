@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createWatchRampsCheckoutTab does not add an order when both the callback and the lookup fail 1`] = `[]`;
+
+exports[`createWatchRampsCheckoutTab falls back to getOrder by widget code when the callback lookup fails 1`] = `
+[
+  [
+    {
+      "id": "moonpay/orders/native-uuid",
+      "providerOrderId": "native-uuid",
+      "status": "PENDING",
+    },
+  ],
+]
+`;
