@@ -86,7 +86,7 @@ async function withSolanaExportAccountTest(
     additionalMocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>;
     fixtureCustomizer?: (builder: FixtureBuilderV2) => FixtureBuilderV2;
   },
-  test: (driver: Driver) => Promise<void>,
+  runExportAccountScenario: (driver: Driver) => Promise<void>,
 ) {
   let builder = new FixtureBuilderV2();
   if (fixtureCustomizer) {
@@ -108,7 +108,7 @@ async function withSolanaExportAccountTest(
     },
     async ({ driver }: { driver: Driver }) => {
       await login(driver);
-      await test(driver);
+      await runExportAccountScenario(driver);
     },
   );
 }
