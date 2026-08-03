@@ -17,9 +17,17 @@ export const NOTIFICATION_MANAGER_EVENTS = {
 export default class NotificationManager extends EventEmitter {
   platform: ExtensionPlatform;
 
-  _popupId: number | undefined;
-
-  _setCurrentPopupId: AppStateController['setCurrentPopupId'] | undefined;
+  /**
+   * Popup bookkeeping. The id and its setter are only ever assigned together,
+   * by `showPopup` — grouping them lets the compiler prove the setter is present
+   * wherever the id matched, instead of asserting or re-checking it.
+   */
+  _popup:
+    | {
+        id: number | undefined;
+        setCurrentPopupId: AppStateController['setCurrentPopupId'];
+      }
+    | undefined;
 
   _popupAutomaticallyClosed: boolean | undefined;
 
@@ -50,8 +58,8 @@ export default class NotificationManager extends EventEmitter {
     setCurrentPopupId: AppStateController['setCurrentPopupId'],
     currentPopupId: number | undefined,
   ) {
-    this._popupId = currentPopupId;
-    this._setCurrentPopupId = setCurrentPopupId;
+    const popupState = { id: currentPopupId, setCurrentPopupId };
+    this._popup = popupState;
     const popup = await this._getPopup();
     // Bring focus to chrome popup
     if (popup) {
@@ -94,22 +102,17 @@ export default class NotificationManager extends EventEmitter {
       if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
         await this.platform.updateWindowPosition(popupWindow.id, left, top);
       }
-      // pass new created popup window id to appController setter
-      // and store the id to private variable this._popupId for future access
-      this._setCurrentPopupId(popupWindow.id);
-      this._popupId = popupWindow.id;
+      // Pass the new popup window id to the appController setter and keep it
+      // on the local popupState (also assigned to this._popup above).
+      popupState.setCurrentPopupId(popupWindow.id);
+      popupState.id = popupWindow.id;
     }
   }
 
   _onWindowClosed(windowId: number) {
-    if (windowId === this._popupId) {
-      // Set alongside `_popupId` in `showPopup`; throw if the setter was never wired.
-      const setCurrentPopupId = this._setCurrentPopupId;
-      if (!setCurrentPopupId) {
-        throw new Error('NotificationManager: setCurrentPopupId was never set');
-      }
-      setCurrentPopupId(undefined);
-      this._popupId = undefined;
+    if (this._popup && windowId === this._popup.id) {
+      this._popup.setCurrentPopupId(undefined);
+      this._popup.id = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,
       });
@@ -138,7 +141,7 @@ export default class NotificationManager extends EventEmitter {
     return windows
       ? windows.find((win) => {
           // Returns notification popup
-          return win && win.type === 'popup' && win.id === this._popupId;
+          return win && win.type === 'popup' && win.id === this._popup?.id;
         })
       : null;
   }

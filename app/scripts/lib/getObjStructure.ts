@@ -27,10 +27,10 @@ import type { MetaMaskStorageStructure } from '../../../shared/lib/stores/base-s
  * replaced with the javascript type of that value.
  */
 export default function getObjStructure(
-  obj: MetaMaskStorageStructure | undefined,
+  obj: MetaMaskStorageStructure | null | undefined,
 ): Record<string, unknown> {
   const structure = cloneDeep(obj);
-  return deepMap(structure as Record<string, unknown> | undefined, (value) => {
+  return deepMap(structure, (value) => {
     return value === null ? 'null' : typeof value;
   });
 }
@@ -44,7 +44,7 @@ export default function getObjStructure(
  * @returns The modified object
  */
 function deepMap(
-  target: Record<string, unknown> | undefined,
+  target: Record<string, unknown> | null | undefined,
   visit: (value: unknown) => string,
 ): Record<string, unknown> {
   const mappedTarget = target ?? {};

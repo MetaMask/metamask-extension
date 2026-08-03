@@ -5,13 +5,9 @@
  * @returns Error with clean stack trace.
  */
 export default function cleanErrorStack(err: Error): Error {
-  const { name: errName, message: errMessage } = err;
-
-  let name: string | undefined = errName;
-  name = name === undefined ? 'Error' : String(name);
-
-  let msg: string | undefined = errMessage;
-  msg = msg === undefined ? '' : String(msg);
+  // `??` (not `||`) so an intentional blank `name` / `message` is preserved.
+  const name = String(err.name ?? 'Error');
+  const msg = String(err.message ?? '');
 
   if (name === '') {
     err.stack = err.message;

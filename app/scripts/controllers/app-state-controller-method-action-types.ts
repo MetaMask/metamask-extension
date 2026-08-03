@@ -368,7 +368,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
