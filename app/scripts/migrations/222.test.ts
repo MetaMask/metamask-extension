@@ -20,7 +20,6 @@ import {
   BSC_CHAIN_ID,
   ZKSYNC_ERA_CHAIN_ID,
   MEGAETH_CHAIN_ID,
-  TEMPO_CHAIN_ID,
 } from './222';
 
 const VERSION = version;
@@ -29,12 +28,10 @@ const oldVersion = VERSION - 1;
 const QUICKNODE_BSC_URL = 'https://failover.example/bsc';
 const QUICKNODE_ZKSYNC_URL = 'https://failover.example/zksync';
 const QUICKNODE_MEGAETH_URL = 'https://failover.example/megaeth';
-const QUICKNODE_TEMPO_URL = 'https://failover.example/tempo';
 
 const BSC_INFURA_URL = `https://bsc-mainnet.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`;
 const ZKSYNC_INFURA_URL = `https://zksync-mainnet.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`;
 const MEGAETH_INFURA_URL = `https://megaeth-mainnet.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`;
-const TEMPO_DEFAULT_URL = 'https://rpc.tempo.xyz/';
 
 function infuraNetworkConfiguration(
   chainId: string,
@@ -80,7 +77,6 @@ describe(`migration #${VERSION}`, () => {
     process.env.QUICKNODE_BSC_URL = QUICKNODE_BSC_URL;
     process.env.QUICKNODE_ZKSYNC_URL = QUICKNODE_ZKSYNC_URL;
     process.env.QUICKNODE_MEGAETH_URL = QUICKNODE_MEGAETH_URL;
-    process.env.QUICKNODE_TEMPO_URL = QUICKNODE_TEMPO_URL;
     mockedCaptureException = jest.fn();
     global.sentry = { captureException: mockedCaptureException };
     mockUnitTestInfuraId = mockUnitTestInfuraIdInitialValue;
@@ -210,47 +206,6 @@ describe(`migration #${VERSION}`, () => {
       [BSC_CHAIN_ID]: infuraNetworkConfiguration(
         BSC_CHAIN_ID,
         `https://evil.example/.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`,
-      ),
-    });
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedControllers.has('NetworkController')).toBe(false);
-  });
-
-  it('adds the QuickNode failover to the Tempo default (rpc.tempo.xyz) endpoint', async () => {
-    const oldStorage = baseStorage({
-      [TEMPO_CHAIN_ID]: infuraNetworkConfiguration(
-        TEMPO_CHAIN_ID,
-        TEMPO_DEFAULT_URL,
-      ),
-    });
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    const config = (
-      versionedData.data.NetworkController as {
-        networkConfigurationsByChainId: Record<
-          string,
-          { rpcEndpoints: { failoverUrls: string[] }[] }
-        >;
-      }
-    ).networkConfigurationsByChainId[TEMPO_CHAIN_ID];
-
-    expect(config.rpcEndpoints[0].failoverUrls).toStrictEqual([
-      QUICKNODE_TEMPO_URL,
-    ]);
-    expect(changedControllers.has('NetworkController')).toBe(true);
-  });
-
-  it('does not add the Tempo failover to a non-default Tempo RPC endpoint', async () => {
-    const oldStorage = baseStorage({
-      [TEMPO_CHAIN_ID]: infuraNetworkConfiguration(
-        TEMPO_CHAIN_ID,
-        'https://my-own-tempo-rpc.example',
       ),
     });
     const versionedData = cloneDeep(oldStorage);

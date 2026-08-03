@@ -9,9 +9,6 @@ export const version = 222;
 export const BSC_CHAIN_ID = CHAIN_IDS.BSC;
 export const ZKSYNC_ERA_CHAIN_ID = CHAIN_IDS.ZKSYNC_ERA;
 export const MEGAETH_CHAIN_ID = CHAIN_IDS.MEGAETH_MAINNET;
-export const TEMPO_CHAIN_ID = CHAIN_IDS.TEMPO_MAINNET;
-
-const TEMPO_DEFAULT_RPC_HOST = 'rpc.tempo.xyz';
 
 type RpcEndpoint = {
   url: string;
@@ -21,15 +18,11 @@ type RpcEndpoint = {
 };
 
 /**
- * The networks that got new QuickNode failovers configured in INFRA-3736. For
- * each one we add the QuickNode failover URL to the matching RPC endpoints of
- * the user's existing network configuration.
- *
- * - BSC, ZKsync Era and MegaETH default to Infura, so we only add the failover
- * to their Infura endpoints.
- * - Tempo defaults to its own `rpc.tempo.xyz` Custom endpoint (it is not on
- * Infura). The network controller applies `failoverUrls` to Custom endpoints
- * too, so we add the failover to the Tempo default endpoint.
+ * The networks that got new QuickNode failovers configured in INFRA-3736. BSC,
+ * ZKsync Era and MegaETH default to Infura, so we add the QuickNode failover to
+ * their Infura endpoints. (Tempo was also configured in INFRA-3736 but has no
+ * Infura endpoint, and the network controller only applies failovers to Infura
+ * primaries, so it can't be wired from the client and is excluded here.)
  */
 const FAILOVER_CONFIGS: {
   chainId: string;
@@ -51,19 +44,14 @@ const FAILOVER_CONFIGS: {
     getQuickNodeUrl: () => process.env.QUICKNODE_MEGAETH_URL,
     shouldAddFailover: isInfuraEndpoint,
   },
-  {
-    chainId: TEMPO_CHAIN_ID,
-    getQuickNodeUrl: () => process.env.QUICKNODE_TEMPO_URL,
-    shouldAddFailover: isTempoDefaultEndpoint,
-  },
 ];
 
 /**
  * Migration 222: add the QuickNode failover URLs (configured in INFRA-3736) to
- * the BSC, ZKsync Era, MegaETH and Tempo network configurations for users who
- * already have those networks. Users adding the networks for the first time
- * already get the failover from `FEATURED_RPCS`, so this only backfills
- * existing configurations.
+ * the BSC, ZKsync Era and MegaETH network configurations for users who already
+ * have those networks. Users adding the networks for the first time already get
+ * the failover from `FEATURED_RPCS`, so this only backfills existing
+ * configurations.
  *
  * @param versionedData - Versioned MetaMask extension state, exactly what we
  * persist to disk.
@@ -168,20 +156,6 @@ function isInfuraEndpoint(rpcEndpoint: RpcEndpoint): boolean {
   try {
     const { host, pathname } = new URL(rpcEndpoint.url);
     return host.endsWith('.infura.io') && pathname.startsWith('/v3/');
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Checks if an RPC endpoint is the Tempo default endpoint (`rpc.tempo.xyz`).
- *
- * @param rpcEndpoint - The RPC endpoint to check.
- * @returns True if the endpoint is the Tempo default endpoint.
- */
-function isTempoDefaultEndpoint(rpcEndpoint: RpcEndpoint): boolean {
-  try {
-    return new URL(rpcEndpoint.url).host === TEMPO_DEFAULT_RPC_HOST;
   } catch {
     return false;
   }

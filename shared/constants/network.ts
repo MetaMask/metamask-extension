@@ -1579,9 +1579,6 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'zksync-mainnet': () => process.env.QUICKNODE_ZKSYNC_URL,
   'megaeth-mainnet': () => process.env.QUICKNODE_MEGAETH_URL,
-  // Tempo's default RPC is rpc.tempo.xyz (a Custom endpoint, not Infura), but
-  // the network controller applies failoverUrls to Custom endpoints too.
-  'tempo-mainnet': () => process.env.QUICKNODE_TEMPO_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1782,7 +1779,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://rpc.tempo.xyz/`,
-        failoverUrls: getFailoverUrlsForInfuraNetwork('tempo-mainnet'),
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
