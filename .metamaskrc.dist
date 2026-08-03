@@ -25,6 +25,7 @@ PASSKEY_ENABLED='false'
 ; Start the server: yarn secret-escrow:mock-server
 ; Then set:
 ;SECRET_ESCROW_URL=http://127.0.0.1:8787
+; Full walkthrough: docs/secret-escrow-local-demo.md
 
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
