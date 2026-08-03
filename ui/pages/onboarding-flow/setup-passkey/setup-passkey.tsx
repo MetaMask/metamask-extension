@@ -33,6 +33,7 @@ export default function SetupPasskey() {
     typeof location.state?.password === 'string'
       ? location.state.password
       : undefined;
+  const requirePasskey = Boolean(location.state?.requirePasskey);
 
   const handleNext = useCallback(() => {
     let nextRoute: string;
@@ -65,5 +66,11 @@ export default function SetupPasskey() {
     completedMetaMetricsOnboarding,
   ]);
 
-  return <SetupPasskeyContent onNext={handleNext} password={password} />;
+  return (
+    <SetupPasskeyContent
+      onNext={handleNext}
+      password={password}
+      requirePasskey={requirePasskey}
+    />
+  );
 }

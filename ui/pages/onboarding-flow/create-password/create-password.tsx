@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
@@ -24,6 +24,7 @@ import {
   getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
+import { generateWalletPassword } from '../../../../shared/lib/generate-wallet-password';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -45,6 +46,7 @@ import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../../create-password-form';
 import { useDispatch } from '../../../store/hooks';
+import LoadingScreen from '../../../components/ui/loading-screen';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -63,6 +65,8 @@ export default function CreatePassword({
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [passkeyOnlyError, setPasskeyOnlyError] = useState<string | null>(null);
+  const passkeyOnlyStartedRef = useRef(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFirefox = useIsFirefox();
@@ -97,6 +101,12 @@ export default function CreatePassword({
   const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
   const analyticsIframeUrl = `https://start.metamask.io/?${urlSearchParams.toString()}`;
 
+  const usePasskeyOnlySocialCreate =
+    isSocialLoginFlow &&
+    isSecretEscrowPasskeyAvailable &&
+    firstTimeFlowType === FirstTimeFlowType.socialCreate &&
+    !currentKeyring;
+
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
       getIsSeedlessOnboardingUserAuthenticated(),
@@ -104,6 +114,7 @@ export default function CreatePassword({
     if (!isSeedlessOnboardingUserAuthenticated) {
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
+    return isSeedlessOnboardingUserAuthenticated;
   }, [dispatch, navigate]);
 
   useEffect(() => {
@@ -237,6 +248,7 @@ export default function CreatePassword({
   const handleCreateNewWallet = async (
     password: string,
     termsChecked: boolean,
+    { passkeyOnly = false }: { passkeyOnly?: boolean } = {},
   ) => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletCreationAttempted)
@@ -251,10 +263,14 @@ export default function CreatePassword({
     setNewAccountCreationInProgress(true);
     await createNewAccount(password);
 
-    if (isSocialLoginFlow && isSecretEscrowPasskeyAvailable) {
+    if (
+      isSocialLoginFlow &&
+      isSecretEscrowPasskeyAvailable &&
+      !passkeyOnly
+    ) {
       try {
-        // Mint wallet secret S with password as the first 1-of-N factor.
-        // Passkey setup can addFactor later without replacing this enrollment.
+        // Typed-password social create: register password as a 1-of-N factor.
+        // Passkey-only create skips this and enrolls passkey-first instead.
         await createSecretEscrowPasswordFactor(password);
       } catch (error) {
         log.error('Failed to create secret escrow password factor', error);
@@ -271,7 +287,7 @@ export default function CreatePassword({
         .addCategory(MetaMetricsEventCategory.Onboarding)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
+          biometrics_enabled: passkeyOnly,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: accountTypeForMetrics,
         })
@@ -301,7 +317,9 @@ export default function CreatePassword({
           .addProperties({
             [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
             [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
-            location: 'onboarding_create_password',
+            location: passkeyOnly
+              ? 'onboarding_passkey_only'
+              : 'onboarding_create_password',
           })
           .build(),
       );
@@ -313,7 +331,10 @@ export default function CreatePassword({
       if (isSecretEscrowPasskeyAvailable) {
         navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, {
           replace: true,
-          state: { password },
+          state: {
+            password,
+            requirePasskey: passkeyOnly,
+          },
         });
       } else {
         navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
@@ -335,6 +356,44 @@ export default function CreatePassword({
       bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupAttempt });
     };
   }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
+
+  useEffect(() => {
+    if (!usePasskeyOnlySocialCreate || passkeyOnlyStartedRef.current) {
+      return;
+    }
+    passkeyOnlyStartedRef.current = true;
+
+    (async () => {
+      setPasskeyOnlyError(null);
+      setIsSubmitting(true);
+      try {
+        const isAuthenticated = await validateSocialLoginAuthenticatedState();
+        if (!isAuthenticated) {
+          return;
+        }
+        const password = generateWalletPassword();
+        // Passkey-first escrow: skip password factor registration so the only
+        // unlock factor the user enrolled is the passkey.
+        await handleCreateNewWallet(password, false, { passkeyOnly: true });
+      } catch (error) {
+        log.error('Error creating passkey-only social wallet', error);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.WalletSetupFailure)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .build(),
+        );
+        setNewAccountCreationInProgress(false);
+        passkeyOnlyStartedRef.current = false;
+        setPasskeyOnlyError(
+          error instanceof Error ? error.message : 'Wallet setup failed',
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    })();
+    // Intentionally run once when passkey-only social create is available.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount/condition gate only
+  }, [usePasskeyOnlySocialCreate]);
 
   const handleBackClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -382,6 +441,17 @@ export default function CreatePassword({
       setIsSubmitting(false);
     }
   };
+
+  if (usePasskeyOnlySocialCreate) {
+    return (
+      <Box className="h-full w-full" data-testid="create-password-passkey-only">
+        <LoadingScreen
+          loadingMessage={passkeyOnlyError ?? undefined}
+          showLoadingSpinner={!passkeyOnlyError}
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box className="h-full w-full">

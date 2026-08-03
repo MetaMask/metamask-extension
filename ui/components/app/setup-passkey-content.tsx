@@ -72,6 +72,11 @@ const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
 export type SetupPasskeyContentProps = {
   readonly onNext: () => void;
   readonly password?: string;
+  /**
+   * When true, passkey enrollment is required (e.g. passkey-only social create
+   * where the user never chose a typed password).
+   */
+  readonly requirePasskey?: boolean;
 };
 
 /**
@@ -80,10 +85,12 @@ export type SetupPasskeyContentProps = {
  * @param options0 - Component props.
  * @param options0.onNext - Called after the passkey step is skipped or completed.
  * @param options0.password - Wallet password when vault is restored.
+ * @param options0.requirePasskey - Hide skip when passkey is the only unlock factor.
  */
 export default function SetupPasskeyContent({
   onNext,
   password,
+  requirePasskey = false,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -473,15 +480,17 @@ export default function SetupPasskeyContent({
             >
               {t('setUpPasskey', [passkeyMethodLabel])}
             </Button>
-            <TextButton
-              type="button"
-              className="w-full"
-              color={TextColor.PrimaryDefault}
-              data-testid="passkey-maybe-later-button"
-              onClick={handleMaybeLater}
-            >
-              {t('maybeLater')}
-            </TextButton>
+            {requirePasskey ? null : (
+              <TextButton
+                type="button"
+                className="w-full"
+                color={TextColor.PrimaryDefault}
+                data-testid="passkey-maybe-later-button"
+                onClick={handleMaybeLater}
+              >
+                {t('maybeLater')}
+              </TextButton>
+            )}
           </Box>
         </>
       )}
