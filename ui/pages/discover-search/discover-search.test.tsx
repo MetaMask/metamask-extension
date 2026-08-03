@@ -21,12 +21,9 @@ jest.mock('../routes/global-menu-route-transition', () => ({
   useGlobalMenuRouteTransition: () => mockRunCloseTransition,
 }));
 
-jest.mock('../../hooks/discover-search', () => ({
-  DISCOVER_SEARCH_PREVIEW_COUNT: 3,
+jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
   useDiscoverSearch: () => ({
     crypto: {
-      id: 'crypto',
-      titleKey: 'perpsFilterCrypto',
       items: [
         {
           assetId: 'eip155:1/slip44:60',
@@ -43,15 +40,11 @@ jest.mock('../../hooks/discover-search', () => ({
       error: null,
     },
     perps: {
-      id: 'perps',
-      titleKey: 'perps',
       items: [],
       isLoading: false,
       error: null,
     },
     stocks: {
-      id: 'stocks',
-      titleKey: 'perpsFilterStocks',
       items: [
         {
           assetId: 'eip155:1/erc20:0xstock',

@@ -30,11 +30,9 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  DISCOVER_SEARCH_PREVIEW_COUNT,
-  useDiscoverSearch,
-  type DiscoverSearchTab,
-} from '../../hooks/discover-search';
+import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
+import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
+import type { DiscoverSearchTab } from '../../hooks/discover-search/types';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
@@ -96,6 +94,7 @@ export const DiscoverSearchPage = () => {
     stocks,
   } = useDiscoverSearch({
     query: searchQuery,
+    activeTab,
   });
 
   const handleBack = useCallback(

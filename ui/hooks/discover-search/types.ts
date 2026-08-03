@@ -3,22 +3,16 @@ import type { PerpsMarketData } from '@metamask/perps-controller';
 
 export type DiscoverSearchTab = 'all' | 'crypto' | 'perps' | 'stocks';
 
-export type DiscoverSearchSectionId = 'crypto' | 'perps' | 'stocks';
-
-export type DiscoverAssetResult = TrendingAsset;
-
 export type DiscoverSearchSection<TItem = unknown> = {
-  id: DiscoverSearchSectionId;
-  titleKey: string;
   items: TItem[];
   isLoading: boolean;
   error?: Error | null;
 };
 
 export type DiscoverSearchResult = {
-  crypto: DiscoverSearchSection<DiscoverAssetResult>;
+  crypto: DiscoverSearchSection<TrendingAsset>;
   perps: DiscoverSearchSection<PerpsMarketData>;
-  stocks: DiscoverSearchSection<DiscoverAssetResult>;
+  stocks: DiscoverSearchSection<TrendingAsset>;
   isDebouncing: boolean;
 };
 
