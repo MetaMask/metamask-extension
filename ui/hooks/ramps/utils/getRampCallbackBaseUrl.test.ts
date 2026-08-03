@@ -32,6 +32,11 @@ describe('getRampCallbackBaseUrl', () => {
     expect(getRampCallbackBaseUrl()).toBe(DEVELOPMENT_CALLBACK);
   });
 
+  it('returns the production URL for the release-candidate environment', () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+    expect(getRampCallbackBaseUrl()).toBe(PRODUCTION_CALLBACK);
+  });
+
   for (const environment of [
     ENVIRONMENT.OTHER,
     ENVIRONMENT.PULL_REQUEST,
