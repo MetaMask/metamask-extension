@@ -187,8 +187,9 @@ function handleOrderStatusChange({
 
   const toastId = generateToastId(orderCode);
   const copy = getToastCopy(order, t);
-  const onClick = () =>
+  const onActionClick = () =>
     navigateToOrder(navigate, getLatestOrder(orderCode) ?? order);
+  const actionText = t('view');
 
   const becameInProgress =
     IN_PROGRESS.has(order.status) &&
@@ -197,7 +198,8 @@ function handleOrderStatusChange({
 
   if (becameInProgress && shouldShowPendingToast(orderCode)) {
     showPendingToast(toastId, {
-      onClick,
+      actionText,
+      onActionClick,
       title: copy.pendingTitle,
       description: copy.pendingDescription,
     });
@@ -209,7 +211,8 @@ function handleOrderStatusChange({
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
       showSuccessToast(toastId, {
-        onClick,
+        actionText,
+        onActionClick,
         title: copy.successTitle,
         description: copy.successDescription,
       });
@@ -221,7 +224,8 @@ function handleOrderStatusChange({
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
       showFailedToast(toastId, {
-        onClick,
+        actionText,
+        onActionClick,
         title: copy.failedTitle,
         description: copy.failedDescription,
       });

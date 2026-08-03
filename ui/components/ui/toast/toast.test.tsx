@@ -44,37 +44,4 @@ describe('ToastContent', () => {
     );
     expect(screen.queryByText('test-action')).not.toBeInTheDocument();
   });
-
-  it('invokes onClick when the toast content is clicked', () => {
-    const onClick = jest.fn();
-    render(
-      <ToastContent
-        title="Buy in progress"
-        onClick={onClick}
-        dataTestId="toast"
-      />,
-    );
-
-    fireEvent.click(screen.getByTestId('toast'));
-
-    expect(onClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('keeps the action button from triggering onClick', () => {
-    const onClick = jest.fn();
-    const onActionClick = jest.fn();
-    render(
-      <ToastContent
-        title="Buy in progress"
-        actionText="test-action"
-        onActionClick={onActionClick}
-        onClick={onClick}
-      />,
-    );
-
-    fireEvent.click(screen.getByText('test-action'));
-
-    expect(onActionClick).toHaveBeenCalledTimes(1);
-    expect(onClick).not.toHaveBeenCalled();
-  });
 });

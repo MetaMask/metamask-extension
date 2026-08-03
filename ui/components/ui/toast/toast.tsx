@@ -82,7 +82,6 @@ export const ToastContent = ({
   description,
   actionText,
   onActionClick,
-  onClick,
   dataTestId,
 }: {
   title: string;
@@ -90,10 +89,9 @@ export const ToastContent = ({
   actionText?: string;
   dataTestId?: string;
   onActionClick?: () => void;
-  onClick?: () => void;
 }) => {
-  const content = (
-    <>
+  return (
+    <div data-testid={dataTestId}>
       <div className="flex min-w-0 flex-col">
         <p className="text-m-body-md">{title}</p>
 
@@ -112,36 +110,11 @@ export const ToastContent = ({
           textProps={{
             variant: TextVariant.BodySm,
           }}
-          onClick={(event) => {
-            event.stopPropagation();
-            onActionClick();
-          }}
+          onClick={onActionClick}
         >
           {actionText}
         </Button>
       )}
-    </>
+    </div>
   );
-
-  if (onClick) {
-    return (
-      <div
-        role="button"
-        tabIndex={0}
-        data-testid={dataTestId}
-        className="min-w-0 flex-1 cursor-pointer"
-        onClick={onClick}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onClick();
-          }
-        }}
-      >
-        {content}
-      </div>
-    );
-  }
-
-  return <div data-testid={dataTestId}>{content}</div>;
 };

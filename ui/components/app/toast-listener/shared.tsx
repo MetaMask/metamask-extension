@@ -11,7 +11,6 @@ export type ToastContentOptions = {
   transactionId?: string;
   actionText?: string;
   onActionClick?: () => void;
-  onClick?: () => void;
 };
 
 export const ToastContent = ({
@@ -22,7 +21,6 @@ export const ToastContent = ({
   transactionId,
   actionText,
   onActionClick,
-  onClick,
 }: { status: ToastStatus } & ToastContentOptions) => {
   const { title: derivedTitle, description: derivedDescription } =
     useToastLabel(status, transactionId);
@@ -34,7 +32,6 @@ export const ToastContent = ({
       dataTestId={dataTestId}
       actionText={actionText}
       onActionClick={onActionClick}
-      onClick={onClick}
     />
   );
 };

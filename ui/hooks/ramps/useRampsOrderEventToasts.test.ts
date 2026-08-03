@@ -32,9 +32,9 @@ const buyOrder = {
   network: { name: 'Ethereum', chainId: 'eip155:1' },
 };
 
-function clickToast(toast: jest.Mock) {
+function clickToastAction(toast: jest.Mock) {
   const [, options] = toast.mock.calls[0];
-  options.onClick();
+  options.onActionClick();
 }
 
 jest.mock('react-router-dom', () => ({
@@ -117,7 +117,8 @@ describe('useRampsOrderEventToasts', () => {
       'ramp-order-1',
       expect.objectContaining({
         title: 'rampsOrderToastPendingTitle',
-        onClick: expect.any(Function),
+        actionText: 'view',
+        onActionClick: expect.any(Function),
       }),
     );
   });
@@ -152,7 +153,7 @@ describe('useRampsOrderEventToasts', () => {
     );
   });
 
-  it('opens the order details page when the toast is clicked', () => {
+  it('opens the order details page when the toast action is clicked', () => {
     mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       { ...buyOrder, status: RampsOrderStatus.Precreated },
     ]);
@@ -168,7 +169,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToast(showPendingToast as jest.Mock);
+    clickToastAction(showPendingToast as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
   });
@@ -196,7 +197,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToast(showPendingToast as jest.Mock);
+    clickToastAction(showPendingToast as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
   });
@@ -222,7 +223,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToast(showPendingToast as jest.Mock);
+    clickToastAction(showPendingToast as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/activity');
   });
