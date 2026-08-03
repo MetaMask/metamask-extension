@@ -269,6 +269,17 @@ export const PerpsView = () => {
       // `finally`, so a client emit here would double-count. The count is only
       // reported on the branches where the batch actually returned a result.
       captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
       setBatchActionError(t('somethingWentWrong'));
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
@@ -327,11 +338,13 @@ export const PerpsView = () => {
 
     try {
       if (!result?.success) {
-        const failureCount = result?.failureCount ?? 0;
-        if (failureCount > 0 || result === undefined || result === null) {
-          setBatchActionError(t('somethingWentWrong'));
-          return;
-        }
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+        );
+        setBatchActionError(t('somethingWentWrong'));
+        return;
       }
       const fresh = await submitRequestToBackground<Order[]>(
         'perpsGetOpenOrders',
