@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class BackupAndSyncSettings {
-  private readonly driver: Driver;
-
   private readonly accountSyncToggle =
     '[data-testid="account-syncing-toggle-container"]';
 
@@ -11,6 +9,8 @@ class BackupAndSyncSettings {
 
   private readonly contactSyncToggle =
     '[data-testid="contact-syncing-toggle-container"]';
+
+  private readonly driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;

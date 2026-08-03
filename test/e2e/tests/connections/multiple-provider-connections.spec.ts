@@ -20,20 +20,23 @@ import {
   OPTIMISM_DISPLAY_NAME,
   MONAD_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
+import {
+  checkAccountsAndNetworksDisplayed,
+  getPermissionsPageForHost,
+} from '../../page-objects/flows/permissions.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
-import { Driver } from '../../webdriver/driver';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  getRequestPermissionsRequestObject,
+  getRestrictedNetworks,
+} from './helpers';
 
 const EVM_ADDRESS_TWO = ACCOUNT_2;
 const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
@@ -51,106 +54,6 @@ const SOLANA_PERMISSIONS = {
     },
   },
 };
-
-/**
- * Checks if an account is displayed
- *
- * @param driver - The test driver
- * @param account - The account to check
- */
-async function checkIsAccountDisplayed(
-  driver: Driver,
-  account: string,
-): Promise<void> {
-  await driver.waitForSelector({
-    text: account,
-    tag: 'p',
-  });
-}
-
-/**
- * Helper to check if the accounts and networks are displayed in the site permission page.
- *
- * @param driver - The test driver
- * @param sitePermissionPage - The site permission page to use.
- * @param networks - The networks to check.
- * @param accounts - The accounts to check.
- */
-async function checkAccountsAndNetworksDisplayed(
-  driver: Driver,
-  sitePermissionPage: SitePermissionPage,
-  networks: string[],
-  accounts: string[],
-) {
-  await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-  await sitePermissionPage.openNetworkPermissionsModal();
-  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.checkPageIsLoaded();
-
-  await networkPermissionSelectModal.checkNetworkStatus(networks);
-
-  await networkPermissionSelectModal.clickConfirmEditButton();
-  await sitePermissionPage.openAccountPermissionsModal();
-  const accountPermissionSelectModal = new EditConnectedAccountsModal(driver);
-  await accountPermissionSelectModal.checkPageIsLoaded();
-
-  for (const account of accounts) {
-    await checkIsAccountDisplayed(driver, account);
-  }
-}
-
-/**
- * Helper to get a request permissions request object with a caveat.
- *
- * @param accounts - The accounts to be requested.
- * @returns The request permissions request object with the caveat.
- */
-function getRequestPermissionsRequestObject(accounts: string[] = []): string {
-  const caveats =
-    accounts.length > 0
-      ? {
-          caveats: [
-            {
-              type: 'restrictReturnedAccounts',
-              value: accounts,
-            },
-          ],
-        }
-      : {};
-
-  return JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'wallet_requestPermissions',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    params: [{ eth_accounts: caveats }],
-  });
-}
-
-/**
- * Helper to get a request permissions request object with network restrictions.
- *
- * @param networks - Array of network IDs to restrict switching to
- * @returns the wallet_requestPermissions request string
- */
-function getRestrictedNetworks(networks: string[]): string {
-  const restrictNetworks = {
-    'endowment:permitted-chains': {
-      caveats: [
-        {
-          type: 'restrictNetworkSwitching',
-          value: networks,
-        },
-      ],
-    },
-  };
-
-  return JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'wallet_requestPermissions',
-    params: [restrictNetworks],
-  });
-}
 
 describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
@@ -192,7 +95,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -239,9 +144,10 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_ONE);
-
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -293,6 +199,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
+          DAPP_HOST_ADDRESS,
           [
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
@@ -350,6 +257,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
+          DAPP_HOST_ADDRESS,
           [
             MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
@@ -405,7 +313,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -425,6 +335,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
+          DAPP_HOST_ADDRESS,
           [
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
@@ -494,6 +405,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
+          DAPP_HOST_ADDRESS,
           [MAINNET_DISPLAY_NAME, 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE],
         );
