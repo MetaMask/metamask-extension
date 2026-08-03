@@ -100,8 +100,6 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       return;
     }
     if (step === 0) {
-      // No event: this doesn't acknowledge the Blockaid alert, so the
-      // questionnaire returns on the next confirm attempt. Nothing decided yet.
       onDismiss();
       return;
     }
