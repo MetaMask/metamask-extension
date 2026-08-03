@@ -1,68 +1,38 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import {
-  getErrorMessage,
-  hasProperty,
-  Hex,
-  isHexString,
-  isObject,
-} from '@metamask/utils';
-import { cloneDeep } from 'lodash';
+import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../shared/lib/sentry';
-import { infuraProjectId } from '../../../shared/constants/network';
-
-export type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
-
-/**
- * A Copy of the RpcEndpoint type from the network controller,
- * This is used to avoid the dependency on the network controller.
- */
-type RpcEndpoint = {
-  failoverUrls?: string[];
-  name?: string;
-  networkClientId: string;
-  url: string;
-  type: string;
-};
-
-/**
- * A Copy of the NetworkConfiguration type from the network controller,
- * This is used to avoid the dependency on the network controller.
- */
-type NetworkConfiguration = {
-  blockExplorerUrls: string[];
-  chainId: Hex;
-  defaultBlockExplorerUrlIndex?: number;
-  defaultRpcEndpointIndex: number;
-  name: string;
-  nativeCurrency: string;
-  rpcEndpoints: RpcEndpoint[];
-};
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import type { Migrate } from './types';
 
 export const version = 222;
 
-export const BSC_CHAIN_ID: Hex = '0x38';
-export const ZKSYNC_ERA_CHAIN_ID: Hex = '0x144';
-export const MEGAETH_CHAIN_ID: Hex = '0x10e6';
-export const TEMPO_CHAIN_ID: Hex = '0x1079';
+export const BSC_CHAIN_ID = CHAIN_IDS.BSC;
+export const ZKSYNC_ERA_CHAIN_ID = CHAIN_IDS.ZKSYNC_ERA;
+export const MEGAETH_CHAIN_ID = CHAIN_IDS.MEGAETH_MAINNET;
+export const TEMPO_CHAIN_ID = CHAIN_IDS.TEMPO_MAINNET;
 
 const TEMPO_DEFAULT_RPC_HOST = 'rpc.tempo.xyz';
 
+type RpcEndpoint = {
+  url: string;
+  type?: unknown;
+  failoverUrls?: unknown;
+  [key: string]: unknown;
+};
+
 /**
- * The set of networks that got new QuickNode failovers configured in
- * INFRA-3736. For each one we add the QuickNode failover URL to the matching
- * RPC endpoints in the user's existing network configuration.
+ * The networks that got new QuickNode failovers configured in INFRA-3736. For
+ * each one we add the QuickNode failover URL to the matching RPC endpoints of
+ * the user's existing network configuration.
  *
  * - BSC, ZKsync Era and MegaETH default to Infura, so we only add the failover
- * to their Infura endpoints (same behaviour as the Monad/HyperEVM migrations).
+ * to their Infura endpoints.
  * - Tempo defaults to its own `rpc.tempo.xyz` Custom endpoint (it is not on
  * Infura). The network controller applies `failoverUrls` to Custom endpoints
  * too, so we add the failover to the Tempo default endpoint.
  */
 const FAILOVER_CONFIGS: {
-  chainId: Hex;
+  chainId: string;
   getQuickNodeUrl: () => string | undefined;
   shouldAddFailover: (rpcEndpoint: RpcEndpoint) => boolean;
 }[] = [
@@ -89,71 +59,58 @@ const FAILOVER_CONFIGS: {
 ];
 
 /**
- * This migration adds the QuickNode failover URLs (configured in INFRA-3736)
- * to the BSC, ZKsync Era, MegaETH and Tempo network configurations for users
- * who already have those networks. Users adding the networks for the first
- * time already get the failover from `FEATURED_RPCS`, so this migration only
- * backfills existing configurations.
+ * Migration 222: add the QuickNode failover URLs (configured in INFRA-3736) to
+ * the BSC, ZKsync Era, MegaETH and Tempo network configurations for users who
+ * already have those networks. Users adding the networks for the first time
+ * already get the failover from `FEATURED_RPCS`, so this only backfills
+ * existing configurations.
  *
- * @param versionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @param localChangedControllers - A set of controller keys that have been changed by the migration.
- * @returns Updated versioned MetaMask extension state.
+ * @param versionedData - Versioned MetaMask extension state, exactly what we
+ * persist to disk.
+ * @param changedControllers - A set of controller keys that have been changed
+ * by the migration.
  */
-export async function migrate(
-  versionedData: VersionedData,
-  localChangedControllers: Set<string>,
-): Promise<void> {
+export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  const changedVersionedData = cloneDeep(versionedData);
-  const changedLocalChangedControllers = new Set<string>();
 
   try {
-    transformState(changedVersionedData.data, changedLocalChangedControllers);
-    versionedData.data = changedVersionedData.data;
-    changedLocalChangedControllers.forEach((controller) =>
-      localChangedControllers.add(controller),
-    );
+    transformState(versionedData.data, changedControllers);
   } catch (error) {
     console.error(error);
-    const newError = new Error(
-      `Migration #${version}: ${getErrorMessage(error)}`,
+    captureException(
+      new Error(`Migration #${version}: ${getErrorMessage(error)}`),
     );
-    captureException(newError);
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests to work
   }
-}
+}) satisfies Migrate;
+
+export default migrate;
 
 function transformState(
   state: Record<string, unknown>,
-  changedLocalChangedControllers: Set<string>,
-) {
-  const networkControllerState = validateNetworkController(state);
-  if (networkControllerState === undefined) {
-    // Missing or invalid NetworkController state is expected during some tests,
-    // so we skip the migration silently to avoid new baseline violations.
-    return state;
+  changedControllers: Set<string>,
+): void {
+  if (
+    !hasProperty(state, 'NetworkController') ||
+    !isObject(state.NetworkController) ||
+    !hasProperty(state.NetworkController, 'networkConfigurationsByChainId') ||
+    !isObject(state.NetworkController.networkConfigurationsByChainId)
+  ) {
+    return;
   }
 
-  const { networkConfigurationsByChainId } = networkControllerState;
+  const { networkConfigurationsByChainId } = state.NetworkController;
 
   for (const {
     chainId,
     getQuickNodeUrl,
     shouldAddFailover,
   } of FAILOVER_CONFIGS) {
-    if (!hasProperty(networkConfigurationsByChainId, chainId)) {
-      // User doesn't have this network, nothing to migrate for it.
-      continue;
-    }
-
-    const networkConfiguration = networkConfigurationsByChainId[chainId];
-
-    if (!isValidNetworkConfiguration(networkConfiguration)) {
-      console.warn(
-        `Migration ${version}: Invalid network configuration for chainId ${chainId}, skip it`,
-      );
+    const networkConfig = networkConfigurationsByChainId[chainId];
+    if (
+      !isObject(networkConfig) ||
+      !Array.isArray(networkConfig.rpcEndpoints)
+    ) {
+      // User doesn't have this network (or it's malformed), nothing to migrate.
       continue;
     }
 
@@ -163,265 +120,69 @@ function transformState(
       continue;
     }
 
-    const didChange = addFailoverToNetworkConfiguration(
-      networkConfiguration,
-      quickNodeUrl,
-      shouldAddFailover,
+    let didChange = false;
+    networkConfig.rpcEndpoints = networkConfig.rpcEndpoints.map(
+      (rpcEndpoint) => {
+        if (!isObject(rpcEndpoint) || typeof rpcEndpoint.url !== 'string') {
+          return rpcEndpoint;
+        }
+
+        // Skip if endpoint already has failover URLs.
+        if (
+          Array.isArray(rpcEndpoint.failoverUrls) &&
+          rpcEndpoint.failoverUrls.length > 0
+        ) {
+          return rpcEndpoint;
+        }
+
+        if (!shouldAddFailover(rpcEndpoint as RpcEndpoint)) {
+          return rpcEndpoint;
+        }
+
+        didChange = true;
+        return {
+          ...rpcEndpoint,
+          failoverUrls: [quickNodeUrl],
+        };
+      },
     );
 
     if (didChange) {
-      changedLocalChangedControllers.add('NetworkController');
+      changedControllers.add('NetworkController');
     }
   }
-
-  return state;
 }
 
 /**
- * Adds the QuickNode failover URL to the matching RPC endpoints of a network
- * configuration.
+ * Checks if an RPC endpoint is an Infura endpoint. Uses the parsed URL host so
+ * `.infura.io` can only match the hostname, never a path segment.
  *
- * @param networkConfiguration - The network configuration to update in place.
- * @param quickNodeUrl - The QuickNode failover URL to add.
- * @param shouldAddFailover - Predicate deciding whether a given endpoint should
- * receive the failover.
- * @returns True if at least one endpoint was updated.
+ * @param rpcEndpoint - The RPC endpoint to check.
+ * @returns True if the endpoint is an Infura endpoint.
  */
-function addFailoverToNetworkConfiguration(
-  networkConfiguration: NetworkConfiguration,
-  quickNodeUrl: string,
-  shouldAddFailover: (rpcEndpoint: RpcEndpoint) => boolean,
-): boolean {
-  let didChange = false;
+function isInfuraEndpoint(rpcEndpoint: RpcEndpoint): boolean {
+  if (rpcEndpoint.type === RpcEndpointType.Infura) {
+    return true;
+  }
 
-  networkConfiguration.rpcEndpoints = networkConfiguration.rpcEndpoints.map(
-    (rpcEndpoint) => {
-      if (!isValidRpcEndpoint(rpcEndpoint)) {
-        // Skip invalid endpoints - this is expected for some edge cases
-        return rpcEndpoint;
-      }
-
-      // Skip if endpoint already has failover URLs
-      if (
-        rpcEndpoint.failoverUrls &&
-        Array.isArray(rpcEndpoint.failoverUrls) &&
-        rpcEndpoint.failoverUrls.length > 0
-      ) {
-        return rpcEndpoint;
-      }
-
-      if (!shouldAddFailover(rpcEndpoint)) {
-        return rpcEndpoint;
-      }
-
-      didChange = true;
-      return {
-        ...rpcEndpoint,
-        failoverUrls: [quickNodeUrl],
-      };
-    },
-  );
-
-  return didChange;
+  try {
+    const { host, pathname } = new URL(rpcEndpoint.url);
+    return host.endsWith('.infura.io') && pathname.startsWith('/v3/');
+  } catch {
+    return false;
+  }
 }
 
 /**
  * Checks if an RPC endpoint is the Tempo default endpoint (`rpc.tempo.xyz`).
  *
  * @param rpcEndpoint - The RPC endpoint to check.
- * @param rpcEndpoint.url
  * @returns True if the endpoint is the Tempo default endpoint.
  */
-function isTempoDefaultEndpoint(rpcEndpoint: { url: string }): boolean {
+function isTempoDefaultEndpoint(rpcEndpoint: RpcEndpoint): boolean {
   try {
     return new URL(rpcEndpoint.url).host === TEMPO_DEFAULT_RPC_HOST;
   } catch {
     return false;
   }
-}
-
-// From Monad migration script (188.ts)
-function validateNetworkController(state: Record<string, unknown>):
-  | {
-      networkConfigurationsByChainId: Record<Hex, unknown>;
-      selectedNetworkClientId: string;
-    }
-  | undefined {
-  if (!hasProperty(state, 'NetworkController')) {
-    // We catch the exception here, as we don't expect the NetworkController state is missing.
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: missing NetworkController`,
-      ),
-    );
-    return undefined;
-  }
-
-  const networkControllerState = state.NetworkController;
-
-  // To narrow the type of the networkControllerState to the expected type.
-  if (!isValidNetworkControllerState(networkControllerState)) {
-    return undefined;
-  }
-
-  return networkControllerState;
-}
-
-// From Monad migration script (188.ts)
-function isValidNetworkControllerState(value: unknown): value is {
-  networkConfigurationsByChainId: Record<Hex, unknown>;
-  selectedNetworkClientId: string;
-} {
-  if (!isObject(value)) {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: NetworkController state is not an object: '${typeof value}'`,
-      ),
-    );
-    return false;
-  }
-
-  if (!hasProperty(value, 'networkConfigurationsByChainId')) {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: missing networkConfigurationsByChainId property`,
-      ),
-    );
-    return false;
-  }
-
-  if (
-    !isValidNetworkConfigurationsByChainId(value.networkConfigurationsByChainId)
-  ) {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: networkConfigurationsByChainId is not a valid Record<Hex, unknown>`,
-      ),
-    );
-    return false;
-  }
-
-  if (!hasProperty(value, 'selectedNetworkClientId')) {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: missing selectedNetworkClientId property`,
-      ),
-    );
-    return false;
-  }
-
-  if (typeof value.selectedNetworkClientId !== 'string') {
-    captureException(
-      new Error(
-        `Migration ${version}: Invalid NetworkController state: selectedNetworkClientId is not a string: '${typeof value.selectedNetworkClientId}'`,
-      ),
-    );
-    return false;
-  }
-
-  return true;
-}
-
-// From Monad migration script (188.ts)
-function isValidNetworkConfigurationsByChainId(
-  value: unknown,
-): value is Record<Hex, unknown> {
-  return (
-    isObject(value) &&
-    Object.entries(value).every(
-      ([chainId]) => typeof chainId === 'string' && isHexString(chainId),
-    )
-  );
-}
-
-// From Monad migration script (188.ts)
-function isValidNetworkConfiguration(
-  object: unknown,
-): object is NetworkConfiguration {
-  return (
-    isObject(object) &&
-    hasProperty(object, 'chainId') &&
-    typeof object.chainId === 'string' &&
-    isHexString(object.chainId) &&
-    hasProperty(object, 'rpcEndpoints') &&
-    Array.isArray(object.rpcEndpoints) &&
-    object.rpcEndpoints.every(isValidRpcEndpoint) &&
-    hasProperty(object, 'name') &&
-    typeof object.name === 'string' &&
-    hasProperty(object, 'nativeCurrency') &&
-    typeof object.nativeCurrency === 'string' &&
-    hasProperty(object, 'blockExplorerUrls') &&
-    Array.isArray(object.blockExplorerUrls) &&
-    object.blockExplorerUrls.every((url) => typeof url === 'string') &&
-    hasProperty(object, 'defaultRpcEndpointIndex') &&
-    typeof object.defaultRpcEndpointIndex === 'number' &&
-    (!hasProperty(object, 'defaultBlockExplorerUrlIndex') ||
-      (hasProperty(object, 'defaultBlockExplorerUrlIndex') &&
-        typeof object.defaultBlockExplorerUrlIndex === 'number'))
-  );
-}
-
-/**
- * Type guard to validate if an object has a valid RPC endpoint structure with url property.
- *
- * @param object - The object to validate.
- * @returns True if the object has a valid RPC endpoint structure.
- */
-// From Monad migration script (188.ts)
-function isValidRpcEndpoint(object: unknown): object is {
-  url: string;
-  type?: RpcEndpointType;
-  failoverUrls?: string[];
-  [key: string]: unknown;
-} {
-  return (
-    isObject(object) &&
-    hasProperty(object, 'url') &&
-    typeof object.url === 'string' &&
-    (!hasProperty(object, 'failoverUrls') ||
-      (hasProperty(object, 'failoverUrls') &&
-        Array.isArray(object.failoverUrls) &&
-        object.failoverUrls.every((url) => typeof url === 'string')))
-  );
-}
-
-/**
- * Checks if an RPC endpoint is an Infura endpoint.
- *
- * @param rpcEndpoint - The RPC endpoint to check.
- * @param rpcEndpoint.url - The URL of the RPC endpoint.
- * @param rpcEndpoint.type - The type of the RPC endpoint (optional).
- * @returns True if the endpoint is an Infura endpoint.
- */
-// From Monad migration script (188.ts)
-function isInfuraEndpoint(rpcEndpoint: {
-  url: string;
-  type?: RpcEndpointType;
-  [key: string]: unknown;
-}): boolean {
-  // Check if type is explicitly Infura
-  if (rpcEndpoint.type === RpcEndpointType.Infura) {
-    return true;
-  }
-
-  // Check if URL matches Infura pattern
-  // All featured networks that use Infura get added as custom RPC
-  // endpoints, not Infura RPC endpoints, so we need to check the URL pattern.
-  // The subdomain group excludes `/` so `.infura.io` can only match inside the
-  // hostname, never in a path segment (e.g. https://evil.com/.infura.io/v3/).
-  const infuraUrlPattern = /^https:\/\/([^/]+?)\.infura\.io\/v3\//u;
-  const match = rpcEndpoint.url.match(infuraUrlPattern);
-
-  if (!match) {
-    return false;
-  }
-
-  // If INFURA_PROJECT_ID is set, verify it matches for more precise detection
-  if (infuraProjectId) {
-    const expectedUrl = `https://${match[1]}.infura.io/v3/${infuraProjectId}`;
-    return rpcEndpoint.url.startsWith(expectedUrl);
-  }
-
-  // If INFURA_PROJECT_ID is not set, just check if it matches the Infura pattern
-  return true;
 }
