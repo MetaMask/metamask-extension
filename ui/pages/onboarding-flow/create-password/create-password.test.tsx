@@ -46,6 +46,7 @@ jest.mock('../../../hooks/useIsFirefox', () => ({
 const { useIsFirefox } = jest.requireMock('../../../hooks/useIsFirefox');
 
 jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey'),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 
@@ -1184,7 +1185,7 @@ describe('Onboarding Create Password', () => {
         .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
         .mockReturnValue(jest.fn().mockResolvedValue(true));
       const store = configureMockStore([thunk])(socialLoginState);
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, getByTestId } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
@@ -1193,8 +1194,10 @@ describe('Onboarding Create Password', () => {
         store,
       );
 
-      expect(queryByTestId('create-password-passkey-only')).toBeInTheDocument();
+      expect(queryByTestId('unlock-factor-picker')).toBeInTheDocument();
       expect(queryByTestId('create-password-new-input')).not.toBeInTheDocument();
+
+      fireEvent.click(getByTestId('unlock-factor-option-passkey'));
 
       await waitFor(() => {
         expect(mockCreateNewAccount).toHaveBeenCalledWith(
@@ -1206,6 +1209,79 @@ describe('Onboarding Create Password', () => {
             replace: true,
             state: {
               password: expect.stringMatching(/^[A-Za-z0-9_-]+$/u),
+              requirePasskey: true,
+            },
+          },
+        );
+      });
+    });
+
+    it('shows the password form when password-only is selected', async () => {
+      jest
+        .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
+        .mockReturnValue(jest.fn().mockResolvedValue(true));
+      const store = configureMockStore([thunk])(socialLoginState);
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      fireEvent.click(getByTestId('unlock-factor-option-password'));
+
+      await waitFor(() => {
+        expect(queryByTestId('create-password-new-input')).toBeInTheDocument();
+      });
+      expect(mockCreateNewAccount).not.toHaveBeenCalled();
+    });
+
+    it('creates with password then requires passkey when both factors are selected', async () => {
+      jest
+        .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
+        .mockReturnValue(jest.fn().mockResolvedValue(true));
+      jest
+        .spyOn(Actions, 'createSecretEscrowPasswordFactor')
+        .mockResolvedValue(undefined);
+      const store = configureMockStore([thunk])(socialLoginState);
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      fireEvent.click(getByTestId('unlock-factor-option-passkey_and_password'));
+
+      await waitFor(() => {
+        expect(queryByTestId('create-password-new-input')).toBeInTheDocument();
+      });
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(Actions.createSecretEscrowPasswordFactor).toHaveBeenCalledWith(
+          password,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_SETUP_PASSKEY_ROUTE,
+          {
+            replace: true,
+            state: {
+              password,
               requirePasskey: true,
             },
           },

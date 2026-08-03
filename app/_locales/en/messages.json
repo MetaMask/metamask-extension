@@ -3022,6 +3022,34 @@
   "createPasswordMarketing": {
     "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
+  "secretEscrowFactorPickerTitle": {
+    "message": "Choose how to unlock"
+  },
+  "secretEscrowFactorPickerDescription": {
+    "message": "You can unlock with any factor you set up. Add more later."
+  },
+  "secretEscrowFactorPasskeyTitle": {
+    "message": "$1 only",
+    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "secretEscrowFactorPasskeyDescription": {
+    "message": "Unlock with $1. No password to remember.",
+    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "secretEscrowFactorPasswordTitle": {
+    "message": "Password only"
+  },
+  "secretEscrowFactorPasswordDescription": {
+    "message": "Unlock with a password you create."
+  },
+  "secretEscrowFactorPasskeyAndPasswordTitle": {
+    "message": "$1 and password",
+    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "secretEscrowFactorPasskeyAndPasswordDescription": {
+    "message": "Unlock with either $1 or your password.",
+    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },
