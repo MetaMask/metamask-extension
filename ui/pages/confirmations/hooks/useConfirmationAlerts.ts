@@ -11,6 +11,7 @@ import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useAccountNoFundsAlert } from './alerts/transactions/useAccountNoFundsAlert';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
@@ -45,6 +46,7 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountNoFundsAlerts = useAccountNoFundsAlert();
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
@@ -73,6 +75,7 @@ function useTransactionAlerts(): Alert[] {
 
   return useMemo(
     () => [
+      ...accountNoFundsAlerts,
       ...accountTypeUpgradeAlerts,
       ...addressPoisoningAlert,
       ...burnAddressAlert,
@@ -98,6 +101,7 @@ function useTransactionAlerts(): Alert[] {
       ...tokenTrustSignalAlerts,
     ],
     [
+      accountNoFundsAlerts,
       accountTypeUpgradeAlerts,
       addressPoisoningAlert,
       burnAddressAlert,

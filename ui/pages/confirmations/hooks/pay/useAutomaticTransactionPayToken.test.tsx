@@ -183,15 +183,12 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token if no tokens with balance', () => {
+  it('does not select token when no tokens with balance', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider();
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('does nothing if no required tokens', () => {
@@ -245,7 +242,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token when preferred payment token provided but no tokens available', () => {
+  it('does not select token when preferred payment token provided but no tokens available', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider({
@@ -255,10 +252,7 @@ describe('useAutomaticTransactionPayToken', () => {
       },
     });
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('selects first available token when preferred token not in available tokens', () => {
