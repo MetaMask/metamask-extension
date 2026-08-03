@@ -138,7 +138,11 @@ function transformState(
 
   const { networkConfigurationsByChainId } = networkControllerState;
 
-  for (const { chainId, getQuickNodeUrl, shouldAddFailover } of FAILOVER_CONFIGS) {
+  for (const {
+    chainId,
+    getQuickNodeUrl,
+    shouldAddFailover,
+  } of FAILOVER_CONFIGS) {
     if (!hasProperty(networkConfigurationsByChainId, chainId)) {
       // User doesn't have this network, nothing to migrate for it.
       continue;

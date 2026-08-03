@@ -171,7 +171,10 @@ describe(`migration #${VERSION}`, () => {
 
     const configs = (
       versionedData.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { failoverUrls: string[] }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { failoverUrls: string[] }[] }
+        >;
       }
     ).networkConfigurationsByChainId;
 
@@ -181,9 +184,9 @@ describe(`migration #${VERSION}`, () => {
     expect(
       configs[ZKSYNC_ERA_CHAIN_ID].rpcEndpoints[0].failoverUrls,
     ).toStrictEqual([QUICKNODE_ZKSYNC_URL]);
-    expect(configs[MEGAETH_CHAIN_ID].rpcEndpoints[0].failoverUrls).toStrictEqual(
-      [QUICKNODE_MEGAETH_URL],
-    );
+    expect(
+      configs[MEGAETH_CHAIN_ID].rpcEndpoints[0].failoverUrls,
+    ).toStrictEqual([QUICKNODE_MEGAETH_URL]);
     expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
@@ -215,7 +218,10 @@ describe(`migration #${VERSION}`, () => {
 
     const config = (
       versionedData.data.NetworkController as {
-        networkConfigurationsByChainId: Record<string, { rpcEndpoints: { failoverUrls: string[] }[] }>;
+        networkConfigurationsByChainId: Record<
+          string,
+          { rpcEndpoints: { failoverUrls: string[] }[] }
+        >;
       }
     ).networkConfigurationsByChainId[TEMPO_CHAIN_ID];
 
