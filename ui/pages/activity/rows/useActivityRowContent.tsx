@@ -33,10 +33,7 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
-function getChainDisplay(caipChainId: CaipChainId | undefined) {
-  if (!caipChainId) {
-    return { chainId: undefined, networkName: undefined };
-  }
+function getChainDisplay(caipChainId: CaipChainId) {
   const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
@@ -56,7 +53,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId } = getChainDisplay(activity.chainId);
+  const chainId = activity.chainId
+    ? getChainDisplay(activity.chainId).chainId
+    : undefined;
   const formatAsFiat = useFormatFiatAmount(chainId);
   const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
