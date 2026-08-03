@@ -1,4 +1,4 @@
-import { act } from 'react-dom/test-utils';
+import { waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../../shared/lib/selectors';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
@@ -31,8 +31,8 @@ async function runHook() {
     ),
   );
 
-  await act(async () => {
-    // Intentionally empty
+  await waitFor(() => {
+    expect(result.current.pending).toBe(false);
   });
 
   return result.current;
@@ -98,7 +98,7 @@ describe('useGaslessSupportedSmartTransactions', () => {
   it('returns pending = true while sendBundleSupported is being fetched', async () => {
     getIsSmartTransactionMock.mockReturnValue(true);
     // Simulate pending by not resolving the Promise yet
-    let resolvePromise: (value: boolean) => void;
+    let resolvePromise: (value: boolean) => void = () => undefined;
     const pendingPromise = new Promise<boolean>((resolve) => {
       resolvePromise = resolve;
     });
@@ -106,7 +106,7 @@ describe('useGaslessSupportedSmartTransactions', () => {
       pendingPromise as Promise<boolean>,
     );
 
-    const { result, waitForNextUpdate } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       useGaslessSupportedSmartTransactions,
       getMockConfirmStateForTransaction(
         genUnapprovedContractInteractionConfirmation({
@@ -118,16 +118,14 @@ describe('useGaslessSupportedSmartTransactions', () => {
     // Initially pending
     expect(result.current.pending).toBe(true);
 
-    // Resolve and wait for next update
-    await act(async () => {
-      resolvePromise(true);
-      await waitForNextUpdate();
-    });
-
-    expect(result.current).toStrictEqual({
-      isSmartTransaction: true,
-      isSupported: true,
-      pending: false,
+    // Resolve and wait for the async result to settle
+    resolvePromise(true);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual({
+        isSmartTransaction: true,
+        isSupported: true,
+        pending: false,
+      });
     });
   });
 
@@ -141,8 +139,8 @@ describe('useGaslessSupportedSmartTransactions', () => {
       ),
     );
 
-    await act(async () => {
-      // Wait for useAsyncResult to settle
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
     });
 
     expect(result.current).toStrictEqual({
