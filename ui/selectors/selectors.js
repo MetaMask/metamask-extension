@@ -3014,16 +3014,18 @@ export function getIsEnrolledPasskeyIncompatibleWithSidepanel(state) {
 }
 
 /**
- * Checks if the passkey feature is available
+ * Checks if the passkey feature is available on this client.
  *
- * @param {object} state - Redux state
+ * Social-login wallets may also enroll a local vault wrap (offline unlock)
+ * alongside secret-escrow recovery; do not gate on social vs SRP here.
+ *
+ * @param {object} _state - Redux state (unused; signature kept for selector consistency)
  * @returns {boolean}
  */
-export function getIsPasskeyFeatureAvailable(state) {
+export function getIsPasskeyFeatureAvailable(_state) {
   return Boolean(
     getIsPasskeyFeatureEnabled() &&
     isWebAuthnSupported() &&
-    !getIsSocialLoginFlow(state) &&
     !isFirefoxBrowser() &&
     getDeviceType() !== DEVICE_TYPE.MOBILE,
   );
@@ -3032,8 +3034,9 @@ export function getIsPasskeyFeatureAvailable(state) {
 /**
  * Whether social-login secret-escrow passkey recovery is available on this client.
  *
- * Distinct from {@link getIsPasskeyFeatureAvailable}: social users use escrow
- * (password wrap) instead of local vault-key wrapping.
+ * Escrow is used for wipe/rehydration (and as unlock fallback when local vault
+ * wrap is missing). Distinct from local vault-key wrapping via
+ * {@link getIsPasskeyFeatureAvailable}.
  *
  * @param {object} state - Redux state
  * @returns {boolean}

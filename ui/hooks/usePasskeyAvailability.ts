@@ -5,7 +5,6 @@ import {
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
 } from '../selectors';
 
 /**
@@ -23,11 +22,13 @@ export function useIsPasskeyIncompatibleInSidepanel(): boolean {
 
 /**
  * Whether passkey is enrolled and the passkey feature is available.
+ *
+ * Includes social-login wallets that dual-enrolled a local vault wrap for
+ * offline unlock.
  */
 export function useIsPasskeyActive(): boolean {
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
-  return isPasskeyRegistered && isPasskeyFeatureAvailable && !isSocialLoginFlow;
+  return isPasskeyRegistered && isPasskeyFeatureAvailable;
 }

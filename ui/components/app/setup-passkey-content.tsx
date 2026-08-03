@@ -241,7 +241,24 @@ export default function SetupPasskeyContent({
             'Password is required to enroll a social-login escrow passkey',
           );
         }
+
+        // Local vault wrap first so day-to-day unlock works offline, then
+        // register the same credential with secret escrow for wipe/rehydration.
+        currentStep = 'verify';
+        const postRegAuthOptions =
+          await generatePasskeyPostRegistrationAuthenticationOptions(
+            registrationResponse,
+          );
+        const postRegAuthenticationResponse =
+          await startPasskeyAuthentication(postRegAuthOptions);
+
         currentStep = 'enroll';
+        await protectVaultKeyWithPasskey(
+          registrationResponse,
+          postRegAuthenticationResponse,
+          password,
+        );
+
         // Match PasskeyControllerInit: store the extension origin for escrow
         // assertion verification metadata. Do not derive an rpId host from it —
         // WebAuthn ceremonies omit rpId on extension pages.
@@ -264,9 +281,13 @@ export default function SetupPasskeyContent({
           password,
         );
         markSocialCreateUserFactor(SecretEscrowFactorKind.Passkey);
-        await forceUpdateMetamaskState(dispatch);
+        const newMetamaskState = await forceUpdateMetamaskState(dispatch);
         setVerifyStepPhase('success');
         currentStep = 'complete';
+
+        const derivationMethod = getPasskeyDerivationMethod({
+          metamask: newMetamaskState,
+        });
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PasskeySetup)
@@ -275,7 +296,9 @@ export default function SetupPasskeyContent({
               ...baseProperties,
               status: 'completed',
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              derivation_method: 'secret_escrow',
+              derivation_method: derivationMethod ?? 'secret_escrow',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              escrow_enrolled: true,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               duration_ms: Date.now() - enrollmentStartedAt,
             })

@@ -38,7 +38,9 @@ export type SecretEscrowFactorOption = {
   descriptionKey: string;
   /**
    * Whether this factor can unlock the vault locally without the escrow
-   * backend (password / passkey). TOTP requires the backend to release `S`.
+   * backend (password / passkey vault wrap). TOTP requires the backend to
+   * release `S`. Social passkey also enrolls a local vault wrap for offline
+   * unlock; escrow remains for wipe/rehydration.
    */
   canUnlockLocally: boolean;
   available: (context: SecretEscrowFactorOptionAvailability) => boolean;

@@ -63,14 +63,16 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   } = state;
   const isSocialLoginFlow = getIsSocialLoginFlow(state);
   const isOnboardingCompleted = getCompletedOnboarding(state);
+  // Local vault wrap works offline for SRP and social (when dual-enrolled).
   const isVaultPasskeyActive =
     getIsPasskeyFeatureAvailable(state) &&
     getIsPasskeyRegistered(state) &&
-    !isSocialLoginFlow &&
     isOnboardingCompleted;
+  // Escrow passkey is for wipe/rehydration (and unlock if vault wrap is absent).
   const useSecretEscrowPasskey =
     getIsSecretEscrowPasskeyAvailable(state) &&
-    getIsSecretEscrowPasskeyEnrolled(state);
+    getIsSecretEscrowPasskeyEnrolled(state) &&
+    !isVaultPasskeyActive;
   const isSecretEscrowTotpEnrolled = getIsSecretEscrowTotpEnrolled(state);
   // Allow during social rehydration (onboarding not completed yet) and after.
   const isPasskeyActive = isVaultPasskeyActive || useSecretEscrowPasskey;

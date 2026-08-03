@@ -69,10 +69,20 @@ describe('getIsPasskeyFeatureAvailable', () => {
     jest.resetAllMocks();
   });
 
-  it('returns true when build flag is enabled, WebAuthn is supported, not social login, not Firefox, and not mobile', () => {
+  it('returns true when build flag is enabled, WebAuthn is supported, not Firefox, and not mobile', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
+    getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
+
+    expect(getIsPasskeyFeatureAvailable(mockState)).toBe(true);
+  });
+
+  it('returns true for social login when platform conditions are met (vault wrap + escrow)', () => {
+    getIsPasskeyFeatureEnabled.mockReturnValue(true);
+    isWebAuthnSupported.mockReturnValue(true);
+    getIsSocialLoginFlow.mockReturnValue(true);
     isFirefoxBrowser.mockReturnValue(false);
     getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
 
@@ -93,16 +103,6 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(false);
     getIsSocialLoginFlow.mockReturnValue(false);
-    isFirefoxBrowser.mockReturnValue(false);
-    getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
-
-    expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
-  });
-
-  it('returns false when user is on social login flow', () => {
-    getIsPasskeyFeatureEnabled.mockReturnValue(true);
-    isWebAuthnSupported.mockReturnValue(true);
-    getIsSocialLoginFlow.mockReturnValue(true);
     isFirefoxBrowser.mockReturnValue(false);
     getDeviceType.mockReturnValue(DEVICE_TYPE.DESKTOP);
 

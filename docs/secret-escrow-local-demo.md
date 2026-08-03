@@ -120,3 +120,6 @@ yarn start
 - Each tester runs their **own** mock (their own `.secret-escrow-mock.json`).
 - Passkeys are tied to that machine’s authenticator and that unpacked extension id.
 - Delete `.secret-escrow-mock.json` and restart the mock to clear enrollments.
+- **Offline unlock:** social passkey enrollment also wraps the local vault, so
+  day-to-day biometrics unlock works offline. After a wipe, use escrow (online)
+  once to rehydrate; local vault wrap is cleared with extension data.
