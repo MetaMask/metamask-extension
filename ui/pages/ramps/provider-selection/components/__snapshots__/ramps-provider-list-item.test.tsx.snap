@@ -3,7 +3,7 @@
 exports[`RampsProviderListItem matches snapshot when selected with quote 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
     data-testid="ramps-provider-item-/providers/transak"
     role="button"
   >
@@ -68,7 +68,7 @@ exports[`RampsProviderListItem matches snapshot when unavailable 1`] = `
 <div>
   <button
     aria-disabled="true"
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-provider-item-/providers/transak"
     disabled=""
     role="button"
@@ -107,7 +107,7 @@ exports[`RampsProviderListItem matches snapshot when unavailable 1`] = `
 exports[`RampsProviderListItem matches snapshot while quote is loading 1`] = `
 <div>
   <button
-    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-provider-item-/providers/transak"
     role="button"
   >

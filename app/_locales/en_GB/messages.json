@@ -8224,8 +8224,9 @@
     "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "Change provider."
+  "rampsChangeProviderLink": {
+    "message": "Change provider",
+    "description": "Inline link in the payment method footer, e.g. 'Buying via Transak. Change provider'"
   },
   "rampsChangeProvidersLink": {
     "message": "change providers",
@@ -8348,6 +8349,9 @@
   "rampsOtherOptions": {
     "message": "Other options"
   },
+  "rampsPayWith": {
+    "message": "Pay with"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },
@@ -8372,13 +8376,9 @@
   "rampsPaymentDelayMinutes": {
     "message": "mins"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Max $1",
-    "description": "$1 is the maximum fiat buy amount"
+  "rampsPaymentMethodLimit": {
+    "message": "$1 limit",
+    "description": "$1 is the maximum purchase amount for a payment method, e.g. '$500 limit'"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",

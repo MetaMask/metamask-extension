@@ -29,17 +29,17 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
         >
@@ -50,10 +50,10 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-primary-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,16 +66,20 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Debit card
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Debit card
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5 - 10 mins
+                  5-10 mins
                 </p>
               </div>
             </div>
@@ -83,7 +87,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               class="flex flex-row gap-2 items-center shrink-0"
             >
               <svg
-                class="inline-block w-5 h-5 text-primary-default"
+                class="inline-block w-6 h-6 text-icon-default"
                 data-testid="ramps-payment-method-item-selected"
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -97,7 +101,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
           </div>
         </button>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
         >
@@ -108,10 +112,10 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-icon-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -124,11 +128,15 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Bank transfer
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Bank transfer
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-bank-transfer"
@@ -158,7 +166,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -195,7 +203,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when no payment methods are a
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
@@ -224,7 +232,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when no payment methods are a
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -261,7 +269,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods fail to 
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
@@ -290,7 +298,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods fail to 
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -327,7 +335,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods query is
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
@@ -356,7 +364,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods query is
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -393,7 +401,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
@@ -405,7 +413,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
       >
         <div
           aria-hidden="true"
-          class="relative overflow-hidden h-8 w-8 shrink-0 rounded-full"
+          class="relative overflow-hidden h-10 w-10 shrink-0 rounded-full"
         >
           <div
             aria-hidden="true"
@@ -440,7 +448,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
       >
         <div
           aria-hidden="true"
-          class="relative overflow-hidden h-8 w-8 shrink-0 rounded-full"
+          class="relative overflow-hidden h-10 w-10 shrink-0 rounded-full"
         >
           <div
             aria-hidden="true"
@@ -475,7 +483,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
       >
         <div
           aria-hidden="true"
-          class="relative overflow-hidden h-8 w-8 shrink-0 rounded-full"
+          class="relative overflow-hidden h-10 w-10 shrink-0 rounded-full"
         >
           <div
             aria-hidden="true"
@@ -523,7 +531,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -560,17 +568,17 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
         >
@@ -581,10 +589,10 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-primary-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -597,16 +605,20 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Debit card
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Debit card
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5 - 10 mins
+                  5-10 mins
                 </p>
               </div>
             </div>
@@ -614,7 +626,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               class="flex flex-row gap-2 items-center shrink-0"
             >
               <svg
-                class="inline-block w-5 h-5 text-primary-default"
+                class="inline-block w-6 h-6 text-icon-default"
                 data-testid="ramps-payment-method-item-selected"
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -628,7 +640,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
           </div>
         </button>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
         >
@@ -639,10 +651,10 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-icon-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -655,11 +667,15 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Bank transfer
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Bank transfer
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-bank-transfer"
@@ -689,7 +705,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>
@@ -726,17 +742,17 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Select payment method
+        Pay with
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
         >
@@ -747,10 +763,10 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-primary-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -763,16 +779,20 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Debit card
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Debit card
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-debit-credit-card"
                 >
-                  5 - 10 mins
+                  5-10 mins
                 </p>
               </div>
             </div>
@@ -795,7 +815,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                 </p>
               </div>
               <svg
-                class="inline-block w-5 h-5 text-primary-default"
+                class="inline-block w-6 h-6 text-icon-default"
                 data-testid="ramps-payment-method-item-selected"
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -809,7 +829,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
           </div>
         </button>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
         >
@@ -820,10 +840,10 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
               class="flex flex-row gap-3 items-center min-w-0 flex-1"
             >
               <div
-                class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                class="inline-flex items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted shrink-0"
               >
                 <svg
-                  class="inline-block w-5 h-5 text-icon-default"
+                  class="inline-block w-6 h-6 text-icon-alternative"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -836,11 +856,15 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
               <div
                 class="flex flex-col items-start min-w-0 flex-1"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-2 items-center w-full min-w-0"
                 >
-                  Bank transfer
-                </p>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  >
+                    Bank transfer
+                  </p>
+                </div>
                 <p
                   class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                   data-testid="ramps-payment-method-item-delay-bank-transfer"
@@ -889,7 +913,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
         <span
           class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          Change provider.
+          Change provider
         </span>
       </button>
     </div>

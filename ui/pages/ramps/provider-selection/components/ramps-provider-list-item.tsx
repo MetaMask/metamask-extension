@@ -82,11 +82,17 @@ export default function RampsProviderListItem({
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
 
+  // Rows are full-bleed in Figma, and `ButtonBase` defaults to `bg-muted`,
+  // which would make every row read as a card. Only the selected row is tinted.
+  const rowClassName = `w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed ${
+    isSelected ? 'bg-background-muted' : 'bg-transparent'
+  }`;
+
   return (
     <ButtonBase
       onClick={onClick}
       isDisabled={isDisabled}
-      className="w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+      className={rowClassName}
       data-testid={`ramps-provider-item-${provider.id}`}
     >
       <Box

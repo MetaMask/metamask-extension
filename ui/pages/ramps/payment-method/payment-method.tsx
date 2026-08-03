@@ -1,9 +1,13 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { PaymentMethod } from '@metamask/ramps-controller';
+import {
+  RampsOrderStatus,
+  type PaymentMethod,
+} from '@metamask/ramps-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { RAMPS_PROVIDER_SELECTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
@@ -39,6 +43,7 @@ export function RampsPaymentMethodScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
     paymentMethods,
     paymentMethodsLoading,
@@ -67,6 +72,17 @@ export function RampsPaymentMethodScreen() {
   const paymentMethodIds = useMemo(
     () => paymentMethods.map((paymentMethod) => paymentMethod.id),
     [paymentMethods],
+  );
+
+  // Mirrors the provider list's "Previously used" pill, sourced the same way:
+  // payment methods the user has already completed an order with.
+  const previouslyUsedPaymentMethodIds = useMemo(
+    () =>
+      controllerOrders
+        .filter((order) => order.status === RampsOrderStatus.Completed)
+        .map((order) => order.paymentMethod?.id)
+        .filter((id): id is string => Boolean(id)),
+    [controllerOrders],
   );
 
   const quoteFetchParams = useMemo(
@@ -135,7 +151,7 @@ export function RampsPaymentMethodScreen() {
     [navigate, setSelectedPaymentMethod],
   );
 
-  const title = t('rampsSelectPaymentMethod');
+  const title = t('rampsPayWith');
   const backButtonTestId = 'ramps-payment-method-back';
 
   let testId = 'ramps-payment-method-screen';
@@ -170,8 +186,8 @@ export function RampsPaymentMethodScreen() {
     );
   } else {
     body = (
-      <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+      <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+        <Box flexDirection={BoxFlexDirection.Column}>
           {paymentMethods.map((paymentMethod) => {
             const matchedQuote =
               quotes?.success?.find(
@@ -189,6 +205,9 @@ export function RampsPaymentMethodScreen() {
                 paymentMethod={paymentMethod}
                 isSelected={selectedPaymentMethod?.id === paymentMethod.id}
                 isDisabled={isSelecting}
+                isPreviouslyUsed={previouslyUsedPaymentMethodIds.includes(
+                  paymentMethod.id,
+                )}
                 limitText={formatPaymentMethodLimits(
                   getProviderBuyLimit(
                     selectedProvider,

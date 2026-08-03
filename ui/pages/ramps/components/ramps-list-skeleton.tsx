@@ -44,7 +44,7 @@ export default function RampsListSkeleton({
           gap={3}
         >
           {showAvatar ? (
-            <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+            <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
           ) : null}
           <Box
             className="min-w-0 flex-1"

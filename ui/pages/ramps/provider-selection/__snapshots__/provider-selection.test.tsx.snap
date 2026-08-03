@@ -43,13 +43,13 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-provider-item-/providers/transak"
           role="button"
         >
@@ -112,7 +112,7 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
           </div>
         </button>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-provider-item-/providers/moonpay"
           role="button"
         >
@@ -376,13 +376,13 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-provider-item-/providers/transak"
           role="button"
         >
@@ -445,7 +445,7 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
           </p>
         </div>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-provider-item-/providers/moonpay"
           role="button"
         >
@@ -515,13 +515,13 @@ exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
       </p>
     </div>
     <div
-      class="flex-1 overflow-y-auto px-2 pb-4"
+      class="flex-1 overflow-y-auto pb-4"
     >
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col"
       >
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-provider-item-/providers/transak"
           role="button"
         >
@@ -559,7 +559,7 @@ exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
           </div>
         </button>
         <button
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-provider-item-/providers/moonpay"
           role="button"
         >

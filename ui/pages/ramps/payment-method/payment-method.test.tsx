@@ -37,9 +37,10 @@ const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
 );
 
-const createStore = () =>
+const createStore = (orders: unknown[] = []) =>
   configureStore({
     metamask: {
+      orders,
       selectedNetworkClientId: 'mainnet',
       currentCurrency: 'usd',
       networkConfigurationsByChainId: {
@@ -137,6 +138,40 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('tags only payment methods used by a completed order', () => {
+    const orders = [
+      {
+        walletAddress: '0xABC123',
+        status: 'COMPLETED',
+        paymentMethod: { id: 'debit-credit-card' },
+      },
+      {
+        walletAddress: '0xabc123',
+        status: 'PENDING',
+        paymentMethod: { id: 'bank-transfer' },
+      },
+      {
+        walletAddress: '0xsomeoneelse',
+        status: 'COMPLETED',
+        paymentMethod: { id: 'bank-transfer' },
+      },
+    ];
+
+    const { queryByTestId } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(orders),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      queryByTestId('ramps-payment-method-item-tag-debit-credit-card'),
+    ).toBeInTheDocument();
+    // Pending order, and another account's completed order, do not count.
+    expect(
+      queryByTestId('ramps-payment-method-item-tag-bank-transfer'),
+    ).not.toBeInTheDocument();
   });
 
   it('matches snapshot while loading', () => {

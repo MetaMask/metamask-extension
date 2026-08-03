@@ -397,8 +397,8 @@ export function RampsProviderSelectionScreen() {
           </Text>
         </Box>
       ) : null}
-      <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+      <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+        <Box flexDirection={BoxFlexDirection.Column}>
           {listRows.map((row) =>
             row.type === 'separator' ? (
               <RampsProviderSeparator key={row.key} />
