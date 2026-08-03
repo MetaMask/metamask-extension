@@ -1,4 +1,20 @@
 import type { Quote, QuoteError } from '@metamask/ramps-controller';
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
+
+type TranslateFn = ReturnType<typeof useI18nContext>;
+
+/**
+ * Follow-up affordance rendered inline after the build-quote error copy.
+ *
+ * - `weeklyLimit` opens the "You've reached your weekly limit" modal.
+ * - `changeProvider` sends the user to provider selection.
+ */
+export type QuoteErrorAction = 'weeklyLimit' | 'changeProvider';
+
+export type DisplayedQuoteError = {
+  message: string;
+  action?: QuoteErrorAction;
+};
 
 type NamedSelection = {
   id: string;
@@ -118,6 +134,38 @@ export function resolvePaymentMethodLabel(
   return paymentMethods[0]?.name ?? fallbackLabel;
 }
 
+/**
+ * Recognizes provider errors that mean the user hit a rolling purchase limit
+ * rather than a per-order maximum.
+ *
+ * Providers only give us free-form strings on `QuoteError` (there is no error
+ * code), so matching on the message is the only signal available.
+ *
+ * @param rawError - The provider's raw error message.
+ * @returns True when the error describes a weekly / time-based limit.
+ */
+export function isWeeklyLimitQuoteError(rawError: string): boolean {
+  return /weekly limit|time[\s-]?based limit/iu.test(rawError);
+}
+
+/**
+ * Maps a failed quote into the copy shown under the amount on build-quote.
+ *
+ * Purpose-written copy is preferred over the provider's raw string: published
+ * min/max limits win first, then a recognized weekly-limit error (which offers
+ * the explanatory modal), then a generic "enter a lower amount or change
+ * providers" fallback.
+ * @param options0
+ * @param options0.quoteFetchErrorMessage
+ * @param options0.hasAmount
+ * @param options0.hasSettledQuoteAmount
+ * @param options0.selectedQuoteLoading
+ * @param options0.hasQuoteFetchError
+ * @param options0.quotesResponse
+ * @param options0.selectedQuote
+ * @param options0.limitMessage
+ * @param options0.t
+ */
 export function resolveDisplayedQuoteError({
   quoteFetchErrorMessage,
   hasAmount,
@@ -126,6 +174,8 @@ export function resolveDisplayedQuoteError({
   hasQuoteFetchError,
   quotesResponse,
   selectedQuote,
+  limitMessage,
+  t,
 }: {
   quoteFetchErrorMessage: string | null;
   hasAmount: boolean;
@@ -134,9 +184,11 @@ export function resolveDisplayedQuoteError({
   hasQuoteFetchError: boolean;
   quotesResponse: QuotesResponseOrNull;
   selectedQuote: QuoteSelectionItem | null;
-}): string | null {
+  limitMessage: string | null;
+  t: TranslateFn;
+}): DisplayedQuoteError | null {
   if (quoteFetchErrorMessage) {
-    return quoteFetchErrorMessage;
+    return { message: quoteFetchErrorMessage };
   }
 
   const hasNoQuotes =
@@ -151,7 +203,20 @@ export function resolveDisplayedQuoteError({
     return null;
   }
 
-  return quotesResponse.error[0]?.error ?? null;
+  // Published provider limits describe min/max purchase precisely, so they
+  // take precedence over anything the provider says in prose.
+  if (limitMessage) {
+    return { message: limitMessage };
+  }
+
+  if (isWeeklyLimitQuoteError(quotesResponse.error[0]?.error ?? '')) {
+    return { message: t('rampsWeeklyLimitReached'), action: 'weeklyLimit' };
+  }
+
+  return {
+    message: t('rampsQuoteErrorEnterLowerAmount'),
+    action: 'changeProvider',
+  };
 }
 
 /**

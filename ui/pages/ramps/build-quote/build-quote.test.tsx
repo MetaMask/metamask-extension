@@ -212,6 +212,92 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  describe('quote error copy', () => {
+    const mockQuoteError = (error: string) =>
+      useRampsQuotes.mockReturnValue({
+        data: { success: [], error: [{ provider: 'transak', error }] },
+        loading: false,
+        error: null,
+      });
+
+    it('renders the error above the payment method pill', () => {
+      mockQuoteError('Something opaque');
+
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+
+      const errorNode = screen.getByTestId('ramps-build-quote-error');
+      const pill = screen.getByTestId('ramps-payment-method-pill');
+
+      expect(errorNode.compareDocumentPosition(pill)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('maps an unrecognized provider error to generic copy with a change-providers link', () => {
+      mockQuoteError('PROVIDER_BLEW_UP: raw string');
+
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+
+      expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+        messages.rampsQuoteErrorEnterLowerAmount.message,
+      );
+      expect(screen.queryByText('PROVIDER_BLEW_UP: raw string')).toBeNull();
+
+      fireEvent.click(screen.getByTestId('ramps-build-quote-error-link'));
+
+      expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
+        state: { amount: 100 },
+      });
+    });
+
+    it('maps a weekly limit error to its own copy and explanatory modal', () => {
+      mockQuoteError('You have exceeded your weekly limit');
+      useRampsController.mockReturnValue({
+        ...mockControllerState(),
+        selectedProvider: {
+          id: 'transak',
+          name: 'Transak',
+          links: [{ name: 'Support', url: 'https://support.transak.com' }],
+        },
+      });
+
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+
+      expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+        messages.rampsWeeklyLimitReached.message,
+      );
+      expect(screen.queryByTestId('ramps-weekly-limit-modal')).toBeNull();
+
+      fireEvent.click(screen.getByTestId('ramps-build-quote-error-link'));
+
+      expect(
+        screen.getByTestId('ramps-weekly-limit-modal'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('ramps-weekly-limit-contact-support'));
+
+      expect(mockOpenTab).toHaveBeenCalledWith({
+        url: 'https://support.transak.com',
+      });
+
+      fireEvent.click(screen.getByTestId('ramps-weekly-limit-got-it'));
+
+      expect(screen.queryByTestId('ramps-weekly-limit-modal')).toBeNull();
+    });
+  });
+
   it('disables continue while amount debounce has not settled', () => {
     jest.useFakeTimers();
 
