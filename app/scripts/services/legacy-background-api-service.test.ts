@@ -814,7 +814,7 @@ describe('LegacyBackgroundApiService', () => {
       const stopTransaction = jest.fn().mockResolvedValue(undefined);
 
       await withService(
-        { options: { getState: jest.fn().mockReturnValue(uiState) } },
+        { options: { getUIState: jest.fn().mockReturnValue(uiState) } },
         async ({ rootMessenger, serviceMessenger }) => {
           const callSpy = jest.spyOn(serviceMessenger, 'call');
           rootMessenger.registerActionHandler(
@@ -849,7 +849,7 @@ describe('LegacyBackgroundApiService', () => {
       const speedUpTransaction = jest.fn().mockResolvedValue(undefined);
 
       await withService(
-        { options: { getState: jest.fn().mockReturnValue(uiState) } },
+        { options: { getUIState: jest.fn().mockReturnValue(uiState) } },
         async ({ rootMessenger, serviceMessenger }) => {
           const callSpy = jest.spyOn(serviceMessenger, 'call');
           rootMessenger.registerActionHandler(
@@ -4516,7 +4516,7 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
-    getState: jest.fn().mockReturnValue({}),
+    getUIState: jest.fn().mockReturnValue({}),
     seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,

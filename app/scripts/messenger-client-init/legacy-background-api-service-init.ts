@@ -43,7 +43,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    getState: getUIState,
+    getUIState,
     seedlessOperationMutex,
     offscreenPromise,
   });

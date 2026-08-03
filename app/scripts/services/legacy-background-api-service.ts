@@ -467,7 +467,7 @@ type LegacyBackgroundApiServiceOptions = {
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
-  getState: () => MetaMaskReduxState['metamask'];
+  getUIState: () => MetaMaskReduxState['metamask'];
   offscreenPromise: Promise<void>;
 };
 
@@ -497,7 +497,7 @@ export class LegacyBackgroundApiService {
 
   readonly #sendUpdate: () => void;
 
-  readonly #getState: () => MetaMaskReduxState['metamask'];
+  readonly #getUIState: () => MetaMaskReduxState['metamask'];
 
   readonly #seedlessOperationMutex: Mutex;
 
@@ -517,7 +517,7 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.getState - A function that returns the MetaMask UI state.
+   * @param options.getUIState - A function that returns the MetaMask UI state.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
@@ -529,7 +529,7 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    getState,
+    getUIState,
     seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
@@ -542,7 +542,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    this.#getState = getState;
+    this.#getUIState = getUIState;
     // Temporarily get the mutex from `MetamaskController` until
     // changePasswordWithPasskeyVerification is migrated here (the only remaining
     // MetamaskController user of this mutex).
@@ -827,7 +827,7 @@ export class LegacyBackgroundApiService {
       customGasSettings,
       options,
     );
-    return this.#getState();
+    return this.#getUIState();
   }
 
   /**
@@ -858,7 +858,7 @@ export class LegacyBackgroundApiService {
       customGasSettings,
       options,
     );
-    return this.#getState();
+    return this.#getUIState();
   }
 
   /**
