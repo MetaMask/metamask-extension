@@ -52,10 +52,7 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   createDeepEqualSelector,
@@ -749,8 +746,6 @@ export const getBridgeQuotes = createSelector(
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-      // Decides whether to prioritize legacy metadata over new metadata
-      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
 
     return quotes;
