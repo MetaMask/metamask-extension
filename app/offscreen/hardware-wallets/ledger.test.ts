@@ -861,6 +861,85 @@ describe('Ledger Offscreen', () => {
         consoleSpy.mockRestore();
         jest.useRealTimers();
       });
+
+      it('waits for an in-flight idle close to settle before opening a new transport', async () => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: '0x1234567890abcdef',
+          chainCode: 'chaincode123',
+        });
+
+        // Hold the idle close's `transport.close()` in flight so we can prove
+        // a new action waits for it instead of racing to open a new transport.
+        let resolveClose!: () => void;
+        mockTransportClose.mockReturnValue(
+          new Promise<void>((resolve) => {
+            resolveClose = resolve;
+          }),
+        );
+
+        jest.useFakeTimers();
+
+        // First action opens transport T1.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // Idle window elapses: T1.close() starts and stays pending.
+        jest.advanceTimersByTime(5_000);
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // A new action arrives while T1.close() is still pending. It must NOT
+        // reopen the transport until the close settles.
+        const secondAction = sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        // handleAction has run its synchronous preamble and is now suspended at
+        // `await closeInProgress`; the transport is not reopened yet.
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // Let the close settle; the new action proceeds to open T2.
+        resolveClose();
+        await secondAction;
+        expect(mockCreate).toHaveBeenCalledTimes(2);
+
+        jest.useRealTimers();
+      });
+
+      it('forceReset drops the transport synchronously and fire-and-forgets the close', async () => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: '0x1234567890abcdef',
+          chainCode: 'chaincode123',
+        });
+
+        // Open a transport via an action.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        mockTransportClose.mockClear();
+        (handler as unknown as { forceReset: () => void }).forceReset();
+
+        // References are dropped synchronously; close is best-effort.
+        expect(
+          (handler as unknown as { transport: unknown }).transport,
+        ).toBeNull();
+        expect(
+          (handler as unknown as { ethApp: unknown }).ethApp,
+        ).toBeNull();
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+
+        // A subsequent action opens a fresh transport.
+        mockGetAddress.mockClear();
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(2);
+      });
     });
 
     describe('error handling', () => {

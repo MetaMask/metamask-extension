@@ -15,6 +15,12 @@ type LedgerHandler = {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown>;
+  /**
+   * Best-effort synchronous reset of the underlying transport, invoked when an
+   * action has wedged past its timeout. Drops transport/app references so the
+   * next action opens a fresh transport instead of queuing behind the hung one.
+   */
+  forceReset?: () => void;
 };
 
 /** The currently-active ledger handler (DMK bridge or legacy). */
@@ -31,19 +37,30 @@ type ChromeMessageListener = Parameters<
 let messageListener: ChromeMessageListener | null = null;
 
 /**
- * Serializes all Ledger actions through a single promise chain.
- *
- * The underlying WebHID transport (and the Ledger ETH app's `_appAPIlock`)
- * cannot tolerate two decorated APDUs in flight at once — a concurrent call
- * rejects with `TransportLocked` ("Ledger Device is busy (lock ...)"). Now that
- * the Legacy handler keeps the transport open across actions (see
- * `LedgerLegacyHandler`), concurrent messages arriving on the shared
- * transport would overlap. Chaining here guarantees one action runs at a time
- * for the active handler (DMK or Legacy), which is the correct semantics for a
- * single hardware device. Each message still resolves with its own
- * `sendResponse`; the chain only orders them.
+ * Serializes all Ledger actions through a single promise chain so concurrent
+ * messages never overlap on the shared transport (which would reject with
+ * `TransportLocked`). Each link races `handleAction` against a timeout so a
+ * wedged offscreen WebHID round-trip rejects (unblocking later messages)
+ * instead of stalling the chain forever; on timeout the handler is
+ * force-reset so retries can open a fresh transport.
  */
 let actionChain: Promise<unknown> = Promise.resolve();
+
+/** Backstop timeout for non-signing actions (above the 30s bridge read timeout). */
+const READ_ACTION_TIMEOUT_MS = 60_000;
+/** Backstop timeout for signing actions (above the 300s bridge sign timeout). */
+const SIGN_ACTION_TIMEOUT_MS = 330_000;
+const SIGN_ACTIONS = new Set<LedgerAction>([
+  LedgerAction.signTransaction,
+  LedgerAction.signPersonalMessage,
+  LedgerAction.signTypedData,
+]);
+
+function actionTimeoutMs(action: LedgerAction): number {
+  return SIGN_ACTIONS.has(action)
+    ? SIGN_ACTION_TIMEOUT_MS
+    : READ_ACTION_TIMEOUT_MS;
+}
 
 /**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
@@ -96,9 +113,33 @@ function ensureMessageListener(): void {
         : undefined;
 
     // Chain onto the in-flight action so concurrent messages never overlap on
-    // the shared transport. Each link resolves/rejects its own sendResponse.
+    // the shared transport. Race the offscreen link against a timeout so a
+    // wedged action rejects (freeing the chain) instead of stalling it; on
+    // timeout, force-reset the handler so retries open a fresh transport.
+    const handler = activeHandler;
     actionChain = actionChain
-      .then(() => activeHandler?.handleAction(action, params))
+      .then(() => {
+        const timeoutMs = actionTimeoutMs(action);
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timer = setTimeout(() => {
+            handler.forceReset?.();
+            reject(
+              new Error(
+                `Ledger action "${action}" timed out after ${timeoutMs}ms`,
+              ),
+            );
+          }, timeoutMs);
+        });
+        return Promise.race([
+          handler.handleAction(action, params),
+          timeoutPromise,
+        ]).finally(() => {
+          if (timer) {
+            clearTimeout(timer);
+          }
+        });
+      })
       .then(
         (result) => {
           sendResponse({ success: true, payload: result });

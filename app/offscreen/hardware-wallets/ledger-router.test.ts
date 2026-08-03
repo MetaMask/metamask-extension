@@ -7,15 +7,18 @@ import {
 const mockDmkInit = jest.fn();
 const mockDmkDestroy = jest.fn();
 const mockDmkHandleAction = jest.fn();
+const mockDmkForceReset = jest.fn();
 
 const mockLegacyInit = jest.fn();
 const mockLegacyDestroy = jest.fn();
 const mockLegacyHandleAction = jest.fn();
+const mockLegacyForceReset = jest.fn();
 
 type MockHandler = {
   init: jest.Mock;
   destroy: jest.Mock;
   handleAction: jest.Mock;
+  forceReset: jest.Mock;
 };
 
 let mockDmkInstance: MockHandler;
@@ -28,6 +31,7 @@ jest.mock('./ledger-dmk', () => {
         init: mockDmkInit,
         destroy: mockDmkDestroy,
         handleAction: mockDmkHandleAction,
+        forceReset: mockDmkForceReset,
       };
       return mockDmkInstance;
     }),
@@ -45,14 +49,15 @@ jest.mock('./ledger-utils', () => ({
 jest.mock('./ledger', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: jest.fn().mockImplementation(() => {
-    mockLegacyInstance = {
-      init: mockLegacyInit,
-      destroy: mockLegacyDestroy,
-      handleAction: mockLegacyHandleAction,
-    };
-    return mockLegacyInstance;
-  }),
+    default: jest.fn().mockImplementation(() => {
+      mockLegacyInstance = {
+        init: mockLegacyInit,
+        destroy: mockLegacyDestroy,
+        handleAction: mockLegacyHandleAction,
+        forceReset: mockLegacyForceReset,
+      };
+      return mockLegacyInstance;
+    }),
 }));
 
 // Router exports + mocked handler constructors are re-fetched per test in
@@ -320,6 +325,64 @@ describe('LedgerRouter', () => {
       expect(sendResponse2).toHaveBeenCalledWith({
         success: true,
         payload: 'second-result',
+      });
+    });
+
+    it('rejects a wedged action after the timeout, force-resets the handler, and frees the chain', async () => {
+      const sendResponse1 = jest.fn();
+      const sendResponse2 = jest.fn();
+      jest.useFakeTimers();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+
+        // First action never resolves (wedged offscreen WebHID round-trip);
+        // second action resolves normally once it gets to run.
+        mockLegacyHandleAction
+          .mockReturnValueOnce(
+             
+            new Promise(() => {
+              /* never resolves */
+            }),
+          )
+          .mockResolvedValueOnce('after-recovery');
+
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+          {},
+          sendResponse1,
+        );
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'b' }),
+          {},
+          sendResponse2,
+        );
+
+        // Let the chain reach the wedged action.
+        await Promise.resolve();
+        expect(sendResponse1).not.toHaveBeenCalled();
+
+        // Cross the read-action backstop (60s): the link rejects and the
+        // handler is force-reset (synchronously, within the timer callback).
+        jest.advanceTimersByTime(60_000);
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        // Always restore real timers so later tests don't hang on faked setTimeout.
+        jest.useRealTimers();
+      }
+
+      // Drain the microtask chain now that timers are real.
+      await flushAsync();
+      expect(sendResponse1).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
+      });
+      expect(sendResponse2).toHaveBeenCalledWith({
+        success: true,
+        payload: 'after-recovery',
       });
     });
   });
