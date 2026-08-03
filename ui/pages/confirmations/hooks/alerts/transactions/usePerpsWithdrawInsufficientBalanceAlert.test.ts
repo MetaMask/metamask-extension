@@ -85,12 +85,16 @@ const EXPECTED_ALERT = {
   severity: Severity.Danger,
 };
 
-/** Blocked because the balance could not be read — not because it is short. */
-const UNAVAILABLE_COPY = "Couldn't check your Perps balance. Try again.";
+/**
+ * Blocked because the balance could not be read — not because it is short, so
+ * it carries its own alert key (telemetry) and its own copy. `reason` is the
+ * confirm button label and stays short; `message` explains inline.
+ */
 const EXPECTED_UNAVAILABLE_ALERT = {
   ...EXPECTED_ALERT,
-  message: UNAVAILABLE_COPY,
-  reason: UNAVAILABLE_COPY,
+  key: AlertsName.PerpsWithdrawBalanceUnavailable,
+  message: "Couldn't check your Perps balance. Try again.",
+  reason: 'Balance unavailable',
 };
 
 function buildPerpsWithdrawState() {
@@ -364,6 +368,26 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
         error,
       );
       consoleError.mockRestore();
+    });
+
+    it('reports the unverifiable block under its own alert key and a short button label', async () => {
+      // The key is what alert telemetry counts, so a degraded read must not
+      // land in the insufficient-balance bucket. `reason` is the disabled
+      // confirm button's label, so it stays close to "Insufficient funds"
+      // in length rather than carrying the full explanation.
+      setFreshAccount(null);
+      setEnteredAmount('100');
+
+      const result = await runSettledHook(buildPerpsWithdrawState());
+
+      await waitFor(() => expect(result.current).toHaveLength(1));
+      const [alert] = result.current;
+      expect(alert.key).toBe(AlertsName.PerpsWithdrawBalanceUnavailable);
+      expect(alert.key).not.toBe(AlertsName.InsufficientPayTokenBalance);
+      expect(alert.reason).not.toBe(alert.message);
+      expect((alert.reason as string).length).toBeLessThanOrEqual(
+        'Insufficient funds'.length + 4,
+      );
     });
 
     it('blocks without inventing a balance when the fresh read returns no account', async () => {
