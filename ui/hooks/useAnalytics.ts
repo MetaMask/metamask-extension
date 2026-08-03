@@ -27,7 +27,7 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
 
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
-  trackEvent: (built: AnalyticsEvent) => void;
+  trackEvent: (built: AnalyticsEvent) => Promise<void>;
 };
 
 export function useAnalytics(): UseAnalyticsResult {
@@ -43,7 +43,7 @@ export function useAnalytics(): UseAnalyticsResult {
     !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
 
   const trackEvent = useCallback(
-    (built: AnalyticsEvent) => {
+    async (built: AnalyticsEvent): Promise<void> => {
       const options: UIAnalyticsTrackEventOptions = {
         ...built.options,
         environmentType: getEnvironmentType(),
@@ -55,7 +55,7 @@ export function useAnalytics(): UseAnalyticsResult {
         canMaybeTrackLater ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
-        trackAnalyticsEvent(built, options).catch(() => undefined);
+        await trackAnalyticsEvent(built, options).catch(() => undefined);
       }
     },
     [canMaybeTrackLater, canTrackImmediately, context],
