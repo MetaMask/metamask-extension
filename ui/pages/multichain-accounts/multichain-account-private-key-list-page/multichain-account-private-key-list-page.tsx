@@ -94,6 +94,8 @@ export const MultichainAccountPrivateKeyListPage = ({
         <BannerAlert
           data-testid="backup-state-banner-alert"
           title={t('revealMultichainPrivateKeysBannerTitle')}
+          paddingTop={2}
+          paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
           marginHorizontal={4}
         >
