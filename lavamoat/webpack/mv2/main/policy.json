@@ -2152,6 +2152,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
+        "@metamask/seedless-onboarding-controller": true,
         "@noble/ciphers": true,
         "@noble/hashes": true,
         "buffer": true,
