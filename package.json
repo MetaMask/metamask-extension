@@ -44,6 +44,7 @@
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn webpack --watch",
     "secret-escrow:mock-server": "yarn --cwd ../core workspace @metamask/secret-escrow-client mock-server",
+    "secret-escrow:mock-server:pack": "yarn --cwd ../core workspace @metamask/secret-escrow-client mock-server:pack",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
     "start:mv2": "yarn webpack --watch --browser firefox --manifestVersion 2",
     "start:flask": "yarn start --type flask",
