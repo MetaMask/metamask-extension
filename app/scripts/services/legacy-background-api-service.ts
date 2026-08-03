@@ -2180,6 +2180,10 @@ export class LegacyBackgroundApiService {
     // This is the first-time setup path for a hardware wallet; the keyring
     // may not exist yet, so allow creation here. Every other caller of
     // `#withKeyringForDevice` operates on an already-paired device.
+    //
+    // Address paging waits on the device (and on user interaction, e.g.
+    // entering a PIN), potentially forever if the device stays locked, so it
+    // runs as a `deviceRead` outside the controller lock.
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath, create: true, deviceRead: true },
       async (keyring) => {
