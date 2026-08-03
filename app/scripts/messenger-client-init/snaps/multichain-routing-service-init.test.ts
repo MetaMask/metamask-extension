@@ -129,6 +129,33 @@ describe('withSnapKeyring', () => {
     );
   });
 
+  it('unwraps v1-style { pending: false, result } envelope from v2 snaps', async () => {
+    const innerResult = { signature: 'abc123' };
+    const mockV2Keyring = {
+      type: KeyringType.Snap,
+      submitRequest: jest
+        .fn()
+        .mockResolvedValue({ pending: false, result: innerResult }),
+      hasAccount: jest.fn().mockReturnValue(true),
+    };
+
+    const initMessenger = getInitMessenger();
+
+    jest
+      .spyOn(initMessenger, 'call')
+      .mockImplementation(async (_action, _options, operation) =>
+        (operation as WithKeyringOperation)({ keyring: mockV2Keyring }),
+      );
+
+    await expect(
+      withSnapKeyring(
+        initMessenger,
+        mockAppStateController,
+        async ({ keyring }) => keyring.submitRequest(mockRequest),
+      ),
+    ).resolves.toStrictEqual(innerResult);
+  });
+
   it('does not look up a keyring until the provided operation submits a request', async () => {
     const initMessenger = getInitMessenger();
     const initMessengerCall = jest.spyOn(initMessenger, 'call');
