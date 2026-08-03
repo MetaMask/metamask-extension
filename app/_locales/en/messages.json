@@ -3078,6 +3078,12 @@
   "secretEscrowTotpInvalidCode": {
     "message": "That code isn’t valid. Try again."
   },
+  "secretEscrowTotpUnlockDescription": {
+    "message": "Enter the 6-digit code from your authenticator app."
+  },
+  "useAuthenticatorApp": {
+    "message": "Use authenticator app"
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },

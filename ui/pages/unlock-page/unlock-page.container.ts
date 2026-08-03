@@ -14,6 +14,7 @@ import {
   tryUnlockMetamask,
   tryUnlockMetamaskWithPasskey,
   recoverPasswordWithSecretEscrow,
+  recoverPasswordWithSecretEscrowTotp,
   hydrateSecretEscrowEnrollment,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
@@ -28,6 +29,7 @@ import {
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getIsSecretEscrowPasskeyAvailable,
   getIsSecretEscrowPasskeyEnrolled,
+  getIsSecretEscrowTotpEnrolled,
   getAccountTypeForOnboardingMetrics,
 } from '../../selectors';
 import {
@@ -69,6 +71,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const useSecretEscrowPasskey =
     getIsSecretEscrowPasskeyAvailable(state) &&
     getIsSecretEscrowPasskeyEnrolled(state);
+  const isSecretEscrowTotpEnrolled = getIsSecretEscrowTotpEnrolled(state);
   // Allow during social rehydration (onboarding not completed yet) and after.
   const isPasskeyActive = isVaultPasskeyActive || useSecretEscrowPasskey;
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -89,6 +92,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     isPasskeyActive,
     useSecretEscrowPasskey,
+    isSecretEscrowTotpEnrolled,
     mustDeferPasskeyToBrowserTab,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
     accountTypeForMetrics,
@@ -104,6 +108,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     recoverPasswordWithSecretEscrow: (assertion: EscrowAssertion) =>
       dispatch(recoverPasswordWithSecretEscrow(assertion)),
+    recoverPasswordWithSecretEscrowTotp: (code: string) =>
+      dispatch(recoverPasswordWithSecretEscrowTotp(code)),
     hydrateSecretEscrowEnrollment: () =>
       dispatch(hydrateSecretEscrowEnrollment()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
@@ -124,6 +130,7 @@ const mergeProps = (
     tryUnlockMetamask: propsTryUnlockMetamask,
     tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
     recoverPasswordWithSecretEscrow: propsRecoverPasswordWithSecretEscrow,
+    recoverPasswordWithSecretEscrowTotp: propsRecoverPasswordWithSecretEscrowTotp,
     ...restDispatchProps
   } = dispatchProps;
   const {
@@ -165,6 +172,10 @@ const mergeProps = (
     await propsRecoverPasswordWithSecretEscrow(assertion);
   };
 
+  const onUnlockWithSecretEscrowTotp = async (code: string) => {
+    await propsRecoverPasswordWithSecretEscrowTotp(code);
+  };
+
   return {
     ...stateProps,
     ...restDispatchProps,
@@ -172,6 +183,7 @@ const mergeProps = (
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
     onUnlockWithSecretEscrow,
+    onUnlockWithSecretEscrowTotp,
     navigateAfterUnlock:
       ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,

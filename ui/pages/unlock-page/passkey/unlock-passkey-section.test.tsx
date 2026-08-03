@@ -171,6 +171,33 @@ describe('UnlockPasskeySection', () => {
     expect(onUsePassword).toHaveBeenCalledTimes(1);
   });
 
+  it('calls onUseTotp when Use authenticator app is clicked', () => {
+    const onUseTotp = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection
+        {...baseProps}
+        showUseTotp={true}
+        onUseTotp={onUseTotp}
+      />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-use-totp-button'));
+
+    expect(onUseTotp).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the authenticator app link when TOTP is not enrolled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} />,
+      mockStore,
+      '/unlock',
+    );
+
+    expect(queryByTestId('unlock-use-totp-button')).toBeNull();
+  });
+
   it('does not throw when unmounted while passkey authentication is pending', async () => {
     let resolveCeremony: (value: unknown) => void;
     const ceremonyPromise = new Promise((resolve) => {

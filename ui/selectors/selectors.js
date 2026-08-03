@@ -3065,6 +3065,39 @@ export function getIsSecretEscrowPasskeyEnrolled(state) {
 }
 
 /**
+ * Whether a secret-escrow TOTP factor is enrolled (with wrapped password).
+ *
+ * TOTP can release `S` via the escrow backend during rehydration / unlock; it
+ * is not a local vault unlock method on its own.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsSecretEscrowTotpEnrolled(state) {
+  return Boolean(
+    state.metamask?.escrowRecord?.wrappedPassword &&
+      getSecretEscrowTotpFactorId(state),
+  );
+}
+
+/**
+ * Factor id for the enrolled secret-escrow TOTP factor.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getSecretEscrowTotpFactorId(state) {
+  const factors = getSecretEscrowFactors(state);
+  if (factors.totp?.type === 'totp') {
+    return 'totp';
+  }
+  const entry = Object.entries(factors).find(
+    ([, factor]) => factor?.type === 'totp',
+  );
+  return entry?.[0];
+}
+
+/**
  * Public factors map for the enrolled secret-escrow user (1-of-N).
  *
  * @param {object} state - Redux state

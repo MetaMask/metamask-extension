@@ -66,6 +66,9 @@ export type UnlockPasskeySectionProps = {
   ) => Promise<void>;
   onUnlockWithSecretEscrow?: (assertion: EscrowAssertion) => Promise<void>;
   onUsePassword: () => void;
+  /** When true, show a link to unlock with an enrolled escrow TOTP factor. */
+  showUseTotp?: boolean;
+  onUseTotp?: () => void;
 };
 
 export const UnlockPasskeySection = ({
@@ -78,6 +81,8 @@ export const UnlockPasskeySection = ({
   onUnlockWithPasskey,
   onUnlockWithSecretEscrow,
   onUsePassword,
+  showUseTotp = false,
+  onUseTotp,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
@@ -395,6 +400,17 @@ export const UnlockPasskeySection = ({
       >
         {t('usePassword')}
       </TextButton>
+      {showUseTotp && onUseTotp ? (
+        <TextButton
+          type="button"
+          data-testid="unlock-use-totp-button"
+          color={TextColor.PrimaryDefault}
+          className="text-center"
+          onClick={onUseTotp}
+        >
+          {t('useAuthenticatorApp')}
+        </TextButton>
+      ) : null}
     </Box>
   );
 };

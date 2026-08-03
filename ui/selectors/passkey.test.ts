@@ -5,6 +5,7 @@ import {
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getIsSecretEscrowPasskeyAvailable,
   getIsSecretEscrowPasskeyEnrolled,
+  getIsSecretEscrowTotpEnrolled,
   getSecretEscrowPasskeyCredentialId,
   getPasskeyDerivationMethod,
 } from './selectors';
@@ -200,6 +201,37 @@ describe('getIsSecretEscrowPasskeyEnrolled', () => {
     expect(
       getIsSecretEscrowPasskeyEnrolled({
         metamask: { escrowRecord: null },
+      }),
+    ).toBe(false);
+  });
+});
+
+describe('getIsSecretEscrowTotpEnrolled', () => {
+  it('returns true when a wrapped password and totp factor exist', () => {
+    expect(
+      getIsSecretEscrowTotpEnrolled({
+        metamask: {
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factors: {
+              password: { type: 'password' },
+              totp: { type: 'totp' },
+            },
+          },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when totp is not enrolled', () => {
+    expect(
+      getIsSecretEscrowTotpEnrolled({
+        metamask: {
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factors: { passkey: { type: 'webauthn', credentialId: 'c' } },
+          },
+        },
       }),
     ).toBe(false);
   });

@@ -2959,6 +2959,8 @@ export default class MetamaskController extends EventEmitter {
       enrollSecretEscrowPasskey: this.enrollSecretEscrowPasskey.bind(this),
       recoverPasswordWithSecretEscrow:
         this.recoverPasswordWithSecretEscrow.bind(this),
+      recoverPasswordWithSecretEscrowTotp:
+        this.recoverPasswordWithSecretEscrowTotp.bind(this),
       revokeSecretEscrowPasskey: this.revokeSecretEscrowPasskey.bind(this),
       hydrateSecretEscrowEnrollment:
         this.hydrateSecretEscrowEnrollment.bind(this),
@@ -4649,6 +4651,36 @@ export default class MetamaskController extends EventEmitter {
       assertion,
       factorId || 'passkey',
     );
+  }
+
+  /**
+   * Recovers the wallet password via secret escrow after a TOTP code proof.
+   * Does not unlock — callers must run unlock/restore with the returned password.
+   *
+   * @param {string} code - Current 6-digit TOTP code.
+   * @param {string} [factorId]
+   * @returns {Promise<string>} Recovered wallet password.
+   */
+  async recoverPasswordWithSecretEscrowTotp(code, factorId) {
+    if (!this.secretEscrowController.isEnrolled()) {
+      await this.hydrateSecretEscrowEnrollment();
+    }
+    const factors = this.secretEscrowController.listFactors();
+    const resolvedFactorId =
+      factorId ||
+      (factors.totp?.type === 'totp'
+        ? 'totp'
+        : Object.entries(factors).find(
+            ([, factor]) => factor?.type === 'totp',
+          )?.[0]);
+    if (!resolvedFactorId) {
+      throw new Error('Secret escrow TOTP factor is not enrolled');
+    }
+    await this.secretEscrowController.startExport(resolvedFactorId);
+    return await this.secretEscrowController.recoverPasswordWithFactor({
+      factorId: resolvedFactorId,
+      proof: { type: 'totp', code },
+    });
   }
 
   /**

@@ -1414,6 +1414,43 @@ export function recoverPasswordWithSecretEscrow(
 }
 
 /**
+ * Recovers the wallet password via secret-escrow TOTP, then unlocks / restores.
+ *
+ * @param code - Current 6-digit authenticator code.
+ * @param factorId - Optional enrolled TOTP factor id (defaults to `"totp"`).
+ */
+export function recoverPasswordWithSecretEscrowTotp(
+  code: string,
+  factorId?: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    dispatch(showLoadingIndication());
+    try {
+      const password = await submitRequestToBackground<string>(
+        'recoverPasswordWithSecretEscrowTotp',
+        [code, factorId],
+      );
+
+      const state = getState();
+      const isSocialImportRehydration =
+        getFirstTimeFlowType(state) === FirstTimeFlowType.socialImport &&
+        !getCompletedOnboarding(state);
+
+      if (isSocialImportRehydration) {
+        await dispatch(restoreSocialBackupAndGetSeedPhrase(password));
+      } else {
+        await dispatch(tryUnlockMetamask(password));
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
  * Revokes secret-escrow passkey enrollment.
  */
 export function revokeSecretEscrowPasskey(): Promise<void> {
