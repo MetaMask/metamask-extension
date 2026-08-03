@@ -28,14 +28,16 @@ import {
   getIsSecretEscrowPasskeyAvailable,
   getDeferredDeepLinkParameters,
   getAccountTypeForOnboardingMetrics,
+  getSocialLoginEmail,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { generateWalletPassword } from '../../../../shared/lib/generate-wallet-password';
 import {
   getAddableSecretEscrowFactorOptions,
-  getAvailableSecretEscrowFactorOptions,
+  getFirstSecretEscrowFactorOptions,
   isPasskeyFactor,
   isPasswordFactor,
+  isTotpFactor,
   SecretEscrowFactorKind,
   type SecretEscrowFactorOption,
 } from '../../../../shared/constants/secret-escrow-factors';
@@ -51,6 +53,7 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   addSecretEscrowUserPasswordFactor,
   createSecretEscrowPasswordFactor,
+  enrollSecretEscrowTotpFactor,
   forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
   setDataCollectionForMarketing,
@@ -64,6 +67,7 @@ import { CreatePasswordForm } from '../../create-password-form';
 import { useDispatch } from '../../../store/hooks';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import UnlockFactorPicker from '../unlock-factor-picker';
+import SetupTotp from '../setup-totp';
 import {
   clearSocialCreateFactorSession,
   getSocialCreateUserFactors,
@@ -85,6 +89,7 @@ type SocialCreateStep =
   | 'choose-factors'
   | 'manage-factors'
   | 'create-password'
+  | 'setup-totp'
   | 'creating';
 
 type CreateWalletFactorOptions = {
@@ -143,6 +148,7 @@ export default function CreatePassword({
   );
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
+  const socialLoginEmail = useSelector(getSocialLoginEmail);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
     completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
@@ -163,6 +169,7 @@ export default function CreatePassword({
   const resolvedSocialCreateStep: SocialCreateStep =
     manageFromNavigation &&
     socialCreateStep !== 'create-password' &&
+    socialCreateStep !== 'setup-totp' &&
     socialCreateStep !== 'creating'
       ? 'manage-factors'
       : socialCreateStep;
@@ -188,7 +195,7 @@ export default function CreatePassword({
   );
 
   const factorOptions = useMemo(
-    () => getAvailableSecretEscrowFactorOptions(factorAvailability),
+    () => getFirstSecretEscrowFactorOptions(factorAvailability),
     [factorAvailability],
   );
 
@@ -226,6 +233,7 @@ export default function CreatePassword({
         isSocialCreateFactorFlow &&
         (resolvedSocialCreateStep === 'manage-factors' ||
           resolvedSocialCreateStep === 'create-password' ||
+          resolvedSocialCreateStep === 'setup-totp' ||
           resolvedSocialCreateStep === 'creating' ||
           getSocialCreateWalletPassword() ||
           getSocialCreateUserFactors().length > 0)
@@ -493,8 +501,9 @@ export default function CreatePassword({
 
     if (
       isSocialCreateFactorFlow &&
-      resolvedSocialCreateStep === 'create-password' &&
-      addingPasswordAfterCreate
+      (resolvedSocialCreateStep === 'setup-totp' ||
+        (resolvedSocialCreateStep === 'create-password' &&
+          addingPasswordAfterCreate))
     ) {
       goToManageFactors();
       return;
@@ -567,6 +576,10 @@ export default function CreatePassword({
         });
         return;
       }
+      if (isTotpFactor(option.factor)) {
+        setSocialCreateStep('setup-totp');
+        return;
+      }
     }
 
     if (isPasswordFactor(option.factor)) {
@@ -612,6 +625,13 @@ export default function CreatePassword({
     await addSecretEscrowUserPasswordFactor(currentPassword, newPassword);
     setSocialCreateWalletPassword(newPassword);
     markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+    await forceUpdateMetamaskState(dispatch);
+    goToManageFactors();
+  };
+
+  const handleTotpEnrollComplete = async (totpSecret: string) => {
+    await enrollSecretEscrowTotpFactor(totpSecret);
+    markSocialCreateUserFactor(SecretEscrowFactorKind.Totp);
     await forceUpdateMetamaskState(dispatch);
     goToManageFactors();
   };
@@ -681,6 +701,19 @@ export default function CreatePassword({
         options={factorOptions}
         onSelect={handleFactorOptionSelect}
         onBack={handleBackClick}
+      />
+    );
+  }
+
+  if (
+    (showFactorManager || showFactorPicker) &&
+    resolvedSocialCreateStep === 'setup-totp'
+  ) {
+    return (
+      <SetupTotp
+        accountName={socialLoginEmail ?? 'MetaMask'}
+        onBack={handleBackClick}
+        onComplete={handleTotpEnrollComplete}
       />
     );
   }

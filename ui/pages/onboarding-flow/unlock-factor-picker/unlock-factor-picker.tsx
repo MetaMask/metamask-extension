@@ -23,6 +23,7 @@ import type {
   SecretEscrowFactorKind,
   SecretEscrowFactorOption,
 } from '../../../../shared/constants/secret-escrow-factors';
+import { getSecretEscrowFactorTitleKey } from '../../../../shared/constants/secret-escrow-factors';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
 
 export type UnlockFactorPickerProps = {
@@ -137,9 +138,7 @@ export default function UnlockFactorPicker({
                 />
                 <Text variant={TextVariant.BodyMd}>
                   {substitutePasskeyLabel(
-                    factor === 'passkey'
-                      ? 'secretEscrowFactorPasskeyTitle'
-                      : 'secretEscrowFactorPasswordTitle',
+                    getSecretEscrowFactorTitleKey(factor),
                   )}
                 </Text>
               </Box>

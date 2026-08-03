@@ -1335,6 +1335,57 @@ describe('Onboarding Create Password', () => {
       expect(
         queryByTestId('unlock-factor-option-passkey_and_password'),
       ).not.toBeInTheDocument();
+      expect(queryByTestId('unlock-factor-option-totp')).not.toBeInTheDocument();
+    });
+
+    it('offers TOTP from the manage screen after a local factor', async () => {
+      const {
+        markSocialCreateUserFactor,
+        setSocialCreateWalletPassword,
+      } = jest.requireActual(
+        '../social-create-wallet-password',
+      ) as typeof import('../social-create-wallet-password');
+      const { SecretEscrowFactorKind } = jest.requireActual(
+        '../../../../shared/constants/secret-escrow-factors',
+      ) as typeof import('../../../../shared/constants/secret-escrow-factors');
+      setSocialCreateWalletPassword('12345678');
+      markSocialCreateUserFactor(SecretEscrowFactorKind.Passkey);
+      mockUseLocation.mockReturnValue({
+        pathname: '/onboarding/create-password',
+        state: { manageFactors: true },
+        key: '',
+        search: '',
+        hash: '',
+      });
+
+      const store = configureMockStore([thunk])({
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          isSeedlessOnboardingUserAuthenticated: true,
+          authConnection: 'google',
+          socialLoginEmail: 'user@example.com',
+        },
+      });
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('unlock-factor-manager')).toBeInTheDocument();
+      });
+      expect(getByTestId('unlock-factor-option-totp')).toBeInTheDocument();
+      fireEvent.click(getByTestId('unlock-factor-option-totp'));
+      await waitFor(() => {
+        expect(queryByTestId('setup-totp')).toBeInTheDocument();
+      });
     });
   });
 

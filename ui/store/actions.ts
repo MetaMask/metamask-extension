@@ -1322,6 +1322,22 @@ export function addSecretEscrowUserPasswordFactor(
 }
 
 /**
+ * Adds a TOTP factor to social-login secret escrow (backend-assisted unlock).
+ *
+ * @param totpSecret - Base32 shared secret verified by the setup UI.
+ * @param factorId - Escrow factor id (defaults to `"totp"`).
+ */
+export function enrollSecretEscrowTotpFactor(
+  totpSecret: string,
+  factorId: string = 'totp',
+): Promise<void> {
+  return submitRequestToBackground('enrollSecretEscrowTotpFactor', [
+    totpSecret,
+    factorId,
+  ]);
+}
+
+/**
  * Enrolls a social-login passkey with the secret escrow.
  *
  * Adds a passkey factor when password-first escrow already exists; otherwise

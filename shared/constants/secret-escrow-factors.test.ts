@@ -1,8 +1,10 @@
 import {
   getAddableSecretEscrowFactorOptions,
   getAvailableSecretEscrowFactorOptions,
+  getFirstSecretEscrowFactorOptions,
   isPasskeyFactor,
   isPasswordFactor,
+  isTotpFactor,
   SecretEscrowFactorKind,
   SecretEscrowFactorOptionId,
   SECRET_ESCROW_FACTOR_OPTIONS,
@@ -14,33 +16,51 @@ describe('secret-escrow-factors', () => {
       getAvailableSecretEscrowFactorOptions({ passkeyAvailable: false }).map(
         (option) => option.id,
       ),
-    ).toStrictEqual([SecretEscrowFactorOptionId.Password]);
+    ).toStrictEqual([
+      SecretEscrowFactorOptionId.Password,
+      SecretEscrowFactorOptionId.Totp,
+    ]);
 
     expect(
       getAvailableSecretEscrowFactorOptions({ passkeyAvailable: true }),
     ).toHaveLength(SECRET_ESCROW_FACTOR_OPTIONS.length);
   });
 
-  it('exposes only single-factor options', () => {
+  it('exposes first-factor options without TOTP', () => {
     expect(
-      SECRET_ESCROW_FACTOR_OPTIONS.map((option) => option.id),
+      getFirstSecretEscrowFactorOptions({ passkeyAvailable: true }).map(
+        (option) => option.id,
+      ),
     ).toStrictEqual([
       SecretEscrowFactorOptionId.Passkey,
       SecretEscrowFactorOptionId.Password,
     ]);
   });
 
-  it('filters addable options by enrolled factors', () => {
+  it('offers TOTP only after a local unlock factor is enrolled', () => {
+    expect(
+      getAddableSecretEscrowFactorOptions({ passkeyAvailable: true }, []).map(
+        (option) => option.id,
+      ),
+    ).toStrictEqual([
+      SecretEscrowFactorOptionId.Passkey,
+      SecretEscrowFactorOptionId.Password,
+    ]);
+
     expect(
       getAddableSecretEscrowFactorOptions({ passkeyAvailable: true }, [
         SecretEscrowFactorKind.Passkey,
       ]).map((option) => option.id),
-    ).toStrictEqual([SecretEscrowFactorOptionId.Password]);
+    ).toStrictEqual([
+      SecretEscrowFactorOptionId.Password,
+      SecretEscrowFactorOptionId.Totp,
+    ]);
   });
 
   it('identifies factor kinds', () => {
     expect(isPasskeyFactor(SecretEscrowFactorKind.Passkey)).toBe(true);
     expect(isPasswordFactor(SecretEscrowFactorKind.Password)).toBe(true);
+    expect(isTotpFactor(SecretEscrowFactorKind.Totp)).toBe(true);
     expect(isPasskeyFactor(SecretEscrowFactorKind.Password)).toBe(false);
   });
 });

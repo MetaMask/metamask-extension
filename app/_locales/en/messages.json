@@ -3054,6 +3054,30 @@
   "secretEscrowFactorPasswordDescription": {
     "message": "Unlock with a password you create."
   },
+  "secretEscrowFactorTotpTitle": {
+    "message": "Authenticator app"
+  },
+  "secretEscrowFactorTotpDescription": {
+    "message": "Add a one-time code from an authenticator app. Requires online recovery — not for local unlock alone."
+  },
+  "secretEscrowTotpSetupTitle": {
+    "message": "Set up authenticator app"
+  },
+  "secretEscrowTotpSetupDescription": {
+    "message": "Add this secret in your authenticator app, then enter the 6-digit code to confirm."
+  },
+  "secretEscrowTotpSecretLabel": {
+    "message": "Secret key"
+  },
+  "secretEscrowTotpCodeLabel": {
+    "message": "Authentication code"
+  },
+  "secretEscrowTotpCodePlaceholder": {
+    "message": "000000"
+  },
+  "secretEscrowTotpInvalidCode": {
+    "message": "That code isn’t valid. Try again."
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },

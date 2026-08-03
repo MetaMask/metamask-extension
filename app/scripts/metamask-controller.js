@@ -2954,6 +2954,8 @@ export default class MetamaskController extends EventEmitter {
         this.createSecretEscrowPasswordFactor.bind(this),
       addSecretEscrowUserPasswordFactor:
         this.addSecretEscrowUserPasswordFactor.bind(this),
+      enrollSecretEscrowTotpFactor:
+        this.enrollSecretEscrowTotpFactor.bind(this),
       enrollSecretEscrowPasskey: this.enrollSecretEscrowPasskey.bind(this),
       recoverPasswordWithSecretEscrow:
         this.recoverPasswordWithSecretEscrow.bind(this),
@@ -4560,6 +4562,36 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       secret.fill(0);
     }
+  }
+
+  /**
+   * Adds a TOTP factor to an existing secret-escrow enrollment (1-of-N).
+   *
+   * TOTP can release wallet secret `S` via the escrow backend; it is not a
+   * local vault unlock method on its own.
+   *
+   * @param {string} totpSecret - Base32 shared secret.
+   * @param {string} [factorId]
+   * @returns {Promise<void>}
+   */
+  async enrollSecretEscrowTotpFactor(totpSecret, factorId = 'totp') {
+    if (!this.onboardingController.getIsSocialLoginFlow()) {
+      throw new Error(
+        'Secret escrow TOTP enrollment is only available for social login',
+      );
+    }
+    if (!this.secretEscrowController.isEnrolled()) {
+      throw new Error('Secret escrow is not enrolled');
+    }
+    const resolvedFactorId = factorId || 'totp';
+    const factors = this.secretEscrowController.listFactors();
+    if (factors[resolvedFactorId]) {
+      return;
+    }
+    await this.secretEscrowController.addFactor({
+      factorId: resolvedFactorId,
+      factor: { type: 'totp', secret: totpSecret },
+    });
   }
 
   /**

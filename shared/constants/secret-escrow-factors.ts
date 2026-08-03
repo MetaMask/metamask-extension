@@ -1,14 +1,14 @@
 /**
  * Unlock factors for social-login secret escrow (1-of-N).
  *
- * Each onboarding option maps to a **single** factor. Users pick one first,
- * then can add more from the manage screen. Append new kinds (e.g. `totp`)
- * here and in {@link SECRET_ESCROW_FACTOR_OPTIONS}.
+ * Each onboarding option maps to a **single** factor. Users pick one
+ * local-capable factor first (passkey / password), then can add more —
+ * including backend-assisted factors like TOTP — from the manage screen.
  */
 export const SecretEscrowFactorKind = {
   Password: 'password',
   Passkey: 'passkey',
-  // Totp: 'totp',
+  Totp: 'totp',
 } as const;
 
 export type SecretEscrowFactorKind =
@@ -20,7 +20,7 @@ export type SecretEscrowFactorKind =
 export const SecretEscrowFactorOptionId = {
   Passkey: 'passkey',
   Password: 'password',
-  // Totp: 'totp',
+  Totp: 'totp',
 } as const;
 
 export type SecretEscrowFactorOptionId =
@@ -36,13 +36,19 @@ export type SecretEscrowFactorOption = {
   factor: SecretEscrowFactorKind;
   titleKey: string;
   descriptionKey: string;
+  /**
+   * Whether this factor can unlock the vault locally without the escrow
+   * backend (password / passkey). TOTP requires the backend to release `S`.
+   */
+  canUnlockLocally: boolean;
   available: (context: SecretEscrowFactorOptionAvailability) => boolean;
 };
 
 /**
  * Ordered single-factor choices for social-create unlock setup.
  *
- * Future factors (TOTP, etc.) should be appended here with availability gates.
+ * TOTP is listed for manage/add flows only — see
+ * {@link getFirstSecretEscrowFactorOptions}.
  */
 export const SECRET_ESCROW_FACTOR_OPTIONS: readonly SecretEscrowFactorOption[] =
   [
@@ -51,6 +57,7 @@ export const SECRET_ESCROW_FACTOR_OPTIONS: readonly SecretEscrowFactorOption[] =
       factor: SecretEscrowFactorKind.Passkey,
       titleKey: 'secretEscrowFactorPasskeyTitle',
       descriptionKey: 'secretEscrowFactorPasskeyDescription',
+      canUnlockLocally: true,
       available: ({ passkeyAvailable }) => passkeyAvailable,
     },
     {
@@ -58,9 +65,36 @@ export const SECRET_ESCROW_FACTOR_OPTIONS: readonly SecretEscrowFactorOption[] =
       factor: SecretEscrowFactorKind.Password,
       titleKey: 'secretEscrowFactorPasswordTitle',
       descriptionKey: 'secretEscrowFactorPasswordDescription',
+      canUnlockLocally: true,
+      available: () => true,
+    },
+    {
+      id: SecretEscrowFactorOptionId.Totp,
+      factor: SecretEscrowFactorKind.Totp,
+      titleKey: 'secretEscrowFactorTotpTitle',
+      descriptionKey: 'secretEscrowFactorTotpDescription',
+      canUnlockLocally: false,
       available: () => true,
     },
   ];
+
+const FACTOR_TITLE_KEYS: Record<SecretEscrowFactorKind, string> = {
+  [SecretEscrowFactorKind.Passkey]: 'secretEscrowFactorPasskeyTitle',
+  [SecretEscrowFactorKind.Password]: 'secretEscrowFactorPasswordTitle',
+  [SecretEscrowFactorKind.Totp]: 'secretEscrowFactorTotpTitle',
+};
+
+/**
+ * i18n title key for an enrolled factor kind.
+ *
+ * @param factor - Factor kind.
+ * @returns Locale message key.
+ */
+export function getSecretEscrowFactorTitleKey(
+  factor: SecretEscrowFactorKind,
+): string {
+  return FACTOR_TITLE_KEYS[factor];
+}
 
 /**
  * Returns picker options available in the current client environment.
@@ -77,7 +111,26 @@ export function getAvailableSecretEscrowFactorOptions(
 }
 
 /**
- * Options not yet enrolled, available to add.
+ * First-factor choices that can unlock the vault locally.
+ *
+ * Excludes backend-only factors such as TOTP.
+ *
+ * @param context - Availability flags.
+ * @returns Options safe to enroll as the first unlock method.
+ */
+export function getFirstSecretEscrowFactorOptions(
+  context: SecretEscrowFactorOptionAvailability,
+): SecretEscrowFactorOption[] {
+  return getAvailableSecretEscrowFactorOptions(context).filter(
+    (option) => option.canUnlockLocally,
+  );
+}
+
+/**
+ * Options not yet enrolled, available to add from the manage screen.
+ *
+ * Backend-only factors (TOTP) appear only after at least one local unlock
+ * factor is enrolled.
  *
  * @param context - Availability flags.
  * @param enrolledFactorIds - Factor kinds the user has set up.
@@ -88,9 +141,22 @@ export function getAddableSecretEscrowFactorOptions(
   enrolledFactorIds: readonly SecretEscrowFactorKind[],
 ): SecretEscrowFactorOption[] {
   const enrolled = new Set(enrolledFactorIds);
-  return getAvailableSecretEscrowFactorOptions(context).filter(
-    (option) => !enrolled.has(option.factor),
-  );
+  const hasLocalUnlock = [...enrolled].some((factor) => {
+    const option = SECRET_ESCROW_FACTOR_OPTIONS.find(
+      (entry) => entry.factor === factor,
+    );
+    return option?.canUnlockLocally;
+  });
+
+  return getAvailableSecretEscrowFactorOptions(context).filter((option) => {
+    if (enrolled.has(option.factor)) {
+      return false;
+    }
+    if (!option.canUnlockLocally && !hasLocalUnlock) {
+      return false;
+    }
+    return true;
+  });
 }
 
 /**
@@ -111,4 +177,14 @@ export function isPasskeyFactor(factor: SecretEscrowFactorKind): boolean {
  */
 export function isPasswordFactor(factor: SecretEscrowFactorKind): boolean {
   return factor === SecretEscrowFactorKind.Password;
+}
+
+/**
+ * Whether the factor kind is TOTP.
+ *
+ * @param factor - Escrow factor kind.
+ * @returns True when TOTP.
+ */
+export function isTotpFactor(factor: SecretEscrowFactorKind): boolean {
+  return factor === SecretEscrowFactorKind.Totp;
 }
