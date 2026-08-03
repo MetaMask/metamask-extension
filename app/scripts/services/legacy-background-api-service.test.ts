@@ -1939,6 +1939,49 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('incrementTransactionUIMetricsFragmentProperty', () => {
+    it('increments the value stored in the existing fragment', async () => {
+      const transactionId = 'transaction-id';
+      const fragmentId = `transaction-ui-${transactionId}`;
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue({
+            id: fragmentId,
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 2,
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:incrementTransactionUIMetricsFragmentProperty',
+          transactionId,
+          'enforced_simulation_toggle_count',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'MetaMetricsController:updateEventFragment',
+          fragmentId,
+          {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 3,
+            },
+          },
+        );
+      });
+    });
+  });
+
   describe('setSelectedInternalAccount', () => {
     it('sets the selected account when the account exists', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -3094,11 +3137,21 @@ describe('LegacyBackgroundApiService', () => {
     it('calls TransactionController:updateEditableParams with the new parameters', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 2.5,
           updateTransaction: (tx) => {
             tx.txParams.data = NEW_DATA_MOCK;
           },
         });
 
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue(undefined),
+        );
+        const createEventFragmentMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:createEventFragment',
+          createEventFragmentMock,
+        );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
           jest.fn().mockReturnValue({ transactions: [TRANSACTION_META_MOCK] }),
@@ -3129,12 +3182,21 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
+        expect(createEventFragmentMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_slippage_bps: 250,
+            },
+          }),
+        );
       });
     });
 
     it('does not persist a gas fallback when container estimation fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 10,
           updateTransaction: (tx) => {
             tx.txParams.data = NEW_DATA_MOCK;
           },

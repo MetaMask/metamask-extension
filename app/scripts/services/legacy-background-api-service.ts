@@ -209,6 +209,7 @@ import {
 } from '../lib/transaction/sentinel-api';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { getEnforcedSimulationsSlippageBasisPoints } from '../../../shared/lib/transaction/enforced-simulations';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
@@ -254,6 +255,8 @@ import {
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
+const ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME =
+  'enforced_simulation_slippage_bps';
 
 /**
  * The methods that the {@link LegacyBackgroundApiService} exposes to the messenger.
@@ -286,6 +289,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSentinelNetworkFlags',
   'importAccountWithStrategy',
   'importMnemonicToVault',
+  'incrementTransactionUIMetricsFragmentProperty',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
@@ -1666,13 +1670,14 @@ export class LegacyBackgroundApiService {
       throw new Error(`Transaction with ID ${transactionId} not found.`);
     }
 
-    const { updateTransaction } = await applyTransactionContainers({
-      isApproved: false,
-      messenger:
-        this.#messenger as unknown as TransactionControllerInitMessenger,
-      transactionMeta,
-      types: containerTypes,
-    });
+    const { enforcedSimulationsSlippage, updateTransaction } =
+      await applyTransactionContainers({
+        isApproved: false,
+        messenger:
+          this.#messenger as unknown as TransactionControllerInitMessenger,
+        transactionMeta,
+        types: containerTypes,
+      });
 
     const newTransactionMeta = cloneDeep(transactionMeta);
 
@@ -1693,6 +1698,17 @@ export class LegacyBackgroundApiService {
         value: newTransactionMeta.txParams.value,
       },
     );
+
+    this.upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        [ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME]:
+          enforcedSimulationsSlippage === undefined
+            ? null
+            : getEnforcedSimulationsSlippageBasisPoints(
+                enforcedSimulationsSlippage,
+              ),
+      },
+    });
   }
 
   /**
@@ -1758,6 +1774,27 @@ export class LegacyBackgroundApiService {
       canDeleteIfAbandoned: true,
       properties: payload.properties ?? {},
       sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
+  /**
+   * Increments a numeric property in a transaction UI metrics fragment.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param property - The metrics property to increment.
+   */
+  incrementTransactionUIMetricsFragmentProperty(
+    transactionId: string,
+    property: string,
+  ): void {
+    const fragment = this.#getTransactionUIMetricsFragment(transactionId);
+    const currentValue = fragment?.properties?.[property];
+    const nextValue = (typeof currentValue === 'number' ? currentValue : 0) + 1;
+
+    this.upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        [property]: nextValue,
+      },
     });
   }
 

@@ -32,6 +32,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
@@ -62,6 +63,7 @@ describe('useFeeCalculations', () => {
         currencyRates: {
           SepoliaETH: {
             conversionRate: 0,
+            usdConversionRate: 556.12,
           },
         },
         networkConfigurationsByChainId: {
@@ -81,6 +83,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": "$0.07",
+        "addedProtectionFeeUsd": 0.069707754,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.14",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -128,6 +131,7 @@ describe('useFeeCalculations', () => {
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -157,6 +161,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -188,6 +193,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -216,6 +222,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$2.57",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -268,6 +275,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$3.24",
         "estimatedFeeFiatWith18SignificantDigits": null,

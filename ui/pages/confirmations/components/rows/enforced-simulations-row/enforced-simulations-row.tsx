@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -25,6 +31,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/manage-crypto/transactions/simulations/';
@@ -35,8 +42,10 @@ export function EnforcedSimulationsRow() {
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
   const isEligible = useIsEnforcedSimulationsEligible();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const [isUnavailable, setIsUnavailable] = useState(false);
   const autoEnableRequestId = useRef(0);
+  const currentTransactionIdRef = useRef(transactionId);
 
   const hasAutoEnabled = containerTypes !== undefined;
 
@@ -44,31 +53,56 @@ export function EnforcedSimulationsRow() {
     TransactionContainerType.EnforcedSimulations,
   );
 
+  useLayoutEffect(() => {
+    currentTransactionIdRef.current = transactionId;
+  }, [transactionId]);
+
   useEffect(() => {
     setIsUnavailable(false);
   }, [transactionId]);
 
   useEffect(() => {
-    const requestId = autoEnableRequestId.current + 1;
-    autoEnableRequestId.current = requestId;
-
     if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
       return;
     }
 
+    const requestId = autoEnableRequestId.current + 1;
+    autoEnableRequestId.current = requestId;
+
     applyTransactionContainersExisting(transactionId, [
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
-    ]).catch((error) => {
-      if (requestId !== autoEnableRequestId.current) {
-        return;
-      }
+    ])
+      .then(() => {
+        if (
+          requestId !== autoEnableRequestId.current ||
+          transactionId !== currentTransactionIdRef.current
+        ) {
+          return;
+        }
 
-      setIsUnavailable(true);
-      if (!process.env.IN_TEST) {
-        console.error(error);
-      }
-    });
+        updateTransactionEventFragment(
+          {
+            properties: {
+              enforced_simulations_default_enabled: true,
+            },
+          },
+          transactionId,
+        );
+      })
+      .catch((error) => {
+        if (
+          requestId !== autoEnableRequestId.current ||
+          transactionId !== currentTransactionIdRef.current
+        ) {
+          return;
+        }
+
+        setIsUnavailable(true);
+        if (!process.env.IN_TEST) {
+          console.error(error);
+        }
+      });
   }, [
     currentConfirmation,
     isEligible,
@@ -76,7 +110,30 @@ export function EnforcedSimulationsRow() {
     transactionId,
     containerTypes,
     isUnavailable,
+    updateTransactionEventFragment,
   ]);
+
+  const handleLearnMoreClicked = useCallback(() => {
+    updateTransactionEventFragment(
+      {
+        properties: {
+          link_clicked: 'enforced_simulations_learn_more',
+        },
+      },
+      transactionId,
+    );
+  }, [transactionId, updateTransactionEventFragment]);
+
+  const handleTooltipOpened = useCallback(() => {
+    updateTransactionEventFragment(
+      {
+        properties: {
+          tooltip_opened: 'enforced_simulations',
+        },
+      },
+      transactionId,
+    );
+  }, [transactionId, updateTransactionEventFragment]);
 
   if (isUnavailable || !hasAutoEnabled) {
     return null;
@@ -96,7 +153,7 @@ export function EnforcedSimulationsRow() {
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Start}
       >
-        <TitleRow />
+        <TitleRow onTooltipOpened={handleTooltipOpened} />
 
         <EnforcedSimulationsCheckbox
           isEnabled={Boolean(hasEnforcedSimulations)}
@@ -105,7 +162,7 @@ export function EnforcedSimulationsRow() {
         />
       </Box>
 
-      <Description />
+      <Description onLearnMoreClicked={handleLearnMoreClicked} />
     </Box>
   );
 }
@@ -120,6 +177,8 @@ function EnforcedSimulationsCheckbox({
   transactionId: string;
 }) {
   const [pendingEnabled, setPendingEnabled] = useState<boolean | null>(null);
+  const { incrementTransactionEventFragmentProperty } =
+    useTransactionEventFragment();
 
   const isToggling = pendingEnabled !== null;
 
@@ -136,6 +195,11 @@ function EnforcedSimulationsCheckbox({
   const handleToggle = useCallback(async () => {
     const targetEnabled = !isEnabled;
     setPendingEnabled(targetEnabled);
+
+    incrementTransactionEventFragmentProperty(
+      'enforced_simulation_toggle_count',
+      transactionId,
+    );
 
     const newContainerTypes = [...(containerTypes ?? [])];
 
@@ -159,7 +223,12 @@ function EnforcedSimulationsCheckbox({
     } catch {
       setPendingEnabled(null);
     }
-  }, [containerTypes, isEnabled, transactionId]);
+  }, [
+    containerTypes,
+    incrementTransactionEventFragmentProperty,
+    isEnabled,
+    transactionId,
+  ]);
 
   if (isToggling) {
     return (
@@ -184,7 +253,7 @@ function EnforcedSimulationsCheckbox({
   );
 }
 
-function TitleRow() {
+function TitleRow({ onTooltipOpened }: { onTooltipOpened: () => void }) {
   const t = useI18nContext();
 
   return (
@@ -210,6 +279,7 @@ function TitleRow() {
         tag="span"
         wrapperStyle={{ display: 'flex', alignItems: 'center' }}
         style={{ display: 'flex', alignItems: 'center' }}
+        onShown={onTooltipOpened}
       >
         <Icon
           name={IconName.Question}
@@ -238,7 +308,11 @@ function TitleRow() {
   );
 }
 
-function Description() {
+function Description({
+  onLearnMoreClicked,
+}: {
+  onLearnMoreClicked: () => void;
+}) {
   const t = useI18nContext();
 
   return (
@@ -250,6 +324,7 @@ function Description() {
         rel="noopener noreferrer"
         data-testid="enforced-simulations-learn-more"
         className="text-primary-default hover:underline"
+        onClick={onLearnMoreClicked}
       >
         {t('learnMore').charAt(0).toUpperCase() + t('learnMore').slice(1)}
       </a>

@@ -6322,6 +6322,16 @@ export function upsertTransactionUIMetricsFragment(
   ]);
 }
 
+export function incrementTransactionUIMetricsFragmentProperty(
+  transactionId: string,
+  property: string,
+) {
+  return submitRequestToBackground(
+    'incrementTransactionUIMetricsFragmentProperty',
+    [transactionId, property],
+  );
+}
+
 export function updateEventFragment(
   id: string,
   payload: Partial<MetaMetricsEventFragment>,

@@ -1,4 +1,5 @@
-import { act } from '@testing-library/react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import {
@@ -16,6 +17,14 @@ import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GasFeesDetails } from './gas-fees-details';
+
+const mockUpdateTransactionEventFragment = jest.fn();
+
+jest.mock('../../../../../hooks/useTransactionEventFragment', () => ({
+  useTransactionEventFragment: () => ({
+    updateTransactionEventFragment: mockUpdateTransactionEventFragment,
+  }),
+}));
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
@@ -37,7 +46,7 @@ function getStore({
   simulationFails,
   userFeeLevel,
   chainId,
-  isEnforcedSimulations = false,
+  isEnforcedSimulations,
 }: {
   isAdvanced?: boolean;
   selectedGasFeeToken?: Hex;
@@ -59,11 +68,23 @@ function getStore({
     ];
     confirmation.txParamsOriginal = { ...confirmation.txParams };
     confirmation.txParams.gas = '0x156ee';
+  } else if (isEnforcedSimulations === false) {
+    confirmation.containerTypes = [];
   }
 
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
+        currencyRates: {
+          ETH: {
+            conversionRate: 556.12,
+            usdConversionRate: 556.12,
+          },
+          SepoliaETH: {
+            conversionRate: 556.12,
+            usdConversionRate: 556.12,
+          },
+        },
         preferences: {
           showFiatInTestnets: true,
           showConfirmationAdvancedDetails: isAdvanced ?? false,
@@ -82,10 +103,10 @@ describe('<GasFeesDetails />', () => {
     );
   });
 
-  it('renders fiat gas fee', async () => {
+  it('renders fiat gas fee and records zero added fee when enforced simulations are disabled', async () => {
     const { getByText } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore(),
+      getStore({ isEnforcedSimulations: false }),
     );
 
     await act(async () => {
@@ -93,6 +114,14 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(getByText('$0.07')).toBeInTheDocument();
+    expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: 0,
+        },
+      },
+      expect.any(String),
+    );
   });
 
   it('renders max fee if advanced', async () => {
@@ -113,6 +142,16 @@ describe('<GasFeesDetails />', () => {
     expect(getByTestId('added-protection-network-fee')).toHaveTextContent(
       messages.addedProtectionIncludesNetworkFee.message.replace('$1', '$0.07'),
     );
+    await waitFor(() => {
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        {
+          properties: {
+            enforced_simulation_added_network_fee_usd: expect.any(Number),
+          },
+        },
+        expect.any(String),
+      );
+    });
   });
 
   it('does not render max fee if advanced and selected gas fee token', async () => {

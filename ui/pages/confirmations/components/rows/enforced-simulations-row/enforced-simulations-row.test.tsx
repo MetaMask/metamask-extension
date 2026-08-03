@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
-import { act, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionContainerType } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -8,6 +9,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
 
@@ -17,6 +19,29 @@ jest.mock('../../../../../store/actions', () => ({
   applyTransactionContainersExisting: jest.fn().mockResolvedValue(undefined),
 }));
 jest.mock('../../../hooks/useIsEnforcedSimulationsEligible');
+jest.mock('../../../hooks/useTransactionEventFragment');
+jest.mock('../../../../../components/ui/tooltip', () => {
+  const react = jest.requireActual('react');
+
+  return {
+    __esModule: true,
+    default: ({
+      children,
+      onShown,
+    }: {
+      children: React.ReactNode;
+      onShown?: () => void;
+    }) =>
+      react.createElement(
+        'span',
+        {
+          'data-testid': 'enforced-simulations-tooltip',
+          onMouseEnter: onShown,
+        },
+        children,
+      ),
+  };
+});
 
 const mockStore = configureMockStore([]);
 
@@ -24,6 +49,11 @@ const useIsEnforcedSimulationsEligibleMock = jest.mocked(
   useIsEnforcedSimulationsEligible,
 );
 const useI18nContextMock = jest.mocked(useI18nContext);
+const useTransactionEventFragmentMock = jest.mocked(
+  useTransactionEventFragment,
+);
+const incrementTransactionEventFragmentPropertyMock = jest.fn();
+const updateTransactionEventFragmentMock = jest.fn();
 
 function render({
   isEligible = true,
@@ -69,6 +99,11 @@ function render({
 describe('EnforcedSimulationsRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useTransactionEventFragmentMock.mockReturnValue({
+      incrementTransactionEventFragmentProperty:
+        incrementTransactionEventFragmentPropertyMock,
+      updateTransactionEventFragment: updateTransactionEventFragmentMock,
+    });
   });
 
   it('renders nothing when enforced simulations is not eligible', async () => {
@@ -112,7 +147,7 @@ describe('EnforcedSimulationsRow', () => {
     const consoleError = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     function RerenderableRow() {
       const [renderCount, setRenderCount] = React.useState(0);
 
@@ -152,6 +187,21 @@ describe('EnforcedSimulationsRow', () => {
     consoleError.mockRestore();
   });
 
+  it('records when enforced simulations are enabled by default', async () => {
+    render({ containerTypes: undefined });
+
+    await waitFor(() => {
+      expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+        {
+          properties: {
+            enforced_simulations_default_enabled: true,
+          },
+        },
+        expect.any(String),
+      );
+    });
+  });
+
   it('renders the optional badge', async () => {
     const { getByTestId, getByText } = render({ containerTypes: [] });
 
@@ -180,14 +230,40 @@ describe('EnforcedSimulationsRow', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the learn more link', async () => {
+  it('records learn more link clicks', async () => {
     const { getByTestId } = render({ containerTypes: [] });
 
-    await waitFor(() => {
-      expect(
-        getByTestId('enforced-simulations-learn-more'),
-      ).toBeInTheDocument();
-    });
+    const link = await waitFor(() =>
+      getByTestId('enforced-simulations-learn-more'),
+    );
+    fireEvent.click(link);
+
+    expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+      {
+        properties: {
+          link_clicked: 'enforced_simulations_learn_more',
+        },
+      },
+      expect.any(String),
+    );
+  });
+
+  it('records tooltip opens', async () => {
+    const { getByTestId } = render({ containerTypes: [] });
+
+    const tooltip = await waitFor(() =>
+      getByTestId('enforced-simulations-tooltip'),
+    );
+    fireEvent.mouseEnter(tooltip);
+
+    expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+      {
+        properties: {
+          tooltip_opened: 'enforced_simulations',
+        },
+      },
+      expect.any(String),
+    );
   });
 
   it('renders the checkbox as checked when enabled', async () => {
@@ -236,6 +312,12 @@ describe('EnforcedSimulationsRow', () => {
     expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
       expect.any(String),
       [],
+    );
+    expect(
+      incrementTransactionEventFragmentPropertyMock,
+    ).toHaveBeenCalledWith(
+      'enforced_simulation_toggle_count',
+      expect.any(String),
     );
   });
 

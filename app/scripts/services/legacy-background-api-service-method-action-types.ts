@@ -468,6 +468,18 @@ export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   };
 
 /**
+ * Increments a numeric property in a transaction UI metrics fragment.
+ *
+ * @param transactionId - The id of the transaction.
+ * @param property - The metrics property to increment.
+ */
+export type LegacyBackgroundApiServiceIncrementTransactionUIMetricsFragmentPropertyAction =
+  {
+    type: `LegacyBackgroundApiService:incrementTransactionUIMetricsFragmentProperty`;
+    handler: LegacyBackgroundApiService['incrementTransactionUIMetricsFragmentProperty'];
+  };
+
+/**
  * Rejects a pending approval request.
  *
  * @param id - The ID of the approval request to reject.
@@ -746,6 +758,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceExportAccountAction
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
+  | LegacyBackgroundApiServiceIncrementTransactionUIMetricsFragmentPropertyAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
   | LegacyBackgroundApiServiceResolvePendingApprovalAction
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
