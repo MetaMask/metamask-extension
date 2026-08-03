@@ -5842,10 +5842,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.14.2":
-  version: 1.14.2
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.14.2"
-  checksum: 10/1d109536bdbf2e840eb0ce7867c5c1c2416946b8e5d003b05d1b23a579eaa8c8ee023703e7c87f4096833806e8309ca1eb846cde5a450c28b0ae9f81c6abf561
+"@metamask/bitcoin-wallet-snap@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:2.0.0"
+  checksum: 10/4be09daf16be0407b3e02650229d471a3306ccfc910c45f363689df8c47e4c89492c8386cb3d82387cfd6cd11f5a3cfe81dbd1ea32282694d5a4acccb9fb26fe
   languageName: node
   linkType: hard
 
@@ -8582,10 +8582,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.33.1":
-  version: 1.33.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.33.1"
-  checksum: 10/cd1d5acb6ad4b7753aca0fd78bb2abec2dc1977d6e93fd6512e9536cf6af46ded04e83092b63a13ba6aac91e96b192a38aba959b96d42c025b13d3d7bfab5c79
+"@metamask/tron-wallet-snap@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/tron-wallet-snap@npm:2.0.0"
+  checksum: 10/0282022591aa9572c8f88f94ecd595ea1907213ae9be04c3b6828995adda1d2e267dfbc7965e58c14b166952862f10a67b920962efddcee4ac242406265bfd17
   languageName: node
   linkType: hard
 
@@ -32783,7 +32783,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.14.2"
+    "@metamask/bitcoin-wallet-snap": "npm:^2.0.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^78.0.1"
     "@metamask/bridge-status-controller": "npm:^74.6.0"
@@ -32920,7 +32920,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.1.0"
     "@metamask/transaction-pay-controller": "npm:^26.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.33.1"
+    "@metamask/tron-wallet-snap": "npm:^2.0.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^7.0.1"
