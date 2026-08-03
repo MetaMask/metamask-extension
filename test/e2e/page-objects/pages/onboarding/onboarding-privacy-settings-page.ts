@@ -1,18 +1,25 @@
 import { Driver } from '../../../webdriver/driver';
 
 class OnboardingPrivacySettingsPage {
-  private driver: Driver;
+  // General settings - add custom network section
+  private readonly addCustomNetworkButton = {
+    text: 'Add a network',
+    tag: 'p',
+  };
+
+  private readonly addRpcUrlButton = {
+    text: 'Add RPC URL',
+    tag: 'button',
+  };
+
+  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+
+  // Assets settings
+  private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly categoryBackButton = '[data-testid="category-back-button"]';
-
-  private readonly generalSettings = '[data-testid="category-item-General"]';
-
-  private readonly privacySettingsBackButton =
-    '[data-testid="privacy-settings-back-button"]';
-
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
   // General settings
   private readonly basicFunctionalityCheckbox =
@@ -32,20 +39,7 @@ class OnboardingPrivacySettingsPage {
     tag: 'h4',
   };
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
-
-  // General settings - add custom network section
-  private readonly addCustomNetworkButton = {
-    text: 'Add a network',
-    tag: 'p',
-  };
-
-  private readonly addRpcUrlButton = {
-    text: 'Add RPC URL',
-    tag: 'button',
-  };
-
-  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+  private readonly categoryBackButton = '[data-testid="category-back-button"]';
 
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
@@ -62,35 +56,24 @@ class OnboardingPrivacySettingsPage {
   private readonly currencySymbolInput =
     '[data-testid="network-form-ticker-input"]';
 
+  private driver: Driver;
+
+  private readonly generalSettings = '[data-testid="category-item-General"]';
+
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
+
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
 
+  private readonly privacySettingsBackButton =
+    '[data-testid="privacy-settings-back-button"]';
+
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
-  // Assets settings
-  private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
-
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
+  private readonly securitySettings = '[data-testid="category-item-Security"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.generalSettings,
-        this.assetsSettings,
-        this.securitySettings,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for onboarding privacy settings page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Onboarding privacy settings page is loaded');
   }
 
   /**
@@ -130,6 +113,23 @@ class OnboardingPrivacySettingsPage {
     );
     // Navigate back to default privacy settings
     await this.navigateBackToSettingsPage();
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.generalSettings,
+        this.assetsSettings,
+        this.securitySettings,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for onboarding privacy settings page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Onboarding privacy settings page is loaded');
   }
 
   /**

@@ -172,13 +172,14 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false
+      "optedIn": false,
+      "consentDecisionMade": true
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 219,
+      "currentMigrationVersion": 221,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -449,9 +450,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": false,
-      "eventsBeforeMetricsOptIn": [],
       "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [],
@@ -1316,6 +1315,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 219
+    "version": 221
   }
 }

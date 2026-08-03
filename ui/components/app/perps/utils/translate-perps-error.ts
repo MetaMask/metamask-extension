@@ -75,6 +75,9 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.SPOT_PAIR_NOT_FOUND]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.PRICE_UNAVAILABLE]: 'somethingWentWrong',
 
+  // Market / collateral
+  [PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL]: 'perpsUnsupportedCollateral',
+
   // Batch operations
   [PERPS_ERROR_CODES.BATCH_CANCEL_FAILED]: 'perpsBatchCancelFailed',
   [PERPS_ERROR_CODES.BATCH_CLOSE_FAILED]: 'perpsBatchCloseFailed',

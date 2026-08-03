@@ -1785,6 +1785,20 @@ async function setupMocking(
     });
   }
 
+  // Geolocation API v2 (GeolocationController -> GeolocationApiService).
+  // Mirrors the legacy on-ramp mock above (US-TX) but in the v2 JSON shape.
+  for (const host of [
+    'geolocation.api.cx.metamask.io',
+    'geolocation.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
+      };
+    });
+  }
+
   // On Ramp: Countries list (RampsController.init on startup)
   for (const host of [
     'on-ramp-cache.api.cx.metamask.io',

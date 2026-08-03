@@ -16,7 +16,7 @@ type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
  * selection and error UI. Wider Quote fields are not required here.
  */
 type QuotesResponseOrNull = {
-  success?: QuoteSelectionItem[];
+  success?: Quote[];
   error?: QuoteErrorItem[];
 } | null;
 
@@ -86,7 +86,7 @@ export function findSelectedQuote(
   quotesResponse: QuotesResponseOrNull,
   selectedProvider: NamedSelection,
   selectedPaymentMethod: NamedSelection,
-): QuoteSelectionItem | null {
+): Quote | null {
   if (!quotesResponse?.success || !selectedProvider || !selectedPaymentMethod) {
     return null;
   }
