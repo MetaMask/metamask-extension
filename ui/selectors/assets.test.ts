@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash';
 import {
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAllWallets,
+  selectAllAssets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type {
@@ -35,6 +36,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
@@ -105,6 +107,7 @@ jest.mock('@metamask/assets-controllers', () => {
       userCurrency: 'usd',
     })),
     selectAssetsBySelectedAccountGroup: jest.fn(() => ({})), // Returns empty object by default
+    selectAllAssets: jest.fn(() => ({})),
   };
 });
 
@@ -1537,6 +1540,146 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       // Should return true because user has non-native tokens
       expect(result).toBe(true);
     });
+  });
+});
+
+describe('getAssetsByAccountGroupId', () => {
+  const ACCOUNT_GROUP_ID = 'entropy:wallet/1';
+
+  const createMockState = (suffix: string) => ({
+    metamask: {
+      selectedAccountGroup: `selected-${suffix}`,
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  });
+
+  beforeEach(() => {
+    jest.mocked(selectAllAssets).mockReset();
+    jest.mocked(selectAllAssets).mockReturnValue({});
+  });
+
+  it('returns an empty map when accountGroupId is undefined', () => {
+    const result = getAssetsByAccountGroupId(
+      createMockState('undefined-group'),
+      undefined,
+    );
+
+    expect(result).toStrictEqual({});
+    expect(selectAllAssets).not.toHaveBeenCalled();
+  });
+
+  it('returns assets for the requested account group', () => {
+    const groupAssets = {
+      '0x1': [
+        {
+          address: '0x1111111111111111111111111111111111111111',
+          isNative: false,
+        },
+      ],
+    };
+
+    jest.mocked(selectAllAssets).mockReturnValueOnce({
+      [ACCOUNT_GROUP_ID]: groupAssets,
+      'entropy:wallet/2': {
+        '0x1': [{ address: '0x2222222222222222222222222222222222222222' }],
+      },
+    } as unknown as ReturnType<typeof selectAllAssets>);
+
+    const result = getAssetsByAccountGroupId(
+      createMockState('group-assets'),
+      ACCOUNT_GROUP_ID as never,
+    );
+
+    expect(selectAllAssets).toHaveBeenCalled();
+    expect(result).toStrictEqual(groupAssets);
+  });
+
+  it('returns an empty map when the account group has no assets', () => {
+    jest.mocked(selectAllAssets).mockReturnValueOnce({
+      'entropy:wallet/2': {
+        '0x1': [{ address: '0x2222222222222222222222222222222222222222' }],
+      },
+    } as unknown as ReturnType<typeof selectAllAssets>);
+
+    const result = getAssetsByAccountGroupId(
+      createMockState('missing-group'),
+      ACCOUNT_GROUP_ID as never,
+    );
+
+    expect(result).toStrictEqual({});
+  });
+
+  it('clears ignored assets when includeHidden is true', () => {
+    const groupAssets = {
+      '0x1': [
+        {
+          address: '0x1111111111111111111111111111111111111111',
+          isNative: false,
+        },
+      ],
+    };
+
+    jest.mocked(selectAllAssets).mockReturnValueOnce({
+      [ACCOUNT_GROUP_ID]: groupAssets,
+    } as unknown as ReturnType<typeof selectAllAssets>);
+
+    const result = getAssetsByAccountGroupId(
+      createMockState('include-hidden'),
+      ACCOUNT_GROUP_ID as never,
+      { includeHidden: true },
+    );
+
+    expect(selectAllAssets).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allIgnoredTokens: {},
+        allIgnoredAssets: {},
+      }),
+    );
+    expect(result).toStrictEqual(groupAssets);
+  });
+
+  it('hides the Arc USDC ERC20 while keeping the native token and other assets', () => {
+    const arcNative = {
+      address: '0x0000000000000000000000000000000000000000',
+      isNative: true,
+    };
+    const arcUsdcErc20 = {
+      address: '0x3600000000000000000000000000000000000000',
+      isNative: false,
+    };
+    const otherToken = {
+      address: '0x1111111111111111111111111111111111111111',
+      isNative: false,
+    };
+
+    jest.mocked(selectAllAssets).mockReturnValueOnce({
+      [ACCOUNT_GROUP_ID]: {
+        '0x13b2': [arcNative, arcUsdcErc20, otherToken],
+        '0x1': [arcUsdcErc20],
+      },
+    } as unknown as ReturnType<typeof selectAllAssets>);
+
+    const result = getAssetsByAccountGroupId(
+      createMockState('arc-filter'),
+      ACCOUNT_GROUP_ID as never,
+    );
+
+    expect(result['0x13b2']).toStrictEqual([arcNative, otherToken]);
+    expect(result['0x1']).toStrictEqual([arcUsdcErc20]);
   });
 });
 

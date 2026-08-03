@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention, camelcase */
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
+  selectBlockedPayTokens,
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
+  selectMinimumRequiredTokenBalance,
   selectPayQuoteConfig,
   selectPreferredPayToken,
 } from './feature-flags';
@@ -44,6 +46,17 @@ type PreferredTokensConfig = {
 
 type PayTokensFlag = {
   preferredTokens?: PreferredTokensConfig;
+  blockedTokens?: {
+    default?: {
+      chainIds?: string[];
+      tokens?: { address: string; chainId: string }[];
+    };
+    overrides?: Record<
+      string,
+      { chainIds?: string[]; tokens?: { address: string; chainId: string }[] }
+    >;
+  };
+  minimumRequiredTokenBalance?: number;
 };
 
 type PayPrefilledAmountConfig = {
@@ -295,6 +308,97 @@ describe('Confirmations Pay Feature Flags', () => {
       });
 
       expect(selectPreferredPayToken(state, 'perpsWithdraw')).toBeUndefined();
+    });
+  });
+
+  describe('selectBlockedPayTokens', () => {
+    it('returns empty blocklists when the flag is unset', () => {
+      const state = getMockPayTokensState();
+
+      expect(
+        selectBlockedPayTokens(state, 'moneyAccountDeposit'),
+      ).toStrictEqual({
+        chainIds: [],
+        tokens: [],
+      });
+    });
+
+    it('returns the default blocklist when no transaction override exists', () => {
+      const state = getMockPayTokensState({
+        blockedTokens: {
+          default: {
+            chainIds: ['0xa4b1'],
+            tokens: [
+              {
+                address: '0x1111111111111111111111111111111111111111',
+                chainId: '0x1',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(
+        selectBlockedPayTokens(state, 'moneyAccountDeposit'),
+      ).toStrictEqual({
+        chainIds: ['0xa4b1'],
+        tokens: [
+          {
+            address: '0x1111111111111111111111111111111111111111',
+            chainId: '0x1',
+          },
+        ],
+      });
+    });
+
+    it('prefers a transaction-type override over the default blocklist', () => {
+      const state = getMockPayTokensState({
+        blockedTokens: {
+          default: {
+            chainIds: ['0xa4b1'],
+            tokens: [],
+          },
+          overrides: {
+            moneyAccountDeposit: {
+              chainIds: [],
+              tokens: [
+                {
+                  address: '0x2222222222222222222222222222222222222222',
+                  chainId: '0x1',
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      expect(
+        selectBlockedPayTokens(state, 'moneyAccountDeposit'),
+      ).toStrictEqual({
+        chainIds: [],
+        tokens: [
+          {
+            address: '0x2222222222222222222222222222222222222222',
+            chainId: '0x1',
+          },
+        ],
+      });
+    });
+  });
+
+  describe('selectMinimumRequiredTokenBalance', () => {
+    it('defaults to 0 when the flag is unset', () => {
+      const state = getMockPayTokensState();
+
+      expect(selectMinimumRequiredTokenBalance(state)).toBe(0);
+    });
+
+    it('returns the configured minimum required token balance', () => {
+      const state = getMockPayTokensState({
+        minimumRequiredTokenBalance: 0.01,
+      });
+
+      expect(selectMinimumRequiredTokenBalance(state)).toBe(0.01);
     });
   });
 

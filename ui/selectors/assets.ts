@@ -5,8 +5,19 @@ import {
   MultichainAssetsRatesControllerState,
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAccountGroup,
+  selectAllAssets,
   selectAssetsBySelectedAccountGroup,
+  type AccountGroupAssets,
+  type TokenBalancesControllerState,
+  type TokenRatesControllerState,
+  type MultichainBalancesControllerState,
+  type TokensControllerState,
+  type CurrencyRateState,
+  type BalanceChangePeriod,
+  type BalanceChangeResult,
+  type AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AccountGroupId } from '@metamask/account-api';
 import {
   AssetsControllerState,
   calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
@@ -39,16 +50,6 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import type {
-  TokenBalancesControllerState,
-  TokenRatesControllerState,
-  MultichainBalancesControllerState,
-  TokensControllerState,
-  CurrencyRateState,
-  BalanceChangePeriod,
-  BalanceChangeResult,
-  AccountTrackerControllerState,
-} from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
@@ -1536,6 +1537,53 @@ export const getAssetsBySelectedAccountGroupIncludingHidden =
         }),
       ),
   );
+
+const EMPTY_ACCOUNT_GROUP_ASSETS: AccountGroupAssets = {};
+
+const selectAllAssetsGrouped = createSelector(
+  getStateForAssetSelector,
+  (assetListState: AssetListState) => selectAllAssets(assetListState),
+);
+
+const selectAllAssetsGroupedIncludingHidden = createSelector(
+  getStateForAssetSelector,
+  (assetListState: AssetListState) =>
+    selectAllAssets({
+      ...assetListState,
+      allIgnoredTokens: EMPTY_OBJECT,
+      allIgnoredAssets: EMPTY_OBJECT,
+    }),
+);
+
+/**
+ * Assets for a specific account group. Used when a confirmation has an
+ * `accountOverride` so the Pay-with list reflects that account's holdings
+ * instead of the globally selected account group.
+ *
+ * @param state - Redux state.
+ * @param accountGroupId - Account group to resolve assets for.
+ * @param options - Selector options.
+ * @param options.includeHidden - When true, include hidden/ignored tokens.
+ * @returns Per-chain assets for the group, or an empty map when unset.
+ */
+export function getAssetsByAccountGroupId(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
+  state: any,
+  accountGroupId: AccountGroupId | undefined,
+  { includeHidden = false }: { includeHidden?: boolean } = {},
+): AccountGroupAssets {
+  if (!accountGroupId) {
+    return EMPTY_ACCOUNT_GROUP_ASSETS;
+  }
+
+  const allAssets = includeHidden
+    ? selectAllAssetsGroupedIncludingHidden(state)
+    : selectAllAssetsGrouped(state);
+
+  return filterExcludedAssets(
+    allAssets[accountGroupId] ?? EMPTY_ACCOUNT_GROUP_ASSETS,
+  );
+}
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],

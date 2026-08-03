@@ -40,8 +40,25 @@ type PreferredTokensConfig = {
     | undefined;
 };
 
+export type BlockedPayTokenEntry = {
+  address: string;
+  chainId: string;
+};
+
+export type BlockedPayTokensListConfig = {
+  chainIds?: string[];
+  tokens?: BlockedPayTokenEntry[];
+};
+
+export type BlockedPayTokensConfig = {
+  default?: BlockedPayTokensListConfig;
+  overrides?: Record<string, BlockedPayTokensListConfig>;
+};
+
 type RawPayTokensFlag = {
   preferredTokens?: PreferredTokensConfig;
+  blockedTokens?: BlockedPayTokensConfig;
+  minimumRequiredTokenBalance?: number;
 };
 
 type HardwareWalletConfig = {
@@ -162,6 +179,38 @@ export const selectPreferredPayToken = createSelector(
 
     return preferredTokens?.[0];
   },
+);
+
+/**
+ * Resolves the MM Pay token blocklist for a transaction type from the
+ * `confirmations_pay_tokens` remote feature flag. Transaction-specific
+ * `overrides[transactionType]` take precedence over `default`.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectBlockedPayTokens = createSelector(
+  [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
+  (flag, transactionType): BlockedPayTokensListConfig => {
+    const blockedTokens = flag?.blockedTokens;
+    const config =
+      (transactionType && blockedTokens?.overrides?.[transactionType]) ||
+      blockedTokens?.default;
+
+    return {
+      chainIds: config?.chainIds ?? [],
+      tokens: config?.tokens ?? [],
+    };
+  },
+);
+
+/**
+ * Minimum fiat balance required when auto-selecting a pay token, from the
+ * `confirmations_pay_tokens` remote feature flag.
+ */
+export const selectMinimumRequiredTokenBalance = createSelector(
+  selectPayTokensFlag,
+  (flag): number => flag?.minimumRequiredTokenBalance ?? 0,
 );
 
 export const selectIsEnforcedSimulationsEnabled = createSelector(

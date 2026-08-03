@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -6,6 +6,7 @@ import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyri
 import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
+import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -24,9 +25,11 @@ export function useAutomaticTransactionPayToken({
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const availableTokens = useTransactionPayAvailableTokens();
+  const accountOverride = useTransactionAccountOverride();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   const {
@@ -63,6 +66,28 @@ export function useAutomaticTransactionPayToken({
     [requiredTokens],
   );
 
+  const automaticToken = useMemo(
+    () =>
+      getBestToken({
+        isHardwareWallet,
+        isPostQuoteWithdraw,
+        isPostQuoteWithdrawTokenFilterApplied,
+        isPostQuoteWithdrawTokenAllowed,
+        targetToken,
+        tokens: tokensWithBalance,
+        preferredToken,
+      }),
+    [
+      isHardwareWallet,
+      isPostQuoteWithdraw,
+      isPostQuoteWithdrawTokenFilterApplied,
+      isPostQuoteWithdrawTokenAllowed,
+      preferredToken,
+      targetToken,
+      tokensWithBalance,
+    ],
+  );
+
   useLayoutEffect(() => {
     if (
       disable ||
@@ -72,16 +97,6 @@ export function useAutomaticTransactionPayToken({
     ) {
       return;
     }
-
-    const automaticToken = getBestToken({
-      isHardwareWallet,
-      isPostQuoteWithdraw,
-      isPostQuoteWithdrawTokenFilterApplied,
-      isPostQuoteWithdrawTokenAllowed,
-      targetToken,
-      tokens: tokensWithBalance,
-      preferredToken,
-    });
 
     if (!automaticToken) {
       return;
@@ -94,18 +109,55 @@ export function useAutomaticTransactionPayToken({
 
     isUpdated.current = transactionId;
   }, [
+    automaticToken,
     disable,
-    isHardwareWallet,
-    isPostQuoteWithdraw,
-    isPostQuoteWithdrawTokenFilterApplied,
-    isPostQuoteWithdrawTokenAllowed,
     payToken,
-    preferredToken,
     requiredTokens,
     setPayToken,
-    targetToken,
-    tokensWithBalance,
     transactionId,
+  ]);
+
+  // Re-select the pay token whenever the signer address (`from`) or the
+  // account selected in the From account row (`accountOverride`) changes.
+  // `accountOverride` switches money-account deposit to a different funding
+  // account without touching `txParams.from`.
+  const prevAccountKeyRef = useRef(`${from ?? ''}:${accountOverride ?? ''}`);
+  const pendingAccountReselectRef = useRef(false);
+  useEffect(() => {
+    const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
+    if (disable || !from || isPostQuoteWithdraw) {
+      return;
+    }
+
+    if (prevAccountKeyRef.current !== accountKey) {
+      prevAccountKeyRef.current = accountKey;
+      pendingAccountReselectRef.current = true;
+    }
+
+    if (!pendingAccountReselectRef.current) {
+      return;
+    }
+
+    // Wait for the new account's funding tokens before selecting. Otherwise
+    // getBestToken falls back to the required destination token (mUSD on
+    // Monad) and the Pay-with row briefly shows that instead of a loader.
+    if (tokensWithBalance.length === 0 || !automaticToken) {
+      return;
+    }
+
+    setPayToken({
+      address: automaticToken.address,
+      chainId: automaticToken.chainId,
+    });
+    pendingAccountReselectRef.current = false;
+  }, [
+    accountOverride,
+    automaticToken,
+    disable,
+    from,
+    isPostQuoteWithdraw,
+    setPayToken,
+    tokensWithBalance.length,
   ]);
 }
 

@@ -5,14 +5,17 @@ import type { Hex } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
+  getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
 } from '../../../../selectors/assets';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
 import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
 import * as assetUtils from '../../../../../shared/lib/asset-utils';
+import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useSendTokens } from './useSendTokens';
 
 jest.mock('react-redux', () => ({
@@ -22,6 +25,17 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../useChainNetworkNameAndImage');
 jest.mock('../../../../hooks/useFiatFormatter');
+jest.mock('../transactions/useTransactionAccountOverride');
+jest.mock('../../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../../selectors/assets'),
+  getAssetsByAccountGroupId: jest.fn(),
+}));
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual(
+    '../../../../selectors/multichain-accounts/account-tree',
+  ),
+  getAccountGroupsByAddress: jest.fn(),
+}));
 jest.mock('../../../../../shared/lib/asset-utils', () => ({
   ...jest.requireActual('../../../../../shared/lib/asset-utils'),
   fetchAssetMetadataForAssetIds: jest.fn(),
@@ -37,6 +51,26 @@ const mockUseFiatFormatter = jest.mocked(
 const mockFetchAssetMetadataForAssetIds = jest.mocked(
   assetUtils.fetchAssetMetadataForAssetIds,
 );
+const mockUseTransactionAccountOverride = jest.mocked(
+  useTransactionAccountOverride,
+);
+const mockGetAccountGroupsByAddress = jest.mocked(getAccountGroupsByAddress);
+const mockGetAssetsByAccountGroupId = jest.mocked(getAssetsByAccountGroupId);
+
+/**
+ * Runs the inline useSelector callbacks used by useAccountGroupAssets against
+ * an empty state. Named selectors are never passed here — those are matched
+ * by reference in each test's mockImplementation.
+ *
+ * @param selector - Inline selector callback from useSelector.
+ */
+function runInlineSelector(selector: (state: never) => unknown) {
+  try {
+    return selector({} as never);
+  } catch {
+    return undefined;
+  }
+}
 
 describe('useSendTokens', () => {
   const mockAssetsData = [
@@ -104,6 +138,10 @@ describe('useSendTokens', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockUseTransactionAccountOverride.mockReturnValue(undefined);
+    mockGetAccountGroupsByAddress.mockReturnValue([]);
+    mockGetAssetsByAccountGroupId.mockReturnValue({});
 
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getIsTokenManagementFilterEnabled) {
@@ -435,5 +473,137 @@ describe('useSendTokens', () => {
 
     const asset = result.current[0];
     expect(asset?.shortenedBalance).toBe('');
+  });
+
+  it('uses assets for the account override instead of the globally selected account', async () => {
+    const overrideAddress = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex;
+    const overrideAssets = {
+      '0x1': [
+        {
+          address: '0xOverrideToken',
+          chainId: '0x1',
+          balance: '1000000000000000000',
+          rawBalance: '0xde0b6b3a7640000',
+          isNative: false,
+          symbol: 'OVERRIDE',
+          decimals: 18,
+          fiat: {
+            balance: 250,
+            currency: 'USD',
+          },
+        },
+      ],
+    };
+
+    mockUseTransactionAccountOverride.mockReturnValue(overrideAddress);
+    mockGetAccountGroupsByAddress.mockReturnValue([
+      { id: 'entropy:wallet/1' },
+    ] as never);
+    mockGetAssetsByAccountGroupId.mockReturnValue(overrideAssets as never);
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return false;
+      }
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return mockAssetsData;
+      }
+      if (typeof selector === 'function') {
+        return runInlineSelector(selector);
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].symbol).toBe('OVERRIDE');
+    expect(mockGetAssetsByAccountGroupId).toHaveBeenCalledWith(
+      expect.anything(),
+      'entropy:wallet/1',
+      { includeHidden: false },
+    );
+  });
+
+  it('returns an empty list when the account override has no assets', async () => {
+    mockUseTransactionAccountOverride.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    mockGetAccountGroupsByAddress.mockReturnValue([
+      { id: 'entropy:wallet/1' },
+    ] as never);
+    mockGetAssetsByAccountGroupId.mockReturnValue({});
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return false;
+      }
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return mockAssetsData;
+      }
+      if (typeof selector === 'function') {
+        return runInlineSelector(selector);
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('requests hidden assets for the account override when the filter is enabled', async () => {
+    mockUseTransactionAccountOverride.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    mockGetAccountGroupsByAddress.mockReturnValue([
+      { id: 'entropy:wallet/1' },
+    ] as never);
+    mockGetAssetsByAccountGroupId.mockReturnValue({
+      '0x1': [mockAssetsData[1]],
+    } as never);
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return true;
+      }
+      if (selector === getAssetsBySelectedAccountGroupIncludingHidden) {
+        return mockAssetsData;
+      }
+      if (typeof selector === 'function') {
+        return runInlineSelector(selector);
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toHaveLength(1);
+    expect(mockGetAssetsByAccountGroupId).toHaveBeenCalledWith(
+      expect.anything(),
+      'entropy:wallet/1',
+      { includeHidden: true },
+    );
+  });
+
+  it('does not use global assets when the override address has no account group', async () => {
+    mockUseTransactionAccountOverride.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    mockGetAccountGroupsByAddress.mockReturnValue([] as never);
+    mockGetAssetsByAccountGroupId.mockReturnValue({} as never);
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return false;
+      }
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return mockAssetsData;
+      }
+      if (typeof selector === 'function') {
+        return runInlineSelector(selector);
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toEqual([]);
   });
 });
