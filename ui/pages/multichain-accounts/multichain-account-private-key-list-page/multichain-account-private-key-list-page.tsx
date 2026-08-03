@@ -90,23 +90,25 @@ export const MultichainAccountPrivateKeyListPage = ({
       >
         {accountGroupName} / {t('privateKeys')}
       </Header>
-      <BannerAlert
-        data-testid="backup-state-banner-alert"
-        title={t('revealMultichainPrivateKeysBannerTitle')}
-        severity={BannerAlertSeverity.Danger}
-        marginHorizontal={4}
-      >
-        {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
-      </BannerAlert>
-      <Box flexDirection={BoxFlexDirection.Column}>
-        {decodedAccountGroupId ? (
-          <MultichainPrivateKeyList
-            groupId={decodedAccountGroupId}
-            goBack={() => navigate(PREVIOUS_ROUTE)}
-            data-testid="multichain-account-private-key-list"
-          />
-        ) : null}
-      </Box>
+      <Content padding={0}>
+        <BannerAlert
+          data-testid="backup-state-banner-alert"
+          title={t('revealMultichainPrivateKeysBannerTitle')}
+          severity={BannerAlertSeverity.Danger}
+          marginHorizontal={4}
+        >
+          {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
+        </BannerAlert>
+        <Box flexDirection={BoxFlexDirection.Column}>
+          {decodedAccountGroupId ? (
+            <MultichainPrivateKeyList
+              groupId={decodedAccountGroupId}
+              goBack={() => navigate(PREVIOUS_ROUTE)}
+              data-testid="multichain-account-private-key-list"
+            />
+          ) : null}
+        </Box>
+      </Content>
     </Page>
   );
 };
