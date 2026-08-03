@@ -448,7 +448,6 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
  *
  * @param transactionId - The ID of the transaction to update.
  * @param containerTypes - The container types to apply to the transaction.
- * @param incrementToggleCount - Whether to increment the toggle interaction metric.
  */
 export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   {

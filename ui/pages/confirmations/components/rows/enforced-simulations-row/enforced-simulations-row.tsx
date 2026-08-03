@@ -242,7 +242,9 @@ function EnforcedSimulationsCheckbox({
   );
 }
 
-function TitleRow({ onTooltipOpened }: { onTooltipOpened: () => void }) {
+function TitleRow({
+  onTooltipOpened,
+}: Readonly<{ onTooltipOpened: () => void }>) {
   const t = useI18nContext();
 
   return (
@@ -299,9 +301,9 @@ function TitleRow({ onTooltipOpened }: { onTooltipOpened: () => void }) {
 
 function Description({
   onLearnMoreClicked,
-}: {
+}: Readonly<{
   onLearnMoreClicked: () => void;
-}) {
+}>) {
   const t = useI18nContext();
 
   return (

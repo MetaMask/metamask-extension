@@ -228,11 +228,9 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('records learn more link clicks', async () => {
-    const { getByTestId } = render({ containerTypes: [] });
+    const { findByTestId } = render({ containerTypes: [] });
 
-    const link = await waitFor(() =>
-      getByTestId('enforced-simulations-learn-more'),
-    );
+    const link = await findByTestId('enforced-simulations-learn-more');
     fireEvent.click(link);
 
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
@@ -246,11 +244,9 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('records tooltip opens', async () => {
-    const { getByTestId } = render({ containerTypes: [] });
+    const { findByTestId } = render({ containerTypes: [] });
 
-    const tooltip = await waitFor(() =>
-      getByTestId('enforced-simulations-tooltip'),
-    );
+    const tooltip = await findByTestId('enforced-simulations-tooltip');
     fireEvent.mouseEnter(tooltip);
 
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
