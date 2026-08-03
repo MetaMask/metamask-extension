@@ -1576,6 +1576,12 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
   'arc-mainnet': () => process.env.QUICKNODE_ARC_URL,
   'robinhood-mainnet': () => process.env.QUICKNODE_ROBINHOOD_URL,
+  'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
+  'zksync-mainnet': () => process.env.QUICKNODE_ZKSYNC_URL,
+  'megaeth-mainnet': () => process.env.QUICKNODE_MEGAETH_URL,
+  // Tempo's default RPC is rpc.tempo.xyz (a Custom endpoint, not Infura), but
+  // the network controller applies failoverUrls to Custom endpoints too.
+  'tempo-mainnet': () => process.env.QUICKNODE_TEMPO_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1641,7 +1647,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('bsc-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1686,7 +1692,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('zksync-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1761,7 +1767,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('megaeth-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1776,7 +1782,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://rpc.tempo.xyz/`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('tempo-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
