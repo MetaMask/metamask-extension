@@ -31,6 +31,21 @@ type ChromeMessageListener = Parameters<
 let messageListener: ChromeMessageListener | null = null;
 
 /**
+ * Serializes all Ledger actions through a single promise chain.
+ *
+ * The underlying WebHID transport (and the Ledger ETH app's `_appAPIlock`)
+ * cannot tolerate two decorated APDUs in flight at once — a concurrent call
+ * rejects with `TransportLocked` ("Ledger Device is busy (lock ...)"). Now that
+ * the Legacy handler keeps the transport open across actions (see
+ * `LedgerLegacyHandler`), concurrent messages arriving on the shared
+ * transport would overlap. Chaining here guarantees one action runs at a time
+ * for the active handler (DMK or Legacy), which is the correct semantics for a
+ * single hardware device. Each message still resolves with its own
+ * `sendResponse`; the chain only orders them.
+ */
+let actionChain: Promise<unknown> = Promise.resolve();
+
+/**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
  * invoked while `initLedger` has not yet finished, it awaits this promise
  * first so it sees the correct `activeHandler` and `currentMode` instead
@@ -80,22 +95,21 @@ function ensureMessageListener(): void {
         ? (message.params as Record<string, unknown>)
         : undefined;
 
-    activeHandler
-      .handleAction(action, params)
-      .then((result) => {
-        sendResponse({
-          success: true,
-          payload: result,
-        });
-      })
-      .catch((error: unknown) => {
-        sendResponse({
-          success: false,
-          payload: {
-            error: serializeLedgerError(error),
-          },
-        });
-      });
+    // Chain onto the in-flight action so concurrent messages never overlap on
+    // the shared transport. Each link resolves/rejects its own sendResponse.
+    actionChain = actionChain
+      .then(() => activeHandler?.handleAction(action, params))
+      .then(
+        (result) => {
+          sendResponse({ success: true, payload: result });
+        },
+        (error: unknown) => {
+          sendResponse({
+            success: false,
+            payload: { error: serializeLedgerError(error) },
+          });
+        },
+      );
 
     return true;
   };

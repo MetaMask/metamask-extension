@@ -194,6 +194,13 @@ describe('Ledger Offscreen', () => {
     mockCreate.mockResolvedValue(mockTransport);
   });
 
+  afterEach(() => {
+    // handleAction now schedules a deferred idle close instead of closing
+    // immediately; clear any leaked timers so they don't fire in later tests.
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
   describe('init', () => {
     it('sets up device listeners', async () => {
       const handler = new LedgerLegacyHandler();
@@ -803,37 +810,56 @@ describe('Ledger Offscreen', () => {
     });
 
     describe('transport cleanup', () => {
-      const flushPromises = () =>
-        new Promise((resolve) => setTimeout(resolve, 0));
-
-      it('closes transport after a successful action', async () => {
+      it('keeps the transport open across consecutive actions and closes it after the idle timeout', async () => {
         mockGetAddress.mockResolvedValue({
           publicKey: '04abcd1234',
           address: '0x1234567890abcdef',
           chainCode: 'chaincode123',
         });
 
+        jest.useFakeTimers();
+
         await sendAction(LedgerAction.getPublicKey, {
           hdPath: "m/44'/60'/0'/0/0",
         });
-        await flushPromises();
+        // Transport opened once, not closed yet (idle timer pending).
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        expect(mockTransportClose).not.toHaveBeenCalled();
 
-        expect(mockTransportClose).toHaveBeenCalled();
+        // Second action within the idle window reuses the open transport.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        expect(mockTransportClose).not.toHaveBeenCalled();
+
+        // After the idle timeout, the transport is finally closed.
+        jest.advanceTimersByTime(5_000);
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+
+        jest.useRealTimers();
       });
 
-      it('closes transport after a failed action', async () => {
+      it('closes transport after a failed action once idle', async () => {
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
         mockGetAddress.mockRejectedValue(new Error('Device error'));
 
+        jest.useFakeTimers();
+
         await sendAction(LedgerAction.getPublicKey, {
           hdPath: "m/44'/60'/0'/0/0",
         });
-        await flushPromises();
+        // The transport stays open immediately after the failure; only the idle
+        // timer is (re)scheduled.
+        expect(mockTransportClose).not.toHaveBeenCalled();
 
+        jest.advanceTimersByTime(5_000);
         expect(mockTransportClose).toHaveBeenCalled();
+
         consoleSpy.mockRestore();
+        jest.useRealTimers();
       });
     });
 

@@ -219,12 +219,12 @@ describe('LedgerRouter', () => {
       );
 
       expect(result).toBe(true);
+
+      await flushAsync();
       expect(mockDmkHandleAction).toHaveBeenCalledWith(
         LedgerAction.getPublicKey,
         { hdPath: "m/44'/60'/0'/0/0" },
       );
-
-      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
         payload: 'dmk-result',
@@ -239,12 +239,11 @@ describe('LedgerRouter', () => {
 
       getListener()(makeMessage(LedgerAction.getPublicKey), {}, sendResponse);
 
+      await flushAsync();
       expect(mockLegacyHandleAction).toHaveBeenCalledWith(
         LedgerAction.getPublicKey,
         undefined,
       );
-
-      await flushAsync();
       expect(sendResponse).toHaveBeenCalledWith({
         success: true,
         payload: 'legacy-result',
@@ -277,6 +276,50 @@ describe('LedgerRouter', () => {
       expect(sendResponse).toHaveBeenCalledWith({
         success: false,
         payload: { error: expect.objectContaining({ message: 'bad' }) },
+      });
+    });
+
+    it('serializes concurrent actions so the second runs only after the first resolves', async () => {
+      await initLedger(LedgerHandlerMode.Legacy);
+      let resolveFirst!: (value: unknown) => void;
+      const firstPending = new Promise((r) => {
+        resolveFirst = r;
+      });
+      mockLegacyHandleAction.mockReturnValueOnce(firstPending);
+      mockLegacyHandleAction.mockResolvedValueOnce('second-result');
+
+      const sendResponse1 = jest.fn();
+      const sendResponse2 = jest.fn();
+
+      getListener()(
+        makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+        {},
+        sendResponse1,
+      );
+      getListener()(
+        makeMessage(LedgerAction.getPublicKey, { hdPath: 'b' }),
+        {},
+        sendResponse2,
+      );
+
+      await flushAsync();
+      // First action is in flight; the second must not have started yet, and
+      // neither response has been sent.
+      expect(mockLegacyHandleAction).toHaveBeenCalledTimes(1);
+      expect(sendResponse1).not.toHaveBeenCalled();
+      expect(sendResponse2).not.toHaveBeenCalled();
+
+      resolveFirst('first-result');
+      await flushAsync();
+
+      expect(mockLegacyHandleAction).toHaveBeenCalledTimes(2);
+      expect(sendResponse1).toHaveBeenCalledWith({
+        success: true,
+        payload: 'first-result',
+      });
+      expect(sendResponse2).toHaveBeenCalledWith({
+        success: true,
+        payload: 'second-result',
       });
     });
   });

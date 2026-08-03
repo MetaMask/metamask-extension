@@ -25,6 +25,18 @@ import {
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
 /**
+ * How long to keep the WebHID transport open between consecutive Ledger
+ * actions before closing it.
+ *
+ * The transport used to be closed after every single action, which caused
+ * open/close churn that desynced WebHID after a handful of round-trips. We now
+ * keep it open across actions and only close it after this idle period, which
+ * releases the device back to the OS (and to other apps like Ledger Live) when
+ * the user stops interacting.
+ */
+const TRANSPORT_IDLE_TIMEOUT_MS = 5_000;
+
+/**
  * Checks if WebHID API is available in this environment.
  *
  * @returns True if WebHID is supported.
@@ -91,6 +103,11 @@ export class LedgerLegacyHandler {
   private hidDisconnectListener:
     | ((event: { device: HIDDevice }) => void)
     | null = null;
+
+  // Idle timer that closes the transport after a period of inactivity, so the
+  // device is released back to the OS between bursts of actions. Cleared on
+  // each new action and in `destroy()`.
+  private idleCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Attempts to open a transport to an already-permitted Ledger device.
@@ -173,6 +190,7 @@ export class LedgerLegacyHandler {
    * Clears state synchronously first to prevent races with reconnection.
    */
   private async closeTransport(): Promise<void> {
+    this.clearIdleClose();
     const transportToClose = this.transport;
     this.transport = null;
     this.ethApp = null;
@@ -538,9 +556,10 @@ export class LedgerLegacyHandler {
    * Public entry point for processing Ledger actions.
    *
    * Used by the centralized ledger-router so both DMK and Legacy handlers
-   * expose the same `handleAction` surface for the message listener.
-   * Closes the underlying WebHID transport after every action so the device
-   * is released back to the OS even when the action fails.
+   * expose the same `handleAction` surface for the message listener. The
+   * underlying WebHID transport is kept open across consecutive actions to
+   * avoid the open/close churn that desyncs WebHID, and is closed after an idle
+   * period (`TRANSPORT_IDLE_TIMEOUT_MS`) to release the device back to the OS.
    *
    * @param action - The Ledger action to perform (e.g. `getPublicKey`,
    * `signTransaction`). Must be a member of `LedgerAction`.
@@ -555,10 +574,36 @@ export class LedgerLegacyHandler {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown> {
+    this.clearIdleClose();
     try {
       return await this.handleLedgerAction(action, params);
     } finally {
-      await this.closeTransport();
+      this.scheduleIdleClose();
+    }
+  }
+
+  /**
+   * Schedules a deferred `closeTransport()` after the idle timeout. Replaces
+   * the previous per-action close, which caused WebHID desync from open/close
+   * churn. No-op if there is no transport to close.
+   */
+  private scheduleIdleClose(): void {
+    this.clearIdleClose();
+    this.idleCloseTimer = setTimeout(() => {
+      this.idleCloseTimer = null;
+      this.closeTransport();
+    }, TRANSPORT_IDLE_TIMEOUT_MS);
+  }
+
+  /**
+   * Cancels any pending idle close. Called at the start of each action and in
+   * `destroy()` so a scheduled close never fires on a freshly-(re)opened
+   * transport or after the handler has been torn down.
+   */
+  private clearIdleClose(): void {
+    if (this.idleCloseTimer) {
+      clearTimeout(this.idleCloseTimer);
+      this.idleCloseTimer = null;
     }
   }
 
@@ -570,6 +615,8 @@ export class LedgerLegacyHandler {
    * Safe to call multiple times.
    */
   async destroy(): Promise<void> {
+    // Cancel any pending idle close before tearing down listeners/transport.
+    this.clearIdleClose();
     if (this.hidConnectListener && typeof navigator !== 'undefined') {
       navigator.hid.removeEventListener('connect', this.hidConnectListener);
       this.hidConnectListener = null;

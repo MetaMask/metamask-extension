@@ -17,6 +17,24 @@ import {
 const MESSAGE_TIMEOUT = 4000;
 
 /**
+ * Timeout for `getPublicKey` requests sent to the offscreen document.
+ *
+ * `getPublicKey` does not require user interaction on the device (the address
+ * is returned without a confirmation prompt), so a relatively short timeout is
+ * appropriate. If the offscreen/WebHID round-trip wedges, this converts the
+ * otherwise-indefinite hang into a recoverable rejection.
+ */
+const GET_PUBLIC_KEY_TIMEOUT = 30_000;
+
+/**
+ * Timeout for signing requests sent to the offscreen document.
+ *
+ * Signing requires the user to physically confirm on the Ledger device, which
+ * can take longer; allow up to 5 minutes before giving up.
+ */
+const SIGN_TIMEOUT = 300_000;
+
+/**
  * The options for the LedgerOffscreenBridge are empty because the bridge
  * doesn't require any options to be passed in.
  */
@@ -110,10 +128,13 @@ export class LedgerOffscreenBridge implements Omit<
     address: string;
     chainCode?: string;
   }> {
-    return this.#sendMessage({
-      action: LedgerAction.getPublicKey,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getPublicKey,
+        params,
+      },
+      { timeout: GET_PUBLIC_KEY_TIMEOUT },
+    );
   }
 
   deviceSignTransaction(params: { hdPath: string; tx: string }): Promise<{
@@ -121,29 +142,38 @@ export class LedgerOffscreenBridge implements Omit<
     s: string;
     r: string;
   }> {
-    return this.#sendMessage({
-      action: LedgerAction.signTransaction,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signTransaction,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT },
+    );
   }
 
   deviceSignMessage(params: {
     hdPath: string;
     message: string;
   }): Promise<{ v: number; s: string; r: string }> {
-    return this.#sendMessage({
-      action: LedgerAction.signPersonalMessage,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signPersonalMessage,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT },
+    );
   }
 
   deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
-    return this.#sendMessage({
-      action: LedgerAction.signTypedData,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signTypedData,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT },
+    );
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
@@ -155,7 +185,11 @@ export class LedgerOffscreenBridge implements Omit<
 
       if (timeout) {
         responseTimeout = setTimeout(() => {
-          reject(new Error('Ledger iframe timeout'));
+          reject(
+            new Error(
+              `Ledger device did not respond to "${message.action}" within ${timeout}ms`,
+            ),
+          );
         }, timeout);
       }
 
