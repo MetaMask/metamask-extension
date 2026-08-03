@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
+import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -8,9 +9,6 @@ import {
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
-import { useRampsOrders } from '../../hooks/ramps/useRampsOrders';
-import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
-import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
 
 type Props = {
@@ -34,32 +32,18 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
-  const { orders: rampsOrders, getOrderById } = useRampsOrders();
-  const rampsOrderById = txIdentifier ? getOrderById(txIdentifier) : undefined;
-  const rampsOrder =
-    rampsOrderById ??
-    (txIdentifier
-      ? rampsOrders.find(
-          (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
-        )
-      : undefined);
-
   const apiTransaction = useApiTransaction({
     chainId,
     txHash:
-      isEvm && selectedAddress && !rampsOrderById ? txIdentifier : undefined,
+      isEvm &&
+      selectedAddress &&
+      txIdentifier &&
+      isValidTransactionHash(txIdentifier)
+        ? txIdentifier
+        : undefined,
   });
 
   const transaction = useMemo(() => {
-    const chainFallback =
-      chainId && chainId.includes(':') ? chainId : undefined;
-    const mappedRampsOrder = rampsOrder
-      ? mapRampsOrderSafely(rampsOrder, chainFallback)
-      : undefined;
-    if (mappedRampsOrder) {
-      return mappedRampsOrder;
-    }
-
     const apiActivityItem =
       apiTransaction && selectedAddress
         ? mapApiTransaction({
@@ -94,26 +78,18 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [
-    apiTransaction,
-    chainId,
-    localActivityItem,
-    nonEvmActivityItem,
-    rampsOrder,
-    selectedAddress,
-  ]);
+  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
-      <div className="shrink-0 px-4 py-4">
-        <Header item={transaction} onBack={onBack} />
-      </div>
-
-      <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
-        <ErrorBoundary>
-          <TemplateLoader item={transaction} />
-        </ErrorBoundary>
-      </div>
+      <ErrorBoundary>
+        <TemplateLoader
+          item={transaction}
+          chainId={chainId}
+          txIdentifier={txIdentifier}
+          onBack={onBack}
+        />
+      </ErrorBoundary>
     </div>
   );
 }
