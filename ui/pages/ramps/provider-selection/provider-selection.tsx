@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   Text,
   TextColor,
   TextVariant,
@@ -21,8 +19,8 @@ import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallba
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/determinePreferredProvider';
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
-import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import RampsListSkeleton from '../components/ramps-list-skeleton';
 import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
@@ -347,14 +345,7 @@ export function RampsProviderSelectionScreen() {
         testId="ramps-provider-selection-loading"
         backButtonTestId={backButtonTestId}
       >
-        <Box
-          className="flex-1"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-        >
-          <Spinner className="h-8 w-8" />
-        </Box>
+        <RampsListSkeleton testId="ramps-provider-selection-skeleton" />
       </RampsSelectionPage>
     );
   }
