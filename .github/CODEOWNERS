@@ -341,4 +341,3 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 /shared/lib/deep-links/routes/route*                          @MetaMask/extension-security-team
 /ui/helpers/utils/resolve-deep-link-href*                     @MetaMask/extension-security-team
 /ui/pages/deep-link/                                          @MetaMask/extension-security-team
-/ui/pages/onboarding-flow/hooks/useOnboardingCompletion*      @MetaMask/extension-security-team
