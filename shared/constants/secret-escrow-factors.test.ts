@@ -1,8 +1,8 @@
 import {
+  getAddableSecretEscrowFactorOptions,
   getAvailableSecretEscrowFactorOptions,
-  selectionIncludesPasskey,
-  selectionIncludesPassword,
-  selectionRequiresTypedPassword,
+  isPasskeyFactor,
+  isPasswordFactor,
   SecretEscrowFactorKind,
   SecretEscrowFactorOptionId,
   SECRET_ESCROW_FACTOR_OPTIONS,
@@ -21,21 +21,26 @@ describe('secret-escrow-factors', () => {
     ).toHaveLength(SECRET_ESCROW_FACTOR_OPTIONS.length);
   });
 
-  it('derives password / passkey requirements from factor sets', () => {
-    expect(selectionIncludesPasskey([SecretEscrowFactorKind.Passkey])).toBe(
-      true,
-    );
-    expect(selectionIncludesPassword([SecretEscrowFactorKind.Password])).toBe(
-      true,
-    );
+  it('exposes only single-factor options', () => {
     expect(
-      selectionRequiresTypedPassword([SecretEscrowFactorKind.Passkey]),
-    ).toBe(false);
+      SECRET_ESCROW_FACTOR_OPTIONS.map((option) => option.id),
+    ).toStrictEqual([
+      SecretEscrowFactorOptionId.Passkey,
+      SecretEscrowFactorOptionId.Password,
+    ]);
+  });
+
+  it('filters addable options by enrolled factors', () => {
     expect(
-      selectionRequiresTypedPassword([
-        SecretEscrowFactorKind.Password,
+      getAddableSecretEscrowFactorOptions({ passkeyAvailable: true }, [
         SecretEscrowFactorKind.Passkey,
-      ]),
-    ).toBe(true);
+      ]).map((option) => option.id),
+    ).toStrictEqual([SecretEscrowFactorOptionId.Password]);
+  });
+
+  it('identifies factor kinds', () => {
+    expect(isPasskeyFactor(SecretEscrowFactorKind.Passkey)).toBe(true);
+    expect(isPasswordFactor(SecretEscrowFactorKind.Password)).toBe(true);
+    expect(isPasskeyFactor(SecretEscrowFactorKind.Password)).toBe(false);
   });
 });

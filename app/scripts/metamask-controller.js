@@ -2952,6 +2952,8 @@ export default class MetamaskController extends EventEmitter {
         this.generateSecretEscrowExportChallenge.bind(this),
       createSecretEscrowPasswordFactor:
         this.createSecretEscrowPasswordFactor.bind(this),
+      addSecretEscrowUserPasswordFactor:
+        this.addSecretEscrowUserPasswordFactor.bind(this),
       enrollSecretEscrowPasskey: this.enrollSecretEscrowPasskey.bind(this),
       recoverPasswordWithSecretEscrow:
         this.recoverPasswordWithSecretEscrow.bind(this),
@@ -4514,6 +4516,50 @@ export default class MetamaskController extends EventEmitter {
       factor: { type: 'password', password },
       password,
     });
+  }
+
+  /**
+   * Rotates the vault password and escrow password factor during social-create
+   * when the user adds a typed password after passkey-first setup (which used a
+   * generated vault password registered as a technical password factor).
+   *
+   * @param {string} currentPassword - Current vault password (often generated).
+   * @param {string} newPassword - User-chosen password.
+   * @returns {Promise<void>}
+   */
+  async addSecretEscrowUserPasswordFactor(currentPassword, newPassword) {
+    if (!this.onboardingController.getIsSocialLoginFlow()) {
+      throw new Error(
+        'Secret escrow password factor is only available for social login',
+      );
+    }
+    if (!this.secretEscrowController.isEnrolled()) {
+      throw new Error('Secret escrow is not enrolled');
+    }
+    await this.keyringController.verifyPassword(currentPassword);
+
+    await this.secretEscrowController.startExport('password');
+    const secret = await this.secretEscrowController.unlockWithFactor({
+      factorId: 'password',
+      proof: { type: 'password', password: currentPassword },
+    });
+    try {
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:changePassword',
+        newPassword,
+        currentPassword,
+      );
+      await this.secretEscrowController.addFactor({
+        factorId: 'password',
+        factor: { type: 'password', password: newPassword },
+      });
+      await this.secretEscrowController.updateWrappedPassword({
+        password: newPassword,
+        secret,
+      });
+    } finally {
+      secret.fill(0);
+    }
   }
 
   /**

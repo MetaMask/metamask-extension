@@ -3026,10 +3026,22 @@
     "message": "Choose how to unlock"
   },
   "secretEscrowFactorPickerDescription": {
-    "message": "You can unlock with any factor you set up. Add more later."
+    "message": "Pick one unlock method to start. You can add more after."
+  },
+  "secretEscrowFactorManageTitle": {
+    "message": "Your unlock methods"
+  },
+  "secretEscrowFactorManageDescription": {
+    "message": "You can unlock with any method you set up. Add another now, or continue."
+  },
+  "secretEscrowFactorEnrolledHeading": {
+    "message": "Set up"
+  },
+  "secretEscrowFactorAddHeading": {
+    "message": "Add another"
   },
   "secretEscrowFactorPasskeyTitle": {
-    "message": "$1 only",
+    "message": "$1",
     "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "secretEscrowFactorPasskeyDescription": {
@@ -3037,18 +3049,10 @@
     "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "secretEscrowFactorPasswordTitle": {
-    "message": "Password only"
+    "message": "Password"
   },
   "secretEscrowFactorPasswordDescription": {
     "message": "Unlock with a password you create."
-  },
-  "secretEscrowFactorPasskeyAndPasswordTitle": {
-    "message": "$1 and password",
-    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "secretEscrowFactorPasskeyAndPasswordDescription": {
-    "message": "Unlock with either $1 or your password.",
-    "description": "$1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -11,10 +12,13 @@ import {
   getFirstTimeFlowType,
   getCompletedMetaMetricsOnboarding,
   getIsSocialLoginFlow,
+  getIsSecretEscrowPasskeyEnrolled,
 } from '../../../selectors';
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { SecretEscrowFactorKind } from '../../../../shared/constants/secret-escrow-factors';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { markSocialCreateUserFactor } from '../social-create-wallet-password';
 
 /**
  * Onboarding wrapper that renders the reusable passkey setup content and
@@ -26,6 +30,9 @@ export default function SetupPasskey() {
   const isFirefox = useIsFirefox();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isSecretEscrowPasskeyEnrolled = useSelector(
+    getIsSecretEscrowPasskeyEnrolled,
+  );
   const completedMetaMetricsOnboarding = useSelector(
     getCompletedMetaMetricsOnboarding,
   );
@@ -34,8 +41,24 @@ export default function SetupPasskey() {
       ? location.state.password
       : undefined;
   const requirePasskey = Boolean(location.state?.requirePasskey);
+  const returnToManageFactors = Boolean(location.state?.returnToManageFactors);
 
   const handleNext = useCallback(() => {
+    if (
+      returnToManageFactors &&
+      isSocialLoginFlow &&
+      firstTimeFlowType === FirstTimeFlowType.socialCreate
+    ) {
+      if (isSecretEscrowPasskeyEnrolled) {
+        markSocialCreateUserFactor(SecretEscrowFactorKind.Passkey);
+      }
+      navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, {
+        replace: true,
+        state: { manageFactors: true },
+      });
+      return;
+    }
+
     let nextRoute: string;
 
     if (isSocialLoginFlow) {
@@ -61,9 +84,11 @@ export default function SetupPasskey() {
   }, [
     firstTimeFlowType,
     isFirefox,
+    isSecretEscrowPasskeyEnrolled,
     isSocialLoginFlow,
     navigate,
     completedMetaMetricsOnboarding,
+    returnToManageFactors,
   ]);
 
   return (

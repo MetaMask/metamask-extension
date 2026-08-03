@@ -1,5 +1,11 @@
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { Box } from '@metamask/design-system-react';
@@ -26,9 +32,11 @@ import {
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { generateWalletPassword } from '../../../../shared/lib/generate-wallet-password';
 import {
+  getAddableSecretEscrowFactorOptions,
   getAvailableSecretEscrowFactorOptions,
-  selectionIncludesPasskey,
-  selectionRequiresTypedPassword,
+  isPasskeyFactor,
+  isPasswordFactor,
+  SecretEscrowFactorKind,
   type SecretEscrowFactorOption,
 } from '../../../../shared/constants/secret-escrow-factors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -41,10 +49,12 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
+  addSecretEscrowUserPasswordFactor,
+  createSecretEscrowPasswordFactor,
+  forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
   setDataCollectionForMarketing,
   setMarketingConsent,
-  createSecretEscrowPasswordFactor,
 } from '../../../store/actions';
 import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -54,6 +64,13 @@ import { CreatePasswordForm } from '../../create-password-form';
 import { useDispatch } from '../../../store/hooks';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import UnlockFactorPicker from '../unlock-factor-picker';
+import {
+  clearSocialCreateFactorSession,
+  getSocialCreateUserFactors,
+  getSocialCreateWalletPassword,
+  markSocialCreateUserFactor,
+  setSocialCreateWalletPassword,
+} from '../social-create-wallet-password';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -64,10 +81,14 @@ type CreatePasswordProps = {
   secretRecoveryPhrase: string;
 };
 
-type SocialCreateStep = 'choose-factors' | 'create-password' | 'creating';
+type SocialCreateStep =
+  | 'choose-factors'
+  | 'manage-factors'
+  | 'create-password'
+  | 'creating';
 
 type CreateWalletFactorOptions = {
-  /** Register the typed/generated password as an escrow factor. */
+  /** Register the vault password as an escrow password factor. */
   registerPasswordFactor: boolean;
   /** Navigate to passkey setup after vault creation. */
   setupPasskey: boolean;
@@ -86,8 +107,19 @@ export default function CreatePassword({
   const [createError, setCreateError] = useState<string | null>(null);
   const [selectedFactorOption, setSelectedFactorOption] =
     useState<SecretEscrowFactorOption | null>(null);
-  const [socialCreateStep, setSocialCreateStep] =
-    useState<SocialCreateStep>('choose-factors');
+  const [addingPasswordAfterCreate, setAddingPasswordAfterCreate] =
+    useState(false);
+  const [enrolledUserFactors, setEnrolledUserFactors] = useState(() =>
+    getSocialCreateUserFactors(),
+  );
+  const location = useLocation();
+  const manageFromNavigation = Boolean(location.state?.manageFactors);
+  const [socialCreateStep, setSocialCreateStep] = useState<SocialCreateStep>(
+    () =>
+      manageFromNavigation || getSocialCreateUserFactors().length > 0
+        ? 'manage-factors'
+        : 'choose-factors',
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFirefox = useIsFirefox();
@@ -122,19 +154,56 @@ export default function CreatePassword({
   const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
   const analyticsIframeUrl = `https://start.metamask.io/?${urlSearchParams.toString()}`;
 
-  const showFactorPicker =
+  const isSocialCreateFactorFlow =
     isSocialLoginFlow &&
     isSecretEscrowPasskeyAvailable &&
-    firstTimeFlowType === FirstTimeFlowType.socialCreate &&
-    !currentKeyring;
+    firstTimeFlowType === FirstTimeFlowType.socialCreate;
 
-  const factorOptions = useMemo(
-    () =>
-      getAvailableSecretEscrowFactorOptions({
-        passkeyAvailable: isSecretEscrowPasskeyAvailable,
-      }),
+  // Re-enter manage mode when returning from passkey setup (location state).
+  const resolvedSocialCreateStep: SocialCreateStep =
+    manageFromNavigation &&
+    socialCreateStep !== 'create-password' &&
+    socialCreateStep !== 'creating'
+      ? 'manage-factors'
+      : socialCreateStep;
+
+  const displayedEnrolledFactors =
+    manageFromNavigation || resolvedSocialCreateStep === 'manage-factors'
+      ? getSocialCreateUserFactors()
+      : enrolledUserFactors;
+
+  const showFactorPicker = isSocialCreateFactorFlow && !currentKeyring;
+  const showFactorManager =
+    isSocialCreateFactorFlow &&
+    Boolean(currentKeyring) &&
+    (resolvedSocialCreateStep === 'manage-factors' ||
+      displayedEnrolledFactors.length > 0 ||
+      Boolean(getSocialCreateWalletPassword()));
+
+  const factorAvailability = useMemo(
+    () => ({
+      passkeyAvailable: isSecretEscrowPasskeyAvailable,
+    }),
     [isSecretEscrowPasskeyAvailable],
   );
+
+  const factorOptions = useMemo(
+    () => getAvailableSecretEscrowFactorOptions(factorAvailability),
+    [factorAvailability],
+  );
+
+  const displayedAddableOptions = useMemo(
+    () =>
+      getAddableSecretEscrowFactorOptions(
+        factorAvailability,
+        displayedEnrolledFactors,
+      ),
+    [factorAvailability, displayedEnrolledFactors],
+  );
+
+  const syncEnrolledFactorsFromSession = useCallback(() => {
+    setEnrolledUserFactors(getSocialCreateUserFactors());
+  }, []);
 
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
@@ -152,7 +221,18 @@ export default function CreatePassword({
       !newAccountCreationInProgress &&
       !isWalletResetInProgress
     ) {
-      // route to passkey setup
+      // Stay on create-password for social-create factor manage flow.
+      if (
+        isSocialCreateFactorFlow &&
+        (resolvedSocialCreateStep === 'manage-factors' ||
+          resolvedSocialCreateStep === 'create-password' ||
+          resolvedSocialCreateStep === 'creating' ||
+          getSocialCreateWalletPassword() ||
+          getSocialCreateUserFactors().length > 0)
+      ) {
+        return;
+      }
+
       if (
         isPasskeyFeatureAvailable &&
         (firstTimeFlowType === FirstTimeFlowType.import ||
@@ -179,7 +259,6 @@ export default function CreatePassword({
           !isFirefox &&
           firstTimeFlowType === FirstTimeFlowType.socialImport
         ) {
-          // we don't display the metametrics screen for social login flows if the user is not on firefox
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
@@ -211,11 +290,11 @@ export default function CreatePassword({
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
     isSecretEscrowPasskeyAvailable,
+    isSocialCreateFactorFlow,
+    resolvedSocialCreateStep,
   ]);
 
   useEffect(() => {
-    // validate social login authenticated state on mount
-    // before user attempts to create a new wallet
     (async () => {
       if (isSocialLoginFlow) {
         await validateSocialLoginAuthenticatedState();
@@ -274,6 +353,14 @@ export default function CreatePassword({
     }
   };
 
+  const goToManageFactors = useCallback(() => {
+    syncEnrolledFactorsFromSession();
+    setAddingPasswordAfterCreate(false);
+    setSelectedFactorOption(null);
+    setSocialCreateStep('manage-factors');
+    setNewAccountCreationInProgress(false);
+  }, [syncEnrolledFactorsFromSession]);
+
   const handleCreateNewWallet = async (
     password: string,
     termsChecked: boolean,
@@ -307,6 +394,7 @@ export default function CreatePassword({
     ) {
       try {
         await createSecretEscrowPasswordFactor(password);
+        await forceUpdateMetamaskState(dispatch);
       } catch (error) {
         log.error('Failed to create secret escrow password factor', error);
       }
@@ -326,7 +414,9 @@ export default function CreatePassword({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: accountTypeForMetrics,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          unlock_factors: selectedFactorOption?.factors ?? [],
+          unlock_factors: selectedFactorOption
+            ? [selectedFactorOption.factor]
+            : [],
         })
         .build(),
     );
@@ -346,8 +436,6 @@ export default function CreatePassword({
         .build(),
     );
     if (isSocialLoginFlow) {
-      // track analytics preference selected event for social login users
-      // as social login users will not see the metametrics screen
       trackEvent(
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Onboarding)
@@ -371,8 +459,12 @@ export default function CreatePassword({
           state: {
             password,
             requirePasskey: factorOptionsConfig.requirePasskey,
+            returnToManageFactors: true,
           },
         });
+      } else if (isSecretEscrowPasskeyAvailable) {
+        // Password-first (or other non-passkey) factor setup → manage screen.
+        goToManageFactors();
       } else {
         navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
       }
@@ -400,8 +492,17 @@ export default function CreatePassword({
     event.preventDefault();
 
     if (
-      showFactorPicker &&
-      socialCreateStep === 'create-password' &&
+      isSocialCreateFactorFlow &&
+      resolvedSocialCreateStep === 'create-password' &&
+      addingPasswordAfterCreate
+    ) {
+      goToManageFactors();
+      return;
+    }
+
+    if (
+      (showFactorPicker || showFactorManager) &&
+      resolvedSocialCreateStep === 'create-password' &&
       selectedFactorOption
     ) {
       setSelectedFactorOption(null);
@@ -410,7 +511,6 @@ export default function CreatePassword({
     }
 
     if (firstTimeFlowType === FirstTimeFlowType.import) {
-      // for SRP import flow, we will just navigate back to the import SRP page
       navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
     } else {
       await resetOnboardingAndReturn();
@@ -422,24 +522,59 @@ export default function CreatePassword({
     password: string,
     termsChecked: boolean,
   ) => {
-    const includesPasskey = selectionIncludesPasskey(option.factors);
+    setSocialCreateWalletPassword(password);
+
     await handleCreateNewWallet(password, termsChecked, {
-      registerPasswordFactor: selectionRequiresTypedPassword(option.factors),
-      setupPasskey: includesPasskey,
-      requirePasskey: includesPasskey,
+      // Always register a password factor (typed or generated) so later
+      // password rotation / wrap updates can unlock S without WebAuthn.
+      registerPasswordFactor: true,
+      setupPasskey: isPasskeyFactor(option.factor),
+      requirePasskey: isPasskeyFactor(option.factor),
     });
+
+    if (isPasswordFactor(option.factor)) {
+      markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+      syncEnrolledFactorsFromSession();
+    }
   };
 
   const handleFactorOptionSelect = async (option: SecretEscrowFactorOption) => {
     setCreateError(null);
     setSelectedFactorOption(option);
 
-    if (selectionRequiresTypedPassword(option.factors)) {
+    if (
+      currentKeyring &&
+      resolvedSocialCreateStep === 'manage-factors'
+    ) {
+      if (isPasswordFactor(option.factor)) {
+        setAddingPasswordAfterCreate(true);
+        setSocialCreateStep('create-password');
+        return;
+      }
+      if (isPasskeyFactor(option.factor)) {
+        const password = getSocialCreateWalletPassword();
+        if (!password) {
+          setCreateError('Missing wallet password for passkey setup');
+          return;
+        }
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, {
+          replace: true,
+          state: {
+            password,
+            requirePasskey: false,
+            returnToManageFactors: true,
+          },
+        });
+        return;
+      }
+    }
+
+    if (isPasswordFactor(option.factor)) {
       setSocialCreateStep('create-password');
       return;
     }
 
-    // Passkey-only (and future non-password factors): generate vault password.
+    // Passkey-first: generate vault password, create wallet, then passkey setup.
     setSocialCreateStep('creating');
     setIsSubmitting(true);
     try {
@@ -452,7 +587,7 @@ export default function CreatePassword({
       const password = generateWalletPassword();
       await runCreateWithFactorOption(option, password, false);
     } catch (error) {
-      log.error('Error creating wallet with selected unlock factors', error);
+      log.error('Error creating wallet with selected unlock factor', error);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.WalletSetupFailure)
           .addCategory(MetaMetricsEventCategory.Onboarding)
@@ -469,6 +604,18 @@ export default function CreatePassword({
     }
   };
 
+  const handleAddPasswordAfterCreate = async (newPassword: string) => {
+    const currentPassword = getSocialCreateWalletPassword();
+    if (!currentPassword) {
+      throw new Error('Missing current wallet password');
+    }
+    await addSecretEscrowUserPasswordFactor(currentPassword, newPassword);
+    setSocialCreateWalletPassword(newPassword);
+    markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+    await forceUpdateMetamaskState(dispatch);
+    goToManageFactors();
+  };
+
   const handleCreatePassword = async (
     password: string,
     termsChecked: boolean,
@@ -479,12 +626,13 @@ export default function CreatePassword({
 
     setIsSubmitting(true);
     try {
-      // If secretRecoveryPhrase is defined we are in import wallet flow
       if (
         secretRecoveryPhrase &&
         firstTimeFlowType === FirstTimeFlowType.import
       ) {
         await handleWalletImport(password);
+      } else if (addingPasswordAfterCreate) {
+        await handleAddPasswordAfterCreate(password);
       } else if (selectedFactorOption) {
         await runCreateWithFactorOption(
           selectedFactorOption,
@@ -492,7 +640,6 @@ export default function CreatePassword({
           termsChecked,
         );
       } else {
-        // Legacy / non-picker create (SRP or social without escrow passkey)
         await handleCreateNewWallet(password, termsChecked);
       }
     } catch (error) {
@@ -509,7 +656,15 @@ export default function CreatePassword({
     }
   };
 
-  if (showFactorPicker && socialCreateStep === 'creating') {
+  const handleManageContinue = () => {
+    clearSocialCreateFactorSession();
+    navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
+  };
+
+  if (
+    (showFactorPicker || showFactorManager) &&
+    resolvedSocialCreateStep === 'creating'
+  ) {
     return (
       <Box className="h-full w-full" data-testid="create-password-creating">
         <LoadingScreen
@@ -520,11 +675,27 @@ export default function CreatePassword({
     );
   }
 
-  if (showFactorPicker && socialCreateStep === 'choose-factors') {
+  if (showFactorPicker && resolvedSocialCreateStep === 'choose-factors') {
     return (
       <UnlockFactorPicker
         options={factorOptions}
         onSelect={handleFactorOptionSelect}
+        onBack={handleBackClick}
+      />
+    );
+  }
+
+  if (
+    (showFactorManager || showFactorPicker) &&
+    resolvedSocialCreateStep === 'manage-factors'
+  ) {
+    return (
+      <UnlockFactorPicker
+        manageMode
+        options={displayedAddableOptions}
+        enrolledFactors={displayedEnrolledFactors}
+        onSelect={handleFactorOptionSelect}
+        onContinue={handleManageContinue}
         onBack={handleBackClick}
       />
     );

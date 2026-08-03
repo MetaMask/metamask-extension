@@ -22,6 +22,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { clearSocialCreateFactorSession } from '../social-create-wallet-password';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
@@ -56,11 +57,19 @@ jest.mock('../../../../shared/lib/environment', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn(() => ({
+  pathname: '/onboarding/create-password',
+  state: null,
+  key: '',
+  search: '',
+  hash: '',
+}));
 
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -104,12 +113,24 @@ describe('Onboarding Create Password', () => {
 
   beforeEach(() => {
     setBackgroundConnection(backgroundConnectionMock as never);
+    clearSocialCreateFactorSession();
+    mockCreateNewAccount.mockResolvedValue('');
+    mockImportWithRecoveryPhrase.mockResolvedValue('');
+    mockUseLocation.mockReturnValue({
+      pathname: '/onboarding/create-password',
+      state: null,
+      key: '',
+      search: '',
+      hash: '',
+    });
+    jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(true);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(true);
     jest.mocked(useIsFirefox).mockReturnValue(false);
+    clearSocialCreateFactorSession();
   });
 
   describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
@@ -1173,6 +1194,7 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
+        expect(mockCreateNewAccount).toHaveBeenCalledWith(password);
         expect(mockUseNavigate).toHaveBeenCalledWith(
           ONBOARDING_DOWNLOAD_APP_ROUTE,
           { replace: true },
@@ -1180,10 +1202,68 @@ describe('Onboarding Create Password', () => {
       });
     });
 
+    it('shows manage screen after password-only social create', async () => {
+      const {
+        markSocialCreateUserFactor,
+        setSocialCreateWalletPassword,
+      } = jest.requireActual(
+        '../social-create-wallet-password',
+      ) as typeof import('../social-create-wallet-password');
+      const { SecretEscrowFactorKind } = jest.requireActual(
+        '../../../../shared/constants/secret-escrow-factors',
+      ) as typeof import('../../../../shared/constants/secret-escrow-factors');
+      setSocialCreateWalletPassword('12345678');
+      markSocialCreateUserFactor(SecretEscrowFactorKind.Password);
+      mockUseLocation.mockReturnValue({
+        pathname: '/onboarding/create-password',
+        state: { manageFactors: true },
+        key: '',
+        search: '',
+        hash: '',
+      });
+
+      const store = configureMockStore([thunk])({
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          isSeedlessOnboardingUserAuthenticated: true,
+          authConnection: 'google',
+          socialLoginEmail: 'user@example.com',
+        },
+      });
+
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('unlock-factor-manager')).toBeInTheDocument();
+      });
+      expect(getByTestId('unlock-factor-enrolled-password')).toBeInTheDocument();
+      expect(getByTestId('unlock-factor-option-passkey')).toBeInTheDocument();
+      fireEvent.click(getByTestId('unlock-factor-continue-button'));
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_DOWNLOAD_APP_ROUTE,
+        { replace: true },
+      );
+    });
+
     it('auto-creates a passkey-only social wallet and requires passkey setup', async () => {
       jest
         .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
         .mockReturnValue(jest.fn().mockResolvedValue(true));
+      jest
+        .spyOn(Actions, 'createSecretEscrowPasswordFactor')
+        .mockResolvedValue(undefined);
+      jest
+        .spyOn(Actions, 'forceUpdateMetamaskState')
+        .mockResolvedValue(undefined);
       const store = configureMockStore([thunk])(socialLoginState);
       const { queryByTestId, getByTestId } = renderWithProvider(
         <CreatePassword
@@ -1203,6 +1283,7 @@ describe('Onboarding Create Password', () => {
         expect(mockCreateNewAccount).toHaveBeenCalledWith(
           expect.stringMatching(/^[A-Za-z0-9_-]+$/u),
         );
+        expect(Actions.createSecretEscrowPasswordFactor).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(
           ONBOARDING_SETUP_PASSKEY_ROUTE,
           {
@@ -1210,6 +1291,7 @@ describe('Onboarding Create Password', () => {
             state: {
               password: expect.stringMatching(/^[A-Za-z0-9_-]+$/u),
               requirePasskey: true,
+              returnToManageFactors: true,
             },
           },
         );
@@ -1238,15 +1320,9 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('creates with password then requires passkey when both factors are selected', async () => {
-      jest
-        .spyOn(Actions, 'getIsSeedlessOnboardingUserAuthenticated')
-        .mockReturnValue(jest.fn().mockResolvedValue(true));
-      jest
-        .spyOn(Actions, 'createSecretEscrowPasswordFactor')
-        .mockResolvedValue(undefined);
+    it('does not offer a combined passkey and password option', () => {
       const store = configureMockStore([thunk])(socialLoginState);
-      const { queryByTestId, getByTestId } = renderWithProvider(
+      const { queryByTestId } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
@@ -1255,38 +1331,10 @@ describe('Onboarding Create Password', () => {
         store,
       );
 
-      fireEvent.click(getByTestId('unlock-factor-option-passkey_and_password'));
-
-      await waitFor(() => {
-        expect(queryByTestId('create-password-new-input')).toBeInTheDocument();
-      });
-
-      const password = '12345678';
-      fireEvent.change(
-        queryByTestId('create-password-new-input') as HTMLElement,
-        { target: { value: password } },
-      );
-      fireEvent.change(
-        queryByTestId('create-password-confirm-input') as HTMLElement,
-        { target: { value: password } },
-      );
-      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
-
-      await waitFor(() => {
-        expect(Actions.createSecretEscrowPasswordFactor).toHaveBeenCalledWith(
-          password,
-        );
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_SETUP_PASSKEY_ROUTE,
-          {
-            replace: true,
-            state: {
-              password,
-              requirePasskey: true,
-            },
-          },
-        );
-      });
+      expect(queryByTestId('unlock-factor-picker')).toBeInTheDocument();
+      expect(
+        queryByTestId('unlock-factor-option-passkey_and_password'),
+      ).not.toBeInTheDocument();
     });
   });
 

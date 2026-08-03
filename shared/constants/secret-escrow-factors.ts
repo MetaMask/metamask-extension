@@ -1,8 +1,9 @@
 /**
  * Unlock factors for social-login secret escrow (1-of-N).
  *
- * Add new kinds here (e.g. `totp`) and corresponding picker options — the
- * onboarding UI reads {@link SECRET_ESCROW_FACTOR_OPTIONS}.
+ * Each onboarding option maps to a **single** factor. Users pick one first,
+ * then can add more from the manage screen. Append new kinds (e.g. `totp`)
+ * here and in {@link SECRET_ESCROW_FACTOR_OPTIONS}.
  */
 export const SecretEscrowFactorKind = {
   Password: 'password',
@@ -14,12 +15,11 @@ export type SecretEscrowFactorKind =
   (typeof SecretEscrowFactorKind)[keyof typeof SecretEscrowFactorKind];
 
 /**
- * Stable ids for onboarding factor presets (not the same as escrow factor ids).
+ * Stable ids for single-factor onboarding options.
  */
 export const SecretEscrowFactorOptionId = {
   Passkey: 'passkey',
   Password: 'password',
-  PasskeyAndPassword: 'passkey_and_password',
   // Totp: 'totp',
 } as const;
 
@@ -32,15 +32,15 @@ export type SecretEscrowFactorOptionAvailability = {
 
 export type SecretEscrowFactorOption = {
   id: SecretEscrowFactorOptionId;
-  /** Escrow factors enrolled for this choice (1-of-N). */
-  factors: readonly SecretEscrowFactorKind[];
+  /** Single escrow factor kind for this option. */
+  factor: SecretEscrowFactorKind;
   titleKey: string;
   descriptionKey: string;
   available: (context: SecretEscrowFactorOptionAvailability) => boolean;
 };
 
 /**
- * Ordered onboarding choices for social-create unlock factors.
+ * Ordered single-factor choices for social-create unlock setup.
  *
  * Future factors (TOTP, etc.) should be appended here with availability gates.
  */
@@ -48,27 +48,17 @@ export const SECRET_ESCROW_FACTOR_OPTIONS: readonly SecretEscrowFactorOption[] =
   [
     {
       id: SecretEscrowFactorOptionId.Passkey,
-      factors: [SecretEscrowFactorKind.Passkey],
+      factor: SecretEscrowFactorKind.Passkey,
       titleKey: 'secretEscrowFactorPasskeyTitle',
       descriptionKey: 'secretEscrowFactorPasskeyDescription',
       available: ({ passkeyAvailable }) => passkeyAvailable,
     },
     {
       id: SecretEscrowFactorOptionId.Password,
-      factors: [SecretEscrowFactorKind.Password],
+      factor: SecretEscrowFactorKind.Password,
       titleKey: 'secretEscrowFactorPasswordTitle',
       descriptionKey: 'secretEscrowFactorPasswordDescription',
       available: () => true,
-    },
-    {
-      id: SecretEscrowFactorOptionId.PasskeyAndPassword,
-      factors: [
-        SecretEscrowFactorKind.Password,
-        SecretEscrowFactorKind.Passkey,
-      ],
-      titleKey: 'secretEscrowFactorPasskeyAndPasswordTitle',
-      descriptionKey: 'secretEscrowFactorPasskeyAndPasswordDescription',
-      available: ({ passkeyAvailable }) => passkeyAvailable,
     },
   ];
 
@@ -87,39 +77,38 @@ export function getAvailableSecretEscrowFactorOptions(
 }
 
 /**
- * Whether the selection includes a passkey factor.
+ * Options not yet enrolled, available to add.
  *
- * @param factors - Selected escrow factor kinds.
- * @returns True when passkey is included.
+ * @param context - Availability flags.
+ * @param enrolledFactorIds - Factor kinds the user has set up.
+ * @returns Options the user can still set up.
  */
-export function selectionIncludesPasskey(
-  factors: readonly SecretEscrowFactorKind[],
-): boolean {
-  return factors.includes(SecretEscrowFactorKind.Passkey);
+export function getAddableSecretEscrowFactorOptions(
+  context: SecretEscrowFactorOptionAvailability,
+  enrolledFactorIds: readonly SecretEscrowFactorKind[],
+): SecretEscrowFactorOption[] {
+  const enrolled = new Set(enrolledFactorIds);
+  return getAvailableSecretEscrowFactorOptions(context).filter(
+    (option) => !enrolled.has(option.factor),
+  );
 }
 
 /**
- * Whether the selection includes a password factor the user must know.
+ * Whether the factor kind is passkey.
  *
- * @param factors - Selected escrow factor kinds.
- * @returns True when password is included.
+ * @param factor - Escrow factor kind.
+ * @returns True when passkey.
  */
-export function selectionIncludesPassword(
-  factors: readonly SecretEscrowFactorKind[],
-): boolean {
-  return factors.includes(SecretEscrowFactorKind.Password);
+export function isPasskeyFactor(factor: SecretEscrowFactorKind): boolean {
+  return factor === SecretEscrowFactorKind.Passkey;
 }
 
 /**
- * Whether onboarding should prompt the user to type a password.
+ * Whether the factor kind is a user-typed password.
  *
- * Passkey-only uses a generated vault password instead.
- *
- * @param factors - Selected escrow factor kinds.
- * @returns True when the create-password form should be shown.
+ * @param factor - Escrow factor kind.
+ * @returns True when password.
  */
-export function selectionRequiresTypedPassword(
-  factors: readonly SecretEscrowFactorKind[],
-): boolean {
-  return selectionIncludesPassword(factors);
+export function isPasswordFactor(factor: SecretEscrowFactorKind): boolean {
+  return factor === SecretEscrowFactorKind.Password;
 }

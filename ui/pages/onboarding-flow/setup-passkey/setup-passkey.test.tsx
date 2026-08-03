@@ -8,6 +8,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
@@ -321,14 +322,14 @@ describe('SetupPasskey', () => {
       );
     });
 
-    it('navigates to completion when flow type is socialCreate', () => {
+    it('navigates to download-app when flow type is socialCreate', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.socialCreate);
       const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
+        ONBOARDING_DOWNLOAD_APP_ROUTE,
         {
           replace: true,
         },

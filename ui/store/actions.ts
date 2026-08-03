@@ -1305,6 +1305,23 @@ export function createSecretEscrowPasswordFactor(
 }
 
 /**
+ * Adds or rotates a user-chosen password factor after passkey-first social
+ * create (replaces the generated vault password).
+ *
+ * @param currentPassword - Current vault password.
+ * @param newPassword - User-chosen password.
+ */
+export function addSecretEscrowUserPasswordFactor(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  return submitRequestToBackground('addSecretEscrowUserPasswordFactor', [
+    currentPassword,
+    newPassword,
+  ]);
+}
+
+/**
  * Enrolls a social-login passkey with the secret escrow.
  *
  * Adds a passkey factor when password-first escrow already exists; otherwise
