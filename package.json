@@ -172,6 +172,9 @@
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
+    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@4.0.2-preview-d2f661012",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@28.3.0-preview-d2f661012",
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@10.1.0-preview-d2f661012",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
@@ -444,7 +447,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^10.1.0",
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@10.1.0-preview-d2f661012",
     "@metamask/selected-network-controller": "^26.1.4",
     "@metamask/sentinel-api-service": "^1.0.0",
     "@metamask/shield-controller": "^5.1.2",
