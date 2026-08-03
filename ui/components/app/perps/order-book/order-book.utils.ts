@@ -105,8 +105,14 @@ export const ORDER_BOOK_MAX_WIDTH_PCT = 60;
  * panes get a pixel minimum (only applied while the book is open); the body
  * scrolls horizontally if the popup cannot fit both floors.
  */
-/** Minimum readable width for the order-book panel (fits both columns). */
-export const ORDER_BOOK_MIN_WIDTH_PX = 140;
+/**
+ * Minimum width for the order-book panel. Sized so the two floors plus the
+ * divider fit the ~338px body of a 360px popup (112 + 224 + 2), which keeps the
+ * split scroll-free in the compact layout. The panel's own columns still
+ * truncate at this width — the ladder is read by widening the split or opening
+ * the wider fullscreen layout.
+ */
+export const ORDER_BOOK_MIN_WIDTH_PX = 112;
 /** Minimum usable width for the order-entry form beside the book. */
 export const ORDER_BOOK_FORM_MIN_WIDTH_PX = 224;
 /** Width of the draggable divider (Tailwind `w-0.5` = 2px). */

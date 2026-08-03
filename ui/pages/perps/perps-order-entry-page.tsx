@@ -1984,9 +1984,9 @@ const PerpsOrderEntryPage = () => {
               width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
               // Floor the width while open, and use a transitionable 0 (not
               // `undefined`/`auto`) while closed: CSS cannot interpolate
-              // `auto -> 140px`, so an `undefined` closed value made the panel
+              // `auto -> <floor>`, so an `undefined` closed value made the panel
               // snap to full width on open instead of animating. Animating
-              // min-width 0 <-> 140px keeps open and close symmetric.
+              // min-width between 0 and the floor keeps open and close symmetric.
               minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
             }}
             className={twMerge(
