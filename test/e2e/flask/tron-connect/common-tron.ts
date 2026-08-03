@@ -30,6 +30,7 @@ import {
   mockGetNextMaintenanceTime,
   mockGetContract,
   mockGetNowBlockInfura,
+  mockTestnetAccountApis,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -108,6 +109,7 @@ export const withTronAccountSnap = async (
         await mockGetChainParameters(mockServer),
         await mockGetNextMaintenanceTime(mockServer),
         await mockGetContract(mockServer),
+        await mockTestnetAccountApis(mockServer),
         ...(additionalMocks ? await additionalMocks(mockServer) : []),
       ],
     },
