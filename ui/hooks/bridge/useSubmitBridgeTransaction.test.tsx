@@ -580,9 +580,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
     it('submits intent quotes via submitBridgeIntent', async () => {
       const store = makeMockStore();
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
-      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
-        wrapper: makeWrapper(store),
-      });
+      const { result } = renderHook(
+        () => useSubmitBridgeTransaction('fiat_value'),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -603,6 +606,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
+        inputPrimaryDenomination: 'fiat_value',
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {

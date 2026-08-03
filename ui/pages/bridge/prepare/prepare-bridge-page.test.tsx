@@ -52,6 +52,8 @@ setBackgroundConnection({
   resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
+  setInputPrimaryDenomination: async () => undefined,
+  trackUnifiedSwapBridgeEvent: async () => undefined,
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -130,6 +132,35 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
 
     expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
+  });
+
+  it('toggles only the source input to fiat when the feature flag is enabled', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: true,
+      } as never,
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    await act(async () => {
+      await userEvent.click(
+        getByTestId('bridge-input-denomination-toggle'),
+      );
+    });
+
+    expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');
+    expect(getByTestId('to-amount')).toHaveValue('0');
   });
 
   it('should render the component, with inputs set', async () => {

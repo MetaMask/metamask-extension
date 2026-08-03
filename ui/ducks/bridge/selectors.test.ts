@@ -58,6 +58,7 @@ import {
   getIsSolanaSwap,
   getIsRWASwap,
   getIsStxEnabled,
+  getIsFiatToggleEnabled,
   getAccountGroupNameByInternalAccount,
   getToAccounts,
   getHardwareWalletName,
@@ -1019,6 +1020,22 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual('');
     });
+  });
+
+  it('returns true only for a strict boolean true flag', () => {
+    const enabledState = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: true,
+      } as never,
+    });
+    const stringState = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: 'true',
+      } as never,
+    });
+
+    expect(getIsFiatToggleEnabled(enabledState as never)).toBe(true);
+    expect(getIsFiatToggleEnabled(stringState as never)).toBe(false);
   });
 
   describe('getBridgeQuotes', () => {

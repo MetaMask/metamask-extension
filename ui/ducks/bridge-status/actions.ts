@@ -3,6 +3,7 @@ import {
   type QuoteResponseV1,
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
+  type InputPrimaryDenomination,
 } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -31,6 +32,7 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param context - Metrics context captured when quotes were received.
  * @param location - Entry point from which the user initiated the swap or bridge.
  * @param tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
+ * @param inputPrimaryDenomination - The source denomination shown at submission time.
  * @returns A thunk that dispatches the `submitTx` bridge status action.
  */
 export const submitBridgeTx = (
@@ -40,6 +42,7 @@ export const submitBridgeTx = (
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
   location: MetaMetricsSwapsEventSource,
   tokenSecurityTypeDestination: string | null,
+  inputPrimaryDenomination?: InputPrimaryDenomination,
 ) =>
   callBridgeStatusControllerMethod<
     [
@@ -51,6 +54,8 @@ export const submitBridgeTx = (
       undefined,
       undefined,
       string | null,
+      undefined,
+      InputPrimaryDenomination | undefined,
     ]
   >('submitTx', [
     accountAddress,
@@ -61,6 +66,8 @@ export const submitBridgeTx = (
     undefined,
     undefined,
     tokenSecurityTypeDestination,
+    undefined,
+    inputPrimaryDenomination,
   ]);
 
 /**
@@ -71,6 +78,7 @@ export const submitBridgeTx = (
  * @param params.accountAddress - Account submitting the signed intent.
  * @param params.location - Entry point from which the user initiated the swap or bridge.
  * @param params.tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
+ * @param params.inputPrimaryDenomination - The source denomination shown at submission time.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
 export const submitBridgeIntent = (params: {
@@ -78,6 +86,7 @@ export const submitBridgeIntent = (params: {
   accountAddress: string;
   location: MetaMetricsSwapsEventSource;
   tokenSecurityTypeDestination?: string | null;
+  inputPrimaryDenomination?: InputPrimaryDenomination;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
 

@@ -277,6 +277,39 @@ describe('BridgeInputGroup', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('moves the caret only when the input denomination changes', () => {
+    const mockState = createBridgeMockStore();
+    const view = renderWithProvider(
+      <InputGroup mockState={mockState} />,
+      configureStore(mockState),
+    );
+    const input = view.getByTestId('from-amount') as HTMLInputElement;
+    const setSelectionRangeSpy = jest.spyOn(input, 'setSelectionRange');
+
+    act(() => {
+      view.rerender(
+        <InputGroup
+          mockState={mockState}
+          amountFieldProps={{
+            testId: 'from-amount',
+            autoFocus: true,
+            value: '12',
+          }}
+        />,
+      );
+    });
+
+    expect(setSelectionRangeSpy).not.toHaveBeenCalled();
+
+    act(() => {
+      view.rerender(
+        <InputGroup mockState={mockState} amountInputPrefix="$" />,
+      );
+    });
+
+    expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('should search for tokens', async () => {
     setupFetchMock();
     const { getByTestId } = renderBridgeInputGroup();

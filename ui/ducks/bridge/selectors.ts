@@ -9,6 +9,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
+  type InputPrimaryDenomination,
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
@@ -490,6 +491,15 @@ export const getToChain = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+export const getInputPrimaryDenomination = (
+  state: BridgeAppState,
+): InputPrimaryDenomination =>
+  state.metamask.inputPrimaryDenomination ?? 'token_amount';
+
+export const getIsFiatToggleEnabled = (state: BridgeAppState): boolean =>
+  (getRemoteFeatureFlags(state) as unknown as Record<string, unknown>)
+    .enableFiatToggle === true;
 
 export const getAccountGroupNameByInternalAccount = createSelector(
   [getAllAccountGroups, (_, account: InternalAccount | null) => account],

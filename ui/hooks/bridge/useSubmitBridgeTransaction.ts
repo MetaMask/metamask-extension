@@ -6,6 +6,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type {
+  InputPrimaryDenomination,
   QuoteMetadata,
   QuoteResponseV1,
 } from '@metamask/bridge-controller';
@@ -25,6 +26,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getInputPrimaryDenomination,
   getToToken,
   getWarningLabels,
   type BridgeAppState,
@@ -46,7 +48,9 @@ import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-export default function useSubmitBridgeTransaction() {
+export default function useSubmitBridgeTransaction(
+  inputPrimaryDenominationOverride?: InputPrimaryDenomination,
+) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHardwareWalletSigningPage = Boolean(
@@ -61,6 +65,11 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const persistedInputPrimaryDenomination = useSelector(
+    getInputPrimaryDenomination,
+  );
+  const inputPrimaryDenomination =
+    inputPrimaryDenominationOverride ?? persistedInputPrimaryDenomination;
   const fromAccount = useSelector(getFromAccount);
   const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
@@ -99,6 +108,7 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+            inputPrimaryDenomination,
           }),
         );
         return;
@@ -126,6 +136,7 @@ export default function useSubmitBridgeTransaction() {
             ),
             location,
             toToken?.securityData?.type ?? null,
+            inputPrimaryDenomination,
           ),
         );
         const tracked = { requestId, promise: rpcPromise };

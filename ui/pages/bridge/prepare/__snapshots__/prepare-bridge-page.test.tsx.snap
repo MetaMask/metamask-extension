@@ -87,7 +87,9 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
-        />
+        >
+          $0
+        </p>
       </div>
     </div>
     <div

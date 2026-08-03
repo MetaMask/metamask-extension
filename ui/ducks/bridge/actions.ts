@@ -1,5 +1,6 @@
 import {
   type BridgeController,
+  type InputPrimaryDenomination,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -105,6 +106,10 @@ export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
 
 export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
   submitRequestToBackground('getLocation');
+
+export const setInputPrimaryDenomination = (
+  denomination: InputPrimaryDenomination,
+) => callBridgeControllerMethod('setInputPrimaryDenomination', denomination);
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

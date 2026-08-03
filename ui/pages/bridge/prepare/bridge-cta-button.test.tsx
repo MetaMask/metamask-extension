@@ -476,6 +476,7 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
+            inputPrimaryDenomination="fiat_value"
             onOpenAlertModals={
               isAlertModalProvided
                 ? mockOnOpenPriceImpactWarningModal
@@ -505,6 +506,7 @@ describe('BridgeCTAButton', () => {
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(
         expectedSubmitBridgeTransactionCalls,
       );
+      expect(useSubmitSpy).toHaveBeenCalledWith('fiat_value');
 
       useSubmitSpy.mockRestore();
     },
