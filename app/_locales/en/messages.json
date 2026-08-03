@@ -8232,6 +8232,10 @@
     "message": "change providers",
     "description": "Inline link in the buy amount error, e.g. 'Error getting quotes. Enter a lower amount or change providers'"
   },
+  "rampsChooseProvider": {
+    "message": "Choose provider",
+    "description": "Title of the provider selection modal"
+  },
   "rampsContactProviderSupport": {
     "message": "Contact $1 support",
     "description": "$1 is the ramp provider name"

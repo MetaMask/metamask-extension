@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
@@ -9,6 +8,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../components/component-library';
+import { AlignItems } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,16 +27,10 @@ import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/deter
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
-import {
-  RampsSelectionCenteredMessage,
-  RampsSelectionPage,
-} from '../components/ramps-selection-page';
+import { RampsSelectionCenteredMessage } from '../components/ramps-selection-page';
 import { providerSupportsAsset } from '../utils/providerSupportsAsset';
 import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
-import {
-  RampsProviderSeparator,
-  RampsQuotesForPaymentMethodBanner,
-} from './components/ramps-provider-list-helpers';
+import { RampsProviderSeparator } from './components/ramps-provider-list-helpers';
 import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
@@ -40,8 +40,11 @@ import {
   type ProviderTag,
 } from './utils/build-provider-list-items';
 
-type ProviderSelectionLocationState = {
-  amount?: number;
+export type RampsProviderSelectionModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  /** Amount entered on the calling screen, used to fetch quotes. */
+  amount: number;
 };
 
 type ProviderListRow =
@@ -158,15 +161,22 @@ function buildProviderListRows({
 }
 
 /**
- * Ramps buy-flow provider selection screen.
+ * Ramps buy-flow provider selection modal.
  *
  * Lists providers with optional quotes for the current payment method and
- * updates controller selection before returning to payment-method.
+ * updates controller selection, overlaid on whichever screen opened it.
+ *
+ * @param options0
+ * @param options0.isOpen
+ * @param options0.onClose
+ * @param options0.amount
  */
-export function RampsProviderSelectionScreen() {
+export function RampsProviderSelectionModal({
+  isOpen,
+  onClose,
+  amount,
+}: RampsProviderSelectionModalProps) {
   const t = useI18nContext();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { formatCurrency } = useFormatters();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
@@ -183,8 +193,6 @@ export function RampsProviderSelectionScreen() {
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
 
-  const amount =
-    (location.state as ProviderSelectionLocationState | null)?.amount ?? 0;
   const walletAddress = selectedAccount?.address ?? '';
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
@@ -310,10 +318,6 @@ export function RampsProviderSelectionScreen() {
     ],
   );
 
-  const handleBack = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
-
   const handleProviderSelect = useCallback(
     async (provider: Provider) => {
       if (isSelectingRef.current) {
@@ -325,106 +329,89 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
-        navigate(-1);
+        onClose();
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);
       }
     },
-    [navigate, setSelectedProvider],
+    [onClose, setSelectedProvider],
   );
 
-  const title = t('rampsProviders');
-  const backButtonTestId = 'ramps-provider-selection-back';
+  const title = t('rampsChooseProvider');
+
+  let testId = 'ramps-provider-selection-screen';
+  let body: React.ReactNode;
 
   if (providersLoading) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-loading"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsListSkeleton testId="ramps-provider-selection-skeleton" />
-      </RampsSelectionPage>
+    testId = 'ramps-provider-selection-loading';
+    body = <RampsListSkeleton testId="ramps-provider-selection-skeleton" />;
+  } else if (providersError && displayProviders.length === 0) {
+    testId = 'ramps-provider-selection-error';
+    body = <RampsSelectionCenteredMessage message={providersError} />;
+  } else if (displayProviders.length === 0) {
+    testId = 'ramps-provider-selection-empty';
+    body = (
+      <RampsSelectionCenteredMessage message={t('rampsNoProvidersAvailable')} />
     );
-  }
-
-  if (providersError && displayProviders.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-error"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage message={providersError} />
-      </RampsSelectionPage>
-    );
-  }
-
-  if (displayProviders.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-provider-selection-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoProvidersAvailable')}
-        />
-      </RampsSelectionPage>
+  } else {
+    body = (
+      <>
+        {quotesErrorMessage ? (
+          <Box className="px-4 pb-2">
+            <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+              {quotesErrorMessage}
+            </Text>
+          </Box>
+        ) : null}
+        <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {listRows.map((row) =>
+              row.type === 'separator' ? (
+                <RampsProviderSeparator key={row.key} />
+              ) : (
+                <RampsProviderListItem
+                  key={row.key}
+                  provider={row.provider}
+                  isSelected={row.isSelected}
+                  isDisabled={row.isDisabled}
+                  tag={row.tag}
+                  subtitle={row.subtitle}
+                  showQuote={row.showQuote}
+                  quote={row.quote}
+                  quoteLoading={row.quoteLoading}
+                  currency={row.currency}
+                  tokenSymbol={row.tokenSymbol}
+                  onClick={() => {
+                    handleProviderSelect(row.provider).catch(() => undefined);
+                  }}
+                />
+              ),
+            )}
+          </Box>
+        </ScrollContainer>
+      </>
     );
   }
 
   return (
-    <RampsSelectionPage
-      title={title}
-      onBack={handleBack}
-      testId="ramps-provider-selection-screen"
-      backButtonTestId={backButtonTestId}
-    >
-      {showQuotes && selectedPaymentMethod ? (
-        <RampsQuotesForPaymentMethodBanner
-          paymentMethodName={selectedPaymentMethod.name}
-        />
-      ) : null}
-      {quotesErrorMessage ? (
-        <Box className="px-4 pb-2">
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {quotesErrorMessage}
-          </Text>
-        </Box>
-      ) : null}
-      <ScrollContainer className="flex-1 overflow-y-auto pb-4">
-        <Box flexDirection={BoxFlexDirection.Column}>
-          {listRows.map((row) =>
-            row.type === 'separator' ? (
-              <RampsProviderSeparator key={row.key} />
-            ) : (
-              <RampsProviderListItem
-                key={row.key}
-                provider={row.provider}
-                isSelected={row.isSelected}
-                isDisabled={row.isDisabled}
-                tag={row.tag}
-                subtitle={row.subtitle}
-                showQuote={row.showQuote}
-                quote={row.quote}
-                quoteLoading={row.quoteLoading}
-                currency={row.currency}
-                tokenSymbol={row.tokenSymbol}
-                onClick={() => {
-                  handleProviderSelect(row.provider).catch(() => undefined);
-                }}
-              />
-            ),
-          )}
-        </Box>
-      </ScrollContainer>
-    </RampsSelectionPage>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent
+        alignItems={AlignItems.center}
+        modalDialogProps={{
+          borderColor: undefined,
+          borderWidth: 0,
+          'data-testid': testId,
+        }}
+      >
+        <ModalHeader alignItems={AlignItems.center} onClose={onClose}>
+          {title}
+        </ModalHeader>
+        {body}
+      </ModalContent>
+    </Modal>
   );
 }
 
-export default RampsProviderSelectionScreen;
+export default RampsProviderSelectionModal;

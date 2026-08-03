@@ -10,7 +10,6 @@ import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/
 import {
   DEFAULT_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
-  RAMPS_PROVIDER_SELECTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
@@ -53,6 +52,8 @@ export type RampsBuildQuoteReadyViewModel = {
   isQuoteLoading: boolean;
   canContinue: boolean;
   isWeeklyLimitModalOpen: boolean;
+  isProviderSelectionModalOpen: boolean;
+  providerSelectionModalAmount: number;
   providerSupportUrl: string | null;
   providerName: string;
   handleBack: () => void;
@@ -60,6 +61,7 @@ export type RampsBuildQuoteReadyViewModel = {
   handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleContinue: () => void;
   handleCloseWeeklyLimitModal: () => void;
+  handleCloseProviderSelectionModal: () => void;
   handleContactProviderSupport: () => void;
 };
 
@@ -200,11 +202,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     });
   }, [debouncedAmount, navigate]);
 
+  const [isProviderSelectionModalOpen, setIsProviderSelectionModalOpen] =
+    useState(false);
+
   const handleChangeProviderPress = useCallback(() => {
-    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
-      state: { amount: debouncedAmount },
-    });
-  }, [debouncedAmount, navigate]);
+    setIsProviderSelectionModalOpen(true);
+  }, []);
+
+  const handleCloseProviderSelectionModal = useCallback(() => {
+    setIsProviderSelectionModalOpen(false);
+  }, []);
 
   const [isWeeklyLimitModalOpen, setIsWeeklyLimitModalOpen] = useState(false);
 
@@ -345,6 +352,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,
     isWeeklyLimitModalOpen,
+    isProviderSelectionModalOpen,
+    providerSelectionModalAmount: debouncedAmount,
     providerSupportUrl,
     providerName: selectedProvider?.name ?? '',
     handleBack,
@@ -352,6 +361,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     handleAmountChange,
     handleContinue,
     handleCloseWeeklyLimitModal,
+    handleCloseProviderSelectionModal,
     handleContactProviderSupport,
   };
 }

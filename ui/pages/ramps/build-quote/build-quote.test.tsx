@@ -120,6 +120,10 @@ const mockControllerState = ({
   userRegion,
   selectedToken,
   tokensLoading,
+  providers: [],
+  providersLoading: false,
+  providersError: null,
+  setSelectedProvider: jest.fn().mockResolvedValue(undefined),
   selectedProvider: { id: 'transak', name: 'Transak' },
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
@@ -251,11 +255,15 @@ describe('RampsBuildQuoteScreen', () => {
       );
       expect(screen.queryByText('PROVIDER_BLEW_UP: raw string')).toBeNull();
 
+      expect(
+        screen.queryByTestId('ramps-provider-selection-empty'),
+      ).not.toBeInTheDocument();
+
       fireEvent.click(screen.getByTestId('ramps-build-quote-error-link'));
 
-      expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
-        state: { amount: 100 },
-      });
+      expect(
+        screen.getByTestId('ramps-provider-selection-empty'),
+      ).toBeInTheDocument();
     });
 
     it('maps a weekly limit error to its own copy and explanatory modal', () => {

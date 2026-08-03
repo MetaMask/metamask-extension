@@ -15,6 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
+import RampsProviderSelectionModal from '../../provider-selection/provider-selection';
 import type { RampsBuildQuoteReadyViewModel } from '../hooks/useRampsBuildQuote';
 import RampsPaymentMethodPill from './ramps-payment-method-pill';
 import RampsWeeklyLimitModal from './ramps-weekly-limit-modal';
@@ -33,6 +34,8 @@ export default function RampsBuildQuoteView({
   isQuoteLoading,
   canContinue,
   isWeeklyLimitModalOpen,
+  isProviderSelectionModalOpen,
+  providerSelectionModalAmount,
   providerSupportUrl,
   providerName,
   handleBack,
@@ -40,6 +43,7 @@ export default function RampsBuildQuoteView({
   handleAmountChange,
   handleContinue,
   handleCloseWeeklyLimitModal,
+  handleCloseProviderSelectionModal,
   handleContactProviderSupport,
 }: RampsBuildQuoteReadyViewModel) {
   const t = useI18nContext();
@@ -155,6 +159,14 @@ export default function RampsBuildQuoteView({
         supportUrl={providerSupportUrl}
         onContactSupport={handleContactProviderSupport}
       />
+
+      {isProviderSelectionModalOpen ? (
+        <RampsProviderSelectionModal
+          isOpen={isProviderSelectionModalOpen}
+          onClose={handleCloseProviderSelectionModal}
+          amount={providerSelectionModalAmount}
+        />
+      ) : null}
     </Box>
   );
 }

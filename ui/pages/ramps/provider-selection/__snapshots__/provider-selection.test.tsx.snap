@@ -1,148 +1,345 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RampsProviderSelectionScreen keeps the provider list visible while quotes load 1`] = `
-<div>
+exports[`RampsProviderSelectionModal keeps the provider list visible while quotes load 1`] = `
+<body>
   <div
-    class="flex h-full flex-col bg-background-default"
-    data-testid="ramps-provider-selection-screen"
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal"
   >
     <div
-      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
-    >
-      <button
-        aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-provider-selection-back"
-        role="button"
-      >
-        <svg
-          class="inline-block w-5 h-5 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
-          />
-        </svg>
-      </button>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Providers
-      </p>
-    </div>
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
     <div
-      class="mx-2 mb-2 rounded-lg bg-background-muted px-3 py-3"
-      data-testid="ramps-provider-quotes-banner"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-      >
-        Quotes displayed for Debit card.
-      </p>
-    </div>
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
     <div
-      class="flex-1 overflow-y-auto pb-4"
+      data-focus-lock-disabled="false"
     >
       <div
-        class="flex flex-col"
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
       >
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
-          data-testid="ramps-provider-item-/providers/transak"
-          role="button"
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          data-testid="ramps-provider-selection-screen"
+          role="dialog"
         >
-          <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="mm-box mm-box--width-full"
             >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
-                >
-                  Transak
-                </p>
-              </div>
+                Choose provider
+              </h4>
             </div>
             <div
-              class="flex flex-row gap-2 items-center shrink-0"
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
             >
-              <div
-                class="flex flex-col gap-1 items-end"
-                data-testid="ramps-quote-display-loading"
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
-                <div
-                  aria-hidden="true"
-                  class="relative overflow-hidden rounded"
-                  style="height: 16px; width: 80px;"
-                >
-                  <div
-                    aria-hidden="true"
-                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-                  />
-                </div>
-                <div
-                  aria-hidden="true"
-                  class="relative overflow-hidden rounded"
-                  style="height: 16px; width: 60px;"
-                >
-                  <div
-                    aria-hidden="true"
-                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-                  />
-                </div>
-              </div>
-              <svg
-                class="inline-block w-5 h-5 text-primary-default"
-                data-testid="ramps-provider-item-selected"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                <span
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
                 />
-              </svg>
+              </button>
             </div>
-          </div>
-        </button>
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
-          data-testid="ramps-provider-item-/providers/moonpay"
-          role="button"
-        >
+          </header>
           <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
+            class="flex-1 overflow-y-auto pb-4"
           >
             <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="flex flex-col"
             >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
+                data-testid="ramps-provider-item-/providers/transak"
+                role="button"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
                 >
-                  MoonPay
-                </p>
-              </div>
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        Transak
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 items-center shrink-0"
+                  >
+                    <div
+                      class="flex flex-col gap-1 items-end"
+                      data-testid="ramps-quote-display-loading"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="relative overflow-hidden rounded"
+                        style="height: 16px; width: 80px;"
+                      >
+                        <div
+                          aria-hidden="true"
+                          class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                        />
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="relative overflow-hidden rounded"
+                        style="height: 16px; width: 60px;"
+                      >
+                        <div
+                          aria-hidden="true"
+                          class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                        />
+                      </div>
+                    </div>
+                    <svg
+                      class="inline-block w-5 h-5 text-primary-default"
+                      data-testid="ramps-provider-item-selected"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
+                data-testid="ramps-provider-item-/providers/moonpay"
+                role="button"
+              >
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
+                >
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        MoonPay
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 items-center shrink-0"
+                  >
+                    <div
+                      class="flex flex-col gap-1 items-end"
+                      data-testid="ramps-quote-display-loading"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="relative overflow-hidden rounded"
+                        style="height: 16px; width: 80px;"
+                      >
+                        <div
+                          aria-hidden="true"
+                          class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                        />
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="relative overflow-hidden rounded"
+                        style="height: 16px; width: 60px;"
+                      >
+                        <div
+                          aria-hidden="true"
+                          class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          data-testid="ramps-provider-selection-empty"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              >
+                Choose provider
+              </h4>
             </div>
             <div
-              class="flex flex-row gap-2 items-center shrink-0"
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="flex flex-col gap-2 items-center justify-center flex-1 px-4 py-8"
+          >
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            >
+              No providers available.
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+  </div>
+</body>
+`;
+
+exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal"
+  >
+    <div
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
+    >
+      <div
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+      >
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          data-testid="ramps-provider-selection-loading"
+          role="dialog"
+        >
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-box--width-full"
+            >
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              >
+                Choose provider
+              </h4>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
+          </header>
+          <div
+            class="flex flex-col gap-4 flex-1 px-4 pt-2"
+            data-testid="ramps-provider-selection-skeleton"
+          >
+            <div
+              class="flex flex-row gap-3 items-center w-full"
             >
               <div
-                class="flex flex-col gap-1 items-end"
-                data-testid="ramps-quote-display-loading"
+                class="flex flex-col gap-2 min-w-0 flex-1"
               >
                 <div
                   aria-hidden="true"
-                  class="relative overflow-hidden rounded"
-                  style="height: 16px; width: 80px;"
+                  class="relative overflow-hidden rounded h-3 w-16"
                 >
                   <div
                     aria-hidden="true"
@@ -151,8 +348,59 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
                 </div>
                 <div
                   aria-hidden="true"
-                  class="relative overflow-hidden rounded"
-                  style="height: 16px; width: 60px;"
+                  class="relative overflow-hidden rounded h-3 w-1/3"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-row gap-3 items-center w-full"
+            >
+              <div
+                class="flex flex-col gap-2 min-w-0 flex-1"
+              >
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded h-3 w-16"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded h-3 w-1/3"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-row gap-3 items-center w-full"
+            >
+              <div
+                class="flex flex-col gap-2 min-w-0 flex-1"
+              >
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded h-3 w-16"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded h-3 w-1/3"
                 >
                   <div
                     aria-hidden="true"
@@ -162,427 +410,324 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
               </div>
             </div>
           </div>
-        </button>
+        </section>
       </div>
     </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
   </div>
-</div>
+</body>
 `;
 
-exports[`RampsProviderSelectionScreen matches snapshot when empty 1`] = `
-<div>
+exports[`RampsProviderSelectionModal matches snapshot with provider quotes 1`] = `
+<body>
   <div
-    class="flex h-full flex-col bg-background-default"
-    data-testid="ramps-provider-selection-empty"
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal"
   >
     <div
-      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
-    >
-      <button
-        aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-provider-selection-back"
-        role="button"
-      >
-        <svg
-          class="inline-block w-5 h-5 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
-          />
-        </svg>
-      </button>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Providers
-      </p>
-    </div>
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
     <div
-      class="flex flex-col gap-2 items-center justify-center flex-1 px-4 py-8"
-    >
-      <p
-        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-      >
-        No providers available.
-      </p>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`RampsProviderSelectionScreen matches snapshot while loading 1`] = `
-<div>
-  <div
-    class="flex h-full flex-col bg-background-default"
-    data-testid="ramps-provider-selection-loading"
-  >
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
     <div
-      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
-    >
-      <button
-        aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-provider-selection-back"
-        role="button"
-      >
-        <svg
-          class="inline-block w-5 h-5 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
-          />
-        </svg>
-      </button>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Providers
-      </p>
-    </div>
-    <div
-      class="flex flex-col gap-4 flex-1 px-4 pt-2"
-      data-testid="ramps-provider-selection-skeleton"
+      data-focus-lock-disabled="false"
     >
       <div
-        class="flex flex-row gap-3 items-center w-full"
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
       >
-        <div
-          class="flex flex-col gap-2 min-w-0 flex-1"
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          data-testid="ramps-provider-selection-screen"
+          role="dialog"
         >
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-16"
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-1/3"
-          >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-3 items-center w-full"
-      >
-        <div
-          class="flex flex-col gap-2 min-w-0 flex-1"
-        >
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-16"
-          >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-1/3"
-          >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="flex flex-row gap-3 items-center w-full"
-      >
-        <div
-          class="flex flex-col gap-2 min-w-0 flex-1"
-        >
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-16"
-          >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-          <div
-            aria-hidden="true"
-            class="relative overflow-hidden rounded h-3 w-1/3"
-          >
-            <div
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] = `
-<div>
-  <div
-    class="flex h-full flex-col bg-background-default"
-    data-testid="ramps-provider-selection-screen"
-  >
-    <div
-      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
-    >
-      <button
-        aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-provider-selection-back"
-        role="button"
-      >
-        <svg
-          class="inline-block w-5 h-5 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
-          />
-        </svg>
-      </button>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Providers
-      </p>
-    </div>
-    <div
-      class="mx-2 mb-2 rounded-lg bg-background-muted px-3 py-3"
-      data-testid="ramps-provider-quotes-banner"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-      >
-        Quotes displayed for Debit card.
-      </p>
-    </div>
-    <div
-      class="flex-1 overflow-y-auto pb-4"
-    >
-      <div
-        class="flex flex-col"
-      >
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
-          data-testid="ramps-provider-item-/providers/transak"
-          role="button"
-        >
-          <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
-          >
-            <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="mm-box mm-box--width-full"
             >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
-                >
-                  Transak
-                </p>
-              </div>
+                Choose provider
+              </h4>
             </div>
             <div
-              class="flex flex-row gap-2 items-center shrink-0"
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
             >
-              <div
-                class="flex flex-col items-end"
-                data-testid="ramps-quote-display"
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-                >
-                  0.05 ETH
-                </p>
-                <p
-                  class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-                >
-                  $99.50
-                </p>
-              </div>
-              <svg
-                class="inline-block w-5 h-5 text-primary-default"
-                data-testid="ramps-provider-item-selected"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                <span
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
                 />
-              </svg>
+              </button>
             </div>
-          </div>
-        </button>
-        <div
-          class="px-4 py-3"
-          data-testid="ramps-provider-separator"
-        >
-          <p
-            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
-          >
-            Other options
-          </p>
-        </div>
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
-          data-testid="ramps-provider-item-/providers/moonpay"
-          role="button"
-        >
+          </header>
           <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
+            class="flex-1 overflow-y-auto pb-4"
           >
             <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="flex flex-col"
             >
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
+                data-testid="ramps-provider-item-/providers/transak"
+                role="button"
+              >
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
+                >
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        Transak
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 items-center shrink-0"
+                  >
+                    <div
+                      class="flex flex-col items-end"
+                      data-testid="ramps-quote-display"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                      >
+                        0.05 ETH
+                      </p>
+                      <p
+                        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                      >
+                        $99.50
+                      </p>
+                    </div>
+                    <svg
+                      class="inline-block w-5 h-5 text-primary-default"
+                      data-testid="ramps-provider-item-selected"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </button>
               <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+                class="px-4 py-3"
+                data-testid="ramps-provider-separator"
               >
                 <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                  class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
                 >
-                  MoonPay
+                  Other options
                 </p>
               </div>
-              <p
-                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
-                data-testid="ramps-provider-item-subtitle-/providers/moonpay"
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
+                data-testid="ramps-provider-item-/providers/moonpay"
+                role="button"
               >
-                Quote unavailable.
-              </p>
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
+                >
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        MoonPay
+                      </p>
+                    </div>
+                    <p
+                      class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+                      data-testid="ramps-provider-item-subtitle-/providers/moonpay"
+                    >
+                      Quote unavailable.
+                    </p>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 items-center shrink-0"
+                  />
+                </div>
+              </button>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center shrink-0"
-            />
           </div>
-        </button>
+        </section>
       </div>
     </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
   </div>
-</div>
+</body>
 `;
 
-exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
-<div>
+exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
+<body>
   <div
-    class="flex h-full flex-col bg-background-default"
-    data-testid="ramps-provider-selection-screen"
+    id="popover-content"
+  />
+  <div />
+  <div
+    class="mm-modal"
   >
     <div
-      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
-    >
-      <button
-        aria-label="Back"
-        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-provider-selection-back"
-        role="button"
-      >
-        <svg
-          class="inline-block w-5 h-5 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
-          />
-        </svg>
-      </button>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Providers
-      </p>
-    </div>
+      aria-hidden="true"
+      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    />
     <div
-      class="flex-1 overflow-y-auto pb-4"
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
     >
       <div
-        class="flex flex-col"
+        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
       >
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
-          data-testid="ramps-provider-item-/providers/transak"
-          role="button"
+        <section
+          aria-modal="true"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          data-testid="ramps-provider-selection-screen"
+          role="dialog"
         >
-          <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
+          <header
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="mm-box mm-box--width-full"
             >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+              <h4
+                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
-                >
-                  Transak
-                </p>
-              </div>
+                Choose provider
+              </h4>
             </div>
             <div
-              class="flex flex-row gap-2 items-center shrink-0"
+              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+              style="min-width: 0px;"
             >
-              <svg
-                class="inline-block w-5 h-5 text-primary-default"
-                data-testid="ramps-provider-item-selected"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
-                <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                <span
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
                 />
-              </svg>
+              </button>
             </div>
-          </div>
-        </button>
-        <button
-          class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
-          data-testid="ramps-provider-item-/providers/moonpay"
-          role="button"
-        >
+          </header>
           <div
-            class="flex flex-row gap-3 items-center justify-between w-full"
+            class="flex-1 overflow-y-auto pb-4"
           >
             <div
-              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+              class="flex flex-col"
             >
-              <div
-                class="flex flex-row gap-2 items-center w-full min-w-0"
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
+                data-testid="ramps-provider-item-/providers/transak"
+                role="button"
               >
-                <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
                 >
-                  MoonPay
-                </p>
-              </div>
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        Transak
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 items-center shrink-0"
+                  >
+                    <svg
+                      class="inline-block w-5 h-5 text-primary-default"
+                      data-testid="ramps-provider-item-selected"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+              <button
+                class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
+                data-testid="ramps-provider-item-/providers/moonpay"
+                role="button"
+              >
+                <div
+                  class="flex flex-row gap-3 items-center justify-between w-full"
+                >
+                  <div
+                    class="flex flex-col gap-1 items-start min-w-0 flex-1"
+                  >
+                    <div
+                      class="flex flex-row gap-2 items-center w-full min-w-0"
+                    >
+                      <p
+                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                      >
+                        MoonPay
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
-        </button>
+        </section>
       </div>
     </div>
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
   </div>
-</div>
+</body>
 `;
