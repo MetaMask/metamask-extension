@@ -20,9 +20,11 @@ import { AlertsName } from '../constants';
 const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
 
 // Coalescing window for the fresh read. Long enough that re-mounting the
-// confirmation (or a sibling Perps surface asking for the same account state)
-// reuses one HL request instead of adding weight against the per-IP budget,
-// short enough that the balance the user is blocked on is still current.
+// confirmation reuses one HL request instead of adding weight against the
+// per-IP budget, short enough that the balance the user is blocked on is
+// still current. Only this hook shares the key today: `PerpsStreamManager`
+// issues its own uncoalesced `perpsGetAccountState`, so it would have to route
+// through `coalesceBackgroundRequest` for the two to share a request.
 const FRESH_BALANCE_TTL_MS = 5000;
 
 type SettledBalance =
