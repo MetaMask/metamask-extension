@@ -31,7 +31,6 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatNetworkFee, formatTokenAmount, readMmFee } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -51,13 +50,16 @@ import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors'
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { useDispatch } from '../../../store/hooks';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
 import { BRIDGE_DEBUG_ENABLED } from '../../../../shared/constants/bridge';
 import {
   getGasFees,
   getIncludedTxFees,
   getTotalNetworkFee,
+  formatNetworkFee,
+  formatTokenAmount,
+  readMmFee,
 } from '../utils/quote';
+import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
 

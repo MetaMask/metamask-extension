@@ -26,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setSelectedQuote,
@@ -46,6 +45,8 @@ import {
   getGasFees,
   getPriceImpactNumber,
   getTotalNetworkFee,
+  formatCurrencyAmount,
+  formatTokenAmount,
 } from '../utils/quote';
 
 export const BridgeQuotesModal = ({

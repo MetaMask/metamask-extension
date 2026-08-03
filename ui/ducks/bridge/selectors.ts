@@ -19,7 +19,6 @@ import {
   isCrossChain,
   RequestStatus,
   isNonEvmChainId,
-  sumAmounts,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -85,7 +84,6 @@ import {
   type SmartTransactionsState,
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
-import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import { getInternalAccountsByScope } from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
@@ -111,8 +109,13 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
-import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
+import {
+  getPriceImpactNumber,
+  getTotalNetworkFee,
+  safeAmountForCalc,
+} from '../../pages/bridge/utils/quote';
+import { getCurrentCurrency } from '../metamask/metamask';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -129,10 +132,6 @@ import type {
   BridgeToken,
   QuoteValidationErrors,
 } from './types';
-import {
-  getPriceImpactNumber,
-  getTotalNetworkFee,
-} from '../../pages/bridge/utils/quote';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
