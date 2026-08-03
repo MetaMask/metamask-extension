@@ -12,7 +12,9 @@ import { withTronAccountSnap } from './common-tron';
 const TRON_SNAP_ID = 'npm:@metamask/tron-wallet-snap';
 const PORTFOLIO_ORIGIN = 'https://portfolio.metamask.io';
 
-async function mockPortfolioOrigin(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+async function mockPortfolioOrigin(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   const endpoint = await mockServer
     .forGet(/^https:\/\/portfolio\.metamask\.io\//u)
     .thenCallback(() => ({
@@ -108,7 +110,11 @@ describe('Tron Snap - exportAccount', function () {
             .catch((e) => callback({ success: false, error: e.message }));
           `);
 
-        assert.equal(result.success, false, 'Expected rejection but got success');
+        assert.equal(
+          result.success,
+          false,
+          'Expected rejection but got success',
+        );
         assert.equal(
           result.error,
           `Snap "${TRON_SNAP_ID}" is not permitted to handle requests from "${DAPP_URL}".`,
@@ -157,7 +163,11 @@ describe('Tron Snap - exportAccount', function () {
             .catch((e) => callback({ success: false, error: e.message }));
           `);
 
-        assert.equal(result.success, false, 'Expected rejection but got success');
+        assert.equal(
+          result.success,
+          false,
+          'Expected rejection but got success',
+        );
         assert.equal(
           result.error,
           'Permission denied',

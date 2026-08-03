@@ -18,7 +18,9 @@ function grantSnapPermission(origin: string) {
             permissions: {
               /* eslint-disable @typescript-eslint/naming-convention */
               wallet_snap: {
-                caveats: [{ type: 'snapIds', value: { [BITCOIN_SNAP_ID]: {} } }],
+                caveats: [
+                  { type: 'snapIds', value: { [BITCOIN_SNAP_ID]: {} } },
+                ],
                 date: 1770296204693,
                 id: `snap-perm-${origin}`,
                 invoker: origin,
@@ -88,7 +90,11 @@ describe('Bitcoin Snap - exportAccount', function () {
             .catch((e) => callback({ success: false, error: e.message }));
           `);
 
-        assert.equal(result.success, false, 'Expected rejection but got success');
+        assert.equal(
+          result.success,
+          false,
+          'Expected rejection but got success',
+        );
         assert.equal(
           result.error,
           `Snap "${BITCOIN_SNAP_ID}" is not permitted to handle requests from "${DAPP_URL}".`,

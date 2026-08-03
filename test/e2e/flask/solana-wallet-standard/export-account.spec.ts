@@ -1,7 +1,11 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { SubjectType } from '@metamask/permission-controller';
-import { DAPP_URL, DEFAULT_FIXTURE_SOLANA_ACCOUNT, DAPP_PATH } from '../../constants';
+import {
+  DAPP_URL,
+  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  DAPP_PATH,
+} from '../../constants';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -10,7 +14,9 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 const SOLANA_SNAP_ID = 'npm:@metamask/solana-wallet-snap';
 const PORTFOLIO_ORIGIN = 'https://portfolio.metamask.io';
 
-async function mockPortfolioOrigin(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+async function mockPortfolioOrigin(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   const endpoint = await mockServer
     .forGet(/^https:\/\/portfolio\.metamask\.io\//u)
     .thenCallback(() => ({
@@ -138,7 +144,11 @@ describe('Solana Snap - exportAccount', function () {
             .catch((e) => callback({ success: false, error: e.message }));
           `);
 
-        assert.equal(result.success, false, 'Expected rejection but got success');
+        assert.equal(
+          result.success,
+          false,
+          'Expected rejection but got success',
+        );
         assert.equal(
           result.error,
           `Snap "${SOLANA_SNAP_ID}" is not permitted to handle requests from "${DAPP_URL}".`,
@@ -182,7 +192,11 @@ describe('Solana Snap - exportAccount', function () {
             .catch((e) => callback({ success: false, error: e.message }));
           `);
 
-        assert.equal(result.success, false, 'Expected rejection but got success');
+        assert.equal(
+          result.success,
+          false,
+          'Expected rejection but got success',
+        );
         assert.equal(
           result.error,
           'Permission denied',
