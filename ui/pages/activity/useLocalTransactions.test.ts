@@ -76,7 +76,7 @@ describe('useLocalTransactions', () => {
       useLocalTransactions({ networks: ['eip155:1'] }),
     );
 
-    expect(result.current).toMatchSnapshot();
+    expect(result.current).toEqual([withChain]);
   });
 
   it('returns an empty list when no networks are selected', () => {

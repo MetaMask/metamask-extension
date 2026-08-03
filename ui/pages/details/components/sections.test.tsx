@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { MetadataSection, TokensSection } from './sections';
 
@@ -56,7 +56,7 @@ jest.mock('./shared', () => ({
 
 describe('TokensSection', () => {
   it('renders labeled token rows', () => {
-    const { container } = render(
+    render(
       <TokensSection
         tokens={[
           {
@@ -71,7 +71,8 @@ describe('TokensSection', () => {
       />,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(screen.getByText('You get')).toBeInTheDocument();
+    expect(screen.getByTestId('token-row')).toHaveTextContent('ETH');
   });
 
   it('renders nothing when no tokens are present', () => {
@@ -92,9 +93,12 @@ describe('MetadataSection', () => {
       data: { from: '0xabc' },
     } as ActivityListItem;
 
-    const { container } = render(<MetadataSection item={item} />);
+    render(<MetadataSection item={item} />);
 
-    expect(container).toMatchSnapshot();
+    expect(screen.getByTestId('transaction-status')).toHaveTextContent(
+      'pending',
+    );
+    expect(screen.queryByTestId('network-name')).not.toBeInTheDocument();
   });
 
   it('renders the network row when chainId is present', () => {
@@ -107,13 +111,13 @@ describe('MetadataSection', () => {
       data: { from: '0xabc', to: '0xdef' },
     } as ActivityListItem;
 
-    const { container } = render(
+    render(
       <MetadataSection
         item={item}
         addressRows={{ from: '0xabc', to: '0xdef' }}
       />,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(screen.getByTestId('network-name')).toHaveTextContent('eip155:1');
   });
 });

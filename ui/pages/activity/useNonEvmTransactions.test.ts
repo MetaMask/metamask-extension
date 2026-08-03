@@ -59,7 +59,7 @@ describe('useNonEvmTransactions', () => {
       useNonEvmTransactions({ networks: [network] }),
     );
 
-    expect(result.current).toMatchSnapshot();
+    expect(result.current).toEqual([withChain]);
   });
 
   it('returns an empty list when no networks are selected', () => {

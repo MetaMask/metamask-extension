@@ -249,9 +249,11 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(activity),
     );
 
-    expect({
-      title: result.current.title.props.children,
-      subtitle: result.current.subtitle,
-    }).toMatchSnapshot();
+    expect(result.current.title.props.children).toBe(
+      'activity_send_pending_title|ETH',
+    );
+    expect(result.current.subtitle).toBe(
+      'activity_send_pending_description|0x11111...11111',
+    );
   });
 });
