@@ -33,7 +33,6 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../utils/formatPerpsDisplayPrice';
-import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -44,7 +43,6 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
-import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
 import { isClosingOrder } from '../utils/orderUtils';
@@ -76,7 +74,6 @@ export const CancelOrderModal = ({
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
-  const { buildTrackingData } = usePerpsAttribution();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -157,56 +154,31 @@ export const CancelOrderModal = ({
         success: boolean;
         error?: string;
       }>('perpsCancelOrder', [
-        {
-          orderId: order.orderId,
-          symbol: order.symbol,
-          // Attribution-only trackingData — cancel has no fee/notional; zeros
-          // satisfy TrackingData while entry/discovery come from flow context.
-          trackingData: buildTrackingData({
-            totalFee: 0,
-            marketPrice: parseFloat(order.price) || 0,
-            vipTier: null,
-            vipDiscount: undefined,
-          }),
-        },
+        { orderId: order.orderId, symbol: order.symbol },
       ]);
       if (!result?.success) {
-        // Controller already emitted cancel submitted/terminal analytics —
-        // surface UI only; do not throw into catch (would duplicate PerpsError).
-        const errorMessage = result?.error ?? t('somethingWentWrong');
-        setError(errorMessage);
-        // The error is DISPLAYED here, so emit the error screen view even though
-        // we intentionally skip the client PerpsError.
-        trackPerpsErrorScreenViewed(
-          track,
-          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
-        );
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
-          description: errorMessage,
-        });
-        setIsSubmitting(false);
-        return;
+        throw new Error(result?.error ?? t('somethingWentWrong'));
       }
+      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.ORDER_TYPE]: order.orderType,
+      });
       replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CANCEL_ORDER_SUCCESS });
       setIsSubmitting(false);
       onClose();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t('somethingWentWrong');
-      // Transport/background throws never reach the controller cancel
-      // submitted/terminal pipeline — keep client PerpsError for that gap.
-      // Do not re-emit client cancel transaction events (controller owns those).
+      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
-      trackPerpsErrorScreenViewed(
-        track,
-        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
-      );
       setError(errorMessage);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
@@ -218,8 +190,7 @@ export const CancelOrderModal = ({
     isEligible,
     order.orderId,
     order.symbol,
-    order.price,
-    buildTrackingData,
+    order.orderType,
     onClose,
     replacePerpsToastByKey,
     track,
