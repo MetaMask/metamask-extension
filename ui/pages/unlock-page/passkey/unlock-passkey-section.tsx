@@ -151,7 +151,9 @@ export const UnlockPasskeySection = ({
             throw new Error('Secret escrow credential is not enrolled');
           }
 
-          const { challenge } = await generateSecretEscrowExportChallenge();
+          const { challenge } = await generateSecretEscrowExportChallenge(
+            'passkey',
+          );
           // Omit rpId: PasskeyController also uses undefined so Chromium accepts
           // chrome-extension:// pages. An explicit extension-id rpId is rejected
           // as an invalid domain.

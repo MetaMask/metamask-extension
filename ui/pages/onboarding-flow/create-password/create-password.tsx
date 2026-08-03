@@ -37,6 +37,7 @@ import {
   getIsSeedlessOnboardingUserAuthenticated,
   setDataCollectionForMarketing,
   setMarketingConsent,
+  createSecretEscrowPasswordFactor,
 } from '../../../store/actions';
 import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -249,6 +250,16 @@ export default function CreatePassword({
 
     setNewAccountCreationInProgress(true);
     await createNewAccount(password);
+
+    if (isSocialLoginFlow && isSecretEscrowPasskeyAvailable) {
+      try {
+        // Mint wallet secret S with password as the first 1-of-N factor.
+        // Passkey setup can addFactor later without replacing this enrollment.
+        await createSecretEscrowPasswordFactor(password);
+      } catch (error) {
+        log.error('Failed to create secret escrow password factor', error);
+      }
+    }
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });

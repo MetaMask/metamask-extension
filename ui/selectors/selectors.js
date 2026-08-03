@@ -3051,11 +3051,50 @@ export function getIsSecretEscrowPasskeyAvailable(state) {
 /**
  * Whether a secret-escrow passkey factor is enrolled (with wrapped password).
  *
+ * Password-first wallet-secret enrollment alone is not enough — a WebAuthn
+ * factor must also be present for passkey unlock / setup-complete checks.
+ *
  * @param {object} state - Redux state
  * @returns {boolean}
  */
 export function getIsSecretEscrowPasskeyEnrolled(state) {
-  return Boolean(state.metamask?.escrowRecord?.wrappedPassword);
+  return Boolean(
+    state.metamask?.escrowRecord?.wrappedPassword &&
+      getSecretEscrowWebAuthnFactor(state),
+  );
+}
+
+/**
+ * Public factors map for the enrolled secret-escrow user (1-of-N).
+ *
+ * @param {object} state - Redux state
+ * @returns {Record<string, object>}
+ */
+export function getSecretEscrowFactors(state) {
+  return state.metamask?.escrowRecord?.factors ?? {};
+}
+
+/**
+ * Resolves the enrolled WebAuthn factor from legacy `factor` or the factors map.
+ *
+ * @param {object} state - Redux state
+ * @returns {object | undefined}
+ */
+function getSecretEscrowWebAuthnFactor(state) {
+  const record = state.metamask?.escrowRecord;
+  if (!record) {
+    return undefined;
+  }
+  if (record.factor?.type === 'webauthn' || record.factor?.credentialId) {
+    return record.factor;
+  }
+  const factors = record.factors ?? {};
+  return (
+    factors.passkey ??
+    Object.values(factors).find(
+      (factor) => factor?.type === 'webauthn' || factor?.credentialId,
+    )
+  );
 }
 
 /**
@@ -3065,7 +3104,7 @@ export function getIsSecretEscrowPasskeyEnrolled(state) {
  * @returns {string | undefined}
  */
 export function getSecretEscrowPasskeyCredentialId(state) {
-  return state.metamask?.escrowRecord?.factor?.credentialId;
+  return getSecretEscrowWebAuthnFactor(state)?.credentialId;
 }
 
 /**
@@ -3075,7 +3114,7 @@ export function getSecretEscrowPasskeyCredentialId(state) {
  * @returns {string | undefined}
  */
 export function getSecretEscrowPasskeyRpId(state) {
-  return state.metamask?.escrowRecord?.factor?.rpId;
+  return getSecretEscrowWebAuthnFactor(state)?.rpId;
 }
 
 /**

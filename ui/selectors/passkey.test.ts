@@ -168,16 +168,32 @@ describe('getIsSecretEscrowPasskeyAvailable', () => {
 });
 
 describe('getIsSecretEscrowPasskeyEnrolled', () => {
-  it('returns true when a wrapped password escrow record exists', () => {
+  it('returns true when a wrapped password and webauthn factor exist', () => {
     expect(
       getIsSecretEscrowPasskeyEnrolled({
         metamask: {
           escrowRecord: {
             wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factor: { type: 'webauthn', credentialId: 'cred-1' },
           },
         },
       }),
     ).toBe(true);
+  });
+
+  it('returns false when only a password factor is enrolled', () => {
+    expect(
+      getIsSecretEscrowPasskeyEnrolled({
+        metamask: {
+          escrowRecord: {
+            wrappedPassword: { ciphertext: 'x', iv: 'y' },
+            factorId: 'password',
+            factor: { type: 'password' },
+            factors: { password: { type: 'password' } },
+          },
+        },
+      }),
+    ).toBe(false);
   });
 
   it('returns false when no escrow record exists', () => {
@@ -200,6 +216,27 @@ describe('getSecretEscrowPasskeyCredentialId', () => {
         },
       }),
     ).toBe('cred-1');
+  });
+
+  it('returns the passkey credential from the factors map', () => {
+    expect(
+      getSecretEscrowPasskeyCredentialId({
+        metamask: {
+          escrowRecord: {
+            factorId: 'password',
+            factor: { type: 'password' },
+            factors: {
+              password: { type: 'password' },
+              passkey: {
+                type: 'webauthn',
+                credentialId: 'cred-from-factors',
+                rpId: 'metamask',
+              },
+            },
+          },
+        },
+      }),
+    ).toBe('cred-from-factors');
   });
 });
 

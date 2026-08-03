@@ -2950,6 +2950,8 @@ export default class MetamaskController extends EventEmitter {
       // secret escrow passkey recovery (social login; mock backend for now)
       generateSecretEscrowExportChallenge:
         this.generateSecretEscrowExportChallenge.bind(this),
+      createSecretEscrowPasswordFactor:
+        this.createSecretEscrowPasswordFactor.bind(this),
       enrollSecretEscrowPasskey: this.enrollSecretEscrowPasskey.bind(this),
       recoverPasswordWithSecretEscrow:
         this.recoverPasswordWithSecretEscrow.bind(this),
@@ -4477,19 +4479,48 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Issues a WebAuthn challenge for secret-escrow export / password recovery.
+   * Issues an export challenge for a secret-escrow factor (defaults to passkey).
    *
+   * @param {string} [factorId]
    * @returns {Promise<{ challenge: string }>}
    */
-  async generateSecretEscrowExportChallenge() {
+  async generateSecretEscrowExportChallenge(factorId = 'passkey') {
     if (!this.secretEscrowController.isEnrolled()) {
       await this.hydrateSecretEscrowEnrollment();
     }
-    return this.secretEscrowController.startExport();
+    return this.secretEscrowController.startExport(factorId || 'passkey');
   }
 
   /**
-   * Enrolls a WebAuthn factor with the (mock) escrow and wraps the wallet password.
+   * Registers wallet secret `S` with a password factor and wraps the password
+   * under `S` (social create path; passkey can be added later via 1-of-N).
+   *
+   * @param {string} password - Current wallet password (TOPRF factor).
+   * @returns {Promise<void>}
+   */
+  async createSecretEscrowPasswordFactor(password) {
+    if (!this.onboardingController.getIsSocialLoginFlow()) {
+      throw new Error(
+        'Secret escrow password factor is only available for social login',
+      );
+    }
+    await this.keyringController.verifyPassword(password);
+    if (this.secretEscrowController.isEnrolled()) {
+      return;
+    }
+    await this.secretEscrowController.createWithWalletSecretAndWrapPassword({
+      userId: this.#getSecretEscrowUserId(),
+      factorId: 'password',
+      factor: { type: 'password', password },
+      password,
+    });
+  }
+
+  /**
+   * Enrolls a WebAuthn factor with the (mock) escrow.
+   *
+   * When a password factor already escrows `S`, adds the passkey as another
+   * 1-of-N factor. Otherwise falls back to legacy passkey-first wrap enroll.
    *
    * @param {import('@metamask/secret-escrow-client').WebAuthnEscrowFactor} factor
    * @param {string} password - Current wallet password (TOPRF factor).
@@ -4505,6 +4536,19 @@ export default class MetamaskController extends EventEmitter {
     // Port IPC may turn omitted args into `null`; coalesce before use.
     const resolvedFactorId = factorId || 'passkey';
     await this.keyringController.verifyPassword(password);
+
+    if (this.secretEscrowController.isEnrolled()) {
+      const factors = this.secretEscrowController.listFactors();
+      if (factors[resolvedFactorId]) {
+        return;
+      }
+      await this.secretEscrowController.addFactor({
+        factorId: resolvedFactorId,
+        factor,
+      });
+      return;
+    }
+
     await this.secretEscrowController.enrollAndWrapPassword({
       userId: this.#getSecretEscrowUserId(),
       factorId: resolvedFactorId,
@@ -4519,10 +4563,14 @@ export default class MetamaskController extends EventEmitter {
    * the returned password (e.g. social rehydration vs normal unlock).
    *
    * @param {import('@metamask/secret-escrow-client').EscrowAssertion} assertion
+   * @param {string} [factorId]
    * @returns {Promise<string>} Recovered wallet password.
    */
-  async recoverPasswordWithSecretEscrow(assertion) {
-    return await this.secretEscrowController.recoverPassword(assertion);
+  async recoverPasswordWithSecretEscrow(assertion, factorId = 'passkey') {
+    return await this.secretEscrowController.recoverPassword(
+      assertion,
+      factorId || 'passkey',
+    );
   }
 
   /**

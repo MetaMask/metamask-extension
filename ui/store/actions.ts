@@ -1291,7 +1291,24 @@ export function protectVaultKeyWithPasskey(
 }
 
 /**
- * Enrolls a social-login passkey with the secret escrow and wraps the wallet password.
+ * Registers wallet secret `S` with a password factor and wraps the password
+ * under `S` for social-login multi-factor escrow.
+ *
+ * @param password - Current wallet password.
+ */
+export function createSecretEscrowPasswordFactor(
+  password: string,
+): Promise<void> {
+  return submitRequestToBackground('createSecretEscrowPasswordFactor', [
+    password,
+  ]);
+}
+
+/**
+ * Enrolls a social-login passkey with the secret escrow.
+ *
+ * Adds a passkey factor when password-first escrow already exists; otherwise
+ * performs legacy passkey-first wrap enrollment.
  *
  * @param factor - Public WebAuthn factor metadata for the escrow.
  * @param password - Current wallet password.
@@ -1311,11 +1328,17 @@ export function enrollSecretEscrowPasskey(
 
 /**
  * Starts a secret-escrow export ceremony (returns the WebAuthn challenge).
+ *
+ * @param factorId - Factor to challenge (defaults to `"passkey"`).
  */
-export function generateSecretEscrowExportChallenge(): Promise<{
+export function generateSecretEscrowExportChallenge(
+  factorId: string = 'passkey',
+): Promise<{
   challenge: string;
 }> {
-  return submitRequestToBackground('generateSecretEscrowExportChallenge');
+  return submitRequestToBackground('generateSecretEscrowExportChallenge', [
+    factorId,
+  ]);
 }
 
 /**
@@ -1323,9 +1346,11 @@ export function generateSecretEscrowExportChallenge(): Promise<{
  * the same path as password unlock (social rehydration vs normal unlock).
  *
  * @param assertion - Escrow assertion (credential id + challenge, or full WebAuthn JSON).
+ * @param factorId - Factor used for the assertion (defaults to `"passkey"`).
  */
 export function recoverPasswordWithSecretEscrow(
   assertion: import('@metamask/secret-escrow-client').EscrowAssertion,
+  factorId: string = 'passkey',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
@@ -1335,7 +1360,7 @@ export function recoverPasswordWithSecretEscrow(
     try {
       const password = await submitRequestToBackground<string>(
         'recoverPasswordWithSecretEscrow',
-        [assertion],
+        [assertion, factorId],
       );
 
       const state = getState();
