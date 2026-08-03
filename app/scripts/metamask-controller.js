@@ -4479,6 +4479,8 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
         unwrapped,
       );
+      // Backfill remote metadata if this device enrolled offline wrap earlier.
+      await this.#syncLocalPasskeyWrapToEscrow();
       return;
     }
     await this.submitEncryptionKey(unwrapped);
@@ -4502,6 +4504,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Restores local escrow enrollment from the remote mock/API after wipe.
+   * Also restores the local offline passkey wrap when present in metadata.
    *
    * @returns {Promise<boolean>} True when local state was hydrated.
    */
@@ -4510,13 +4513,61 @@ export default class MetamaskController extends EventEmitter {
       return false;
     }
     try {
-      return await this.secretEscrowController.hydrateFromRemote(
+      const hydrated = await this.secretEscrowController.hydrateFromRemote(
         this.#getSecretEscrowUserId(),
       );
+      if (hydrated) {
+        this.#restoreLocalPasskeyWrapFromEscrow();
+      }
+      return hydrated;
     } catch (error) {
       log.warn('hydrateSecretEscrowEnrollment failed', error);
       return false;
     }
+  }
+
+  /**
+   * Pushes the local PasskeyController wrap into escrow enrollment metadata so
+   * wipe/rehydration can restore offline biometrics unlock.
+   *
+   * @returns {Promise<void>}
+   */
+  async #syncLocalPasskeyWrapToEscrow() {
+    if (
+      !this.passkeyController.isPasskeyEnrolled() ||
+      !this.secretEscrowController.isEnrolled()
+    ) {
+      return;
+    }
+    const { passkeyRecord } = this.passkeyController.state;
+    if (!passkeyRecord) {
+      return;
+    }
+    try {
+      await this.secretEscrowController.setLocalPasskeyRecord(passkeyRecord);
+    } catch (error) {
+      log.warn('Failed to sync local passkey wrap to escrow metadata', error);
+    }
+  }
+
+  /**
+   * Restores PasskeyController state from escrow metadata after wipe hydrate.
+   */
+  #restoreLocalPasskeyWrapFromEscrow() {
+    if (this.passkeyController.isPasskeyEnrolled()) {
+      return;
+    }
+    const localPasskeyRecord =
+      this.secretEscrowController.state.escrowRecord?.localPasskeyRecord;
+    if (!localPasskeyRecord) {
+      return;
+    }
+    // `update` is protected on BaseController in TS, but available at runtime.
+    this.passkeyController.update((state) => {
+      state.passkeyRecord = globalThis.structuredClone
+        ? globalThis.structuredClone(localPasskeyRecord)
+        : JSON.parse(JSON.stringify(localPasskeyRecord));
+    });
   }
 
   /**
@@ -4601,6 +4652,7 @@ export default class MetamaskController extends EventEmitter {
       if (this.passkeyController.isPasskeyEnrolled()) {
         this.passkeyController.removePasskey();
       }
+      await this.secretEscrowController.clearLocalPasskeyRecord();
     } finally {
       secret.fill(0);
     }
@@ -4659,22 +4711,24 @@ export default class MetamaskController extends EventEmitter {
 
     if (this.secretEscrowController.isEnrolled()) {
       const factors = this.secretEscrowController.listFactors();
-      if (factors[resolvedFactorId]) {
-        return;
+      if (!factors[resolvedFactorId]) {
+        await this.secretEscrowController.addFactor({
+          factorId: resolvedFactorId,
+          factor,
+        });
       }
-      await this.secretEscrowController.addFactor({
+    } else {
+      await this.secretEscrowController.enrollAndWrapPassword({
+        userId: this.#getSecretEscrowUserId(),
         factorId: resolvedFactorId,
         factor,
+        password,
       });
-      return;
     }
 
-    await this.secretEscrowController.enrollAndWrapPassword({
-      userId: this.#getSecretEscrowUserId(),
-      factorId: resolvedFactorId,
-      factor,
-      password,
-    });
+    // Dual-enroll stores the password under the local passkey; publish that wrap
+    // into remote enrollment metadata for wipe/rehydration offline unlock.
+    await this.#syncLocalPasskeyWrapToEscrow();
   }
 
   /**

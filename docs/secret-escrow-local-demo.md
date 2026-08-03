@@ -122,7 +122,9 @@ yarn start
 - Delete `.secret-escrow-mock.json` and restart the mock to clear enrollments.
 - **Offline unlock:** social passkey enrollment wraps the **wallet password**
   under the same WebAuthn credential (not only the vault encryption key), so
-  biometrics unlock works offline and still unlocks Seedless. After a wipe, use
-  escrow (online) once to rehydrate; local wrap is cleared with extension data.
+  biometrics unlock works offline and still unlocks Seedless. That local wrap is
+  also stored in escrow enrollment metadata; after a wipe, hydrate restores it
+  so offline unlock works again without re-enrolling. (Enrollment still shows
+  two biometrics prompts: WebAuthn create + verify — that is expected.)
   If you add a typed password after passkey-first setup, the local wrap is
   cleared and unlock falls back to escrow until you re-enroll biometrics.

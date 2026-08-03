@@ -814,6 +814,59 @@ describe('MetaMaskController', function () {
       });
     });
 
+    describe('#hydrateSecretEscrowEnrollment', function () {
+      it('restores local passkey wrap from escrow metadata after hydrate', async function () {
+        const localPasskeyRecord = {
+          credential: {
+            id: 'cred',
+            publicKey: 'pk',
+            counter: 1,
+            aaguid: 'aaguid',
+          },
+          encryptedVaultKey: { ciphertext: 'ct', iv: 'iv' },
+          keyDerivation: { method: 'userHandle' },
+        };
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(true);
+        jest
+          .spyOn(metamaskController.seedlessOnboardingController, 'state', 'get')
+          .mockReturnValue({
+            ...metamaskController.seedlessOnboardingController.state,
+            userId: 'user-1',
+          });
+        jest
+          .spyOn(metamaskController.secretEscrowController, 'hydrateFromRemote')
+          .mockResolvedValue(true);
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+        Object.defineProperty(
+          metamaskController.secretEscrowController,
+          'state',
+          {
+            configurable: true,
+            get: () => ({
+              escrowRecord: { localPasskeyRecord },
+              mockClientSnapshot: null,
+            }),
+          },
+        );
+        const updateSpy = jest.fn();
+        metamaskController.passkeyController.update = updateSpy;
+
+        const hydrated =
+          await metamaskController.hydrateSecretEscrowEnrollment();
+
+        expect(hydrated).toBe(true);
+        expect(updateSpy).toHaveBeenCalledTimes(1);
+        const updater = updateSpy.mock.calls[0][0];
+        const state = { passkeyRecord: null };
+        updater(state);
+        expect(state.passkeyRecord).toMatchObject(localPasskeyRecord);
+      });
+    });
+
     describe('#removePasskeyWithPasskeyVerification', function () {
       it('throws when passkey is not registered', async function () {
         jest
