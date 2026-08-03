@@ -219,6 +219,11 @@ class NetworkManager {
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
     const locator = this.networkListItemByName(networkName);
+    const retryableErrors = new Set([
+      'ElementClickInterceptedError',
+      'ElementNotInteractableError',
+      'TimeoutError',
+    ]);
 
     for (let attempt = 0; attempt < 5; attempt++) {
       await dismissObstructingToastsBeforeClick(this.driver);
@@ -227,12 +232,21 @@ class NetworkManager {
         await dismissVisibleToasts(this.driver);
         return;
       } catch (error) {
-        if (
-          error instanceof Error &&
-          error.name === 'ElementClickInterceptedError' &&
-          attempt < 4
-        ) {
+        const errorName = error instanceof Error ? error.name : '';
+        if (retryableErrors.has(errorName) && attempt < 4) {
+          console.warn(
+            `Retrying network selection for ${networkName} (attempt ${
+              attempt + 1
+            }/5) due to: ${errorName}`,
+          );
           await dismissVisibleToasts(this.driver);
+          // Scroll the target clear of any toast that reappeared mid-click.
+          try {
+            const el = await this.driver.findElement(locator);
+            await this.driver.scrollToElement(el);
+          } catch {
+            // Element may have gone stale; the next attempt re-finds it.
+          }
           await this.driver.delay(500);
         } else {
           throw error;

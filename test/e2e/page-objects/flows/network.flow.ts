@@ -1,7 +1,10 @@
 import { Driver } from '../../webdriver/driver';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
-import { dismissObstructingToastsBeforeClick } from './toast.flow';
+import {
+  dismissObstructingToastsBeforeClick,
+  dismissVisibleToasts,
+} from './toast.flow';
 
 // TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created
 // asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
@@ -37,6 +40,21 @@ export const switchToNetworkFromNetworkSelect = async (
 export async function waitForNetworkManagerBackdropToClear(
   driver: Driver,
 ): Promise<void> {
-  await dismissObstructingToastsBeforeClick(driver);
+  await dismissVisibleToasts(driver);
+  const backdropStillPresent = await driver.isElementPresentAndVisible(
+    '.modal__backdrop',
+    1_000,
+  );
+  if (backdropStillPresent) {
+    // Selection sometimes leaves the modal open (e.g. toast raced the click).
+    // Close it explicitly so later home-page clicks are not blocked.
+    const networkManager = new NetworkManager(driver);
+    try {
+      await networkManager.closeNetworkManager();
+    } catch {
+      await dismissObstructingToastsBeforeClick(driver);
+      await networkManager.closeNetworkManager();
+    }
+  }
   await driver.assertElementNotPresent('.modal__backdrop', { timeout: 15_000 });
 }
