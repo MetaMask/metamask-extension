@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
 import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -16,9 +17,19 @@ type Props = {
   chainId: string | undefined;
   txIdentifier: string | undefined;
   onBack: () => void;
+  /**
+   * Optional pre-resolved activity item (e.g. from the activity list dialog).
+   * When provided, skips local/API/non-EVM resolution.
+   */
+  item?: ActivityListItem;
 };
 
-export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
+export function TransactionDetails({
+  chainId,
+  txIdentifier,
+  onBack,
+  item,
+}: Props) {
   const selectedAddress = useSelector(selectEvmAddress);
   const isEvm = chainId?.startsWith('eip155:');
 
@@ -45,6 +56,10 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   });
 
   const transaction = useMemo(() => {
+    if (item) {
+      return item;
+    }
+
     const apiActivityItem =
       apiTransaction && selectedAddress
         ? mapApiTransaction({
@@ -79,7 +94,13 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
+  }, [
+    apiTransaction,
+    item,
+    localActivityItem,
+    nonEvmActivityItem,
+    selectedAddress,
+  ]);
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">

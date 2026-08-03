@@ -17,16 +17,18 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+import {
+  RAMPS_ORDER_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { RampOrderDetailsRoute } from '../details/templates/ramps/ramp-order-details-route';
 import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
+  getActivityDetailsPath,
   getActivityItemIdentifier,
   getLastEvmItemIndex,
   getItemKey,
@@ -107,8 +109,8 @@ export function ActivityList({
   });
 
   const handleClick = (item: ActivityListItem) => {
-    const identifier = getActivityItemIdentifier(item);
-    if (!identifier || !item.chainId) {
+    const detailsPath = getActivityDetailsPath(item);
+    if (!detailsPath) {
       return;
     }
 
@@ -128,10 +130,10 @@ export function ActivityList({
       dialogRef.current.showModal?.();
     }
 
-    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
-    const alreadyOnDetails = window.location.hash.includes(
-      `${TX_DETAILS_ROUTE}/`,
-    );
+    const detailsHash = `#${detailsPath}`;
+    const alreadyOnDetails =
+      window.location.hash.includes(`${TX_DETAILS_ROUTE}/`) ||
+      window.location.hash.includes(`${RAMPS_ORDER_DETAILS_ROUTE}/`);
 
     if (alreadyOnDetails) {
       window.history.replaceState(null, '', detailsHash);
@@ -159,7 +161,10 @@ export function ActivityList({
         .build(),
     );
 
-    if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
+    if (
+      window.location.hash.includes(`${TX_DETAILS_ROUTE}/`) ||
+      window.location.hash.includes(`${RAMPS_ORDER_DETAILS_ROUTE}/`)
+    ) {
       window.history.back();
     }
   };
@@ -215,21 +220,14 @@ export function ActivityList({
         className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
         onClose={handleClose}
       >
-        <RampOrderDetailsRoute
+        <TransactionDetails
+          item={selectedItem ?? undefined}
           chainId={selectedItem?.chainId}
           txIdentifier={
             selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
           }
           onBack={() => dialogRef.current?.close?.()}
-        >
-          <TransactionDetails
-            chainId={selectedItem?.chainId}
-            txIdentifier={
-              selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
-            }
-            onBack={() => dialogRef.current?.close?.()}
-          />
-        </RampOrderDetailsRoute>
+        />
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>
   );

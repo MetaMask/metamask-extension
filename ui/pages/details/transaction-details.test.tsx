@@ -115,4 +115,45 @@ describe('TransactionDetails', () => {
 
     expect(getByTestId('template-loader')).toMatchSnapshot();
   });
+
+  it('prefers a seeded activity item over generic resolution', () => {
+    const seededItem = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: { id: 'order-1', from: '0x1' },
+    } as never;
+
+    mockSelectLocalActivityItemsByIdentifier.mockReturnValue(
+      new Map([
+        [
+          'order-1',
+          {
+            type: 'send',
+            chainId: 'eip155:1',
+            status: 'success',
+            timestamp: 1,
+            hash: 'order-1',
+            data: { from: '0x1', to: '0x2' },
+          } as never,
+        ],
+      ]),
+    );
+
+    const { getByTestId } = render(
+      <TransactionDetails
+        item={seededItem}
+        chainId="eip155:1"
+        txIdentifier="order-1"
+        onBack={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-item-type',
+      'rampBuy',
+    );
+    expect(getByTestId('header')).toHaveAttribute('data-item-type', 'rampBuy');
+  });
 });

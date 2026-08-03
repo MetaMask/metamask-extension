@@ -170,7 +170,7 @@ describe('useRampsOrderEventToasts', () => {
 
     clickToast(showPendingToast as jest.Mock);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
   });
 
   it('opens the order details page using state resolved after the toast is shown', () => {
@@ -198,7 +198,7 @@ describe('useRampsOrderEventToasts', () => {
 
     clickToast(showPendingToast as jest.Mock);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
   });
 
   it('falls back to activity when the order has no resolvable chain', () => {

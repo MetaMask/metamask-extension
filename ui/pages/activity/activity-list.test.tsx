@@ -91,11 +91,6 @@ jest.mock('../details/transaction-details', () => ({
   TransactionDetails: () => null,
 }));
 
-jest.mock('../details/templates/ramps/ramp-order-details-route', () => ({
-  RampOrderDetailsRoute: ({ children }: { children: React.ReactNode }) =>
-    children,
-}));
-
 describe('ActivityList', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -203,7 +198,7 @@ describe('ActivityList', () => {
     expect(pushStateSpy).toHaveBeenCalledWith(
       null,
       '',
-      '#/tx/eip155:1/native-uuid',
+      '#/ramps/order/eip155:1/native-uuid',
     );
     pushStateSpy.mockRestore();
   });
