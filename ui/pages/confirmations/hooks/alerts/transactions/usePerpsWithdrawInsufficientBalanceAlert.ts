@@ -178,19 +178,29 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
       return [];
     }
 
-    const message =
+    // `reason` becomes the disabled confirm button's label
+    // (`single-action-footer.tsx`), so it stays short; when it differs from
+    // `message`, `useTransactionCustomAmountAlerts` surfaces `message` inline.
+    // The key is what alert telemetry reports, so the two cases stay distinct.
+    const alert =
       blockReason === 'exceedsBalance'
-        ? t('alertInsufficientPayTokenBalance')
-        : t('alertPerpsWithdrawBalanceUnavailable');
+        ? {
+            key: AlertsName.InsufficientPayTokenBalance,
+            message: t('alertInsufficientPayTokenBalance'),
+            reason: t('alertInsufficientPayTokenBalance'),
+          }
+        : {
+            key: AlertsName.PerpsWithdrawBalanceUnavailable,
+            message: t('alertPerpsWithdrawBalanceUnavailable'),
+            reason: t('alertReasonPerpsWithdrawBalanceUnavailable'),
+          };
 
     return [
       {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
-        key: AlertsName.InsufficientPayTokenBalance,
-        message,
-        reason: message,
         severity: Severity.Danger,
+        ...alert,
       },
     ];
   }, [blockReason, t]);
