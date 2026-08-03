@@ -113,6 +113,33 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
+  it('sets hideResults and disableUpdate when AccountNoFunds alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.AccountNoFunds,
+            reason: 'Insufficient funds',
+            message: 'No funds available. Use a different account.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'No funds available. Use a different account.',
+      disableUpdate: true,
+      hideResults: true,
+    });
+  });
+
   it('sets hideResults to true when SigningOrSubmitting alert exists', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({

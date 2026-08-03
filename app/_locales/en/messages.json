@@ -1410,6 +1410,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "No funds available. Use a different account."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Insufficient funds"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
@@ -6597,6 +6603,10 @@
   "payWith": {
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithEmptySelection": {
+    "message": "Select payment method",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
   },
   "payWithModalTitle": {
     "message": "Pay with",

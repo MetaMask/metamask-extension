@@ -21,6 +21,8 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   usePayWithToken,
   type PayWithDisplayToken,
@@ -53,7 +55,8 @@ export const PayWithRowSkeleton = () => {
 };
 
 type PaySelectorContentProps = {
-  displayToken: PayWithDisplayToken;
+  displayToken?: PayWithDisplayToken;
+  emptyLabel?: string;
   balanceText: string;
   showBalance: boolean;
   showArrow: boolean;
@@ -61,36 +64,45 @@ type PaySelectorContentProps = {
 
 function PaySelectorContent({
   displayToken,
+  emptyLabel,
   balanceText,
   showBalance,
   showArrow,
 }: PaySelectorContentProps) {
   return (
     <>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        marginRight={1}
-      >
-        <TokenIcon
-          chainId={displayToken.chainId as `0x${string}`}
-          tokenAddress={displayToken.address as `0x${string}`}
-          symbol={displayToken.symbol}
-          size="xs"
-        />
-      </Box>
-      <Text data-testid="pay-with-symbol">
-        {displayToken.symbol}
-        {showBalance && (
-          <Text
-            as="span"
-            data-testid="pay-with-balance"
-            color={TextColor.textAlternative}
+      {displayToken ? (
+        <>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            marginRight={1}
           >
-            {balanceText}
+            <TokenIcon
+              chainId={displayToken.chainId as `0x${string}`}
+              tokenAddress={displayToken.address as `0x${string}`}
+              symbol={displayToken.symbol}
+              size="xs"
+            />
+          </Box>
+          <Text data-testid="pay-with-symbol">
+            {displayToken.symbol}
+            {showBalance && (
+              <Text
+                as="span"
+                data-testid="pay-with-balance"
+                color={TextColor.textAlternative}
+              >
+                {balanceText}
+              </Text>
+            )}
           </Text>
-        )}
-      </Text>
+        </>
+      ) : (
+        <Text data-testid="pay-with-symbol" color={TextColor.textAlternative}>
+          {emptyLabel}
+        </Text>
+      )}
       {showArrow && (
         <Icon
           data-testid="pay-with-arrow"
@@ -109,6 +121,9 @@ type PayWithRowProps = {
 export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
 }: PayWithRowProps = {}) {
+  const t = useI18nContext();
+  const accountNoFundsAlert = useAccountNoFundsAlert();
+  const hasAccountNoFunds = accountNoFundsAlert.length > 0;
   const {
     displayToken,
     balanceUsdFormatted,
@@ -121,7 +136,9 @@ export function PayWithRow({
     modal,
   } = usePayWithToken();
 
-  if (!displayToken) {
+  // Match mobile: when the selected account has no funding tokens, show an
+  // empty "Select payment method" placeholder instead of an endless skeleton.
+  if (!displayToken && !hasAccountNoFunds) {
     return <PayWithRowSkeleton />;
   }
 
@@ -145,8 +162,9 @@ export function PayWithRow({
         >
           <PaySelectorContent
             displayToken={displayToken}
+            emptyLabel={t('payWithEmptySelection')}
             balanceText={` (${balanceUsdFormatted})`}
-            showBalance={!isPerpsWithdraw}
+            showBalance={Boolean(displayToken) && !isPerpsWithdraw}
             showArrow={canEdit && Boolean(from)}
           />
         </Box>

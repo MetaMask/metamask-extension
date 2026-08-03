@@ -40,6 +40,7 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
@@ -105,6 +106,8 @@ export const CustomAmountInfo = React.memo(
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
+    const accountNoFundsAlert = useAccountNoFundsAlert();
+    const hasAccountNoFunds = accountNoFundsAlert.length > 0;
     const isPostQuoteWithdraw =
       isPostQuoteWithdrawTransaction(currentConfirmation);
     // Post-quote withdrawals (e.g. Perps) source funds off-chain, not from a
@@ -162,6 +165,7 @@ export const CustomAmountInfo = React.memo(
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
             hasTokens={hasTokens}
+            hasAccountNoFunds={hasAccountNoFunds}
           />
         )}
       </Box>
@@ -266,11 +270,13 @@ function BottomContainer({
   disablePay,
   displayAccountRow,
   hasTokens,
+  hasAccountNoFunds,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasTokens: boolean;
+  hasAccountNoFunds: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady();
@@ -287,7 +293,9 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
-      {disablePay !== true && hasTokens && <PayWithRow />}
+      {disablePay !== true && (hasTokens || hasAccountNoFunds) && (
+        <PayWithRow />
+      )}
       {isResultReady && !hideResults && (
         <>
           <BridgeFeeRow

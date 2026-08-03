@@ -288,5 +288,13 @@ function getBestToken({
     };
   }
 
-  return targetTokenFallback;
+  // Deposit flows: do not fall back to the required destination token when
+  // the account has no funding balance. Leaving payToken unset empties the
+  // selector and allows the account-no-funds alert to surface. Post-quote
+  // withdraws still use the destination token as a known-safe default.
+  if (isPostQuoteWithdraw) {
+    return targetTokenFallback;
+  }
+
+  return undefined;
 }
