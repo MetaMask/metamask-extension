@@ -27,6 +27,7 @@ import type { SelectedNetworkControllerState } from '@metamask/selected-network-
 import type {
   PermissionConstraint,
   PermissionControllerState,
+  SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -392,6 +393,16 @@ class FixtureBuilderV2 {
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withSubjectMetadataController(
+    data: Partial<SubjectMetadataControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).SubjectMetadataController,
+      data,
+    );
     return this;
   }
 
