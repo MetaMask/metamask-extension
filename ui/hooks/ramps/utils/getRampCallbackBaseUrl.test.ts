@@ -15,10 +15,15 @@ describe('getRampCallbackBaseUrl', () => {
     process.env.METAMASK_ENVIRONMENT = originalEnv;
   });
 
-  it('returns the production URL for the production environment', () => {
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-    expect(getRampCallbackBaseUrl()).toBe(PRODUCTION_CALLBACK);
-  });
+  for (const environment of [
+    ENVIRONMENT.PRODUCTION,
+    ENVIRONMENT.RELEASE_CANDIDATE,
+  ]) {
+    it(`returns the production URL for the ${environment} environment`, () => {
+      process.env.METAMASK_ENVIRONMENT = environment;
+      expect(getRampCallbackBaseUrl()).toBe(PRODUCTION_CALLBACK);
+    });
+  }
 
   // `on-ramp-content.dev-api.cx.metamask.io` does not exist — pointing
   // development at it made providers redirect to a DNS failure page.
@@ -30,7 +35,6 @@ describe('getRampCallbackBaseUrl', () => {
   for (const environment of [
     ENVIRONMENT.OTHER,
     ENVIRONMENT.PULL_REQUEST,
-    ENVIRONMENT.RELEASE_CANDIDATE,
     ENVIRONMENT.STAGING,
     ENVIRONMENT.TESTING,
   ]) {
