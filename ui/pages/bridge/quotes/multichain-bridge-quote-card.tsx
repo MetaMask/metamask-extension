@@ -50,6 +50,7 @@ import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors'
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { useDispatch } from '../../../store/hooks';
+import { BRIDGE_DEBUG_ENABLED } from '../../../../shared/constants/bridge';
 import {
   getGasFees,
   getIncludedTxFees,
@@ -248,7 +249,7 @@ export const MultichainBridgeQuoteCard = ({
               {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
                 locale,
                 activeQuote.quote.priceData?.swapRate,
-              )} ${activeQuote.quote.dest.asset.symbol}`}
+              )} ${BRIDGE_DEBUG_ENABLED ? `(${activeQuote.swapRate}) ` : ''}${activeQuote.quote.dest.asset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -335,8 +336,17 @@ export const MultichainBridgeQuoteCard = ({
                   data-testid="network-fees-included-original-amount"
                 >
                   {includedTxFees?.valueInCurrency
-                    ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
-                    : formatNetworkFee(gasFees?.valueInCurrency, currency)}
+                    ? formatNetworkFee(
+                        includedTxFees.valueInCurrency,
+                        currency,
+                      ) +
+                      (BRIDGE_DEBUG_ENABLED
+                        ? ` (${activeQuote.includedTxFees?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                        : '')
+                    : formatNetworkFee(gasFees?.valueInCurrency, currency) +
+                      (BRIDGE_DEBUG_ENABLED
+                        ? ` (${activeQuote.gasFee?.total?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                        : '')}
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
@@ -347,6 +357,11 @@ export const MultichainBridgeQuoteCard = ({
                   }
                 >
                   {t('swapGasFeesIncluded')}
+                  {BRIDGE_DEBUG_ENABLED
+                    ? activeQuote.quote?.gasIncluded7702
+                      ? '(7702)'
+                      : ''
+                    : ''}
                 </Text>
               </Row>
             )}
@@ -360,7 +375,18 @@ export const MultichainBridgeQuoteCard = ({
                 }
                 data-testid="network-fees"
               >
-                {formatNetworkFee(gasFees?.valueInCurrency, currency)}
+                {formatNetworkFee(gasFees?.valueInCurrency, currency) +
+                  (BRIDGE_DEBUG_ENABLED
+                    ? ` (${activeQuote.gasFee?.total?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                    : '') +
+                  (BRIDGE_DEBUG_ENABLED
+                    ? ` / USD: ${sumAmounts(
+                        activeQuote.quote.feeData.network,
+                      )?.usd?.slice(
+                        0,
+                        8,
+                      )}  (${activeQuote.gasFee?.total?.usd?.slice(0, 8) ?? '0'})`
+                    : '')}
               </Text>
             )}
           </Row>
@@ -434,6 +460,9 @@ export const MultichainBridgeQuoteCard = ({
                 activeQuote.quote.dest.minAmountNormalized,
                 activeQuote.quote.dest.asset.symbol,
               )}
+              {BRIDGE_DEBUG_ENABLED
+                ? ` (${activeQuote.minToTokenAmount?.amount ?? '0'})`
+                : ''}
             </Text>
           </Row>
         )}
