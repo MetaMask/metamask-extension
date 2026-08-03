@@ -203,6 +203,50 @@ describe('ActivityList', () => {
     pushStateSpy.mockRestore();
   });
 
+  it('replaces the details hash when another item is opened while details are open', () => {
+    const pushStateSpy = jest.spyOn(window.history, 'pushState');
+    const replaceStateSpy = jest.spyOn(window.history, 'replaceState');
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      isInitialLoading: false,
+      fetchNextVisiblePage: jest.fn(),
+    });
+    mockUseRampsOrderActivity.mockReturnValue([
+      {
+        type: 'rampBuy',
+        chainId: 'eip155:1',
+        status: 'pending',
+        timestamp: 2,
+        data: { id: 'moonpay/orders/order-a', from: '0x1' },
+      },
+      {
+        type: 'rampSell',
+        chainId: 'eip155:1',
+        status: 'pending',
+        timestamp: 1,
+        data: { id: 'moonpay/orders/order-b', from: '0x1' },
+      },
+    ]);
+
+    render(<ActivityList />);
+    fireEvent.click(screen.getByTestId('activity-row-rampBuy'));
+    fireEvent.click(screen.getByTestId('activity-row-rampSell'));
+
+    expect(pushStateSpy).toHaveBeenCalledTimes(1);
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      null,
+      '',
+      '#/ramps/order/eip155:1/order-a',
+    );
+    expect(replaceStateSpy).toHaveBeenCalledWith(
+      null,
+      '',
+      '#/ramps/order/eip155:1/order-b',
+    );
+    pushStateSpy.mockRestore();
+    replaceStateSpy.mockRestore();
+  });
+
   it('renders a pending header when a ramp order is pending', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },

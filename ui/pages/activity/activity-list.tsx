@@ -17,10 +17,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import {
-  RAMPS_ORDER_DETAILS_ROUTE,
-  TX_DETAILS_ROUTE,
-} from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
 import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
@@ -55,6 +51,7 @@ export function ActivityList({
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const detailsHashOpenRef = useRef(false);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
@@ -105,6 +102,7 @@ export function ActivityList({
   });
 
   useEventListener('popstate', () => {
+    detailsHashOpenRef.current = false;
     dialogRef.current?.close?.();
   });
 
@@ -131,15 +129,13 @@ export function ActivityList({
     }
 
     const detailsHash = `#${detailsPath}`;
-    const alreadyOnDetails =
-      window.location.hash.includes(`${TX_DETAILS_ROUTE}/`) ||
-      window.location.hash.includes(`${RAMPS_ORDER_DETAILS_ROUTE}/`);
 
-    if (alreadyOnDetails) {
+    if (detailsHashOpenRef.current) {
       window.history.replaceState(null, '', detailsHash);
       return;
     }
 
+    detailsHashOpenRef.current = true;
     window.history.pushState(null, '', detailsHash);
   };
 
@@ -161,10 +157,8 @@ export function ActivityList({
         .build(),
     );
 
-    if (
-      window.location.hash.includes(`${TX_DETAILS_ROUTE}/`) ||
-      window.location.hash.includes(`${RAMPS_ORDER_DETAILS_ROUTE}/`)
-    ) {
+    if (detailsHashOpenRef.current) {
+      detailsHashOpenRef.current = false;
       window.history.back();
     }
   };
