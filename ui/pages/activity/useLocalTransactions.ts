@@ -26,7 +26,10 @@ export function useLocalTransactions(filters: ActivityListFilter) {
     }
 
     const selectedNetworks = new Set(networks);
-    return localItems.filter((item) => selectedNetworks.has(item.chainId));
+    return localItems.filter(
+      (item) =>
+        item.chainId !== undefined && selectedNetworks.has(item.chainId),
+    );
   }, [assetId, localItems, networks]);
 
   const localTransactionGroups = useMemo(
