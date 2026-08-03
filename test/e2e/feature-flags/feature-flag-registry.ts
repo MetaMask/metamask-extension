@@ -2866,7 +2866,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      enabled: false,
+      preferredTokens: {
+        default: [],
+        overrides: {},
+      },
+      blockedTokens: {
+        default: {
+          chainIds: [],
+          tokens: [],
+        },
+        overrides: {},
+      },
+      minimumRequiredTokenBalance: 10,
     },
     status: FeatureFlagStatus.Active,
   },
