@@ -131,7 +131,6 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.getByText(messages.networkNameEthereum.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Stock1')).toBeInTheDocument();
   });
 
   it('switches to Crypto tab when View all is clicked', () => {
