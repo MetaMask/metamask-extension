@@ -39,6 +39,7 @@ import {
   findProviderQuote,
   getProviderTag,
   type ProviderListItem,
+  type ProviderTag,
 } from './utils/build-provider-list-items';
 
 type ProviderSelectionLocationState = {
@@ -53,6 +54,7 @@ type ProviderListRow =
       provider: Provider;
       isSelected: boolean;
       isDisabled: boolean;
+      tag: ProviderTag | null;
       subtitle: string | null;
       showQuote: boolean;
       quote: ReturnType<typeof findProviderQuote>;
@@ -138,7 +140,7 @@ function buildProviderListRows({
           formatCurrency,
           t,
         }) ?? t('rampsQuoteUnavailable'))
-      : tag;
+      : null;
 
     return {
       type: 'provider',
@@ -146,6 +148,7 @@ function buildProviderListRows({
       provider,
       isSelected: selectedProviderId === provider.id,
       isDisabled: isSelecting,
+      tag,
       subtitle,
       showQuote: showQuotes,
       quote: matchedQuote,
@@ -414,6 +417,7 @@ export function RampsProviderSelectionScreen() {
                 provider={row.provider}
                 isSelected={row.isSelected}
                 isDisabled={row.isDisabled}
+                tag={row.tag}
                 subtitle={row.subtitle}
                 showQuote={row.showQuote}
                 quote={row.quote}
