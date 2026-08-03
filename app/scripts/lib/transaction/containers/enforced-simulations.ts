@@ -237,9 +237,7 @@ function applySlippage(
 ): bigint {
   const valueBN = new BigNumber(value);
   const slippageMultiplier = (100 + (isDecrease ? slippage : -slippage)) / 100;
-  const valueWithSlippage = BigInt(
-    valueBN.mul(slippageMultiplier).toFixed(0),
-  );
+  const valueWithSlippage = BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
 
   if (!isDecrease) {
     return valueWithSlippage;
