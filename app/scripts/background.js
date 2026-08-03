@@ -2144,7 +2144,7 @@ async function triggerUi() {
   const sidepanelSupported = Boolean(browser.sidePanel?.open);
   const dappOpenSidepanelEnabled = getBooleanFeatureFlag(
     controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
-      ?.dappOpenSidepanel,
+      ?.dappOpenSidepanelEnabled,
     false,
   );
 
