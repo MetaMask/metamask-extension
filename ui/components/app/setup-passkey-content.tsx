@@ -242,8 +242,9 @@ export default function SetupPasskeyContent({
           );
         }
 
-        // Local vault wrap first so day-to-day unlock works offline, then
-        // register the same credential with secret escrow for wipe/rehydration.
+        // Local password wrap first so day-to-day unlock works offline (social
+        // recovers the wallet password under the passkey), then register the
+        // same credential with secret escrow for wipe/rehydration.
         currentStep = 'verify';
         const postRegAuthOptions =
           await generatePasskeyPostRegistrationAuthenticationOptions(

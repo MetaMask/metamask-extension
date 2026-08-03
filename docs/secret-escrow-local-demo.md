@@ -120,6 +120,9 @@ yarn start
 - Each tester runs their **own** mock (their own `.secret-escrow-mock.json`).
 - Passkeys are tied to that machine’s authenticator and that unpacked extension id.
 - Delete `.secret-escrow-mock.json` and restart the mock to clear enrollments.
-- **Offline unlock:** social passkey enrollment also wraps the local vault, so
-  day-to-day biometrics unlock works offline. After a wipe, use escrow (online)
-  once to rehydrate; local vault wrap is cleared with extension data.
+- **Offline unlock:** social passkey enrollment wraps the **wallet password**
+  under the same WebAuthn credential (not only the vault encryption key), so
+  biometrics unlock works offline and still unlocks Seedless. After a wipe, use
+  escrow (online) once to rehydrate; local wrap is cleared with extension data.
+  If you add a typed password after passkey-first setup, the local wrap is
+  cleared and unlock falls back to escrow until you re-enroll biometrics.

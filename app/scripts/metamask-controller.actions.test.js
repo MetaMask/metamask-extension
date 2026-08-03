@@ -609,6 +609,9 @@ describe('MetaMaskController', function () {
             ...metamaskController.onboardingController.state,
             completedOnboarding: true,
           });
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(false);
 
         await expect(
           metamaskController.protectVaultKeyWithPasskey(
@@ -625,6 +628,9 @@ describe('MetaMaskController', function () {
             ...metamaskController.onboardingController.state,
             completedOnboarding: true,
           });
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(false);
         const verifyPasswordSpy = jest
           .spyOn(metamaskController.keyringController, 'verifyPassword')
           .mockResolvedValue(true);
@@ -652,6 +658,54 @@ describe('MetaMaskController', function () {
         });
       });
 
+      it('wraps the wallet password for social login (offline unlock)', async function () {
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(true);
+        const verifyPasswordSpy = jest
+          .spyOn(metamaskController.keyringController, 'verifyPassword')
+          .mockResolvedValue(true);
+        const exportEncryptionKeySpy = jest.spyOn(
+          metamaskController.keyringController,
+          'exportEncryptionKey',
+        );
+        const protectVaultKeySpy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'protectVaultKeyWithPasskey',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.protectVaultKeyWithPasskey(
+          registrationResponse,
+          authenticationResponse,
+          'social-password',
+        );
+
+        expect(verifyPasswordSpy).toHaveBeenCalledWith('social-password');
+        expect(exportEncryptionKeySpy).not.toHaveBeenCalled();
+        expect(protectVaultKeySpy).toHaveBeenCalledWith({
+          registrationResponse,
+          authenticationResponse,
+          vaultKey: 'social-password',
+        });
+      });
+
+      it('requires password for social login passkey enrollment', async function () {
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(true);
+
+        await expect(
+          metamaskController.protectVaultKeyWithPasskey(
+            registrationResponse,
+            authenticationResponse,
+          ),
+        ).rejects.toThrow(
+          'Password required to register social-login passkey for offline unlock',
+        );
+      });
+
       it('skips password verification before onboarding completion', async function () {
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
@@ -659,6 +713,9 @@ describe('MetaMaskController', function () {
             ...metamaskController.onboardingController.state,
             completedOnboarding: false,
           });
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(false);
         const verifyPasswordSpy = jest.spyOn(
           metamaskController.keyringController,
           'verifyPassword',
@@ -705,6 +762,9 @@ describe('MetaMaskController', function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(true);
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(false);
         const retrieveVaultKeySpy = jest
           .spyOn(
             metamaskController.passkeyController,
@@ -721,6 +781,36 @@ describe('MetaMaskController', function () {
           authenticationResponse,
         );
         expect(submitEncryptionKeySpy).toHaveBeenCalledWith('vault-key');
+      });
+
+      it('unlocks social login via recovered password', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('social-password');
+        const messengerCallSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
+        const submitEncryptionKeySpy = jest.spyOn(
+          metamaskController,
+          'submitEncryptionKey',
+        );
+
+        await metamaskController.unlockWithPasskey(authenticationResponse);
+
+        expect(messengerCallSpy).toHaveBeenCalledWith(
+          'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+          'social-password',
+        );
+        expect(submitEncryptionKeySpy).not.toHaveBeenCalled();
       });
     });
 

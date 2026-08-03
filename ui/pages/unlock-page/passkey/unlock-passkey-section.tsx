@@ -184,7 +184,42 @@ export const UnlockPasskeySection = ({
           const authenticationResponse =
             await startPasskeyAuthentication(authOptions);
 
-          await onUnlockWithPasskey(authenticationResponse);
+          try {
+            await onUnlockWithPasskey(authenticationResponse);
+          } catch (vaultUnlockError) {
+            // Social wallets may have escrow enrolled alongside a local wrap.
+            // If the local wrap is stale/wrong (e.g. older encryption-key wrap),
+            // fall back to escrow recovery (second WebAuthn prompt).
+            if (
+              !onUnlockWithSecretEscrow ||
+              !escrowCredentialId ||
+              isPasskeyCeremonySilentError(vaultUnlockError)
+            ) {
+              throw vaultUnlockError;
+            }
+
+            const { challenge } = await generateSecretEscrowExportChallenge(
+              'passkey',
+            );
+            const escrowAuthenticationResponse =
+              await startPasskeyAuthentication({
+                challenge,
+                allowCredentials: [
+                  {
+                    id: escrowCredentialId,
+                    type: 'public-key',
+                  },
+                ],
+                userVerification: 'preferred',
+                timeout: 60_000,
+              });
+
+            await onUnlockWithSecretEscrow({
+              id: escrowAuthenticationResponse.id,
+              challenge,
+              response: escrowAuthenticationResponse.response,
+            });
+          }
         }
 
         trackEvent(

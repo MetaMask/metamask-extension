@@ -4397,12 +4397,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
-   * If `completedOnboarding`, `password` is required and verified first.
+   * Wraps unlock material with a passkey after WebAuthn registration in the UI.
+   *
+   * - SRP: wraps the vault encryption key (offline unlock via submitEncryptionKey).
+   * - Social: wraps the wallet password (offline unlock via syncPasswordAndUnlockWallet
+   *   so SeedlessOnboardingController unlocks too). `password` is always required.
+   *
+   * If `completedOnboarding` (SRP), `password` is required and verified first.
    *
    * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Post-registration `get()` response from the UI.
-   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
+   * @param {string} [password] - Wallet password (required for social; required for SRP after onboarding).
    * @returns {Promise<void>}
    */
   async protectVaultKeyWithPasskey(
@@ -4410,7 +4415,27 @@ export default class MetamaskController extends EventEmitter {
     authenticationResponse,
     password,
   ) {
+    const isSocialLoginFlow =
+      this.onboardingController.getIsSocialLoginFlow();
     const { completedOnboarding } = this.onboardingController.state;
+
+    if (isSocialLoginFlow) {
+      if (!password) {
+        throw new Error(
+          'Password required to register social-login passkey for offline unlock',
+        );
+      }
+      await this.keyringController.verifyPassword(password);
+      // Persist the password under the passkey — social unlock must recover the
+      // password to unlock SeedlessOnboardingController, not only the keyring.
+      await this.passkeyController.protectVaultKeyWithPasskey({
+        registrationResponse,
+        authenticationResponse,
+        vaultKey: password,
+      });
+      return;
+    }
+
     if (completedOnboarding) {
       // password is required when onboarding is complete
       if (!password) {
@@ -4431,6 +4456,9 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Unlocks the vault with a passkey.
    *
+   * Social login recovers the wrapped wallet password and runs the normal social
+   * unlock path. SRP recovers the vault encryption key.
+   *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
    * @returns {Promise<void>}
    */
@@ -4443,10 +4471,17 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     }
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+    const unwrapped = await this.passkeyController.retrieveVaultKeyWithPasskey(
       authenticationResponse,
     );
-    await this.submitEncryptionKey(vaultKey);
+    if (this.onboardingController.getIsSocialLoginFlow()) {
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+        unwrapped,
+      );
+      return;
+    }
+    await this.submitEncryptionKey(unwrapped);
   }
 
   /**
@@ -4561,6 +4596,11 @@ export default class MetamaskController extends EventEmitter {
         password: newPassword,
         secret,
       });
+      // Local passkey wrap stores the old password; without a WebAuthn ceremony
+      // we cannot renew it here. Drop the wrap so unlock falls back to escrow.
+      if (this.passkeyController.isPasskeyEnrolled()) {
+        this.passkeyController.removePasskey();
+      }
     } finally {
       secret.fill(0);
     }
