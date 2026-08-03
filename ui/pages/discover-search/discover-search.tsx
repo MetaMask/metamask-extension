@@ -138,7 +138,10 @@ export const DiscoverSearchPage = () => {
   const showAllEmpty = !allLoading && !hasAnyPreview;
 
   const renderAllTabSkeleton = () => (
-    <Box flexDirection={BoxFlexDirection.Column} data-testid="discover-search-loading">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      data-testid="discover-search-loading"
+    >
       <DiscoverSearchSectionHeader
         title={t('perpsFilterCrypto')}
         showViewAll={false}
