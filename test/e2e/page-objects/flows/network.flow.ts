@@ -1,10 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
-import {
-  dismissObstructingToastsBeforeClick,
-  dismissVisibleToasts,
-} from './toast.flow';
+import { dismissVisibleToasts } from './toast.flow';
 
 // TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created
 // asynchronously at runtime via BIP44 stage-2 alignment, and the Snap only kicks
@@ -30,10 +27,13 @@ export const switchToNetworkFromNetworkSelect = async (
     await driver.delay(NON_EVM_SNAP_READY_DELAY_MS);
   }
 
+  // Pending tx toasts can appear during the snap delay; dismiss before opening
+  // the picker so they cannot intercept tab/network clicks (Perps pattern).
+  await dismissVisibleToasts(driver, 5_000);
   await tokensTab.openNetworksFilter();
-  await dismissObstructingToastsBeforeClick(driver);
+  await dismissVisibleToasts(driver);
   await networkManager.selectTab(networkCategory);
-  await dismissObstructingToastsBeforeClick(driver);
+  await dismissVisibleToasts(driver);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
 
@@ -52,7 +52,7 @@ export async function waitForNetworkManagerBackdropToClear(
     try {
       await networkManager.closeNetworkManager();
     } catch {
-      await dismissObstructingToastsBeforeClick(driver);
+      await dismissVisibleToasts(driver);
       await networkManager.closeNetworkManager();
     }
   }

@@ -9,7 +9,6 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
-import { dismissVisibleToasts } from '../../page-objects/flows/toast.flow';
 import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 import { TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
@@ -33,7 +32,6 @@ type TronDetailsExpectation = {
 async function setupTronAccount(driver: Driver): Promise<NonEvmHomepage> {
   await login(driver, { validateBalance: false });
   await selectTronNetwork(driver);
-  await dismissVisibleToasts(driver);
   const home = new NonEvmHomepage(driver);
   await home.checkPageIsLoaded();
   return home;

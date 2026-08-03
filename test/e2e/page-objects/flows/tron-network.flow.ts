@@ -15,7 +15,6 @@ import { dismissVisibleToasts } from './toast.flow';
  * @param driver - WebDriver instance
  */
 export async function selectTronNetwork(driver: Driver): Promise<void> {
-  await dismissVisibleToasts(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
   await waitForNetworkManagerBackdropToClear(driver);
   await dismissVisibleToasts(driver);
