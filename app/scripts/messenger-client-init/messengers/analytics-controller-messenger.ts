@@ -54,7 +54,7 @@ export function getAnalyticsControllerMessenger(
     });
   messenger.delegate({
     messenger: analyticsControllerMessenger,
-    actions: [],
+    actions: ['GeolocationController:getGeolocationData'],
     events: [],
   });
   return analyticsControllerMessenger;
