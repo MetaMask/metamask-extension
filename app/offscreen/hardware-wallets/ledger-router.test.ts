@@ -49,15 +49,15 @@ jest.mock('./ledger-utils', () => ({
 jest.mock('./ledger', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-    default: jest.fn().mockImplementation(() => {
-      mockLegacyInstance = {
-        init: mockLegacyInit,
-        destroy: mockLegacyDestroy,
-        handleAction: mockLegacyHandleAction,
-        forceReset: mockLegacyForceReset,
-      };
-      return mockLegacyInstance;
-    }),
+  default: jest.fn().mockImplementation(() => {
+    mockLegacyInstance = {
+      init: mockLegacyInit,
+      destroy: mockLegacyDestroy,
+      handleAction: mockLegacyHandleAction,
+      forceReset: mockLegacyForceReset,
+    };
+    return mockLegacyInstance;
+  }),
 }));
 
 // Router exports + mocked handler constructors are re-fetched per test in
@@ -339,7 +339,6 @@ describe('LedgerRouter', () => {
         // second action resolves normally once it gets to run.
         mockLegacyHandleAction
           .mockReturnValueOnce(
-             
             new Promise(() => {
               /* never resolves */
             }),

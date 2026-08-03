@@ -228,12 +228,9 @@ export class LedgerLegacyHandler {
     this.transport = null;
     this.ethApp = null;
     if (transportToClose) {
-      Promise.resolve(transportToClose.close()).catch(
-         
-        () => {
-          /* best-effort: ignore close failures during forced reset */
-        },
-      );
+      Promise.resolve(transportToClose.close()).catch(() => {
+        /* best-effort: ignore close failures during forced reset */
+      });
     }
   }
 

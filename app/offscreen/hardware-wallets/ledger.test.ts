@@ -928,9 +928,7 @@ describe('Ledger Offscreen', () => {
         expect(
           (handler as unknown as { transport: unknown }).transport,
         ).toBeNull();
-        expect(
-          (handler as unknown as { ethApp: unknown }).ethApp,
-        ).toBeNull();
+        expect((handler as unknown as { ethApp: unknown }).ethApp).toBeNull();
         expect(mockTransportClose).toHaveBeenCalledTimes(1);
 
         // A subsequent action opens a fresh transport.
