@@ -151,21 +151,20 @@ const MetamaskWordMarkAnimationInner = ({
       rive.play();
       setIsInitialized(true);
     }
+  }, [rive, skipTransition, isInitialized, theme, cacheInputs]);
 
+  // Always mark the session animation as seen on unmount. Do not gate on
+  // animationTimeoutRef — StrictMode remounts (and cases where the state
+  // machine never emits) can unmount before onStateChange schedules a timeout.
+  useEffect(() => {
     return () => {
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
-        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
+        animationTimeoutRef.current = null;
       }
+      setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
     };
-  }, [
-    rive,
-    skipTransition,
-    isInitialized,
-    theme,
-    cacheInputs,
-    setIsAnimationCompleted,
-  ]);
+  }, [setIsAnimationCompleted]);
 
   useEffect(() => {
     if (!rive || !isInitialized || prevThemeRef.current === theme) {

@@ -217,18 +217,18 @@ function loadRivBuffer(url: string): Promise<ArrayBuffer> {
 }
 
 export const useRiveWasmFile = (url: string) => {
-  const { urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
-  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(
+  const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
+  const [rawBuffer, setRawBuffer] = useState<ArrayBuffer | undefined>(
     () => urlBufferMap[url] ?? rivBufferCache.get(url),
   );
-  const [loading, setLoading] = useState(() => !buffer);
+  const [loading, setLoading] = useState(() => !rawBuffer);
   const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
     const cached = urlBufferMap[url] ?? rivBufferCache.get(url);
     if (cached) {
-      setBuffer(cached);
+      setRawBuffer(cached);
       setLoading(false);
       setError(undefined);
       return undefined;
@@ -239,7 +239,7 @@ export const useRiveWasmFile = (url: string) => {
       .then((loaded) => {
         if (!cancelled) {
           setUrlBufferCache(url, loaded);
-          setBuffer(loaded);
+          setRawBuffer(loaded);
           setLoading(false);
           setError(undefined);
         }
@@ -256,5 +256,14 @@ export const useRiveWasmFile = (url: string) => {
     };
   }, [url, urlBufferMap, setUrlBufferCache]);
 
-  return { buffer, loading, error };
+  // Do not expose .riv bytes until WASM is ready. Callers pass `buffer` into
+  // useRiveFile / useRive; a failed load while the runtime is unloaded can
+  // leave status === 'failed' permanently even after WASM becomes ready.
+  const buffer = isWasmReady ? rawBuffer : undefined;
+
+  return {
+    buffer,
+    loading: !isWasmReady || loading,
+    error,
+  };
 };

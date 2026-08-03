@@ -103,4 +103,28 @@ describe('MetamaskWordMarkAnimation', () => {
     expect(setIsAnimationComplete).toHaveBeenCalledWith(true);
     consoleErrorSpy.mockRestore();
   });
+
+  it('marks the session animation complete on unmount even if no timeout was scheduled', () => {
+    const setIsAnimationCompleted = jest.fn();
+    mockedWasm.useRiveWasmContext.mockReturnValue({
+      isWasmReady: true,
+      loading: false,
+      error: undefined,
+      urlBufferMap: {},
+      setUrlBufferCache: jest.fn(),
+      animationCompleted: {},
+      setIsAnimationCompleted,
+    });
+
+    const { unmount } = render(
+      <MetamaskWordMarkAnimation setIsAnimationComplete={jest.fn()} />,
+    );
+
+    unmount();
+
+    expect(setIsAnimationCompleted).toHaveBeenCalledWith(
+      'MetamaskWordMarkAnimation',
+      true,
+    );
+  });
 });
