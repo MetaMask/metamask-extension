@@ -448,6 +448,7 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
  *
  * @param transactionId - The ID of the transaction to update.
  * @param containerTypes - The container types to apply to the transaction.
+ * @param incrementToggleCount - Whether to increment the toggle interaction metric.
  */
 export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   {
@@ -465,18 +466,6 @@ export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   {
     type: `LegacyBackgroundApiService:upsertTransactionUIMetricsFragment`;
     handler: LegacyBackgroundApiService['upsertTransactionUIMetricsFragment'];
-  };
-
-/**
- * Increments a numeric property in a transaction UI metrics fragment.
- *
- * @param transactionId - The id of the transaction.
- * @param property - The metrics property to increment.
- */
-export type LegacyBackgroundApiServiceIncrementTransactionUIMetricsFragmentPropertyAction =
-  {
-    type: `LegacyBackgroundApiService:incrementTransactionUIMetricsFragmentProperty`;
-    handler: LegacyBackgroundApiService['incrementTransactionUIMetricsFragmentProperty'];
   };
 
 /**
@@ -758,7 +747,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceExportAccountAction
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
-  | LegacyBackgroundApiServiceIncrementTransactionUIMetricsFragmentPropertyAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
   | LegacyBackgroundApiServiceResolvePendingApprovalAction
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction

@@ -36,7 +36,6 @@ describe('useSimulationMetrics', () => {
     updateTransactionEventFragmentMock = jest.fn();
 
     useTransactionEventFragmentMock.mockReturnValue({
-      incrementTransactionEventFragmentProperty: jest.fn(),
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 

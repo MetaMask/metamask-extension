@@ -1939,49 +1939,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('incrementTransactionUIMetricsFragmentProperty', () => {
-    it('increments the value stored in the existing fragment', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          jest.fn().mockReturnValue({
-            id: fragmentId,
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              enforced_simulation_toggle_count: 2,
-            },
-          }),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:incrementTransactionUIMetricsFragmentProperty',
-          transactionId,
-          'enforced_simulation_toggle_count',
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:updateEventFragment',
-          fragmentId,
-          {
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              enforced_simulation_toggle_count: 3,
-            },
-          },
-        );
-      });
-    });
-  });
-
   describe('setSelectedInternalAccount', () => {
     it('sets the selected account when the account exists', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -3145,12 +3102,17 @@ describe('LegacyBackgroundApiService', () => {
 
         rootMessenger.registerActionHandler(
           'MetaMetricsController:getEventFragmentById',
-          jest.fn().mockReturnValue(undefined),
+          jest.fn().mockReturnValue({
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 2,
+            },
+          }),
         );
-        const createEventFragmentMock = jest.fn();
+        const updateEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentMock,
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -3172,6 +3134,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:applyTransactionContainersExisting',
           TRANSACTION_ID_MOCK,
           [TransactionContainerType.EnforcedSimulations],
+          true,
         );
 
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
@@ -3182,13 +3145,23 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
-        expect(createEventFragmentMock).toHaveBeenCalledWith(
-          expect.objectContaining({
+        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+          expect.any(String),
+          {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 3,
+            },
+          },
+        );
+        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+          expect.any(String),
+          {
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               enforced_simulation_slippage_bps: 250,
             },
-          }),
+          },
         );
       });
     });

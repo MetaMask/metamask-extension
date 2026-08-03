@@ -177,8 +177,6 @@ function EnforcedSimulationsCheckbox({
   transactionId: string;
 }) {
   const [pendingEnabled, setPendingEnabled] = useState<boolean | null>(null);
-  const { incrementTransactionEventFragmentProperty } =
-    useTransactionEventFragment();
 
   const isToggling = pendingEnabled !== null;
 
@@ -195,11 +193,6 @@ function EnforcedSimulationsCheckbox({
   const handleToggle = useCallback(async () => {
     const targetEnabled = !isEnabled;
     setPendingEnabled(targetEnabled);
-
-    incrementTransactionEventFragmentProperty(
-      'enforced_simulation_toggle_count',
-      transactionId,
-    );
 
     const newContainerTypes = [...(containerTypes ?? [])];
 
@@ -219,16 +212,12 @@ function EnforcedSimulationsCheckbox({
       await applyTransactionContainersExisting(
         transactionId,
         newContainerTypes,
+        true,
       );
     } catch {
       setPendingEnabled(null);
     }
-  }, [
-    containerTypes,
-    incrementTransactionEventFragmentProperty,
-    isEnabled,
-    transactionId,
-  ]);
+  }, [containerTypes, isEnabled, transactionId]);
 
   if (isToggling) {
     return (

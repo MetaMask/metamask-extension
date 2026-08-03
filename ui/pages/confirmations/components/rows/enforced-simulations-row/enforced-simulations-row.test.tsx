@@ -52,7 +52,6 @@ const useI18nContextMock = jest.mocked(useI18nContext);
 const useTransactionEventFragmentMock = jest.mocked(
   useTransactionEventFragment,
 );
-const incrementTransactionEventFragmentPropertyMock = jest.fn();
 const updateTransactionEventFragmentMock = jest.fn();
 
 function render({
@@ -100,8 +99,6 @@ describe('EnforcedSimulationsRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useTransactionEventFragmentMock.mockReturnValue({
-      incrementTransactionEventFragmentProperty:
-        incrementTransactionEventFragmentPropertyMock,
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
   });
@@ -312,10 +309,7 @@ describe('EnforcedSimulationsRow', () => {
     expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
       expect.any(String),
       [],
-    );
-    expect(incrementTransactionEventFragmentPropertyMock).toHaveBeenCalledWith(
-      'enforced_simulation_toggle_count',
-      expect.any(String),
+      true,
     );
   });
 

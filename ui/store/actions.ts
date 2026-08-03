@@ -6322,16 +6322,6 @@ export function upsertTransactionUIMetricsFragment(
   ]);
 }
 
-export function incrementTransactionUIMetricsFragmentProperty(
-  transactionId: string,
-  property: string,
-) {
-  return submitRequestToBackground(
-    'incrementTransactionUIMetricsFragmentProperty',
-    [transactionId, property],
-  );
-}
-
 export function updateEventFragment(
   id: string,
   payload: Partial<MetaMetricsEventFragment>,
@@ -7908,10 +7898,11 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
   return await submitRequestToBackground<void>(
     'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
+    [transactionId, containerTypes, incrementToggleCount],
   );
 }
 

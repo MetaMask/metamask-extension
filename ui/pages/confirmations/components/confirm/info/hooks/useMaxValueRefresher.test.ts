@@ -98,7 +98,6 @@ describe('useMaxValueRefresher', () => {
     selectMaxValueModeForTransactionMock.mockReturnValue(true);
 
     useTransactionEventFragmentMock.mockReturnValue({
-      incrementTransactionEventFragmentProperty: jest.fn(),
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 

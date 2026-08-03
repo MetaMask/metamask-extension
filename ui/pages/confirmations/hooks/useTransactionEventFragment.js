@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 
-import {
-  incrementTransactionUIMetricsFragmentProperty,
-  upsertTransactionUIMetricsFragment,
-} from '../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 
 export const useTransactionEventFragment = () => {
@@ -22,24 +19,5 @@ export const useTransactionEventFragment = () => {
     [gasTransactionId],
   );
 
-  const incrementTransactionEventFragmentProperty = useCallback(
-    async (property, _transactionId) => {
-      const transactionId = _transactionId || gasTransactionId;
-
-      if (!transactionId) {
-        return;
-      }
-
-      await incrementTransactionUIMetricsFragmentProperty(
-        transactionId,
-        property,
-      );
-    },
-    [gasTransactionId],
-  );
-
-  return {
-    incrementTransactionEventFragmentProperty,
-    updateTransactionEventFragment,
-  };
+  return { updateTransactionEventFragment };
 };

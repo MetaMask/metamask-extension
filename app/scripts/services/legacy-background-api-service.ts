@@ -289,7 +289,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSentinelNetworkFlags',
   'importAccountWithStrategy',
   'importMnemonicToVault',
-  'incrementTransactionUIMetricsFragmentProperty',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
@@ -1655,10 +1654,12 @@ export class LegacyBackgroundApiService {
    *
    * @param transactionId - The ID of the transaction to update.
    * @param containerTypes - The container types to apply to the transaction.
+   * @param incrementToggleCount - Whether to increment the toggle interaction metric.
    */
   async applyTransactionContainersExisting(
     transactionId: string,
     containerTypes: TransactionContainerType[],
+    incrementToggleCount = false,
   ): Promise<void> {
     const { transactions } = await this.#messenger.call(
       'TransactionController:getState',
@@ -1668,6 +1669,13 @@ export class LegacyBackgroundApiService {
 
     if (!transactionMeta) {
       throw new Error(`Transaction with ID ${transactionId} not found.`);
+    }
+
+    if (incrementToggleCount) {
+      this.#incrementTransactionUIMetricsFragmentProperty(
+        transactionId,
+        'enforced_simulation_toggle_count',
+      );
     }
 
     const { enforcedSimulationsSlippage, updateTransaction } =
@@ -1783,7 +1791,7 @@ export class LegacyBackgroundApiService {
    * @param transactionId - The id of the transaction.
    * @param property - The metrics property to increment.
    */
-  incrementTransactionUIMetricsFragmentProperty(
+  #incrementTransactionUIMetricsFragmentProperty(
     transactionId: string,
     property: string,
   ): void {
