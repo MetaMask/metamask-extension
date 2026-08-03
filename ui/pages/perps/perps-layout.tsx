@@ -8,6 +8,7 @@ import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive'
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { setLastVisitedPerpsRoute } from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import {
   getSelectedInternalAccount,
@@ -15,7 +16,6 @@ import {
 } from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
-import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { useDispatch } from '../../store/hooks';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
@@ -171,12 +171,10 @@ export default function PerpsLayout() {
   }, []);
 
   return (
-    <PerpsAttributionProvider locationSearch={search}>
-      <AccessRestrictedProvider>
-        <PerpsToastProvider>
-          <Outlet />
-        </PerpsToastProvider>
-      </AccessRestrictedProvider>
-    </PerpsAttributionProvider>
+    <AccessRestrictedProvider>
+      <PerpsToastProvider>
+        <Outlet />
+      </PerpsToastProvider>
+    </AccessRestrictedProvider>
   );
 }
