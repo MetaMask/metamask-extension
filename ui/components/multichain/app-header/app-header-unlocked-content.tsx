@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -28,7 +28,10 @@ import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+} from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
@@ -39,6 +42,8 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
+import { useDispatch } from '../../../store/hooks';
+import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -62,6 +67,7 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
 
@@ -98,6 +104,16 @@ export const AppHeaderUnlockedContent = ({
       return prev;
     });
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
+
+  const handleOpenDiscoverSearch = useCallback(() => {
+    transitionForward(() =>
+      navigate(DISCOVER_SEARCH_ROUTE, {
+        state: {
+          globalMenuTransition: 'forward',
+        },
+      }),
+    );
+  }, [navigate]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -208,6 +224,15 @@ export const AppHeaderUnlockedContent = ({
               <BoxDeprecated onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
               </BoxDeprecated>
+            )}
+            {isDiscoverSearchEnabled && (
+              <ButtonIcon
+                iconName={IconNameDeprecated.Search}
+                data-testid="discover-search-button"
+                ariaLabel={t('searchTokens')}
+                onClick={handleOpenDiscoverSearch}
+                size={ButtonIconSize.Lg}
+              />
             )}
             <ButtonIcon
               ref={menuRef}

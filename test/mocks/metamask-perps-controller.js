@@ -64,6 +64,17 @@ const mockPerpsEventValueLiterals = {
     TUTORIAL_STARTED: 'tutorial_started',
     TUTORIAL_COMPLETED: 'tutorial_completed',
     TUTORIAL_NAVIGATION: 'tutorial_navigation',
+    CLOSE_ALL_TAPPED: 'close_all_tapped',
+    CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
+    CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    ORDER_BOOK_OPENED: 'order_book_opened',
+    ORDER_BOOK_CLOSED: 'order_book_closed',
+    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
+    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
+    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
+    SORT_APPLIED: 'sort_applied',
+    FILTER_APPLIED: 'filter_applied',
+    PAYMENT_TOKEN_SELECTOR_DISMISSED: 'payment_token_selector_dismissed',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
@@ -167,6 +178,24 @@ const mockTradingDefaults = {
 };
 
 /**
+ * Stub for the dedicated aggregated order-book WebSocket. Keeps controller /
+ * bridge unit tests from opening a real Hyperliquid socket.
+ */
+class MockAggregatedOrderBookConnection {
+  constructor(options) {
+    this.options = options;
+  }
+
+  subscribe(_params) {
+    return () => undefined;
+  }
+
+  close() {
+    return undefined;
+  }
+}
+
+/**
  * Simplified max-amount helper for unit tests (matches controller shape; omits
  * position-size rounding details that are covered by controller tests).
  *
@@ -204,4 +233,5 @@ module.exports = {
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
+  AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };

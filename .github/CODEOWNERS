@@ -127,6 +127,7 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 
 # Core Extension UX
 ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
+ui/components/app/import-token                  @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
@@ -196,9 +197,9 @@ ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx 
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
 
-# Assets
-ui/components/app/import-token                        @MetaMask/metamask-assets
-ui/components/app/assets                              @MetaMask/metamask-assets
+# Assets team
+app/**/assets/**                     @MetaMask/metamask-assets
+ui/**/assets/**                      @MetaMask/metamask-assets
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions

@@ -4,6 +4,7 @@ import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning'
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,15 +29,14 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            /* eslint-disable @typescript-eslint/naming-convention */
             notification_id: props.notification.id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_type: props.notification.type,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            notification_type: getNotificationTypeForAnalytics(
+              props.notification,
+            ),
+            notification_subtype: props.notification.notification_subtype,
             clicked_item: isExternal ? 'external_link' : 'internal_link',
+            /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),
       );
@@ -48,13 +48,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         handleSnapNavigate(href);
       }
     },
-    [
-      createEventBuilder,
-      handleSnapNavigate,
-      props.notification.id,
-      props.notification.type,
-      trackEvent,
-    ],
+    [createEventBuilder, handleSnapNavigate, props.notification, trackEvent],
   );
 
   if (!footer) {

@@ -77,6 +77,7 @@ export async function getDeferredDeepLinkRoute(
       return {
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery: url.pathname + url.search,
+        signature,
       };
     }
 

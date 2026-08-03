@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
@@ -34,7 +34,7 @@ import {
 } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
-import { SurveyToast } from '../../ui/survey-toast';
+import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -53,6 +53,8 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
