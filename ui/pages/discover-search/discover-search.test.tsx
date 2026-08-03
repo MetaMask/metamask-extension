@@ -167,18 +167,22 @@ describe('DiscoverSearchPage', () => {
   });
 
   it('renders no-results search design and opens popular assets', () => {
+    const searchQuery = 'erwerwqer';
+
     mockUseDiscoverSearch.mockReturnValue(getEmptyDiscoverSearchResult());
     renderPage();
 
     fireEvent.change(screen.getByTestId('discover-search-input'), {
-      target: { value: 'erwerwqer' },
+      target: { value: searchQuery },
     });
 
     expect(
-      screen.getByText('No results found for “erwerwqer”'),
+      screen.getByText(
+        messages.discoverSearchNoResultsFor.message.replace('$1', searchQuery),
+      ),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Check out other popular assets'),
+      screen.getByText(messages.discoverSearchPopularAssets.message),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('discover-search-no-results-illustration'),
