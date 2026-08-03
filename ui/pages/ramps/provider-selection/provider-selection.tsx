@@ -4,17 +4,16 @@ import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
   BoxFlexDirection,
+  Modal,
+  ModalContent,
+  ModalContentSize,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../components/component-library';
-import { AlignItems } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -398,15 +397,20 @@ export function RampsProviderSelectionModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        size={ModalContentSize.Sm}
+        className="items-center"
         modalDialogProps={{
-          borderColor: undefined,
-          borderWidth: 0,
+          className: 'border-0',
           'data-testid': testId,
         }}
       >
-        <ModalHeader alignItems={AlignItems.center} onClose={onClose}>
-          {title}
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
+          <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
+            {title}
+          </Text>
         </ModalHeader>
         {body}
       </ModalContent>

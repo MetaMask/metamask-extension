@@ -7,11 +7,11 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
   />
   <div />
   <div
-    class="mm-modal"
+    class=""
   >
     <div
       aria-hidden="true"
-      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
     />
     <div
       data-focus-guard="true"
@@ -22,38 +22,43 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          class="flex-col items-stretch justify-start pt-4 pb-4 bg-default flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px] border-0"
           data-testid="ramps-provider-selection-screen"
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
           >
             <div
-              class="mm-box mm-box--width-full"
+              class="col-start-2 col-end-3 w-full"
             >
               <h4
-                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+                class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
                 Choose provider
               </h4>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
+              class="col-start-3 justify-self-end"
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
               </button>
             </div>
           </header>
@@ -199,11 +204,11 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
   />
   <div />
   <div
-    class="mm-modal"
+    class=""
   >
     <div
       aria-hidden="true"
-      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
     />
     <div
       data-focus-guard="true"
@@ -214,38 +219,43 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          class="flex-col items-stretch justify-start pt-4 pb-4 bg-default flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px] border-0"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
           >
             <div
-              class="mm-box mm-box--width-full"
+              class="col-start-2 col-end-3 w-full"
             >
               <h4
-                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+                class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
                 Choose provider
               </h4>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
+              class="col-start-3 justify-self-end"
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
               </button>
             </div>
           </header>
@@ -277,11 +287,11 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
   />
   <div />
   <div
-    class="mm-modal"
+    class=""
   >
     <div
       aria-hidden="true"
-      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
     />
     <div
       data-focus-guard="true"
@@ -292,38 +302,43 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          class="flex-col items-stretch justify-start pt-4 pb-4 bg-default flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px] border-0"
           data-testid="ramps-provider-selection-loading"
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
           >
             <div
-              class="mm-box mm-box--width-full"
+              class="col-start-2 col-end-3 w-full"
             >
               <h4
-                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+                class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
                 Choose provider
               </h4>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
+              class="col-start-3 justify-self-end"
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
               </button>
             </div>
           </header>
@@ -429,11 +444,11 @@ exports[`RampsProviderSelectionModal matches snapshot with provider quotes 1`] =
   />
   <div />
   <div
-    class="mm-modal"
+    class=""
   >
     <div
       aria-hidden="true"
-      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
     />
     <div
       data-focus-guard="true"
@@ -444,38 +459,43 @@ exports[`RampsProviderSelectionModal matches snapshot with provider quotes 1`] =
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          class="flex-col items-stretch justify-start pt-4 pb-4 bg-default flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px] border-0"
           data-testid="ramps-provider-selection-screen"
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
           >
             <div
-              class="mm-box mm-box--width-full"
+              class="col-start-2 col-end-3 w-full"
             >
               <h4
-                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+                class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
                 Choose provider
               </h4>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
+              class="col-start-3 justify-self-end"
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
               </button>
             </div>
           </header>
@@ -601,11 +621,11 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
   />
   <div />
   <div
-    class="mm-modal"
+    class=""
   >
     <div
       aria-hidden="true"
-      class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
     />
     <div
       data-focus-guard="true"
@@ -616,38 +636,43 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-screen mm-box--height-screen"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-0"
+          class="flex-col items-stretch justify-start pt-4 pb-4 bg-default flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px] border-0"
           data-testid="ramps-provider-selection-screen"
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
           >
             <div
-              class="mm-box mm-box--width-full"
+              class="col-start-2 col-end-3 w-full"
             >
               <h4
-                class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+                class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
                 Choose provider
               </h4>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
+              class="col-start-3 justify-self-end"
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
               </button>
             </div>
           </header>
