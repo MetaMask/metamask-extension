@@ -8,6 +8,7 @@ import { AlertsName } from '../alerts/constants';
 
 const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.AccountNoFunds,
+  AlertsName.DepositLimit,
   AlertsName.InsufficientPayTokenBalance,
   AlertsName.PayHardwareAccount,
   AlertsName.SigningOrSubmitting,

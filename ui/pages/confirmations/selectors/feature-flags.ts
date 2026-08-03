@@ -6,6 +6,7 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import { getDepositLimits } from '../utils/pay-deposit-limit';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
@@ -167,6 +168,16 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
   ],
   (remoteFeatureFlags, transactionType): boolean =>
     getIsPayAmountPrefillEnabled({ remoteFeatureFlags }, transactionType),
+);
+
+/**
+ * Per-transaction-type USD deposit limits from
+ * `confirmations_pay.depositLimit`. Empty map when unset.
+ */
+export const selectDepositLimits = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): Record<string, number> =>
+    getDepositLimits({ remoteFeatureFlags }),
 );
 
 /**
