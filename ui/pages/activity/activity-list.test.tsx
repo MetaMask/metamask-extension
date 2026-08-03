@@ -61,7 +61,8 @@ jest.mock('../../hooks/useAnalytics', () => ({
 
 jest.mock('../../hooks/useFormatters', () => ({
   useFormatters: () => ({
-    formatMediumDate: (date: Date | number) => new Date(date).toISOString(),
+    formatMediumDate: (timestamp: string | number) =>
+      new Date(timestamp).toISOString(),
   }),
 }));
 
