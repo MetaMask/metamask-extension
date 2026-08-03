@@ -181,6 +181,38 @@ export type LegacyBackgroundApiServiceEstimateGasAction = {
 };
 
 /**
+ * Allows a user to attempt to cancel a previously submitted transaction
+ * by creating a new transaction.
+ *
+ * @param originalTxId - The id of the txMeta that you want to attempt to
+ * cancel.
+ * @param customGasSettings - Overrides to use for gas params instead of
+ * allowing this method to generate them.
+ * @param options - Options for the cancel transaction.
+ * @returns The updated MetaMask state.
+ */
+export type LegacyBackgroundApiServiceCreateCancelTransactionAction = {
+  type: `LegacyBackgroundApiService:createCancelTransaction`;
+  handler: LegacyBackgroundApiService['createCancelTransaction'];
+};
+
+/**
+ * Allows a user to attempt to speed up a previously submitted transaction
+ * by creating a new transaction.
+ *
+ * @param originalTxId - The id of the txMeta that you want to attempt to
+ * speed up.
+ * @param customGasSettings - Overrides to use for gas params instead of
+ * allowing this method to generate them.
+ * @param options - Options for the speed up transaction.
+ * @returns The updated MetaMask state.
+ */
+export type LegacyBackgroundApiServiceCreateSpeedUpTransactionAction = {
+  type: `LegacyBackgroundApiService:createSpeedUpTransaction`;
+  handler: LegacyBackgroundApiService['createSpeedUpTransaction'];
+};
+
+/**
  * Decodes the data of a transaction using the currently selected network
  * client's provider.
  *
@@ -721,6 +753,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetCodeAction
   | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
+  | LegacyBackgroundApiServiceCreateCancelTransactionAction
+  | LegacyBackgroundApiServiceCreateSpeedUpTransactionAction
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction

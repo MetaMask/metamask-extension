@@ -62,6 +62,8 @@ import {
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerSpeedUpTransactionAction,
+  TransactionControllerStopTransactionAction,
   TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
@@ -187,6 +189,8 @@ import {
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
+// eslint-disable-next-line import-x/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
@@ -266,10 +270,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'changePassword',
   'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
+  'createCancelTransaction',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
+  'createSpeedUpTransaction',
   'decodeTransactionData',
   'discoverAndCreateAccounts',
   'estimateGas',
@@ -435,6 +441,8 @@ type AllowedActions =
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerSpeedUpTransactionAction
+  | TransactionControllerStopTransactionAction
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
@@ -459,6 +467,7 @@ type LegacyBackgroundApiServiceOptions = {
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
+  getState: () => MetaMaskReduxState['metamask'];
   offscreenPromise: Promise<void>;
 };
 
@@ -488,6 +497,8 @@ export class LegacyBackgroundApiService {
 
   readonly #sendUpdate: () => void;
 
+  readonly #getState: () => MetaMaskReduxState['metamask'];
+
   readonly #seedlessOperationMutex: Mutex;
 
   readonly #createVaultMutex: Mutex;
@@ -506,6 +517,7 @@ export class LegacyBackgroundApiService {
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
+   * @param options.getState - A function that returns the MetaMask UI state.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
@@ -517,6 +529,7 @@ export class LegacyBackgroundApiService {
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
+    getState,
     seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
@@ -529,6 +542,7 @@ export class LegacyBackgroundApiService {
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
+    this.#getState = getState;
     // Temporarily get the mutex from `MetamaskController` until
     // changePasswordWithPasskeyVerification is migrated here (the only remaining
     // MetamaskController user of this mutex).
@@ -783,6 +797,68 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
+  }
+
+  /**
+   * Allows a user to attempt to cancel a previously submitted transaction
+   * by creating a new transaction.
+   *
+   * @param originalTxId - The id of the txMeta that you want to attempt to
+   * cancel.
+   * @param customGasSettings - Overrides to use for gas params instead of
+   * allowing this method to generate them.
+   * @param options - Options for the cancel transaction.
+   * @returns The updated MetaMask state.
+   */
+  async createCancelTransaction(
+    originalTxId: Parameters<
+      TransactionControllerStopTransactionAction['handler']
+    >[0],
+    customGasSettings?: Parameters<
+      TransactionControllerStopTransactionAction['handler']
+    >[1],
+    options?: Parameters<
+      TransactionControllerStopTransactionAction['handler']
+    >[2],
+  ): Promise<MetaMaskReduxState['metamask']> {
+    await this.#messenger.call(
+      'TransactionController:stopTransaction',
+      originalTxId,
+      customGasSettings,
+      options,
+    );
+    return this.#getState();
+  }
+
+  /**
+   * Allows a user to attempt to speed up a previously submitted transaction
+   * by creating a new transaction.
+   *
+   * @param originalTxId - The id of the txMeta that you want to attempt to
+   * speed up.
+   * @param customGasSettings - Overrides to use for gas params instead of
+   * allowing this method to generate them.
+   * @param options - Options for the speed up transaction.
+   * @returns The updated MetaMask state.
+   */
+  async createSpeedUpTransaction(
+    originalTxId: Parameters<
+      TransactionControllerSpeedUpTransactionAction['handler']
+    >[0],
+    customGasSettings?: Parameters<
+      TransactionControllerSpeedUpTransactionAction['handler']
+    >[1],
+    options?: Parameters<
+      TransactionControllerSpeedUpTransactionAction['handler']
+    >[2],
+  ): Promise<MetaMaskReduxState['metamask']> {
+    await this.#messenger.call(
+      'TransactionController:speedUpTransaction',
+      originalTxId,
+      customGasSettings,
+      options,
+    );
+    return this.#getState();
   }
 
   /**
