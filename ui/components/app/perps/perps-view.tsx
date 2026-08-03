@@ -338,11 +338,13 @@ export const PerpsView = () => {
 
     try {
       if (!result?.success) {
-        const failureCount = result?.failureCount ?? 0;
-        if (failureCount > 0 || result === undefined || result === null) {
-          setBatchActionError(t('somethingWentWrong'));
-          return;
-        }
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+        );
+        setBatchActionError(t('somethingWentWrong'));
+        return;
       }
       const fresh = await submitRequestToBackground<Order[]>(
         'perpsGetOpenOrders',
