@@ -86,6 +86,7 @@ export async function getDeferredDeepLinkRoute(
       return {
         type: DeferredDeepLinkRouteType.Redirect,
         url: destination.redirectTo.toString(),
+        signature,
       };
     }
 
