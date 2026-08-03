@@ -55,7 +55,7 @@ export function SurveyToast() {
     Boolean(analyticsId) &&
     isMetaMetricsEnabled;
 
-  const { data: survey } = useQuery<Survey | null>({
+  const { data } = useQuery<Survey | null>({
     queryKey: [surveyQueryKey, analyticsId],
     enabled: canFetchSurvey,
     staleTime: process.env.IN_TEST ? 0 : DAY,
@@ -93,6 +93,8 @@ export function SurveyToast() {
       }
     },
   });
+
+  const survey = canFetchSurvey ? data : undefined;
 
   const trackAction = useCallback(
     (response: 'accept' | 'deny') => {
@@ -168,6 +170,7 @@ export function SurveyToast() {
       } as ToastWithClose,
     );
   }, [dismissSurvey, handleActionClick, lastViewedUserSurvey, survey]);
+
 
   useEffect(() => {
     return () => {
