@@ -1,3 +1,6 @@
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import { TrxAccountType, TrxScope } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
@@ -126,9 +129,6 @@ class HomePage {
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
-  private readonly srpAddedToastCloseButton =
-    '.toast-container button[aria-label="Close"]';
-
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
   private readonly storageErrorToastBackupButton = {
@@ -139,6 +139,9 @@ class HomePage {
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   protected readonly swapButton = { css: 'button', text: 'Swap' };
+
+  private readonly toastCloseButton =
+    '.toast-container button[aria-label="Close"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -508,7 +511,12 @@ class HomePage {
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+  }
+
+  async dismissVisibleToast(): Promise<void> {
+    console.log('Dismiss visible toast on homepage');
+    await this.driver.clickElementSafe(this.toastCloseButton);
   }
 
   /**
@@ -647,6 +655,50 @@ class HomePage {
     await this.driver.waitForSelector(this.bitcoinAccountIcon, {
       timeout: NON_EVM_ICON_TIMEOUT,
     });
+  }
+
+  /**
+   * Waits for BIP44 stage-2 alignment to finish creating the selected account
+   * group's Tron account. Account-tree backup sync flags do not represent this
+   * runtime alignment, so readiness is derived from the entropy wallet status
+   * and the selected group's internal accounts instead.
+   */
+  async waitForTronAccountToBeReady(): Promise<void> {
+    console.log('Wait for the selected account group Tron account to be ready');
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        const selectedAccountGroup = uiState?.metamask?.selectedAccountGroup;
+        const wallets = uiState?.metamask?.accountTree?.wallets as
+          | AccountTreeControllerState['accountTree']['wallets']
+          | undefined;
+        const internalAccounts = uiState?.metamask?.internalAccounts
+          ?.accounts as Record<string, InternalAccount> | undefined;
+
+        if (!selectedAccountGroup || !wallets || !internalAccounts) {
+          return false;
+        }
+
+        return Object.values(wallets).some((wallet) => {
+          const selectedGroup = wallet.groups?.[selectedAccountGroup];
+          const hasTronMainnetAccount = selectedGroup?.accounts?.some(
+            (accountId) => {
+              const account = internalAccounts[accountId];
+              return (
+                account?.type === TrxAccountType.Eoa &&
+                account.scopes?.includes(TrxScope.Mainnet)
+              );
+            },
+          );
+
+          return wallet.status === 'ready' && hasTronMainnetAccount === true;
+        });
+      },
+      {
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+      },
+    );
   }
 }
 

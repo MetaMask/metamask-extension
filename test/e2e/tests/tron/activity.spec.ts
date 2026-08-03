@@ -3,12 +3,13 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { login } from '../../page-objects/flows/login.flow';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import {
+  landOnTronActivity,
+  landOnTronHome,
+  openAndCheckTronTransactionDetails,
+} from '../../page-objects/flows/tron-activity.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 import { TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
@@ -19,59 +20,6 @@ import {
   swapTx,
   bridgeTx,
 } from './mocks/tron-tx-fixtures';
-
-type TronDetailsExpectation = {
-  title?: string;
-  status: 'Confirmed' | 'Pending' | 'Failed';
-  amount?: string;
-  addresses?: string[];
-  networkFee?: string;
-  checkTime?: boolean;
-};
-
-async function setupTronAccount(driver: Driver): Promise<NonEvmHomepage> {
-  await login(driver, { validateBalance: false });
-  await selectTronNetwork(driver);
-  const home = new NonEvmHomepage(driver);
-  await home.checkPageIsLoaded();
-  return home;
-}
-
-async function landOnTronActivity(driver: Driver): Promise<ActivityTab> {
-  const home = await setupTronAccount(driver);
-  const activity = new ActivityTab(driver);
-  await activity.goToActivityList();
-  return activity;
-}
-
-async function assertTronTransactionDetails(
-  driver: Driver,
-  activity: ActivityTab,
-  txIndex: number,
-  expected: TronDetailsExpectation,
-): Promise<void> {
-  await activity.clickOnActivity(txIndex);
-  const details = new TransactionDetailsPage(driver);
-  await details.checkPageIsLoaded();
-  if (expected.title !== undefined) {
-    await details.checkTitle(expected.title);
-  }
-  if (expected.checkTime) {
-    await details.checkTime();
-  }
-  await details.checkStatus(expected.status);
-  if (expected.amount !== undefined) {
-    await details.checkAmount(expected.amount);
-  }
-  await details.checkHashLinkPresent();
-  await details.checkViewDetailsLink();
-  for (const address of expected.addresses ?? []) {
-    await details.checkAddressInLog(address);
-  }
-  if (expected.networkFee) {
-    await details.checkBaseFee(expected.networkFee);
-  }
-}
 
 // Rendering a `token:approve` transaction logs this React error on current
 // main because TransactionIcon has no icon mapping for the approve category.
@@ -181,16 +129,21 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-10 USDT', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Approved spending cap',
-            status: 'Confirmed',
-            amount: '-10 USDT',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Approved spending cap',
+              status: 'Confirmed',
+              amount: '-10 USDT',
+            },
           });
         },
       );
     });
 
-    it('Send transaction is rendered with Send label and -amount', async function () {
+    it('Send transaction uses the outgoing transaction presentation', async function () {
       const tx = trxSendTx({
         amountSun: 1_000_000,
         to: A_RECIPIENT,
@@ -219,18 +172,23 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Sent TRX',
-            status: 'Confirmed',
-            amount: '-1 TRX',
-            addresses: [A_RECIPIENT, TRON_ACCOUNT_ADDRESS],
-            checkTime: true,
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Sent TRX',
+              status: 'Confirmed',
+              amount: '-1 TRX',
+              addresses: [A_RECIPIENT, TRON_ACCOUNT_ADDRESS],
+              checkTime: true,
+            },
           });
         },
       );
     });
 
-    it('Receive transaction is rendered with Receive label and +amount', async function () {
+    it('Receive transaction uses the incoming transaction presentation', async function () {
       const tx = trxReceiveTx({
         amountSun: 2_500_000,
         from: A_SENDER,
@@ -262,17 +220,22 @@ describe('Tron - Activity', function (this: Suite) {
           // never prefixes incoming amounts with `+`, so the rendered text is
           // just the bare amount.
           await activity.checkTxAmountInActivity('+2.5 TRX', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Received TRX',
-            status: 'Confirmed',
-            amount: '+2.5 TRX',
-            addresses: [A_SENDER, TRON_ACCOUNT_ADDRESS],
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Received TRX',
+              status: 'Confirmed',
+              amount: '+2.5 TRX',
+              addresses: [A_SENDER, TRON_ACCOUNT_ADDRESS],
+            },
           });
         },
       );
     });
 
-    it('Swap transaction is rendered with Swap A to B label and -srcAmount', async function () {
+    it('Swap transaction uses the swap transaction presentation', async function () {
       const swap = swapTx({
         srcSymbol: 'TRX',
         srcAmount: '5',
@@ -303,10 +266,15 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('+<0.00001 USDT', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Swapped',
-            status: 'Confirmed',
-            amount: '-5 TRX',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Swapped',
+              status: 'Confirmed',
+              amount: '-5 TRX',
+            },
           });
         },
       );
@@ -347,10 +315,15 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-5 USDT', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Approved spending cap',
-            status: 'Confirmed',
-            amount: '-5 USDT',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Approved spending cap',
+              status: 'Confirmed',
+              amount: '-5 USDT',
+            },
           });
         },
       );
@@ -387,10 +360,15 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 0,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Sending TRX',
-            status: 'Pending',
-            amount: '-1 TRX',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Sending TRX',
+              status: 'Pending',
+              amount: '-1 TRX',
+            },
           });
         },
       );
@@ -425,10 +403,15 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 1,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Sent TRX',
-            status: 'Confirmed',
-            amount: '-1 TRX',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Sent TRX',
+              status: 'Confirmed',
+              amount: '-1 TRX',
+            },
           });
         },
       );
@@ -463,10 +446,15 @@ describe('Tron - Activity', function (this: Suite) {
             confirmedTx: 0,
           });
           await activity.checkTxAmountInActivity('-1 TRX', 1);
-          await assertTronTransactionDetails(driver, activity, 1, {
-            title: 'Send failed',
-            status: 'Failed',
-            amount: '-1 TRX',
+          await openAndCheckTronTransactionDetails({
+            driver,
+            activityTab: activity,
+            transactionIndex: 1,
+            expected: {
+              title: 'Send failed',
+              status: 'Failed',
+              amount: '-1 TRX',
+            },
           });
         },
       );
@@ -474,7 +462,7 @@ describe('Tron - Activity', function (this: Suite) {
   });
 
   describe('Network filter', function () {
-    it('All networks filter shows EVM and Tron transactions', async function () {
+    it('All networks filter includes transactions from every enabled network', async function () {
       await withTronFixtures(
         {
           accounts: [
@@ -531,7 +519,7 @@ describe('Tron - Activity', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          const home = await setupTronAccount(driver);
+          const home = await landOnTronHome(driver);
           const tokensTab = new TokensTab(driver);
           await tokensTab.selectOnlyTronInNetworkFilter();
           await home.goToActivityList();

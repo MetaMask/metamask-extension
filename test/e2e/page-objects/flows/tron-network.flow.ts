@@ -1,21 +1,26 @@
 import { Driver } from '../../webdriver/driver';
-import {
-  switchToNetworkFromNetworkSelect,
-  waitForNetworkManagerBackdropToClear,
-} from './network.flow';
-import { dismissVisibleToasts } from './toast.flow';
+import HomePage from '../pages/home/homepage';
+import TokensTab from '../pages/home/tokens-tab';
+import NetworkManager from '../pages/network-manager';
 
 /**
  * Selects the Tron network from the Network Manager Popular tab and waits for
  * any leftover modal backdrop to clear so subsequent clicks are not blocked.
  *
- * Uses {@link switchToNetworkFromNetworkSelect} so the BIP44/Snap ready delay
- * runs before the switch — without it, Tron balance fetches never start.
+ * The flow coordinates homepage readiness and toast handling, the tokens-tab
+ * network filter, and network-manager selection/closure.
  *
  * @param driver - WebDriver instance
  */
 export async function selectTronNetwork(driver: Driver): Promise<void> {
-  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
-  await waitForNetworkManagerBackdropToClear(driver);
-  await dismissVisibleToasts(driver);
+  const homePage = new HomePage(driver);
+  const tokensTab = new TokensTab(driver);
+  const networkManager = new NetworkManager(driver);
+
+  await homePage.waitForTronAccountToBeReady();
+  await homePage.dismissVisibleToast();
+  await tokensTab.openNetworksFilter();
+  await networkManager.selectTab('Popular');
+  await networkManager.selectNetworkByNameWithWait('Tron');
+  await networkManager.closeNetworkManagerIfOpen();
 }

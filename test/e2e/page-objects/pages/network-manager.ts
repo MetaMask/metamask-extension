@@ -44,6 +44,8 @@ class NetworkManager {
   private readonly networkListItemByName = (networkName: string) =>
     `[data-testid="${networkName}"]`;
 
+  private readonly networkManagerBackdrop = '.modal__backdrop';
+
   private readonly networkManagerCloseButton =
     '[data-testid="modal-header-close-button"]';
 
@@ -145,6 +147,13 @@ class NetworkManager {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkManagerCloseButton,
     );
+    await this.waitForNetworkManagerToClose();
+  }
+
+  async closeNetworkManagerIfOpen(): Promise<void> {
+    console.log('Close the network manager if it is still open');
+    await this.driver.clickElementSafe(this.networkManagerCloseButton, 500);
+    await this.waitForNetworkManagerToClose();
   }
 
   async deleteNetworkByChainId(chainId: `0x${string}`): Promise<void> {
@@ -234,6 +243,13 @@ class NetworkManager {
     } else if (networkCategory === 'Popular') {
       await this.driver.waitForSelector(this.networkManagerSelectAllButton);
     }
+  }
+
+  async waitForNetworkManagerToClose(): Promise<void> {
+    console.log('Wait for the network manager to close');
+    await this.driver.assertElementNotPresent(this.networkManagerBackdrop, {
+      timeout: 15_000,
+    });
   }
 }
 
