@@ -149,6 +149,8 @@
   "tokens.api.cx.metamask.io",
   "transaction.api.cx.metamask.io",
   "trigger.api.cx.metamask.io",
+  "nile.api.trongrid.io",
+  "shasta.api.trongrid.io",
   "tron-mainnet.infura.io",
   "tx-sentinel-arbitrum-mainnet.api.cx.metamask.io",
   "tx-sentinel-bsc-mainnet.api.cx.metamask.io",
