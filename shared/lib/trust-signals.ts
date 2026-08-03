@@ -102,7 +102,7 @@ const CHAIN_IDS_LOWERCASED: Record<string, SupportedEVMChain> = {
   [CHAIN_IDS.MONAD_TESTNET.toLowerCase()]: SupportedEVMChain.MonadTestnet,
   [CHAIN_IDS.PLASMA.toLowerCase()]: SupportedEVMChain.Plasma,
   [CHAIN_IDS.PLUME.toLowerCase()]: SupportedEVMChain.Plume,
-  '0x1237': SupportedEVMChain.Robinhood,
+  [CHAIN_IDS.ROBINHOOD_CHAIN.toLowerCase()]: SupportedEVMChain.Robinhood,
   [CHAIN_IDS.TEMPO_MAINNET.toLowerCase()]: SupportedEVMChain.Tempo,
   [CHAIN_IDS.TEMPO_TESTNET.toLowerCase()]: SupportedEVMChain.TempoTestnet,
   [CHAIN_IDS.X_LAYER.toLowerCase()]: SupportedEVMChain.Xlayer,
