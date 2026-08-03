@@ -86,6 +86,15 @@ beforeEach(() => {
 });
 
 describe('useConfirmationAlertMetrics', () => {
+  it('reports an unreadable Perps balance under its own metrics name', () => {
+    // The key was split from InsufficientPayTokenBalance so alert_triggered /
+    // alert_resolved stop conflating the two; without the mapping the property
+    // would silently become undefined.
+    expect(
+      ALERTS_NAME_METRICS[AlertsName.PerpsWithdrawBalanceUnavailable],
+    ).toBe('perps_withdraw_balance_unavailable');
+  });
+
   it('initializes metrics properties correctly', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationAlertMetrics(),
