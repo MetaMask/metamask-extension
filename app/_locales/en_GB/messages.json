@@ -5755,9 +5755,6 @@
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameStellar": {
-    "message": "Stellar"
-  },
   "networkNameTron": {
     "message": "Tron"
   },
