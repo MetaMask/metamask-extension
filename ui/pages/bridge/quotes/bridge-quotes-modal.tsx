@@ -7,7 +7,6 @@ import {
   QuoteMetadata,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
-  sumAmounts,
 } from '@metamask/bridge-controller';
 import {
   Modal,
