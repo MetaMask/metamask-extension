@@ -11,6 +11,7 @@ import { DiscoverSearchPage } from './discover-search';
 
 const mockNavigate = jest.fn();
 const mockRunCloseTransition = jest.fn((callback: () => void) => callback());
+const mockUseDiscoverSearch = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -22,47 +23,68 @@ jest.mock('../routes/global-menu-route-transition', () => ({
 }));
 
 jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
-  useDiscoverSearch: () => ({
-    crypto: {
-      items: [
-        {
-          assetId: 'eip155:1/slip44:60',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-          price: '2500',
-          marketCap: 20_000_000_000,
-          aggregatedUsdVolume: 126_000_000,
-          priceChangePct: { h24: '0.02' },
-        },
-      ],
-      isLoading: false,
-      error: null,
-    },
-    perps: {
-      items: [],
-      isLoading: false,
-      error: null,
-    },
-    stocks: {
-      items: [
-        {
-          assetId: 'eip155:1/erc20:0xstock',
-          name: 'Stock1',
-          symbol: 'STK1',
-          decimals: 18,
-          price: '406.78',
-          marketCap: 20_000_000_000,
-          aggregatedUsdVolume: 126_000_000,
-          priceChangePct: { h24: '9.4' },
-        },
-      ],
-      isLoading: false,
-      error: null,
-    },
-    isDebouncing: false,
-  }),
+  useDiscoverSearch: () => mockUseDiscoverSearch(),
 }));
+
+const getDefaultDiscoverSearchResult = () => ({
+  crypto: {
+    items: [
+      {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+        price: '2500',
+        marketCap: 20_000_000_000,
+        aggregatedUsdVolume: 126_000_000,
+        priceChangePct: { h24: '0.02' },
+      },
+    ],
+    isLoading: false,
+    error: null,
+  },
+  perps: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  stocks: {
+    items: [
+      {
+        assetId: 'eip155:1/erc20:0xstock',
+        name: 'Stock1',
+        symbol: 'STK1',
+        decimals: 18,
+        price: '406.78',
+        marketCap: 20_000_000_000,
+        aggregatedUsdVolume: 126_000_000,
+        priceChangePct: { h24: '9.4' },
+      },
+    ],
+    isLoading: false,
+    error: null,
+  },
+  isDebouncing: false,
+});
+
+const getEmptyDiscoverSearchResult = () => ({
+  crypto: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  perps: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  stocks: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  isDebouncing: false,
+});
 
 jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: () => false,
@@ -74,6 +96,7 @@ describe('DiscoverSearchPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     mockRunCloseTransition.mockClear();
+    mockUseDiscoverSearch.mockReturnValue(getDefaultDiscoverSearchResult());
   });
 
   const renderPage = ({ currentCurrency = 'usd' } = {}) => {
@@ -140,6 +163,31 @@ describe('DiscoverSearchPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+    );
+  });
+
+  it('renders no-results search design and opens popular assets', () => {
+    mockUseDiscoverSearch.mockReturnValue(getEmptyDiscoverSearchResult());
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: 'erwerwqer' },
+    });
+
+    expect(
+      screen.getByText('No results found for “erwerwqer”'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Check out other popular assets'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('discover-search-no-results-illustration'),
+    ).toHaveAttribute('src', './images/empty-state-activity-light.png');
+
+    fireEvent.click(screen.getByTestId('discover-search-popular-asset-btc'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
     );
   });
 });

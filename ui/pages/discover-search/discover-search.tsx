@@ -38,6 +38,7 @@ import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-fla
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { DiscoverAssetRow } from './discover-asset-row';
+import { DiscoverNoResultsState } from './discover-no-results-state';
 import { DiscoverSearchSectionHeader } from './discover-search-section-header';
 
 const LoadingState = ({ label }: { label: string }) => (
@@ -131,6 +132,21 @@ export const DiscoverSearchPage = () => {
     setActiveTab(tab);
   }, []);
 
+  const trimmedSearchQuery = searchQuery.trim();
+
+  const renderEmptyState = useCallback(() => {
+    if (trimmedSearchQuery) {
+      return (
+        <DiscoverNoResultsState
+          query={trimmedSearchQuery}
+          onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
+        />
+      );
+    }
+
+    return <EmptyState message={t('discoverSearchNoResults')} />;
+  }, [navigate, t, trimmedSearchQuery]);
+
   const previewCrypto = useMemo(
     () => cryptoSection.items.slice(0, DISCOVER_SEARCH_PREVIEW_COUNT),
     [cryptoSection.items],
@@ -166,7 +182,7 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (items.length === 0) {
-      return <EmptyState message={t('discoverSearchNoResults')} />;
+      return renderEmptyState();
     }
     return items.map((asset) => (
       <DiscoverAssetRow
@@ -183,7 +199,7 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (items.length === 0) {
-      return <EmptyState message={t('discoverSearchNoResults')} />;
+      return renderEmptyState();
     }
     return items.map((market) => (
       <MarketRow
@@ -201,7 +217,7 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (showAllEmpty) {
-      return <EmptyState message={t('discoverSearchNoResults')} />;
+      return renderEmptyState();
     }
     return (
       <Box flexDirection={BoxFlexDirection.Column}>

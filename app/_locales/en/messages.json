@@ -3500,6 +3500,14 @@
     "message": "No results found",
     "description": "Empty state when Discover search returns no matching assets."
   },
+  "discoverSearchNoResultsFor": {
+    "message": "No results found for “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Check out other popular assets",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
   "discoverSearchVol": {
     "message": "vol",
     "description": "Abbreviated label for volume in Discover search result rows."
