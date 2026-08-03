@@ -841,7 +841,8 @@
     },
     "@metamask/account-api": {
       "packages": {
-        "@metamask/keyring-utils": true
+        "@metamask/keyring-api": true,
+        "@metamask/account-api>@metamask/keyring-utils": true
       }
     },
     "@metamask/account-tree-controller": {
@@ -1823,6 +1824,11 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/account-api>@metamask/keyring-utils": {
+      "packages": {
+        "@metamask/utils": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {

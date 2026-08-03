@@ -450,7 +450,7 @@
     "@metamask/shield-controller": "^5.1.2",
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "25.0.0",
-    "@metamask/snap-account-service": "^2.0.0",
+    "@metamask/snap-account-service": "^2.1.1",
     "@metamask/snaps-controllers": "^21.0.0",
     "@metamask/snaps-execution-environments": "^11.2.0",
     "@metamask/snaps-rpc-methods": "^17.1.0",
