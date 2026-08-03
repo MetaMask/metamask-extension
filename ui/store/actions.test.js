@@ -154,6 +154,18 @@ describe('Actions', () => {
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
       sinon.stub();
+    // Vault / seedless methods live on LegacyBackgroundApiService and are only
+    // exposed via getApi(); stub them here for tests that use the controller
+    // stub instance as the background connection directly.
+    background.restoreSocialBackupAndGetSeedPhrase = sinon.stub();
+    background.syncSeedPhrases = sinon.stub();
+    background.createNewVaultAndRestore = sinon.stub();
+    background.createSeedPhraseBackup = sinon.stub();
+    background.createNewVaultAndKeychain = sinon.stub();
+    background.createNewVaultAndGetSeedPhrase = sinon.stub();
+    background.unlockAndGetSeedPhrase = sinon.stub();
+    background.importMnemonicToVault = sinon.stub();
+    background.discoverAndCreateAccounts = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {

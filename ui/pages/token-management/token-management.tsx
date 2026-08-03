@@ -26,7 +26,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -1557,7 +1556,7 @@ export const TokenManagementPage = () => {
         paddingBottom={2}
       >
         <TextFieldSearch
-          className="app-text-field-search"
+          className="w-full"
           clearButtonOnClick={handleSearchClear}
           inputProps={
             {
@@ -1567,7 +1566,6 @@ export const TokenManagementPage = () => {
           }
           onChange={handleSearchChange}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
-          size={TextFieldSize.Lg}
           value={searchQuery}
         />
       </Box>
