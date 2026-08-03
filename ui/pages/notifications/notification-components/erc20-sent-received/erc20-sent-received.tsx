@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
@@ -28,15 +29,8 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
 } from '../../../../components/multichain';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -133,8 +127,7 @@ export const components: NotificationComponent<ERC20Notification> = {
         <NotificationDetailInfo
           icon={{
             iconName: IconName.Check,
-            color: TextColor.successDefault,
-            backgroundColor: BackgroundColor.successMuted,
+            severity: AvatarIconSeverity.Success,
           }}
           label={t('notificationItemStatus') ?? ''}
           detail={t('notificationItemConfirmed') ?? ''}

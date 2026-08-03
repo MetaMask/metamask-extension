@@ -17,8 +17,10 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  IconColor as DsIconColor,
-  IconName as DsIconName,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -35,9 +37,6 @@ import {
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalContent,
   ModalContentSize,
@@ -185,7 +184,7 @@ const HomeNetworkFilterRow = ({
     <Box data-testid={testId}>
       <NetworkListItem
         name={name}
-        iconSrc={isIconName(iconSrc) ? (iconSrc as string) : iconSrc}
+        iconSrc={iconSrc}
         chainId={chainId}
         selected={selected}
         disabled={disabled}
@@ -198,11 +197,6 @@ const HomeNetworkFilterRow = ({
   );
 };
 
-const getDsIconName = (iconName: IconName): DsIconName =>
-  Object.keys(IconName).find(
-    (key) => IconName[key as keyof typeof IconName] === iconName,
-  ) as DsIconName;
-
 const NetworkSelectionItemIcon = ({
   name,
   iconSrc,
@@ -213,10 +207,10 @@ const NetworkSelectionItemIcon = ({
   if (isIconName(iconSrc)) {
     return (
       <AvatarIcon
-        iconName={getDsIconName(iconSrc)}
+        iconName={iconSrc}
         size={AvatarIconSize.Md}
         severity={AvatarIconSeverity.Neutral}
-        iconProps={{ color: DsIconColor.IconDefault }}
+        iconProps={{ color: IconColor.IconDefault }}
       />
     );
   }

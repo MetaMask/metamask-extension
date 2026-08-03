@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -18,10 +19,7 @@ import {
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
 
 import {
   createTextItems,
@@ -31,11 +29,7 @@ import {
   getNetworkDetailsFromNotifPayload,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -176,8 +170,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         <NotificationDetailInfo
           icon={{
             iconName: IconName.Check,
-            color: TextColor.successDefault,
-            backgroundColor: BackgroundColor.successMuted,
+            severity: AvatarIconSeverity.Success,
           }}
           label={t('notificationItemStatus') ?? ''}
           detail={t('notificationItemConfirmed') ?? ''}
@@ -212,8 +205,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
           <NotificationDetailInfo
             icon={{
               iconName: IconName.SwapHorizontal,
-              color: TextColor.infoDefault,
-              backgroundColor: BackgroundColor.infoMuted,
+              severity: AvatarIconSeverity.Info,
             }}
             label={t('notificationItemRate') || ''}
             detail={`1 ${notification.payload.data.token_out.symbol} ≈ ${(
