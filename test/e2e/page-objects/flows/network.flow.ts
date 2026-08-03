@@ -37,5 +37,6 @@ export const switchToNetworkFromNetworkSelect = async (
 export async function waitForNetworkManagerBackdropToClear(
   driver: Driver,
 ): Promise<void> {
-  await driver.assertElementNotPresent('.modal__backdrop');
+  await dismissObstructingToastsBeforeClick(driver);
+  await driver.assertElementNotPresent('.modal__backdrop', { timeout: 15_000 });
 }

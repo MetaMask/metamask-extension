@@ -223,7 +223,7 @@ class NetworkManager {
     for (let attempt = 0; attempt < 5; attempt++) {
       await dismissObstructingToastsBeforeClick(this.driver);
       try {
-        await this.driver.clickElement(locator, { retries: 1 });
+        await this.driver.clickElementAndWaitToDisappear(locator, 15_000);
         await dismissVisibleToasts(this.driver);
         return;
       } catch (error) {
