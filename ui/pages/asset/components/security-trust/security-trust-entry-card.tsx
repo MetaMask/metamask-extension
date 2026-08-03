@@ -17,6 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { buildAssetSecurityTrustRoutePath } from '../../../../../shared/lib/asset-route';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getFeatureTags,
@@ -24,6 +26,7 @@ import {
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
 import type { SecurityTrustLocationState } from '../../types/security-trust';
+import { SecurityTrustAnalyticsProperty } from './security-trust-analytics-properties';
 
 export type SecurityTrustEntryCardToken = {
   symbol: string;
@@ -49,6 +52,7 @@ export const SecurityTrustEntryCard = ({
 }: SecurityTrustEntryCardProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
 
   const config = getResultTypeConfig(
@@ -69,13 +73,43 @@ export const SecurityTrustEntryCard = ({
   useEffect(() => {
     if (!isLoading && securityData && !hasTrackedView.current) {
       hasTrackedView.current = true;
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.TokenDetailsSecuritySectionViewed,
+        )
+          .addProperties({
+            [SecurityTrustAnalyticsProperty.TokenSymbol]: token.symbol,
+            [SecurityTrustAnalyticsProperty.ChainId]: token.chainId,
+            severity: securityData.resultType ?? 'unknown',
+          })
+          .build(),
+      );
     }
-  }, [isLoading, securityData]);
+  }, [
+    createEventBuilder,
+    isLoading,
+    securityData,
+    token.chainId,
+    token.symbol,
+    trackEvent,
+  ]);
 
   const handlePress = () => {
     if (!hasDetails) {
       return;
     }
+
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.TokenDetailsSecuritySectionClicked,
+      )
+        .addProperties({
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: token.symbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: token.chainId,
+          severity: securityData?.resultType ?? 'unknown',
+        })
+        .build(),
+    );
 
     const state: SecurityTrustLocationState = {
       securityData,
