@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MetadataSection renders status without a description and omits network when chainId is missing 1`] = `
+exports[`RampMetadataSection renders a status description and omits network when chainId is missing 1`] = `
 <div>
   <div
     data-testid="section"
@@ -9,11 +9,20 @@ exports[`MetadataSection renders status without a description and omits network 
       data-label="status"
       data-testid="row"
     >
-      <span
-        data-testid="transaction-status"
+      <div
+        class="flex flex-col items-end gap-0.5"
       >
-        pending
-      </span>
+        <span
+          data-testid="transaction-status"
+        >
+          pending
+        </span>
+        <span
+          class="text-right text-s-body-sm text-alternative"
+        >
+          Waiting for payment
+        </span>
+      </div>
     </div>
     <div
       data-label="date"
@@ -35,27 +44,6 @@ exports[`MetadataSection renders status without a description and omits network 
       data-label="transactionIdLabel"
       data-testid="row"
     />
-  </div>
-</div>
-`;
-
-exports[`TokensSection renders labeled token rows 1`] = `
-<div>
-  <div
-    class="flex flex-col gap-2 pb-4"
-  >
-    <div>
-      <p
-        class="text-alternative mb-1"
-      >
-        You get
-      </p>
-      <div
-        data-testid="token-row"
-      >
-        ETH
-      </div>
-    </div>
   </div>
 </div>
 `;

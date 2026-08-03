@@ -9,6 +9,7 @@ import {
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
+import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
 
 type Props = {
@@ -82,14 +83,15 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
-      <ErrorBoundary>
-        <TemplateLoader
-          item={transaction}
-          chainId={chainId}
-          txIdentifier={txIdentifier}
-          onBack={onBack}
-        />
-      </ErrorBoundary>
+      <div className="shrink-0 px-4 py-4">
+        <Header item={transaction} onBack={onBack} />
+      </div>
+
+      <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
+        <ErrorBoundary>
+          <TemplateLoader item={transaction} />
+        </ErrorBoundary>
+      </div>
     </div>
   );
 }

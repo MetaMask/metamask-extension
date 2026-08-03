@@ -236,13 +236,30 @@ describe('groupActivityListItems', () => {
   it('returns only date-grouped rows when nothing is pending', () => {
     const jan2 = new Date('2025-01-02T12:00:00Z').getTime();
     const jan1 = new Date('2025-01-01T10:00:00Z').getTime();
+    const newer = makeItem({ timestamp: jan2, status: 'success' });
+    const older = makeItem({ timestamp: jan1, status: 'success' });
 
-    const grouped = groupActivityListItems([
-      makeItem({ timestamp: jan2, status: 'success' }),
-      makeItem({ timestamp: jan1, status: 'success' }),
+    const grouped = groupActivityListItems([newer, older]);
+
+    expect(grouped.map((row) => row.type)).toStrictEqual([
+      'date-header',
+      'item',
+      'date-header',
+      'item',
     ]);
+    expect(grouped[1]).toStrictEqual({ type: 'item', item: newer });
+    expect(grouped[3]).toStrictEqual({ type: 'item', item: older });
 
-    expect(grouped).toMatchSnapshot();
+    const firstHeader = grouped[0];
+    const secondHeader = grouped[2];
+    expect(firstHeader.type).toBe('date-header');
+    expect(secondHeader.type).toBe('date-header');
+    if (
+      firstHeader.type === 'date-header' &&
+      secondHeader.type === 'date-header'
+    ) {
+      expect(firstHeader.date).toBeGreaterThan(secondHeader.date);
+    }
   });
 
   it('puts pending rows under a pending header then date-groups the rest', () => {

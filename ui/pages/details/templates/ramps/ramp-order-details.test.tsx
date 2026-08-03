@@ -43,19 +43,22 @@ jest.mock('../../../../hooks/ramps/useRampsOrders', () => ({
   }),
 }));
 
-jest.mock('../../components/sections', () => ({
-  MetadataSection: ({ statusDescription }: { statusDescription?: string }) => (
-    <div data-testid="metadata-section">{statusDescription}</div>
-  ),
-  TokensSection: ({
-    tokens,
-    amountPlaceholder,
+jest.mock('./ramp-metadata-section', () => ({
+  RampMetadataSection: ({
+    statusDescription,
   }: {
-    tokens: { token?: { symbol?: string } }[];
-    amountPlaceholder?: string;
+    statusDescription?: string;
+  }) => <div data-testid="metadata-section">{statusDescription}</div>,
+}));
+
+jest.mock('./ramp-tokens-section', () => ({
+  RampTokensSection: ({
+    item,
+  }: {
+    item: { status?: string; data?: { token?: { symbol?: string } } };
   }) => (
     <div data-testid="tokens-section">
-      {amountPlaceholder ?? tokens[0]?.token?.symbol}
+      {item.status === 'pending' ? '...' : item.data?.token?.symbol}
     </div>
   ),
 }));

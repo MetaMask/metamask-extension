@@ -8,23 +8,26 @@ import {
 } from '../../selectors/activity';
 import { TransactionDetails } from './transaction-details';
 
+jest.mock('./components/header', () => ({
+  Header: ({ item }: { item?: { type?: string; chainId?: string } }) => (
+    <div
+      data-testid="header"
+      data-item-type={item?.type}
+      data-chain-id={item?.chainId}
+    />
+  ),
+}));
 jest.mock('./templates/template-loader', () => ({
   TemplateLoader: ({
     item,
-    chainId,
-    txIdentifier,
   }: {
     item?: { type?: string; chainId?: string; data?: { id?: string } };
-    chainId?: string;
-    txIdentifier?: string;
   }) => (
     <div
       data-testid="template-loader"
       data-item-type={item?.type}
-      data-item-chain-id={item?.chainId}
+      data-chain-id={item?.chainId}
       data-order-id={item?.data?.id}
-      data-chain-id={chainId}
-      data-tx-identifier={txIdentifier}
     />
   ),
 }));
@@ -85,7 +88,7 @@ describe('TransactionDetails', () => {
     });
   });
 
-  it('passes the generic activity item and route identifiers to the template loader', () => {
+  it('passes the generic activity item to the template loader', () => {
     mockSelectLocalActivityItemsByIdentifier.mockReturnValue(
       new Map([
         [

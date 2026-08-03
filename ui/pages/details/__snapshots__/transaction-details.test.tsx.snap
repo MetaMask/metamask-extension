@@ -1,11 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TransactionDetails passes the generic activity item and route identifiers to the template loader 1`] = `
+exports[`TransactionDetails passes the generic activity item to the template loader 1`] = `
 <div
   data-chain-id="eip155:1"
-  data-item-chain-id="eip155:1"
   data-item-type="send"
   data-testid="template-loader"
-  data-tx-identifier="order-1"
 />
 `;

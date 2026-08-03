@@ -14,7 +14,6 @@ jest.mock('../../../hooks/useI18nContext', () => ({
       networkFee: 'Network fee',
       paidByMetaMask: 'Paid by MetaMask',
       priorityFee: 'Priority fee',
-      rampsOrderDetailsFees: 'Fees',
     })[key] ?? key,
 }));
 
@@ -99,24 +98,5 @@ describe('FeesRows', () => {
     ).toHaveTextContent('Network fee');
     expect(within(row).getByTestId('token-fiat-value')).toHaveTextContent('6');
     expect(within(row).getByTestId('token-label')).toHaveTextContent('ETH');
-  });
-
-  it('labels total fees with the ramps fees copy', () => {
-    const { container } = renderFeesRows({
-      item: {
-        hash: '0xabc',
-        data: {
-          fees: [
-            {
-              amount: '1.25',
-              symbol: 'USD',
-              type: 'total',
-            },
-          ],
-        },
-      } as ActivityListItem,
-    });
-
-    expect(container).toMatchSnapshot();
   });
 });

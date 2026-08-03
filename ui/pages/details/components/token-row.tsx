@@ -13,53 +13,26 @@ import { useFormatters } from '../../../hooks/useFormatters';
 
 const maximumFractionDigits = 8;
 
-function formatTokenRowAmount({
-  token,
-  humanAmount,
-  amountPlaceholder,
-  formatToken,
-}: {
-  token: TokenAmount;
-  humanAmount: string | undefined;
-  amountPlaceholder?: string;
-  formatToken: ReturnType<typeof useFormatters>['formatToken'];
-}): string | undefined {
-  if (
-    amountPlaceholder !== undefined &&
-    (humanAmount === undefined || Number(humanAmount) <= 0)
-  ) {
-    return `${amountPlaceholder}${token.symbol ? ` ${token.symbol}` : ''}`;
-  }
-  if (humanAmount === undefined) {
-    return token.symbol;
-  }
-  return applyDisplaySign(
-    token.symbol
-      ? formatToken(humanAmount as `${number}`, token.symbol, {
-          maximumFractionDigits,
-        })
-      : humanAmount,
-    getDisplaySignPrefix(token.direction, { showPlus: true }),
-  );
-}
-
 export function TokenRow({
   token,
   showNetworkBadge,
-  amountPlaceholder,
 }: {
   token: TokenAmount;
   showNetworkBadge?: boolean;
-  amountPlaceholder?: string;
 }) {
   const { formatToken } = useFormatters();
   const humanAmount = getHumanReadableTokenAmount(token);
-  const formattedAmount = formatTokenRowAmount({
-    token,
-    humanAmount,
-    amountPlaceholder,
-    formatToken,
-  });
+  const formattedAmount =
+    humanAmount === undefined
+      ? token.symbol
+      : applyDisplaySign(
+          token.symbol
+            ? formatToken(humanAmount as `${number}`, token.symbol, {
+                maximumFractionDigits,
+              })
+            : humanAmount,
+          getDisplaySignPrefix(token.direction, { showPlus: true }),
+        );
 
   const chainId = useMemo(() => {
     if (!showNetworkBadge || !token.assetId) {

@@ -91,6 +91,11 @@ jest.mock('../details/transaction-details', () => ({
   TransactionDetails: () => null,
 }));
 
+jest.mock('../details/templates/ramps/ramp-order-details-route', () => ({
+  RampOrderDetailsRoute: ({ children }: { children: React.ReactNode }) =>
+    children,
+}));
+
 describe('ActivityList', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -219,8 +224,9 @@ describe('ActivityList', () => {
       },
     ]);
 
-    const { container } = render(<ActivityList />);
+    render(<ActivityList />);
 
-    expect(container).toMatchSnapshot();
+    expect(screen.getByText('[pending]')).toBeInTheDocument();
+    expect(screen.getByTestId('activity-row-rampBuy')).toBeInTheDocument();
   });
 });

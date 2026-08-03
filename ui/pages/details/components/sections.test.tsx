@@ -38,13 +38,9 @@ jest.mock('../../../components/app/transaction/transaction-status', () => ({
 }));
 
 jest.mock('./token-row', () => ({
-  TokenRow: ({
-    amountPlaceholder,
-    token,
-  }: {
-    amountPlaceholder?: string;
-    token?: { symbol?: string };
-  }) => <div data-testid="token-row">{amountPlaceholder ?? token?.symbol}</div>,
+  TokenRow: ({ token }: { token?: { symbol?: string } }) => (
+    <div data-testid="token-row">{token?.symbol}</div>
+  ),
 }));
 
 jest.mock('./shared', () => ({
@@ -59,10 +55,9 @@ jest.mock('./shared', () => ({
 }));
 
 describe('TokensSection', () => {
-  it('passes an amount placeholder through to TokenRow', () => {
+  it('renders labeled token rows', () => {
     const { container } = render(
       <TokensSection
-        amountPlaceholder="..."
         tokens={[
           {
             label: 'You get',
@@ -89,17 +84,15 @@ describe('TokensSection', () => {
 });
 
 describe('MetadataSection', () => {
-  it('renders a status description and omits network when chainId is missing', () => {
+  it('renders status without a description and omits network when chainId is missing', () => {
     const item = {
-      type: 'rampBuy',
+      type: 'send',
       status: 'pending',
       timestamp: 1,
       data: { from: '0xabc' },
     } as ActivityListItem;
 
-    const { container } = render(
-      <MetadataSection item={item} statusDescription="Waiting for payment" />,
-    );
+    const { container } = render(<MetadataSection item={item} />);
 
     expect(container).toMatchSnapshot();
   });

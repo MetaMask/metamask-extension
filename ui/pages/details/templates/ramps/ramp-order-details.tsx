@@ -18,8 +18,9 @@ import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRa
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
 import { formatRampCurrencyAmount } from '../../../../hooks/ramps/utils/formatRampCurrencyAmount';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
-import { MetadataSection, TokensSection } from '../../components/sections';
 import { Footer, Row, Section } from '../../components/shared';
+import { RampMetadataSection } from './ramp-metadata-section';
+import { RampTokensSection } from './ramp-tokens-section';
 
 /**
  * Truncates the middle of long order ids for display.
@@ -82,11 +83,8 @@ export function RampOrderDetails({
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        <TokensSection
-          tokens={[{ token }]}
-          amountPlaceholder={item.status === 'pending' ? '...' : undefined}
-        />
-        <MetadataSection
+        <RampTokensSection item={item} />
+        <RampMetadataSection
           item={item}
           statusDescription={
             showStatusDescription ? statusDescription : undefined

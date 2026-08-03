@@ -20,6 +20,8 @@ import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { RampOrderDetailsRoute } from '../details/templates/ramps/ramp-order-details-route';
 import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
@@ -213,13 +215,21 @@ export function ActivityList({
         className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
         onClose={handleClose}
       >
-        <TransactionDetails
+        <RampOrderDetailsRoute
           chainId={selectedItem?.chainId}
           txIdentifier={
             selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
           }
           onBack={() => dialogRef.current?.close?.()}
-        />
+        >
+          <TransactionDetails
+            chainId={selectedItem?.chainId}
+            txIdentifier={
+              selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
+            }
+            onBack={() => dialogRef.current?.close?.()}
+          />
+        </RampOrderDetailsRoute>
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
