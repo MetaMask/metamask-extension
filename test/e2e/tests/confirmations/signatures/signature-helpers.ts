@@ -136,6 +136,17 @@ function getSignatureEventProperty(
   decodingDescription?: string | null,
   requestedThrough?: string,
 ): SignatureEventProperty {
+  // eth_signTypedData_v3/v4 requests are scanned by the trust-signals
+  // middleware; the local test chain is unsupported by the Security Alerts
+  // API, so the PhishingController resolves the scan to an Error verdict
+  // before the confirmation is actioned. Other signature types are never
+  // scanned, leaving the cache empty, which is reported as Loading.
+  const expectedAddressAlertResponse =
+    signatureType === 'eth_signTypedData_v3' ||
+    signatureType === 'eth_signTypedData_v4'
+      ? ResultType.ErrorResult
+      : ResultType.Loading;
+
   const signatureEventProperty: SignatureEventProperty = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -171,7 +182,7 @@ function getSignatureEventProperty(
     api_source: requestedThrough,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    address_alert_response: ResultType.Loading,
+    address_alert_response: expectedAddressAlertResponse,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_iframe: false,
