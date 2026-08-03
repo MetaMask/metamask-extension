@@ -152,9 +152,15 @@ function isTrusted(
   const { chainId, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  // Trust verdicts are cache-driven for every chain. Chains the Security
-  // Alerts API cannot screen produce ErrorResult cache entries when scanned,
-  // which are non-Trusted and therefore enforce.
+  // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
+  // verdict disqualifies a recipient, and chains the Security Alerts API
+  // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
+  // and therefore enforces.
+  //
+  // Recipients that no scan path covers stay cache misses and are treated as
+  // trusted here. The trust-signals middleware only scans a transaction's own
+  // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
+  // nothing is scanned at all when the user has security alerts disabled.
   if (!chainId) {
     return false;
   }
