@@ -755,6 +755,7 @@ export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const ZERO_G_IMAGE_URL = './images/0g.svg';
+export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -1423,7 +1424,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
+  [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
