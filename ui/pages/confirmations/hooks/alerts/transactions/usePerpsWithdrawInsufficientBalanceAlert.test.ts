@@ -303,6 +303,44 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
+    it('falls back to loading rather than the previous scope balance when the account scope changes', async () => {
+      // First scope holds $50, so $100 is blocked there.
+      setStreamedBalance('500');
+      setFreshAccount({ withdrawableBalance: '50' });
+      setEnteredAmount('100');
+
+      const { result, rerender } = runHook(buildPerpsWithdrawState());
+      await waitFor(() =>
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]),
+      );
+
+      // Switching account/network/provider changes the scope key. Until the
+      // new read settles the previous scope's balance says nothing about this
+      // one, so the hook must go back to loading instead of reusing it.
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise(() => undefined),
+      );
+      mockUsePerpsCacheKey.mockReturnValue(OTHER_PERPS_CACHE_KEY);
+      rerender();
+
+      await waitFor(() => expect(result.current).toStrictEqual([]));
+    });
+
+    it('reuses one background request when the confirmation remounts inside the coalescing window', async () => {
+      // FRESH_BALANCE_TTL_MS exists so a re-mount does not add Hyperliquid
+      // request weight; without the coalescing wrapper this is two calls.
+      setEnteredAmount('10');
+
+      await runSettledHook(buildPerpsWithdrawState());
+      runHook(buildPerpsWithdrawState());
+
+      await waitFor(() =>
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1),
+      );
+    });
+  });
+
+  describe('degraded read', () => {
     it('blocks without inventing a balance when the fresh read fails', async () => {
       // Degraded read: the streamed cache still claims $500, but nothing
       // confirms the account can cover the withdrawal, so it is blocked —
@@ -340,29 +378,6 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
       await waitFor(() =>
         expect(result.current).toStrictEqual([EXPECTED_UNAVAILABLE_ALERT]),
       );
-    });
-
-    it('falls back to loading rather than the previous scope balance when the account scope changes', async () => {
-      // First scope holds $50, so $100 is blocked there.
-      setStreamedBalance('500');
-      setFreshAccount({ withdrawableBalance: '50' });
-      setEnteredAmount('100');
-
-      const { result, rerender } = runHook(buildPerpsWithdrawState());
-      await waitFor(() =>
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]),
-      );
-
-      // Switching account/network/provider changes the scope key. Until the
-      // new read settles the previous scope's balance says nothing about this
-      // one, so the hook must go back to loading instead of reusing it.
-      mockSubmitRequestToBackground.mockReturnValue(
-        new Promise(() => undefined),
-      );
-      mockUsePerpsCacheKey.mockReturnValue(OTHER_PERPS_CACHE_KEY);
-      rerender();
-
-      await waitFor(() => expect(result.current).toStrictEqual([]));
     });
   });
 });
