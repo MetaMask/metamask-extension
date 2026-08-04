@@ -104,7 +104,7 @@ describe('MetamaskWordMarkAnimation', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('marks the session animation complete on unmount even if no timeout was scheduled', () => {
+  it('does not mark the session animation complete on unmount before it starts', () => {
     const setIsAnimationCompleted = jest.fn();
     mockedWasm.useRiveWasmContext.mockReturnValue({
       isWasmReady: true,
@@ -122,9 +122,6 @@ describe('MetamaskWordMarkAnimation', () => {
 
     unmount();
 
-    expect(setIsAnimationCompleted).toHaveBeenCalledWith(
-      'MetamaskWordMarkAnimation',
-      true,
-    );
+    expect(setIsAnimationCompleted).not.toHaveBeenCalled();
   });
 });

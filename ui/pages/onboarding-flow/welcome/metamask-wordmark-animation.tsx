@@ -153,16 +153,17 @@ const MetamaskWordMarkAnimationInner = ({
     }
   }, [rive, skipTransition, isInitialized, theme, cacheInputs]);
 
-  // Always mark the session animation as seen on unmount. Do not gate on
-  // animationTimeoutRef — StrictMode remounts (and cases where the state
-  // machine never emits) can unmount before onStateChange schedules a timeout.
+  // Mark the session animation complete only on unmount after it started
+  // (timeout was scheduled). Do not mark when `isAnimationComplete` flips on
+  // this same visit — that would set skipTransition before FoxAppear mounts
+  // and fire Wiggle instead of Start.
   useEffect(() => {
     return () => {
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
         animationTimeoutRef.current = null;
+        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
       }
-      setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
     };
   }, [setIsAnimationCompleted]);
 
