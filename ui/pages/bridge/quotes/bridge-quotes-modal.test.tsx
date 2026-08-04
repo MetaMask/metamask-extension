@@ -188,6 +188,26 @@ describe('BridgeQuotesModal', () => {
   });
 
   it('should render gasIncluded quotes', () => {
+    const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
+      ...quote,
+      quote: {
+        ...quote.quote,
+        gasIncluded: true,
+        feeData: {
+          ...quote.quote.feeData,
+          txFee: [
+            {
+              amount: '9999900',
+              asset: quote.quote.src.asset,
+              maxFeePerGas:
+                quote.quote.feeData?.txFee?.[0]?.maxFeePerGas ?? '0',
+              maxPriorityFeePerGas:
+                quote.quote.feeData?.txFee?.[0]?.maxPriorityFeePerGas ?? '0',
+            },
+          ],
+        },
+      },
+    }));
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -199,28 +219,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-          ...quote,
-          quote: {
-            ...quote.quote,
-            gasIncluded: true,
-            feeData: {
-              ...quote.quote.feeData,
-              txFee: [
-                {
-                  ...(quote.quote.feeData?.txFee?.[0] ?? {}),
-                  amount: '9999900',
-                  asset: quote.quote.src.asset,
-                  maxFeePerGas:
-                    quote.quote.feeData?.txFee?.[0]?.maxFeePerGas ?? '0',
-                  maxPriorityFeePerGas:
-                    quote.quote.feeData?.txFee?.[0]?.maxPriorityFeePerGas ??
-                    '0',
-                },
-              ],
-            },
-          },
-        })),
+        quotes: mockQuotes,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
