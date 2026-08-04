@@ -14,13 +14,11 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
  * Releases dropped wholesale: when the build's own release matches, the sampler
  * returns `0` for every transaction (regardless of name/parent/default). Only
  * affects a build's OWN release — it cannot reach already-installed builds of a
- * dropped release; those need a forced-update drain.
+ * dropped release; those need a forced-update drain. Empty by default; the
+ * original assets-controller incident releases (13.32.0/13.32.1/13.33.0) are no
+ * longer live. Populate via `SENTRY_DROP_RELEASES` for a future incident.
  */
-export const DEFAULT_DROPPED_RELEASES: readonly string[] = Object.freeze([
-  '13.32.0',
-  '13.32.1',
-  '13.33.0',
-]);
+export const DEFAULT_DROPPED_RELEASES: readonly string[] = Object.freeze([]);
 
 /**
  * The subset of Sentry's `SamplingContext` that the sampler depends on.

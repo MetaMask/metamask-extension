@@ -1,8 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import {
-  DEFAULT_DROPPED_RELEASES,
-  createTracesSampler,
-} from './sentry-traces-sampler';
+import { createTracesSampler } from './sentry-traces-sampler';
 
 /**
  * No-op transport so `Sentry.init` never touches the network. Sampling
@@ -103,11 +100,15 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
 
 describe('createTracesSampler whole-release drop (integration with Sentry.init)', () => {
   let sentTransactions: string[];
-  // A build whose own release is in DEFAULT_DROPPED_RELEASES drops every span.
-  const [droppedRelease] = DEFAULT_DROPPED_RELEASES;
+  const originalDropEnv = process.env.SENTRY_DROP_RELEASES;
+  // DEFAULT_DROPPED_RELEASES ships empty (see sentry-traces-sampler.test.ts) —
+  // supply a dropped release via the env var so this exercises the whole-release
+  // kill mechanism regardless of whether any built-in default is currently set.
+  const droppedRelease = '13.32.0';
 
   beforeEach(() => {
     sentTransactions = [];
+    process.env.SENTRY_DROP_RELEASES = droppedRelease;
     (globalThis as typeof globalThis & { nw?: object }).nw = {};
 
     Sentry.init({
@@ -130,6 +131,11 @@ describe('createTracesSampler whole-release drop (integration with Sentry.init)'
 
   afterEach(async () => {
     await Sentry.close(2000);
+    if (originalDropEnv === undefined) {
+      delete process.env.SENTRY_DROP_RELEASES;
+    } else {
+      process.env.SENTRY_DROP_RELEASES = originalDropEnv;
+    }
   });
 
   it('drops every transaction when this build is a dropped release, even a normally-kept one', async () => {
