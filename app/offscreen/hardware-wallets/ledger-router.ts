@@ -63,6 +63,47 @@ function actionTimeoutMs(action: LedgerAction): number {
 }
 
 /**
+ * Race a Ledger action against a timeout without dropping the losing promise.
+ *
+ * Unlike `Promise.race`, this attaches a handler to the action promise so its
+ * eventual settlement is always consumed. When the timeout wins, the in-flight
+ * `handleAction` typically rejects a moment later once `forceReset` closes the
+ * transport; without the attached handler that late rejection would surface as
+ * unhandled. Mirrors `withTrezorDeviceTimeout`. On timeout the handler is
+ * force-reset so the next action opens a fresh transport instead of queuing
+ * behind the hung one.
+ * @param handler
+ * @param action
+ * @param params
+ */
+function raceActionWithTimeout(
+  handler: LedgerHandler,
+  action: LedgerAction,
+  params: Record<string, unknown> | undefined,
+): Promise<unknown> {
+  return new Promise<unknown>((resolve, reject) => {
+    const timeoutMs = actionTimeoutMs(action);
+    const timer = setTimeout(() => {
+      handler.forceReset?.();
+      reject(
+        new Error(`Ledger action "${action}" timed out after ${timeoutMs}ms`),
+      );
+    }, timeoutMs);
+
+    handler.handleAction(action, params).then(
+      (result) => {
+        clearTimeout(timer);
+        resolve(result);
+      },
+      (error: unknown) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
+/**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
  * invoked while `initLedger` has not yet finished, it awaits this promise
  * first so it sees the correct `activeHandler` and `currentMode` instead
@@ -118,28 +159,7 @@ function ensureMessageListener(): void {
     // timeout, force-reset the handler so retries open a fresh transport.
     const handler = activeHandler;
     actionChain = actionChain
-      .then(() => {
-        const timeoutMs = actionTimeoutMs(action);
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          timer = setTimeout(() => {
-            handler.forceReset?.();
-            reject(
-              new Error(
-                `Ledger action "${action}" timed out after ${timeoutMs}ms`,
-              ),
-            );
-          }, timeoutMs);
-        });
-        return Promise.race([
-          handler.handleAction(action, params),
-          timeoutPromise,
-        ]).finally(() => {
-          if (timer) {
-            clearTimeout(timer);
-          }
-        });
-      })
+      .then(() => raceActionWithTimeout(handler, action, params))
       .then(
         (result) => {
           sendResponse({ success: true, payload: result });

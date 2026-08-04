@@ -384,6 +384,65 @@ describe('LedgerRouter', () => {
         payload: 'after-recovery',
       });
     });
+
+    it('swallows the late rejection of a timed-out action (no unhandled rejection)', async () => {
+      // After the timeout fires and forceReset closes the transport, the
+      // abandoned handleAction promise typically rejects. That rejection must
+      // be consumed (not surface as unhandled) and must not change the
+      // already-sent timeout response.
+      const unhandled: unknown[] = [];
+      const onUnhandled = (reason: unknown) => {
+        unhandled.push(reason);
+      };
+      process.on('unhandledRejection', onUnhandled);
+
+      let rejectAction!: (error: unknown) => void;
+      const sendResponse = jest.fn();
+      jest.useFakeTimers();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+        mockLegacyHandleAction.mockReturnValueOnce(
+          new Promise<unknown>((_resolve, reject) => {
+            rejectAction = reject;
+          }),
+        );
+
+        getListener()(
+          makeMessage(LedgerAction.getPublicKey, { hdPath: 'a' }),
+          {},
+          sendResponse,
+        );
+
+        // Let the chain reach the wedged action, then cross the read-action
+        // backstop (60s). forceReset runs synchronously inside the timer.
+        await Promise.resolve();
+        jest.advanceTimersByTime(60_000);
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
+
+      // Drain the microtask chain: the timeout rejection reaches sendResponse.
+      await flushAsync();
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
+      });
+
+      // The transport now closes (forceReset ran); the wedged action rejects
+      // late. This rejection must be consumed, not surface as unhandled.
+      rejectAction(new Error('transport closed'));
+      await flushAsync();
+      process.off('unhandledRejection', onUnhandled);
+
+      expect(unhandled).toHaveLength(0);
+      // The timeout response stands; the late rejection did not overwrite it.
+      expect(sendResponse).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('switchLedgerHandler', () => {
