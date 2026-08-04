@@ -5938,6 +5938,10 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noFee": {
+    "message": "No fee",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
+  },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
