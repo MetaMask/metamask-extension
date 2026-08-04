@@ -371,7 +371,7 @@ async function waitForTransactionMetadata(
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const transactionMeta =
       transactionController.state.transactions.find(transactionFilter);
 
@@ -380,6 +380,18 @@ async function waitForTransactionMetadata(
       return;
     }
 
+    const timeoutId = setTimeout(() => {
+      messenger.unsubscribe(
+        'TransactionController:unapprovedTransactionAdded',
+        callback,
+      );
+      reject(
+        new Error(
+          `Timed out waiting for transaction metadata: ${securityAlertId}`,
+        ),
+      );
+    }, 60_000);
+
     const callback = (event: TransactionMeta) => {
       if (!transactionFilter(event)) {
         return;
@@ -387,6 +399,7 @@ async function waitForTransactionMetadata(
 
       log('Found transaction metadata', event);
 
+      clearTimeout(timeoutId);
       messenger.unsubscribe(
         'TransactionController:unapprovedTransactionAdded',
         callback,
@@ -415,13 +428,22 @@ async function waitForSignatureRequest(
         request.securityAlertResponse?.securityAlertId === securityAlertId,
     );
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const signatureRequest = signatureFilter(signatureController.state);
 
     if (signatureRequest) {
       resolve(signatureRequest);
       return;
     }
+
+    const timeoutId = setTimeout(() => {
+      messenger.unsubscribe('SignatureController:stateChange', callback);
+      reject(
+        new Error(
+          `Timed out waiting for signature request: ${securityAlertId}`,
+        ),
+      );
+    }, 60_000);
 
     const callback = (state: SignatureControllerState) => {
       const request = signatureFilter(state);
@@ -432,6 +454,7 @@ async function waitForSignatureRequest(
 
       log('Found signature request', request);
 
+      clearTimeout(timeoutId);
       messenger.unsubscribe('SignatureController:stateChange', callback);
 
       resolve(request);
