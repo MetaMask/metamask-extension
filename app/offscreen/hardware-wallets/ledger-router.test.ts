@@ -443,6 +443,57 @@ describe('LedgerRouter', () => {
       // The timeout response stands; the late rejection did not overwrite it.
       expect(sendResponse).toHaveBeenCalledTimes(1);
     });
+
+    it('uses the longer sign-action backstop for signing actions (330s, not 60s)', async () => {
+      // Signing actions (signTransaction/signPersonalMessage/signTypedData)
+      // require user confirmation on the device and use a longer backstop than
+      // read actions. A wedged sign action must NOT time out at the 60s read
+      // backstop — only at the 330s sign backstop.
+      jest.useFakeTimers();
+      const sendResponse = jest.fn();
+      try {
+        await initLedger(LedgerHandlerMode.Legacy);
+        mockLegacyHandleAction.mockReturnValueOnce(
+          new Promise(() => {
+            /* never resolves */
+          }),
+        );
+
+        getListener()(
+          makeMessage(LedgerAction.signTransaction, {
+            hdPath: 'a',
+            tx: '0x0',
+          }),
+          {},
+          sendResponse,
+        );
+
+        // Let the chain reach the wedged action.
+        await Promise.resolve();
+
+        // Cross the read-action backstop (60s): a signing action is still pending.
+        jest.advanceTimersByTime(60_000);
+        expect(mockLegacyForceReset).not.toHaveBeenCalled();
+        expect(sendResponse).not.toHaveBeenCalled();
+
+        // Cross the remaining sign-action backstop (330s total): now it times
+        // out and force-resets the handler.
+        jest.advanceTimersByTime(330_000 - 60_000);
+        expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
+      } finally {
+        jest.useRealTimers();
+      }
+
+      await flushAsync();
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: false,
+        payload: {
+          error: expect.objectContaining({
+            message: expect.stringContaining('timed out'),
+          }),
+        },
+      });
+    });
   });
 
   describe('switchLedgerHandler', () => {
@@ -525,6 +576,37 @@ describe('LedgerRouter', () => {
         payload: 'legacy-result',
       });
     });
+
+    it('awaits an in-flight initLedger before switching, avoiding a duplicate handler', async () => {
+      // Start a Legacy init and hold it in flight so a switch arriving
+      // mid-init must wait for `initInProgress` to settle before creating the
+      // new (DMK) handler. Without the guard, the switch would see
+      // `activeHandler === null` and boot a second Legacy handler.
+      let resolveLegacyInit!: () => void;
+      mockLegacyInit.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveLegacyInit = resolve;
+        }),
+      );
+
+      const initPromise = initLedger(LedgerHandlerMode.Legacy);
+      // initLedger assigns `initInProgress` synchronously before suspending.
+      const switchPromise = switchLedgerHandler(LedgerHandlerMode.DMK);
+
+      // The switch is parked on the in-flight init; no DMK handler is created yet.
+      await Promise.resolve();
+      expect(mockedDmkCtor).not.toHaveBeenCalled();
+
+      // Let the initial init complete; the switch can now proceed.
+      resolveLegacyInit();
+      await Promise.all([initPromise, switchPromise]);
+
+      // Exactly one Legacy handler (from initLedger) and one DMK handler (from
+      // the switch); the Legacy handler was destroyed after the atomic swap.
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('bootstrapLedger', () => {
@@ -534,6 +616,24 @@ describe('LedgerRouter', () => {
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
+    });
+
+    it('swallows init failure and logs instead of throwing', async () => {
+      // A real device failure during bootstrap must not reject the bootstrap
+      // promise (the offscreen document would otherwise be left in a broken
+      // state); it is logged so the failure is observable from DevTools.
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockLegacyInit.mockRejectedValueOnce(new Error('init boom'));
+
+      await expect(bootstrapLedger()).resolves.toBeUndefined();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[ledger-router] bootstrapLedger failed:',
+        expect.objectContaining({ message: 'init boom' }),
+      );
+      consoleErrorSpy.mockRestore();
     });
   });
 

@@ -441,7 +441,9 @@ describe('Ledger Offscreen', () => {
         mockTransportClose.mockClear();
 
         // The device stopped responding: makeApp must close and reopen.
-        mockGetAppConfiguration.mockRejectedValueOnce(new Error('disconnected'));
+        mockGetAppConfiguration.mockRejectedValueOnce(
+          new Error('disconnected'),
+        );
         await handler.handleAction(LedgerAction.makeApp);
 
         expect(mockTransportClose).toHaveBeenCalled();
