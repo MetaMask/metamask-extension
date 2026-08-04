@@ -44,19 +44,24 @@ export const useDiscoverSearch = ({
   return useMemo(
     () => ({
       crypto: {
+        id: 'crypto' as const,
         items: cryptoSection.data,
         isLoading: isDebouncing || cryptoSection.isLoading,
         error: cryptoSection.error,
+        totalCount: cryptoSection.totalCount,
       },
       perps: {
+        id: 'perps' as const,
         items: perps.data,
         isLoading: isPerpsSearchActive && (isDebouncing || perps.isLoading),
         error: perps.error,
       },
       stocks: {
+        id: 'stocks' as const,
         items: stocks.data,
         isLoading: isDebouncing || stocks.isLoading,
         error: stocks.error,
+        totalCount: stocks.totalCount,
       },
       isDebouncing,
     }),
@@ -64,6 +69,7 @@ export const useDiscoverSearch = ({
       cryptoSection.data,
       cryptoSection.error,
       cryptoSection.isLoading,
+      cryptoSection.totalCount,
       isDebouncing,
       isPerpsSearchActive,
       perps.data,
@@ -72,6 +78,7 @@ export const useDiscoverSearch = ({
       stocks.data,
       stocks.error,
       stocks.isLoading,
+      stocks.totalCount,
     ],
   );
 };
