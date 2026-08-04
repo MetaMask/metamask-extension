@@ -319,7 +319,7 @@
   "previewBuilds": {
     "@metamask/tron-wallet-snap": {
       "type": "breaking",
-      "previewVersion": "1.33.2-preview-e04998fd"
+      "previewVersion": "2.0.0-preview-f24e2ee"
     }
   },
   "dependencies": {
