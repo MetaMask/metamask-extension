@@ -7307,6 +7307,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/money-account-api-data-service@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/money-account-api-data-service@npm:0.4.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+  checksum: 10/cb3106f2c40e776a9876844aaa5778f79308b23a7f0ff9eaee8cc2c7fbdf0489532b7bd2463e740051c1b7da0fb980aa59ad3f5272a3c19898744294d89a002a
+  languageName: node
+  linkType: hard
+
+"@metamask/money-account-balance-service@npm:2.4.0":
+  version: 2.4.0
+  resolution: "@metamask/money-account-balance-service@npm:2.4.0"
+  dependencies:
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/money-account-api-data-service": "npm:^0.4.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/064ebd057c871b3ee861d901efdca9eaea7e52aa5681c8d539913cfbb2e474651f85ece5c7afcc873f4c681e02152eba8e29e1eba1a7356e4cc99c2b47781bac
+  languageName: node
+  linkType: hard
+
 "@metamask/money-account-utils@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/money-account-utils@npm:1.1.0"
@@ -32973,6 +33006,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
+    "@metamask/money-account-balance-service": "npm:2.4.0"
     "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/multichain-account-service": "npm:^13.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
