@@ -1,4 +1,9 @@
-import { EthScope, SolScope } from '@metamask/keyring-api';
+import {
+  EthScope,
+  SolScope,
+  XlmAccountType,
+  XlmScope,
+} from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -1203,13 +1208,23 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
   };
 
   const createMockStateWithNonEVMNetworks = (
-    includeTestnets = false,
+    includeTestnets: boolean = false,
+    accountId: string = 'account2',
+    accountType: string = 'solana:data-account',
+    accountScopes: string[] = [SolScope.Mainnet],
+    accountMetadata: Record<string, unknown> = {
+      snap: { id: 'npm:@metamask/solana-wallet-snap', enabled: true },
+    },
   ): BalanceCalculationState => {
     const multichainNetworks: Record<string, unknown> = {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         type: 'mainnet',
       }, // Solana mainnet
+      [XlmScope.Pubnet]: {
+        chainId: XlmScope.Pubnet,
+        type: 'mainnet',
+      }, // Stellar mainnet
     };
 
     if (includeTestnets) {
@@ -1221,15 +1236,17 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         chainId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
         type: 'testnet',
       }; // Solana devnet
+      multichainNetworks[XlmScope.Testnet] = {
+        chainId: XlmScope.Testnet,
+        type: 'testnet',
+      }; // Stellar testnet
     }
 
     const baseState = createBaseMockState(
-      'account2',
-      'solana:data-account',
-      [SolScope.Mainnet],
-      {
-        snap: { id: 'npm:@metamask/solana-wallet-snap', enabled: true },
-      },
+      accountId,
+      accountType,
+      accountScopes,
+      accountMetadata,
     );
 
     return {
@@ -1239,9 +1256,24 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         multichainNetworkConfigurationsByChainId: multichainNetworks,
         snaps: {
           'npm:@metamask/solana-wallet-snap': { enabled: true },
+          'npm:@metamask/stellar-wallet-snap': { enabled: true },
         },
       } as unknown as BalanceCalculationState['metamask'],
     };
+  };
+
+  const createMockStateWithStellarNetworks = (
+    includeTestnets: boolean = false,
+  ): BalanceCalculationState => {
+    return createMockStateWithNonEVMNetworks(
+      includeTestnets,
+      'stellar-account',
+      XlmAccountType.Account,
+      [XlmScope.Pubnet],
+      {
+        snap: { id: 'npm:@metamask/stellar-wallet-snap', enabled: true },
+      },
+    );
   };
 
   it('should return true when balance is greater than 0 for EVM networks', () => {
@@ -1270,6 +1302,23 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           amount: '10.5',
           unit: 'SOL',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return true when balance is greater than 0 for Stellar mainnet', () => {
+    const state = createMockStateWithStellarNetworks();
+
+    state.metamask.balances = {
+      'stellar-account': {
+        [`${XlmScope.Pubnet}/slip44:148`]: {
+          amount: '25.5',
+          unit: 'XLM',
         },
       },
     };
@@ -1369,6 +1418,23 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     expect(result).toBe(true);
   });
 
+  it('should return true for loaded state when a Stellar mainnet zero balance record exists', () => {
+    const state = createMockStateWithStellarNetworks();
+
+    state.metamask.balances = {
+      'stellar-account': {
+        [`${XlmScope.Pubnet}/slip44:148`]: {
+          amount: '0',
+          unit: 'XLM',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
   it('should return false for loaded state when only testnet balance records exist', () => {
     const state = createMockStateWithEVMNetworks(true);
 
@@ -1432,6 +1498,47 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
+  });
+
+  it('should exclude Stellar testnet from balance calculation', () => {
+    const state = createMockStateWithStellarNetworks(true);
+
+    state.metamask.balances = {
+      'stellar-account': {
+        [`${XlmScope.Pubnet}/slip44:148`]: {
+          // Mainnet
+          amount: '0',
+          unit: 'XLM',
+        },
+        [`${XlmScope.Testnet}/slip44:148`]: {
+          // Testnet (should be ignored)
+          amount: '100',
+          unit: 'XLM',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
+  });
+
+  it('should return false for loaded state when only Stellar testnet balance records exist', () => {
+    const state = createMockStateWithStellarNetworks(true);
+
+    state.metamask.balances = {
+      'stellar-account': {
+        [`${XlmScope.Testnet}/slip44:148`]: {
+          amount: '100',
+          unit: 'XLM',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
     expect(result).toBe(false);
   });
 

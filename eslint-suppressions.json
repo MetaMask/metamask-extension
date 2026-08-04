@@ -149,11 +149,6 @@
       "count": 2
     }
   },
-  "ui/components/ui/survey-toast/survey-toast.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/contexts/hardware-wallets/HardwareWalletContext.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1

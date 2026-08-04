@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -716,6 +716,71 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.amount).toBe('1000');
       expect(result.current.formState.leverage).toBe(10);
       expect(result.current.formState.type).toBe('limit');
+    });
+  });
+
+  describe('limit price prefill', () => {
+    it('applies the prefilled limit price', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' },
+      };
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.limitPrice).toBe('73790');
+    });
+
+    it('re-applies when a new prefill object is provided', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' } as { price: string },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      // User manually overrides the prefilled value.
+      act(() => {
+        result.current.handleLimitPriceChange('70000');
+      });
+      expect(result.current.formState.limitPrice).toBe('70000');
+
+      // A fresh object (new tap) re-applies even for the same price.
+      props.limitPricePrefill = { price: '73790' };
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.limitPrice).toBe('73790');
+    });
+
+    it('does not overwrite manual edits without a new prefill object', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' } as { price: string },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLimitPriceChange('70000');
+      });
+
+      // Re-render without changing the prefill reference must not clobber edits.
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.limitPrice).toBe('70000');
     });
   });
 
