@@ -51,6 +51,47 @@ export function hasValidTransactionParams(
   );
 }
 
+export function isWalletSendCalls(req: JsonRpcRequest): boolean {
+  return req.method === MESSAGE_TYPE.WALLET_SEND_CALLS;
+}
+
+export function hasValidSendCallsParams(
+  req: JsonRpcRequest,
+): req is JsonRpcRequest & {
+  params: [
+    {
+      calls: {
+        to?: unknown;
+        data?: unknown;
+        [key: string]: unknown;
+      }[];
+      chainId?: unknown;
+      [key: string]: unknown;
+    },
+    ...unknown[],
+  ];
+} {
+  if (!('params' in req) || !req.params) {
+    return false;
+  }
+
+  if (!Array.isArray(req.params) || req.params.length === 0) {
+    return false;
+  }
+
+  const firstParam = req.params[0];
+
+  return (
+    typeof firstParam === 'object' &&
+    firstParam !== null &&
+    'calls' in firstParam &&
+    Array.isArray(firstParam.calls) &&
+    firstParam.calls.every(
+      (call: unknown) => typeof call === 'object' && call !== null,
+    )
+  );
+}
+
 export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   return (
     req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||

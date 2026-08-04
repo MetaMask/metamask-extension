@@ -7,6 +7,8 @@ import {
   hasValidTypedDataParams,
   isConnected,
   connectScreenHasBeenPrompted,
+  isWalletSendCalls,
+  hasValidSendCallsParams,
 } from './trust-signals-util';
 
 describe('trust-signals-util', () => {
@@ -310,6 +312,82 @@ describe('trust-signals-util', () => {
         jsonrpc: '2.0',
       } as JsonRpcRequest;
       expect(connectScreenHasBeenPrompted(req)).toBe(false);
+    });
+  });
+
+  describe('isWalletSendCalls', () => {
+    it('returns true when the method is wallet_sendCalls', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(true);
+    });
+
+    it('returns false for other methods', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(false);
+    });
+  });
+
+  describe('hasValidSendCallsParams', () => {
+    const createRequest = (params?: unknown): JsonRpcRequest =>
+      ({
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        params,
+        id: 1,
+        jsonrpc: '2.0',
+      }) as JsonRpcRequest;
+
+    it('returns true when params contain a calls array of objects', () => {
+      const req = createRequest([
+        {
+          version: '2.0.0',
+          chainId: '0x1',
+          calls: [{ to: '0x1234', data: '0x' }, { data: '0x' }],
+        },
+      ]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+
+    it('returns true when calls is empty', () => {
+      const req = createRequest([{ calls: [] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+
+    it('returns false when params are missing', () => {
+      const req = createRequest(undefined);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params are an empty array', () => {
+      const req = createRequest([]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when the first param is not an object', () => {
+      const req = createRequest(['not-an-object']);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is missing', () => {
+      const req = createRequest([{ version: '2.0.0' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is not an array', () => {
+      const req = createRequest([{ calls: 'not-an-array' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when a call entry is not an object', () => {
+      const req = createRequest([{ calls: [{ to: '0x1234' }, null] }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
     });
   });
 });
