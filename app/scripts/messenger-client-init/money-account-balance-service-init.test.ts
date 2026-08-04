@@ -28,9 +28,8 @@ describe('MoneyAccountBalanceServiceInit', () => {
   });
 
   it('initializes the service', () => {
-    const { messengerClient } = MoneyAccountBalanceServiceInit(
-      getInitRequestMock(),
-    );
+    const { messengerClient } =
+      MoneyAccountBalanceServiceInit(getInitRequestMock());
 
     expect(messengerClient).toBeInstanceOf(MoneyAccountBalanceService);
   });
@@ -44,9 +43,8 @@ describe('MoneyAccountBalanceServiceInit', () => {
   });
 
   it('calls init on the service', () => {
-    const { messengerClient } = MoneyAccountBalanceServiceInit(
-      getInitRequestMock(),
-    );
+    const { messengerClient } =
+      MoneyAccountBalanceServiceInit(getInitRequestMock());
 
     expect(jest.mocked(messengerClient).init).toHaveBeenCalledTimes(1);
   });

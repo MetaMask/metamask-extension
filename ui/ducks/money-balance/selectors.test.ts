@@ -62,10 +62,16 @@ describe('isPersistedMoneyBalanceUsable', () => {
   const unusable: [string, PersistedMoneyBalance | null | undefined][] = [
     ['there is no persisted balance', null],
     ['the persisted balance is undefined', undefined],
-    ['the persisted address is a different account', { ...balance, address: OTHER_ADDRESS }],
+    [
+      'the persisted address is a different account',
+      { ...balance, address: OTHER_ADDRESS },
+    ],
     ['the persisted address is empty', { ...balance, address: '' as Hex }],
     ['the persisted currency is different', { ...balance, currency: 'eur' }],
-    ['the persisted currency differs only in casing', { ...balance, currency: 'USD' }],
+    [
+      'the persisted currency differs only in casing',
+      { ...balance, currency: 'USD' },
+    ],
   ];
 
   for (const [description, persisted] of unusable) {
