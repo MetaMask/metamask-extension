@@ -509,6 +509,24 @@ export const completeCreateNewWalletOnboardingFlow = async ({
 };
 
 /**
+ * Completes create-new-wallet onboarding and waits for the home page to settle.
+ *
+ * @param driver - The WebDriver instance.
+ */
+export const completeOnboardingAndSync = async (
+  driver: Driver,
+): Promise<void> => {
+  await completeCreateNewWalletOnboardingFlow({
+    driver,
+    password: WALLET_PASSWORD,
+    skipSRPBackup: true,
+  });
+  const homePage = new HomePage(driver);
+  await homePage.ensurePageIsReady();
+  await driver.delay(5000); // ensure things have settled before proceeding
+};
+
+/**
  * Complete create new wallet onboarding flow with passkey enrollment.
  * Uses the real WebAuthn enrollment flow (requires a virtual authenticator
  * to be attached to the browser before calling this).
