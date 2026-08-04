@@ -1,12 +1,11 @@
 @use "design-system";
-
-@import 'recovery-phrase/index';
-@import 'onboarding-app-header/index';
-@import 'privacy-settings/index';
-@import 'create-password/index';
-@import 'creation-successful/index';
-@import 'welcome/index';
-@import 'metametrics/index';
+@use 'recovery-phrase/index';
+@use 'onboarding-app-header/index' as onboarding-app-header;
+@use 'privacy-settings/index' as privacy-settings;
+@use 'create-password/index' as create-password;
+@use 'creation-successful/index' as creation-successful;
+@use 'welcome/index' as welcome;
+@use 'metametrics/index' as metametrics;
 
 .onboarding-flow {
   &--welcome-banner {

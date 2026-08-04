@@ -1,5 +1,5 @@
 /** Please import your files in alphabetical order **/
-@import 'confirm/index';
-@import 'confirmation/confirmation';
-@import 'send-utils/send';
-@import './components/index'
+@use 'confirm/index';
+@use 'confirmation/confirmation';
+@use 'send-utils/send';
+@use 'components/index' as components;

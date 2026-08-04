@@ -1,10 +1,10 @@
-@import 'hide-token-confirmation-modal/index';
-@import 'qr-scanner/index';
-@import 'customize-nonce/index';
-@import 'convert-token-to-nft-modal/index';
-@import 'visit-support-data-consent-modal/index';
-@import "multichain-accounts/intro-modal/index";
-@import 'add-funds-modal/index';
+@use 'hide-token-confirmation-modal/index';
+@use 'qr-scanner/index' as qr-scanner;
+@use 'customize-nonce/index' as customize-nonce;
+@use 'convert-token-to-nft-modal/index' as convert-token-to-nft-modal;
+@use 'visit-support-data-consent-modal/index' as visit-support-data-consent-modal;
+@use "multichain-accounts/intro-modal/index" as intro-modal;
+@use 'add-funds-modal/index' as add-funds-modal;
 
 .modal {
   z-index: 1050;

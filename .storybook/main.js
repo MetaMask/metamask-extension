@@ -130,8 +130,17 @@ module.exports = {
           options: {
             sourceMap: true,
             implementation: require('sass-embedded'),
+            // Use the modern Sass JS API; the legacy API is deprecated and
+            // will be removed in Dart Sass 2.0.0.
+            api: 'modern',
+            // The modern sass api doesn't work with the webpackImporter yet;
+            // module resolution is handled by sass itself via `loadPaths`.
+            webpackImporter: false,
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/'],
+              loadPaths: ['ui/css/', 'node_modules/'],
+              // Don't emit deprecation warnings for third-party styles
+              // (e.g. fontawesome) loaded via `loadPaths`.
+              quietDeps: true,
             },
           },
         },

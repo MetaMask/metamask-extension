@@ -3,13 +3,13 @@
 @use "design-system";
 @use "utilities";
 
-$attributes: padding, margin, gap;
-$extraProperties: auto;
-$attributesToApplyExtraProperties: margin;
+// shared with the component-library box module, which declares the same
+// values
+@use "../../component-library/box/box";
 
 .box {
   // Padding, Margin, and Gap
-  @each $attribute in $attributes {
+  @each $attribute in box.$attributes {
     @each $size in design-system.$sizes-numeric {
       &--#{$attribute}-#{$size} {
         #{$attribute}: utilities.get-spacing($size);
@@ -44,14 +44,14 @@ $attributesToApplyExtraProperties: margin;
       }
     }
 
-    @if list.index($attributesToApplyExtraProperties, $attribute) {
-      @each $property in $extraProperties {
+    @if list.index(box.$attributesToApplyExtraProperties, $attribute) {
+      @each $property in box.$extraProperties {
         &--#{$attribute}-#{$property} {
           #{$attribute}: $property;
         }
       }
 
-      @each $property in $extraProperties {
+      @each $property in box.$extraProperties {
         @each $direction in design-system.$directions {
           &--#{$attribute}-#{$direction}-#{$property} {
             #{$attribute}-#{$direction}: $property;
@@ -61,7 +61,7 @@ $attributesToApplyExtraProperties: margin;
 
       // breakpoint classes
       @each $breakpoint, $min-width in design-system.$screen-sizes-map {
-        @each $property in $extraProperties {
+        @each $property in box.$extraProperties {
           @media screen and (min-width: $min-width) {
             &--#{$breakpoint}\:#{$attribute}-#{$property} {
               #{$attribute}: $property;

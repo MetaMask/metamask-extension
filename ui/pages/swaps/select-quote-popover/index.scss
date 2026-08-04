@@ -1,6 +1,5 @@
 @use "design-system";
-
-@import 'quote-details/index';
+@use 'quote-details/index';
 
 .select-quote-popover {
   &__button {

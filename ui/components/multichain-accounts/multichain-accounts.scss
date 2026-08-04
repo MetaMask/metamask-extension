@@ -1,8 +1,8 @@
-@import "multichain-account-cell";
-@import "multichain-account-menu";
-@import "multichain-account-menu-items";
-@import "account-details-row";
-@import "add-multichain-account";
-@import "multichain-address-rows-triggered-list";
-@import "permissions/multichain-edit-accounts-page";
-@import "permissions/multichain-edit-networks-page";
+@use "multichain-account-cell";
+@use "multichain-account-menu";
+@use "multichain-account-menu-items";
+@use "account-details-row";
+@use "add-multichain-account";
+@use "multichain-address-rows-triggered-list";
+@use "permissions/multichain-edit-accounts-page";
+@use "permissions/multichain-edit-networks-page";

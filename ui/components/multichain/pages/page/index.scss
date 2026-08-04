@@ -1,6 +1,5 @@
 @use "design-system";
-
-@import 'components/';
+@use 'components/index' as components;
 
 .multichain-page {
   $height-screen-sm-min: 720px;

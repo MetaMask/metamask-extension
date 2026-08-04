@@ -1,20 +1,20 @@
 /*
   MetaMask design system imports
 */
-@import './tailwind';
-@import './utilities/fonts.scss';
-@import './utilities/colors.scss';
-@import './utilities/opacity.scss';
-@import './utilities/page-transitions.scss';
-@import './base-styles.scss';
-@import '../components/component-library/component-library-components.scss';
-@import '../components/app/app-components';
-@import '../components/ui/ui-components';
-@import '../components/multichain/multichain-components.scss';
-@import '../components/multichain-accounts/multichain-accounts.scss';
-@import '../pages/pages';
-@import './errors.scss';
-@import './loading.scss';
+@use 'tailwind';
+@use 'utilities/fonts.scss';
+@use 'utilities/colors.scss';
+@use 'utilities/opacity.scss';
+@use 'utilities/page-transitions.scss';
+@use 'base-styles.scss';
+@use '../components/component-library/component-library-components.scss';
+@use '../components/app/app-components';
+@use '../components/ui/ui-components';
+@use '../components/multichain/multichain-components.scss';
+@use '../components/multichain-accounts/multichain-accounts.scss';
+@use '../pages/pages';
+@use 'errors.scss';
+@use 'loading.scss';
 
 /*
   ITCSS
@@ -25,12 +25,12 @@
   DEPRECATED: This CSS architecture is deprecated. The following imports will be removed
   overtime.
  */
-@import './itcss/settings/index';
-@import './itcss/components/index';
+@use 'itcss/settings/index' as itcss-settings;
+@use 'itcss/components/index' as itcss-components;
 
 /*
   Third Party Library Styles
 */
-@import 'react-tippy/dist/tippy';
-@import '@metamask/design-tokens/dist/styles';
+@use 'react-tippy/dist/tippy';
+@use '@metamask/design-tokens/dist/styles';
 

@@ -1,9 +1,8 @@
 @use "design-system";
-
-@import 'snaps/snap-install/index';
-@import 'snaps/snap-update/index';
-@import 'snaps/snap-result/index';
-@import 'snaps/snaps-connect/index';
+@use 'snaps/snap-install/index';
+@use 'snaps/snap-update/index' as snap-update;
+@use 'snaps/snap-result/index' as snap-result;
+@use 'snaps/snaps-connect/index' as snaps-connect;
 
 .permissions-connect {
   $height-screen-sm-min: 720px;

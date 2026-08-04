@@ -89,8 +89,18 @@ const config = {
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
               implementation: 'sass-embedded',
+              // `api` is a loader-level option (not a `sassOptions` option);
+              // 'modern' uses the modern Sass JS API, as the legacy JS API is
+              // deprecated and will be removed in Dart Sass 2.0.0.
+              api: 'modern',
+              // Disable the webpackImporter, as we:
+              //  a) don't want to rely on it in case we want to switch away
+              //     from webpack in the future
+              //  b) the sass importer is faster
+              //  c) the "modern" sass api doesn't work with the
+              //     webpackImporter yet.
+              webpackImporter: false,
               sassOptions: {
-                api: 'modern',
                 // We don't need to specify the charset because the HTML
                 // already does and browsers use the HTML's charset for CSS.
                 // Additionally, webpack + sass can cause problems with the
@@ -98,22 +108,19 @@ const config = {
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
                 // Always compress for integration tests to avoid ENOBUFS errors
-                outputStyle: 'compressed',
-                // The order of includePaths is important; prefer our own
+                style: 'compressed',
+                // The order of loadPaths is important; prefer our own
                 // folders over `node_modules`
-                includePaths: [
+                loadPaths: [
                   // enables aliases to `@use design - system`,
                   // `@use utilities`, etc.
                   join(context, '../ui/css'),
                   join(context, '../node_modules'),
                 ],
-                // Disable the webpackImporter, as we:
-                //  a) don't want to rely on it in case we want to switch away
-                //     from webpack in the future
-                //  b) the sass importer is faster
-                //  c) the "modern" sass api doesn't work with the
-                //     webpackImporter yet.
-                webpackImporter: false,
+                // Don't emit deprecation warnings for third-party styles
+                // (e.g. fontawesome) loaded via `loadPaths`; we can't fix
+                // those upstream files ourselves.
+                quietDeps: true,
               },
               sourceMap: true,
             },

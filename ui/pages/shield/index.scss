@@ -1,2 +1,2 @@
-@import 'plan/index';
-@import 'transaction-shield/index';
+@use 'plan/index';
+@use 'transaction-shield/index' as transaction-shield;

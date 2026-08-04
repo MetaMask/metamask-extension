@@ -1,7 +1,6 @@
 @use "design-system";
-
-@import 'components/confirmation-footer/confirmation-footer';
-@import 'components/confirmation-network-switch/index';
+@use 'components/confirmation-footer/confirmation-footer';
+@use 'components/confirmation-network-switch/index';
 
 .confirmation-page {
   $height-screen-sm-min: 720px;

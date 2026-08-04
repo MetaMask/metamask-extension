@@ -1,10 +1,9 @@
 @use "design-system";
-
-@import 'prepare/index';
-@import 'prepare/components/index';
-@import 'prepare/components/bridge-asset-picker/index';
-@import 'quotes/index';
-@import 'awaiting-signatures/index';
+@use 'prepare/index';
+@use 'prepare/components/index' as components;
+@use 'prepare/components/bridge-asset-picker/index' as bridge-asset-picker;
+@use 'quotes/index' as quotes;
+@use 'awaiting-signatures/index' as awaiting-signatures;
 
 
 
