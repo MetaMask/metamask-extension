@@ -156,6 +156,7 @@ const Header = ({
         label={label}
         tooltip={tooltip}
         style={{
+          background: 'transparent',
           paddingLeft: 0,
           paddingRight: 0,
         }}
