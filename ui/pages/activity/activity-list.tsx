@@ -17,13 +17,15 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
+import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
+  getActivityDetailsPath,
+  getActivityItemIdentifier,
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
@@ -40,35 +42,43 @@ const headerHeight = 40;
 export function ActivityList({
   filter,
   entryPoint,
-}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
+}: {
+  filter?: ActivityListFilter;
+  entryPoint?: ScreenViewedEntryPoint;
+} = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const detailsHashOpenRef = useRef(false);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: deferredNetworks ?? [] };
+  const filters: ActivityListFilter = filter ?? {
+    networks: deferredNetworks ?? [],
+  };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
   const nonEvmItems = useNonEvmTransactions(filters);
+  const rampsItems = useRampsOrderActivity(filters);
   const evmItems = useMemo(
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data],
   );
 
   const groupedItems = useMemo(() => {
-    const items = dedupeItems(localItems, evmItems, nonEvmItems);
-
-    return groupActivityListItems(items);
-  }, [evmItems, localItems, nonEvmItems]);
+    // Ramps first so settled orders keep the ramp classification over generic txs.
+    return groupActivityListItems(
+      dedupeItems(rampsItems, localItems, evmItems, nonEvmItems),
+    );
+  }, [evmItems, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),
@@ -79,7 +89,7 @@ export function ActivityList({
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,
-    pendingLength: [...localItems, ...nonEvmItems].filter(
+    pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
     ).length,
     entryPoint,
@@ -92,11 +102,13 @@ export function ActivityList({
   });
 
   useEventListener('popstate', () => {
+    detailsHashOpenRef.current = false;
     dialogRef.current?.close?.();
   });
 
   const handleClick = (item: ActivityListItem) => {
-    if (!item.hash) {
+    const detailsPath = getActivityDetailsPath(item);
+    if (!detailsPath) {
       return;
     }
 
@@ -116,16 +128,14 @@ export function ActivityList({
       dialogRef.current.showModal?.();
     }
 
-    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
-    const alreadyOnDetails = window.location.hash.includes(
-      `${TX_DETAILS_ROUTE}/`,
-    );
+    const detailsHash = `#${detailsPath}`;
 
-    if (alreadyOnDetails) {
+    if (detailsHashOpenRef.current) {
       window.history.replaceState(null, '', detailsHash);
       return;
     }
 
+    detailsHashOpenRef.current = true;
     window.history.pushState(null, '', detailsHash);
   };
 
@@ -147,7 +157,8 @@ export function ActivityList({
         .build(),
     );
 
-    if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
+    if (detailsHashOpenRef.current) {
+      detailsHashOpenRef.current = false;
       window.history.back();
     }
   };
@@ -204,8 +215,11 @@ export function ActivityList({
         onClose={handleClose}
       >
         <TransactionDetails
+          item={selectedItem ?? undefined}
           chainId={selectedItem?.chainId}
-          txIdentifier={selectedItem?.hash}
+          txIdentifier={
+            selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
+          }
           onBack={() => dialogRef.current?.close?.()}
         />
       </dialog>
