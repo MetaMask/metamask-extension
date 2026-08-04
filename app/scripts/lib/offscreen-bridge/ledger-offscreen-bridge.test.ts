@@ -158,6 +158,41 @@ describe('LedgerOffscreenBridge', () => {
     });
   });
 
+  describe('deviceSignDelegationAuthorization', () => {
+    it('rejects with a "not supported" error on the legacy offscreen bridge', async () => {
+      const bridge = new LedgerOffscreenBridge();
+      const params = {
+        hdPath: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        contractAddress: '0x0000000000000000000000000000000000000000',
+        nonce: 0,
+      } as unknown as Parameters<
+        LedgerOffscreenBridge['deviceSignDelegationAuthorization']
+      >[0];
+
+      await expect(bridge.deviceSignDelegationAuthorization(params)).rejects.toThrow(
+        'signDelegationAuthorization is not supported via the legacy offscreen bridge',
+      );
+    });
+
+    it('does not send a message to the offscreen document', async () => {
+      const bridge = new LedgerOffscreenBridge();
+      const params = {
+        hdPath: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        contractAddress: '0x0000000000000000000000000000000000000000',
+        nonce: 0,
+      } as unknown as Parameters<
+        LedgerOffscreenBridge['deviceSignDelegationAuthorization']
+      >[0];
+
+      await expect(
+        bridge.deviceSignDelegationAuthorization(params),
+      ).rejects.toThrow();
+      expect(chromeRuntimeMock.sendMessage).not.toHaveBeenCalled();
+    });
+  });
+
   describe('success response unwrapping', () => {
     it('resolves with payload when present', async () => {
       const bridge = new LedgerOffscreenBridge();

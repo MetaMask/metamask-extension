@@ -3,6 +3,8 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -144,6 +146,20 @@ export class LedgerOffscreenBridge implements Omit<
       action: LedgerAction.signTypedData,
       params,
     });
+  }
+
+  async deviceSignDelegationAuthorization(
+    _params: LedgerSignDelegationAuthorizationParams,
+  ): Promise<LedgerSignDelegationAuthorizationResponse> {
+    // EIP-7702 delegation authorization signing is only supported via the
+    // DMK offscreen handler (lands in a later stacked PR). The legacy
+    // offscreen bridge intentionally rejects so callers surface a clear
+    // "not supported" error instead of silently no-op'ing. This matches the
+    // reference behavior in @metamask/eth-ledger-bridge-keyring's iframe and
+    // mobile bridges.
+    throw new Error(
+      'Ledger: signDelegationAuthorization is not supported via the legacy offscreen bridge',
+    );
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
