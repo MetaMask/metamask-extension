@@ -3166,7 +3166,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('does not persist a gas fallback when container estimation fails', async () => {
+    it('increments the toggle count but does not persist a gas fallback when container estimation fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
           slippage: 10,
@@ -3181,6 +3181,20 @@ describe('LegacyBackgroundApiService', () => {
           txParamsOriginal: { gas: '0x554af' },
         } as TransactionMeta;
 
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue({
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 2,
+            },
+          }),
+        );
+        const updateEventFragmentMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentMock,
+        );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
           jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
@@ -3208,11 +3222,21 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:applyTransactionContainersExisting',
             TRANSACTION_ID_MOCK,
             [TransactionContainerType.EnforcedSimulations],
+            true,
           ),
         ).rejects.toThrow(
           'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
+        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+          expect.any(String),
+          {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 3,
+            },
+          },
+        );
         expect(updateEditableParamsMock).not.toHaveBeenCalled();
       });
     });
