@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/lib/ramps/analytics';
 import { sanitizeUrlPath } from '../../../../shared/lib/ramps/url-path';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { isRampsAnalyticsEnabled } from './isRampsAnalyticsEnabled';
 
 export type RampsCheckoutAnalyticsContext = {
   checkoutSessionId: string;
@@ -27,6 +28,9 @@ function trackCheckoutEvent(
   eventName: MetaMetricsEventName,
   properties: Record<string, Json | undefined>,
 ): void {
+  if (!isRampsAnalyticsEnabled()) {
+    return;
+  }
   trackEvent(
     createEventBuilder(eventName)
       .addCategory(MetaMetricsEventCategory.Ramps)

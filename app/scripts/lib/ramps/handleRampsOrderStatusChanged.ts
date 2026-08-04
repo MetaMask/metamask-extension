@@ -13,6 +13,7 @@ import {
   buildRampsTransactionConfirmedProperties,
   buildRampsTransactionFailedProperties,
 } from './buildRampsTransactionCompletedProperties';
+import { isRampsAnalyticsEnabled } from './isRampsAnalyticsEnabled';
 
 type RampsOrderStatusChangedEventPayload =
   RampsControllerOrderStatusChangedEvent['payload'][0];
@@ -43,6 +44,10 @@ const TERMINAL_ORDER_STATUSES = new Set<string>([
  * @param order - The order to evaluate.
  */
 export function trackRampsTerminalOrder(order?: RampsOrder): void {
+  if (!isRampsAnalyticsEnabled()) {
+    return;
+  }
+
   // Dedupe on the canonical `{providerId}/orders/{orderCode}` id so a callback
   // emit and an in-flight poll emit for one order can't double-count. Not on the
   // bare order code: that is only unique within a single provider (and can be a
@@ -99,6 +104,10 @@ export function trackRampsTransactionConfirmed(
   region?: string,
 ): void {
   if (!order || TERMINAL_ORDER_STATUSES.has(order.status)) {
+    return;
+  }
+
+  if (!isRampsAnalyticsEnabled()) {
     return;
   }
 

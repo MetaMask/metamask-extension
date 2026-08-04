@@ -9,6 +9,7 @@ export type {
 export {
   configureAnalytics,
   canSubmitAnalytics,
+  getRemoteFeatureFlagState,
   identify,
   trackEvent,
   trackPage,

@@ -11,6 +11,10 @@ jest.mock('../controllers/analytics', () => ({
   trackEvent: jest.fn(),
 }));
 
+jest.mock('./ramps/isRampsAnalyticsEnabled', () => ({
+  isRampsAnalyticsEnabled: jest.fn().mockReturnValue(true),
+}));
+
 describe('createWatchRampsCheckoutTab', () => {
   const callbackBase =
     'https://on-ramp-content.uat-api.cx.metamask.io/regions/fake-callback';

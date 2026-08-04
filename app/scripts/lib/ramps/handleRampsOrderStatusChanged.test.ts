@@ -6,11 +6,16 @@ import {
   trackRampsTerminalOrder,
   trackRampsTransactionConfirmed,
 } from './handleRampsOrderStatusChanged';
+import { isRampsAnalyticsEnabled } from './isRampsAnalyticsEnabled';
 
 jest.mock('../../controllers/analytics', () => ({
   createEventBuilder: jest.requireActual('../../controllers/analytics')
     .createEventBuilder,
   trackEvent: jest.fn(),
+}));
+
+jest.mock('./isRampsAnalyticsEnabled', () => ({
+  isRampsAnalyticsEnabled: jest.fn().mockReturnValue(true),
 }));
 
 function makeEvent(status: string) {
@@ -27,7 +32,10 @@ function makeEvent(status: string) {
 }
 
 describe('handleRampsOrderStatusChanged', () => {
-  beforeEach(() => jest.mocked(trackEvent).mockClear());
+  beforeEach(() => {
+    jest.mocked(trackEvent).mockClear();
+    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(true);
+  });
 
   it('tracks Ramps Transaction Completed on COMPLETED', () => {
     handleRampsOrderStatusChanged(makeEvent('COMPLETED'));
@@ -103,10 +111,21 @@ describe('handleRampsOrderStatusChanged', () => {
 
     expect(trackEvent).toHaveBeenCalledTimes(2);
   });
+
+  it('does not emit terminal KPI when the ramps flag is off', () => {
+    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(false);
+
+    handleRampsOrderStatusChanged(makeEvent('COMPLETED'));
+
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
 });
 
 describe('trackRampsTransactionConfirmed', () => {
-  beforeEach(() => jest.mocked(trackEvent).mockClear());
+  beforeEach(() => {
+    jest.mocked(trackEvent).mockClear();
+    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(true);
+  });
 
   it('tracks Ramps Transaction Confirmed for a non-terminal PENDING order', () => {
     trackRampsTransactionConfirmed({
@@ -179,5 +198,15 @@ describe('trackRampsTransactionConfirmed', () => {
       region: 'fr',
       country: 'fr',
     });
+  });
+
+  it('does not emit confirmed KPI when the ramps flag is off', () => {
+    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(false);
+
+    trackRampsTransactionConfirmed({
+      status: 'PENDING',
+    } as unknown as RampsOrder);
+
+    expect(trackEvent).not.toHaveBeenCalled();
   });
 });
