@@ -10,21 +10,23 @@ name: Smoke AMO reviewer packaging
 #
 # Security: do NOT upload package zips or output/ as Actions artifacts — the
 # AMO source zip contains tagged bundle.sh with production build secrets.
+#
+# Triggered on pull_request (not workflow_dispatch) so it can run from a PR
+# branch without merging to main. Path-filtered so it only runs when this smoke
+# path changes. Re-run from the Checks tab to repeat without a new commit.
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: 'Existing release tag to reproduce (e.g. v13.42.0). Must have a GitHub Release + firefox-bundle-script vX.Y.Z tag.'
-        required: true
-        type: string
-        default: 'v13.42.0'
+  pull_request:
+    paths:
+      - '.github/workflows/smoke-amo-reviewer-package.yml'
+      - '.github/scripts/publish-firefox-reviewer-artifacts.sh'
+      - '.github/actions/publish-amo-reviewer-artifacts/**'
 
 permissions:
   contents: read
 
 concurrency:
-  group: smoke-amo-reviewer-package-${{ github.ref }}
+  group: smoke-amo-reviewer-package-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -33,7 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      RELEASE_TAG: ${{ inputs.release_tag }}
+      # Fixed to a known-good released tag; change here if you need another version.
+      RELEASE_TAG: v13.42.0
       FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
     steps:
       - name: Validate release_tag
