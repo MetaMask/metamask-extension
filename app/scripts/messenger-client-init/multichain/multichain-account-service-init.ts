@@ -6,7 +6,6 @@ import {
   BTC_ACCOUNT_PROVIDER_NAME,
   AccountProviderWrapper,
   XlmAccountProvider,
-  XLM_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
@@ -52,13 +51,20 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     new XlmAccountProvider(controllerMessenger, snapAccountProviderConfig),
   );
 
-  xlmProvider.setEnabled(true);
+  // initialize Stellar provider based on feature flag
+  const initialRemoteFeatureFlagsState = initMessenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
 
-  // // Set default to false, then let the feature flag controller enable it if needed.
-  // xlmProvider.setEnabled(false);
+  const initialStellarEnabled = isMultichainFeatureEnabled(
+    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.stellarAccounts,
+  );
+  xlmProvider.setEnabled(initialStellarEnabled);
 
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
+    // TODO: Once stellar is officially supported,
+    // move it to the providers array via `XLM_ACCOUNT_PROVIDER_NAME`.
     providers: [xlmProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
@@ -96,22 +102,9 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     }, preferencesState),
   );
 
-  // Handle Stellar provider feature flag using previousValueComparator pattern
-  const initialRemoteFeatureFlagsState = initMessenger.call(
-    'RemoteFeatureFlagController:getState',
-  );
-
-  const initialStellarEnabled = isMultichainFeatureEnabled(
-    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.stellarAccounts,
-  );
-
-  if (initialStellarEnabled) {
-    xlmProvider.setEnabled(true);
-  }
-
-  // Subscribe to feature flag changes
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (controllerMessenger.subscribe as any)(
+  // Subscribe to feature flag changes to enable Stellar provider.
+  // Note: Disable Stellar provider from enable may result abnormal behavior.
+  initMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     previousValueComparator((prevState, currState) => {
       const prevStellarEnabled = isMultichainFeatureEnabled(

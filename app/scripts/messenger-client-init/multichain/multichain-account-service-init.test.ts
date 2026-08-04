@@ -24,7 +24,9 @@ jest.mock('@metamask/multichain-account-service');
 
 const PREFERENCES_STATE = { useExternalServices: false };
 
-function buildInitRequestMock(): jest.Mocked<
+function buildInitRequestMock(
+  remoteFeatureFlags: Record<string, unknown> = {},
+): jest.Mocked<
   MessengerClientInitRequest<
     MultichainAccountServiceMessenger,
     MultichainAccountServiceInitMessenger
@@ -46,9 +48,7 @@ function buildInitRequestMock(): jest.Mocked<
   baseControllerMessenger.registerActionHandler(
     'RemoteFeatureFlagController:getState',
     jest.fn().mockReturnValue({
-      remoteFeatureFlags: {
-        stellarAccounts: true,
-      },
+      remoteFeatureFlags,
     }),
   );
 
@@ -204,6 +204,121 @@ describe('MultichainAccountServiceInit', () => {
       });
 
       expect(setBasicFunctionalitySpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Stellar provider', () => {
+    const mockSetEnabled = jest.fn();
+    const mockXlmProvider = {
+      setEnabled: mockSetEnabled,
+    } as unknown as AccountProviderWrapper;
+
+    function getSubscriptionHandler(
+      subscribeSpy: jest.SpyInstance,
+      eventName: string,
+    ) {
+      const handler = subscribeSpy.mock.calls.find(
+        (call) => call[0] === eventName,
+      )?.[1];
+      expect(handler).toBeDefined();
+      return handler as (payload: unknown) => unknown;
+    }
+
+    beforeEach(() => {
+      jest
+        .mocked(AccountProviderWrapper)
+        .mockImplementation(() => mockXlmProvider);
+    });
+
+    it('calls RemoteFeatureFlagController:getState during init', () => {
+      const requestMock = buildInitRequestMock();
+      const callSpy = jest.spyOn(
+        requestMock.initMessenger,
+        'call',
+      ) as jest.Mock;
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(callSpy).toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:getState',
+      );
+    });
+
+    it.each([true, false])(
+      'sets XLM provider enabled to %s based on stellarAccounts feature flag',
+      (enabled: boolean) => {
+        MultichainAccountServiceInit(
+          buildInitRequestMock({ stellarAccounts: enabled }),
+        );
+
+        expect(mockSetEnabled).toHaveBeenCalledWith(enabled);
+      },
+    );
+
+    it('subscribes to RemoteFeatureFlagController:stateChange on initMessenger', () => {
+      const requestMock = buildInitRequestMock();
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(subscribeSpy).toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:stateChange',
+        expect.any(Function),
+      );
+    });
+
+    it.each([
+      { initial: false, next: true },
+      { initial: true, next: false },
+    ])(
+      'sets XLM provider enabled to $next when feature flag becomes $next',
+      async ({ initial, next }: { initial: boolean; next: boolean }) => {
+        const requestMock = buildInitRequestMock({
+          stellarAccounts: initial,
+        });
+        const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+
+        const result = MultichainAccountServiceInit(requestMock);
+        jest
+          .spyOn(result.messengerClient, 'alignWallets')
+          .mockResolvedValue(undefined as never);
+
+        mockSetEnabled.mockClear();
+
+        const handler = getSubscriptionHandler(
+          subscribeSpy,
+          'RemoteFeatureFlagController:stateChange',
+        );
+
+        await handler({
+          remoteFeatureFlags: {
+            stellarAccounts: next,
+          },
+        });
+
+        expect(mockSetEnabled).toHaveBeenCalledWith(next);
+      },
+    );
+
+    it('does not update XLM provider when feature flag is unchanged', async () => {
+      const requestMock = buildInitRequestMock({ stellarAccounts: true });
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+
+      MultichainAccountServiceInit(requestMock);
+      mockSetEnabled.mockClear();
+
+      const handler = getSubscriptionHandler(
+        subscribeSpy,
+        'RemoteFeatureFlagController:stateChange',
+      );
+
+      await handler({
+        remoteFeatureFlags: {
+          stellarAccounts: true,
+        },
+      });
+
+      expect(mockSetEnabled).not.toHaveBeenCalled();
     });
   });
 });
