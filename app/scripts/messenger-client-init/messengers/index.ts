@@ -214,6 +214,7 @@ import { getDataDeletionServiceMessenger } from './data-deletion-service-messeng
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -294,6 +295,7 @@ export { getPermissionLogControllerMessenger } from './permission-log-controller
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
@@ -508,6 +510,10 @@ export const MESSENGER_FACTORIES = {
   },
   MetaMetricsDataDeletionController: {
     getMessenger: getMetaMetricsDataDeletionControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MoneyAccountApiDataService: {
+    getMessenger: getMoneyAccountApiDataServiceMessenger,
     getInitMessenger: noop,
   },
   MoneyAccountBalanceService: {

@@ -414,6 +414,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
+    "@metamask/money-account-api-data-service": "^0.4.0",
     "@metamask/money-account-balance-service": "2.4.0",
     "@metamask/money-account-utils": "^1.1.0",
     "@metamask/multichain-account-service": "^13.0.0",

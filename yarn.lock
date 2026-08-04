@@ -33006,6 +33006,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
+    "@metamask/money-account-api-data-service": "npm:^0.4.0"
     "@metamask/money-account-balance-service": "npm:2.4.0"
     "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/multichain-account-service": "npm:^13.0.0"
