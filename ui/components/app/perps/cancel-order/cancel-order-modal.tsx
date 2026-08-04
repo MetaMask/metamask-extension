@@ -246,6 +246,7 @@ export const CancelOrderModal = ({
     order.orderId,
     order.symbol,
     order.price,
+    order.orderType,
     buildTrackingData,
     onClose,
     replacePerpsToastByKey,

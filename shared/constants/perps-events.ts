@@ -116,6 +116,14 @@ export const PERPS_EVENT_VALUE = {
      */
     MARKET_NOT_FOUND: 'market_not_found',
   },
+  ERROR_MESSAGE_KEY: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_MESSAGE_KEY,
+    /**
+     * Kept as an explicit local value (not solely the controller spread) since
+     * `test/mocks/metamask-perps-controller.js` does not define this key.
+     */
+    INSUFFICIENT_BALANCE: 'insufficient_balance',
+  },
   /**
    * Extension-only: which flow a PERPS_TRANSACTION_CONSIDERED belongs to. Only
    * the trade flow emits it today; the controller contract does not export the

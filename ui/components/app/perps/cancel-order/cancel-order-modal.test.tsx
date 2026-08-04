@@ -624,10 +624,10 @@ describe('CancelOrderModal', () => {
       });
 
       expect(
-        mockTrack.mock.calls.some(
+        mockTrack.mock.calls.filter(
           ([event]) => event === 'Perp Order Cancel Transaction',
         ),
-      ).toBe(false);
+      ).toHaveLength(1);
     });
 
     it('emits PerpsError but not cancel transaction analytics on failure', async () => {
