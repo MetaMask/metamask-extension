@@ -5,9 +5,11 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { broadcastBitcoinSend } from '../../page-objects/flows/bitcoin-send.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  selectOnlyNetworkFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import {
@@ -125,8 +127,7 @@ describe('BTC Account - Activity', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
-        const assetList = new TokensTab(driver);
-        await assetList.selectOnlyNetworkInFilter('Bitcoin');
+        await selectOnlyNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
 
         await homePage.goToActivityList();
         const activity = new ActivityTab(driver);
