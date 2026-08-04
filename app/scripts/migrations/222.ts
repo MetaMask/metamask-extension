@@ -27,22 +27,18 @@ type RpcEndpoint = {
 const FAILOVER_CONFIGS: {
   chainId: string;
   getQuickNodeUrl: () => string | undefined;
-  shouldAddFailover: (rpcEndpoint: RpcEndpoint) => boolean;
 }[] = [
   {
     chainId: BSC_CHAIN_ID,
     getQuickNodeUrl: () => process.env.QUICKNODE_BSC_URL,
-    shouldAddFailover: isInfuraEndpoint,
   },
   {
     chainId: ZKSYNC_ERA_CHAIN_ID,
     getQuickNodeUrl: () => process.env.QUICKNODE_ZKSYNC_URL,
-    shouldAddFailover: isInfuraEndpoint,
   },
   {
     chainId: MEGAETH_CHAIN_ID,
     getQuickNodeUrl: () => process.env.QUICKNODE_MEGAETH_URL,
-    shouldAddFailover: isInfuraEndpoint,
   },
 ];
 
@@ -88,11 +84,7 @@ function transformState(
 
   const { networkConfigurationsByChainId } = state.NetworkController;
 
-  for (const {
-    chainId,
-    getQuickNodeUrl,
-    shouldAddFailover,
-  } of FAILOVER_CONFIGS) {
+  for (const { chainId, getQuickNodeUrl } of FAILOVER_CONFIGS) {
     const networkConfig = networkConfigurationsByChainId[chainId];
     if (
       !isObject(networkConfig) ||
@@ -124,7 +116,8 @@ function transformState(
         continue;
       }
 
-      if (!shouldAddFailover(rpcEndpoint as RpcEndpoint)) {
+      // Only Infura endpoints get the QuickNode failover.
+      if (!isInfuraEndpoint(rpcEndpoint as RpcEndpoint)) {
         continue;
       }
 
