@@ -2561,9 +2561,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           gaslessEnabled: false,
         },
       },
-      depositLimit: {
-        moneyAccountDeposit: 500000,
-      },
       slippage: 0.02,
       predictWithdrawAnyToken: true,
       relayExecuteUrl: 'https://intents.api.cx.metamask.io/relay/execute',
@@ -2599,9 +2596,15 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             overrides: {
               musdConversion: {
+                enabled: false,
+              },
+              moneyAccountDeposit: {
                 enabled: false,
               },
             },
@@ -2629,12 +2632,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               gaslessEnabled: true,
             },
           },
+          depositLimit: {
+            moneyAccountDeposit: 500000,
+          },
           prefilledAmount: {
             default: {
               enabled: false,
             },
             overrides: {
               musdConversion: {
+                enabled: true,
+              },
+              moneyAccountDeposit: {
                 enabled: true,
               },
             },

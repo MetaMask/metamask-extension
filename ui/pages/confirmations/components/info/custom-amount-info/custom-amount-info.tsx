@@ -118,13 +118,18 @@ export const CustomAmountInfo = React.memo(
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
-    const { amountFiat, amountHuman, hasInput, updatePendingAmount } =
-      useTransactionCustomAmount({
-        balanceUsdOverride,
-        currency,
-        disableUpdate,
-        prefillMaxOnLoad,
-      });
+    const {
+      amountFiat,
+      amountHuman,
+      hasInput,
+      isDepositPrefillLoading,
+      updatePendingAmount,
+    } = useTransactionCustomAmount({
+      balanceUsdOverride,
+      currency,
+      disableUpdate,
+      prefillMaxOnLoad,
+    });
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -132,6 +137,10 @@ export const CustomAmountInfo = React.memo(
       },
       [updatePendingAmount],
     );
+
+    // Show amount skeleton while deposit prefill recomputes (e.g. token or
+    // account change) so the field does not briefly flash "0".
+    const showAmountLoader = isDepositPrefillLoading && !hasAccountNoFunds;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
       return <CustomAmountInfoSkeleton />;
@@ -153,6 +162,7 @@ export const CustomAmountInfo = React.memo(
           hasInput={hasInput}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
+          isAmountLoading={showAmountLoader}
           onAmountChange={handleAmountChange}
           overrideCenterContent={overrideCenterContent}
         >
@@ -196,6 +206,7 @@ type CenterContainerProps = {
   hasInput: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
+  isAmountLoading?: boolean;
   onAmountChange: (value: string) => void;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
@@ -210,6 +221,7 @@ function CenterContainer({
   hasInput,
   hasTokens,
   hidePayTokenAmount,
+  isAmountLoading = false,
   onAmountChange,
   overrideCenterContent,
 }: CenterContainerProps) {
@@ -227,6 +239,7 @@ function CenterContainer({
         autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
+        isLoading={isAmountLoading}
         onChange={onAmountChange}
       />
 

@@ -12,7 +12,7 @@ import {
 function buildSource(depositLimit?: Record<string, number>) {
   return {
     remoteFeatureFlags: {
-      confirmations_pay: {
+      confirmations_pay_extended: {
         depositLimit,
       },
     },
