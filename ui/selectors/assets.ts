@@ -1181,8 +1181,12 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       Object.keys(allMainnetNetworksMap?.eip155 || {}),
     );
     const mainnetNonEvmChainIds = new Set(
-      Object.keys(allMainnetNetworksMap?.solana || {}).concat(
-        Object.keys(allMainnetNetworksMap?.bip122 || {}),
+      [
+        KnownCaipNamespace.Solana,
+        KnownCaipNamespace.Bip122,
+        KnownCaipNamespace.Stellar,
+      ].flatMap((namespace) =>
+        Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),
     );
 
@@ -1343,8 +1347,12 @@ export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
       Object.keys(allMainnetNetworksMap?.eip155 || {}),
     );
     const mainnetNonEvmChainIds = new Set(
-      Object.keys(allMainnetNetworksMap?.solana || {}).concat(
-        Object.keys(allMainnetNetworksMap?.bip122 || {}),
+      [
+        KnownCaipNamespace.Solana,
+        KnownCaipNamespace.Bip122,
+        KnownCaipNamespace.Stellar,
+      ].flatMap((namespace) =>
+        Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),
     );
 

@@ -48,7 +48,9 @@ describe('useAddressPoisoningDetection', () => {
       '0x1111ffffffffffffffffffffffffffffffffaaaa',
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current).toEqual({
       isPoisoningSuspect: true,
@@ -99,7 +101,9 @@ describe('useAddressPoisoningDetection', () => {
       },
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
     expect(result.current.bestMatch).toBe(match);
 
     rerender({ address: secondAddress });
@@ -121,7 +125,9 @@ describe('useAddressPoisoningDetection', () => {
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current.isPoisoningSuspect).toBe(false);
     expect(result.current.bestMatch).toBeNull();
@@ -139,7 +145,9 @@ describe('useAddressPoisoningDetection', () => {
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current).toEqual({
       isPoisoningSuspect: false,
@@ -158,7 +166,9 @@ describe('useAddressPoisoningDetection', () => {
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current.isPoisoningSuspect).toBe(false);
     expect(result.current.matches).toEqual([]);

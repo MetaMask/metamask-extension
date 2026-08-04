@@ -4,11 +4,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { SecurityTrustAnalyticsProperty } from '../components/security-trust/security-trust-analytics-properties';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../shared/lib/assets/security-trust-feature-flags';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
 
 const mockNavigate = jest.fn();
+const mockTrackEvent = jest.fn();
 let mockLocationState: Record<string, unknown> | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -38,6 +42,18 @@ jest.mock('../../../selectors/assets', () => ({
 jest.mock('../../../hooks/useTheme', () => ({
   useTheme: () => 'light',
 }));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const { useTokenSecurityData } = jest.requireMock(
   '../../../hooks/useTokenSecurityData',
@@ -92,14 +108,26 @@ const locationState = {
   decimals: 6,
   isNative: false,
   address: '0xabc',
-  chainId: '0x1',
+  chainId: 'eip155:1',
 };
 
-const createStore = () =>
+const enabledSecurityTrustFlag = {
+  enabled: true,
+  minimumVersion: '0.0.0',
+};
+
+const createStore = ({
+  securityTrustTdpFlag = enabledSecurityTrustFlag,
+  useExternalServices = true,
+}: {
+  securityTrustTdpFlag?: boolean | { enabled: boolean; minimumVersion: string };
+  useExternalServices?: boolean;
+} = {}) =>
   configureStore({
     reducer: (
       state = {
         metamask: {
+          useExternalServices,
           internalAccounts: {
             selectedAccount: MOCK_ACCOUNT_EOA.id,
             accounts: {
@@ -107,6 +135,7 @@ const createStore = () =>
             },
           },
           remoteFeatureFlags: {
+            [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: securityTrustTdpFlag,
             solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
             solanaTestnetsEnabled: false,
             bitcoinTestnetsEnabled: false,
@@ -120,11 +149,16 @@ const createStore = () =>
               name: 'Ethereum Mainnet',
               defaultBlockExplorerUrlIndex: 0,
               blockExplorerUrls: ['https://etherscan.io'],
-              rpcEndpoints: [],
+              rpcEndpoints: [{ url: 'https://mainnet.infura.io' }],
               defaultRpcEndpointIndex: 0,
             },
           },
-          multichainNetworkConfigurationsByChainId: {},
+          multichainNetworkConfigurationsByChainId: {
+            'eip155:1': {
+              chainId: 'eip155:1',
+              name: 'Ethereum Mainnet',
+            },
+          },
           isEvmSelected: true,
           selectedNetworkClientId: 'mainnet',
           networksMetadata: {},
@@ -164,6 +198,33 @@ describe('SecurityTrustPage', () => {
     document.querySelector('.app')?.scroll(0, 0);
   });
 
+  it('redirects to asset page when security trust TDP flag is disabled', () => {
+    useTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <SecurityTrustPage />,
+      createStore({ securityTrustTdpFlag: false }),
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc',
+      { replace: true },
+    );
+    expect(useTokenSecurityData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetId: null,
+        prefetchedData: undefined,
+      }),
+    );
+    expect(
+      screen.queryByTestId('security-trust-screen'),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders loading state when data is loading and unavailable', () => {
     mockLocationState = {
       symbol: 'USDC',
@@ -182,6 +243,110 @@ describe('SecurityTrustPage', () => {
 
     expect(screen.getByTestId('security-trust-screen')).toBeInTheDocument();
     expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
+  });
+
+  it('does not track page viewed while security data is loading', () => {
+    mockLocationState = {
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      address: '0xabc',
+    };
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: null,
+      isLoading: true,
+      error: null,
+    });
+
+    renderWithProvider(<SecurityTrustPage />, createStore());
+
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+  });
+
+  it('tracks page viewed after security data loads', () => {
+    mockLocationState = {
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      address: '0xabc',
+      chainId: 'eip155:1',
+    };
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: null,
+      isLoading: true,
+      error: null,
+    });
+
+    const { rerender } = renderWithProvider(
+      <SecurityTrustPage />,
+      createStore(),
+    );
+
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+    });
+
+    rerender(<SecurityTrustPage />);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+        properties: expect.objectContaining({
+          severity: 'Verified',
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: 'USDC',
+          [SecurityTrustAnalyticsProperty.ChainId]: 'eip155:1',
+        }),
+      }),
+    );
+  });
+
+  it('tracks page viewed on mount', () => {
+    renderPage();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+  });
+
+  it('tracks cta click when official link is opened', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('security-trust-link-website'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageCtaClicked,
+      }),
+    );
+  });
+
+  it('tracks page dismissed when back button is clicked', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('security-trust-back-button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageDismissed,
+      }),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('renders verified summary and feature tags', () => {

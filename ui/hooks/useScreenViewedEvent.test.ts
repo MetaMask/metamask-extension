@@ -66,8 +66,8 @@ describe('useScreenViewedEvent', () => {
 
   it('fires at most once per mount even if dependencies change', () => {
     const { rerender } = renderHook<
-      { entryPoint?: ScreenViewedEntryPoint },
-      void
+      void,
+      { entryPoint?: ScreenViewedEntryPoint }
     >(
       ({ entryPoint }) =>
         useScreenViewedEvent(MetaMetricsEventName.DeFiScreenViewed, entryPoint),

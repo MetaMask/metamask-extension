@@ -73,8 +73,8 @@ describe('useRefreshSmartTransactionsLiveness', () => {
 
   it('re-fetches when chainId changes to another supported chain', () => {
     const { rerender } = renderHook<
-      { chainId: Hex | CaipChainId | null | undefined },
-      void
+      void,
+      { chainId: Hex | CaipChainId | null | undefined }
     >(({ chainId }) => useRefreshSmartTransactionsLiveness(chainId), {
       initialProps: { chainId: CHAIN_IDS.MAINNET as Hex },
     });
