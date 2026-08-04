@@ -3,20 +3,29 @@ import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import type { MoneyAccountAvailability } from '../../../shared/lib/money/availability';
 import { selectMoneyAccountFeatureEnabled } from '../../selectors/money-account-feature-flags';
+import {
+  selectPrimaryMoneyAccount,
+  type PrimaryMoneyAccount,
+} from '../../selectors/money-account';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 /**
- * The Money Account, as much of it as Tier 1 knows about.
+ * The Money Account.
  *
- * Mobile's `primaryMoneyAccount` is the `InternalAccount` held by
- * `MoneyAccountController`; every consumer of it reads `?.address`. The
- * extension has no such controller until D10, so this is the address alone
- * under the same field name. D10 can widen it to the account object without
- * touching a caller.
+ * Mobile's `primaryMoneyAccount` is the account object held by
+ * `MoneyAccountController`; every consumer of it reads `?.address`.
+ *
+ * The address is always present, because the availability gate derives it from
+ * the seed and will not report an available account without one. The rest of
+ * the account object is whatever `MoneyAccountController` holds, and is
+ * `undefined` until it has created the keyring — which the gate does not wait
+ * for, so there is a window where the account is known to be usable but the
+ * controller has not caught up. Modelling that as optional keeps the address,
+ * which is all any current consumer reads, unconditional.
  */
 export type MoneyAccount = {
   address: Hex;
-};
+} & Partial<Omit<PrimaryMoneyAccount, 'address'>>;
 
 /**
  * What consumers need to decide whether to render the Money surface at all.
@@ -89,6 +98,11 @@ export function useMoneyAccountInfo(): UseMoneyAccountInfoResult {
     selectMoneyAccountFeatureEnabled,
   );
 
+  // The controller's account, when it has one. Never a substitute for the gate:
+  // a created keyring says nothing about whether the account was upgraded, so
+  // it cannot decide `hasMoneyAccount`.
+  const primaryMoneyAccount = useSelector(selectPrimaryMoneyAccount);
+
   // Skipped entirely when the flag is off, mirroring the background gate's own
   // ordering: a flag-off user costs no seed access and no RPC.
   const { data: availability } = useQuery({
@@ -112,7 +126,10 @@ export function useMoneyAccountInfo(): UseMoneyAccountInfoResult {
     isMoneyAccountFeatureEnabled,
     hasMoneyAccount: availability?.isAvailable ?? false,
     primaryMoneyAccount: availability?.isAvailable
-      ? { address: availability.address }
+      ? // The gate's address is authoritative. It and the controller derive
+        // the same address from the same seed, so this cannot mask a
+        // disagreement — it just does not depend on the controller having run.
+        { ...primaryMoneyAccount, address: availability.address }
       : undefined,
   };
 }

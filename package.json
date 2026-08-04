@@ -416,6 +416,7 @@
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
     "@metamask/money-account-api-data-service": "^0.4.0",
     "@metamask/money-account-balance-service": "2.4.0",
+    "@metamask/money-account-controller": "0.3.3",
     "@metamask/money-account-utils": "^1.1.0",
     "@metamask/multichain-account-service": "^13.0.0",
     "@metamask/multichain-api-client": "^0.10.1",

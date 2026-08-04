@@ -432,6 +432,7 @@ import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-reg
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
+import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -740,6 +741,7 @@ export default class MetamaskController extends EventEmitter {
       // via RemoteFeatureFlagController:getState, which the wallet registers
       // before these init functions run.
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
+      MoneyAccountController: MoneyAccountControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
