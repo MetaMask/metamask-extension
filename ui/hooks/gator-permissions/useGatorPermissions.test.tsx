@@ -210,21 +210,18 @@ describe('useGatorPermissions', () => {
   });
 
   it('should fetch when no cache exists', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }: React.PropsWithChildren) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
     expect(result.current.loading).toBe(true);
 
-    await waitForNextUpdate();
-
-    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
-    expect(result.current.loading).toBe(false);
+    await waitFor(() => {
+      expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+      expect(result.current.loading).toBe(false);
+    });
   });
 
   it('should retry fetch when previous fetch failed', async () => {

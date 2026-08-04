@@ -15,7 +15,11 @@ const useTokenDetectionPolling = () => {
   const isUnlocked = useSelector(getIsUnlocked);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  const enabled = completedOnboarding && isUnlocked && useTokenDetection;
+  const enabled =
+    completedOnboarding &&
+    isUnlocked &&
+    useTokenDetection &&
+    enabledChainIds.length > 0;
 
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
