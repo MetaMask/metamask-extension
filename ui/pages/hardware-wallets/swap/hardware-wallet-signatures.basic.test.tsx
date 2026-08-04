@@ -20,9 +20,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
-jest.mock('../../../components/app/toast-listener/shared', () => ({
-  showSuccessToast: jest.fn(),
-}));
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,

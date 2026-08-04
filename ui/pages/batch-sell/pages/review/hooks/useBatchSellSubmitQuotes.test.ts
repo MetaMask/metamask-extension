@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';

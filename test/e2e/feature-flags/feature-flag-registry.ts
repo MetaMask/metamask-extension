@@ -606,6 +606,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  dappOpenSidepanelEnabled: {
+    name: 'dappOpenSidepanelEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   dappSwapMetrics: {
     name: 'dappSwapMetrics',
     type: FeatureFlagType.Remote,

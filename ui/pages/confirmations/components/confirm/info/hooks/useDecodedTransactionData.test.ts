@@ -1,4 +1,4 @@
-import { act } from 'react-dom/test-utils';
+import { waitFor } from '@testing-library/react';
 import {
   TransactionParams,
   TransactionStatus,
@@ -28,16 +28,16 @@ async function runHook(
   state: Record<string, unknown>,
   { data, to }: { data?: Hex; to?: Hex } = {},
 ) {
-  const response = renderHookWithConfirmContextProvider(
+  const { result } = renderHookWithConfirmContextProvider(
     () => useDecodedTransactionData({ data, to }),
     state,
   );
 
-  await act(() => {
-    // Ignore
+  await waitFor(() => {
+    expect(result.current.pending).toBe(false);
   });
 
-  return response.result.current;
+  return result.current;
 }
 
 describe('useDecodedTransactionData', () => {

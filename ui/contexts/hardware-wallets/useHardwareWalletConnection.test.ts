@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
 import {
