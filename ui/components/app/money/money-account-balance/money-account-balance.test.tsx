@@ -63,8 +63,17 @@ const arrange = ({
   } as UseMoneyAccountBalanceResult);
 };
 
-const render = () =>
-  renderWithProvider(<MoneyAccountBalance />, configureMockStore()(mockState));
+const render = ({ privacyMode = false } = {}) =>
+  renderWithProvider(
+    <MoneyAccountBalance />,
+    configureMockStore()({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: { ...mockState.metamask.preferences, privacyMode },
+      },
+    }),
+  );
 
 describe('MoneyAccountBalance', () => {
   beforeEach(() => {
@@ -94,6 +103,19 @@ describe('MoneyAccountBalance', () => {
     );
     expect(getByText('Money balance')).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
+  });
+
+  it('hides the balance when privacy mode is on', () => {
+    // Every other balance on the account overview honours this setting; without
+    // it, turning balances off would leave the Money row as the one figure
+    // still on screen.
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { getByTestId } = render({ privacyMode: true });
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
+    ).not.toHaveTextContent('$2,384.34');
   });
 
   it('prefers the live balance over the last-known one', () => {
