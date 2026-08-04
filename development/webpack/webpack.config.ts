@@ -370,6 +370,17 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // These packages ship only an `exports` map (no legacy `main` field).
+    // Pointing webpack directly at their entry files avoids resolution failures
+    // in both the bundler and the LavaMoat policy-generation pass.
+    alias: {
+      '@ledgerhq/device-management-kit': require.resolve(
+        '@ledgerhq/device-management-kit/lib/cjs/index.js',
+      ),
+      '@ledgerhq/device-transport-kit-web-hid': require.resolve(
+        '@ledgerhq/device-transport-kit-web-hid/lib/esm/index.js',
+      ),
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
