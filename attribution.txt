@@ -8643,7 +8643,7 @@ SOFTWARE.
 ******************************
 
 eth-chainlist
-0.0.498 <https://github.com/poowf/eth-chainlist>
+0.0.795 <https://github.com/poowf/eth-chainlist>
 The MIT License (MIT)
 
 Copyright (c) 2022 Zane J. Chua
@@ -23267,7 +23267,7 @@ authors: Maarten Zuidhoorn <maarten@zuidhoorn.com>
 ******************************
 
 @metamask/account-api
-1.0.4 <https://github.com/MetaMask/accounts>
+1.1.1 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -23589,6 +23589,17 @@ at your option.
 
 ******************************
 
+@metamask/analytics-controller
+2.0.0 <https://github.com/MetaMask/core>
+This project is licensed under either of
+
+ * MIT license ([LICENSE.MIT](LICENSE.MIT))
+ * Apache License, Version 2.0 ([LICENSE.APACHE2](LICENSE.APACHE2))
+
+at your option. 
+
+******************************
+
 @metamask/announcement-controller
 8.0.0 <https://github.com/MetaMask/core>
 MIT License
@@ -23849,7 +23860,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/assets-controller
-11.2.1 <https://github.com/MetaMask/core>
+11.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -23876,7 +23887,7 @@ SOFTWARE.
 ******************************
 
 @metamask/assets-controllers
-110.0.0 <https://github.com/MetaMask/core>
+110.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -23903,7 +23914,7 @@ SOFTWARE.
 ******************************
 
 @metamask/authenticated-user-storage
-3.0.0 <https://github.com/MetaMask/core>
+3.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -24416,7 +24427,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/core-backend
-7.0.0 <https://github.com/MetaMask/core>
+8.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -25906,7 +25917,7 @@ authors: undefined
 ******************************
 
 @metamask/geolocation-controller
-0.1.2 <https://github.com/MetaMask/core>
+1.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26086,7 +26097,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/keyring-internal-api
-11.0.1 <https://github.com/MetaMask/accounts>
+11.0.2 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26167,7 +26178,7 @@ SOFTWARE.
 ******************************
 
 @metamask/keyring-snap-client
-9.2.0 <https://github.com/MetaMask/accounts>
+9.2.1 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26194,7 +26205,7 @@ SOFTWARE.
 ******************************
 
 @metamask/keyring-snap-sdk
-9.2.0 <https://github.com/MetaMask/accounts>
+9.2.1 <https://github.com/MetaMask/accounts>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -26729,7 +26740,7 @@ SOFTWARE.
 ******************************
 
 @metamask/notification-services-controller
-25.0.0 <https://github.com/MetaMask/core>
+26.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -26750,6 +26761,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
@@ -27678,7 +27690,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snap-account-service
-2.0.0 <https://github.com/MetaMask/core>
+2.1.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -27699,6 +27711,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
@@ -28219,7 +28232,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/transaction-controller
-69.2.1 <https://github.com/MetaMask/core>
+69.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -38367,7 +38380,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 
 ******************************
 
-@swc/core-darwin-arm64
+@swc/core-linux-x64-gnu
 1.13.2 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>

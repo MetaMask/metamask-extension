@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import type { BridgeToken } from '../../../ducks/bridge/types';

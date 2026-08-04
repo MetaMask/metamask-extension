@@ -7,10 +7,19 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
+  private readonly amountRequiredError = {
+    text: 'Required',
+  };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly continueButtonEnabled =
     '[data-testid="send-continue-button"]:not([disabled])';
+
+  private readonly continueButtonError = (errorText: string) => ({
+    css: '[data-testid="send-continue-button"]',
+    text: errorText,
+  });
 
   private readonly driver: Driver;
 
@@ -23,6 +32,10 @@ class SendPage {
 
   private readonly inputRecipient = {
     testId: 'recipient-address-input',
+  };
+
+  private readonly insufficientBalanceToCoverFeesError = {
+    text: 'Insufficient balance to cover fees',
   };
 
   private readonly insufficientFundsError = {
@@ -76,6 +89,10 @@ class SendPage {
     };
   };
 
+  private readonly transactionError = {
+    text: 'Transaction error. Exception thrown in contract code.',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -118,6 +135,11 @@ class SendPage {
     );
   }
 
+  async checkAmountRequiredError(): Promise<void> {
+    console.log('Checking for amount required error');
+    await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
   /**
    * Waits until the "available" balance shown on the amount screen matches the
    * expected token amount.
@@ -154,6 +176,11 @@ class SendPage {
     });
   }
 
+  async checkContinueButtonIsDisabled(): Promise<void> {
+    console.log('Checking that Continue button is disabled');
+    await this.checkContinueButton({ state: 'disabled' });
+  }
+
   /**
    * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
    *
@@ -177,9 +204,13 @@ class SendPage {
     });
   }
 
+  async checkInsufficientBalanceToCoverFeesError(): Promise<void> {
+    await this.driver.waitForSelector(this.insufficientBalanceToCoverFeesError);
+  }
+
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
-    await this.driver.findElement(this.insufficientFundsError);
+    await this.driver.waitForSelector(this.insufficientFundsError);
   }
 
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
@@ -189,7 +220,7 @@ class SendPage {
 
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
-    await this.driver.findElement(this.invalidAddressError);
+    await this.driver.waitForSelector(this.invalidAddressError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -232,6 +263,18 @@ class SendPage {
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
+  }
+
+  /**
+   * Waits for a non-EVM submit validation error on the Continue button after
+   * Continue is pressed with an invalid amount (Tron shows transactionError
+   * copy on the button rather than inline "Required").
+   */
+  async checkTransactionError(): Promise<void> {
+    console.log('Checking for transaction error');
+    await this.driver.waitForSelector(
+      this.continueButtonError(this.transactionError.text),
+    );
   }
 
   async checkWarningMessage(warningText: string): Promise<void> {
@@ -376,7 +419,9 @@ class SendPage {
 
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+    const tokenAsset = this.tokenAsset(chainId, symbol);
+    await this.driver.waitForSelector(tokenAsset);
+    await this.driver.clickElement(tokenAsset);
   }
 
   /**

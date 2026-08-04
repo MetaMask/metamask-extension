@@ -104,6 +104,9 @@ export const PERPS_EVENT_VALUE = {
     CLOSE_ALL_TAPPED: 'close_all_tapped',
     CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    /** Extension order-book panel open/close (not yet in controller contract). */
+    ORDER_BOOK_OPENED: 'order_book_opened',
+    ORDER_BOOK_CLOSED: 'order_book_closed',
   },
   ERROR_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,
