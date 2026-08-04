@@ -39,7 +39,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -59,6 +59,7 @@ import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -131,6 +132,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -414,6 +416,19 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   }, []);
 
+  // When the UI was entered directly at this page (e.g. a deep link
+  // redirecting the tab into the extension), there is no in-app history to go
+  // back to — `navigate(-1)` would pop browser history and leave the wallet.
+  // Detect this via location.key being 'default' (initial entry) and navigate
+  // to the home page instead.
+  const handleBack = useCallback(() => {
+    if (location.key === 'default') {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(-1));
+    }
+  }, [location.key, navigate]);
+
   return (
     <AssetPageSecurityTrustProvider
       assetId={caipAssetId as CaipAssetType}
@@ -434,7 +449,7 @@ const AssetPage = ({
               size={ButtonIconSize.Md}
               ariaLabel={t('back') as string}
               iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(-1))}
+              onClick={handleBack}
               className="asset-page__back-button"
             />
           </Box>
