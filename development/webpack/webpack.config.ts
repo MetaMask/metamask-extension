@@ -374,12 +374,10 @@ const config = {
     // Pointing webpack directly at their entry files avoids resolution failures
     // in both the bundler and the LavaMoat policy-generation pass.
     alias: {
-      '@ledgerhq/device-management-kit': require.resolve(
-        '@ledgerhq/device-management-kit/lib/cjs/index.js',
-      ),
-      '@ledgerhq/device-transport-kit-web-hid': require.resolve(
-        '@ledgerhq/device-transport-kit-web-hid/lib/esm/index.js',
-      ),
+      '@ledgerhq/device-management-kit':
+        require.resolve('@ledgerhq/device-management-kit/lib/cjs/index.js'),
+      '@ledgerhq/device-transport-kit-web-hid':
+        require.resolve('@ledgerhq/device-transport-kit-web-hid/lib/esm/index.js'),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
