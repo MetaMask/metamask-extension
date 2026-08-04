@@ -3,25 +3,18 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
-  LedgerSignDelegationAuthorizationParams,
-  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
-  LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import {
-  HardwareWalletType,
-  toHardwareWalletError,
-} from '../../../../shared/lib/hardware-wallets';
-import { SerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
 
-const MESSAGE_TIMEOUT = LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS;
+const MESSAGE_TIMEOUT = 4000;
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -32,12 +25,6 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
 type IFrameMessage<TAction extends LedgerAction> = {
   action: TAction;
   params?: Readonly<Record<string, unknown>>;
-};
-
-type LedgerOffscreenResponse<ResponsePayload> = {
-  success: boolean;
-  payload?: ResponsePayload | { error?: SerializedLedgerError };
-  error?: SerializedLedgerError;
 };
 
 /**
@@ -159,15 +146,6 @@ export class LedgerOffscreenBridge implements Omit<
     });
   }
 
-  deviceSignDelegationAuthorization(
-    params: LedgerSignDelegationAuthorizationParams,
-  ): Promise<LedgerSignDelegationAuthorizationResponse> {
-    return this.#sendMessage({
-      action: LedgerAction.signDelegationAuthorization,
-      params,
-    });
-  }
-
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
@@ -186,67 +164,50 @@ export class LedgerOffscreenBridge implements Omit<
           ...message,
           target: OffscreenCommunicationTarget.ledgerOffscreen,
         },
-        (rawResponse) => {
+        (response) => {
           clearTimeout(responseTimeout);
 
           if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError.message));
+            const chromeError = chrome.runtime.lastError.message;
+            reject(new Error(chromeError));
             return;
           }
-
-          // Generic `TAction` prevents overload resolution from picking a
-          // specific ledger response shape, so narrow explicitly here.
-          const response = rawResponse as
-            | LedgerOffscreenResponse<ResponsePayload>
-            | undefined;
 
           if (response?.success) {
-            resolve((response.payload ?? response.success) as ResponsePayload);
-            return;
+            resolve(response.payload || response.success);
+          } else {
+            const error = response?.payload?.error;
+            if (
+              error?.name === 'HardwareWalletError' &&
+              typeof error?.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
+              error &&
+              typeof error.statusCode === 'number' &&
+              error.statusCode > 0
+            ) {
+              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+              if (isKnownLedgerError(statusCodeHex)) {
+                reject(createLedgerError(statusCodeHex));
+              } else {
+                reject(new TransportStatusError(error.statusCode));
+              }
+            } else if (error?.message) {
+              reject(new Error(error.message, { cause: error }));
+            } else {
+              reject(new Error('Unknown Ledger error occurred'));
+            }
           }
-
-          reject(this.#toLedgerBridgeError(response));
         },
       );
     });
-  }
-
-  #toLedgerBridgeError(
-    response: LedgerOffscreenResponse<unknown> | undefined,
-  ): Error {
-    const error = this.#extractSerializedError(response);
-
-    if (error?.name === 'HardwareWalletError') {
-      return toHardwareWalletError(error, HardwareWalletType.Ledger);
-    }
-
-    if (error && typeof error.statusCode === 'number' && error.statusCode > 0) {
-      const statusCodeHex = `0x${error.statusCode.toString(16)}`;
-      if (isKnownLedgerError(statusCodeHex)) {
-        return createLedgerError(statusCodeHex);
-      }
-      return new TransportStatusError(error.statusCode);
-    }
-
-    if (error?.message) {
-      return new Error(error.message, { cause: error });
-    }
-
-    return new Error('Unknown Ledger error occurred');
-  }
-
-  #extractSerializedError(
-    response: LedgerOffscreenResponse<unknown> | undefined,
-  ): SerializedLedgerError | undefined {
-    if (
-      response?.payload &&
-      typeof response.payload === 'object' &&
-      'error' in response.payload
-    ) {
-      // `ResponsePayload` is `unknown` here, so `payload` collapses to
-      // `unknown` and `.error` is not typed — narrow explicitly.
-      return (response.payload as { error?: SerializedLedgerError }).error;
-    }
-    return response?.error;
   }
 }

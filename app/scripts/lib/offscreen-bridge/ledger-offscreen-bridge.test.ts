@@ -4,7 +4,6 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import {
-  LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
@@ -157,29 +156,6 @@ describe('LedgerOffscreenBridge', () => {
       respond({ success: true, payload: expected });
       await expect(promise).resolves.toEqual(expected);
     });
-
-    it('deviceSignDelegationAuthorization forwards params and resolves with payload', async () => {
-      const bridge = new LedgerOffscreenBridge();
-      const params = {
-        hdPath: "m/44'/60'/0'/0/0",
-        chainId: 1,
-        contractAddress: '0x1234',
-        nonce: 2,
-      };
-      const expected = { v: '0x1c', r: '0xrr', s: '0xss' };
-
-      const promise = bridge.deviceSignDelegationAuthorization(params);
-
-      const [payload] = chromeRuntimeMock.sendMessage.mock.calls[0];
-      expect(payload).toEqual({
-        action: LedgerAction.signDelegationAuthorization,
-        target: OffscreenCommunicationTarget.ledgerOffscreen,
-        params,
-      });
-
-      respond({ success: true, payload: expected });
-      await expect(promise).resolves.toEqual(expected);
-    });
   });
 
   describe('success response unwrapping', () => {
@@ -300,7 +276,7 @@ describe('LedgerOffscreenBridge', () => {
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.attemptMakeApp();
 
-      jest.advanceTimersByTime(LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS);
+      jest.advanceTimersByTime(5000);
 
       await expect(promise).rejects.toThrow('Ledger iframe timeout');
     });
