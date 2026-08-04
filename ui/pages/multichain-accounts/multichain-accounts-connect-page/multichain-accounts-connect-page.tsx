@@ -231,7 +231,7 @@ export const MultichainAccountsConnectPage = ({
     [networkConfigurationsByCaipChainId],
   );
 
-  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
+  const globallySelectedNetwork = useSelector(getMultichainNetwork);
 
   const alreadyConnectedCaipChainIds = useMemo(
     () => getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue),
@@ -254,7 +254,7 @@ export const MultichainAccountsConnectPage = ({
       getDefaultConnectChainIds({
         nonTestNetworkConfigurations,
         testNetworkConfigurations,
-        currentlySelectedNetworkChainId: currentlySelectedNetwork.chainId,
+        globallySelectedNetworkChainId: globallySelectedNetwork.chainId,
         requestedCaipChainIds,
         alreadyConnectedCaipChainIds,
         requestedNamespaces,
@@ -268,7 +268,7 @@ export const MultichainAccountsConnectPage = ({
       testNetworkConfigurations,
       requestedCaipChainIds,
       isEip1193Request,
-      currentlySelectedNetwork.chainId,
+      globallySelectedNetwork.chainId,
       requestedNamespaces,
       requestedNamespacesWithoutWallet,
       alreadyConnectedCaipChainIds,

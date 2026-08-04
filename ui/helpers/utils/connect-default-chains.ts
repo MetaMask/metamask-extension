@@ -9,7 +9,7 @@ import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../sele
 export type GetDefaultConnectChainIdsParams = {
   nonTestNetworkConfigurations: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
   testNetworkConfigurations: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
-  currentlySelectedNetworkChainId: CaipChainId;
+  globallySelectedNetworkChainId: CaipChainId;
   requestedCaipChainIds: CaipChainId[];
   alreadyConnectedCaipChainIds: CaipChainId[];
   requestedNamespaces: CaipNamespace[];
@@ -25,7 +25,7 @@ export type GetDefaultConnectChainIdsParams = {
  * @param options0
  * @param options0.nonTestNetworkConfigurations
  * @param options0.testNetworkConfigurations
- * @param options0.currentlySelectedNetworkChainId
+ * @param options0.globallySelectedNetworkChainId
  * @param options0.requestedCaipChainIds
  * @param options0.alreadyConnectedCaipChainIds
  * @param options0.requestedNamespaces
@@ -37,7 +37,7 @@ export type GetDefaultConnectChainIdsParams = {
 export function getDefaultConnectChainIds({
   nonTestNetworkConfigurations,
   testNetworkConfigurations,
-  currentlySelectedNetworkChainId,
+  globallySelectedNetworkChainId,
   requestedCaipChainIds,
   alreadyConnectedCaipChainIds,
   requestedNamespaces,
@@ -46,21 +46,26 @@ export function getDefaultConnectChainIds({
   isSolanaWalletStandardRequest,
   isTronWalletAdapterRequest,
 }: GetDefaultConnectChainIdsParams): CaipChainId[] {
-  const allNetworksList = [
+  const allNetworksList = new Set([
     ...nonTestNetworkConfigurations,
     ...testNetworkConfigurations,
-  ].map(({ caipChainId }) => caipChainId);
+  ].map(({ caipChainId }) => caipChainId));
 
-  const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-    (network) => network.caipChainId === currentlySelectedNetworkChainId,
+  // If globally selected network is a test network, include that in the default
+  // selected networks for connection request
+  const globallySelectedTestNetwork = testNetworkConfigurations.find(
+    (network) => network.caipChainId === globallySelectedNetworkChainId,
   );
 
-  const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-    ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
+  const defaultSelectedNetworkList = globallySelectedTestNetwork
+    ? [...nonTestNetworkConfigurations, globallySelectedTestNetwork].map(
         ({ caipChainId }) => caipChainId,
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
+  // If the request is an EIP-1193 request (with no specific chains requested),
+  // a Solana wallet standard or a tronWallet library request, return early with
+  // the default selected network list
   if (
     (requestedCaipChainIds.length === 0 && isEip1193Request) ||
     isSolanaWalletStandardRequest ||
@@ -93,12 +98,13 @@ export function getDefaultConnectChainIds({
   const supportedRequestedCaipChainIds = Array.from(
     new Set([
       ...requestedCaipChainIds.filter((requestedCaipChainId) =>
-        allNetworksList.includes(requestedCaipChainId),
+        allNetworksList.has(requestedCaipChainId),
       ),
       ...additionalChains,
     ]),
   );
 
+  // if we have specifically requested chains, return the supported requested chains plus the already connected chains
   if (supportedRequestedCaipChainIds.length > 0) {
     return Array.from(
       new Set([

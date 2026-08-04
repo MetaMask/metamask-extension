@@ -43,7 +43,7 @@ describe('getDefaultConnectChainIds', () => {
   const baseParams = {
     nonTestNetworkConfigurations: [ethMainnet, polygon, solana],
     testNetworkConfigurations: [sepolia],
-    currentlySelectedNetworkChainId: ethMainnet.caipChainId,
+    globallySelectedNetworkChainId: ethMainnet.caipChainId,
     requestedCaipChainIds: [] as (typeof ethMainnet.caipChainId)[],
     alreadyConnectedCaipChainIds: [] as (typeof ethMainnet.caipChainId)[],
     requestedNamespaces: [KnownCaipNamespace.Eip155] as KnownCaipNamespace[],
@@ -144,7 +144,7 @@ describe('getDefaultConnectChainIds', () => {
   it('includes the selected test network when the global network is a testnet', () => {
     const result = getDefaultConnectChainIds({
       ...baseParams,
-      currentlySelectedNetworkChainId: sepolia.caipChainId,
+      globallySelectedNetworkChainId: sepolia.caipChainId,
     });
 
     expect(result).toEqual([
