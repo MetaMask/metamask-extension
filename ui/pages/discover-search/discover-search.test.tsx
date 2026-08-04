@@ -274,4 +274,28 @@ describe('DiscoverSearchPage', () => {
       '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
     );
   });
+
+  it('renders no-results search design on empty category tabs', () => {
+    const searchQuery = 'erwerwqer';
+
+    mockUseDiscoverSearch.mockReturnValue(getEmptyDiscoverSearchResult());
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: searchQuery },
+    });
+    fireEvent.click(screen.getByTestId('discover-tab-crypto'));
+
+    expect(
+      screen.getByTestId('discover-search-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.discoverSearchNoResultsFor.message.replace('$1', searchQuery),
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.discoverSearchPopularAssets.message),
+    ).toBeInTheDocument();
+  });
 });
