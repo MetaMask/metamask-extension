@@ -111,6 +111,7 @@ import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
 import { AnalyticsController } from '@metamask/analytics-controller';
 import { SentinelApiService } from '@metamask/sentinel-api-service';
+import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -176,6 +177,7 @@ export type MessengerClient =
   | LoggingController
   | MetaMetricsController
   | MetaMetricsDataDeletionController
+  | MoneyAccountBalanceService
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
