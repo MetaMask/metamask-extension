@@ -13,6 +13,7 @@ import {
   Q3_OPTIONS,
   QuestionId,
   QuestionOption,
+  type Step,
   TOTAL_QUESTIONS,
   getRedFlagCount,
 } from './scam-questionnaire.constants';
@@ -32,8 +33,6 @@ export type ScamQuestionnaireProps = {
   onDismiss: () => void;
 };
 
-// Steps 0-2 are the questions; the final index is the warning screen.
-type Step = 0 | 1 | 2 | 3;
 const WARNING_STEP = TOTAL_QUESTIONS;
 
 const QUESTION_DEFS: Record<
@@ -84,22 +83,16 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   const [pendingSelection, setPendingSelection] = useState<
     QuestionOption | undefined
   >();
-
-  const startedRef = useRef(false);
+  // Once per step, so the funnel reads as unique users per step rather than
+  // raw view count. A ref, not state: it guards a side effect, and
+  // StrictMode's double-invoked effects would both see a stale `setState`.
+  const viewedStepsRef = useRef<Set<Step>>(new Set());
   useEffect(() => {
-    if (!startedRef.current) {
-      startedRef.current = true;
-      metrics.trackStarted();
+    if (!viewedStepsRef.current.has(step)) {
+      viewedStepsRef.current.add(step);
+      metrics.trackViewed(step);
     }
-  }, [metrics]);
-
-  const warningShownRef = useRef(false);
-  useEffect(() => {
-    if (step === WARNING_STEP && !warningShownRef.current) {
-      warningShownRef.current = true;
-      metrics.trackWarningShown(answers);
-    }
-  }, [step, answers, metrics]);
+  }, [step, metrics]);
 
   const handleBack = useCallback(() => {
     if (step === WARNING_STEP) {
@@ -107,14 +100,13 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       return;
     }
     if (step === 0) {
-      metrics.trackDismissed(0, answers);
       onDismiss();
       return;
     }
     const prevStep = (step - 1) as 0 | 1;
     setPendingSelection(answers[QUESTION_DEFS[prevStep].id]);
     setStep(prevStep);
-  }, [step, answers, metrics, onDismiss]);
+  }, [step, answers, onDismiss]);
 
   const handleSelect = useCallback((option: QuestionOption) => {
     setPendingSelection(option);
@@ -130,11 +122,6 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
       [def.id]: pendingSelection,
     };
     setAnswers(nextAnswers);
-    metrics.trackQuestionAnswered(
-      def.id,
-      pendingSelection.key,
-      pendingSelection.isRedFlag,
-    );
 
     if (step < TOTAL_QUESTIONS - 1) {
       const nextStep = (step + 1) as 0 | 1 | 2;
@@ -147,36 +134,40 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
     if (getRedFlagCount(nextAnswers) > 0) {
       setStep(WARNING_STEP);
     } else {
-      metrics.trackCompletedClean();
+      metrics.trackCompleted({
+        status: 'clean',
+        answers: nextAnswers,
+      });
       onCleanPass();
     }
   }, [step, pendingSelection, answers, metrics, onCleanPass]);
 
   const handleStop = useCallback(() => {
-    metrics.trackWarningStopped(answers);
+    metrics.trackCompleted({
+      status: 'payment_stopped',
+      answers,
+    });
     onReject();
   }, [answers, metrics, onReject]);
 
   const handleContactSupport = useCallback(() => {
-    metrics.trackWarningContactSupport(answers);
+    metrics.trackContactSupport(answers);
   }, [answers, metrics]);
 
   const handleProceed = useCallback(() => {
-    metrics.trackWarningProceeded(answers);
+    metrics.trackCompleted({
+      status: 'proceeded',
+      answers,
+    });
     onBypass();
   }, [answers, metrics, onBypass]);
-
-  const handleRequestClose = useCallback(() => {
-    metrics.trackDismissed(step, answers);
-    onDismiss();
-  }, [step, answers, metrics, onDismiss]);
 
   const questionDef = step === WARNING_STEP ? null : QUESTION_DEFS[step];
 
   return (
     <Modal
       isOpen
-      onClose={handleRequestClose}
+      onClose={onDismiss}
       isClosedOnOutsideClick={false}
       data-testid="scam-questionnaire-modal"
     >

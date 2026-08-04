@@ -10936,9 +10936,6 @@
   "turnOnTokenDetection": {
     "message": "Aktifkan deteksi token yang ditingkatkan"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "Transaksi ini akan dibatalkan"
   },
