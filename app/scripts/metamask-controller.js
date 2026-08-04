@@ -245,6 +245,7 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import { deriveMoneyAccountAddress } from './lib/money/get-money-account-address';
+import { MoneyAccountAvailabilityService } from './lib/money/money-account-availability';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -844,6 +845,10 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
+
+    this.moneyAccountAvailabilityService = new MoneyAccountAvailabilityService({
+      messenger: this.controllerMessenger,
+    });
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -3393,6 +3398,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
       getMoneyAccountAddress: this.getMoneyAccountAddress.bind(this),
+      getMoneyAccountAvailability: this.getMoneyAccountAvailability.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4045,6 +4051,18 @@ export default class MetamaskController extends EventEmitter {
    */
   async getMoneyAccountAddress() {
     return deriveMoneyAccountAddress(this.controllerMessenger);
+  }
+
+  /**
+   * Resolves whether this user has a usable Money Account: the feature flag
+   * is on and the address can be derived. The whole Money surface is hidden
+   * when it is not available, so this is the one answer callers need — see
+   * {@link MoneyAccountAvailabilityService}.
+   *
+   * @returns {Promise<import('./lib/money/money-account-availability').MoneyAccountAvailability>} The availability, with the money address when available.
+   */
+  async getMoneyAccountAvailability() {
+    return this.moneyAccountAvailabilityService.getAvailability();
   }
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
