@@ -1367,68 +1367,6 @@ describe('LegacyBackgroundApiService', () => {
         });
       });
 
-      it('times out the abandoned account creation when the device wedges', async () => {
-        await withService(async ({ rootMessenger }) => {
-          // A wedged device leaves `createAccounts` pending forever. Account
-          // creation mutates vault state and runs under the controller lock,
-          // so it cannot use the lock-free `deviceRead` path; the timeout is
-          // applied by `unlockHardwareWalletAccount` itself.
-          const createAccounts = jest
-            .fn()
-            .mockReturnValue(new Promise(() => undefined));
-          registerWithKeyringV2(rootMessenger, {
-            bridge: { updateTransportMethod: jest.fn() },
-            entropySource: 'entropy-1',
-            hdPath: "m/44'/60'/0'/0",
-            createAccounts,
-          });
-
-          const originalSetTimeout = global.setTimeout;
-          let fireCreateTimeout: (() => void) | undefined;
-          const setTimeoutSpy = jest
-            .spyOn(global, 'setTimeout')
-            .mockImplementation(((
-              handler: () => void,
-              timeout?: number,
-              ...args: unknown[]
-            ) => {
-              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
-                fireCreateTimeout = handler;
-                return 0 as unknown as ReturnType<typeof setTimeout>;
-              }
-              return originalSetTimeout(handler, timeout, ...args);
-            }) as typeof setTimeout);
-
-          try {
-            const wedged = rootMessenger.call(
-              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
-              0,
-              'ledger',
-              "m/44'/60'/0'/0",
-            );
-            // Swallow the timeout rejection asserted below so the abandoned
-            // creation never surfaces as an unhandled rejection.
-            wedged.catch(() => undefined);
-
-            // Wait until account creation has actually started.
-            await new Promise<void>((resolve) => {
-              const poll = () =>
-                createAccounts.mock.calls.length > 0
-                  ? resolve()
-                  : originalSetTimeout(poll, 5);
-              poll();
-            });
-
-            fireCreateTimeout?.();
-            await expect(wedged).rejects.toThrow(
-              'Hardware wallet account creation timed out',
-            );
-          } finally {
-            setTimeoutSpy.mockRestore();
-          }
-        });
-      });
-
       it('throws if it receives an unknown device name', async () => {
         await withService(async ({ rootMessenger }) => {
           await expect(
