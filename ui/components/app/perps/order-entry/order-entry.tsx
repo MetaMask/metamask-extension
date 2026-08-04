@@ -61,6 +61,7 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
  * @param props.limitPricePrefill
+ * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
   asset,
@@ -70,6 +71,7 @@ export const OrderEntry = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onInputMethodChange,
   onCalculationsChange,
   showSubmitButton = true,
   showOrderSummary = true,
@@ -313,6 +315,7 @@ export const OrderEntry = ({
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
+            onInputMethodChange={onInputMethodChange}
             balancePercent={formState.balancePercent}
             onBalancePercentChange={handleBalancePercentChange}
             availableBalance={availableBalance}
