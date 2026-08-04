@@ -31,8 +31,10 @@ class NetworkManager {
   private readonly allNetworksItem =
     '[data-testid="home-network-filter-all-default"]';
 
+  // The redesigned filter splits user-added networks from test networks into
+  // separate sections, where the old Custom tab listed both together.
   private readonly customNetworkRow =
-    '[data-testid^="home-network-filter-custom-"]';
+    ':is([data-testid^="home-network-filter-custom-"], [data-testid^="home-network-filter-test-"])';
 
   private readonly defaultNetworkRow =
     '[data-testid^="home-network-filter-network-"]';

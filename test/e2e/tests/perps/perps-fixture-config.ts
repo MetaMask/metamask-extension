@@ -3,7 +3,7 @@ import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import {
-  getProductionRemoteFlagApiResponse,
+  getProductionRemoteFlagApiResponseWithOverrides,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
 import { formatUnits } from '../../../../shared/lib/unit';
@@ -242,22 +242,6 @@ export function getPerpsGeoBlockConfig(title?: string) {
         }));
     },
   };
-}
-
-function getProductionRemoteFlagApiResponseWithOverrides(
-  overrides: Record<string, Json>,
-): Json[] {
-  const overrideNames = new Set(Object.keys(overrides));
-
-  return [
-    ...getProductionRemoteFlagApiResponse().filter(
-      (entry) =>
-        !Object.keys(entry as Record<string, Json>).some((name) =>
-          overrideNames.has(name),
-        ),
-    ),
-    ...Object.entries(overrides).map(([name, value]) => ({ [name]: value })),
-  ];
 }
 
 /**

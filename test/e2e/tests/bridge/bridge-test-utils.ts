@@ -2,6 +2,7 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import type { Json } from '@metamask/utils';
 import {
   QuoteStreamCompleteReason,
   TokenFeature,
@@ -9,6 +10,7 @@ import {
 } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -582,7 +584,7 @@ function mockSseEventSource(
 async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
-  additionalFlags: Record<string, unknown> = {},
+  additionalFlags: Record<string, Json> = {},
 ) {
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -590,12 +592,10 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [
-          {
-            bridgeConfig: featureFlags,
-            ...additionalFlags,
-          },
-        ],
+        json: getProductionRemoteFlagApiResponseWithOverrides({
+          bridgeConfig: featureFlags as Json,
+          ...additionalFlags,
+        }),
       };
     });
 }

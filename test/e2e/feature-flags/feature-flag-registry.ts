@@ -633,7 +633,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_eip_7702: {
     inProd: true,
     name: 'confirmations_eip_7702',
@@ -977,7 +976,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_enforced_simulations: {
     inProd: true,
     name: 'confirmations_enforced_simulations',
@@ -986,7 +984,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_gas_buffer: {
     inProd: true,
     name: 'confirmations_gas_buffer',
@@ -1024,7 +1021,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_incoming_transactions: {
     inProd: true,
     name: 'confirmations_incoming_transactions',
@@ -1035,7 +1031,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay: {
     inProd: true,
     name: 'confirmations_pay',
@@ -1124,7 +1119,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_dapps: {
     inProd: true,
     name: 'confirmations_pay_dapps',
@@ -1135,7 +1129,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_extended: {
     inProd: true,
     name: 'confirmations_pay_extended',
@@ -1195,7 +1188,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_hardware: {
     inProd: true,
     name: 'confirmations_pay_hardware',
@@ -1206,7 +1198,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_post_quote: {
     inProd: true,
     name: 'confirmations_pay_post_quote',
@@ -1267,7 +1258,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_tokens: {
     inProd: true,
     name: 'confirmations_pay_tokens',
@@ -1278,7 +1268,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_transactions: {
     // Contains acceleratedPolling per-chain configs, batchSizeLimit, etc.
     // Storing simplified version; full value has ~100 chain entries.
@@ -2346,7 +2335,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   dappSwapMetrics: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     inProd: true,
     name: 'dappSwapMetrics',
     productionDefault: {
@@ -3477,6 +3465,34 @@ export function getProductionRemoteFlagApiResponse(): Json[] {
   return Object.values(FEATURE_FLAG_REGISTRY)
     .filter((entry) => entry.type === FeatureFlagType.Remote && entry.inProd)
     .map((entry) => ({ [entry.name]: entry.productionDefault }));
+}
+
+/**
+ * Returns the production flag defaults in the raw API response format with the
+ * given flags replaced.
+ *
+ * Prefer this over building a `/v1/flags` response from scratch. A response
+ * containing only the flags a test cares about leaves every other flag absent,
+ * and absent flags resolve to their "off" fallback rather than their production
+ * value — so the test silently runs against a UI that no user sees.
+ *
+ * @param overrides - Flag name to value, replacing the production default
+ * @returns Array of `{ flagName: value }` objects matching the client-config API format
+ */
+export function getProductionRemoteFlagApiResponseWithOverrides(
+  overrides: Record<string, Json>,
+): Json[] {
+  const overrideNames = new Set(Object.keys(overrides));
+
+  return [
+    ...getProductionRemoteFlagApiResponse().filter(
+      (entry) =>
+        !Object.keys(entry as Record<string, Json>).some((name) =>
+          overrideNames.has(name),
+        ),
+    ),
+    ...Object.entries(overrides).map(([name, value]) => ({ [name]: value })),
+  ];
 }
 
 /**

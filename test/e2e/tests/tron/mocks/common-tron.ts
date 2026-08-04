@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../../feature-flags';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -190,7 +191,7 @@ export async function mockTronFeatureFlags(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: getProductionRemoteFlagApiResponseWithOverrides(BIP44_STAGE_TWO),
     }));
 }
 
