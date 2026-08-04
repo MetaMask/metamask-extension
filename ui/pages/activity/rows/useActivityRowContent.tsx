@@ -53,9 +53,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const chainId = activity.chainId
-    ? getChainDisplay(activity.chainId).chainId
-    : undefined;
+  const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatAsFiat(chainId);
   const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
