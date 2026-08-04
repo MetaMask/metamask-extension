@@ -350,7 +350,7 @@ export const BridgeInputGroup = ({
           <ButtonLink
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
-            endIconName={IconName.SwapHorizontal}
+            endIconName={IconName.SwapVertical}
             endIconProps={{ color: IconColor.iconAlternative }}
             ellipsis
             style={{ textDecoration: 'none' }}

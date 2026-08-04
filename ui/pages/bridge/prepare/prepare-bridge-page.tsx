@@ -176,19 +176,13 @@ const PrepareBridgePage = ({
   });
 
   let sourceSecondaryDisplay: string | undefined;
-  if (sourceInputAmount.isFiatPrimary) {
-    if (
-      sourceInputAmount.tokenAmount &&
-      fromToken &&
-      new BigNumber(sourceInputAmount.tokenAmount).gt(0)
-    ) {
-      sourceSecondaryDisplay = formatTokenAmount(
-        locale,
-        sourceInputAmount.tokenAmount,
-        fromToken.symbol,
-        BigNumber.ROUND_DOWN,
-      );
-    }
+  if (sourceInputAmount.isFiatPrimary && fromToken) {
+    sourceSecondaryDisplay = formatTokenAmount(
+      locale,
+      sourceInputAmount.tokenAmount || '0',
+      fromToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
   } else if (fromTokenConversionRate) {
     sourceSecondaryDisplay = fromAmountInCurrency.valueInCurrency.isZero()
       ? formatCurrency('0', currency, 0)
@@ -197,6 +191,28 @@ const PrepareBridgePage = ({
           currency,
           2,
         );
+  }
+
+  const destinationTokenAmount = unvalidatedQuote?.toTokenAmount?.amount;
+  const destinationFiatAmount =
+    unvalidatedQuote?.toTokenAmount?.valueInCurrency;
+  let destinationAmount = '0';
+  if (sourceInputAmount.isFiatPrimary) {
+    destinationAmount = destinationFiatAmount
+      ? new BigNumber(destinationFiatAmount).toFixed(2)
+      : '0';
+  } else if (destinationTokenAmount) {
+    destinationAmount = formatTokenAmount(locale, destinationTokenAmount);
+  }
+
+  let destinationSecondaryDisplay: string | undefined;
+  if (sourceInputAmount.isFiatPrimary && destinationTokenAmount) {
+    destinationSecondaryDisplay = formatTokenAmount(
+      locale,
+      destinationTokenAmount,
+      toToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
   }
 
   const {
@@ -586,20 +602,23 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
+              sourceInputAmount.isFiatPrimary
+                ? undefined
+                : (destinationFiatAmount ?? undefined)
+            }
+            secondaryDisplay={destinationSecondaryDisplay}
+            amountInputPrefix={
+              sourceInputAmount.isFiatPrimary
+                ? getCurrencySymbol(currency)
+                : undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.toTokenAmount?.amount
-                ? formatTokenAmount(
-                    locale,
-                    unvalidatedQuote.toTokenAmount.amount,
-                  )
-                : '0',
+              value: destinationAmount,
               autoFocus: false,
-              className: unvalidatedQuote?.toTokenAmount?.amount
+              className: destinationTokenAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
