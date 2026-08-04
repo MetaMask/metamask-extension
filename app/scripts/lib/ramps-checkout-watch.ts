@@ -129,11 +129,11 @@ export function createWatchRampsCheckoutTab(
           // Orders resolved already-terminal here publish no
           // `orderStatusChanged` and are never polled, so the terminal KPI has
           // to be emitted from this path (deduped inside).
-          trackRampsTerminalOrder(order);
+          trackRampsTerminalOrder(order, checkoutSessionId);
           // Non-terminal orders emit `ramps-transaction-confirmed` — the user
           // has submitted the order for processing but it hasn't completed yet.
           // Terminal orders no-op here (they emit via trackRampsTerminalOrder).
-          trackRampsTransactionConfirmed(order, region);
+          trackRampsTransactionConfirmed(order, region, checkoutSessionId);
           if (orderCode && resolvedCode && orderCode !== resolvedCode) {
             rampsController.removeOrder(orderCode);
           }

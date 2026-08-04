@@ -15,6 +15,7 @@ import {
 
 export function buildRampsTransactionCompletedProperties(
   order: RampsOrder,
+  checkoutSessionId?: string,
 ): Record<string, Json | undefined> {
   const cryptoAmount = Number(order.cryptoAmount);
   const totalFee = Number(order.totalFeesFiat);
@@ -26,9 +27,15 @@ export function buildRampsTransactionCompletedProperties(
   return {
     ramp_type: RAMPS_RAMP_TYPE,
     ramp_routing: RAMPS_RAMP_ROUTING,
+    // Join key to the checkout funnel (opened → closed → completed). The
+    // session id is the only stable key across the flow — the order id can
+    // change when a provider swaps a precreated stub for its native id.
+    ...(checkoutSessionId
+      ? { checkout_session_id: checkoutSessionId }
+      : {}),
     // Join key back to the provider order — the provider-scoped order code (not
-    // the namespaced canonical id), read together with `provider_onramp`, and
-    // matching the `order_id` the checkout events emit. Never an empty string.
+    // the namespaced canonical id), read together with `provider_onramp`.
+    // Never an empty string.
     ...(order.providerOrderId
       ? { provider_order_id: order.providerOrderId }
       : {}),
@@ -64,11 +71,13 @@ export function buildRampsTransactionCompletedProperties(
  *
  * @param order - The confirmed (non-terminal) RampsOrder.
  * @param region - Optional region code from the checkout context; overrides `order.region` for the `country` field when present.
+ * @param checkoutSessionId - The checkout session id, joining to the checkout funnel events.
  * @returns The `ramps-transaction-confirmed` event properties.
  */
 export function buildRampsTransactionConfirmedProperties(
   order: RampsOrder,
   region?: string,
+  checkoutSessionId?: string,
 ): Record<string, Json | undefined> {
   const cryptoAmount = Number(order.cryptoAmount);
   const totalFee = Number(order.totalFeesFiat);
@@ -79,6 +88,9 @@ export function buildRampsTransactionConfirmedProperties(
   return {
     ramp_type: RAMPS_RAMP_TYPE,
     ramp_routing: RAMPS_RAMP_ROUTING,
+    ...(checkoutSessionId
+      ? { checkout_session_id: checkoutSessionId }
+      : {}),
     ...(order.providerOrderId
       ? { provider_order_id: order.providerOrderId }
       : {}),
@@ -103,13 +115,16 @@ export function buildRampsTransactionConfirmedProperties(
  * plus `error_message`.
  *
  * @param order - The failed RampsOrder.
+ * @param checkoutSessionId - The checkout session id, joining to the checkout
+ * funnel events.
  * @returns The `ramps-transaction-failed` event properties.
  */
 export function buildRampsTransactionFailedProperties(
   order: RampsOrder,
+  checkoutSessionId?: string,
 ): Record<string, Json | undefined> {
   return {
-    ...buildRampsTransactionCompletedProperties(order),
+    ...buildRampsTransactionCompletedProperties(order, checkoutSessionId),
     error_message: order.statusDescription || 'transaction_failed',
   };
 }

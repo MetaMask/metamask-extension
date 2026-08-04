@@ -443,6 +443,47 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
+  it('threads checkout_session_id to the terminal KPI from the watcher context', async () => {
+    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+      createHarness();
+    rampsController.getOrderFromCallback.mockResolvedValue({
+      id: 'moonpay/orders/session-thread-test',
+      providerOrderId: 'session-thread-test',
+      status: 'COMPLETED',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    });
+
+    watch({
+      tabId: 14,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: false,
+      ...checkoutAnalytics,
+      orderCode: undefined,
+    });
+
+    getOnUpdated()?.(
+      14,
+      { url: `${callbackBase}?transactionId=session-thread-test` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const completedCall = jest
+      .mocked(trackEvent)
+      .mock.calls.find(
+        ([event]) =>
+          event.name === MetaMetricsEventName.RampsTransactionCompleted,
+      );
+    expect(completedCall?.[0].properties).toMatchObject({
+      checkout_session_id: 'session-abc',
+    });
+  });
+
   it('tracks checkout closed when the user closes the tab before callback', () => {
     const { watch, getOnRemoved, checkoutAnalytics } = createHarness();
 

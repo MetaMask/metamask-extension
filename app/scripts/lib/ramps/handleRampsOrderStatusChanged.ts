@@ -24,6 +24,29 @@ type RampsOrderStatusChangedEventPayload =
 // orders, so a restarted worker won't re-emit for an already-terminal order.
 const emittedTerminalOrders = new Set<string>();
 
+// Maps canonical order keys to the checkout session id that originated the
+// order. Populated when the checkout watcher resolves an order from the
+// callback URL (which has the session id in scope); read when a later
+// `orderStatusChanged` poll fires the terminal KPI (which does not). Cleared
+// on MV3 service-worker restart — same edge case as the dedupe set: the
+// terminal KPI still fires, just without the session id.
+const checkoutSessionByOrderKey = new Map<string, string>();
+
+/**
+ * Computes the canonical dedupe/join key for an order: the canonical `id` if
+ * present, otherwise `{providerId}/orders/{orderCode}`. Not the bare order
+ * code — that is only unique within a single provider (and can be a custom id
+ * we generated), so it would swallow another provider's order.
+ * @param order
+ */
+function getOrderKey(order?: RampsOrder): string | undefined {
+  const orderCode = order && getInternalOrderCode(order);
+  return (
+    order?.id ??
+    (orderCode ? `${order?.provider?.id ?? ''}/orders/${orderCode}` : undefined)
+  );
+}
+
 /**
  * Terminal order statuses — mirrors `@metamask/ramps-controller`'s internal
  * `TERMINAL_ORDER_STATUSES` set (kept in lockstep with mobile's
@@ -46,18 +69,26 @@ const TERMINAL_ORDER_STATUSES = new Set<string>([
  * Only COMPLETED and FAILED are emitted; canceled is deferred.
  *
  * @param order - The order to evaluate.
+ * @param checkoutSessionId - The checkout session id from the watcher context
+ * (callback path). When omitted, the function looks up the session id from the
+ * order-key map (polling path).
  */
-export function trackRampsTerminalOrder(order?: RampsOrder): void {
-  // Dedupe on the canonical `{providerId}/orders/{orderCode}` id so a callback
-  // emit and an in-flight poll emit for one order can't double-count. Not on the
-  // bare order code: that is only unique within a single provider (and can be a
-  // custom id we generated), so it would swallow another provider's order.
-  const orderCode = order && getInternalOrderCode(order);
-  const orderKey =
-    order?.id ??
-    (orderCode
-      ? `${order?.provider?.id ?? ''}/orders/${orderCode}`
-      : undefined);
+export function trackRampsTerminalOrder(
+  order?: RampsOrder,
+  checkoutSessionId?: string,
+): void {
+  const orderKey = getOrderKey(order);
+
+  // Record the session id for future polling-path lookups.
+  if (orderKey && checkoutSessionId) {
+    checkoutSessionByOrderKey.set(orderKey, checkoutSessionId);
+  }
+
+  // Resolve the session id: explicit arg (callback path) or map (polling path).
+  const sessionId =
+    checkoutSessionId ??
+    (orderKey ? checkoutSessionByOrderKey.get(orderKey) : undefined);
+
   if (orderKey && emittedTerminalOrders.has(orderKey)) {
     return;
   }
@@ -67,7 +98,9 @@ export function trackRampsTerminalOrder(order?: RampsOrder): void {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.RampsTransactionCompleted)
         .addCategory(MetaMetricsEventCategory.Ramps)
-        .addProperties(buildRampsTransactionCompletedProperties(order))
+        .addProperties(
+          buildRampsTransactionCompletedProperties(order, sessionId),
+        )
         .build(),
     );
   } else if (order?.status === 'FAILED' || order?.status === 'ID_EXPIRED') {
@@ -75,7 +108,7 @@ export function trackRampsTerminalOrder(order?: RampsOrder): void {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.RampsTransactionFailed)
         .addCategory(MetaMetricsEventCategory.Ramps)
-        .addProperties(buildRampsTransactionFailedProperties(order))
+        .addProperties(buildRampsTransactionFailedProperties(order, sessionId))
         .build(),
     );
   } else {
@@ -98,19 +131,33 @@ export function trackRampsTerminalOrder(order?: RampsOrder): void {
  *
  * @param order - The callback-resolved order to evaluate.
  * @param region - Optional region code from the checkout context.
+ * @param checkoutSessionId - The checkout session id from the watcher context.
  */
 export function trackRampsTransactionConfirmed(
   order?: RampsOrder,
   region?: string,
+  checkoutSessionId?: string,
 ): void {
   if (!order || TERMINAL_ORDER_STATUSES.has(order.status)) {
     return;
   }
 
+  // Record the session id for future polling-path terminal lookups.
+  const orderKey = getOrderKey(order);
+  if (orderKey && checkoutSessionId) {
+    checkoutSessionByOrderKey.set(orderKey, checkoutSessionId);
+  }
+
   trackEvent(
     createEventBuilder(MetaMetricsEventName.RampsTransactionConfirmed)
       .addCategory(MetaMetricsEventCategory.Ramps)
-      .addProperties(buildRampsTransactionConfirmedProperties(order, region))
+      .addProperties(
+        buildRampsTransactionConfirmedProperties(
+          order,
+          region,
+          checkoutSessionId,
+        ),
+      )
       .build(),
   );
 }

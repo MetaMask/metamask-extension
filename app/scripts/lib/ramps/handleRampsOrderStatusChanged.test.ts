@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
@@ -179,5 +180,115 @@ describe('trackRampsTransactionConfirmed', () => {
       region: 'fr',
       country: 'fr',
     });
+  });
+});
+
+describe('checkout_session_id threading', () => {
+  beforeEach(() => jest.mocked(trackEvent).mockClear());
+
+  it('passes checkoutSessionId to the completed properties on the callback path', () => {
+    trackRampsTerminalOrder(
+      {
+        id: '/providers/moonpay/orders/session-completed',
+        providerOrderId: 'session-completed',
+        status: 'COMPLETED',
+        fiatAmount: 100,
+        cryptoAmount: 0.02,
+        totalFeesFiat: 4,
+      } as unknown as RampsOrder,
+      'session-abc',
+    );
+
+    expect(
+      jest.mocked(trackEvent).mock.calls[0][0].properties,
+    ).toMatchObject({
+      checkout_session_id: 'session-abc',
+    });
+  });
+
+  it('passes checkoutSessionId to the confirmed properties on the callback path', () => {
+    trackRampsTransactionConfirmed(
+      {
+        id: '/providers/moonpay/orders/session-confirmed',
+        providerOrderId: 'session-confirmed',
+        status: 'PENDING',
+        fiatAmount: 100,
+        cryptoAmount: 0.02,
+        totalFeesFiat: 4,
+      } as unknown as RampsOrder,
+      'us-ca',
+      'session-abc',
+    );
+
+    expect(
+      jest.mocked(trackEvent).mock.calls[0][0].properties,
+    ).toMatchObject({
+      checkout_session_id: 'session-abc',
+    });
+  });
+
+  it('passes checkoutSessionId to the failed properties on the callback path', () => {
+    trackRampsTerminalOrder(
+      {
+        id: '/providers/moonpay/orders/session-failed',
+        providerOrderId: 'session-failed',
+        status: 'FAILED',
+        fiatAmount: 100,
+        cryptoAmount: 0.02,
+        totalFeesFiat: 4,
+        statusDescription: 'card_declined',
+      } as unknown as RampsOrder,
+      'session-abc',
+    );
+
+    expect(
+      jest.mocked(trackEvent).mock.calls[0][0].properties,
+    ).toMatchObject({
+      checkout_session_id: 'session-abc',
+    });
+  });
+
+  it('looks up checkout_session_id from the map on the polling path', () => {
+    const order = {
+      id: '/providers/moonpay/orders/session-poll',
+      providerOrderId: 'session-poll',
+      status: 'PENDING',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    } as unknown as RampsOrder;
+
+    // Callback path: confirmed records the session id for this order key.
+    trackRampsTransactionConfirmed(order, 'us-ca', 'session-poll');
+
+    // Polling path: terminal fires with no session id arg — should find it
+    // in the map.
+    trackRampsTerminalOrder({
+      ...order,
+      status: 'COMPLETED',
+    } as unknown as RampsOrder);
+
+    const terminalCall = jest.mocked(trackEvent).mock.calls[1][0];
+    expect(terminalCall.name).toBe(
+      MetaMetricsEventName.RampsTransactionCompleted,
+    );
+    expect(terminalCall.properties).toMatchObject({
+      checkout_session_id: 'session-poll',
+    });
+  });
+
+  it('omits checkout_session_id when no session id was recorded for the order', () => {
+    trackRampsTerminalOrder({
+      id: '/providers/moonpay/orders/no-session-test',
+      providerOrderId: 'no-session-test',
+      status: 'COMPLETED',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    } as unknown as RampsOrder);
+
+    expect(
+      jest.mocked(trackEvent).mock.calls[0][0].properties,
+    ).not.toHaveProperty('checkout_session_id');
   });
 });
