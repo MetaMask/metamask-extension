@@ -33,7 +33,9 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { RootMessenger } from '../messenger';
 import {
+  CONFIRMATION_WAIT_TIMEOUT,
   generateSecurityAlertId,
+  SecurityAlertTimeoutError,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -250,6 +252,35 @@ describe('PPOM Utils', () => {
           source: SecurityAlertSource.Local,
         },
       );
+    });
+
+    it('does not update response again if waiting for the confirmation timed out', async () => {
+      updateSecurityAlertResponseMock.mockRejectedValueOnce(
+        new SecurityAlertTimeoutError('Timed out waiting for transaction'),
+      );
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+      });
+
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('resolves if the error response update also fails', async () => {
+      updateSecurityAlertResponseMock
+        .mockResolvedValueOnce(undefined)
+        .mockRejectedValueOnce(new Error('Update failed'))
+        .mockRejectedValueOnce(new Error('Update failed again'));
+
+      await expect(
+        validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+        }),
+      ).resolves.toBeUndefined();
+
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledTimes(3);
     });
 
     it('updates error response if controller throws', async () => {
@@ -983,6 +1014,89 @@ describe('PPOM Utils', () => {
       expect(
         transactionController.updateSecurityAlertResponse,
       ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
+    });
+
+    it('rejects and unsubscribes if transaction is never added before timeout', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const transactionController = createTransactionControllerMock({
+          transactions: [],
+        } as unknown as TransactionController['state']);
+
+        const messenger = createMessengerMock();
+        const unsubscribeSpy = jest.spyOn(messenger, 'unsubscribe');
+
+        const updatePromise = updateSecurityAlertResponse({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          appStateController: {} as any,
+          method: 'eth_sendTransaction',
+          messenger,
+          securityAlertId: SECURITY_ALERT_ID_MOCK,
+          securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          signatureController: {} as any,
+          transactionController,
+        });
+
+        jest.advanceTimersByTime(CONFIRMATION_WAIT_TIMEOUT);
+
+        await expect(updatePromise).rejects.toThrow(
+          `Timed out waiting for transaction with security alert ID: ${SECURITY_ALERT_ID_MOCK}`,
+        );
+
+        expect(unsubscribeSpy).toHaveBeenCalledWith(
+          'TransactionController:unapprovedTransactionAdded',
+          expect.any(Function),
+        );
+
+        expect(
+          transactionController.updateSecurityAlertResponse,
+        ).not.toHaveBeenCalled();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('rejects and unsubscribes if signature request never appears before timeout', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const appStateController = createAppStateControllerMock();
+        const signatureController = createSignatureControllerMock({});
+
+        const messenger = createMessengerMock();
+        const unsubscribeSpy = jest.spyOn(messenger, 'unsubscribe');
+
+        const updatePromise = updateSecurityAlertResponse({
+          appStateController,
+          method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          messenger,
+          securityAlertId: SECURITY_ALERT_ID_MOCK,
+          securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+          signatureController,
+          transactionController: {} as unknown as TransactionController,
+        });
+
+        jest.advanceTimersByTime(CONFIRMATION_WAIT_TIMEOUT);
+
+        await expect(updatePromise).rejects.toThrow(
+          `Timed out waiting for signature request with security alert ID: ${SECURITY_ALERT_ID_MOCK}`,
+        );
+
+        expect(unsubscribeSpy).toHaveBeenCalledWith(
+          'SignatureController:stateChange',
+          expect.any(Function),
+        );
+
+        expect(
+          appStateController.addSignatureSecurityAlertResponse,
+        ).not.toHaveBeenCalled();
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 
