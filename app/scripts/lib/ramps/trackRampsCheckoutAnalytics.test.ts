@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
-import { isRampsAnalyticsEnabled } from './isRampsAnalyticsEnabled';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
@@ -11,10 +10,6 @@ jest.mock('../../controllers/analytics', () => ({
   createEventBuilder: jest.requireActual('../../controllers/analytics')
     .createEventBuilder,
   trackEvent: jest.fn(),
-}));
-
-jest.mock('./isRampsAnalyticsEnabled', () => ({
-  isRampsAnalyticsEnabled: jest.fn().mockReturnValue(true),
 }));
 
 describe('trackRampsCheckoutAnalytics', () => {
@@ -27,7 +22,6 @@ describe('trackRampsCheckoutAnalytics', () => {
 
   beforeEach(() => {
     jest.mocked(trackEvent).mockClear();
-    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(true);
     jest.spyOn(Date, 'now').mockReturnValue(2_500);
   });
 
@@ -71,18 +65,5 @@ describe('trackRampsCheckoutAnalytics', () => {
       time_on_screen_ms: 1_500,
       order_id: 'order-abc',
     });
-  });
-
-  it('does not track when the ramps flag is off', () => {
-    jest.mocked(isRampsAnalyticsEnabled).mockReturnValue(false);
-
-    trackRampsCheckoutCallbackDetected(context, 'https://provider.example/cb', 1);
-    trackRampsCheckoutClosed(context, {
-      closeSource: 'user_close_button',
-      callbackReached: false,
-      stepIndex: 1,
-    });
-
-    expect(trackEvent).not.toHaveBeenCalled();
   });
 });

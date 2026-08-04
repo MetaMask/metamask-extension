@@ -5,7 +5,6 @@ import type {
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
-import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { Json } from '@metamask/utils';
 import { omitBy } from 'lodash';
 import type {
@@ -116,20 +115,6 @@ function isBasicFunctionalityEnabled(): boolean {
     'PreferencesController:getState',
   );
   return useExternalServices;
-}
-
-/**
- * Reads the current remote feature flags from the RemoteFeatureFlagController.
- * Used by background analytics that needs to gate on feature flags (e.g. the
- * ramps rollout) without access to a Redux store. Mirrors the UI's
- * `getRemoteFeatureFlags` selector but reads directly from controller state
- * via the analytics init messenger.
- *
- * @returns The current remote feature flags.
- */
-export function getRemoteFeatureFlagState(): RemoteFeatureFlagControllerState['remoteFeatureFlags'] {
-  return getMessenger().call('RemoteFeatureFlagController:getState')
-    .remoteFeatureFlags;
 }
 
 export function canSubmitAnalytics(eventName?: string): boolean {
