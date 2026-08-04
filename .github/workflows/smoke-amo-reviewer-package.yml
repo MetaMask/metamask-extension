@@ -35,7 +35,6 @@ jobs:
     env:
       RELEASE_TAG: ${{ inputs.release_tag }}
       FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
-      AMO_REVIEWER_PACKAGE_ROOT: ${{ runner.temp }}/amo-reviewer-artifacts
     steps:
       - name: Validate release_tag
         run: |
@@ -52,9 +51,14 @@ jobs:
           fetch-depth: 0
 
       - name: Package Firefox reviewer artifacts
+        env:
+          # runner.temp is step-scoped; script default is $RUNNER_TEMP/... if unset.
+          AMO_REVIEWER_PACKAGE_ROOT: ${{ runner.temp }}/amo-reviewer-artifacts
         run: bash .github/scripts/publish-firefox-reviewer-artifacts.sh package
 
       - name: Verify package outputs (no artifact upload)
+        env:
+          AMO_REVIEWER_PACKAGE_ROOT: ${{ runner.temp }}/amo-reviewer-artifacts
         run: |
           set -euo pipefail
           version="${RELEASE_TAG#v}"
