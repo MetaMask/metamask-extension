@@ -1,29 +1,9 @@
 import { createSelector } from 'reselect';
-import {
-  isStrictHexString,
-  isValidHexAddress,
-  type Hex,
-} from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { isMoneyAccountEnabled } from '../../shared/lib/money/feature-flags';
-
-/**
- * The Money Account vault contracts, parsed from the
- * `moneyAccountVaultConfig` remote feature flag.
- *
- * Every field is `Hex` because these values are handed to
- * `@metamask/money-account-utils`, which types them that way: `boringVault`
- * becomes the `spender` of an ERC-20 `approve`, and the other three are call
- * targets.
- */
-export type MoneyAccountVaultConfig = {
-  chainId: Hex;
-  boringVault: Hex;
-  tellerAddress: Hex;
-  accountantAddress: Hex;
-  lensAddress: Hex;
-};
+import { getMoneyAccountVaultConfig } from '../../shared/lib/money/vault-config';
 
 /**
  * The APY controls from the `earnMoneyVaultApyControl` remote feature flag.
@@ -33,66 +13,6 @@ export type MoneyVaultApyRemoteConfig = {
   vaultApyFallback: number | undefined;
   /** When configured, always shown instead of the live APY. */
   vaultApyOverride: number | undefined;
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-/**
- * Parses one raw vault-config field into an address.
- *
- * `isValidHexAddress` accepts an all-lowercase address or a valid ERC-55
- * checksum, which is what ethers accepts when it encodes the calldata. The
- * address is deliberately not normalised, so a checksummed address passes
- * through unchanged.
- *
- * @param value - The raw field value.
- * @returns The address, or `undefined` if it is missing or malformed.
- */
-const parseAddress = (value: unknown): Hex | undefined =>
-  isStrictHexString(value) && isValidHexAddress(value) ? value : undefined;
-
-/**
- * Parses the raw `moneyAccountVaultConfig` remote feature flag into a config
- * whose chain id and addresses are known-good `Hex`.
- *
- * Parsing happens once, here, rather than being asserted with `as Hex` at each
- * call site: a malformed flag yields `undefined`, which callers treat as "the
- * Money Account is unavailable", so the entry points stay hidden instead of
- * failing partway through a confirmation.
- *
- * @param raw - The raw remote feature flag value.
- * @returns The parsed vault config, or `undefined` if any field is missing or
- * malformed.
- */
-export const parseMoneyAccountVaultConfig = (
-  raw: unknown,
-): MoneyAccountVaultConfig | undefined => {
-  if (!isRecord(raw)) {
-    return undefined;
-  }
-
-  const { chainId } = raw;
-  if (!isStrictHexString(chainId)) {
-    return undefined;
-  }
-
-  const boringVault = parseAddress(raw.boringVault);
-  const tellerAddress = parseAddress(raw.tellerAddress);
-  const accountantAddress = parseAddress(raw.accountantAddress);
-  const lensAddress = parseAddress(raw.lensAddress);
-
-  if (!boringVault || !tellerAddress || !accountantAddress || !lensAddress) {
-    return undefined;
-  }
-
-  return {
-    chainId,
-    boringVault,
-    tellerAddress,
-    accountantAddress,
-    lensAddress,
-  };
 };
 
 /**
@@ -142,7 +62,7 @@ export const selectMoneyAccountFeatureEnabled = createSelector(
  */
 export const selectMoneyAccountVaultConfig = createSelector(
   getRemoteFeatureFlags,
-  (flags) => parseMoneyAccountVaultConfig(flags?.moneyAccountVaultConfig),
+  getMoneyAccountVaultConfig,
 );
 
 /**
@@ -155,7 +75,7 @@ export const selectMoneyVaultApyRemoteConfig = createSelector(
   getRemoteFeatureFlags,
   (flags): MoneyVaultApyRemoteConfig => {
     const raw = flags?.earnMoneyVaultApyControl;
-    const control = isRecord(raw) ? raw : undefined;
+    const control = isObject(raw) ? raw : undefined;
 
     return {
       vaultApyFallback: parseNonNegativeFinite(control?.vaultApyFallback),

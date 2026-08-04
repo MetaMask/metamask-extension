@@ -1,6 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
+import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '../../../../shared/lib/money/vault-config';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
   MoneyAccountAvailabilityService,
@@ -11,6 +12,13 @@ jest.mock('./get-money-account-address');
 
 const MONEY_ADDRESS = '0xd5fe9b0579443e7025cf3309ba420977710e7183' as Hex;
 const MONAD_NETWORK_CLIENT_ID = 'monad-mainnet';
+const LINEA_NETWORK_CLIENT_ID = 'linea-mainnet';
+
+/** The network clients the mock `NetworkController` knows about, by chain id. */
+const NETWORK_CLIENT_IDS: Record<string, string> = {
+  [CHAIN_IDS.MONAD]: MONAD_NETWORK_CLIENT_ID,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_NETWORK_CLIENT_ID,
+};
 const DELEGATION_TARGET = '1111111111111111111111111111111111111111';
 
 /** The code of an EOA delegated to `DELEGATION_TARGET`. */
@@ -21,6 +29,19 @@ const EMPTY_CODE = '0x';
 
 const ENABLED_FLAG = { enabled: true, minimumVersion: '0.0.1' };
 
+/**
+ * A well-formed vault config naming Monad, as the flag serves it today. The gate
+ * reads only `chainId`; the addresses are here because the parser rejects a
+ * config missing any of them.
+ */
+const MONAD_VAULT_CONFIG = {
+  chainId: CHAIN_IDS.MONAD,
+  boringVault: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
+  tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
+  accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+};
+
 const deriveMoneyAccountAddressMock = jest.mocked(deriveMoneyAccountAddress);
 
 /**
@@ -29,16 +50,25 @@ const deriveMoneyAccountAddressMock = jest.mocked(deriveMoneyAccountAddress);
  *
  * @param options - Options.
  * @param options.moneyFlag - The raw `moneyEnableMoneyAccount` flag value.
+ * @param options.vaultConfig - The raw `moneyAccountVaultConfig` flag value.
+ * Omit the key entirely to model an unserved flag; passing `undefined`
+ * explicitly would take the default.
  * @param options.getCode - The `eth_getCode` handler.
  * @returns The messenger, its mocks, and a way to publish an unlock.
  */
-function createMockMessenger({
-  moneyFlag = ENABLED_FLAG as unknown,
-  getCode = jest.fn(async () => DELEGATED_CODE as unknown),
-}: {
-  moneyFlag?: unknown;
-  getCode?: jest.Mock;
-} = {}) {
+function createMockMessenger(
+  options: {
+    moneyFlag?: unknown;
+    vaultConfig?: unknown;
+    getCode?: jest.Mock;
+  } = {},
+) {
+  const {
+    moneyFlag = ENABLED_FLAG as unknown,
+    getCode = jest.fn(async () => DELEGATED_CODE as unknown),
+  } = options;
+  const vaultConfig =
+    'vaultConfig' in options ? options.vaultConfig : MONAD_VAULT_CONFIG;
   const request = jest.fn(
     async ({ method, params }: { method: string; params: unknown[] }) => {
       if (method !== 'eth_getCode') {
@@ -54,15 +84,20 @@ function createMockMessenger({
         return {
           remoteFeatureFlags: {
             [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: moneyFlag,
+            [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: vaultConfig,
           },
         };
-      case 'NetworkController:findNetworkClientIdByChainId':
-        if (args[0] !== CHAIN_IDS.MONAD) {
-          throw new Error(`Unexpected chain id: ${String(args[0])}`);
+      case 'NetworkController:findNetworkClientIdByChainId': {
+        const clientId = NETWORK_CLIENT_IDS[String(args[0])];
+        if (!clientId) {
+          throw new Error(
+            `No network client found for chain id ${String(args[0])}`,
+          );
         }
-        return MONAD_NETWORK_CLIENT_ID;
+        return clientId;
+      }
       case 'NetworkController:getNetworkClientById':
-        if (args[0] !== MONAD_NETWORK_CLIENT_ID) {
+        if (!Object.values(NETWORK_CLIENT_IDS).includes(String(args[0]))) {
           throw new Error(`Unexpected network client: ${String(args[0])}`);
         }
         return { provider: { request } };
@@ -181,6 +216,7 @@ describe('MoneyAccountAvailabilityService', () => {
         return {
           remoteFeatureFlags: {
             [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: ENABLED_FLAG,
+            [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: MONAD_VAULT_CONFIG,
           },
         };
       }
@@ -192,6 +228,113 @@ describe('MoneyAccountAvailabilityService', () => {
     }).getAvailability();
 
     expect(availability).toStrictEqual({ isAvailable: false });
+  });
+
+  describe('the vault config', () => {
+    it('is unavailable when the vault config is unserved, without reading the seed or the chain', async () => {
+      const { messenger, request } = createMockMessenger({
+        vaultConfig: undefined,
+      });
+
+      const availability = await new MoneyAccountAvailabilityService({
+        messenger,
+      }).getAvailability();
+
+      // No fallback to a hardcoded Monad: without a config there is no chain
+      // this client agrees with the balance service about.
+      expect(availability).toStrictEqual({ isAvailable: false });
+      expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
+      expect(request).not.toHaveBeenCalled();
+    });
+
+    const MALFORMED_CONFIGS: [string, unknown][] = [
+      ['is not an object', 'monad'],
+      ['has a non-hex chain id', { ...MONAD_VAULT_CONFIG, chainId: 'monad' }],
+      ['has no chain id', { ...MONAD_VAULT_CONFIG, chainId: undefined }],
+      [
+        'has a truncated address',
+        { ...MONAD_VAULT_CONFIG, lensAddress: '0xA816ECd922de94c' },
+      ],
+      ['is missing its addresses', { chainId: CHAIN_IDS.MONAD }],
+    ];
+
+    for (const [description, vaultConfig] of MALFORMED_CONFIGS) {
+      it(`is unavailable when the vault config ${description}`, async () => {
+        const { messenger, request } = createMockMessenger({ vaultConfig });
+
+        const availability = await new MoneyAccountAvailabilityService({
+          messenger,
+        }).getAvailability();
+
+        expect(availability).toStrictEqual({ isAvailable: false });
+        expect(request).not.toHaveBeenCalled();
+      });
+    }
+
+    it('honours a config naming a chain other than Monad', async () => {
+      const { messenger, call } = createMockMessenger({
+        vaultConfig: {
+          ...MONAD_VAULT_CONFIG,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+        },
+      });
+
+      const availability = await new MoneyAccountAvailabilityService({
+        messenger,
+      }).getAvailability();
+
+      expect(availability).toStrictEqual({
+        isAvailable: true,
+        address: MONEY_ADDRESS,
+      });
+      expect(call).toHaveBeenCalledWith(
+        'NetworkController:findNetworkClientIdByChainId',
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+      expect(call).toHaveBeenCalledWith(
+        'NetworkController:getNetworkClientById',
+        LINEA_NETWORK_CLIENT_ID,
+      );
+      expect(call).not.toHaveBeenCalledWith(
+        'NetworkController:findNetworkClientIdByChainId',
+        CHAIN_IDS.MONAD,
+      );
+    });
+
+    it('re-reads the delegation when the config changes chain', async () => {
+      let vaultConfig: unknown = MONAD_VAULT_CONFIG;
+      const { call, request, subscribe } = createMockMessenger();
+      const messenger = {
+        call: jest.fn((action: string, ...args: unknown[]) => {
+          if (action === 'RemoteFeatureFlagController:getState') {
+            return {
+              remoteFeatureFlags: {
+                [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: ENABLED_FLAG,
+                [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: vaultConfig,
+              },
+            };
+          }
+          return call(action, ...args);
+        }),
+        subscribe,
+      } as unknown as MoneyAccountAvailabilityMessenger;
+      const service = new MoneyAccountAvailabilityService({ messenger });
+
+      await service.getAvailability();
+      vaultConfig = {
+        ...MONAD_VAULT_CONFIG,
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+      };
+      await service.getAvailability();
+
+      // The cached answer was read on the old chain, so it cannot stand in for
+      // the new one.
+      expect(request).toHaveBeenCalledTimes(2);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'NetworkController:findNetworkClientIdByChainId',
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+    });
   });
 
   describe('caching', () => {
@@ -287,6 +430,7 @@ describe('MoneyAccountAvailabilityService', () => {
             return {
               remoteFeatureFlags: {
                 [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: moneyFlag,
+                [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: MONAD_VAULT_CONFIG,
               },
             };
           }
