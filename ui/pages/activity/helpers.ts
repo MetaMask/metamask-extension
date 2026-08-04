@@ -1,3 +1,4 @@
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -6,6 +7,10 @@ import type { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import {
+  RAMPS_ORDER_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '../../helpers/constants/routes';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
 import {
   getStatusKey,
@@ -100,6 +105,47 @@ export type GroupedItem =
 
 function getItemHash(item: ActivityListItem) {
   return item.hash?.toLowerCase();
+}
+
+/**
+ * Details-route identifier: settlement hash, or internal ramps order code.
+ *
+ * @param item - The activity item.
+ * @returns The hash or ramp order code, if any.
+ */
+export function getActivityItemIdentifier(
+  item: ActivityListItem,
+): string | undefined {
+  if (item.hash) {
+    return item.hash;
+  }
+  if (item.type === 'rampBuy' || item.type === 'rampSell') {
+    return item.data.id ? getInternalOrderCode(item.data.id) : undefined;
+  }
+  return undefined;
+}
+
+/**
+ * In-app details path for an activity item.
+ *
+ * Ramp orders use the ramps-owned details route; everything else uses `/tx`.
+ *
+ * @param item - The activity item.
+ * @returns The hash path without a leading `#`, or undefined when incomplete.
+ */
+export function getActivityDetailsPath(
+  item: ActivityListItem,
+): string | undefined {
+  const identifier = getActivityItemIdentifier(item);
+  if (!identifier || !item.chainId) {
+    return undefined;
+  }
+
+  if (item.type === 'rampBuy' || item.type === 'rampSell') {
+    return `${RAMPS_ORDER_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
+  }
+
+  return `${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
 }
 
 function parseDate(timestamp: number) {
@@ -234,5 +280,6 @@ export function getItemKey(row: GroupedItem, index: number) {
     return `date-header:${row.date}`;
   }
 
-  return `${row.item.chainId}:${row.item.timestamp}:${row.item.type}:${index}`;
+  const identity = getActivityItemIdentifier(row.item) ?? String(index);
+  return `${row.item.chainId ?? ''}:${row.item.timestamp}:${row.item.type}:${identity}`;
 }
