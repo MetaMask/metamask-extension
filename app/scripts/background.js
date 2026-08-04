@@ -2159,7 +2159,8 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {
