@@ -5360,6 +5360,12 @@
   "mmFee": {
     "message": "$1% MetaMask fee"
   },
+  "moneyBalanceLastKnown": {
+    "message": "Last known balance"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money balance"
+  },
   "month": {
     "message": "month"
   },
