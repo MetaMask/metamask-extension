@@ -188,6 +188,22 @@ describe('BridgeQuotesModal', () => {
   });
 
   it('should render gasIncluded quotes', () => {
+    const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
+      ...quote,
+      quote: {
+        ...quote.quote,
+        gasIncluded: true,
+        feeData: {
+          ...quote.quote.feeData,
+          txFee: {
+            amount: '9999900',
+            asset: quote.quote.srcAsset,
+            maxFeePerGas: '1000000000000000000',
+            maxPriorityFeePerGas: '1000000000000000000',
+          },
+        },
+      },
+    }));
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -199,23 +215,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20.map(
-          (quote) =>
-            ({
-              ...quote,
-              quote: {
-                ...quote.quote,
-                gasIncluded: true,
-                feeData: {
-                  ...quote.quote.feeData,
-                  txFee: {
-                    amount: '9999900',
-                    asset: quote.quote.srcAsset,
-                  },
-                },
-              },
-            }) as unknown as QuoteResponseV1,
-        ),
+        quotes: mockQuotes,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
