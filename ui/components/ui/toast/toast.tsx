@@ -77,7 +77,7 @@ export function Toaster() {
                 ariaLabel={t('close')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                className="self-start"
+                className="relative z-10 self-start"
                 onClick={() => {
                   (item as ToastWithClose).onClose?.();
                   toast.dismiss(item.id);

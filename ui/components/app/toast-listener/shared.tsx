@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import { useToastLabel } from './useToastLabel';
-import { Link } from 'react-router-dom';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
@@ -11,12 +11,12 @@ type Props = {
   id?: string;
 };
 
-function TxToastContent({
+const TransactionToastContent = ({
   status,
   transactionId,
   to,
   id,
-}: { status: ToastStatus } & Props) {
+}: { status: ToastStatus } & Props) => {
   const { title, description } = useToastLabel(status, transactionId);
 
   return (
@@ -33,19 +33,23 @@ function TxToastContent({
       )}
     </>
   );
-}
+};
 
 export function showPendingToast(id: string, props?: Props) {
-  toast.loading(<TxToastContent status="pending" {...props} />, { id });
+  toast.loading(<TransactionToastContent status="pending" {...props} />, {
+    id,
+  });
 }
 
 export function showSuccessToast(id: string, props?: Props) {
-  const _props = props?.to ? { ...props, id } : props;
-  toast.success(<TxToastContent status="success" {..._props} />, { id });
+  toast.success(
+    <TransactionToastContent status="success" {...props} id={id} />,
+    { id },
+  );
 }
 
 export function showFailedToast(id: string, props?: Props) {
-  toast.error(<TxToastContent status="failed" {...props} />, { id });
+  toast.error(<TransactionToastContent status="failed" {...props} />, { id });
 }
 
 export function dismissToast(id: string) {

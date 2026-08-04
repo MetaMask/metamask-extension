@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
+import type { Hex } from 'viem';
 import {
   TransactionStatus,
   TransactionType,
@@ -98,6 +99,14 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
+function getDetailsRoute(chainId: Hex, hash?: string) {
+  if (!hash) {
+    return undefined;
+  }
+
+  return `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`;
+}
+
 function isSpeedUpReplacement(
   replacedById: string,
   transactions: TransactionMeta[],
@@ -168,9 +177,7 @@ export function useTransactionEventToasts(): void {
           showPendingToast(toastId, props);
         }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        const to = hash
-          ? `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`
-          : undefined;
+        const to = getDetailsRoute(chainId, hash);
         showSuccessToast(toastId, { ...props, to });
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
