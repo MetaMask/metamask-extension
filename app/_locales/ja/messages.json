@@ -10932,9 +10932,6 @@
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
-  "tutorial": {
-    "message": "チュートリアル"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
