@@ -5,7 +5,7 @@
  * `buildRampsTransactionCompletedProperties.ts`.
  */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -59,12 +59,14 @@ export function useRampsAnalytics() {
   // Region/currency load asynchronously. Read them through refs so the track
   // callbacks keep a stable identity as the region resolves — otherwise a
   // callback listed in a mount `useEffect` dep array (screen-viewed) would
-  // re-fire on every region change and double-count. Refs always hold the
-  // latest value for the handler-invoked events.
+  // re-fire on every region change and double-count. Refs are synced in an
+  // effect (not during render) to satisfy the React Compiler refs rule.
   const regionRef = useRef('');
-  regionRef.current = userRegion?.regionCode ?? '';
   const currencySourceRef = useRef('');
-  currencySourceRef.current = userRegion?.country?.currency ?? '';
+  useEffect(() => {
+    regionRef.current = userRegion?.regionCode ?? '';
+    currencySourceRef.current = userRegion?.country?.currency ?? '';
+  }, [userRegion?.regionCode, userRegion?.country?.currency]);
 
   const track = useCallback(
     (name: MetaMetricsEventName, properties: Record<string, unknown>) => {

@@ -31,9 +31,12 @@ export function useRampsScreenViewed(
 
   // Keep the latest location without making it an effect dependency, so the
   // event captures the value at the moment it fires (parity with the flow's
-  // other screen-viewed hook).
+  // other screen-viewed hook). Synced in an effect (not during render) to
+  // satisfy the React Compiler refs rule.
   const locationRef = useRef(location);
-  locationRef.current = location;
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
   const hasTrackedRef = useRef(false);
 
   useEffect(() => {
