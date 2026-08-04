@@ -11,6 +11,35 @@ import NetworkManager from '../pages/network-manager';
 const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
 const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 
+/**
+ * Opens the network filter from the asset list and enables every network in the
+ * given category, widening the asset list to all of them.
+ *
+ * @param driver - The webdriver instance.
+ * @param networkCategory - The tab to select all networks from.
+ */
+export const selectAllNetworksFromNetworkSelect = async (
+  driver: Driver,
+  networkCategory: string = 'Popular',
+) => {
+  console.log(`Selecting all networks in category: ${networkCategory}`);
+  const tokensTab = new TokensTab(driver);
+  const networkManager = new NetworkManager(driver);
+
+  await tokensTab.openNetworksFilter();
+  await networkManager.checkPageIsLoaded();
+  await networkManager.selectTab(networkCategory);
+  await networkManager.selectAllNetworks();
+};
+
+/**
+ * Opens the network filter from the asset list and enables only the given
+ * network, scoping the asset list to it.
+ *
+ * @param driver - The webdriver instance.
+ * @param networkCategory - The tab the network is listed under.
+ * @param networkName - The display name of the network to switch to.
+ */
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
   networkCategory: string,

@@ -10928,9 +10928,6 @@
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
   },
-  "tutorial": {
-    "message": "教程"
-  },
   "txAlertTitle": {
     "message": "该交易将撤销"
   },

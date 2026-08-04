@@ -153,7 +153,7 @@ export const PerpsRecentActivity = ({
             key={transaction.id}
             transaction={transaction}
             onClick={handleRowClick}
-            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
+            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME}
           />
         ))}
       </Box>
