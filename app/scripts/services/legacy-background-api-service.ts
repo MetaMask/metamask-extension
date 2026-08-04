@@ -16,6 +16,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
+  NetworkEnablementControllerActions,
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
@@ -539,6 +540,15 @@ const MESSENGER_EXPOSED_METHODS = [
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
+// ponytail: `@metamask/network-enablement-controller`@6.0.0 defines this action
+// type but omits it from the package's public exports, so derive it from the
+// exported actions union. Import it directly once the package re-exports
+// `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
+type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
+  NetworkEnablementControllerActions,
+  { type: 'NetworkEnablementController:restoreEnabledNetworkMap' }
+>;
+
 type AllowedActions =
   | AccountOrderControllerUpdateHiddenAccountsListAction
   | AccountTreeControllerClearStateAction
@@ -624,6 +634,7 @@ type AllowedActions =
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
   | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | OnboardingControllerResetOnboardingAction
@@ -729,9 +740,6 @@ type LegacyBackgroundApiServiceOptions = {
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
-  restoreEnabledNetworkMap: (
-    enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
-  ) => void;
 };
 
 /**
@@ -772,10 +780,6 @@ export class LegacyBackgroundApiService {
 
   readonly #offscreenPromise: Promise<void>;
 
-  readonly #restoreEnabledNetworkMap: (
-    enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
-  ) => void;
-
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
 
   /**
@@ -793,7 +797,6 @@ export class LegacyBackgroundApiService {
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
-   * @param options.restoreEnabledNetworkMap - Restores the NetworkEnablementController's enabled network map to a previous value.
    */
   constructor({
     messenger,
@@ -808,7 +811,6 @@ export class LegacyBackgroundApiService {
     sendUpdate,
     seedlessOperationMutex,
     offscreenPromise,
-    restoreEnabledNetworkMap,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
 
@@ -829,7 +831,6 @@ export class LegacyBackgroundApiService {
     this.#seedlessOperationMutex = seedlessOperationMutex;
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
-    this.#restoreEnabledNetworkMap = restoreEnabledNetworkMap;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -1234,7 +1235,10 @@ export class LegacyBackgroundApiService {
         'NetworkEnablementController:stateChange',
         restorePreviousEnabledNetworkMap,
       );
-      this.#restoreEnabledNetworkMap(previousEnabledNetworkMap);
+      this.#messenger.call(
+        'NetworkEnablementController:restoreEnabledNetworkMap',
+        previousEnabledNetworkMap,
+      );
     };
 
     this.#messenger.subscribe(
