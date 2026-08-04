@@ -104,9 +104,6 @@ class TokensTab extends HomePage {
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
-
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
   private readonly multichainTokenListButton = {
@@ -1109,11 +1106,15 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
+  /**
+   * Clicks the network filter in the asset list control bar, which opens the
+   * select network modal. Await `NetworkManager.checkPageIsLoaded` to wait for
+   * that modal.
+   */
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);
     await this.waitForNetworksToggleStable();
     await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitForSelector(this.modalCloseButton);
   }
 
   /**

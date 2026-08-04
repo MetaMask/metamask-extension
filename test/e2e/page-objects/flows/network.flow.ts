@@ -27,6 +27,7 @@ export const switchToNetworkFromNetworkSelect = async (
   }
 
   await tokensTab.openNetworksFilter();
+  await networkManager.checkPageIsLoaded();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
