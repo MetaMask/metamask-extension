@@ -34,7 +34,7 @@ import {
 } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
-import { SurveyToast } from '../../ui/survey-toast';
+import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
