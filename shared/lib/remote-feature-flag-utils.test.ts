@@ -1,4 +1,6 @@
+import { getManifestFlags } from './manifestFlags';
 import {
+  applyManifestFlagOverrides,
   isVersionGatedFeatureFlag,
   isProgressiveRolloutWrapper,
   hasMinimumRequiredVersion,
@@ -6,6 +8,10 @@ import {
   validatedVersionGatedFeatureFlag,
   getBooleanFeatureFlag,
 } from './remote-feature-flag-utils';
+
+jest.mock('./manifestFlags', () => ({ getManifestFlags: jest.fn() }));
+
+const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 // Mock semver to control version comparison
 jest.mock('semver', () => ({
@@ -260,6 +266,50 @@ describe('remote-feature-flag-utils', () => {
       mockSemverGte.mockReturnValue(true);
       const flag = { enabled: false, minimumVersion: '1.0.0' };
       expect(getBooleanFeatureFlag(flag, true)).toBe(false);
+    });
+  });
+
+  describe('applyManifestFlagOverrides', () => {
+    // Background code reads `RemoteFeatureFlagController:getState` directly,
+    // which returns controller state only. Without this merge the UI honours a
+    // manifest override and the background does not — a divergence that is
+    // invisible in production and to every other unit test.
+    it('applies a manifest flag the controller state does not have', () => {
+      mockGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: { moneyEnableMoneyAccount: { enabled: true } },
+      } as ReturnType<typeof getManifestFlags>);
+
+      expect(applyManifestFlagOverrides({})).toStrictEqual({
+        moneyEnableMoneyAccount: { enabled: true },
+      });
+    });
+
+    it('lets the manifest win over controller state', () => {
+      mockGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: { someFlag: 'manifest' },
+      } as ReturnType<typeof getManifestFlags>);
+
+      expect(
+        applyManifestFlagOverrides({ someFlag: 'state', other: 'kept' }),
+      ).toStrictEqual({ someFlag: 'manifest', other: 'kept' });
+    });
+
+    it('passes controller state through when there are no manifest flags', () => {
+      mockGetManifestFlags.mockReturnValue(
+        {} as ReturnType<typeof getManifestFlags>,
+      );
+
+      expect(applyManifestFlagOverrides({ someFlag: 'state' })).toStrictEqual({
+        someFlag: 'state',
+      });
+    });
+
+    it('tolerates undefined controller state', () => {
+      mockGetManifestFlags.mockReturnValue(
+        {} as ReturnType<typeof getManifestFlags>,
+      );
+
+      expect(applyManifestFlagOverrides(undefined)).toStrictEqual({});
     });
   });
 });

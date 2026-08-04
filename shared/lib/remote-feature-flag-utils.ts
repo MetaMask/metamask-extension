@@ -7,8 +7,40 @@
  * Ported from mobile: app/util/remoteFeatureFlag/index.ts
  */
 
+import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
+import merge from 'lodash/merge';
 import semver from 'semver';
 import packageJson from '../../package.json';
+import { getManifestFlags } from './manifestFlags';
+
+/**
+ * Applies the manifest's `_flags.remoteFeatureFlags` over flags read from
+ * `RemoteFeatureFlagController` state, with the manifest taking precedence.
+ *
+ * **Background code must call this.** The UI reaches flags through
+ * `getRemoteFeatureFlags` (`shared/lib/selectors/remote-feature-flags.ts`),
+ * which applies this merge for you. Background code that calls
+ * `RemoteFeatureFlagController:getState` gets the controller's state *only*, so
+ * without this the UI and the background disagree whenever a manifest override
+ * is in play — the UI honours it and the background does not. That divergence is
+ * invisible in production (no manifest overrides are served) and invisible to
+ * unit tests, which is exactly why it is easy to reintroduce.
+ *
+ * @param stateFlags - The flags from `RemoteFeatureFlagController` state.
+ * @returns The flags with any manifest overrides applied.
+ */
+export function applyManifestFlagOverrides(
+  stateFlags: FeatureFlags | undefined,
+): FeatureFlags {
+  // The manifest's flags are typed loosely (they come from arbitrary JSON in
+  // `.manifest-overrides.json`), so the merged result is asserted back to
+  // `FeatureFlags` — the same shape callers already had from controller state.
+  return merge(
+    {},
+    stateFlags ?? {},
+    getManifestFlags().remoteFeatureFlags ?? {},
+  ) as FeatureFlags;
+}
 
 /**
  * Version-gated feature flag structure.
