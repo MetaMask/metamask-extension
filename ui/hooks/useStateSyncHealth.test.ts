@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { forceUpdateMetamaskState } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 import { useStateSyncHealth } from './useStateSyncHealth';
