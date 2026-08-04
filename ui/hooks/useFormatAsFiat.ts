@@ -10,7 +10,7 @@ import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { useConvertToFiat } from './useConvertToFiat';
 import { useFormatters } from './useFormatters';
 
-export function useFormatAsFiat(chainId?: Hex | CaipChainId) {
+export function useFormatAsFiat(chainId: Hex | CaipChainId) {
   const convertToFiat = useConvertToFiat(chainId);
   const currency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();

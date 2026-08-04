@@ -33,7 +33,12 @@ import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
-import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import {
+  ActivityListItem,
+  Status,
+  asActivityListItem,
+  isActivityListItem,
+} from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
@@ -265,7 +270,7 @@ export const selectNonEvmActivityItems = createSelector(
     selectBridgeHistory,
   ],
   (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
-    transactions.map((transaction) => {
+    transactions.flatMap((transaction) => {
       const subjectAddress =
         internalAccountsById?.[transaction.account]?.address;
       const activity = mapKeyringTransaction({
@@ -273,6 +278,10 @@ export const selectNonEvmActivityItems = createSelector(
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
         subjectAddress,
       });
+
+      if (!isActivityListItem(activity)) {
+        return [];
+      }
 
       const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
       const { quote } = bridgeHistoryEntry ?? {};
@@ -282,19 +291,21 @@ export const selectNonEvmActivityItems = createSelector(
         const status = getBridgeActivityStatus(bridgeHistoryEntry);
         const fees = 'fees' in activity.data ? activity.data.fees : undefined;
 
-        return {
-          ...activity,
-          type: 'bridge',
-          ...(status ? { status } : {}),
-          data: {
-            from: subjectAddress,
-            ...tokens,
-            ...(fees === undefined ? {} : { fees }),
-          },
-        } as ActivityListItem;
+        return [
+          {
+            ...activity,
+            type: 'bridge',
+            ...(status ? { status } : {}),
+            data: {
+              from: subjectAddress,
+              ...tokens,
+              ...(fees === undefined ? {} : { fees }),
+            },
+          } as ActivityListItem,
+        ];
       }
 
-      return activity;
+      return [activity];
     }),
 );
 
@@ -535,7 +546,10 @@ export const selectLocalActivityItems = createSelector(
           contractTokenMetadata,
         };
 
-        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+        return enrichLocalActivity(
+          asActivityListItem(mapLocalTransaction(prepared)),
+          prepared,
+        );
       }
 
       const prepared = {
@@ -545,7 +559,10 @@ export const selectLocalActivityItems = createSelector(
         ...(sourceToken ? { sourceToken } : {}),
       };
 
-      return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+      return enrichLocalActivity(
+        asActivityListItem(mapLocalTransaction(prepared)),
+        prepared,
+      );
     });
   },
 );
