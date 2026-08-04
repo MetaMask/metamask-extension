@@ -10928,9 +10928,6 @@
   "turnOnTokenDetection": {
     "message": "एडवांस्ड टोकन डिटेक्शन चालू करें"
   },
-  "tutorial": {
-    "message": "ट्यूटोरियल"
-  },
   "txAlertTitle": {
     "message": "यह ट्रांसेक्शन वापस कर दिया जाएगा"
   },

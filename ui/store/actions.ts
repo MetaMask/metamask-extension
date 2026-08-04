@@ -7840,6 +7840,14 @@ export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
   ]);
 }
 
+export async function getSentinelNetworkFlags(
+  chainId: Hex,
+): Promise<SentinelNetwork> {
+  return await submitRequestToBackground<boolean>('getSentinelNetworkFlags', [
+    chainId,
+  ]);
+}
+
 /**
  * Sets the preference for skipping the interstitial page when opening a deep link.
  *

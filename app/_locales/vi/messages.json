@@ -10936,9 +10936,6 @@
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
   },
-  "tutorial": {
-    "message": "Hướng dẫn"
-  },
   "txAlertTitle": {
     "message": "Giao dịch này sẽ được hoàn tác"
   },

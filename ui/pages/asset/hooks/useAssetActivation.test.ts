@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { XlmScope } from '@metamask/keyring-api';
 import { errorCodes } from '@metamask/rpc-errors';
