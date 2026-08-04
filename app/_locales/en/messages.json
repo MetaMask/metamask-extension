@@ -11675,6 +11675,10 @@
   "viewTokenDetails": {
     "message": "View token details"
   },
+  "viewXMore": {
+    "message": "View $1 more",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
+  },
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"

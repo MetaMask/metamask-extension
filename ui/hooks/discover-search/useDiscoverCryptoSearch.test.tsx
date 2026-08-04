@@ -65,7 +65,8 @@ describe('useDiscoverCryptoSearch', () => {
 
   it('searches tokens when query is present', async () => {
     mockSearchTokens.mockResolvedValue({
-      count: 1,
+      count: 2,
+      totalCount: 2,
       data: [
         {
           assetId: 'eip155:1/slip44:60',
@@ -76,6 +77,13 @@ describe('useDiscoverCryptoSearch', () => {
           marketCap: 1,
           aggregatedUsdVolume: 1,
           pricePercentChange1d: '1.2',
+        },
+        {
+          assetId: 'eip155:1/erc20:0xstock',
+          name: 'Stock',
+          symbol: 'STK',
+          decimals: 18,
+          rwaData: { type: 'stock' },
         },
       ] as never,
     });
@@ -92,5 +100,6 @@ describe('useDiscoverCryptoSearch', () => {
     expect(mockSearchTokens).toHaveBeenCalled();
     expect(mockGetTrendingTokens).not.toHaveBeenCalled();
     expect(result.current.data[0].priceChangePct?.h24).toBe('1.2');
+    expect(result.current.totalCount).toBe(1);
   });
 });
