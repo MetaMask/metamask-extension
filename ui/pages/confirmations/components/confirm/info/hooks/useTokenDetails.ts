@@ -12,8 +12,7 @@ export const useTokenDetails = (transactionMeta: TransactionMeta) => {
   const allTokens = useSelector(getAllTokens);
   const tokenListToken = allTokens?.[chainId]?.[userAddress as string]?.find(
     (token) =>
-      token.address?.toLowerCase() ===
-      (tokenAddress?.toLowerCase() as string),
+      token.address?.toLowerCase() === (tokenAddress?.toLowerCase() as string),
   );
 
   const tokenImage = tokenListToken?.image || undefined;
