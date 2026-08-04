@@ -18,10 +18,7 @@ import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { getCaipAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  formatSignedChangePercent,
-  getChangeColor,
-} from '../../components/app/perps/utils';
+import { getChangeColor } from '../../components/app/perps/utils';
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
@@ -44,6 +41,26 @@ const formatAssetPrice = (price: string | undefined) => {
     currency: USD_CURRENCY,
     maximumFractionDigits: value < 1 ? 6 : 2,
   }).format(value);
+};
+
+/**
+ * Formats 24h % change like mobile Explore: sign + `toFixed(2)` + `%`.
+ *
+ * @param value - Raw percentage from the API
+ * @returns Display label, or null when non-numeric
+ */
+const formatPriceChangePercent = (value: string): string | null => {
+  const numericValue = Number.parseFloat(value.replace('%', ''));
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  if (numericValue === 0) {
+    return '0.00%';
+  }
+
+  const sign = numericValue > 0 ? '+' : '';
+  return `${sign}${numericValue.toFixed(2)}%`;
 };
 
 /**
@@ -74,8 +91,11 @@ export const DiscoverAssetRow = ({
   }, [asset.aggregatedUsdVolume, asset.marketCap, t]);
 
   const changePct = asset.priceChangePct?.h24 ?? '';
-  const changeColor = changePct
-    ? getChangeColor(changePct)
+  const formattedChange = changePct
+    ? formatPriceChangePercent(changePct)
+    : null;
+  const changeColor = formattedChange
+    ? getChangeColor(formattedChange)
     : TextColor.TextAlternative;
 
   const handleClick = () => {
@@ -126,7 +146,7 @@ export const DiscoverAssetRow = ({
           {formatAssetPrice(asset.price)}
         </Text>
         <Text variant={TextVariant.BodySm} color={changeColor}>
-          {changePct ? formatSignedChangePercent(changePct) : '—'}
+          {formattedChange ?? '—'}
         </Text>
       </Box>
     </ButtonBase>

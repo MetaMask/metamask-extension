@@ -28,8 +28,12 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
+import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
-import type { DiscoverSearchTab } from '../../hooks/discover-search/types';
+import type {
+  DiscoverSearchSectionId,
+  DiscoverSearchTab,
+} from '../../hooks/discover-search/types';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
@@ -129,6 +133,37 @@ export const DiscoverSearchPage = () => {
   const handleViewAll = useCallback((tab: DiscoverSearchTab) => {
     setActiveTab(tab);
   }, []);
+
+  const getSectionViewAllLabel = useCallback(
+    (
+      sectionId: DiscoverSearchSectionId,
+      visibleCount: number,
+      serverTotal?: number,
+      isLoading = false,
+    ): string | null => {
+      if (isLoading) {
+        return null;
+      }
+
+      const action = getDiscoverViewMoreAction(
+        sectionId,
+        visibleCount,
+        searchQuery,
+        serverTotal,
+      );
+
+      if (!action) {
+        return null;
+      }
+
+      if (action.kind === 'viewMore') {
+        return t('viewXMore', [String(action.count)]);
+      }
+
+      return t('viewAll');
+    },
+    [searchQuery, t],
+  );
 
   const trimmedSearchQuery = searchQuery.trim();
 
@@ -249,6 +284,12 @@ export const DiscoverSearchPage = () => {
             <DiscoverSearchSectionHeader
               title={t('perpsFilterCrypto')}
               onViewAll={() => handleViewAll('crypto')}
+              viewAllLabel={getSectionViewAllLabel(
+                'crypto',
+                cryptoSection.items.length,
+                cryptoSection.totalCount,
+                cryptoSection.isLoading,
+              )}
               data-testid="discover-section-crypto"
             />
             {renderAssetList(
@@ -264,6 +305,12 @@ export const DiscoverSearchPage = () => {
             <DiscoverSearchSectionHeader
               title={t('perps')}
               onViewAll={() => handleViewAll('perps')}
+              viewAllLabel={getSectionViewAllLabel(
+                'perps',
+                perps.items.length,
+                undefined,
+                perps.isLoading,
+              )}
               data-testid="discover-section-perps"
             />
             {renderPerpsList(previewPerps, perps.isLoading)}
@@ -275,6 +322,12 @@ export const DiscoverSearchPage = () => {
             <DiscoverSearchSectionHeader
               title={t('perpsFilterStocks')}
               onViewAll={() => handleViewAll('stocks')}
+              viewAllLabel={getSectionViewAllLabel(
+                'stocks',
+                stocks.items.length,
+                stocks.totalCount,
+                stocks.isLoading,
+              )}
               data-testid="discover-section-stocks"
             />
             {renderAssetList(
