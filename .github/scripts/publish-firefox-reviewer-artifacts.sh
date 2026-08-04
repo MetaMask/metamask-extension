@@ -152,8 +152,9 @@ run_package() {
   ensure_mtree
 
   local work_root script_ref clone_dir last_listed
+  # Temp dir only; runner discards it. No EXIT trap: with set -u a trap that
+  # refs a function-local fires after the local is unbound and fails the job.
   work_root="$(mktemp -d)"
-  trap 'rm -rf "${work_root}"' EXIT
   script_ref="${FIREFOX_BUNDLE_SCRIPT_REF}"
   clone_dir="${work_root}/firefox-bundle-script"
 
