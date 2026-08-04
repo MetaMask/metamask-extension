@@ -408,6 +408,87 @@ describe('Ledger Offscreen', () => {
         });
         consoleSpy.mockRestore();
       });
+
+      it('reuses an already-connected transport from openConnected without create()', async () => {
+        mockOpenConnected.mockResolvedValue(mockTransport);
+
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockOpenConnected).toHaveBeenCalled();
+        expect(mockCreate).not.toHaveBeenCalled();
+      });
+
+      it('reuses the open transport when getAppConfiguration still responds', async () => {
+        mockGetAppConfiguration.mockResolvedValue({ version: '1.0.0' });
+
+        await handler.handleAction(LedgerAction.makeApp);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        mockCreate.mockClear();
+        mockGetAppConfiguration.mockClear();
+
+        // Second makeApp finds an existing responsive app and skips reopening.
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockGetAppConfiguration).toHaveBeenCalled();
+        expect(mockCreate).not.toHaveBeenCalled();
+      });
+
+      it('reconnects when the existing app is no longer responsive', async () => {
+        mockGetAppConfiguration.mockResolvedValue({ version: '1.0.0' });
+        await handler.handleAction(LedgerAction.makeApp);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        mockCreate.mockClear();
+        mockTransportClose.mockClear();
+
+        // The device stopped responding: makeApp must close and reopen.
+        mockGetAppConfiguration.mockRejectedValueOnce(new Error('disconnected'));
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockTransportClose).toHaveBeenCalled();
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+      });
+
+      it('deduplicates concurrent makeApp calls (opens only one transport)', async () => {
+        mockOpenConnected.mockResolvedValue(null);
+        let resolveCreate!: () => void;
+        mockCreate.mockReturnValue(
+          new Promise((resolve) => {
+            resolveCreate = () => resolve(mockTransport);
+          }),
+        );
+
+        const a = handler.handleAction(LedgerAction.makeApp);
+        const b = handler.handleAction(LedgerAction.makeApp);
+
+        // Both calls share the single pendingMakeApp; only one create() in flight.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        resolveCreate();
+        await Promise.all([a, b]);
+
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('getAppNameAndVersion', () => {
+      it('parses the app name and version from the raw transport response', async () => {
+        const name = 'Ethereum';
+        const version = '1.2.3';
+        const response = Buffer.concat([
+          Buffer.from([0x00, name.length]),
+          Buffer.from(name, 'ascii'),
+          Buffer.from([version.length]),
+          Buffer.from(version, 'ascii'),
+        ]);
+        mockTransportSend.mockResolvedValue(response);
+
+        const responseObj = await sendAction(LedgerAction.getAppNameAndVersion);
+
+        expect(responseObj.success).toBe(true);
+        expect(responseObj.payload).toEqual({ appName: name, version });
+        expect(mockTransportSend).toHaveBeenCalledWith(0xb0, 0x01, 0x00, 0x00);
+      });
     });
 
     describe('getAppConfiguration', () => {
@@ -484,6 +565,44 @@ describe('Ledger Offscreen', () => {
 
         expect(response.success).toBe(true);
         expect(response.payload).toEqual(defaultSignature);
+      });
+
+      it('returns an error when hdPath is missing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          tx: '0x0',
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Missing hdPath or tx parameter',
+          }),
+        });
+        expect(mockClearSignTransaction).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+
+      it('returns an error when tx is missing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Missing hdPath or tx parameter',
+          }),
+        });
+        expect(mockClearSignTransaction).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
       });
 
       it('calls clearSignTransaction with "erc20: true" for ERC20 approve selector', async () => {
