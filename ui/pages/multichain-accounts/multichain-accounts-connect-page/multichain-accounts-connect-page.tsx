@@ -23,7 +23,7 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  Text,
+  Text as TextDS,
   TextColor as TextColorDS,
   TextVariant as TextVariantDS,
 } from '@metamask/design-system-react';
@@ -549,13 +549,13 @@ export const MultichainAccountsConnectPage = ({
         backgroundColor={BackgroundColor.transparent}
       >
         <Box marginTop={4}>
-          <Text
+          <TextDS
             variant={TextVariantDS.BodySm}
-            color={TextColorDS.textAlternative}
+            color={TextColorDS.TextAlternative}
             className="ml-4"
           >
             {t('accounts')}
-          </Text>
+          </TextDS>
           <Box
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
             className="rounded-xl"
