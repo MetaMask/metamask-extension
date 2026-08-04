@@ -267,7 +267,9 @@ describe('RampsProviderSelectionModal', () => {
       createStore(),
     );
 
-    fireEvent.click(screen.getByRole('button', { name: messages.close.message }));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.close.message }),
+    );
     expect(mockOnClose).toHaveBeenCalled();
   });
 });
