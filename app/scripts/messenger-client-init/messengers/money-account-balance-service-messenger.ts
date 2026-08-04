@@ -30,6 +30,9 @@ export function getMoneyAccountBalanceServiceMessenger(
       'NetworkController:getNetworkConfigurationByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
+      // Required by MoneyAccountBalanceService:fetchBalanceWithFallback when
+      // the Money API is the preferred or fallback balance source.
+      'MoneyAccountApiDataService:fetchPositions',
     ],
     events: ['RemoteFeatureFlagController:stateChange'],
   });
