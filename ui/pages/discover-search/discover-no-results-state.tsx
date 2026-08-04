@@ -88,11 +88,11 @@ export const DiscoverNoResultsState = ({
           aria-hidden="true"
           data-testid="discover-search-no-results-illustration"
         />
-        <Box className="flex w-full flex-col items-center gap-1">
+        <Box className="flex w-full max-w-full flex-col items-center gap-1 overflow-hidden">
           <Text
             variant={TextVariant.BodyMd}
             textAlign={TextAlign.Center}
-            className="whitespace-nowrap"
+            className="max-w-full truncate"
           >
             {t('discoverSearchNoResultsFor', [query])}
           </Text>

@@ -22,7 +22,7 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { isCaipAssetType } from '@metamask/utils';
+import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
@@ -76,6 +76,24 @@ const EmptyState = ({ message }: { message: string }) => (
     </Text>
   </Box>
 );
+
+type DiscoverAllEmptyStateProps = {
+  noResultsMessage: string;
+  onAssetPress: (assetId: CaipAssetType) => void;
+  query: string;
+};
+
+const DiscoverAllEmptyState = ({
+  noResultsMessage,
+  onAssetPress,
+  query,
+}: DiscoverAllEmptyStateProps) => {
+  if (query) {
+    return <DiscoverNoResultsState query={query} onAssetPress={onAssetPress} />;
+  }
+
+  return <EmptyState message={noResultsMessage} />;
+};
 
 /**
  * Discover search page: search + All / Crypto / Perps / Stock tabs.
@@ -134,19 +152,6 @@ export const DiscoverSearchPage = () => {
 
   const trimmedSearchQuery = searchQuery.trim();
 
-  const renderEmptyState = useCallback(() => {
-    if (trimmedSearchQuery) {
-      return (
-        <DiscoverNoResultsState
-          query={trimmedSearchQuery}
-          onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
-        />
-      );
-    }
-
-    return <EmptyState message={t('discoverSearchNoResults')} />;
-  }, [navigate, t, trimmedSearchQuery]);
-
   const previewCrypto = useMemo(
     () => cryptoSection.items.slice(0, DISCOVER_SEARCH_PREVIEW_COUNT),
     [cryptoSection.items],
@@ -182,7 +187,7 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (items.length === 0) {
-      return renderEmptyState();
+      return <EmptyState message={t('discoverSearchNoResults')} />;
     }
     return items.map((asset) => (
       <DiscoverAssetRow
@@ -199,7 +204,7 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (items.length === 0) {
-      return renderEmptyState();
+      return <EmptyState message={t('discoverSearchNoResults')} />;
     }
     return items.map((market) => (
       <MarketRow
@@ -217,7 +222,13 @@ export const DiscoverSearchPage = () => {
       return <LoadingState label={t('loading')} />;
     }
     if (showAllEmpty) {
-      return renderEmptyState();
+      return (
+        <DiscoverAllEmptyState
+          noResultsMessage={t('discoverSearchNoResults')}
+          onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
+          query={trimmedSearchQuery}
+        />
+      );
     }
     return (
       <Box flexDirection={BoxFlexDirection.Column}>
