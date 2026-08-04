@@ -23,15 +23,13 @@ import {
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
 } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import { QrKeyring } from '@metamask/eth-qr-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -51,11 +49,7 @@ import {
 } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
-import {
-  HardwareDeviceNames,
-  KEYRING_DEVICE_PROPERTY_MAP,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
+import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
@@ -80,7 +74,6 @@ import {
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -93,9 +86,7 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
-import MetaMaskController, {
-  HARDWARE_DEVICE_READ_TIMEOUT_MS,
-} from './metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { trackEvent } from './controllers/analytics';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -468,6 +459,32 @@ function createMockCronjobControllerStorageManager() {
     getInitialState: noop,
     set: noop,
   };
+}
+
+/**
+ * Replace a messenger-registered controller action handler.
+ * Instance method spies do not affect LegacyBackgroundApiService calls, because
+ * handlers are bound at controller construction via registerMethodActionHandlers.
+ *
+ * @param {object} controller - Controller exposing `.messenger` (BaseController).
+ * @param {string} actionType - Full action type, e.g. `SeedlessOnboardingController:fetchAllSecretData`.
+ * @param {Function} [implementation] - Optional mock implementation.
+ * @returns {jest.Mock}
+ */
+function mockMessengerControllerAction(controller, actionType, implementation) {
+  const impl =
+    typeof implementation === 'function' ? jest.fn(implementation) : jest.fn();
+  if (implementation !== undefined && typeof implementation !== 'function') {
+    impl.mockResolvedValue(implementation);
+  }
+  // Unregister the locally bound handler, then re-register without re-delegating
+  // to the parent (registerActionHandler would throw "already been delegated").
+  controller.messenger.unregisterActionHandler(actionType);
+  controller.messenger._internalRegisterDelegatedActionHandler(
+    actionType,
+    impl,
+  );
+  return impl;
 }
 
 describe('MetaMaskController', () => {
@@ -1169,9 +1186,13 @@ describe('MetaMaskController', () => {
         const password = 'a-fake-password';
 
         const vault1 =
-          await metamaskController.createNewVaultAndKeychain(password);
+          await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+            password,
+          );
         const vault2 =
-          await metamaskController.createNewVaultAndKeychain(password);
+          await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+            password,
+          );
 
         expect(vault1).toStrictEqual(vault2);
       });
@@ -1186,12 +1207,11 @@ describe('MetaMaskController', () => {
           Buffer.from(mockSeedPhrase, 'utf8').values(),
         );
 
-        const createToprfKeyAndBackupSeedPhraseSpy = jest
-          .spyOn(
+        const createToprfKeyAndBackupSeedPhraseSpy =
+          mockMessengerControllerAction(
             metamaskController.seedlessOnboardingController,
-            'createToprfKeyAndBackupSeedPhrase',
-          )
-          .mockResolvedValueOnce();
+            'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+          ).mockResolvedValueOnce();
 
         const syncKeyringEncryptionKey = jest
           .spyOn(
@@ -1201,9 +1221,11 @@ describe('MetaMaskController', () => {
           .mockResolvedValue();
 
         const primaryKeyring =
-          await metamaskController.createNewVaultAndKeychain(password);
+          await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+            password,
+          );
 
-        await metamaskController.createSeedPhraseBackup(
+        await metamaskController.legacyBackgroundApiService.createSeedPhraseBackup(
           password,
           mockEncodedSeedPhrase,
           primaryKeyring.metadata.id,
@@ -1219,33 +1241,23 @@ describe('MetaMaskController', () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController
+        await metamaskController.legacyBackgroundApiService
           .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
           .catch(() => null);
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          password,
+          TEST_SEED,
+        );
 
-        expect(
-          metamaskController.multichainAccountService
-            .createMultichainAccountWallet,
-        ).toHaveBeenNthCalledWith(1, {
-          type: 'restore',
-          password,
-          mnemonic: expect.any(Uint8Array),
-        });
-        expect(
-          metamaskController.multichainAccountService
-            .createMultichainAccountWallet,
-        ).toHaveBeenNthCalledWith(2, {
-          type: 'restore',
-          password,
-          mnemonic: expect.any(Uint8Array),
-        });
+        const accounts = metamaskController.accountsController.listAccounts();
+        expect(accounts).toHaveLength(1);
+        expect(accounts[0].address).toBe(TEST_ADDRESS);
       });
 
       it('should clear previous identities after vault restoration', async () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController.createNewVaultAndRestore(
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
@@ -1270,7 +1282,7 @@ describe('MetaMaskController', () => {
         expect(labelledFirstVaultAccounts[0].address).toBe(TEST_ADDRESS);
         expect(labelledFirstVaultAccounts[0].metadata.name).toBe('Account Foo');
 
-        await metamaskController.createNewVaultAndRestore(
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED_ALT,
         );
@@ -1317,7 +1329,7 @@ describe('MetaMaskController', () => {
             allIgnoredTokens: {},
           });
 
-        await metamaskController.createNewVaultAndRestore(
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
@@ -1358,20 +1370,27 @@ describe('MetaMaskController', () => {
           )
           .mockResolvedValue();
 
+        mockMessengerControllerAction(
+          metamaskController.accountTreeController,
+          'AccountTreeController:syncWithUserStorageAtLeastOnce',
+        ).mockResolvedValue(undefined);
+
         jest
           .spyOn(
-            metamaskController.accountTreeController,
-            'syncWithUserStorageAtLeastOnce',
+            metamaskController.legacyBackgroundApiService,
+            'discoverAndCreateAccounts',
           )
-          .mockResolvedValue(undefined);
-
-        jest
-          .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
-        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          'foo',
+          TEST_SEED,
+        );
 
-        expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+        expect(
+          metamaskController.legacyBackgroundApiService
+            .discoverAndCreateAccounts,
+        ).toHaveBeenCalled();
       });
     });
 
@@ -2256,384 +2275,9 @@ describe('MetaMaskController', () => {
 
     describe('hardware keyrings', () => {
       beforeEach(async () => {
-        await metamaskController.createNewVaultAndKeychain('test@123');
-      });
-
-      describe('connectHardware', () => {
-        it('should throw if it receives an unknown device name', async () => {
-          const result = metamaskController.connectHardware(
-            'Some random device name',
-            0,
-            `m/44/0'/0'`,
-          );
-
-          await expect(result).rejects.toThrow(
-            'MetamaskController:#withKeyringForDevice - Unknown device',
-          );
-        });
-
-        it('should add the Trezor Hardware keyring and return the first page of accounts', async () => {
-          const firstPage = await metamaskController.connectHardware(
-            HardwareDeviceNames.trezor,
-            0,
-          );
-
-          expect(
-            // 0: HD keyring, 1: Trezor keyring (v2 Snap keyrings are lazy)
-            metamaskController.keyringController.state.keyrings[1].type,
-          ).toBe(TrezorKeyring.type);
-          expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
-        });
-
-        it('should add the Ledger Hardware keyring and return the first page of accounts', async () => {
-          const firstPage = await metamaskController.connectHardware(
-            HardwareDeviceNames.ledger,
-            0,
-          );
-
-          expect(
-            // 0: HD keyring, 1: Ledger keyring (v2 Snap keyrings are lazy)
-            metamaskController.keyringController.state.keyrings[1].type,
-          ).toBe(LedgerKeyring.type);
-          expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
-        });
-
-        it('does not hold the controller lock while paging a wedged device, and times out the abandoned read', async () => {
-          // Regression test: a locked Trezor makes `getFirstPage` hang
-          // forever. This used to run under the controller operation mutex,
-          // wedging every other locked keyring operation (unlock, account
-          // creation, Backup & Sync account syncing) until browser restart.
-          const getFirstPageSpy = jest
-            .spyOn(TrezorKeyring.prototype, 'getFirstPage')
-            .mockReturnValue(new Promise(() => undefined));
-
-          // Intercept the device-read backstop timer so the test can fire it
-          // deterministically without faking every timer in the app.
-          const originalSetTimeout = global.setTimeout;
-          let fireDeviceReadTimeout;
-          const setTimeoutSpy = jest
-            .spyOn(global, 'setTimeout')
-            .mockImplementation((handler, timeout, ...args) => {
-              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
-                fireDeviceReadTimeout = handler;
-                return 0;
-              }
-              return originalSetTimeout(handler, timeout, ...args);
-            });
-
-          try {
-            const wedgedConnect = metamaskController.connectHardware(
-              HardwareDeviceNames.trezor,
-              0,
-            );
-            // Swallow the timeout rejection asserted below so the wedged
-            // promise never surfaces as an unhandled rejection.
-            wedgedConnect.catch(() => undefined);
-
-            // Let `connectHardware` reach the (hanging) device read.
-            await new Promise((resolve) => {
-              const poll = () =>
-                getFirstPageSpy.mock.calls.length > 0
-                  ? resolve()
-                  : originalSetTimeout(poll, 5);
-              poll();
-            });
-
-            // A locked keyring operation must still complete while the
-            // device read is pending.
-            await expect(
-              metamaskController.keyringController.addNewAccount(),
-            ).resolves.toBeDefined();
-
-            // The abandoned device read is bounded by the UX backstop.
-            fireDeviceReadTimeout();
-            await expect(wedgedConnect).rejects.toThrow(
-              'Hardware wallet device read timed out',
-            );
-          } finally {
-            getFirstPageSpy.mockRestore();
-            setTimeoutSpy.mockRestore();
-          }
-        });
-      });
-
-      describe('checkHardwareStatus', () => {
-        it('should throw if it receives an unknown device name', async () => {
-          const result = metamaskController.checkHardwareStatus(
-            'Some random device name',
-            `m/44/0'/0'`,
-          );
-          await expect(result).rejects.toThrow(
-            'MetamaskController:#withKeyringForDevice - Unknown device',
-          );
-        });
-
-        it('creates the QR keyring before probing reconnect status', async () => {
-          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
-          const setHdPath = jest.fn();
-          const getMode = jest.fn().mockReturnValue('hd');
-          const withControllerSpy = jest
-            .spyOn(metamaskController.keyringController, 'withController')
-            .mockImplementation(async (callback) => {
-              return await callback({
-                keyrings: [],
-                addNewKeyring,
-              });
-            });
-          // The mutating prelude (`setHdPath`) runs under the lock, while the
-          // status probe itself is a device read on the lock-free path.
-          const withKeyringV2Spy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2')
-            .mockImplementation(async (selector, callback) => {
-              expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
-
-              return await callback({
-                keyring: {
-                  getMode,
-                  setHdPath,
-                },
-              });
-            });
-          const withKeyringV2UnsafeSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2Unsafe')
-            .mockImplementation(async (selector, callback) => {
-              expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
-
-              return await callback({
-                keyring: {
-                  getMode,
-                  setHdPath,
-                },
-              });
-            });
-
-          try {
-            const status = await metamaskController.checkHardwareStatus(
-              HardwareDeviceNames.qr,
-              `m/44'/60'/0'/0`,
-            );
-
-            expect(status).toStrictEqual(true);
-            expect(addNewKeyring).toHaveBeenCalledWith(QrKeyring.type);
-            expect(setHdPath).toHaveBeenCalledWith(`m/44'/60'/0'/0`);
-            expect(getMode).toHaveBeenCalledTimes(1);
-          } finally {
-            withControllerSpy.mockRestore();
-            withKeyringV2Spy.mockRestore();
-            withKeyringV2UnsafeSpy.mockRestore();
-          }
-        });
-
-        it('returns false when the QR keyring is unpaired', async () => {
-          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
-          const setHdPath = jest.fn();
-          const getMode = jest.fn().mockReturnValue(undefined);
-          const withControllerSpy = jest
-            .spyOn(metamaskController.keyringController, 'withController')
-            .mockImplementation(async (callback) => {
-              return await callback({
-                keyrings: [],
-                addNewKeyring,
-              });
-            });
-          const withKeyringV2Spy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2')
-            .mockImplementation(async (_selector, callback) => {
-              return await callback({
-                keyring: {
-                  getMode,
-                  setHdPath,
-                },
-              });
-            });
-          const withKeyringV2UnsafeSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2Unsafe')
-            .mockImplementation(async (_selector, callback) => {
-              return await callback({
-                keyring: {
-                  getMode,
-                  setHdPath,
-                },
-              });
-            });
-
-          try {
-            const status = await metamaskController.checkHardwareStatus(
-              HardwareDeviceNames.qr,
-              `m/44'/60'/0'/0`,
-            );
-
-            expect(status).toStrictEqual(false);
-          } finally {
-            withControllerSpy.mockRestore();
-            withKeyringV2Spy.mockRestore();
-            withKeyringV2UnsafeSpy.mockRestore();
-          }
-        });
-
-        [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
-          (device) => {
-            describe(`using ${device}`, () => {
-              it('should be unlocked by default', async () => {
-                await metamaskController.connectHardware(device, 0);
-
-                const status =
-                  await metamaskController.checkHardwareStatus(device);
-
-                expect(status).toStrictEqual(true);
-              });
-            });
-          },
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+          'test@123',
         );
-      });
-
-      describe('getLedgerAppConfiguration', () => {
-        it('returns the app configuration from the Ledger bridge', async () => {
-          const mockConfiguration = {
-            arbitraryDataEnabled: 1,
-            erc20ProvisioningNecessary: 0,
-            starkEnabled: 0,
-            starkv2Supported: 0,
-            version: '1.0.0',
-          };
-
-          const mockKeyring = {
-            bridge: {
-              updateTransportMethod: jest.fn().mockResolvedValue(true),
-              getAppConfiguration: jest
-                .fn()
-                .mockResolvedValue(mockConfiguration),
-            },
-          };
-
-          // The transport-preference prelude runs under the lock, while the
-          // configuration read is a device read on the lock-free path.
-          const withKeyringSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2')
-            .mockImplementation(async (_selector, fn) => {
-              return await fn({ keyring: mockKeyring });
-            });
-          const withKeyringUnsafeSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2Unsafe')
-            .mockImplementation(async (_selector, fn) => {
-              return await fn({ keyring: mockKeyring });
-            });
-
-          try {
-            const result = await metamaskController.getLedgerAppConfiguration();
-
-            expect(
-              mockKeyring.bridge.updateTransportMethod,
-            ).toHaveBeenCalledTimes(1);
-            expect(
-              mockKeyring.bridge.getAppConfiguration,
-            ).toHaveBeenCalledTimes(1);
-            expect(result).toStrictEqual(mockConfiguration);
-          } finally {
-            withKeyringSpy.mockRestore();
-            withKeyringUnsafeSpy.mockRestore();
-          }
-        });
-      });
-
-      describe('getLedgerMode', () => {
-        let remoteFeatureFlags;
-
-        beforeEach(() => {
-          remoteFeatureFlags = {};
-          jest
-            .spyOn(metamaskController.controllerMessenger, 'call')
-            .mockImplementation((action) => {
-              if (action === 'RemoteFeatureFlagController:getState') {
-                return { remoteFeatureFlags };
-              }
-              return {};
-            });
-        });
-
-        it('returns Legacy when the ledgerDmk flag is missing', () => {
-          const mode = metamaskController.getLedgerMode();
-          expect(mode).toBe('legacy');
-        });
-
-        it('returns Legacy when ledgerDmk is disabled', () => {
-          remoteFeatureFlags.ledgerDmk = {
-            enabled: false,
-            featureVersion: null,
-            minimumVersion: null,
-          };
-          const mode = metamaskController.getLedgerMode();
-          expect(mode).toBe('legacy');
-        });
-
-        it('returns DMK when ledgerDmk is enabled', () => {
-          remoteFeatureFlags.ledgerDmk = {
-            enabled: true,
-            featureVersion: '13.36.0',
-            minimumVersion: '13.36.0',
-          };
-          const mode = metamaskController.getLedgerMode();
-          expect(mode).toBe('dmk');
-        });
-
-        it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', () => {
-          jest
-            .spyOn(metamaskController.controllerMessenger, 'call')
-            .mockImplementation((action) => {
-              if (action === 'RemoteFeatureFlagController:getState') {
-                return {};
-              }
-              return {};
-            });
-
-          expect(metamaskController.getLedgerMode()).toBe('legacy');
-        });
-
-        it('returns DMK when a manifest override enables ledgerDmk', () => {
-          const { getManifestFlags } = jest.requireMock(
-            '../../shared/lib/manifestFlags',
-          );
-          getManifestFlags.mockReturnValueOnce({
-            remoteFeatureFlags: {
-              ledgerDmk: true,
-            },
-          });
-
-          expect(metamaskController.getLedgerMode()).toBe('dmk');
-        });
-      });
-
-      describe('setLedgerTransportPreference', () => {
-        it('returns the bridge transport update result', async () => {
-          const updateTransportMethod = jest.fn().mockResolvedValue(true);
-
-          const result = await metamaskController.setLedgerTransportPreference({
-            bridge: { updateTransportMethod },
-          });
-
-          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
-          expect(result).toBe(true);
-        });
-
-        it('returns undefined if the bridge does not expose transport updates', async () => {
-          const result = await metamaskController.setLedgerTransportPreference({
-            bridge: {},
-          });
-
-          expect(result).toBeUndefined();
-        });
-
-        it('rethrows errors from the bridge transport update', async () => {
-          const error = new Error('transport failed');
-
-          await expect(
-            metamaskController.setLedgerTransportPreference({
-              bridge: {
-                updateTransportMethod: jest.fn().mockRejectedValue(error),
-              },
-            }),
-          ).rejects.toThrow(error);
-        });
       });
 
       describe('getHardwareTypeForMetric', () => {
@@ -2654,145 +2298,6 @@ describe('MetaMaskController', () => {
           expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           expect(result).toBeDefined();
         });
-      });
-
-      describe('forgetDevice', () => {
-        it('should throw if it receives an unknown device name', async () => {
-          const result = metamaskController.forgetDevice(
-            'Some random device name',
-          );
-          await expect(result).rejects.toThrow(
-            'MetamaskController:#withKeyringForDevice - Unknown device',
-          );
-        });
-
-        it('should remove the identities when the device is forgotten', async () => {
-          await metamaskController.connectHardware(
-            HardwareDeviceNames.trezor,
-            0,
-          );
-          await metamaskController.unlockHardwareWalletAccount(
-            0,
-            HardwareDeviceNames.trezor,
-          );
-          const hardwareKeyringAccount =
-            metamaskController.keyringController.state.keyrings[1].accounts[0];
-
-          await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
-
-          expect(
-            metamaskController.accountsController
-              .listAccounts()
-              .some((account) => account.address === hardwareKeyringAccount),
-          ).toStrictEqual(false);
-        });
-
-        it('should wipe all the keyring info', async () => {
-          await metamaskController.connectHardware(
-            HardwareDeviceNames.trezor,
-            0,
-          );
-
-          await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
-          const keyrings =
-            await metamaskController.keyringController.getKeyringsByType(
-              KeyringType.trezor,
-            );
-
-          expect(keyrings[0].accounts).toStrictEqual([]);
-          expect(keyrings[0].page).toStrictEqual(0);
-          expect(keyrings[0].isUnlocked()).toStrictEqual(false);
-        });
-      });
-
-      describe('unlockHardwareWalletAccount', () => {
-        const accountToUnlock = 0;
-
-        it('throws if the keyring does not create an account', async () => {
-          const withKeyringV2Spy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyringV2')
-            .mockImplementation(async (selector, callback) => {
-              expect(selector).toStrictEqual({ type: KeyringTypeV2.Lattice });
-
-              return await callback({
-                keyring: {
-                  entropySource: 'test-entropy-source',
-                  createAccounts: jest.fn().mockResolvedValue([]),
-                  network: null,
-                },
-              });
-            });
-
-          try {
-            await expect(
-              metamaskController.unlockHardwareWalletAccount(
-                accountToUnlock,
-                HardwareDeviceNames.lattice,
-              ),
-            ).rejects.toThrow(
-              `No account created for device: ${HardwareDeviceNames.lattice}`,
-            );
-          } finally {
-            withKeyringV2Spy.mockRestore();
-          }
-        });
-
-        [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
-          (device) => {
-            describe(`using ${device}`, () => {
-              beforeEach(async () => {
-                await metamaskController.connectHardware(device, 0);
-              });
-
-              it('should return the unlocked account', async () => {
-                const { unlockedAccount } =
-                  await metamaskController.unlockHardwareWalletAccount(
-                    accountToUnlock,
-                    device,
-                  );
-
-                expect(unlockedAccount).toBe(
-                  KNOWN_PUBLIC_KEY_ADDRESSES[
-                    accountToUnlock
-                  ].address.toLowerCase(),
-                );
-              });
-
-              it('should add the unlocked account to KeyringController', async () => {
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  // 0: HD keyring, 1: Ledger/Trezor keyring (v2 Snap keyrings are lazy)
-                  metamaskController.keyringController.state.keyrings[1]
-                    .accounts,
-                ).toStrictEqual([
-                  KNOWN_PUBLIC_KEY_ADDRESSES[
-                    accountToUnlock
-                  ].address.toLowerCase(),
-                ]);
-              });
-
-              it('should call accountsController.setSelectedAccount', async () => {
-                jest.spyOn(
-                  metamaskController.accountsController,
-                  'setSelectedAccount',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.accountsController.setSelectedAccount,
-                ).toHaveBeenCalledTimes(1);
-              });
-            });
-          },
-        );
       });
     });
 
@@ -4508,7 +4013,10 @@ describe('MetaMaskController', () => {
 
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          password,
+          TEST_SEED,
+        );
         await metamaskController.legacyBackgroundApiService.submitPasswordOrEncryptionKey(
           { password },
         ); // Force-unlock to trigger Snap keyring creation.
@@ -4520,7 +4028,9 @@ describe('MetaMaskController', () => {
         // 0: Primary HD keyring
         expect(previousKeyrings).toHaveLength(1);
 
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
+        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
+          TEST_SEED_ALT,
+        );
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
@@ -4550,41 +4060,56 @@ describe('MetaMaskController', () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          password,
+          TEST_SEED,
+        );
         await expect(() =>
-          metamaskController.importMnemonicToVault(TEST_SEED),
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault(
+            TEST_SEED,
+          ),
         ).rejects.toThrow(
           'This Secret Recovery Phrase has already been imported.',
         );
       });
 
       it('calls discoverAndCreateAccounts when importMnemonicToVault runs after onboarding completes', async () => {
+        mockMessengerControllerAction(
+          metamaskController.accountTreeController,
+          'AccountTreeController:syncWithUserStorage',
+        ).mockResolvedValue();
+
         jest
           .spyOn(
-            metamaskController.accountTreeController,
-            'syncWithUserStorage',
+            metamaskController.legacyBackgroundApiService,
+            'discoverAndCreateAccounts',
           )
-          .mockResolvedValue();
-
-        jest
-          .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
-        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          'foo',
+          TEST_SEED,
+        );
 
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-        });
+        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
+          TEST_SEED_ALT,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
 
         // Wait for the fire-and-forget sync and discover operation to complete
         await new Promise((resolve) => setImmediate(resolve));
 
-        expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
+        expect(
+          metamaskController.legacyBackgroundApiService
+            .discoverAndCreateAccounts,
+        ).toHaveBeenCalled();
       });
 
       it('does not call discoverAndCreateAccounts before onboarding completes', async () => {
@@ -4595,20 +4120,30 @@ describe('MetaMaskController', () => {
           )
           .mockResolvedValue();
         jest
-          .spyOn(metamaskController, 'discoverAndCreateAccounts')
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'discoverAndCreateAccounts',
+          )
           .mockResolvedValue({});
 
-        await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+          'foo',
+          TEST_SEED,
+        );
 
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-        });
+        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
+          TEST_SEED_ALT,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
 
         await waitForAllPromises();
 
         expect(
-          metamaskController.discoverAndCreateAccounts,
+          metamaskController.legacyBackgroundApiService
+            .discoverAndCreateAccounts,
         ).not.toHaveBeenCalled();
       });
     });
@@ -4878,29 +4413,36 @@ describe('MetaMaskController', () => {
     });
 
     describe('#syncSeedPhrases', () => {
+      let fetchAllSecretDataMock;
+      let getSecretDataBackupStateMock;
+      let getIsSocialLoginFlowMock;
+
       beforeEach(async () => {
         // Unlock the keyring controller first
-        await metamaskController.createNewVaultAndKeychain('test-password');
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+          'test-password',
+        );
 
-        jest.spyOn(
+        getIsSocialLoginFlowMock = mockMessengerControllerAction(
           metamaskController.onboardingController,
-          'getIsSocialLoginFlow',
+          'OnboardingController:getIsSocialLoginFlow',
+        );
+        fetchAllSecretDataMock = mockMessengerControllerAction(
+          metamaskController.seedlessOnboardingController,
+          'SeedlessOnboardingController:fetchAllSecretData',
+        );
+        getSecretDataBackupStateMock = mockMessengerControllerAction(
+          metamaskController.seedlessOnboardingController,
+          'SeedlessOnboardingController:getSecretDataBackupState',
+        );
+        mockMessengerControllerAction(
+          metamaskController.seedlessOnboardingController,
+          'SeedlessOnboardingController:updateBackupMetadataState',
         );
         jest.spyOn(
-          metamaskController.seedlessOnboardingController,
-          'fetchAllSecretData',
+          metamaskController.legacyBackgroundApiService,
+          'importMnemonicToVault',
         );
-        jest.spyOn(
-          metamaskController.seedlessOnboardingController,
-          'getSecretDataBackupState',
-        );
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'updateBackupMetadataState',
-          )
-          .mockReturnValue();
-        jest.spyOn(metamaskController, 'importMnemonicToVault');
         jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
       });
 
@@ -4909,26 +4451,22 @@ describe('MetaMaskController', () => {
       });
 
       it('should throw error if not in social login flow', async () => {
-        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
-          false,
-        );
+        getIsSocialLoginFlowMock.mockReturnValue(false);
 
-        await expect(metamaskController.syncSeedPhrases()).rejects.toThrow(
+        await expect(
+          metamaskController.legacyBackgroundApiService.syncSeedPhrases(),
+        ).rejects.toThrow(
           'Syncing seed phrases is only available for social login flow',
         );
       });
 
       it('should throw error if no root SRP found', async () => {
-        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
-          true,
-        );
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [], // Empty array means no root SRP
-        );
+        getIsSocialLoginFlowMock.mockReturnValue(true);
+        fetchAllSecretDataMock.mockResolvedValue([]); // Empty array means no root SRP
 
-        await expect(metamaskController.syncSeedPhrases()).rejects.toThrow(
-          'No root SRP found',
-        );
+        await expect(
+          metamaskController.legacyBackgroundApiService.syncSeedPhrases(),
+        ).rejects.toThrow('No root SRP found');
       });
 
       it('should import new seed phrases that are not in local state', async () => {
@@ -4938,10 +4476,8 @@ describe('MetaMaskController', () => {
         const mockMnemonic =
           'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 
-        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
-          true,
-        );
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+        getIsSocialLoginFlowMock.mockReturnValue(true);
+        fetchAllSecretDataMock.mockResolvedValue(
           [mockRootSRP, mockOtherSRP1, mockOtherSRP2].map((srp) => ({
             data: srp,
             type: 'mnemonic',
@@ -4949,7 +4485,7 @@ describe('MetaMaskController', () => {
         );
 
         // First SRP exists in local state, second doesn't
-        metamaskController.seedlessOnboardingController.getSecretDataBackupState
+        getSecretDataBackupStateMock
           .mockReturnValueOnce({
             hash: 'existing-hash',
             type: 'mnemonic',
@@ -4960,29 +4496,26 @@ describe('MetaMaskController', () => {
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
-        await metamaskController.syncSeedPhrases();
+        await metamaskController.legacyBackgroundApiService.syncSeedPhrases();
 
         // Should only import the second SRP (the one that doesn't exist locally)
-        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
-          1,
-        );
-        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledWith(
-          mockMnemonic,
-          {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          },
-        );
+        expect(
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault,
+        ).toHaveBeenCalledWith(mockMnemonic, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+        });
       });
 
       it('should not import seed phrases that already exist in local state', async () => {
         const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
         const mockOtherSRP = new Uint8Array([5, 6, 7, 8]);
 
-        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
-          true,
-        );
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+        getIsSocialLoginFlowMock.mockReturnValue(true);
+        fetchAllSecretDataMock.mockResolvedValue(
           [mockRootSRP, mockOtherSRP].map((srp) => ({
             data: srp,
             type: 'mnemonic',
@@ -4990,17 +4523,17 @@ describe('MetaMaskController', () => {
         );
 
         // Both SRPs exist in local state
-        metamaskController.seedlessOnboardingController.getSecretDataBackupState.mockReturnValue(
-          {
-            hash: 'existing-hash',
-            type: 'mnemonic',
-          },
-        );
+        getSecretDataBackupStateMock.mockReturnValue({
+          hash: 'existing-hash',
+          type: 'mnemonic',
+        });
 
-        await metamaskController.syncSeedPhrases();
+        await metamaskController.legacyBackgroundApiService.syncSeedPhrases();
 
         // Should not import any SRPs since they all exist locally
-        expect(metamaskController.importMnemonicToVault).not.toHaveBeenCalled();
+        expect(
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault,
+        ).not.toHaveBeenCalled();
       });
 
       it('should handle multiple seed phrases that need to be imported', async () => {
@@ -5012,10 +4545,8 @@ describe('MetaMaskController', () => {
         const mockMnemonic2 =
           'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 
-        metamaskController.onboardingController.getIsSocialLoginFlow.mockReturnValue(
-          true,
-        );
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
+        getIsSocialLoginFlowMock.mockReturnValue(true);
+        fetchAllSecretDataMock.mockResolvedValue(
           [mockRootSRP, mockOtherSRP1, mockOtherSRP2].map((srp) => ({
             data: srp,
             type: 'mnemonic',
@@ -5023,7 +4554,7 @@ describe('MetaMaskController', () => {
         );
 
         // Both other SRPs don't exist in local state
-        metamaskController.seedlessOnboardingController.getSecretDataBackupState
+        getSecretDataBackupStateMock
           .mockReturnValueOnce(null) // First other SRP doesn't exist
           .mockReturnValueOnce(null); // Second other SRP doesn't exist
 
@@ -5047,14 +4578,14 @@ describe('MetaMaskController', () => {
           },
         );
 
-        await metamaskController.syncSeedPhrases();
+        await metamaskController.legacyBackgroundApiService.syncSeedPhrases();
 
         // Should import both SRPs that don't exist locally
-        expect(metamaskController.importMnemonicToVault).toHaveBeenCalledTimes(
-          2,
-        );
         expect(
-          metamaskController.importMnemonicToVault,
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault,
+        ).toHaveBeenCalledTimes(2);
+        expect(
+          metamaskController.legacyBackgroundApiService.importMnemonicToVault,
         ).toHaveBeenNthCalledWith(1, mockMnemonic1, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
@@ -5073,19 +4604,29 @@ describe('MetaMaskController', () => {
         Buffer.from(mockMnemonic, 'utf8').values(),
       );
 
+      let fetchAllSecretDataMock;
+
       beforeEach(async () => {
         // Unlock the keyring controller first
-        await metamaskController.createNewVaultAndKeychain('test-password');
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+          'test-password',
+        );
 
-        jest.spyOn(
+        fetchAllSecretDataMock = mockMessengerControllerAction(
           metamaskController.seedlessOnboardingController,
-          'fetchAllSecretData',
+          'SeedlessOnboardingController:fetchAllSecretData',
         );
 
         jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
 
-        jest.spyOn(metamaskController, 'createNewVaultAndRestore');
-        jest.spyOn(metamaskController, 'restoreSeedPhrasesToVault');
+        jest.spyOn(
+          metamaskController.legacyBackgroundApiService,
+          'createNewVaultAndRestore',
+        );
+        jest.spyOn(
+          metamaskController.legacyBackgroundApiService,
+          'restoreSeedPhrasesToVault',
+        );
       });
 
       afterEach(() => {
@@ -5112,30 +4653,31 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData, ...mockRemainingSecretData],
-        );
+        fetchAllSecretDataMock.mockResolvedValue([
+          mockFirstSecretData,
+          ...mockRemainingSecretData,
+        ]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const result =
-          await metamaskController.restoreSocialBackupAndGetSeedPhrase(
+          await metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
           );
 
-        expect(
-          metamaskController.seedlessOnboardingController.fetchAllSecretData,
-        ).toHaveBeenCalledWith(mockPassword);
+        expect(fetchAllSecretDataMock).toHaveBeenCalledWith(mockPassword);
         expect(
           utils.convertEnglishWordlistIndicesToCodepoints,
         ).toHaveBeenCalledWith(mockEncodedMnemonic);
         expect(
-          metamaskController.createNewVaultAndRestore,
+          metamaskController.legacyBackgroundApiService
+            .createNewVaultAndRestore,
         ).toHaveBeenCalledWith(mockPassword, mockEncodedSeedPhrase);
         expect(
-          metamaskController.restoreSeedPhrasesToVault,
+          metamaskController.legacyBackgroundApiService
+            .restoreSeedPhrasesToVault,
         ).toHaveBeenCalledWith(mockRemainingSecretData);
         expect(result).toBe(mockMnemonic);
       });
@@ -5150,24 +4692,24 @@ describe('MetaMaskController', () => {
           dataType: 1, // PrimarySrp
         };
 
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData],
-        );
+        fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const result =
-          await metamaskController.restoreSocialBackupAndGetSeedPhrase(
+          await metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
           );
 
         expect(
-          metamaskController.createNewVaultAndRestore,
+          metamaskController.legacyBackgroundApiService
+            .createNewVaultAndRestore,
         ).toHaveBeenCalledWith(mockPassword, mockEncodedSeedPhrase);
         expect(
-          metamaskController.restoreSeedPhrasesToVault,
+          metamaskController.legacyBackgroundApiService
+            .restoreSeedPhrasesToVault,
         ).not.toHaveBeenCalled();
         expect(result).toBe(mockMnemonic);
       });
@@ -5208,33 +4750,35 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData, ...mockRemainingSecretData],
-        );
+        fetchAllSecretDataMock.mockResolvedValue([
+          mockFirstSecretData,
+          ...mockRemainingSecretData,
+        ]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const result =
-          await metamaskController.restoreSocialBackupAndGetSeedPhrase(
+          await metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
             mockPassword,
           );
 
         expect(
-          metamaskController.restoreSeedPhrasesToVault,
+          metamaskController.legacyBackgroundApiService
+            .restoreSeedPhrasesToVault,
         ).toHaveBeenCalledWith(mockRemainingSecretData);
         expect(result).toBe(mockMnemonic);
       });
 
       it('should handle errors from fetchAllSecretData', async () => {
         const mockError = new Error('Failed to fetch secret data');
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockRejectedValue(
-          mockError,
-        );
+        fetchAllSecretDataMock.mockRejectedValue(mockError);
 
         await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
+          metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
+            mockPassword,
+          ),
         ).rejects.toThrow('Failed to fetch secret data');
       });
 
@@ -5248,21 +4792,21 @@ describe('MetaMaskController', () => {
           dataType: 1, // PrimarySrp
         };
 
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData],
-        );
+        fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const mockError = new Error('Failed to create vault');
-        metamaskController.createNewVaultAndRestore.mockRejectedValue(
+        metamaskController.legacyBackgroundApiService.createNewVaultAndRestore.mockRejectedValue(
           mockError,
         );
 
         await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
+          metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
+            mockPassword,
+          ),
         ).rejects.toThrow('Failed to create vault');
       });
 
@@ -5286,61 +4830,56 @@ describe('MetaMaskController', () => {
           },
         ];
 
-        metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
-          [mockFirstSecretData, ...mockRemainingSecretData],
-        );
+        fetchAllSecretDataMock.mockResolvedValue([
+          mockFirstSecretData,
+          ...mockRemainingSecretData,
+        ]);
 
         utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
         const mockError = new Error('Failed to restore seed phrases');
-        metamaskController.restoreSeedPhrasesToVault.mockRejectedValue(
+        metamaskController.legacyBackgroundApiService.restoreSeedPhrasesToVault.mockRejectedValue(
           mockError,
         );
 
         await expect(
-          metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
+          metamaskController.legacyBackgroundApiService.restoreSocialBackupAndGetSeedPhrase(
+            mockPassword,
+          ),
         ).rejects.toThrow('Failed to restore seed phrases');
       });
     });
 
     describe('#addNewSeedPhraseBackup', () => {
       it('should call addNewSecretData with ImportedSrp dataType', async () => {
-        await metamaskController.createNewVaultAndKeychain('test-password');
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+          'test-password',
+        );
 
         // Mock completedOnboarding to allow migration to run
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
-        // Migrations now run via the messenger action. Intercept that single
-        // action and let every other call fall through to the real handler.
-        // Returns false to indicate no migration was performed.
-        const realCall = metamaskController.controllerMessenger.call.bind(
-          metamaskController.controllerMessenger,
-        );
-        jest
-          .spyOn(metamaskController.controllerMessenger, 'call')
-          .mockImplementation((actionType, ...args) => {
-            if (actionType === 'SeedlessOnboardingController:runMigrations') {
-              return Promise.resolve(false);
-            }
-            return realCall(actionType, ...args);
-          });
+        // Migrations now run via the messenger action on LBAS's messenger
+        // (bound handlers), so replace the SeedlessOnboardingController handler.
+        mockMessengerControllerAction(
+          metamaskController.seedlessOnboardingController,
+          'SeedlessOnboardingController:runMigrations',
+        ).mockResolvedValue(false);
 
-        const addNewSecretDataSpy = jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'addNewSecretData',
-          )
-          .mockResolvedValue();
+        const addNewSecretDataSpy = mockMessengerControllerAction(
+          metamaskController.seedlessOnboardingController,
+          'SeedlessOnboardingController:addNewSecretData',
+        ).mockResolvedValue();
 
         const mockMnemonic =
           'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
         const mockKeyringId = 'test-keyring-id';
 
-        await metamaskController.addNewSeedPhraseBackup(
+        await metamaskController.legacyBackgroundApiService.addNewSeedPhraseBackup(
           mockMnemonic,
           mockKeyringId,
           true,
@@ -6526,9 +6065,16 @@ describe('MetaMaskController', () => {
 
   describe('discoverAndCreateAccounts', () => {
     let metamaskController;
+    let getMultichainAccountWalletSpy;
     const password = 'what-what-what';
 
     beforeEach(async () => {
+      // Spy before construction so messenger-bound handlers capture the mock.
+      getMultichainAccountWalletSpy = jest.spyOn(
+        MultichainAccountService.prototype,
+        'getMultichainAccountWallet',
+      );
+
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
@@ -6554,7 +6100,14 @@ describe('MetaMaskController', () => {
         }),
       });
 
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        password,
+        TEST_SEED,
+      );
+    });
+
+    afterEach(() => {
+      getMultichainAccountWalletSpy.mockRestore();
     });
 
     it('uses first HD keyring id when none provided and returns counts', async () => {
@@ -6570,13 +6123,10 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      const getMultichainAccountWalletSpy = jest.spyOn(
-        metamaskController.multichainAccountService,
-        'getMultichainAccountWallet',
-      );
       getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
-      const result = await metamaskController.discoverAndCreateAccounts();
+      const result =
+        await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts();
 
       expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
         entropySource: primaryId,
@@ -6597,14 +6147,12 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      const getMultichainAccountWalletSpy = jest.spyOn(
-        metamaskController.multichainAccountService,
-        'getMultichainAccountWallet',
-      );
       getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result =
-        await metamaskController.discoverAndCreateAccounts(providedId);
+        await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts(
+          providedId,
+        );
 
       expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
         entropySource: providedId,
@@ -6614,14 +6162,16 @@ describe('MetaMaskController', () => {
     });
 
     it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
-      const originalState = metamaskController.keyringController.state;
-      jest
-        .spyOn(metamaskController.keyringController, 'state', 'get')
-        .mockReturnValue({ ...originalState, keyrings: [] });
+      mockMessengerControllerAction(
+        metamaskController.keyringController,
+        'KeyringController:getState',
+        () => ({ keyrings: [] }),
+      );
 
       const warnSpy = jest.spyOn(log, 'warn');
 
-      const result = await metamaskController.discoverAndCreateAccounts();
+      const result =
+        await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts();
 
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
@@ -6636,19 +6186,12 @@ describe('MetaMaskController', () => {
         discoverAccounts: jest.fn().mockRejectedValue(new Error('boom')),
       };
 
-      metamaskController.messenger = {
-        call: jest.fn().mockReturnValue(wallet),
-      };
-
-      const getMultichainAccountWalletSpy = jest.spyOn(
-        metamaskController.multichainAccountService,
-        'getMultichainAccountWallet',
-      );
       getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const warnSpy = jest.spyOn(log, 'warn');
 
-      const result = await metamaskController.discoverAndCreateAccounts();
+      const result =
+        await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts();
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: boom',
@@ -6667,14 +6210,11 @@ describe('MetaMaskController', () => {
           .mockResolvedValue([{ type: SolAccountType.DataAccount }]),
       };
 
-      jest
-        .spyOn(
-          metamaskController.multichainAccountService,
-          'getMultichainAccountWallet',
-        )
-        .mockReturnValue(wallet);
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
-      await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+      await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts(
+        'test-keyring-id',
+      );
 
       expect(trace).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -6695,15 +6235,12 @@ describe('MetaMaskController', () => {
         discoverAccounts: jest.fn().mockResolvedValue([]),
       };
 
-      jest
-        .spyOn(
-          metamaskController.multichainAccountService,
-          'getMultichainAccountWallet',
-        )
-        .mockReturnValue(wallet);
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result =
-        await metamaskController.discoverAndCreateAccounts('test-keyring-id');
+        await metamaskController.legacyBackgroundApiService.discoverAndCreateAccounts(
+          'test-keyring-id',
+        );
 
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(trace).not.toHaveBeenCalled();
@@ -6713,6 +6250,7 @@ describe('MetaMaskController', () => {
 
   describe('OnboardingController:stateChange subscription', () => {
     let metamaskController;
+    let messengerCallSpy;
     const password = 'pw';
 
     async function publishOnboardingState(state) {
@@ -6750,9 +6288,21 @@ describe('MetaMaskController', () => {
         }),
       });
 
-      jest
-        .spyOn(metamaskController, 'discoverAndCreateAccounts')
-        .mockResolvedValue({});
+      const realCall = metamaskController.controllerMessenger.call.bind(
+        metamaskController.controllerMessenger,
+      );
+      messengerCallSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockImplementation((actionType, ...args) => {
+          if (
+            actionType ===
+            'LegacyBackgroundApiService:discoverAndCreateAccounts'
+          ) {
+            return Promise.resolve({});
+          }
+          return realCall(actionType, ...args);
+        });
+
       jest
         .spyOn(metamaskController, 'postOnboardingInitialization')
         .mockImplementation(noop);
@@ -6763,11 +6313,14 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
         .mockResolvedValue(undefined);
 
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        password,
+        TEST_SEED,
+      );
     });
 
     it('calls discoverAndCreateAccounts for each HD keyring when firstTimeFlowType is socialImport', async () => {
-      jest
+      const syncMock = jest
         .spyOn(
           metamaskController.accountTreeController,
           'syncWithUserStorageAtLeastOnce',
@@ -6793,21 +6346,22 @@ describe('MetaMaskController', () => {
         .filter((keyring) => keyring.type === 'HD Key Tree')
         .map((keyring) => keyring.metadata.id);
 
-      expect(
-        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        metamaskController.discoverAndCreateAccounts,
-      ).toHaveBeenCalledTimes(hdIds.length);
+      expect(syncMock).toHaveBeenCalledTimes(1);
+      const discoverCalls = messengerCallSpy.mock.calls.filter(
+        ([actionType]) =>
+          actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts',
+      );
+      expect(discoverCalls).toHaveLength(hdIds.length);
       hdIds.forEach((id) => {
-        expect(
-          metamaskController.discoverAndCreateAccounts,
-        ).toHaveBeenCalledWith(id);
+        expect(discoverCalls).toContainEqual([
+          'LegacyBackgroundApiService:discoverAndCreateAccounts',
+          id,
+        ]);
       });
     });
 
     it('calls discoverAndCreateAccounts when firstTimeFlowType is not socialImport', async () => {
-      jest
+      const syncMock = jest
         .spyOn(
           metamaskController.accountTreeController,
           'syncWithUserStorageAtLeastOnce',
@@ -6827,12 +6381,12 @@ describe('MetaMaskController', () => {
       // Allow async subscription handler to run
       await new Promise((resolve) => setImmediate(resolve));
 
-      expect(
-        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        metamaskController.discoverAndCreateAccounts,
-      ).toHaveBeenCalledTimes(1);
+      expect(syncMock).toHaveBeenCalledTimes(1);
+      const discoverCalls = messengerCallSpy.mock.calls.filter(
+        ([actionType]) =>
+          actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts',
+      );
+      expect(discoverCalls).toHaveLength(1);
     });
   });
 

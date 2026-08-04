@@ -3492,6 +3492,18 @@
   "discover": {
     "message": "Discover"
   },
+  "discoverSearchCap": {
+    "message": "cap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "No results found",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -7329,6 +7341,82 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookApply": {
+    "message": "Apply"
+  },
+  "perpsOrderBookBuy": {
+    "message": "Buy: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Listed by & Group by"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Order book connection lost"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Buy $1%, sell $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Group by"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listed by"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Loading order book"
+  },
+  "perpsOrderBookNoData": {
+    "message": "No order book data"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Price"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconnect"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconnecting to order book"
+  },
+  "perpsOrderBookResize": {
+    "message": "Resize order book"
+  },
+  "perpsOrderBookSell": {
+    "message": "Sell: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
+  "perpsOrderBookSize": {
+    "message": "Size"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookUsePrice": {
+    "message": "Use $1 as limit price",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
+  "perpsOrderBookValueType": {
+    "message": "Value type"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Order book showing bids and asks",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Order book showing bids only",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Order book showing asks only",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
+  },
   "perpsOrderDate": {
     "message": "Date"
   },
@@ -8835,6 +8923,300 @@
   },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Buy/Sell Tax"
+  },
+  "securityTrustBuyTax": {
+    "message": "Buy tax"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Continue anyway"
+  },
+  "securityTrustCreated": {
+    "message": "Created"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Security data unavailable"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "This security review is for evaluation only and does not constitute an endorsement or recommendation to trade."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Suspicious airdrop"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Can blacklist"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Can whitelist"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Concentrated supply"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Confidential transfers"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "External calls"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Fake volume"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Trading cooldown"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Hidden owner"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Established reputation"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "High sell fee"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "High trading volume"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Impersonator"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Likely impersonator"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Unconfirmed impersonator"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Possible impersonator"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Artificial volume"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mintable"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Listed on exchange"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Creator has low reputation"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Modifiable taxes"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Non-transferable"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Owner can change balance"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Possible price manipulation"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Proxy contract"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Rugpull risk"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Bot activity at launch"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Spam text"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Suspicious code"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Transfer reversals enabled"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Transfer hook enabled"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transfers pauseable"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Unsellable token"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Unstable price"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Published contract"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading"
+  },
+  "securityTrustMalicious": {
+    "message": "Malicious"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Malicious"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Serious risk signals detected on $1. We recommend not trading this token."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Serious risk signals detected on this token. We recommend not trading this token."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Malicious token"
+  },
+  "securityTrustMore": {
+    "message": "more"
+  },
+  "securityTrustNa": {
+    "message": "N/A"
+  },
+  "securityTrustNetwork": {
+    "message": "Network"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "No hidden fees detected"
+  },
+  "securityTrustNoIssues": {
+    "message": "No issues"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Official Links"
+  },
+  "securityTrustOther": {
+    "message": "Other"
+  },
+  "securityTrustRisky": {
+    "message": "Risky"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "This token is flagged as suspicious. Take a look at the risks before you continue."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Suspicious token"
+  },
+  "securityTrustSellTax": {
+    "message": "Sell tax"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "No risk signals detected. Always research any asset before trading."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Serious risk signals detected. We recommend avoiding this asset."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "No risk signals detected. Always research any asset before trading."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Cautionary signals detected. Review the flagged issues carefully before trading this asset."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Security analysis could not be loaded for this token."
+  },
+  "securityTrustSuspicious": {
+    "message": "Suspicious"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 is a suspicious token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "This is a suspicious token."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Security and trust"
+  },
+  "securityTrustTokenAge": {
+    "message": "Token age"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Token distribution"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Token Info"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Top 10 holders"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Total supply"
+  },
+  "securityTrustTransfer": {
+    "message": "Transfer"
+  },
+  "securityTrustType": {
+    "message": "Type"
+  },
+  "securityTrustVerified": {
+    "message": "Verified"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 is actively traded and is widely recognized. Verification is not an endorsement by MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Verified token"
+  },
+  "securityTrustWebsite": {
+    "message": "Website"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -11053,9 +11435,6 @@
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "This transaction will be reverted"
   },
@@ -11263,6 +11642,10 @@
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "View all",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
