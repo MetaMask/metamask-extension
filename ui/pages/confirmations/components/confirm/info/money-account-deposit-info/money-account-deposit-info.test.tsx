@@ -32,7 +32,7 @@ describe('MoneyAccountDepositInfo', () => {
     });
   });
 
-  it('renders CustomAmountInfo configured for a USD fiat deposit', () => {
+  it('renders CustomAmountInfo with the account row for a USD fiat deposit', () => {
     render(<MoneyAccountDepositInfo />);
 
     expect(screen.getByTestId('custom-amount-info')).toBeInTheDocument();
@@ -40,6 +40,7 @@ describe('MoneyAccountDepositInfo', () => {
       expect.objectContaining({
         autoFocusAmount: true,
         currency: 'usd',
+        displayAccountRow: true,
         hidePayTokenAmount: true,
       }),
       expect.anything(),
