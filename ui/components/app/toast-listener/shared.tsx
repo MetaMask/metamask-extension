@@ -9,6 +9,7 @@ type ToastContentOptions = {
   description?: string;
   dataTestId?: string;
   transactionId?: string;
+  to?: string;
 };
 
 export const ToastContent = ({
@@ -35,7 +36,10 @@ export function showPendingToast(id: string, options?: ToastContentOptions) {
 }
 
 export function showSuccessToast(id: string, options?: ToastContentOptions) {
-  toast.success(<ToastContent status="success" {...options} />, { id });
+  toast.success(<ToastContent status="success" {...options} />, {
+    id,
+    to: options?.to,
+  });
 }
 
 export function showFailedToast(id: string, options?: ToastContentOptions) {

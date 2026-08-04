@@ -9,6 +9,7 @@ import type {
   AccountTransactionsUpdatedEventPayload,
   Transaction,
 } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -16,6 +17,7 @@ import {
 } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
+import { TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
   dismissToast,
@@ -149,7 +151,7 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      const { id, status } = transactionMeta;
+      const { id, status, hash, chainId } = transactionMeta;
       if (!id || !status) {
         return;
       }
@@ -166,7 +168,10 @@ export function useTransactionEventToasts(): void {
           showPendingToast(toastId, props);
         }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        showSuccessToast(toastId, props);
+        const to = hash
+          ? `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`
+          : undefined;
+        showSuccessToast(toastId, { ...props, to });
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
           const transactions = store.getState().metamask?.transactions ?? [];

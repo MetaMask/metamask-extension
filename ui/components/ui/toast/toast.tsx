@@ -5,6 +5,7 @@ import {
   ToastBar,
   Toaster as ToasterBase,
 } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -22,6 +23,7 @@ export { toast } from 'react-hot-toast';
 
 export type ToastWithClose = Toast & {
   onClose?: () => void;
+  to?: string;
 };
 
 const statusMap = {
@@ -58,32 +60,49 @@ export function Toaster() {
     >
       {(item) => (
         <ToastBar toast={item} position={item.position ?? 'bottom-center'}>
-          {({ message }) => (
-            <>
-              {item.icon ?? (
-                <StatusIcon
-                  className="shrink-0"
-                  state={
-                    statusMap[item.type as keyof typeof statusMap] ??
-                    statusMap.loading
-                  }
+          {({ message }) => {
+            const { to, onClose } = item as ToastWithClose;
+            const body = (
+              <>
+                {item.icon ?? (
+                  <StatusIcon
+                    className="shrink-0"
+                    state={
+                      statusMap[item.type as keyof typeof statusMap] ??
+                      statusMap.loading
+                    }
+                  />
+                )}
+                {message}
+              </>
+            );
+
+            return (
+              <>
+                {to ? (
+                  <Link
+                    to={to}
+                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-inherit no-underline"
+                  >
+                    {body}
+                  </Link>
+                ) : (
+                  body
+                )}
+
+                <ButtonIcon
+                  ariaLabel={t('close')}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  className="self-start"
+                  onClick={() => {
+                    onClose?.();
+                    toast.dismiss(item.id);
+                  }}
                 />
-              )}
-
-              {message}
-
-              <ButtonIcon
-                ariaLabel={t('close')}
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                className="self-start"
-                onClick={() => {
-                  (item as ToastWithClose).onClose?.();
-                  toast.dismiss(item.id);
-                }}
-              />
-            </>
-          )}
+              </>
+            );
+          }}
         </ToastBar>
       )}
     </ToasterBase>

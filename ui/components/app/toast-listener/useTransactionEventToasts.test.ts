@@ -120,6 +120,7 @@ describe('useTransactionEventToasts', () => {
         transactionMeta: createTransactionMeta({
           id: 'id1',
           status: TransactionStatus.submitted,
+          hash: '0xabc',
         }),
       });
 
@@ -135,17 +136,20 @@ describe('useTransactionEventToasts', () => {
         transactionMeta: createTransactionMeta({
           id: 'id1',
           status: TransactionStatus.submitted,
+          hash: '0xabc',
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
           id: 'id1',
           status: TransactionStatus.confirmed,
+          hash: '0xabc',
         }),
       });
 
       expect(mockShowSuccessToast).toHaveBeenCalledWith('tx-id1', {
         transactionId: 'id1',
+        to: '/tx/eip155:1/0xabc',
       });
     });
 

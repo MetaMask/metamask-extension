@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   ToastContent,
+  showPendingToast,
   showSuccessToast,
   showToast,
   type ToastStatus,
@@ -106,6 +107,25 @@ describe('toast-listener/shared', () => {
 
     expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
       id: 'toast-id',
+    });
+  });
+
+  it('passes to as a toast option for success toasts only', () => {
+    showSuccessToast('toast-id', {
+      transactionId: 'tx-1',
+      to: '/tx/eip155:1/0xabc',
+    });
+    showPendingToast('pending-id', {
+      transactionId: 'tx-1',
+      to: '/tx/eip155:1/0xabc',
+    });
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+      to: '/tx/eip155:1/0xabc',
+    });
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'pending-id',
     });
   });
 });
