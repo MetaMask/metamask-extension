@@ -7,6 +7,7 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_TYPE,
   DEFAULT_RELATIVE_THRESHOLDS,
+  resolveBenchmarkMockMode,
   STAT_KEY,
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
@@ -1218,7 +1219,12 @@ export async function buildPerformanceBenchmarksSection(
       [BENCHMARK_PLATFORMS.CHROME],
       benchmarkBuildTypes,
     ),
-    fetchHistoricalPerformanceDataFromMain(),
+    // Population-matched: a mocked PR run is only ever compared against a
+    // mocked baseline, so the deltas reflect the commit rather than upstream
+    // latency. Yields no baseline until a matching series exists.
+    fetchHistoricalPerformanceDataFromMain(
+      resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME),
+    ),
   ]);
 
   const resolvedBaseline = baselineResult?.baseline ?? undefined;

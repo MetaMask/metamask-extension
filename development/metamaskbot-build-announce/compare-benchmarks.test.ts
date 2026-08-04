@@ -1,6 +1,9 @@
 import { promises as fs } from 'fs';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_MOCK_MODE,
+  THRESHOLD_SEVERITY,
+} from '../../shared/constants/benchmarks';
 import {
   runComparison,
   buildMetricLines,
@@ -106,6 +109,60 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
       expect(result.anyFailed).toBe(true);
       expect(result.comparisons[0].absoluteFailed).toBe(true);
+    });
+
+    it('does not fail on a live-population run, but still records the breach', () => {
+      // Same gated breach as above. On `live` the timing carries upstream
+      // latency that is not a property of the commit, so it is reported
+      // rather than blocking.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-startupStandardHome',
+          data: {
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
+              p75: { uiStartup: 99999 },
+              p95: { uiStartup: 99999 },
+              mean: { uiStartup: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {}, BENCHMARK_MOCK_MODE.LIVE);
+
+      expect(result.anyFailed).toBe(false);
+      expect(result.enforced).toBe(false);
+      expect(result.mockMode).toBe(BENCHMARK_MOCK_MODE.LIVE);
+      // The measurement is unchanged — only the consequence is.
+      expect(result.comparisons[0].absoluteFailed).toBe(true);
+    });
+
+    it('reports a live-population breach as a warning with an explanatory result line', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-startupStandardHome',
+          data: {
+            startupStandardHome: makeBenchmarkResults('uiStartup', {
+              p75: { uiStartup: 99999 },
+              p95: { uiStartup: 99999 },
+              mean: { uiStartup: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {}, BENCHMARK_MOCK_MODE.LIVE);
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      try {
+        printReport(result);
+        const allCalls = consoleSpy.mock.calls.flat().join('\n');
+        expect(allCalls).toContain('WARN  startupStandardHome');
+        expect(allCalls).not.toMatch(/FAIL\s+startupStandardHome/u);
+        expect(allCalls).toContain('NOT enforced');
+        expect(allCalls).toContain('RESULT: PASS (ceilings not enforced)');
+      } finally {
+        consoleSpy.mockRestore();
+      }
     });
 
     it('does not fail when a non-allowlisted metric exceeds its fail threshold', () => {

@@ -132,11 +132,22 @@ assemble_performance_data() {
 
     echo "Collected ${file_count} preset(s)" >&2
 
+    # Record which network population produced these numbers. Consumers only
+    # ever build a baseline from entries matching their own population — a
+    # `live` run carries upstream latency that a `mocked` run does not, so
+    # blending them yields deltas that describe the internet rather than the
+    # commit. Mirrors resolveBenchmarkMockMode() in shared/constants/benchmarks.ts.
+    local mock_mode='mocked'
+    if [[ "${RAW_BRANCH}" == "main" || "${RAW_BRANCH}" == release/* ]]; then
+        mock_mode='live'
+    fi
+
     # presets_json can exceed ARG_MAX; pass it via stdin instead of as a jq argument
     # (a too-large argv makes the kernel fail to exec jq with "Argument list too long").
     printf '%s' "${presets_json}" | jq \
         --argjson timestamp "$(date +%s000)" \
-        '{ timestamp: $timestamp, presets: . }'
+        --arg mockMode "${mock_mode}" \
+        '{ timestamp: $timestamp, mockMode: $mockMode, presets: . }'
 }
 
 # Resolve stats file and assemble data

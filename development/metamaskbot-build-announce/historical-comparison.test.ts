@@ -1,3 +1,4 @@
+import { BENCHMARK_MOCK_MODE } from '../../shared/constants/benchmarks';
 import {
   aggregateHistoricalData,
   aggregateHistoricalDataWithCommit,
@@ -65,7 +66,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('averages across the 3 most recent commits', () => {
-    const result = aggregateHistoricalData(mockFile);
+    const result = aggregateHistoricalData(mockFile, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1500);
     expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1650);
@@ -92,7 +93,7 @@ describe('aggregateHistoricalData', () => {
       },
     };
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
     expect(result['userActions/loadNewAccount']?.loadNewAccount?.mean).toBe(
@@ -101,7 +102,7 @@ describe('aggregateHistoricalData', () => {
   });
 
   it('returns empty object when data has no commits', () => {
-    const result = aggregateHistoricalData({});
+    const result = aggregateHistoricalData({}, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result).toStrictEqual({});
   });
@@ -113,7 +114,7 @@ describe('aggregateHistoricalData', () => {
       good: makeCommit(),
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
   });
@@ -135,7 +136,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/badEntry']).toBeUndefined();
     expect(result['pageLoad/goodEntry']?.uiStartup?.mean).toBe(800);
@@ -159,7 +160,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/entry']?.good?.mean).toBe(500);
     expect(result['pageLoad/entry']?.good?.p75).toBe(550);
@@ -172,7 +173,7 @@ describe('aggregateHistoricalData', () => {
       c1: { timestamp: 1 },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result).toStrictEqual({});
   });
@@ -188,7 +189,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/standardHome']).toBeUndefined();
     expect(result['userActions/loadNewAccount']?.loadNewAccount?.mean).toBe(
@@ -226,7 +227,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     // stdDev true-branch: result should include a stdDev field
     expect(result['pageLoad/entry']?.metric).toHaveProperty('stdDev');
@@ -264,7 +265,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     // mean([Infinity, -Infinity]) = NaN → entry must be skipped
     expect(result['pageLoad/nanEntry']).toBeUndefined();
@@ -284,7 +285,7 @@ describe('aggregateHistoricalData', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/entry']?.metric?.mean).toBe(500);
     expect(result['pageLoad/entry']?.metric?.p75).toBe(500);
@@ -306,7 +307,10 @@ describe('aggregateHistoricalDataWithCommit', () => {
       ghi789: makeCommit({ timestamp: 1_700_000_002 }),
     };
 
-    const result = aggregateHistoricalDataWithCommit(data);
+    const result = aggregateHistoricalDataWithCommit(
+      data,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result.latestCommit).toBe('ghi789');
     expect(result.latestTimestamp).toBe(1_700_000_002);
@@ -317,7 +321,10 @@ describe('aggregateHistoricalDataWithCommit', () => {
   it('returns empty string and 0 timestamp when data is empty', () => {
     const data: HistoricalPerformanceFile = {};
 
-    const result = aggregateHistoricalDataWithCommit(data);
+    const result = aggregateHistoricalDataWithCommit(
+      data,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result.latestCommit).toBe('');
     expect(result.latestTimestamp).toBe(0);
@@ -331,7 +338,10 @@ describe('aggregateHistoricalDataWithCommit', () => {
       middle: makeCommit({ timestamp: 1_700_000_001 }),
     };
 
-    const result = aggregateHistoricalDataWithCommit(data);
+    const result = aggregateHistoricalDataWithCommit(
+      data,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result.latestCommit).toBe('newest');
     expect(result.latestTimestamp).toBe(1_700_000_003);
@@ -344,7 +354,10 @@ describe('aggregateHistoricalDataWithCommit', () => {
       nullTimestamp: { timestamp: null, presets: {} },
     });
 
-    const result = aggregateHistoricalDataWithCommit(data);
+    const result = aggregateHistoricalDataWithCommit(
+      data,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result.latestCommit).toBe('valid');
     expect(result.latestTimestamp).toBe(1_700_000_001);
@@ -390,7 +403,10 @@ describe('aggregateHistoricalDataWithCommit', () => {
       }),
     };
 
-    const result = aggregateHistoricalDataWithCommit(data);
+    const result = aggregateHistoricalDataWithCommit(
+      data,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result.latestCommit).toBe('commit3');
     expect(result.latestTimestamp).toBe(1_700_000_002);
@@ -425,7 +441,9 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
   it('fetches from main and returns aggregated data with commit info', async () => {
     mockFetch.mockReturnValueOnce(makeOkResponse(mockFile));
 
-    const result = await fetchHistoricalPerformanceDataFromMain();
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result?.baseline['pageLoad/standardHome']?.uiStartup?.mean).toBe(
       1500,
@@ -440,7 +458,9 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
   it('returns null when main has no data', async () => {
     mockFetch.mockReturnValueOnce(makeNotFoundResponse());
 
-    const result = await fetchHistoricalPerformanceDataFromMain();
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result).toBeNull();
   });
@@ -448,7 +468,9 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
   it('returns null when main returns an empty object', async () => {
     mockFetch.mockReturnValueOnce(makeOkResponse({}));
 
-    const result = await fetchHistoricalPerformanceDataFromMain();
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result).toBeNull();
   });
@@ -469,7 +491,7 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1000);
     expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1300);
@@ -492,7 +514,7 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
       },
     });
 
-    const result = aggregateHistoricalData(data);
+    const result = aggregateHistoricalData(data, BENCHMARK_MOCK_MODE.LIVE);
 
     // p95 should fall back to the mean value (1000)
     expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1000);
@@ -508,7 +530,9 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
     });
     mockFetch.mockReturnValueOnce(makeOkResponse(invalidData));
 
-    const result = await fetchHistoricalPerformanceDataFromMain();
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result).toBeNull();
   });
@@ -516,8 +540,111 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
   it('returns null when fetch throws', async () => {
     mockFetch.mockRejectedValue(new Error('network error'));
 
-    const result = await fetchHistoricalPerformanceDataFromMain();
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
 
     expect(result).toBeNull();
+  });
+
+  it('returns null when the file holds no entries for the requested population', async () => {
+    // Every entry is `live`; a mocked consumer must get nothing rather than a
+    // cross-population baseline.
+    mockFetch.mockReturnValueOnce(makeOkResponse(mockFile));
+
+    const result = await fetchHistoricalPerformanceDataFromMain(
+      BENCHMARK_MOCK_MODE.MOCKED,
+    );
+
+    expect(result).toBeNull();
+  });
+});
+
+describe('population separation', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const mixedFile: HistoricalPerformanceFile = {
+    liveCommit: makeCommit({
+      timestamp: 1_700_000_000,
+      mockMode: BENCHMARK_MOCK_MODE.LIVE,
+      presets: {
+        pageLoad: {
+          standardHome: {
+            mean: { uiStartup: 9000 },
+            p75: { uiStartup: 9000 },
+            p95: { uiStartup: 9000 },
+          },
+        },
+      },
+    }),
+    mockedCommit: makeCommit({
+      timestamp: 1_700_000_001,
+      mockMode: BENCHMARK_MOCK_MODE.MOCKED,
+      presets: {
+        pageLoad: {
+          standardHome: {
+            mean: { uiStartup: 1000 },
+            p75: { uiStartup: 1000 },
+            p95: { uiStartup: 1000 },
+          },
+        },
+      },
+    }),
+  };
+
+  it('builds the baseline only from entries matching the requested population', () => {
+    const live = aggregateHistoricalData(mixedFile, BENCHMARK_MOCK_MODE.LIVE);
+    const mocked = aggregateHistoricalData(
+      mixedFile,
+      BENCHMARK_MOCK_MODE.MOCKED,
+    );
+
+    // Never the 5000 that averaging the two populations together would give.
+    expect(live['pageLoad/standardHome']?.uiStartup?.mean).toBe(9000);
+    expect(mocked['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
+  });
+
+  it('treats entries written before mode was recorded as live', () => {
+    // All existing history predates the field, and every one of those runs
+    // was a main/release push — which is live by construction.
+    const legacyOnly: HistoricalPerformanceFile = {
+      legacy: makeCommit({
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 4242 },
+              p75: { uiStartup: 4242 },
+              p95: { uiStartup: 4242 },
+            },
+          },
+        },
+      }),
+    };
+
+    expect(
+      aggregateHistoricalData(legacyOnly, BENCHMARK_MOCK_MODE.LIVE)[
+        'pageLoad/standardHome'
+      ]?.uiStartup?.mean,
+    ).toBe(4242);
+    expect(
+      aggregateHistoricalData(legacyOnly, BENCHMARK_MOCK_MODE.MOCKED),
+    ).toStrictEqual({});
+  });
+
+  it('reports provenance from the selected population, not the newest entry overall', () => {
+    const result = aggregateHistoricalDataWithCommit(
+      mixedFile,
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
+
+    // `mockedCommit` is newer, but it is not what the baseline was built from.
+    expect(result.latestCommit).toBe('liveCommit');
+    expect(result.latestTimestamp).toBe(1_700_000_000);
   });
 });

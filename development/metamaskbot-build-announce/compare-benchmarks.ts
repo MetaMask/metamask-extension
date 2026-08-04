@@ -10,8 +10,15 @@
  * node development/metamaskbot-build-announce/compare-benchmarks.ts \
  * --current <path-to-benchmark-json-directory>
  *
+ * Absolute ceilings are enforced only for `mocked` runs. A `live` run's
+ * timings include upstream latency that is not a property of the commit and
+ * drifts on its own — a fixed ceiling over such a series goes red and stays
+ * red regardless of what lands. Live breaches are still reported, as
+ * warnings, so the signal is kept without blocking on it.
+ *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, or
+ * the run measured the `live` population and ceilings were not enforced
  * 1 — at least one allowlisted metric exceeded its fail threshold;
  * non-allowlisted breaches are degraded to warnings and do not block
  * 2 — usage error or fatal crash
@@ -21,8 +28,13 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
 
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_MOCK_MODE,
+  resolveBenchmarkMockMode,
+  THRESHOLD_SEVERITY,
+} from '../../shared/constants/benchmarks';
 import type {
+  BenchmarkMockMode,
   ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
@@ -69,10 +81,14 @@ export async function loadCurrentBenchmarks(
 }
 
 /**
- * Loads the historical baseline.
+ * Loads the historical baseline for a population.
+ *
+ * @param mockMode - Population the current run measured.
  */
-async function loadBaseline(): Promise<HistoricalBaselineReference> {
-  const result = await fetchHistoricalPerformanceDataFromMain();
+async function loadBaseline(
+  mockMode: BenchmarkMockMode,
+): Promise<HistoricalBaselineReference> {
+  const result = await fetchHistoricalPerformanceDataFromMain(mockMode);
   return result?.baseline ?? {};
 }
 
@@ -81,11 +97,20 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
  *
  * @param benchmarks - Loaded benchmark files.
  * @param baseline - Historical baseline reference.
+ * @param mockMode - Population the run measured. Ceilings block only for
+ * `mocked`; `live` breaches are reported without failing the gate.
  */
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
-): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
+  mockMode: BenchmarkMockMode = BENCHMARK_MOCK_MODE.MOCKED,
+): {
+  comparisons: BenchmarkEntryComparison[];
+  anyFailed: boolean;
+  mockMode: BenchmarkMockMode;
+  enforced: boolean;
+} {
+  const enforced = mockMode === BENCHMARK_MOCK_MODE.MOCKED;
   const comparisons: BenchmarkEntryComparison[] = [];
   let anyFailed = false;
 
@@ -137,13 +162,13 @@ export function runComparison(
 
       comparisons.push(comparison);
 
-      if (comparison.absoluteFailed) {
+      if (comparison.absoluteFailed && enforced) {
         anyFailed = true;
       }
     }
   }
 
-  return { comparisons, anyFailed };
+  return { comparisons, anyFailed, mockMode, enforced };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -314,10 +339,27 @@ function formatName(comparison: BenchmarkEntryComparison): string {
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
   anyFailed: boolean;
+  mockMode?: BenchmarkMockMode;
+  enforced?: boolean;
 }): void {
+  const enforced = result.enforced ?? true;
+
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Quality Gate');
   console.log('═══════════════════════════════════════');
+
+  if (!enforced) {
+    console.log(
+      `\nNOTE  This run measured the "${result.mockMode ?? BENCHMARK_MOCK_MODE.LIVE}" population — upstream requests`,
+    );
+    console.log(
+      '      reached real servers, so timings carry latency that is not a property',
+    );
+    console.log(
+      '      of this commit. Absolute ceilings are reported below but NOT enforced;',
+    );
+    console.log('      they gate mocked runs (PRs) only.');
+  }
 
   // Pre-compute metric lines to avoid duplicate work
   const withLines = result.comparisons.map((c) => ({
@@ -325,10 +367,15 @@ export function printReport(result: {
     lines: buildMetricLines(c),
   }));
 
-  const failed = withLines.filter((w) => w.comparison.absoluteFailed);
+  // A ceiling breach only groups as FAIL when this run's population is
+  // actually gated; otherwise it is reported alongside the warnings.
+  const isBlocking = (w: { comparison: BenchmarkEntryComparison }): boolean =>
+    w.comparison.absoluteFailed && enforced;
+
+  const failed = withLines.filter(isBlocking);
   const warned = withLines.filter(
     (w) =>
-      !w.comparison.absoluteFailed &&
+      !isBlocking(w) &&
       (w.comparison.absoluteViolations.some(
         (v) => v.severity === THRESHOLD_SEVERITY.Warn,
       ) ||
@@ -336,7 +383,7 @@ export function printReport(result: {
   );
   const passed = withLines.filter(
     (w) =>
-      !w.comparison.absoluteFailed &&
+      !isBlocking(w) &&
       !w.comparison.absoluteViolations.some(
         (v) => v.severity === THRESHOLD_SEVERITY.Warn,
       ) &&
@@ -390,6 +437,13 @@ export function printReport(result: {
     console.log(
       '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
     );
+  } else if (!enforced) {
+    const breaches = withLines.filter(
+      (w) => w.comparison.absoluteFailed,
+    ).length;
+    console.log(
+      `\nRESULT: PASS (ceilings not enforced) — ${breaches} benchmark(s) exceeded a constant fail limit, reported as warnings`,
+    );
   } else {
     console.log('\nRESULT: PASS — all benchmarks within constant limits');
   }
@@ -414,9 +468,12 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const baseline = await loadBaseline();
+  // Same branch-derived value the benchmark harness used to decide whether to
+  // mock, so the gate evaluates the population that was actually measured.
+  const mockMode = resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME);
+  const baseline = await loadBaseline(mockMode);
 
-  const result = runComparison(benchmarks, baseline);
+  const result = runComparison(benchmarks, baseline, mockMode);
   printReport(result);
 
   process.exit(result.anyFailed ? 1 : 0);
