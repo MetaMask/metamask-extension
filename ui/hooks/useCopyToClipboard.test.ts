@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { DEFAULT_UI_DELAY, useCopyToClipboard } from './useCopyToClipboard';
 
 describe('useCopyToClipboard', () => {
