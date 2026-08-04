@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import { getFromAccount } from '../../../../../ducks/bridge/selectors';
@@ -8,7 +9,6 @@ import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
-import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
 
 jest.mock('../../../../../store/hooks', () => ({
   useDispatch: jest.fn(),

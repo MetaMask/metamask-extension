@@ -10,11 +10,11 @@ import { BigNumber } from 'bignumber.js';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
+import type { BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 import {
   computeHasSufficientGasForQuoteForMetrics,
   useHasSufficientGasForQuoteForMetrics,
 } from './useHasSufficientGasForQuoteForMetrics';
-import type { BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),

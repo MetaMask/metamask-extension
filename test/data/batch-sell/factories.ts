@@ -1,4 +1,10 @@
 import type { CaipAssetType } from '@metamask/utils';
+import {
+  sumAmounts,
+  type DeepPartial,
+  type QuoteResponse,
+  type selectBatchSellQuotes,
+} from '@metamask/bridge-controller';
 import type { BatchSellAsset } from '../../../ui/ducks/batch-sell/types';
 import type {
   SendAssetEntry,
@@ -6,12 +12,6 @@ import type {
   BatchSellQuotesResults,
 } from '../../../ui/pages/batch-sell/pages/review/types';
 import { BATCH_SELL_ASSET_IDS, BATCH_SELL_CHAIN_ID } from './constants';
-import {
-  sumAmounts,
-  type DeepPartial,
-  type QuoteResponse,
-  type selectBatchSellQuotes,
-} from '@metamask/bridge-controller';
 
 export function buildBatchSellAsset(
   overrides: Partial<BatchSellAsset> = {},

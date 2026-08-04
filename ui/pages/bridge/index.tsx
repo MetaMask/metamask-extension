@@ -18,7 +18,6 @@ import {
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
-import { Column } from './layout';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,

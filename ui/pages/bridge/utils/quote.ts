@@ -4,11 +4,11 @@ import {
   sumAmounts,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
+import { parseCaipAssetType } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { parseCaipAssetType } from '@metamask/utils';
 
 export const formatTokenAmount = (
   locale: string,

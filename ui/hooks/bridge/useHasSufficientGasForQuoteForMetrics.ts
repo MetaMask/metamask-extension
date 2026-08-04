@@ -8,7 +8,6 @@ import {
 import { BigNumber } from 'bignumber.js';
 import {
   getFromNativeBalance,
-  getFromToken,
   getQuoteRequest,
   isNativeBalanceInsufficientForQuote,
   resolveMinimumBalanceToKeep,
@@ -73,7 +72,6 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
  */
 export const useHasSufficientGasForQuoteForMetrics = () => {
   const nativeBalance = useSelector(getFromNativeBalance);
-  const fromToken = useSelector(getFromToken);
   const quoteRequest = useSelector(getQuoteRequest);
   const minimumBalanceForRentExemptionInSOL = useSelector(
     (state: BridgeAppState) =>
@@ -93,11 +91,6 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
         minimumBalanceToKeep,
       });
     },
-    [
-      nativeBalance,
-      fromToken,
-      quoteRequest,
-      minimumBalanceForRentExemptionInSOL,
-    ],
+    [nativeBalance, quoteRequest, minimumBalanceForRentExemptionInSOL],
   );
 };
