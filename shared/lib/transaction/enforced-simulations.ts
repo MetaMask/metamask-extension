@@ -172,9 +172,11 @@ function isTrusted(
   // and therefore enforces.
   //
   // Recipients that no scan path covers stay cache misses and are treated as
-  // trusted here. The trust-signals middleware only scans a transaction's own
-  // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
-  // nothing is scanned at all when the user has security alerts disabled.
+  // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
+  // and `wallet_sendCalls` requests (including each nested call's `to`), but
+  // nothing is scanned when the user has security alerts disabled, and the
+  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
+  // batch) is never scanned, so its cache miss never disqualifies.
   if (!chainId) {
     return false;
   }
