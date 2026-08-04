@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -7,6 +8,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { SensitiveText } from '../../../component-library';
+// `SensitiveText` is a legacy component-library component and takes that
+// library's `TextVariant`, which is a different enum from the design-system-react
+// one used elsewhere in this file even though the values coincide.
+import { TextVariant as LegacyTextVariant } from '../../../../helpers/constants/design-system';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
@@ -52,6 +59,7 @@ export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
  */
 export const MoneyAccountBalance = () => {
   const t = useI18nContext();
+  const { privacyMode } = useSelector(getPreferences);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const { totalFiatFormatted, lastKnownTotalFiatFormatted } =
     useMoneyAccountBalance();
@@ -75,12 +83,18 @@ export const MoneyAccountBalance = () => {
       <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
         {t('moneyBalanceTitle')}
       </Text>
-      <Text
-        variant={TextVariant.HeadingLg}
+      {/*
+        Honours the privacy-mode setting, as every other balance on the account
+        overview does. Without it, turning balances off would leave the Money
+        row as the one figure still on screen.
+      */}
+      <SensitiveText
+        variant={LegacyTextVariant.headingLg}
+        isHidden={privacyMode}
         data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
       >
         {balance}
-      </Text>
+      </SensitiveText>
       {isLastKnown ? (
         <Text
           variant={TextVariant.BodyXs}
