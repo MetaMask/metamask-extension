@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useSettingsI18n } from './useSettingsI18n';
 

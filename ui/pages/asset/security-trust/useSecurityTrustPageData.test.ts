@@ -1,7 +1,7 @@
-import { SolScope } from '@metamask/keyring-api';
-import { renderHook } from '@testing-library/react-hooks';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
+import { SolScope } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
+import { renderHook } from '@testing-library/react';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import type { Token } from '../../../components/app/assets/types';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
