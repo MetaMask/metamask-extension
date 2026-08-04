@@ -4861,11 +4861,11 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
           CHAIN_IDS.MONAD,
+          CHAIN_IDS.BSC,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
-          CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
         ];
