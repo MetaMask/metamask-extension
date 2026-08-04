@@ -7,6 +7,7 @@ import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-cont
 import type { Hex } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
+import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useAutomaticTransactionPayToken } from './useAutomaticTransactionPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -18,6 +19,7 @@ jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
 jest.mock('./useWithdrawTokenFilter');
+jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../../../../selectors', () => ({}));
 jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
@@ -49,19 +51,31 @@ function renderHookWithProvider({
   preferredToken,
   transactionType,
   transactionId = TRANSACTION_ID_MOCK,
+  from = '0x123',
+  confirmContextValue: confirmContextValueOverride,
 }: {
   disable?: boolean;
   preferredToken?: SetPayTokenRequest;
   transactionType?: TransactionType;
   transactionId?: string;
+  from?: string;
+  confirmContextValue?: {
+    currentConfirmation: {
+      id: string;
+      type?: TransactionType;
+      txParams: { from: string };
+    };
+    isScrollToBottomCompleted: boolean;
+    setIsScrollToBottomCompleted: jest.Mock;
+  };
 } = {}) {
   const store = mockStore(STATE_MOCK);
 
-  const confirmContextValue = {
+  const confirmContextValue = confirmContextValueOverride ?? {
     currentConfirmation: {
       id: transactionId,
       type: transactionType,
-      txParams: { from: '0x123' },
+      txParams: { from },
     },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
@@ -106,6 +120,9 @@ describe('useAutomaticTransactionPayToken', () => {
   const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
     usePostQuoteWithdrawTokenFilter,
   );
+  const useTransactionAccountOverrideMock = jest.mocked(
+    useTransactionAccountOverride,
+  );
 
   const setPayTokenMock = jest.fn();
 
@@ -125,6 +142,7 @@ describe('useAutomaticTransactionPayToken', () => {
     ]);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
     usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
       isFilterApplied: false,
@@ -381,5 +399,94 @@ describe('useAutomaticTransactionPayToken', () => {
     rerender();
 
     expect(setPayTokenMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-selects the pay token when the account override changes', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        address: TOKEN_ADDRESS_2_MOCK as Hex,
+        chainId: CHAIN_ID_2_MOCK as Hex,
+      } as never,
+      setPayToken: setPayTokenMock,
+    });
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_1_MOCK, chainId: CHAIN_ID_1_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_3_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+
+    rerender();
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_3_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('does not select the required-token fallback when account override changes with no funding tokens', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+    expect(setPayTokenMock).toHaveBeenCalled();
+    setPayTokenMock.mockClear();
+
+    // Simulate TransactionPayController clearing paymentToken on override.
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: setPayTokenMock,
+    });
+
+    rerender();
+
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
+  it('selects a funding token once tokens load after an account override change', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+    expect(setPayTokenMock).toHaveBeenCalled();
+    setPayTokenMock.mockClear();
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: setPayTokenMock,
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_3_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    rerender();
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_3_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
   });
 });

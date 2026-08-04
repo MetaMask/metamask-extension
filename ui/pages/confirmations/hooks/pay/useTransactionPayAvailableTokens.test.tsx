@@ -3,9 +3,11 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
+import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
+jest.mock('./useTransactionPayBlockedTokens');
 jest.mock('../../utils/transaction-pay', () => ({
   ...jest.requireActual('../../utils/transaction-pay'),
   getAvailableTokens: jest.fn(),
@@ -33,13 +35,22 @@ const TOKEN_MOCK: Asset = {
 
 describe('useTransactionPayAvailableTokens', () => {
   const useSendTokensMock = jest.mocked(useSendTokens);
+  const useTransactionPayBlockedTokensMock = jest.mocked(
+    useTransactionPayBlockedTokens,
+  );
   const getAvailableTokensMock = jest.mocked(
     transactionPayUtils.getAvailableTokens,
   );
 
+  const blockedTokensMock = {
+    chainIds: ['0xa4b1'],
+    tokens: [],
+  };
+
   beforeEach(() => {
     jest.resetAllMocks();
     useSendTokensMock.mockReturnValue([SEND_TOKEN_MOCK]);
+    useTransactionPayBlockedTokensMock.mockReturnValue(blockedTokensMock);
     getAvailableTokensMock.mockReturnValue([TOKEN_MOCK]);
   });
 
@@ -49,7 +60,7 @@ describe('useTransactionPayAvailableTokens', () => {
     expect(result.current).toMatchObject([TOKEN_MOCK]);
   });
 
-  it('calls getAvailableTokens with tokens from useSendTokens', () => {
+  it('calls getAvailableTokens with tokens and LD blocked tokens', () => {
     renderHook(() => useTransactionPayAvailableTokens());
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith({
@@ -60,6 +71,7 @@ describe('useTransactionPayAvailableTokens', () => {
           chainId: '0x123',
         }),
       ]),
+      blockedTokens: blockedTokensMock,
     });
   });
 
