@@ -4,7 +4,6 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   selectAllNetworksFromNetworkSelect,
-  selectOnlyNetworkFromNetworkSelect,
   switchToNetworkFromNetworkSelect,
 } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -217,7 +216,6 @@ describe('Tron - Assets', function (this: Suite) {
             await landOnTronHome(driver);
             const tokensTab = new TokensTab(driver);
             await waitForTronAssetList(tokensTab);
-            await selectOnlyNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
             await tokensTab.checkOnlyAssetsArePresent([
               'Tron',
               'GasFreeTransferSolution',

@@ -34,31 +34,12 @@ export const selectAllNetworksFromNetworkSelect = async (
 
 /**
  * Opens the network filter from the asset list and enables only the given
- * network, scoping the asset list to it. Prefer
- * `switchToNetworkFromNetworkSelect` unless the caller has already waited for
- * the network's Snap to be ready.
+ * network, scoping the asset list to it.
  *
  * @param driver - The webdriver instance.
  * @param networkCategory - The tab the network is listed under.
- * @param networkName - The display name of the network to select.
+ * @param networkName - The display name of the network to switch to.
  */
-export const selectOnlyNetworkFromNetworkSelect = async (
-  driver: Driver,
-  networkCategory: string,
-  networkName: string,
-) => {
-  console.log(
-    `Selecting only network: ${networkName} in category: ${networkCategory}`,
-  );
-  const tokensTab = new TokensTab(driver);
-  const networkManager = new NetworkManager(driver);
-
-  await tokensTab.openNetworksFilter();
-  await networkManager.checkPageIsLoaded();
-  await networkManager.selectTab(networkCategory);
-  await networkManager.selectNetworkByNameWithWait(networkName);
-};
-
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
   networkCategory: string,
@@ -67,16 +48,17 @@ export const switchToNetworkFromNetworkSelect = async (
   console.log(
     `Switching to network: ${networkName} in category: ${networkCategory}`,
   );
+  const tokensTab = new TokensTab(driver);
+  const networkManager = new NetworkManager(driver);
 
   if (NON_EVM_NETWORKS_NEEDING_DELAY.includes(networkName)) {
     await driver.delay(NON_EVM_SNAP_READY_DELAY_MS);
   }
 
-  await selectOnlyNetworkFromNetworkSelect(
-    driver,
-    networkCategory,
-    networkName,
-  );
+  await tokensTab.openNetworksFilter();
+  await networkManager.checkPageIsLoaded();
+  await networkManager.selectTab(networkCategory);
+  await networkManager.selectNetworkByNameWithWait(networkName);
 };
 
 export async function waitForNetworkManagerBackdropToClear(
