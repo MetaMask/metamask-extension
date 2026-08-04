@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
-  ToastContent,
   showPendingToast,
   showSuccessToast,
   showToast,
@@ -47,56 +46,18 @@ describe('toast-listener/shared', () => {
     });
   });
 
-  it('renders the transaction title in ToastContent', () => {
-    render(<ToastContent status="pending" />);
-
-    expect(mockUseToastLabel).toHaveBeenCalledWith('pending', undefined);
-    expect(
-      screen.getByText(messages.transactionSubmitted.message),
-    ).toBeInTheDocument();
-  });
-
-  it('renders custom toast content', () => {
-    render(
-      <ToastContent
-        status="success"
-        title={messages.perpsWithdrawPostQuoteToastSuccessTitle.message}
-        description="$20.73 BNB moved to your wallet"
-      />,
-    );
-
-    expect(
-      screen.getByText(
-        messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('$20.73 BNB moved to your wallet'),
-    ).toBeInTheDocument();
-  });
-
-  it('shows a pending toast', () => {
-    showToast('toast-id', 'pending' as ToastStatus);
+  it('shows a pending toast with the derived title', () => {
+    showPendingToast('toast-id');
 
     expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
       id: 'toast-id',
     });
-  });
 
-  it('shows a success toast', () => {
-    showToast('toast-id', 'success' as ToastStatus);
-
-    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
-  });
-
-  it('shows a failed toast', () => {
-    showToast('toast-id', 'failed' as ToastStatus);
-
-    expect(mockToastError).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
+    render(mockToastLoading.mock.calls[0][0]);
+    expect(mockUseToastLabel).toHaveBeenCalledWith('pending', undefined);
+    expect(
+      screen.getByText(messages.transactionSubmitted.message),
+    ).toBeInTheDocument();
   });
 
   it('shows a custom success toast', () => {
@@ -107,6 +68,59 @@ describe('toast-listener/shared', () => {
 
     expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
       id: 'toast-id',
+    });
+
+    render(mockToastSuccess.mock.calls[0][0]);
+    expect(
+      screen.getByText(
+        messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('$20.73 BNB moved to your wallet'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows a pending toast via showToast', () => {
+    showToast('toast-id', 'pending' as ToastStatus);
+
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+    });
+  });
+
+  it('shows a success toast via showToast', () => {
+    showToast('toast-id', 'success' as ToastStatus);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+    });
+  });
+
+  it('shows a failed toast via showToast', () => {
+    showToast('toast-id', 'failed' as ToastStatus);
+
+    expect(mockToastError).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+    });
+  });
+
+  it('passes to as a toast option for success toasts only', () => {
+    showSuccessToast('toast-id', {
+      transactionId: 'tx-1',
+      to: '/tx/eip155:1/0xabc',
+    });
+    showPendingToast('pending-id', {
+      transactionId: 'tx-1',
+      to: '/tx/eip155:1/0xabc',
+    });
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+      to: '/tx/eip155:1/0xabc',
+    });
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'pending-id',
     });
   });
 
