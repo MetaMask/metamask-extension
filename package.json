@@ -323,7 +323,7 @@
     },
     "@metamask/tron-wallet-snap": {
       "type": "breaking",
-      "previewVersion": "2.0.0-preview-f24e2ee"
+      "previewVersion": "2.0.0-preview-e3b05f64"
     }
   },
   "dependencies": {
