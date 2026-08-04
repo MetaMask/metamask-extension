@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { setGasSponsorshipOptOut } from '../../../../store/actions';
