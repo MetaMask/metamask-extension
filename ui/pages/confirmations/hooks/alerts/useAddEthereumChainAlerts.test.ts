@@ -1,5 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as confirmContext from '../../context/confirm';
 import * as safeChains from '../../../../components/multichain/networks-form/use-safe-chains';

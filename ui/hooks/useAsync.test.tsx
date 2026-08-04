@@ -1,5 +1,5 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import React from 'react';
+import { act, render, renderHook, waitFor } from '@testing-library/react';
 import {
   useAsyncResult,
   useAsyncResultOrThrow,
@@ -9,10 +9,32 @@ import {
   RESULT_PENDING,
 } from './useAsync';
 
+class TestErrorBoundary extends React.Component<
+  { children: React.ReactNode; onError: (error: Error) => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    this.props.onError(error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+    return this.props.children;
+  }
+}
+
 // Helper to create a controlled promise for testing timing scenarios
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const createControlledPromise = <T>() => {
+const createControlledPromise = <T,>() => {
   let resolve!: (value: T) => void;
   let reject!: (error: Error) => void;
   const promise = new Promise<T>((res, rej) => {
@@ -25,7 +47,7 @@ const createControlledPromise = <T>() => {
 // Test helpers
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const successState = <T>(value: T) =>
+const successState = <T,>(value: T) =>
   expect.objectContaining({
     status: 'success',
     value,
@@ -128,6 +150,8 @@ describe('useAsyncCallback', () => {
 
     const { result, rerender } = renderHook(
       ({ value }) =>
+        // Intentionally re-run when `value` changes for the race-condition case.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         useAsyncCallback(async () => await currentPromise, [value]),
       { initialProps: { value: 'test1' } },
     );
@@ -283,34 +307,66 @@ describe('useAsyncResult', () => {
 describe('useAsyncResultOrThrow', () => {
   it('throws errors for error boundaries to catch', async () => {
     const error = new Error('Boundary error');
-    const { result } = renderHook(() =>
-      useAsyncResultOrThrow(() => Promise.reject(error)),
-    );
+    let capturedError: Error | undefined;
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
 
-    await waitFor(() => {
-      expect(() => result.current).toThrow(error);
-    });
+    const Consumer = () => {
+      useAsyncResultOrThrow(() => Promise.reject(error));
+      return null;
+    };
+
+    try {
+      render(
+        <TestErrorBoundary
+          onError={(thrown) => {
+            capturedError = thrown;
+          }}
+        >
+          <Consumer />
+        </TestErrorBoundary>,
+      );
+
+      await waitFor(() => {
+        expect(capturedError).toBe(error);
+      });
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it('preserves error properties when throwing', async () => {
     type CustomError = Error & { code?: string };
     const error = new Error('Context error') as CustomError;
     error.code = 'CUSTOM_CODE';
+    let capturedError: CustomError | undefined;
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
 
-    const { result } = renderHook(() =>
-      useAsyncResultOrThrow(() => Promise.reject(error)),
-    );
+    const Consumer = () => {
+      useAsyncResultOrThrow(() => Promise.reject(error));
+      return null;
+    };
 
-    await waitFor(() => {
-      expect(() => result.current).toThrow(error);
-    });
     try {
-      Object.prototype.toString.call(result.current);
-      fail('Should have thrown');
-    } catch (e) {
-      const thrownError = e as CustomError;
-      expect(thrownError).toBe(error);
-      expect(thrownError.code).toBe('CUSTOM_CODE');
+      render(
+        <TestErrorBoundary
+          onError={(thrown) => {
+            capturedError = thrown as CustomError;
+          }}
+        >
+          <Consumer />
+        </TestErrorBoundary>,
+      );
+
+      await waitFor(() => {
+        expect(capturedError).toBe(error);
+        expect(capturedError?.code).toBe('CUSTOM_CODE');
+      });
+    } finally {
+      consoleError.mockRestore();
     }
   });
 });
