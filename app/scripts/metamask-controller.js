@@ -4548,7 +4548,7 @@ export default class MetamaskController extends EventEmitter {
    * {@link MoneyAccountAvailabilityService} for the caching and for why it is
    * not a deposit pre-flight check.
    *
-   * @returns {Promise<import('./lib/money/money-account-availability').MoneyAccountAvailability>} The availability, with the money address when available.
+   * @returns {Promise<import('../../shared/lib/money/availability').MoneyAccountAvailability>} The availability, with the money address when available.
    */
   async getMoneyAccountAvailability() {
     return this.moneyAccountAvailabilityService.getAvailability();

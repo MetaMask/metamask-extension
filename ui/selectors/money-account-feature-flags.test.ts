@@ -3,6 +3,7 @@ import type { RemoteFeatureFlagsState } from '../../shared/lib/selectors/remote-
 import {
   parseMoneyAccountVaultConfig,
   selectMoneyAccountDepositQuotePipelineEnabled,
+  selectMoneyAccountFeatureEnabled,
   selectMoneyAccountVaultConfig,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
@@ -113,6 +114,45 @@ describe('parseMoneyAccountVaultConfig', () => {
       expect(parseMoneyAccountVaultConfig(raw)).toBeUndefined();
     });
   }
+});
+
+describe('selectMoneyAccountFeatureEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: false, minimumVersion: '0.0.1' },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved', () => {
+    expect(selectMoneyAccountFeatureEnabled(mockState())).toBe(false);
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyAccountFeatureEnabled(
+        mockState({
+          moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('selectMoneyAccountVaultConfig', () => {

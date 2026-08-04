@@ -6,6 +6,7 @@ import {
 } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { isMoneyAccountEnabled } from '../../shared/lib/money/feature-flags';
 
 /**
  * The Money Account vault contracts, parsed from the
@@ -111,6 +112,26 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
   }
   return undefined;
 };
+
+/**
+ * Selects whether the `moneyEnableMoneyAccount` flag is on.
+ *
+ * Deliberately the same parser the background's availability gate calls
+ * (`isMoneyAccountEnabled`) over the same `RemoteFeatureFlagController` state,
+ * read here through its Redux mirror. One flag, one version-gate
+ * interpretation, so the UI cannot disagree with the gate about whether the
+ * feature is on.
+ *
+ * On its own this is **not** enough to show anything: an enabled flag with no
+ * upgraded money account still shows nothing. Use `useMoneyAccountInfo`.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the Money Account feature flag is enabled.
+ */
+export const selectMoneyAccountFeatureEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAccountEnabled,
+);
 
 /**
  * Selects the Money Account vault config, or `undefined` when the flag is

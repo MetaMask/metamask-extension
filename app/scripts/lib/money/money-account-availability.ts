@@ -10,6 +10,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
@@ -39,17 +40,7 @@ export type MoneyAccountAvailabilityMessenger = Messenger<
   KeyringControllerUnlockEvent
 >;
 
-/**
- * Whether this user has a usable Money Account, and its address when they do.
- *
- * The address is only present in the available case: when the account is
- * unavailable the entire Money surface is hidden, so there is nothing for a
- * caller to render it against. Callers get one answer rather than a flag per
- * input to recombine.
- */
-export type MoneyAccountAvailability =
-  | { isAvailable: true; address: Hex }
-  | { isAvailable: false };
+export type { MoneyAccountAvailability };
 
 const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 
