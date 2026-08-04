@@ -172,16 +172,16 @@
   "previewBuilds": {
     "@metamask/bridge-controller": {
       "type": "breaking",
-      "previewVersion": "78.0.3-preview-60e0d4cd3"
+      "previewVersion": "78.1.0-preview-426400357"
     },
     "@metamask/bridge-status-controller": {
       "type": "breaking",
-      "previewVersion": "74.6.1-preview-60e0d4cd3"
+      "previewVersion": "74.6.2-preview-426400357"
     }
   },
   "resolutions": {
-    "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@78.0.3-preview-60e0d4cd3",
-    "@metamask/bridge-status-controller": "npm:@metamask-previews/bridge-status-controller@74.6.1-preview-60e0d4cd3",
+    "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@78.1.0-preview-426400357",
+    "@metamask/bridge-status-controller": "npm:@metamask-previews/bridge-status-controller@74.6.2-preview-426400357",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
