@@ -62,13 +62,18 @@ describe('RampMetadataSection', () => {
       data: { from: '0xabc' },
     } as RampOrderItem;
 
-    const { container } = render(
+    const { getByTestId, getByText, queryByTestId } = render(
       <RampMetadataSection
         item={item}
         statusDescription="Waiting for payment"
       />,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByTestId('transaction-status')).toHaveTextContent('pending');
+    expect(getByText('Waiting for payment')).toBeInTheDocument();
+    expect(getByTestId('account-name')).toHaveTextContent('0xabc');
+    expect(getByText('formatted-date')).toBeInTheDocument();
+    expect(queryByTestId('network-name')).not.toBeInTheDocument();
+    expect(queryByTestId('transaction-id')).not.toBeInTheDocument();
   });
 });

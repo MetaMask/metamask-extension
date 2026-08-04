@@ -113,7 +113,14 @@ describe('TransactionDetails', () => {
       />,
     );
 
-    expect(getByTestId('template-loader')).toMatchSnapshot();
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-item-type',
+      'send',
+    );
+    expect(getByTestId('template-loader')).toHaveAttribute(
+      'data-chain-id',
+      'eip155:1',
+    );
   });
 
   it('prefers a seeded activity item over generic resolution', () => {
