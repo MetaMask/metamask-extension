@@ -15,7 +15,13 @@ export type TronDetailsExpectation = {
 };
 
 export async function landOnTronHome(driver: Driver): Promise<NonEvmHomepage> {
-  await login(driver);
+  // Activity assertions use mocked transaction history, not live balances.
+  // Skipping balance and non-EVM account waits keeps each case under CI shard
+  // time limits (see tron-send.flow.ts for the same pattern).
+  await login(driver, {
+    validateBalance: false,
+    waitForNonEvmAccounts: false,
+  });
   await selectTronNetwork(driver);
 
   const homePage = new NonEvmHomepage(driver);

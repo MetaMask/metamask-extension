@@ -31,7 +31,6 @@ const APPROVE_ICON_CONSOLE_ERRORS = [
 const A_RECIPIENT = 'TBEPnZeEVRJWtJwqY4f3VWEtf9jKyQ4HAu';
 const A_SENDER = 'TPwezUWpEGmFBENNWJHwXHRG1D2NCEEt5s';
 const A_SPENDER = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
 const EVM_ACTIVITY_TRANSACTION = {
   hash: '0x1000000000000000000000000000000000000000000000000000000000000001',
   timestamp: new Date(1_234).toISOString(),
@@ -115,6 +114,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           ignoredConsoleErrors: APPROVE_ICON_CONSOLE_ERRORS,
           title: this.test?.fullTitle(),
         },
@@ -161,6 +161,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -206,6 +207,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -255,6 +257,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -299,6 +302,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           ignoredConsoleErrors: APPROVE_ICON_CONSOLE_ERRORS,
           title: this.test?.fullTitle(),
         },
@@ -349,6 +353,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -392,6 +397,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -435,6 +441,7 @@ describe('Tron - Activity', function (this: Suite) {
             },
           ],
           fixtures: new FixtureBuilderV2().build(),
+          includeAnvil: false,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
