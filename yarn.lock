@@ -5842,10 +5842,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:2.0.0"
-  checksum: 10/4be09daf16be0407b3e02650229d471a3306ccfc910c45f363689df8c47e4c89492c8386cb3d82387cfd6cd11f5a3cfe81dbd1ea32282694d5a4acccb9fb26fe
+"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@2.0.0-preview-be6d7f2c":
+  version: 2.0.0-preview-be6d7f2c
+  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:2.0.0-preview-be6d7f2c"
+  checksum: 10/94850d7e3877a6a5b200427a9b0617d26a304fe6e2343e3046e4f20af9a7a7c1c80c2046b06f71e58abf07ad56efe9b098fa380796c2d92c8050624a5300cee9
   languageName: node
   linkType: hard
 

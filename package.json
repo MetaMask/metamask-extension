@@ -317,6 +317,10 @@
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
   },
   "previewBuilds": {
+    "@metamask/bitcoin-wallet-snap": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-be6d7f2c"
+    },
     "@metamask/tron-wallet-snap": {
       "type": "breaking",
       "previewVersion": "2.0.0-preview-f24e2ee"

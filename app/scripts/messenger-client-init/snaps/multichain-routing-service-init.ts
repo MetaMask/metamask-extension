@@ -44,7 +44,7 @@ export async function withSnapKeyring(
             if (!isSnapKeyring(keyring)) {
               throw new Error('Expected v2 Snap keyring');
             }
-            const response = await keyring.submitRequest({
+            return keyring.submitRequest({
               id: crypto.randomUUID(),
               origin: request.origin,
               scope: request.scope,
@@ -54,21 +54,6 @@ export async function withSnapKeyring(
                 params: request.params,
               },
             });
-            // Some v2 snaps (e.g. Bitcoin wallet snap v2.0.0) incorrectly wrap
-            // their response in a v1 KeyringResponse envelope
-            // { pending: false, result: ... }. Unwrap it so callers receive
-            // the inner result directly, as the v2 protocol expects.
-            if (
-              response !== null &&
-              typeof response === 'object' &&
-              !Array.isArray(response) &&
-              'pending' in response &&
-              'result' in response &&
-              response.pending === false
-            ) {
-              return (response as { pending: false; result: Json }).result;
-            }
-            return response;
           },
         ) as Promise<Json>,
     },
