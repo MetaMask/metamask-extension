@@ -2535,7 +2535,9 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "ethers>@ethersproject/wallet": true,
@@ -2552,6 +2554,7 @@
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-method-registry": true,
+        "@metamask/transaction-controller>ethereum-cryptography": true,
         "webpack>events": true,
         "lodash": true,
         "uuid": true
@@ -3028,6 +3031,11 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -4697,6 +4705,16 @@
       },
       "packages": {
         "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/transaction-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
