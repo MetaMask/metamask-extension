@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
+import { MoneyAccountBalance } from '../../app/money/money-account-balance';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -32,6 +33,14 @@ export const AccountOverviewLayout = ({
         <NetworkConnectionBanner />
 
         {children}
+
+        {/*
+          Renders nothing unless there is a Money Account with a balance to
+          show, which is every user until the Money keyring is registered. Sits
+          below the hero balance and above the carousel, mirroring where mobile
+          puts it on the wallet home.
+        */}
+        <MoneyAccountBalance />
 
         <Carousel />
       </div>
