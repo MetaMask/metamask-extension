@@ -30,17 +30,11 @@ class ConnectAccountConfirmation {
     tag: 'button',
   };
 
-  private readonly editPermissionsButton = '[data-testid="edit"]';
-
   private readonly originHeader = (origin: string) => {
     return {
       tag: 'h2',
       text: origin,
     };
-  };
-
-  private readonly permissionsTab = {
-    testId: 'permissions-tab',
   };
 
   constructor(driver: Driver) {
@@ -78,10 +72,6 @@ class ConnectAccountConfirmation {
     );
   }
 
-  async goToPermissionsTab(): Promise<void> {
-    await this.driver.clickElement(this.permissionsTab);
-  }
-
   async isConfirmButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.confirmConnectButton, {
@@ -98,14 +88,6 @@ class ConnectAccountConfirmation {
   async openEditAccountsModal(): Promise<void> {
     console.log('Open edit accounts modal');
     await this.driver.clickElement(this.editAccountButton);
-  }
-
-  async openEditNetworksModal(): Promise<void> {
-    console.log('Open edit networks modal');
-    const editButtons = await this.driver.findElements(
-      this.editPermissionsButton,
-    );
-    await editButtons[1].click();
   }
 }
 

@@ -1,29 +1,24 @@
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../pages/dialog/network-permission-select-modal';
+import { updateConnectedSiteNetworkSelection } from './permissions.flow';
 
 /**
- * Selects the Devnet checkbox in the permissions tab during connection.
+ * Ensures Solana Devnet is permitted for the connected site from Connected sites.
  *
  * @param driver
  */
 const selectDevnet = async (driver: Driver): Promise<void> => {
-  console.log('select devnet on permissions tab');
-
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.checkPageIsLoaded();
-  await connectAccountConfirmation.goToPermissionsTab();
-  await connectAccountConfirmation.openEditNetworksModal();
-
-  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.checkPageIsLoaded();
-  await networkPermissionSelectModal.selectNetwork({
-    networkName: 'Solana Devnet',
-  });
-  await networkPermissionSelectModal.clickConfirmEditButton();
+  console.log('select devnet on connected sites page');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await updateConnectedSiteNetworkSelection(driver, DAPP_HOST_ADDRESS, [
+    {
+      networkName: 'Solana Devnet',
+      shouldBeSelected: true,
+    },
+  ]);
 };
 
 /**
@@ -54,13 +49,13 @@ export const connectSolanaTestDapp = async (
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  if (options?.includeDevnet) {
-    await selectDevnet(driver);
-  }
-
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
+
+  if (options?.includeDevnet) {
+    await selectDevnet(driver);
+  }
 
   await testDapp.switchTo();
   console.log('solana test dapp connected');

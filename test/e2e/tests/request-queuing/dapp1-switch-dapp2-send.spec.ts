@@ -1,20 +1,20 @@
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
+  DAPP_HOST_ADDRESS,
   DAPP_ONE_URL,
   DAPP_URL,
   DEFAULT_FIXTURE_ACCOUNT_ID,
   WINDOW_TITLES,
 } from '../../constants';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
+import { confirmConnectAndUpdateSiteNetworks } from '../../page-objects/flows/connect.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
@@ -82,25 +82,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        // Disconnect Localhost 8545
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
+          {
+            networkName: 'Localhost 8545',
+            shouldBeSelected: false,
+          },
+        ]);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -230,27 +217,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Disconnect Localhost 8545
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
+          {
+            networkName: 'Localhost 8545',
+            shouldBeSelected: false,
+          },
+        ]);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

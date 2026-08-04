@@ -5,10 +5,10 @@ import {
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import { updateConnectedSiteNetworksToOnly } from '../../page-objects/flows/permissions.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
-import { WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import {
   account1Short,
@@ -95,27 +95,18 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           // Start connection
           await testDapp.connectToWallet(connectionLibrary);
 
-          // Open the permissions modal
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
           await connectAccountConfirmation.checkPageIsLoaded();
-
-          // Deselect all networks except "Ethereum"
-          await connectAccountConfirmation.goToPermissionsTab();
-          await connectAccountConfirmation.openEditNetworksModal();
-
-          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-            driver,
-          );
-          await networkPermissionSelectModal.checkPageIsLoaded();
-          await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
-          await networkPermissionSelectModal.clickConfirmEditButton();
-
-          // Click connect
-          await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await updateConnectedSiteNetworksToOnly(driver, DAPP_HOST_ADDRESS, [
+            'Ethereum',
+          ]);
 
           // Switch back to test dapp
           await testDapp.switchTo();

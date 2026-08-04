@@ -208,9 +208,8 @@ describe('MM Connect-EVM', function (this: Suite) {
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
           await testDapp.connectLegacy();
-          // Pre-permit Polygon so the switch only tests chain-switching, not
-          // the combined "approve new network + switch" flow.
-          await approveConnect(driver, { extraNetworks: ['Polygon'] });
+          // Default connect grants all enabled networks, including Polygon.
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
@@ -392,7 +391,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           await testDapp.openPage();
           await testDapp.connectWagmi();
 
-          await approveConnect(driver, { extraNetworks: ['Optimism'] });
+          await approveConnect(driver);
           await testDapp.switchTo();
           await testDapp.checkWagmiCardVisible();
 

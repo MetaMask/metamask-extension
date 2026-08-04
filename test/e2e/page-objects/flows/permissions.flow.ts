@@ -96,3 +96,56 @@ export async function getPermissionsPageForHost(
   await sitePermissionPage.checkPageIsLoaded(hostname);
   return sitePermissionPage;
 }
+
+type NetworkSelectionUpdate = {
+  networkName: string;
+  shouldBeSelected: boolean;
+};
+
+/**
+ * Updates the connected site's permitted networks from the Connected sites page.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param updates - Network display names and desired selection state.
+ */
+export async function updateConnectedSiteNetworkSelection(
+  driver: Driver,
+  hostname: string,
+  updates: NetworkSelectionUpdate[],
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+
+  for (const { networkName, shouldBeSelected } of updates) {
+    await networkPermissionSelectModal.selectNetwork({
+      networkName,
+      shouldBeSelected,
+    });
+  }
+
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}
+
+/**
+ * Updates the connected site's permitted networks so only the specified
+ * networks remain selected.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param selectedNetworkNames - Network display names that should remain selected.
+ */
+export async function updateConnectedSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await networkPermissionSelectModal.updateNetworkStatus(selectedNetworkNames);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}

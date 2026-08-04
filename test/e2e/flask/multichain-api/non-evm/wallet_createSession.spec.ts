@@ -1,11 +1,11 @@
+import { strict as assert } from 'assert';
 import { withFixtures } from '../../../helpers';
-import { SOLANA_MAINNET_SCOPE } from '../../../constants';
+import { SOLANA_MAINNET_SCOPE, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 
@@ -26,7 +26,6 @@ describe('Multichain API - Non EVM', function () {
           };
 
           const requestScopes = Object.keys(requestScopesToNetworkMap);
-          const networksToRequest = Object.values(requestScopesToNetworkMap);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -38,16 +37,20 @@ describe('Multichain API - Non EVM', function () {
             driver,
           );
           await connectAccountConfirmation.checkPageIsLoaded();
-          await connectAccountConfirmation.goToPermissionsTab();
-          await connectAccountConfirmation.openEditNetworksModal();
+          await connectAccountConfirmation.confirmConnect();
 
-          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-            driver,
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
           );
-          await networkPermissionSelectModal.checkPageIsLoaded();
-          await networkPermissionSelectModal.checkNetworkStatus(
-            networksToRequest,
-          );
+          await testDapp.checkPageIsLoaded();
+
+          const getSessionResult = await testDapp.getSession();
+          for (const scope of requestScopes) {
+            assert.ok(
+              getSessionResult.sessionScopes[scope],
+              `scope ${scope} should be granted`,
+            );
+          }
         },
       );
     });

@@ -1,0 +1,224 @@
+import { KnownCaipNamespace } from '@metamask/utils';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../selectors/selectors.types';
+import { getDefaultConnectChainIds } from './connect-default-chains';
+
+const ethMainnet = {
+  caipChainId: 'eip155:1',
+  chainId: 'eip155:1',
+  name: 'Ethereum Mainnet',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+const polygon = {
+  caipChainId: 'eip155:137',
+  chainId: 'eip155:137',
+  name: 'Polygon Mainnet',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+const sepolia = {
+  caipChainId: 'eip155:11155111',
+  chainId: 'eip155:11155111',
+  name: 'Sepolia Testnet',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+const solana = {
+  caipChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana Mainnet',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+const tron = {
+  caipChainId: MultichainNetworks.TRON,
+  chainId: MultichainNetworks.TRON,
+  name: 'Tron Mainnet',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+const bsc = {
+  caipChainId: 'eip155:56',
+  chainId: 'eip155:56',
+  name: 'BNB Smart Chain',
+} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+
+describe('getDefaultConnectChainIds', () => {
+  const baseParams = {
+    nonTestNetworkConfigurations: [ethMainnet, polygon, solana],
+    testNetworkConfigurations: [sepolia],
+    currentlySelectedNetworkChainId: ethMainnet.caipChainId,
+    requestedCaipChainIds: [] as (typeof ethMainnet.caipChainId)[],
+    alreadyConnectedCaipChainIds: [] as (typeof ethMainnet.caipChainId)[],
+    requestedNamespaces: [KnownCaipNamespace.Eip155] as KnownCaipNamespace[],
+    requestedNamespacesWithoutWallet: [
+      KnownCaipNamespace.Eip155,
+    ] as KnownCaipNamespace[],
+    isEip1193Request: false,
+    isSolanaWalletStandardRequest: false,
+    isTronWalletAdapterRequest: false,
+  };
+
+  it('returns all default networks for EIP-1193 requests with no specific chains', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      isEip1193Request: true,
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      solana.caipChainId,
+    ]);
+  });
+
+  it('returns all default networks for Solana wallet standard requests', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedCaipChainIds: [solana.caipChainId],
+      isSolanaWalletStandardRequest: true,
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      solana.caipChainId,
+    ]);
+  });
+
+  it('returns all default networks for Tron wallet adapter requests', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet, tron],
+      requestedCaipChainIds: [tron.caipChainId],
+      isTronWalletAdapterRequest: true,
+    });
+
+    expect(result).toEqual([ethMainnet.caipChainId, tron.caipChainId]);
+  });
+
+  it('returns only specifically requested supported chains for EIP-1193 requests', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [polygon],
+      testNetworkConfigurations: [],
+      requestedCaipChainIds: [polygon.caipChainId],
+      isEip1193Request: true,
+    });
+
+    expect(result).toEqual([polygon.caipChainId]);
+  });
+
+  it('merges supported requested chains with already connected chains', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet, polygon, bsc],
+      testNetworkConfigurations: [],
+      requestedCaipChainIds: [ethMainnet.caipChainId, polygon.caipChainId],
+      alreadyConnectedCaipChainIds: [ethMainnet.caipChainId, bsc.caipChainId],
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      bsc.caipChainId,
+    ]);
+  });
+
+  it('filters default networks by requested namespaces when no specific chains are requested', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedNamespaces: [
+        KnownCaipNamespace.Eip155,
+        KnownCaipNamespace.Solana,
+      ],
+      requestedNamespacesWithoutWallet: [
+        KnownCaipNamespace.Eip155,
+        KnownCaipNamespace.Solana,
+      ],
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      solana.caipChainId,
+    ]);
+  });
+
+  it('includes the selected test network when the global network is a testnet', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      currentlySelectedNetworkChainId: sepolia.caipChainId,
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      sepolia.caipChainId,
+    ]);
+  });
+
+  it('filters out unsupported requested chain IDs', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet],
+      testNetworkConfigurations: [],
+      requestedCaipChainIds: [
+        ethMainnet.caipChainId,
+        'eip155:999999' as typeof ethMainnet.caipChainId,
+        'unsupported:chain' as typeof ethMainnet.caipChainId,
+      ],
+    });
+
+    expect(result).toEqual([ethMainnet.caipChainId]);
+  });
+
+  it('filters wallet namespace from requested chain IDs', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet],
+      testNetworkConfigurations: [],
+      requestedCaipChainIds: [
+        ethMainnet.caipChainId,
+        'wallet:1' as typeof ethMainnet.caipChainId,
+      ],
+    });
+
+    expect(result).toEqual([ethMainnet.caipChainId]);
+  });
+
+  it('deduplicates chain IDs when merging requested and existing chains', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet, polygon, bsc],
+      testNetworkConfigurations: [],
+      requestedCaipChainIds: [ethMainnet.caipChainId, polygon.caipChainId],
+      alreadyConnectedCaipChainIds: [ethMainnet.caipChainId, bsc.caipChainId],
+    });
+
+    expect(result.filter((id) => id === ethMainnet.caipChainId)).toHaveLength(
+      1,
+    );
+  });
+
+  it('does not treat Solana session properties alone as a wallet standard request', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedCaipChainIds: [solana.caipChainId],
+      isSolanaWalletStandardRequest: false,
+      requestedNamespaces: [KnownCaipNamespace.Solana],
+      requestedNamespacesWithoutWallet: [KnownCaipNamespace.Solana],
+    });
+
+    expect(result).toEqual([solana.caipChainId]);
+  });
+
+  it('ignores unrelated session properties for Tron detection', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      nonTestNetworkConfigurations: [ethMainnet, tron],
+      requestedCaipChainIds: [tron.caipChainId],
+      isTronWalletAdapterRequest: false,
+      requestedNamespaces: [KnownCaipNamespace.Tron],
+      requestedNamespacesWithoutWallet: [KnownCaipNamespace.Tron],
+    });
+
+    expect(result).toEqual([tron.caipChainId]);
+  });
+});
