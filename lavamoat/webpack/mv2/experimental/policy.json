@@ -1908,7 +1908,7 @@
         "@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/network-enablement-controller": true,
+        "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
         "reselect": true
       }
@@ -1956,6 +1956,11 @@
         "@metamask/keyring-api": true,
         "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": {
+      "packages": {
         "@metamask/utils": true,
         "reselect": true
       }
