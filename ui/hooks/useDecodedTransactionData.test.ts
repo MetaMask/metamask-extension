@@ -1,4 +1,4 @@
-import { act } from 'react-dom/test-utils';
+import { waitFor } from '@testing-library/react';
 import {
   TransactionParams,
   TransactionStatus,
@@ -32,15 +32,15 @@ async function runHook({
   to,
   chainId,
 }: { data?: Hex; to?: Hex; chainId?: Hex } = {}) {
-  const response = renderHook(() =>
+  const { result } = renderHook(() =>
     useDecodedTransactionData({ data, to, chainId }),
   );
 
-  await act(() => {
-    // Ignore
+  await waitFor(() => {
+    expect(result.current.pending).toBe(false);
   });
 
-  return response.result.current;
+  return result.current;
 }
 
 describe('useDecodedTransactionData', () => {
@@ -145,8 +145,8 @@ describe('useDecodedTransactionDataValue', () => {
       },
     );
 
-    await act(() => {
-      // Ignore
+    await waitFor(() => {
+      expect(result.current.decodeResponse.pending).toBe(false);
     });
 
     expect(result.current).toEqual({
@@ -191,8 +191,8 @@ describe('useDecodedTransactionDataValue', () => {
       useDecodedTransactionDataValue(transactionMeta),
     );
 
-    await act(() => {
-      // Ignore
+    await waitFor(() => {
+      expect(result.current.decodeResponse.pending).toBe(false);
     });
 
     expect(result.current).toEqual({
@@ -238,8 +238,8 @@ describe('useDecodedTransactionDataValue', () => {
       useDecodedTransactionDataValue(transactionMeta),
     );
 
-    await act(() => {
-      // Ignore
+    await waitFor(() => {
+      expect(result.current.decodeResponse.pending).toBe(false);
     });
 
     expect(result.current).toEqual({
