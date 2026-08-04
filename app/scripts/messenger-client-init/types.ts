@@ -8,7 +8,6 @@ import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
 import { Mutex } from 'async-mutex';
-import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
@@ -266,13 +265,6 @@ export type MessengerClientInitRequest<
    *
    */
   sendUpdate: () => void;
-
-  /**
-   * Restores the NetworkEnablementController's enabled network map to a previous value.
-   */
-  restoreEnabledNetworkMap: (
-    enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
-  ) => void;
 };
 
 /**

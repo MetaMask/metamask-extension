@@ -1976,52 +1976,53 @@ describe('LegacyBackgroundApiService', () => {
     });
 
     it('restores the previous enabled network map when a network is enabled after adding', async () => {
-      const restoreEnabledNetworkMap = jest.fn();
-      await withService(
-        { options: { restoreEnabledNetworkMap } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'NetworkController:addNetwork',
-            jest.fn().mockReturnValue(addedNetwork),
-          );
-          rootMessenger.registerActionHandler(
-            'NetworkEnablementController:getState',
-            jest.fn().mockReturnValue({
-              enabledNetworkMap: { eip155: { '0x1': true } },
-            }),
-          );
-          rootMessenger.registerActionHandler(
-            'NetworkController:getState',
-            jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
-          );
-          rootMessenger.registerActionHandler(
-            'NetworkController:lookupNetwork',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        const restoreEnabledNetworkMapHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockReturnValue(addedNetwork),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          restoreEnabledNetworkMapHandler,
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:addNetwork',
-            networkConfiguration,
-            { setActive: false },
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          networkConfiguration,
+          { setActive: false },
+        );
 
-          // Simulate the NetworkEnablementController publishing a state change
-          // after the network is added.
-          rootMessenger.publish(
-            'NetworkEnablementController:stateChange',
-            {
-              enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
-            } as unknown as NetworkEnablementControllerState,
-            [],
-          );
+        // Simulate the NetworkEnablementController publishing a state change
+        // after the network is added.
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          {
+            enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
+          } as unknown as NetworkEnablementControllerState,
+          [],
+        );
 
-          // The map captured before the network was added is restored.
-          expect(restoreEnabledNetworkMap).toHaveBeenCalledTimes(1);
-          expect(restoreEnabledNetworkMap).toHaveBeenCalledWith({
-            eip155: { '0x1': true },
-          });
-        },
-      );
+        // The map captured before the network was added is restored.
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledTimes(1);
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
+          eip155: { '0x1': true },
+        });
+      });
     });
 
     it('unsubscribes from the state change event and rethrows when adding the network fails', async () => {
@@ -6671,6 +6672,7 @@ function getMessenger(
       'NetworkEnablementController:getState',
       'NetworkEnablementController:enableNetwork',
       'NetworkEnablementController:enableAllPopularNetworks',
+      'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:getAssets',
@@ -6822,7 +6824,6 @@ async function withService<ReturnValue>(
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
-    restoreEnabledNetworkMap: jest.fn(),
     ...options,
   });
   return await testFunction({ service, rootMessenger, serviceMessenger });

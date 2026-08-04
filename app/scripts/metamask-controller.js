@@ -7645,10 +7645,6 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       requestSafeReload: this.requestSafeReload.bind(this),
-      restoreEnabledNetworkMap: (enabledNetworkMap) =>
-        this.networkEnablementController.restoreEnabledNetworkMap(
-          enabledNetworkMap,
-        ),
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
