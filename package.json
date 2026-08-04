@@ -313,11 +313,6 @@
     "@metamask/multichain-account-service": "^13.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
-    "@ledgerhq/device-management-kit@npm:^1.7.1": "patch:@ledgerhq/device-management-kit@npm%3A1.7.1#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.7.1-c85615f09e.patch",
-    "@ledgerhq/device-transport-kit-web-hid@npm:^1.2.4": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch",
-    "reflect-metadata@npm:0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
-    "reflect-metadata@npm:^0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
-    "@inversifyjs/reflect-metadata-utils@npm:1.1.0": "patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
   },

@@ -4393,15 +4393,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inversifyjs/reflect-metadata-utils@patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch":
-  version: 1.1.0
-  resolution: "@inversifyjs/reflect-metadata-utils@patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch::version=1.1.0&hash=c6ac62"
-  peerDependencies:
-    reflect-metadata: 0.2.2
-  checksum: 10/3b160f30e6b9ba6cc0c224e6e33546f0597a06884a67c2316d19d7d1d577c027fdad11e73ede6b01da4d26a4187aa7783de3455092bf01c4a54f033f0573e65e
-  languageName: node
-  linkType: hard
-
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -5194,7 +5185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/device-management-kit@npm:1.7.1":
+"@ledgerhq/device-management-kit@npm:^1.7.1":
   version: 1.7.1
   resolution: "@ledgerhq/device-management-kit@npm:1.7.1"
   dependencies:
@@ -5211,26 +5202,6 @@ __metadata:
   peerDependencies:
     rxjs: 7.8.2
   checksum: 10/bb46a39b98c87b094cc67f8caceb9445f9c17156478c763a67e99fca2ae75b09bb5e3d75a77f842bb86d45323cf8c9a071cd27dbe8b2cc167e1f0ac247554083
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A1.7.1#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.7.1-c85615f09e.patch":
-  version: 1.7.1
-  resolution: "@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A1.7.1#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.7.1-c85615f09e.patch::version=1.7.1&hash=de5dce"
-  dependencies:
-    "@noble/hashes": "npm:^1.8.0"
-    "@sentry/minimal": "npm:6.19.7"
-    inversify: "npm:7.5.1"
-    isomorphic-ws: "npm:^5.0.0"
-    purify-ts: "npm:2.1.0"
-    reflect-metadata: "npm:0.2.2"
-    semver: "npm:7.7.2"
-    uuid: "npm:11.0.3"
-    ws: "npm:^8.18.0"
-    xstate: "npm:5.19.2"
-  peerDependencies:
-    rxjs: 7.8.2
-  checksum: 10/ca7bd0a603bcb87a3302d0a5805b4c40741f55aee2969c47096685379ceb2749e27e7b9074930846ee7a3e90178804c0be6eed3842c49dcd59be2a265958f39b
   languageName: node
   linkType: hard
 
@@ -5252,7 +5223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/device-transport-kit-web-hid@npm:1.2.4":
+"@ledgerhq/device-transport-kit-web-hid@npm:^1.2.4":
   version: 1.2.4
   resolution: "@ledgerhq/device-transport-kit-web-hid@npm:1.2.4"
   dependencies:
@@ -5263,20 +5234,6 @@ __metadata:
     "@ledgerhq/device-management-kit": ^1.7.0
     rxjs: 7.8.2
   checksum: 10/e10171c6745ca8bef5b7a988e170fc234a110c64dbb322a17e08866013a8dccf6558b651942d9da2c4b2a8c69fcae5d873710393585b4158fa5bc29cff1910fd
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/device-transport-kit-web-hid@patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch":
-  version: 1.2.4
-  resolution: "@ledgerhq/device-transport-kit-web-hid@patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch::version=1.2.4&hash=45d529"
-  dependencies:
-    "@sentry/minimal": "npm:6.19.7"
-    purify-ts: "npm:2.1.0"
-    uuid: "npm:11.0.3"
-  peerDependencies:
-    "@ledgerhq/device-management-kit": ^1.7.0
-    rxjs: 7.8.2
-  checksum: 10/e8389cab818e67c8cd18def76be305ca032c648a57e2ceddd77e6c07eb10d1b270dadc7d5b2f19ea48fa5b3009c9e63b7372373beee2cdc4447627578d7327ed
   languageName: node
   linkType: hard
 
@@ -38153,17 +38110,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reflect-metadata@npm:0.2.2":
+"reflect-metadata@npm:0.2.2, reflect-metadata@npm:^0.2.2":
   version: 0.2.2
   resolution: "reflect-metadata@npm:0.2.2"
   checksum: 10/1c93f9ac790fea1c852fde80c91b2760420069f4862f28e6fae0c00c6937a56508716b0ed2419ab02869dd488d123c4ab92d062ae84e8739ea7417fae10c4745
-  languageName: node
-  linkType: hard
-
-"reflect-metadata@patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch":
-  version: 0.2.2
-  resolution: "reflect-metadata@patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch::version=0.2.2&hash=ddd64c"
-  checksum: 10/4d07cdf841293565dd16fa01d2b3232ca70c37a0bad0c331714829e48266258f90e321a8751acd96e6c0bd146239fa14c7bc913a2eae54034610fd3e924b6c81
   languageName: node
   linkType: hard
 
