@@ -480,9 +480,6 @@
     "ui/hooks/bridge/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 10
-    },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
       "MetaMask: Background connection not initialized": 13
     },
@@ -511,8 +508,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/hooks/metamask-notifications/useSwitchNotifications.test.tsx": {
-      "MetaMask: Background connection not initialized": 5,
-      "React: Act warnings (component updates not wrapped)": 6
+      "MetaMask: Background connection not initialized": 5
     },
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
@@ -521,9 +517,6 @@
     },
     "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
       "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/musd/useMusdGeoBlocking.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/hooks/rewards/useVipTier.test.ts": {
       "error: Error: fail": 1
@@ -538,7 +531,6 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/hooks/useDecodedTransactionData.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 7,
       "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1
     },
     "ui/hooks/useDisplayName.test.ts": {
@@ -550,24 +542,8 @@
     "ui/hooks/useMultichainAccountTotalFiatBalance.test.tsx": {
       "MetaMask: Background connection not initialized": 8
     },
-    "ui/hooks/useTokenDetectionPolling.test.ts": {
-      "Test errors: Uncaught Errors": 4,
-      "error: Error handled by React Router": 4,
-      "error: React Router caught the following": 4
-    },
     "ui/hooks/useTokenInsightsData.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
-    },
-    "ui/hooks/useTokenListPolling.test.ts": {
-      "Test errors: Uncaught TypeErrors": 3,
-      "error: Error handled by React Router": 3,
-      "error: React Router caught the following": 3
-    },
-    "ui/hooks/useTokenRatesPolling.test.ts": {
-      "Test errors: Uncaught Errors": 1,
-      "Test errors: Uncaught TypeErrors": 3,
-      "error: Error handled by React Router": 4,
-      "error: React Router caught the following": 4
     },
     "ui/hooks/useTokenSearch.test.ts": {
       "error: Error: boom": 1
@@ -637,18 +613,14 @@
       "MetaMask: Background connection not initialized": 14,
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/confirmations/components/confirm/info/hooks/useDecodedTransactionData.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 7
-    },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
       "MetaMask: Background connection not initialized": 32
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
-      "MetaMask: Background connection not initialized": 68,
+      "MetaMask: Background connection not initialized": 61,
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
-      "Test errors: Uncaught Errors": 4
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 23,
@@ -727,12 +699,10 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-renderer.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 10,
-      "Test errors: Uncaught Errors": 6
+      "React: Act warnings (component updates not wrapped)": 10
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 13,
-      "Test errors: Uncaught Errors": 12
+      "React: Act warnings (component updates not wrapped)": 13
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
@@ -807,14 +777,8 @@
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 60
     },
-    "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 7
-    },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 6
-    },
-    "ui/pages/confirmations/hooks/send/alerts/useFirstTimeInteractionSendAlert.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 7
     },
     "ui/pages/confirmations/hooks/send/metrics/useRecipientSelectionMetrics.test.tsx": {
       "error: Unexpected key \"state\" found in": 1

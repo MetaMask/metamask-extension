@@ -19,6 +19,7 @@ import {
   FontWeight,
   IconColor as DsIconColor,
   IconName as DsIconName,
+  ModalHeader,
   Text,
   TextColor,
   TextVariant,
@@ -41,7 +42,6 @@ import {
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader,
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -235,6 +235,7 @@ export const NetworkSelectionModal = ({
   footerButton,
   'data-testid': dataTestId,
 }: NetworkSelectionModalProps) => {
+  const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
@@ -252,7 +253,12 @@ export const NetworkSelectionModal = ({
             className: 'flex h-full flex-col overflow-hidden',
           }}
         >
-          <ModalHeader onClose={onClose}>{title}</ModalHeader>
+          <ModalHeader
+            onClose={onClose}
+            closeButtonProps={{ ariaLabel: t('close') }}
+          >
+            {title}
+          </ModalHeader>
           <Box
             className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}

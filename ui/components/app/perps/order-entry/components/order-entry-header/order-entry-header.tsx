@@ -23,6 +23,7 @@ export type OrderEntryHeaderProps = {
   displayChange?: string;
   onBack: () => void;
   testIdPrefix?: string;
+  rightAccessory?: React.ReactNode;
 };
 
 /**
@@ -34,6 +35,8 @@ export type OrderEntryHeaderProps = {
  * @param props.displayChange - Formatted 24-hour price change.
  * @param props.onBack - Called when the back control is selected.
  * @param props.testIdPrefix - Prefix used for test identifiers.
+ * @param props.rightAccessory - Optional trailing control (e.g. an order-book
+ * toggle). Falls back to a spacer that keeps the centered title symmetric.
  */
 export const OrderEntryHeader = ({
   displayName,
@@ -41,6 +44,7 @@ export const OrderEntryHeader = ({
   displayChange,
   onBack,
   testIdPrefix = 'perps-order-entry',
+  rightAccessory,
 }: OrderEntryHeaderProps) => {
   const t = useI18nContext();
 
@@ -102,7 +106,7 @@ export const OrderEntryHeader = ({
           ) : null}
         </Box>
       </Box>
-      <Box className="w-9 shrink-0" aria-hidden="true" />
+      {rightAccessory ?? <Box className="w-9 shrink-0" aria-hidden="true" />}
     </Box>
   );
 };
