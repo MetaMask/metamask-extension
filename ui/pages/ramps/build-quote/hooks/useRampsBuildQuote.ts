@@ -219,7 +219,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         ? getInternalOrderCode(widget.orderId)
         : undefined;
       const checkoutSessionId = uuidV4();
-      const checkoutOpenedAt = Date.now();
 
       // Durable work first — opening a tab can unload the popup.
       if (widget.orderId && orderCode) {
@@ -264,6 +263,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
+
+      const checkoutOpenedAt = Date.now();
 
       trackCheckoutOpened({
         checkoutSessionId,
