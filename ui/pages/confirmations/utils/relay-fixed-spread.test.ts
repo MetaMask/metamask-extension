@@ -1,6 +1,7 @@
 import {
   EMPTY_RELAY_FIXED_SPREAD_CONFIG,
   getRelayFixedSpreadFromConfig,
+  isRouteToken,
   isSubsidizedRoute,
   isSubsidizedSource,
 } from './relay-fixed-spread';
@@ -125,6 +126,32 @@ describe('isSubsidizedSource', () => {
 
     expect(
       isSubsidizedSource(config, { address: ETH_MUSD, chainId: '0x1' }),
+    ).toBe(false);
+  });
+});
+
+describe('isRouteToken', () => {
+  it('returns true when the token is a route source', () => {
+    const config = getRelayFixedSpreadFromConfig(samplePayload, FLAG_NAME);
+
+    expect(isRouteToken(config, { address: ETH_USDC, chainId: '0x1' })).toBe(
+      true,
+    );
+  });
+
+  it('returns true when the token is a route target', () => {
+    const config = getRelayFixedSpreadFromConfig(samplePayload, FLAG_NAME);
+
+    expect(isRouteToken(config, { address: ETH_MUSD, chainId: '0x1' })).toBe(
+      true,
+    );
+  });
+
+  it('returns false when the token is not on any route', () => {
+    const config = getRelayFixedSpreadFromConfig(samplePayload, FLAG_NAME);
+
+    expect(
+      isRouteToken(config, { address: LINEA_USDC, chainId: '0xe708' }),
     ).toBe(false);
   });
 });

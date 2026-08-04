@@ -179,7 +179,7 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
 
 /**
  * Per-transaction-type USD deposit limits from
- * `confirmations_pay.depositLimit`. Empty map when unset.
+ * `confirmations_pay_extended.depositLimit`. Empty map when unset.
  */
 export const selectDepositLimits = createSelector(
   getRemoteFeatureFlags,

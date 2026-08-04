@@ -3,12 +3,11 @@ import {
   type TransactionType,
 } from '@metamask/transaction-controller';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
-
-export const PAY_FEATURE_FLAG = 'confirmations_pay';
+import { PAY_EXTENDED_FEATURE_FLAG } from '../../../../shared/lib/transaction/pay-prefill';
 
 export const PAY_DEPOSIT_LIMITS_DEFAULT: Record<string, number> = {};
 
-type PayFeatureFlag = {
+type PayExtendedFeatureFlag = {
   depositLimit?: Record<string, number>;
 };
 
@@ -17,8 +16,8 @@ type FeatureFlagSource = {
 };
 
 /**
- * Reads `confirmations_pay.depositLimit` as a per-transaction-type USD map.
- * Missing or invalid values fall back to an empty map (no limits).
+ * Reads `confirmations_pay_extended.depositLimit` as a per-transaction-type USD
+ * map. Missing or invalid values fall back to an empty map (no limits).
  *
  * @param source - An object holding the remote feature flags.
  * @returns Deposit limits keyed by transaction type.
@@ -26,8 +25,8 @@ type FeatureFlagSource = {
 export function getDepositLimits(
   source: FeatureFlagSource,
 ): Record<string, number> {
-  const flag = source.remoteFeatureFlags?.[PAY_FEATURE_FLAG] as
-    | PayFeatureFlag
+  const flag = source.remoteFeatureFlags?.[PAY_EXTENDED_FEATURE_FLAG] as
+    | PayExtendedFeatureFlag
     | undefined;
 
   const depositLimit = flag?.depositLimit;

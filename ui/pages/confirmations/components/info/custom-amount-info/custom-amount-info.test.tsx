@@ -28,14 +28,22 @@ jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
     amountFiat,
     disabled,
+    isLoading,
   }: {
     amountFiat: string;
     disabled?: boolean;
-  }) => (
-    <div data-testid="custom-amount" data-disabled={String(Boolean(disabled))}>
-      {amountFiat}
-    </div>
-  ),
+    isLoading?: boolean;
+  }) =>
+    isLoading ? (
+      <div data-testid="custom-amount-skeleton" />
+    ) : (
+      <div
+        data-testid="custom-amount"
+        data-disabled={String(Boolean(disabled))}
+      >
+        {amountFiat}
+      </div>
+    ),
   CustomAmountSkeleton: () => <div data-testid="custom-amount-skeleton" />,
 }));
 jest.mock('../../pay-token-amount/pay-token-amount', () => ({
@@ -67,6 +75,9 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   amountHuman: '50',
   amountHumanDebounced: '50',
   hasInput: false,
+  isDepositPrefillEnabled: false,
+  isDepositPrefillLoading: false,
+  isDepositPrefilled: false,
   isInputChanged: false,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
@@ -210,6 +221,37 @@ describe('CustomAmountInfo', () => {
   it('renders custom amount component', () => {
     const { getByTestId } = render();
     expect(getByTestId('custom-amount')).toBeInTheDocument();
+  });
+
+  it('shows amount skeleton while deposit prefill is loading', () => {
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: true,
+        isDepositPrefilled: false,
+      },
+    });
+
+    expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
+  });
+
+  it('does not show amount skeleton for deposit prefill loading when account has no funds', () => {
+    const { getByTestId, queryByTestId } = render({
+      accountNoFundsAlert: [{ key: 'accountNoFunds' }],
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: true,
+        isDepositPrefilled: false,
+      },
+    });
+
+    expect(getByTestId('custom-amount')).toBeInTheDocument();
+    expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
   });
 
   it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
