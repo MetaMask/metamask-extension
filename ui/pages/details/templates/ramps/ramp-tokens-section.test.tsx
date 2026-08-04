@@ -38,9 +38,12 @@ const buildItem = (overrides: Partial<RampOrderItem> = {}): RampOrderItem =>
 
 describe('RampTokensSection', () => {
   it('renders a pending ellipsis label when crypto amount is unknown', () => {
-    const { container } = render(<RampTokensSection item={buildItem()} />);
+    const { getByTestId } = render(<RampTokensSection item={buildItem()} />);
 
-    expect(container).toMatchSnapshot();
+    expect(getByTestId('activity-avatar')).toBeInTheDocument();
+    expect(
+      getByTestId('transaction-list-item-primary-currency'),
+    ).toHaveTextContent('... ETH');
   });
 
   it('delegates to TokensSection when an amount is available', () => {

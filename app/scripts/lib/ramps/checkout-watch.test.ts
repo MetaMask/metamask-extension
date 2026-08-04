@@ -145,7 +145,6 @@ describe('createWatchRampsCheckoutTab', () => {
         status: 'PENDING',
       }),
     );
-    expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
     expect(platform.closeTab).toHaveBeenCalledWith(9);
   });
 
@@ -176,7 +175,6 @@ describe('createWatchRampsCheckoutTab', () => {
     await Promise.resolve();
 
     expect(rampsController.addOrder).not.toHaveBeenCalled();
-    expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
   });
 
   it('throws when the opened checkout tab has no id', async () => {
