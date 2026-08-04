@@ -30,9 +30,7 @@ export function buildRampsTransactionCompletedProperties(
     // Join key to the checkout funnel (opened → closed → completed). The
     // session id is the only stable key across the flow — the order id can
     // change when a provider swaps a precreated stub for its native id.
-    ...(checkoutSessionId
-      ? { checkout_session_id: checkoutSessionId }
-      : {}),
+    ...(checkoutSessionId ? { checkout_session_id: checkoutSessionId } : {}),
     // Join key back to the provider order — the provider-scoped order code (not
     // the namespaced canonical id), read together with `provider_onramp`.
     // Never an empty string.
@@ -88,9 +86,7 @@ export function buildRampsTransactionConfirmedProperties(
   return {
     ramp_type: RAMPS_RAMP_TYPE,
     ramp_routing: RAMPS_RAMP_ROUTING,
-    ...(checkoutSessionId
-      ? { checkout_session_id: checkoutSessionId }
-      : {}),
+    ...(checkoutSessionId ? { checkout_session_id: checkoutSessionId } : {}),
     ...(order.providerOrderId
       ? { provider_order_id: order.providerOrderId }
       : {}),

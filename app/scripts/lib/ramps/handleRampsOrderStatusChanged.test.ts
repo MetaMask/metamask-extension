@@ -199,9 +199,7 @@ describe('checkout_session_id threading', () => {
       'session-abc',
     );
 
-    expect(
-      jest.mocked(trackEvent).mock.calls[0][0].properties,
-    ).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
       checkout_session_id: 'session-abc',
     });
   });
@@ -220,9 +218,7 @@ describe('checkout_session_id threading', () => {
       'session-abc',
     );
 
-    expect(
-      jest.mocked(trackEvent).mock.calls[0][0].properties,
-    ).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
       checkout_session_id: 'session-abc',
     });
   });
@@ -241,9 +237,7 @@ describe('checkout_session_id threading', () => {
       'session-abc',
     );
 
-    expect(
-      jest.mocked(trackEvent).mock.calls[0][0].properties,
-    ).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
       checkout_session_id: 'session-abc',
     });
   });
