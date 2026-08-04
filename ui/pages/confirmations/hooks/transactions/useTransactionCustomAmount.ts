@@ -409,7 +409,8 @@ export function useTransactionCustomAmount({
     amountHumanDebounced,
     hasInput,
     isDepositPrefillEnabled: shouldUseDepositPrefill,
-    isDepositPrefillLoading: shouldUseDepositPrefill && depositPrefill.isLoading,
+    isDepositPrefillLoading:
+      shouldUseDepositPrefill && depositPrefill.isLoading,
     isDepositPrefilled: shouldUseDepositPrefill && depositPrefill.hasPrefilled,
     isInputChanged,
     updatePendingAmount,
