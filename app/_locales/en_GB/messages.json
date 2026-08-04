@@ -5379,6 +5379,12 @@
   "moneyApy": {
     "message": "$1 APY"
   },
+  "moneyBalanceLastKnown": {
+    "message": "Last known balance"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money balance"
+  },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
   },
