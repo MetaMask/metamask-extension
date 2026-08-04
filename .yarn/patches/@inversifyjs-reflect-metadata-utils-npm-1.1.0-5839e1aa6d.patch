@@ -1,0 +1,118 @@
+diff --git a/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js b/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js
+index 369a8ead9f5c03251ac531175db0353002f99bc6..1653fd16a04ddaf824053f4836ba901ecce37956 100644
+--- a/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js
++++ b/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js
+@@ -1,8 +1,10 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getOwnReflectMetadata = getOwnReflectMetadata;
++// Use no-conflict so we don't touch the SES/LavaMoat-frozen global Reflect.
++const ReflectMetadata = require("reflect-metadata/no-conflict");
+ // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+ function getOwnReflectMetadata(target, metadataKey) {
+-    return Reflect.getOwnMetadata(metadataKey, target);
++    return ReflectMetadata.getOwnMetadata(metadataKey, target);
+ }
+ //# sourceMappingURL=getOwnReflectMetadata.js.map
+diff --git a/lib/cjs/reflectMetadata/utils/getReflectMetadata.js b/lib/cjs/reflectMetadata/utils/getReflectMetadata.js
+index c21dfc0dca5590b3a52a21a64fdfa92dfa85c5b4..7e19bcfb2b20bdb98e101e7b4b0deffc909e93f7 100644
+--- a/lib/cjs/reflectMetadata/utils/getReflectMetadata.js
++++ b/lib/cjs/reflectMetadata/utils/getReflectMetadata.js
+@@ -1,8 +1,9 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getReflectMetadata = getReflectMetadata;
++const ReflectMetadata = require("reflect-metadata/no-conflict");
+ // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+ function getReflectMetadata(target, metadataKey) {
+-    return Reflect.getMetadata(metadataKey, target);
++    return ReflectMetadata.getMetadata(metadataKey, target);
+ }
+ //# sourceMappingURL=getReflectMetadata.js.map
+diff --git a/lib/cjs/reflectMetadata/utils/setReflectMetadata.js b/lib/cjs/reflectMetadata/utils/setReflectMetadata.js
+index dc1081bc1a6cf655ae628eea0828b2effdb479c8..c351ca7ce8fba6453c3a82f79e7b77c4746188b9 100644
+--- a/lib/cjs/reflectMetadata/utils/setReflectMetadata.js
++++ b/lib/cjs/reflectMetadata/utils/setReflectMetadata.js
+@@ -1,7 +1,8 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.setReflectMetadata = setReflectMetadata;
++const ReflectMetadata = require("reflect-metadata/no-conflict");
+ function setReflectMetadata(target, metadataKey, metadata) {
+-    Reflect.defineMetadata(metadataKey, metadata, target);
++    ReflectMetadata.defineMetadata(metadataKey, metadata, target);
+ }
+ //# sourceMappingURL=setReflectMetadata.js.map
+diff --git a/lib/cjs/reflectMetadata/utils/updateOwnReflectMetadata.js b/lib/cjs/reflectMetadata/utils/updateOwnReflectMetadata.js
+index 861641827243ec6b28e08ad5be0e65a48b25d7a7..c129babd8c6ab8dbe835766b41325f736939ca25 100644
+--- a/lib/cjs/reflectMetadata/utils/updateOwnReflectMetadata.js
++++ b/lib/cjs/reflectMetadata/utils/updateOwnReflectMetadata.js
+@@ -1,10 +1,11 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.updateOwnReflectMetadata = updateOwnReflectMetadata;
++const ReflectMetadata = require("reflect-metadata/no-conflict");
+ const getOwnReflectMetadata_1 = require("./getOwnReflectMetadata");
+ function updateOwnReflectMetadata(target, metadataKey, buildDefaultValue, callback) {
+     const metadata = (0, getOwnReflectMetadata_1.getOwnReflectMetadata)(target, metadataKey) ?? buildDefaultValue();
+     const updatedMetadata = callback(metadata);
+-    Reflect.defineMetadata(metadataKey, updatedMetadata, target);
++    ReflectMetadata.defineMetadata(metadataKey, updatedMetadata, target);
+ }
+ //# sourceMappingURL=updateOwnReflectMetadata.js.map
+diff --git a/lib/cjs/reflectMetadata/utils/updateReflectMetadata.js b/lib/cjs/reflectMetadata/utils/updateReflectMetadata.js
+index 28b5996316e3ec19d5d0bbe0fd5e65ed0dfb6b67..bea22f86c38511e7e34feec2a7feb8d4f8b8a8b7 100644
+--- a/lib/cjs/reflectMetadata/utils/updateReflectMetadata.js
++++ b/lib/cjs/reflectMetadata/utils/updateReflectMetadata.js
+@@ -1,10 +1,11 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.updateReflectMetadata = updateReflectMetadata;
++const ReflectMetadata = require("reflect-metadata/no-conflict");
+ const getReflectMetadata_1 = require("./getReflectMetadata");
+ function updateReflectMetadata(target, metadataKey, buildDefaultValue, callback) {
+     const metadata = (0, getReflectMetadata_1.getReflectMetadata)(target, metadataKey) ?? buildDefaultValue();
+     const updatedMetadata = callback(metadata);
+-    Reflect.defineMetadata(metadataKey, updatedMetadata, target);
++    ReflectMetadata.defineMetadata(metadataKey, updatedMetadata, target);
+ }
+ //# sourceMappingURL=updateReflectMetadata.js.map
+diff --git a/lib/esm/index.js b/lib/esm/index.js
+index f9ebab3ccccceaf185f799c070468d69ebf89072..be44be3a241cb7b1408f852da4902935b1a29859 100644
+--- a/lib/esm/index.js
++++ b/lib/esm/index.js
+@@ -1,2 +1,32 @@
+-function t(t,e){return Reflect.getOwnMetadata(e,t)}function e(t,e){return Reflect.getMetadata(e,t)}function n(t,e,n){Reflect.defineMetadata(e,n,t)}function a(e,n,a,f){const c=f(t(e,n)??a());Reflect.defineMetadata(n,c,e)}function f(t,n,a,f){const c=f(e(t,n)??a());Reflect.defineMetadata(n,c,t)}export{t as getOwnReflectMetadata,e as getReflectMetadata,n as setReflectMetadata,a as updateOwnReflectMetadata,f as updateReflectMetadata};
+-//# sourceMappingURL=index.js.map
++// Use no-conflict so we don't touch the SES/LavaMoat-frozen global Reflect.
++import ReflectMetadata from "reflect-metadata/no-conflict";
++
++function getOwnReflectMetadata(target, metadataKey) {
++  return ReflectMetadata.getOwnMetadata(metadataKey, target);
++}
++function getReflectMetadata(target, metadataKey) {
++  return ReflectMetadata.getMetadata(metadataKey, target);
++}
++function setReflectMetadata(target, metadataKey, metadata) {
++  ReflectMetadata.defineMetadata(metadataKey, metadata, target);
++}
++function updateOwnReflectMetadata(target, metadataKey, buildDefaultValue, callback) {
++  const updatedMetadata = callback(
++    getOwnReflectMetadata(target, metadataKey) ?? buildDefaultValue(),
++  );
++  ReflectMetadata.defineMetadata(metadataKey, updatedMetadata, target);
++}
++function updateReflectMetadata(target, metadataKey, buildDefaultValue, callback) {
++  const updatedMetadata = callback(
++    getReflectMetadata(target, metadataKey) ?? buildDefaultValue(),
++  );
++  ReflectMetadata.defineMetadata(metadataKey, updatedMetadata, target);
++}
++
++export {
++  getOwnReflectMetadata,
++  getReflectMetadata,
++  setReflectMetadata,
++  updateOwnReflectMetadata,
++  updateReflectMetadata,
++};

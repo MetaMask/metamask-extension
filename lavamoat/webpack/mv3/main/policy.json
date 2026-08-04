@@ -794,7 +794,7 @@
         "console.warn": true
       },
       "packages": {
-        "wait-on>rxjs": true
+        "rxjs": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
@@ -1583,7 +1583,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/hw-wallet-sdk": true,
+        "@metamask/eth-trezor-keyring>@metamask/hw-wallet-sdk": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
@@ -6478,7 +6478,7 @@
         "console": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "clearTimeout": true,
         "setTimeout.apply": true
