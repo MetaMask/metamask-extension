@@ -756,6 +756,98 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenCalledWith(orderBook);
     });
 
+    it('routes orderBookAggregated channel to orderBookAggregated.pushData', () => {
+      const aggregatedCb = jest.fn();
+      const rawCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.orderBook.subscribe(rawCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-1');
+
+      const aggregated = { bids: [{ price: '1750' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: aggregated,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(aggregated);
+      // The raw channel must not receive aggregated data.
+      expect(rawCb).not.toHaveBeenCalled();
+    });
+
+    it('rejects aggregated packets when no subscription is active', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: { bids: [{ price: '1750' }], asks: [] },
+        subscriptionId: 'agg-closed',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('discards aggregated packets that do not match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const staleBook = { bids: [{ price: '73775' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: staleBook,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('accepts aggregated packets that match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const book = { bids: [{ price: '73770' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: book,
+        subscriptionId: 'agg-2',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(book);
+    });
+
+    it('discards aggregated status updates that do not match the active identity', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: 'agg-1',
+      });
+
+      expect(statusCb).not.toHaveBeenCalledWith('connected');
+    });
+
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-status');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+        subscriptionId: 'agg-status',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
+    });
+
     it('routes candles channel to candles.pushFromBackground', () => {
       const pushFromBackground = jest.fn();
       (

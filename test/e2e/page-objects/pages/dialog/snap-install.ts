@@ -9,6 +9,11 @@ class SnapInstall {
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
+  private readonly closeButton = {
+    tag: 'button',
+    text: 'Close',
+  };
+
   private readonly confirmationDialogBoldUrl = {
     text: 'snaps.metamask.io',
     tag: 'b',
@@ -110,6 +115,11 @@ class SnapInstall {
   async clickCheckboxPermission() {
     console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
+  }
+
+  async clickCloseButton() {
+    console.log('Clicking Close button and wait for dialog to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.closeButton);
   }
 
   async clickConfirmationDialogLinkText(): Promise<void> {

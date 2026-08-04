@@ -10936,9 +10936,6 @@
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
   },
-  "tutorial": {
-    "message": "튜토리얼"
-  },
   "txAlertTitle": {
     "message": "이 트랜잭션은 되돌려집니다"
   },
