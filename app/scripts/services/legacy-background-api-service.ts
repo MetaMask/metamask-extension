@@ -293,8 +293,6 @@ import {
 import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMiddleware';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
 import {

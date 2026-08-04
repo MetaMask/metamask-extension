@@ -632,7 +632,7 @@ describe('LegacyBackgroundApiService', () => {
           '0xNotInTokenList',
         );
 
-        expect(result).toStrictEqual(null);
+        expect(result).toBeNull();
       });
     });
   });
