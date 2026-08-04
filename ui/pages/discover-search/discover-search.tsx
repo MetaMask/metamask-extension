@@ -11,10 +11,7 @@ import {
   BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
-  Icon,
-  IconColor,
   IconName,
-  IconSize,
   Text,
   TextAlign,
   TextColor,
@@ -39,24 +36,7 @@ import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { DiscoverAssetRow } from './discover-asset-row';
 import { DiscoverSearchSectionHeader } from './discover-search-section-header';
-
-const LoadingState = ({ label }: { label: string }) => (
-  <Box
-    flexDirection={BoxFlexDirection.Column}
-    alignItems={BoxAlignItems.Center}
-    justifyContent={BoxJustifyContent.Center}
-    padding={6}
-    aria-label={label}
-    data-testid="discover-search-loading"
-  >
-    <Icon
-      className="animate-spin"
-      name={IconName.Loading}
-      color={IconColor.IconMuted}
-      size={IconSize.Lg}
-    />
-  </Box>
-);
+import { DiscoverSearchSectionSkeleton } from './discover-search-section-skeleton';
 
 const EmptyState = ({ message }: { message: string }) => (
   <Box
@@ -157,13 +137,45 @@ export const DiscoverSearchPage = () => {
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
 
+  const renderAllTabSkeleton = () => (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      data-testid="discover-search-loading"
+    >
+      <DiscoverSearchSectionHeader
+        title={t('perpsFilterCrypto')}
+        showViewAll={false}
+        data-testid="discover-section-crypto"
+      />
+      <DiscoverSearchSectionSkeleton testIdPrefix="discover-crypto-preview" />
+
+      {isPerpsAvailable ? (
+        <>
+          <DiscoverSearchSectionHeader
+            title={t('perps')}
+            showViewAll={false}
+            data-testid="discover-section-perps"
+          />
+          <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />
+        </>
+      ) : null}
+
+      <DiscoverSearchSectionHeader
+        title={t('perpsFilterStocks')}
+        showViewAll={false}
+        data-testid="discover-section-stocks"
+      />
+      <DiscoverSearchSectionSkeleton testIdPrefix="discover-stocks-preview" />
+    </Box>
+  );
+
   const renderAssetList = (
     items: TrendingAsset[],
     isLoading: boolean,
     testIdPrefix: string,
   ) => {
     if (isLoading && items.length === 0) {
-      return <LoadingState label={t('loading')} />;
+      return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
     }
     if (items.length === 0) {
       return <EmptyState message={t('discoverSearchNoResults')} />;
@@ -180,7 +192,7 @@ export const DiscoverSearchPage = () => {
 
   const renderPerpsList = (items: PerpsMarketData[], isLoading: boolean) => {
     if (isLoading && items.length === 0) {
-      return <LoadingState label={t('loading')} />;
+      return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
     }
     if (items.length === 0) {
       return <EmptyState message={t('discoverSearchNoResults')} />;
@@ -198,7 +210,7 @@ export const DiscoverSearchPage = () => {
 
   const allTabContent = (() => {
     if (showAllLoading) {
-      return <LoadingState label={t('loading')} />;
+      return renderAllTabSkeleton();
     }
     if (showAllEmpty) {
       return <EmptyState message={t('discoverSearchNoResults')} />;

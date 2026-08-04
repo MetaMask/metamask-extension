@@ -1105,6 +1105,14 @@ export enum MetaMetricsEventName {
   PerpsWithdrawalTransaction = 'Perp Withdrawal Transaction',
   PerpsRiskManagement = 'Perp Risk Management',
   PerpsError = 'Perp Error',
+  // Order funnel events. Mirror the controller's PerpsAnalyticsEvent
+  // string values exactly so client- and controller-emitted names match.
+  PerpsTransactionConsidered = 'Perp Transaction Considered',
+  PerpsTradeQuoteReceived = 'Perp Trade Quote Received',
+  // Market search funnel events, same mirroring rule as the order funnel above.
+  PerpsSearchQuery = 'Perp Search Query',
+  PerpsSearchResultTapped = 'Perp Search Result Tapped',
+  PerpsSearchAbandoned = 'Perp Search Abandoned',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
