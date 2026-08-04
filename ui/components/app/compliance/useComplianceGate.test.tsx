@@ -1,7 +1,7 @@
 import React, { type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useComplianceGate } from './useComplianceGate';
 
@@ -307,8 +307,8 @@ describe('useComplianceGate', () => {
       .mockResolvedValueOnce([getStatus(ADDRESS, false)]);
     const action = jest.fn();
     const { result, rerender } = renderHook<
-      { address: string },
-      ReturnType<typeof useComplianceGate>
+      ReturnType<typeof useComplianceGate>,
+      { address: string }
     >(({ address }) => useComplianceGate(address), {
       initialProps: { address: BLOCKED_ADDRESS },
       wrapper: getWrapper(),
@@ -335,8 +335,8 @@ describe('useComplianceGate', () => {
       .mockResolvedValueOnce([getStatus(ADDRESS, false)]); // wallet B prefetch
     const action = jest.fn();
     const { result, rerender } = renderHook<
-      { address: string },
-      ReturnType<typeof useComplianceGate>
+      ReturnType<typeof useComplianceGate>,
+      { address: string }
     >(({ address }) => useComplianceGate(address), {
       initialProps: { address: BLOCKED_ADDRESS },
       wrapper: getWrapper(),
@@ -364,8 +364,8 @@ describe('useComplianceGate', () => {
       .mockResolvedValueOnce([getStatus(ADDRESS, false)]); // wallet B prefetch
     const action = jest.fn();
     const { result, rerender } = renderHook<
-      { address: string },
-      ReturnType<typeof useComplianceGate>
+      ReturnType<typeof useComplianceGate>,
+      { address: string }
     >(({ address }) => useComplianceGate(address), {
       initialProps: { address: BLOCKED_ADDRESS },
       wrapper: getWrapper(),
