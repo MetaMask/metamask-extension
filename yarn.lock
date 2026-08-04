@@ -7646,9 +7646,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@4.0.2-preview-943313fc9":
-  version: 4.0.2-preview-943313fc9
-  resolution: "@metamask-previews/profile-metrics-controller@npm:4.0.2-preview-943313fc9"
+"@metamask/profile-metrics-controller@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@metamask/profile-metrics-controller@npm:4.0.3"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.6"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7656,7 +7656,7 @@ __metadata:
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/polling-controller": "npm:^16.0.9"
-    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
@@ -7665,19 +7665,18 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/036c8978f114c12121313aca241c88f0c7150141965005d05856ff5dc03f125d8f5d6a5d98a2d0fbf5dac59a12c6587d6509ffa0546b3f5bf33ad38ab2994fad
+  checksum: 10/3523322a19a7ae07989269a7ba85ea686278e43c93d60ca75fcee0ea48467c23c8305d5af4c80c1b218653024341dd977d544c4fa942831d51f0cda9ab9039bb
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@28.3.0-preview-943313fc9":
-  version: 28.3.0-preview-943313fc9
-  resolution: "@metamask-previews/profile-sync-controller@npm:28.3.0-preview-943313fc9"
+"@metamask/profile-sync-controller@npm:28.2.0":
+  version: 28.2.0
+  resolution: "@metamask/profile-sync-controller@npm:28.2.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^7.1.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/seedless-onboarding-controller": "npm:^10.1.0"
+    "@metamask/keyring-controller": "npm:^27.0.0"
+    "@metamask/messenger": "npm:^1.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
@@ -7690,7 +7689,56 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/0fb40a31b6f10ff1a5a37bf4bcb059f89125416b9da4947375a3b6db4eecd6bcbb6fe089403a6daaf05f68ad93eab7e7aab67cee36e539e2ffcf7a89fb05c5bc
+  checksum: 10/49f9a69a205613dc1dab9d122048601713561c385e21cbb0d9f501925e888d3f5681f3a4a7cebdc1b3d2488f76ab6a8b2a7b9ae47ffe567245819415444f678c
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@npm:^28.1.1, @metamask/profile-sync-controller@npm:^28.2.0, @metamask/profile-sync-controller@npm:^28.3.0":
+  version: 28.3.0
+  resolution: "@metamask/profile-sync-controller@npm:28.3.0"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.1.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/utils": "npm:^11.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/a0fa6dad8a183bcd41907e7ab5d35fcb321bd1c7040125120deebc20b3d809a0e0f076feb2e80ef70b9ce1330138a8d1c8d8b5eea18086cd765ae4301a32e2ba
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@npm:^29.0.0":
+  version: 29.0.0
+  resolution: "@metamask/profile-sync-controller@npm:29.0.0"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.1.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/seedless-onboarding-controller": "npm:^10.1.1"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/utils": "npm:^11.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/f98539a754e786047effd717e9a6bdaf9c2392884397e46325ff19b829169ab2fa30ef4ca5d7975115ce1f1549b4ac850c85f396ed4377c943c3e5902a46c7d5
   languageName: node
   linkType: hard
 
@@ -7878,9 +7926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@10.1.0-preview-943313fc9":
-  version: 10.1.0-preview-943313fc9
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:10.1.0-preview-943313fc9"
+"@metamask/seedless-onboarding-controller@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "@metamask/seedless-onboarding-controller@npm:10.1.1"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7893,7 +7941,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/41875f9d274ef0773a6ede6eea0291a96464f1a2cc3cea461f23dfe1a8993b8cd9a5caf835043e6cf2e2a7da24ef3d0ed71608e84008973388d5973b90ef669f
+  checksum: 10/9f1ac407aa467fd17ce9809da1d46a46440a57c201c759e2cc630a52855193852acec7eee72ef82f21c15dfcead6d40d1a7609edf334b3e269792396347ba80e
   languageName: node
   linkType: hard
 
@@ -32869,8 +32917,8 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.1"
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
-    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@4.0.2-preview-943313fc9"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@28.3.0-preview-943313fc9"
+    "@metamask/profile-metrics-controller": "npm:^4.0.3"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^15.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
@@ -32879,7 +32927,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@10.1.0-preview-943313fc9"
+    "@metamask/seedless-onboarding-controller": "npm:^10.1.1"
     "@metamask/selected-network-controller": "npm:^26.1.4"
     "@metamask/sentinel-api-service": "npm:^1.0.0"
     "@metamask/shield-controller": "npm:^5.1.2"
