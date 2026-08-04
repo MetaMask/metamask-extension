@@ -14,6 +14,7 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
