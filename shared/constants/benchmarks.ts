@@ -204,6 +204,47 @@ export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   warnPercent: 0.05,
 };
 
+/**
+ * Network population a benchmark run measured.
+ *
+ * `mocked` — upstream HTTP is served by the mock suite, so timings are a
+ * property of the commit under test. `live` — requests reach real servers,
+ * so timings also carry upstream latency, which is not attributable to the
+ * commit and drifts independently of it.
+ *
+ * The two are different statistical populations and must never be compared
+ * to each other, nor held to the same absolute ceiling.
+ */
+export const BENCHMARK_MOCK_MODE = {
+  MOCKED: 'mocked',
+  LIVE: 'live',
+} as const;
+
+export type BenchmarkMockMode =
+  (typeof BENCHMARK_MOCK_MODE)[keyof typeof BENCHMARK_MOCK_MODE];
+
+/**
+ * Resolves the network population for a run from its branch name.
+ *
+ * `main` and `release/*` exercise real servers (introduced by #39587 to keep
+ * a real-world signal on the trunk); every other ref — PRs, local dev — runs
+ * against the mock suite for determinism.
+ *
+ * Pure function of the branch name so both the benchmark harness and the
+ * quality gate can derive the same answer without sharing runtime state.
+ *
+ * @param branch - Branch name, e.g. `process.env.GITHUB_REF_NAME`.
+ */
+export function resolveBenchmarkMockMode(
+  branch: string | undefined,
+): BenchmarkMockMode {
+  const name = branch ?? '';
+  const isMainOrRelease = name === 'main' || name.startsWith('release/');
+  return isMainOrRelease
+    ? BENCHMARK_MOCK_MODE.LIVE
+    : BENCHMARK_MOCK_MODE.MOCKED;
+}
+
 export const BENCHMARK_PLATFORMS = {
   CHROME: 'chrome',
   FIREFOX: 'firefox',

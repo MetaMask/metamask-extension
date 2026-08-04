@@ -5,8 +5,12 @@
  * and aggregates it into a mean-of-means reference for PR comment comparisons.
  */
 import { calculateMean } from '../../test/e2e/benchmarks/utils/statistics';
-import { STAT_KEY } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_MOCK_MODE,
+  STAT_KEY,
+} from '../../shared/constants/benchmarks';
 import type {
+  BenchmarkMockMode,
   BenchmarkResults,
   HistoricalBaselineMetrics,
 } from '../../shared/constants/benchmarks';
@@ -17,7 +21,22 @@ type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 type HistoricalCommitEntry = {
   timestamp: number;
   presets: Record<string, NestedPresetEntry>;
+  /**
+   * Network population the commit's run measured. Absent on every entry
+   * written before mode was recorded; those runs were all `main`/`release/*`
+   * pushes, which are `live` by construction — hence the default below.
+   */
+  mockMode?: BenchmarkMockMode;
 };
+
+/**
+ * Reads the population a historical entry was measured under.
+ *
+ * @param entry - A commit entry from the stats file.
+ */
+function entryMockMode(entry: HistoricalCommitEntry): BenchmarkMockMode {
+  return entry.mockMode ?? BENCHMARK_MOCK_MODE.LIVE;
+}
 
 export type HistoricalPerformanceFile = Record<string, HistoricalCommitEntry>;
 
@@ -36,9 +55,18 @@ export type HistoricalBaselineResult = {
  * Fetches historical performance data from the `main` branch of
  * extension_benchmark_stats.
  *
+ * Returns `null` when the file holds no entries for `mockMode` — the caller
+ * then reports no baseline rather than a cross-population delta. Today that
+ * is the expected outcome for `mocked` consumers, because only `main` and
+ * `release/*` publish stats and both run `live`; see the follow-up to
+ * publish a `mocked` series.
+ *
+ * @param mockMode - Population the consuming run measured.
  * @returns Reference map (benchmarkName -> metric -> baseline) with latest commit info, or null if unavailable.
  */
-export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineResult | null> {
+export async function fetchHistoricalPerformanceDataFromMain(
+  mockMode: BenchmarkMockMode,
+): Promise<HistoricalBaselineResult | null> {
   try {
     const response = await fetch(
       EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
@@ -51,7 +79,7 @@ export async function fetchHistoricalPerformanceDataFromMain(): Promise<Historic
       return null;
     }
     const { baseline, latestCommit, latestTimestamp } =
-      aggregateHistoricalDataWithCommit(data);
+      aggregateHistoricalDataWithCommit(data, mockMode);
     return Object.keys(baseline).length > 0
       ? { baseline, latestCommit, latestTimestamp }
       : null;
@@ -173,14 +201,22 @@ function buildMetricBaselines(
  * startup baseline, and to smooth out run-to-run variance.
  * Values from all commits are averaged together.
  *
+ * Only commits measured under `mockMode` contribute. A `mocked` run compared
+ * against a `live` baseline (or the reverse) produces deltas that are an
+ * artifact of upstream latency rather than of the commit, so the populations
+ * are kept apart rather than blended.
+ *
  * @param data - Full historical data file contents.
+ * @param mockMode - Population to build the baseline from.
  * @returns Aggregated reference map.
  */
 export function aggregateHistoricalData(
   data: HistoricalPerformanceFile,
+  mockMode: BenchmarkMockMode,
 ): HistoricalBaselineReference {
   const latestCommits = Object.keys(data)
     .filter((hash) => data[hash]?.timestamp)
+    .filter((hash) => entryMockMode(data[hash]) === mockMode)
     .sort((a, b) => data[b].timestamp - data[a].timestamp)
     .slice(0, 5);
 
@@ -204,11 +240,17 @@ export function aggregateHistoricalData(
 /**
  * Aggregates historical data and returns the baseline along with the latest commit info.
  *
+ * `latestCommit`/`latestTimestamp` describe the newest entry in the selected
+ * population, so the reported provenance matches the numbers the baseline was
+ * actually built from.
+ *
  * @param data - Full historical data file contents.
+ * @param mockMode - Population to build the baseline from.
  * @returns Aggregated reference map with latest commit hash and timestamp.
  */
 export function aggregateHistoricalDataWithCommit(
   data: HistoricalPerformanceFile,
+  mockMode: BenchmarkMockMode,
 ): {
   baseline: HistoricalBaselineReference;
   latestCommit: string;
@@ -216,11 +258,12 @@ export function aggregateHistoricalDataWithCommit(
 } {
   const sortedCommits = Object.keys(data)
     .filter((hash) => data[hash]?.timestamp)
+    .filter((hash) => entryMockMode(data[hash]) === mockMode)
     .sort((a, b) => data[b].timestamp - data[a].timestamp);
 
   const latestCommit = sortedCommits[0] || '';
   const latestTimestamp = data[latestCommit]?.timestamp || 0;
-  const baseline = aggregateHistoricalData(data);
+  const baseline = aggregateHistoricalData(data, mockMode);
 
   return { baseline, latestCommit, latestTimestamp };
 }
