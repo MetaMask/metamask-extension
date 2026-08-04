@@ -8,10 +8,7 @@ import { NoFeeTag } from './no-fee-tag';
 describe('NoFeeTag', () => {
   it('renders the No fee label', () => {
     const store = configureStore(mockState);
-    const { getByTestId, getByText } = renderWithProvider(
-      <NoFeeTag />,
-      store,
-    );
+    const { getByTestId, getByText } = renderWithProvider(<NoFeeTag />, store);
 
     expect(getByTestId('no-fee-tag')).toBeInTheDocument();
     expect(getByText(messages.noFee.message)).toBeInTheDocument();

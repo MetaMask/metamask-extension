@@ -113,7 +113,7 @@ const extractRoutes = (value: unknown): RelayFixedSpreadRoute[] | null => {
   }
   const chains = buildAliasMap(value.chains);
   const tokens = buildAliasMap(value.tokens);
-  const {routes} = value;
+  const { routes } = value;
   if (!chains || !tokens || !Array.isArray(routes)) {
     return null;
   }
