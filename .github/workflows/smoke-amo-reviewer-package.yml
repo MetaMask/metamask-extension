@@ -11,16 +11,14 @@ name: Smoke AMO reviewer packaging
 # Security: do NOT upload package zips or output/ as Actions artifacts — the
 # AMO source zip contains tagged bundle.sh with production build secrets.
 #
-# Triggered on pull_request (not workflow_dispatch) so it can run from a PR
-# branch without merging to main. Path-filtered so it only runs when this smoke
-# path changes. Re-run from the Checks tab to repeat without a new commit.
+# Triggered on pull_request so it can run from this PR without merging.
+# No path filter: a new workflow file + paths filter can fail to schedule.
+# Re-run from the Checks tab to repeat without a new commit. Close the PR
+# without merging when done.
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/smoke-amo-reviewer-package.yml'
-      - '.github/scripts/publish-firefox-reviewer-artifacts.sh'
-      - '.github/actions/publish-amo-reviewer-artifacts/**'
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
