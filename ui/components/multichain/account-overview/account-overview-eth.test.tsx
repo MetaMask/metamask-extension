@@ -2,6 +2,7 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
@@ -53,7 +54,15 @@ const render = (props: AccountOverviewEthProps) => {
     },
   });
 
-  return renderWithProvider(<AccountOverviewEth {...props} />, store);
+  return renderWithProvider(
+    <AccountOverviewEth {...props} />,
+    store,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    createMockRouteMessenger(),
+  );
 };
 
 describe('AccountOverviewEth', () => {
