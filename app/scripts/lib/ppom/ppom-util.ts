@@ -46,6 +46,19 @@ const log = createProjectLogger('ppom-util');
 
 const { sentry } = global;
 
+/**
+ * Thrown when waitForTransactionMetadata or waitForSignatureRequest times out
+ * waiting for a controller object that never arrives (e.g. tx rejected during
+ * PPOM network call). Caught in validateRequestWithPPOM to avoid re-subscribing
+ * and triggering a second unhandled timeout rejection.
+ */
+class PPOMWaitTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PPOMWaitTimeoutError';
+  }
+}
+
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -100,6 +113,14 @@ export async function validateRequestWithPPOM({
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
     log('Error', error);
+
+    // If the wait timed out it means the tx/sig was rejected before PPOM
+    // completed. There is no controller object to update, and calling
+    // updateSecurityResponse again would re-subscribe and produce a second
+    // unhandled timeout rejection after another 60 seconds.
+    if (error instanceof PPOMWaitTimeoutError) {
+      return;
+    }
 
     await updateSecurityResponse(
       request.method,
@@ -386,7 +407,7 @@ async function waitForTransactionMetadata(
         callback,
       );
       reject(
-        new Error(
+        new PPOMWaitTimeoutError(
           `Timed out waiting for transaction metadata: ${securityAlertId}`,
         ),
       );
@@ -439,7 +460,7 @@ async function waitForSignatureRequest(
     const timeoutId = setTimeout(() => {
       messenger.unsubscribe('SignatureController:stateChange', callback);
       reject(
-        new Error(
+        new PPOMWaitTimeoutError(
           `Timed out waiting for signature request: ${securityAlertId}`,
         ),
       );
