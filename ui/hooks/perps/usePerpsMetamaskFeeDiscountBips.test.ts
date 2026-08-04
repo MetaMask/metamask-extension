@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
@@ -81,23 +81,23 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
   it('returns the discount in basis points when > 0', async () => {
     setDiscountResponse(5000);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
-    await waitForNextUpdate();
-
-    expect(result.current).toBe(5000);
+    await waitFor(() => {
+      expect(result.current).toBe(5000);
+    });
   });
 
   it('caps the discount at 10000 bips (100%)', async () => {
     setDiscountResponse(12000);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
-    await waitForNextUpdate();
-
-    expect(result.current).toBe(10000);
+    await waitFor(() => {
+      expect(result.current).toBe(10000);
+    });
   });
 
   it('returns undefined when bips is exactly 0', async () => {
@@ -188,25 +188,26 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
   it('calls rewardsGetPerpsDiscountForAccount with the CAIP-10 id and the original MM fee bips', async () => {
     setDiscountResponse(2500);
 
-    const { waitForNextUpdate } = renderHook(() =>
+    renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
-    await waitForNextUpdate();
-
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'rewardsGetPerpsDiscountForAccount',
-      [TEST_CAIP_ACCOUNT_ID, ORIGINAL_METAMASK_FEE_BIPS],
-    );
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'rewardsGetPerpsDiscountForAccount',
+        [TEST_CAIP_ACCOUNT_ID, ORIGINAL_METAMASK_FEE_BIPS],
+      );
+    });
   });
 
   it('caches a non-null discount across rerenders for the same address', async () => {
     setDiscountResponse(2000);
 
-    const { waitForNextUpdate, rerender, result } = renderHook(() =>
+    const { rerender, result } = renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
-    await waitForNextUpdate();
-    expect(result.current).toBe(2000);
+    await waitFor(() => {
+      expect(result.current).toBe(2000);
+    });
 
     // Force a re-render — the effect deps (selectedAddress, currentChainId)
     // haven't changed, so the effect shouldn't re-fire. Even if it did, the
@@ -227,8 +228,9 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     const first = renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
-    await first.waitForNextUpdate();
-    expect(first.result.current).toBe(3000);
+    await waitFor(() => {
+      expect(first.result.current).toBe(3000);
+    });
     first.unmount();
 
     // Second mount with the same address: should hit the cache and not call
@@ -250,22 +252,24 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
   it('refetches when the chain changes for the same address (cache is keyed by CAIP account id)', async () => {
     setDiscountResponse(2000);
 
-    const { rerender, result, waitForNextUpdate } = renderHook(
+    const { rerender, result } = renderHook(
       ({ chainId }: { chainId: string }) => {
         setSelectors({ chainId });
         return usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS);
       },
       { initialProps: { chainId: TEST_CHAIN_ID } },
     );
-    await waitForNextUpdate();
-    expect(result.current).toBe(2000);
+    await waitFor(() => {
+      expect(result.current).toBe(2000);
+    });
 
     // Switch to a different chain for the same address. The CAIP account id
     // changes, so the cache must miss and the background must be called again.
     setDiscountResponse(4000);
     rerender({ chainId: '0x1' });
-    await waitForNextUpdate();
-    expect(result.current).toBe(4000);
+    await waitFor(() => {
+      expect(result.current).toBe(4000);
+    });
 
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
       (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
@@ -287,7 +291,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
       },
       { initialProps: { chainId: TEST_CHAIN_ID } },
     );
-    // Flush the initial null lookup. `waitForNextUpdate` would hang here
+    // Flush the initial null lookup. a waitFor on result.current would hang here
     // because the hook stays at its initial `undefined` value — there's no
     // state change to await.
     await act(async () => {
@@ -309,15 +313,16 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
   it('resets to undefined immediately when the account switches before the new fetch resolves', async () => {
     // First account resolves to 5000.
     setDiscountResponse(5000);
-    const { rerender, result, waitForNextUpdate } = renderHook(
+    const { rerender, result } = renderHook(
       ({ address }: { address: string }) => {
         setSelectors({ address });
         return usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS);
       },
       { initialProps: { address: TEST_ADDRESS } },
     );
-    await waitForNextUpdate();
-    expect(result.current).toBe(5000);
+    await waitFor(() => {
+      expect(result.current).toBe(5000);
+    });
 
     // Switch to a new address. New fetch is deliberately never resolved.
     mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
