@@ -6,10 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { mapLocalTransaction } from '@metamask/client-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  asActivityListItem,
-  type ActivityListItem,
-} from '../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
@@ -78,7 +75,7 @@ function mapMusdClaimGroup(
   } as unknown as TransactionGroup;
 
   const result = enrichLocalMusdClaimActivity(
-    asActivityListItem(mapLocalTransaction(transactionGroup)),
+    mapLocalTransaction(transactionGroup),
     transactionGroup,
   );
   return result;
@@ -290,7 +287,7 @@ describe('enrichLocalMusdClaimActivity', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const mapped = asActivityListItem(mapLocalTransaction(transactionGroup));
+    const mapped = mapLocalTransaction(transactionGroup);
     const enriched = enrichLocalMusdClaimActivity(mapped, transactionGroup);
 
     expect(enriched).toBe(mapped);

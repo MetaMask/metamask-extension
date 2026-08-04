@@ -5987,18 +5987,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/client-utils@npm:1.5.0"
+"@metamask/client-utils@npm:@metamask-previews/client-utils@1.6.0-preview-0efc7ef01":
+  version: 1.6.0-preview-0efc7ef01
+  resolution: "@metamask-previews/client-utils@npm:1.6.0-preview-0efc7ef01"
   dependencies:
     "@metamask/contract-metadata": "npm:^2.4.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^8.0.0"
+    "@metamask/core-backend": "npm:^8.1.0"
     "@metamask/keyring-api": "npm:^23.7.0"
     "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^69.3.0"
+    "@metamask/transaction-controller": "npm:^69.4.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/5dc3ee21a60ab5ed1cea5d42513cbb0f727a9c17d1d0e3afb91d4e4d6c05e0ba3f8057ed9b5251c712404d8f749f146022a870f68929dd1f349f7fafd50ba7ac
+    eth-chainlist: "npm:^0.0.795"
+  checksum: 10/8d5a2facac4a5bb0df1dda4684024e1f4768ff9e751320d1cdf47711d66d3f79cc8a916a7c4039fbbce2a7cc77acff798454e7cc716b53ec0df4c2ac302f3e7d
   languageName: node
   linkType: hard
 

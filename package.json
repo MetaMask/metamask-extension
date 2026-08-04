@@ -169,6 +169,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/client-utils": {
+      "type": "breaking",
+      "previewVersion": "1.6.0-preview-0efc7ef01"
+    }
+  },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",

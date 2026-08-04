@@ -6,7 +6,6 @@ import {
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
-import { asActivityListItem } from '../../../shared/lib/activity/types';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
@@ -41,12 +40,10 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const transaction = useMemo(() => {
     const apiActivityItem =
       apiTransaction && selectedAddress
-        ? asActivityListItem(
-            mapApiTransaction({
-              subjectAddress: selectedAddress,
-              transaction: apiTransaction,
-            }),
-          )
+        ? mapApiTransaction({
+            subjectAddress: selectedAddress,
+            transaction: apiTransaction,
+          })
         : undefined;
 
     if (localActivityItem) {

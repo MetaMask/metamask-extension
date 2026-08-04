@@ -6,10 +6,7 @@ import type {
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
-import {
-  asActivityListItem,
-  type ActivityListItem,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
@@ -55,9 +52,7 @@ export function useQueryFilters(queryFilters: Props) {
               txFilters.every((filter) => filter(transaction)),
             )
             .map((transaction) =>
-              asActivityListItem(
-                mapApiTransaction({ subjectAddress, transaction }),
-              ),
+              mapApiTransaction({ subjectAddress, transaction }),
             )
             .map((activity) => {
               const hash = activity.hash?.toLowerCase();
