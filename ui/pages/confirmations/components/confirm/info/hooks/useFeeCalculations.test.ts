@@ -61,9 +61,11 @@ describe('useFeeCalculations', () => {
     const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
       metamask: {
         currencyRates: {
+          ETH: {
+            usdConversionRate: 556.12,
+          },
           SepoliaETH: {
             conversionRate: 0,
-            usdConversionRate: 556.12,
           },
         },
         networkConfigurationsByChainId: {

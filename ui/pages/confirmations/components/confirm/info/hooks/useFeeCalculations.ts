@@ -102,16 +102,19 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const chainConversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
-  const usdConversionRate = getValidConversionRate(
-    useSelector((state) => getUSDConversionRateByChainId(chainId)(state)),
+  const chainUsdConversionRate = useSelector((state) =>
+    getUSDConversionRateByChainId(chainId)(state),
   );
   const currencyRates = useSelector(getCurrencyRates);
-  const ethConversionRate = shouldUseEthConversionRateFallback(chainId)
-    ? currencyRates?.[CURRENCY_SYMBOLS.ETH]?.conversionRate
+  const fallbackCurrencyRate = shouldUseEthConversionRateFallback(chainId)
+    ? currencyRates?.[CURRENCY_SYMBOLS.ETH]
     : undefined;
   const conversionRate =
     getValidConversionRate(chainConversionRate) ??
-    getValidConversionRate(ethConversionRate);
+    getValidConversionRate(fallbackCurrencyRate?.conversionRate);
+  const usdConversionRate =
+    getValidConversionRate(chainUsdConversionRate) ??
+    getValidConversionRate(fallbackCurrencyRate?.usdConversionRate);
   const hasValidConversionRate = conversionRate !== undefined;
 
   const { gasLimit: optimizedGasLimit, quotedGasLimit } =
