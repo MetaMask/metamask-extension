@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "पहले इस्तेमाल किया गया"
   },
-  "rampsProviders": {
-    "message": "प्रोवाइडर्स"
-  },
   "rampsQuoteFetchError": {
     "message": "कोटेशन प्राप्त नहीं हो पाया।"
   },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "भुगतान विधि चुनें"

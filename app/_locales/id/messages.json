@@ -8045,18 +8045,11 @@
   "rampsPreviouslyUsed": {
     "message": "Digunakan sebelumnya"
   },
-  "rampsProviders": {
-    "message": "Penyedia"
-  },
   "rampsQuoteFetchError": {
     "message": "Gagal mengambil kuotasi."
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Kuotasi yang ditampilkan untuk $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pilih metode pembayaran"

@@ -10,6 +10,7 @@ import type {
 } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { RampsProviderSelectionModal } from './provider-selection';
 
 const mockOnClose = jest.fn();
@@ -266,7 +267,7 @@ describe('RampsProviderSelectionModal', () => {
       createStore(),
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    fireEvent.click(screen.getByRole('button', { name: messages.close.message }));
     expect(mockOnClose).toHaveBeenCalled();
   });
 });

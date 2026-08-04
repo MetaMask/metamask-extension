@@ -8045,18 +8045,11 @@
   "rampsPreviouslyUsed": {
     "message": "Đã sử dụng trước đây"
   },
-  "rampsProviders": {
-    "message": "Nhà cung cấp"
-  },
   "rampsQuoteFetchError": {
     "message": "Tìm nạp báo giá không thành công."
   },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Báo giá được hiển thị cho $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Chọn phương thức thanh toán"

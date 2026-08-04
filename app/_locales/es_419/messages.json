@@ -8045,18 +8045,11 @@
   "rampsPreviouslyUsed": {
     "message": "Usado anteriormente"
   },
-  "rampsProviders": {
-    "message": "Proveedores"
-  },
   "rampsQuoteFetchError": {
     "message": "No se pudo obtener la cotización."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Cotizaciones mostradas para $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Seleccionar método de pago"

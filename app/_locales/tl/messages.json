@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "Dating ginamit"
   },
-  "rampsProviders": {
-    "message": "Mga Provider"
-  },
   "rampsQuoteFetchError": {
     "message": "Nabigong kunin ang quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Mga quote na ipinapakita para sa $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pumili ng paraan ng pagbabayad"

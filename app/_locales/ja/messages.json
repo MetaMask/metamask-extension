@@ -8041,18 +8041,11 @@
   "rampsPreviouslyUsed": {
     "message": "以前使用"
   },
-  "rampsProviders": {
-    "message": "プロバイダー"
-  },
   "rampsQuoteFetchError": {
     "message": "クォートを取得できませんでした。"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1用のクォートが表示されています。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "支払方法を選択"

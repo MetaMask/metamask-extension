@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "Usado anteriormente"
   },
-  "rampsProviders": {
-    "message": "Fornecedores"
-  },
   "rampsQuoteFetchError": {
     "message": "Falha ao buscar cotação."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotação não disponível."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Cotações exibidas para $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Selecione o método de pagamento"

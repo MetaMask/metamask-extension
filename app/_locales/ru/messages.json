@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "Ранее использовались"
   },
-  "rampsProviders": {
-    "message": "Поставщики"
-  },
   "rampsQuoteFetchError": {
     "message": "Не удалось получить котировку."
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Отображаются котировки для $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Выбрать способ оплаты"

@@ -8391,9 +8391,6 @@
   "rampsPreviouslyUsed": {
     "message": "Previously used"
   },
-  "rampsProviders": {
-    "message": "Providers"
-  },
   "rampsQuoteErrorEnterLowerAmount": {
     "message": "Error getting quotes. Enter a lower amount or"
   },
@@ -8402,10 +8399,6 @@
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Quotes displayed for $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"

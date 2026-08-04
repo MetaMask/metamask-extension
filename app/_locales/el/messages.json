@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "Χρησιμοποιήθηκε στο παρελθόν"
   },
-  "rampsProviders": {
-    "message": "Πάροχοι"
-  },
   "rampsQuoteFetchError": {
     "message": "Αποτυχία λήψης προσφοράς."
   },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Οι τιμές εμφανίζονται για τον τρόπο πληρωμής $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Επιλέξτε μέθοδο πληρωμής"

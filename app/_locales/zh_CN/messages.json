@@ -8037,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "先前使用的"
   },
-  "rampsProviders": {
-    "message": "提供商"
-  },
   "rampsQuoteFetchError": {
     "message": "获取报价失败。"
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "显示 $1 的报价。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "选择付款方式"
