@@ -279,6 +279,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
+import { deriveMoneyAccountAddress } from './lib/money/get-money-account-address';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -3365,6 +3366,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
+      getMoneyAccountAddress: this.getMoneyAccountAddress.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4510,6 +4512,16 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return convertEnglishWordlistIndicesToCodepoints(mnemonic);
+  }
+
+  /**
+   * Derives the money account address from the primary HD seed. Requires an
+   * unlocked wallet, but not the password.
+   *
+   * @returns {Promise<string>} The money account address.
+   */
+  async getMoneyAccountAddress() {
+    return deriveMoneyAccountAddress(this.controllerMessenger);
   }
 
   /**
