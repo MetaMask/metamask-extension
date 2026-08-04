@@ -6,7 +6,10 @@ import {
 } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
-import { trackRampsTerminalOrder, trackRampsTransactionConfirmed } from './ramps/handleRampsOrderStatusChanged';
+import {
+  trackRampsTerminalOrder,
+  trackRampsTransactionConfirmed,
+} from './ramps/handleRampsOrderStatusChanged';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,

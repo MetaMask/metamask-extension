@@ -389,9 +389,9 @@ describe('createWatchRampsCheckoutTab', () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    const eventNames = jest.mocked(trackEvent).mock.calls.map(
-      ([event]) => event.name,
-    );
+    const eventNames = jest
+      .mocked(trackEvent)
+      .mock.calls.map(([event]) => event.name);
     expect(eventNames).toContain(
       MetaMetricsEventName.RampsTransactionConfirmed,
     );

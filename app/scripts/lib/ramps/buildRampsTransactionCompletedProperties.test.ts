@@ -109,25 +109,25 @@ describe('buildRampsTransactionFailedProperties', () => {
 
 describe('buildRampsTransactionConfirmedProperties', () => {
   it('maps a fully-populated order to the confirmed schema shape', () => {
-    expect(
-      buildRampsTransactionConfirmedProperties(makeOrder()),
-    ).toStrictEqual({
-      ramp_type: 'UNIFIED_BUY_2',
-      ramp_routing: 'AGGREGATOR',
-      provider_order_id: 'transak/orders/abc123',
-      amount_source: 100,
-      amount_destination: 0.02,
-      exchange_rate: 4800,
-      gas_fee: 1.5,
-      processing_fee: 2.5,
-      total_fee: 4,
-      payment_method_id: 'credit_debit_card',
-      country: 'us-ca',
-      currency_destination: 'eip155:1/slip44:60',
-      currency_destination_symbol: 'ETH',
-      currency_destination_network: 'Ethereum',
-      currency_source: 'USD',
-    });
+    expect(buildRampsTransactionConfirmedProperties(makeOrder())).toStrictEqual(
+      {
+        ramp_type: 'UNIFIED_BUY_2',
+        ramp_routing: 'AGGREGATOR',
+        provider_order_id: 'transak/orders/abc123',
+        amount_source: 100,
+        amount_destination: 0.02,
+        exchange_rate: 4800,
+        gas_fee: 1.5,
+        processing_fee: 2.5,
+        total_fee: 4,
+        payment_method_id: 'credit_debit_card',
+        country: 'us-ca',
+        currency_destination: 'eip155:1/slip44:60',
+        currency_destination_symbol: 'ETH',
+        currency_destination_network: 'Ethereum',
+        currency_source: 'USD',
+      },
+    );
   });
 
   it('does not include provider_onramp (not in the confirmed schema)', () => {
@@ -141,10 +141,7 @@ describe('buildRampsTransactionConfirmedProperties', () => {
   });
 
   it('includes region and uses it for country when passed', () => {
-    const props = buildRampsTransactionConfirmedProperties(
-      makeOrder(),
-      'fr',
-    );
+    const props = buildRampsTransactionConfirmedProperties(makeOrder(), 'fr');
     expect(props.region).toBe('fr');
     expect(props.country).toBe('fr');
   });
