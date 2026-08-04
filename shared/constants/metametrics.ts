@@ -975,6 +975,7 @@ export enum MetaMetricsEventName {
   RampsCheckoutCallbackDetected = 'Ramps Checkout Callback Detected',
   RampsCheckoutClosed = 'Ramps Checkout Closed',
   RampsTransactionCompleted = 'Ramps Transaction Completed',
+  RampsTransactionConfirmed = 'Ramps Transaction Confirmed',
   RampsTransactionFailed = 'Ramps Transaction Failed',
   PasswordChanged = 'Password Changed',
   PasswordChangeWithPasskey = 'Password Change With Passkey',

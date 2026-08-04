@@ -6,7 +6,7 @@ import {
 } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
-import { trackRampsTerminalOrder } from './ramps/handleRampsOrderStatusChanged';
+import { trackRampsTerminalOrder, trackRampsTransactionConfirmed } from './ramps/handleRampsOrderStatusChanged';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
@@ -127,6 +127,10 @@ export function createWatchRampsCheckoutTab(
           // `orderStatusChanged` and are never polled, so the terminal KPI has
           // to be emitted from this path (deduped inside).
           trackRampsTerminalOrder(order);
+          // Non-terminal orders emit `ramps-transaction-confirmed` — the user
+          // has submitted the order for processing but it hasn't completed yet.
+          // Terminal orders no-op here (they emit via trackRampsTerminalOrder).
+          trackRampsTransactionConfirmed(order, region);
           if (orderCode && resolvedCode && orderCode !== resolvedCode) {
             rampsController.removeOrder(orderCode);
           }

@@ -4,6 +4,7 @@ import { trackEvent } from '../../controllers/analytics';
 import {
   handleRampsOrderStatusChanged,
   trackRampsTerminalOrder,
+  trackRampsTransactionConfirmed,
 } from './handleRampsOrderStatusChanged';
 
 jest.mock('../../controllers/analytics', () => ({
@@ -101,5 +102,82 @@ describe('handleRampsOrderStatusChanged', () => {
     } as unknown as RampsOrder);
 
     expect(trackEvent).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('trackRampsTransactionConfirmed', () => {
+  beforeEach(() => jest.mocked(trackEvent).mockClear());
+
+  it('tracks Ramps Transaction Confirmed for a non-terminal PENDING order', () => {
+    trackRampsTransactionConfirmed({
+      status: 'PENDING',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    } as unknown as RampsOrder);
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
+      MetaMetricsEventName.RampsTransactionConfirmed,
+    );
+  });
+
+  it('tracks Ramps Transaction Confirmed for a CREATED order', () => {
+    trackRampsTransactionConfirmed({
+      status: 'CREATED',
+    } as unknown as RampsOrder);
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
+      MetaMetricsEventName.RampsTransactionConfirmed,
+    );
+  });
+
+  it('does not track for terminal status COMPLETED', () => {
+    trackRampsTransactionConfirmed({
+      status: 'COMPLETED',
+    } as unknown as RampsOrder);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not track for terminal status FAILED', () => {
+    trackRampsTransactionConfirmed({
+      status: 'FAILED',
+    } as unknown as RampsOrder);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not track for terminal status CANCELLED', () => {
+    trackRampsTransactionConfirmed({
+      status: 'CANCELLED',
+    } as unknown as RampsOrder);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not track for terminal status ID_EXPIRED', () => {
+    trackRampsTransactionConfirmed({
+      status: 'ID_EXPIRED',
+    } as unknown as RampsOrder);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not track when no order is provided', () => {
+    trackRampsTransactionConfirmed(undefined);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('passes region through to the confirmed properties', () => {
+    trackRampsTransactionConfirmed(
+      {
+        status: 'PENDING',
+        fiatAmount: 100,
+        cryptoAmount: 0.02,
+        totalFeesFiat: 4,
+        region: 'us-ca',
+      } as unknown as RampsOrder,
+      'fr',
+    );
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
+      region: 'fr',
+      country: 'fr',
+    });
   });
 });

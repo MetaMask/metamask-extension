@@ -51,6 +51,54 @@ export function buildRampsTransactionCompletedProperties(
 }
 
 /**
+ * Maps a RampsOrder onto the `metamask-ramps` schema's
+ * `ramps-transaction-confirmed` properties. Fires when a callback-fetched
+ * order is first observed in a non-terminal state (the user has submitted the
+ * order for processing but it has not completed yet). Kept in lockstep with
+ * mobile's `buildRampsTransactionConfirmedParams` in metamask-mobile
+ * `ramps-controller/event-handlers/analytics.ts`.
+ *
+ * Unlike `buildRampsTransactionCompletedProperties`, this does NOT emit
+ * `provider_onramp` (not in the confirmed schema) and DOES emit `region`
+ * separately from `country` when a region is provided.
+ *
+ * @param order - The confirmed (non-terminal) RampsOrder.
+ * @param region - Optional region code from the checkout context; overrides `order.region` for the `country` field when present.
+ * @returns The `ramps-transaction-confirmed` event properties.
+ */
+export function buildRampsTransactionConfirmedProperties(
+  order: RampsOrder,
+  region?: string,
+): Record<string, Json | undefined> {
+  const cryptoAmount = Number(order.cryptoAmount);
+  const totalFee = Number(order.totalFeesFiat);
+  const computedExchangeRate =
+    cryptoAmount > 0 ? (Number(order.fiatAmount) - totalFee) / cryptoAmount : 0;
+  const country = region ?? order.region ?? '';
+
+  return {
+    ramp_type: RAMPS_RAMP_TYPE,
+    ramp_routing: RAMPS_RAMP_ROUTING,
+    ...(order.providerOrderId
+      ? { provider_order_id: order.providerOrderId }
+      : {}),
+    amount_source: Number(order.fiatAmount),
+    amount_destination: cryptoAmount,
+    exchange_rate: Number(order.exchangeRate ?? computedExchangeRate),
+    gas_fee: Number(order.networkFees ?? 0),
+    processing_fee: Number(order.partnerFees ?? 0),
+    total_fee: totalFee,
+    payment_method_id: order.paymentMethod?.id ?? '',
+    country,
+    ...(region ? { region } : {}),
+    currency_destination: order.cryptoCurrency?.assetId ?? '',
+    currency_destination_symbol: order.cryptoCurrency?.symbol,
+    currency_destination_network: order.network?.name,
+    currency_source: order.fiatCurrency?.symbol ?? '',
+  };
+}
+
+/**
  * `ramps-transaction-failed` shares the completed field set (mobile parity)
  * plus `error_message`.
  *

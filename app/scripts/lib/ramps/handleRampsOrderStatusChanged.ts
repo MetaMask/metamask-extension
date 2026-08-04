@@ -10,6 +10,7 @@ import {
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
   buildRampsTransactionCompletedProperties,
+  buildRampsTransactionConfirmedProperties,
   buildRampsTransactionFailedProperties,
 } from './buildRampsTransactionCompletedProperties';
 
@@ -17,6 +18,18 @@ type RampsOrderStatusChangedEventPayload =
   RampsControllerOrderStatusChangedEvent['payload'][0];
 
 const emittedTerminalOrders = new Set<string>();
+
+/**
+ * Terminal order statuses — mirrors `@metamask/ramps-controller`'s internal
+ * `TERMINAL_ORDER_STATUSES` set (kept in lockstep with mobile's
+ * `ramps-controller/event-handlers/analytics.ts`).
+ */
+const TERMINAL_ORDER_STATUSES = new Set<string>([
+  'COMPLETED',
+  'FAILED',
+  'CANCELLED',
+  'ID_EXPIRED',
+]);
 
 /**
  * Fires the ramps buy-flow terminal-outcome KPI (completed / failed) for an
@@ -67,6 +80,34 @@ export function trackRampsTerminalOrder(order?: RampsOrder): void {
   if (orderKey) {
     emittedTerminalOrders.add(orderKey);
   }
+}
+
+/**
+ * Fires `ramps-transaction-confirmed` when a callback-fetched order is first
+ * observed in a non-terminal state — the user has submitted the order for
+ * processing but it has not reached a terminal outcome yet. Mirrors mobile's
+ * `emitOrderConfirmedAnalyticsFromCallback` in metamask-mobile
+ * `ramps-controller/event-handlers/analytics.ts`.
+ *
+ * No-ops for terminal orders (those emit via `trackRampsTerminalOrder` instead).
+ *
+ * @param order - The callback-resolved order to evaluate.
+ * @param region - Optional region code from the checkout context.
+ */
+export function trackRampsTransactionConfirmed(
+  order?: RampsOrder,
+  region?: string,
+): void {
+  if (!order || TERMINAL_ORDER_STATUSES.has(order.status)) {
+    return;
+  }
+
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.RampsTransactionConfirmed)
+      .addCategory(MetaMetricsEventCategory.Ramps)
+      .addProperties(buildRampsTransactionConfirmedProperties(order, region))
+      .build(),
+  );
 }
 
 /**

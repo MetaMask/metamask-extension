@@ -359,6 +359,90 @@ describe('createWatchRampsCheckoutTab', () => {
     ).toContain(MetaMetricsEventName.RampsTransactionCompleted);
   });
 
+  it('tracks ramps-transaction-confirmed for a non-terminal callback order', async () => {
+    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+      createHarness();
+    rampsController.getOrderFromCallback.mockResolvedValue({
+      id: 'moonpay/orders/pending-order',
+      providerOrderId: 'pending-order',
+      status: 'PENDING',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    });
+
+    watch({
+      tabId: 12,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: false,
+      ...checkoutAnalytics,
+      orderCode: undefined,
+    });
+
+    getOnUpdated()?.(
+      12,
+      { url: `${callbackBase}?transactionId=pending-order` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const eventNames = jest.mocked(trackEvent).mock.calls.map(
+      ([event]) => event.name,
+    );
+    expect(eventNames).toContain(
+      MetaMetricsEventName.RampsTransactionConfirmed,
+    );
+    expect(eventNames).not.toContain(
+      MetaMetricsEventName.RampsTransactionCompleted,
+    );
+  });
+
+  it('passes the checkout region to ramps-transaction-confirmed', async () => {
+    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+      createHarness();
+    rampsController.getOrderFromCallback.mockResolvedValue({
+      id: 'moonpay/orders/pending-order',
+      providerOrderId: 'pending-order',
+      status: 'PENDING',
+      fiatAmount: 100,
+      cryptoAmount: 0.02,
+      totalFeesFiat: 4,
+    });
+
+    watch({
+      tabId: 13,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: false,
+      ...checkoutAnalytics,
+      region: 'de',
+      orderCode: undefined,
+    });
+
+    getOnUpdated()?.(
+      13,
+      { url: `${callbackBase}?transactionId=pending-order` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const confirmedCall = jest
+      .mocked(trackEvent)
+      .mock.calls.find(
+        ([event]) =>
+          event.name === MetaMetricsEventName.RampsTransactionConfirmed,
+      );
+    expect(confirmedCall?.[0].properties).toMatchObject({
+      region: 'de',
+      country: 'de',
+    });
+  });
+
   it('tracks checkout closed when the user closes the tab before callback', () => {
     const { watch, getOnRemoved, checkoutAnalytics } = createHarness();
 
