@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "आप अपनी एसेट्स एक बर्न एड्रेस पर भेज रहे हैं। यदि आप जारी रखते हैं, तो आप अपनी एसेट्स खो देंगे।"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "इस ट्रांसेक्शन के लिए अनुमानित परिवर्तन अपडेट कर दिए गए हैं। आगे बढ़ने से पहले उनकी बारीकी से समीक्षा करें।"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "आप पहली बार इस एड्रेस के साथ इंटरैक्ट कर रहे हैं। जारी रखने से पहले सुनिश्चित करें कि यह सही है।"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "वॉलेट सपोर्टेड नहीं है"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "परिणाम बदल गए हैं"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "पहला इंटरैक्शन"

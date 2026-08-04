@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Varlıklarınızı bir yakım adresine gönderiyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Bu işlem için tahmin edilen değişiklikler güncellendi. Devam etmeden önce dikkatle inceleyin."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Bu adresle ilk kez etkileşimde bulunuyorsunuz. Devam etmeden önce doğru olduğundan emin olun."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Cüzdan desteklenmiyor"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Sonuçlar değişti"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1. etkileşim"

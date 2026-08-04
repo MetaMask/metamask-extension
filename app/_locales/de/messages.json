@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Sie senden Ihre Vermögenswerte an eine Burn-Adresse. Wenn Sie fortfahren, verlieren Sie Ihre Vermögenswerte."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Die voraussichtlichen Änderungen dieser Transaktion wurden aktualisiert. Überprüfen Sie diese sorgfältig, bevor Sie fortfahren."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Sie interagieren zum ersten Mal mit dieser Adresse. Vergewissern Sie sich, dass sie korrekt ist, bevor Sie fortfahren."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Wallet wird nicht unterstützt"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Ergebnisse haben sich geändert"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1. Interaktion"

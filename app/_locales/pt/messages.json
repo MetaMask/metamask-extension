@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Você está enviando seus ativos para um endereço de queima. Se continuar, você perderá seus ativos."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "As mudanças estimadas para esta transação foram atualizadas. Revise com atenção antes de prosseguir."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Esta é sua primeira interação com este endereço. Certifique-se de que ele está correto antes de continuar."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Não há suporte para esta carteira"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Os resultados mudaram"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1ª interação"

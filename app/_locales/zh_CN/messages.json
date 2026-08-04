@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "此交易的预计更改已更新。继续之前请仔细审查。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "您首次与此地址交互。请确保地址正确，然后再继续。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "钱包不获支持"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "结果已发生变化"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"

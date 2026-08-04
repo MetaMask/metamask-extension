@@ -1462,9 +1462,6 @@
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
   },
@@ -1527,9 +1524,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Results have changed"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"

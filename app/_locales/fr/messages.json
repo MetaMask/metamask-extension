@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Vous envoyez vos actifs vers une adresse de destruction. Si vous continuez, vous perdrez vos actifs."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Les changements estimés pour cette transaction ont été mis à jour. Examinez-les attentivement avant de continuer."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Vous interagissez avec cette adresse pour la première fois. Assurez-vous qu’elle est correcte avant de continuer."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Portefeuille non pris en charge"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Les résultats ont changé"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1re interaction"

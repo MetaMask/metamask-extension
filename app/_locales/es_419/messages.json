@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Estás enviando tus activos a una dirección de quema. Si continúas, perderás tus activos."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Se actualizaron los cambios estimados para esta transacción. Revíselos detenidamente antes de continuar."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Está interactuando con esta dirección por primera vez. Asegúrese de que sea correcta antes de continuar."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Billetera no admitida"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Los resultados cambiaron"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1.ª interacción"

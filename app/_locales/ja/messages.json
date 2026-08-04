@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "このトランザクションの予測される増減額が更新されました。先に進む前によく確認してください。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "未対応のウォレットです"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "結果が変更されました"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
