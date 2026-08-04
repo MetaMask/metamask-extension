@@ -398,6 +398,7 @@ export const DiscoverSearchPage = () => {
           />
         </Link>
         <TextFieldSearch
+          autoFocus={true}
           className="app-text-field-search min-w-0 flex-1"
           placeholder={t('searchTokens')}
           value={searchQuery}
@@ -407,7 +408,6 @@ export const DiscoverSearchPage = () => {
           inputProps={
             {
               'data-testid': 'discover-search-input',
-              autoFocus: true,
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }
