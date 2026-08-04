@@ -16,13 +16,17 @@ export type EthProvider = NonNullable<
   ReturnType<NetworkController['getProviderAndBlockTracker']>['provider']
 >;
 
-export default async function resolveEnsToIpfsContentId({
-  provider,
-  name,
-}: {
-  provider: EthProvider;
-  name: string;
-}) {
+export default async function resolveEnsToIpfsContentId(
+  {
+    provider,
+    name,
+  }: {
+    provider: EthProvider;
+    name: string;
+  },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
   const hash = namehash.hash(name);
 
   // lookup registry
@@ -84,7 +88,9 @@ export default async function resolveEnsToIpfsContentId({
   );
 }
 
-function hexValueIsEmpty(value: string | null | undefined): boolean {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hexValueIsEmpty(value: any): boolean {
   return [
     undefined,
     null,
