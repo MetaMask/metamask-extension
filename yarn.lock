@@ -7293,6 +7293,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/money-account-utils@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/money-account-utils@npm:1.1.0"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/abstract-provider": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@metamask/transaction-controller": "npm:^69.4.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/1117c232b37d6551af0b2e68b3f7ced9ec5d9b7bc025089bf54feeb15d627fcc474c9b65e5cf47b9c000cad19773cc9ea0ee5410aaa035ef250820d54b7efdd5
+  languageName: node
+  linkType: hard
+
 "@metamask/multichain-account-service@npm:^13.0.0":
   version: 13.0.0
   resolution: "@metamask/multichain-account-service@npm:13.0.0"
@@ -32945,6 +32958,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
+    "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/multichain-account-service": "npm:^13.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"
