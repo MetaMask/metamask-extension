@@ -6,6 +6,10 @@ import {
   BoxJustifyContent,
   ButtonBase,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -38,24 +42,33 @@ export const DiscoverSearchSectionHeader = ({
 
   return (
     <Box
-      className="px-4 py-2"
+      className="px-4 pb-3 pt-3"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       data-testid={dataTestId}
     >
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
         {title}
       </Text>
       {showViewAll && onViewAll ? (
         <ButtonBase
-          className="h-auto rounded-none bg-transparent px-0 py-0 hover:bg-transparent active:bg-transparent"
+          className="h-auto gap-1 rounded-none bg-transparent px-0 py-0 hover:bg-transparent active:bg-transparent"
           onClick={onViewAll}
           data-testid={`${dataTestId ?? 'discover-section'}-view-all`}
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
+          >
             {t('viewAll')}
           </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Md}
+            color={IconColor.IconAlternative}
+          />
         </ButtonBase>
       ) : null}
     </Box>
