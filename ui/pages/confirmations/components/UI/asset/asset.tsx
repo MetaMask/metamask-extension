@@ -162,8 +162,6 @@ const TokenAsset = ({
       })
     : (image ?? '');
 
-  // A disabled asset with an explanation stays interactive so the row can open
-  // the explanatory modal; without one it is inert, as before.
   const isExplained = Boolean(disabled && disabledMessage);
   const handleClick = disabled && !isExplained ? undefined : onClick;
 

@@ -42,7 +42,6 @@ import {
 export type RampsProviderSelectionModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  /** Amount entered on the calling screen, used to fetch quotes. */
   amount: number;
 };
 
@@ -65,21 +64,20 @@ type ProviderListRow =
 
 /**
  * Builds render-ready rows from sorted list items (tags, quotes, unavailable).
- *
- * @param args
- * @param args.sortedListItems
- * @param args.quotes
- * @param args.quotesLoading
- * @param args.showQuotes
- * @param args.selectedProviderId
- * @param args.selectedPaymentMethodId
- * @param args.ordersProviders
- * @param args.isSelecting
- * @param args.amount
- * @param args.fiatCurrency
- * @param args.tokenSymbol
- * @param args.formatCurrency
- * @param args.t
+ * @param options0
+ * @param options0.sortedListItems
+ * @param options0.quotes
+ * @param options0.quotesLoading
+ * @param options0.showQuotes
+ * @param options0.selectedProviderId
+ * @param options0.selectedPaymentMethodId
+ * @param options0.ordersProviders
+ * @param options0.isSelecting
+ * @param options0.amount
+ * @param options0.fiatCurrency
+ * @param options0.tokenSymbol
+ * @param options0.formatCurrency
+ * @param options0.t
  */
 function buildProviderListRows({
   sortedListItems,
@@ -164,7 +162,6 @@ function buildProviderListRows({
  *
  * Lists providers with optional quotes for the current payment method and
  * updates controller selection, overlaid on whichever screen opened it.
- *
  * @param options0
  * @param options0.isOpen
  * @param options0.onClose

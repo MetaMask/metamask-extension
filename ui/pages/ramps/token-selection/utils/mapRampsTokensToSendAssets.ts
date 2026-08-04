@@ -117,7 +117,7 @@ export function mapRampsTokenToSendAsset(
   const isNative = token.assetId.includes('/slip44:');
   const chainId = normalizeSendAssetChainId(token.chainId);
 
-  return {
+  const asset: AssetType = {
     assetId: token.assetId,
     address: parseAddressFromAssetId(token.assetId),
     chainId,
@@ -129,10 +129,14 @@ export function mapRampsTokenToSendAsset(
     networkImage: networkDetails.networkImage,
     isNative,
     disabled: !token.tokenSupported,
-    // Drives the (i) affordance and "Token unavailable" modal on the asset row.
-    ...(!token.tokenSupported && disabledMessage ? { disabledMessage } : {}),
     standard: isNative ? AssetStandard.Native : AssetStandard.ERC20,
   };
+
+  if (!token.tokenSupported && disabledMessage) {
+    asset.disabledMessage = disabledMessage;
+  }
+
+  return asset;
 }
 
 export function mapRampsTokensToSendAssets(

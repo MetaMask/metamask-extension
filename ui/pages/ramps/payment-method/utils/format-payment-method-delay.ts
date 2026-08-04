@@ -103,8 +103,8 @@ function translateDelayToken(
 /**
  * Formats a payment method delay array for display (e.g. "5-10 mins").
  *
- * Figma writes ranges without spaces around the dash ("1-2 days"), so the
- * separator is joined tight to its neighbours while the unit keeps its space.
+ * Ranges are joined tight to the dash ("1-2 days") while the unit keeps its
+ * space.
  *
  * @param delay - Delay bounds in minutes, when present.
  * @param t - i18n translate function.

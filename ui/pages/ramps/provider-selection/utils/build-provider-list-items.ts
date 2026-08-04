@@ -13,7 +13,6 @@ export type ProviderListItem =
   | { type: 'provider'; provider: Provider }
   | { type: 'separator' };
 
-/** Colored pill shown next to a provider name. */
 export type ProviderTag = {
   label: string;
   severity: TagSeverity;
@@ -22,9 +21,8 @@ export type ProviderTag = {
 /**
  * Tag pill for a provider row (previously used / reliability / best rate).
  *
- * Each reason gets its own severity so the pills are visually distinct, per
- * the Buy Figma spec. `Info` matches the design token used in Figma
- * (`primary-muted` / `primary-default`, which `info-*` aliases).
+ * Each reason gets its own severity so the pills are visually distinct.
+ * `Info` aliases the `primary-muted` / `primary-default` design tokens.
  *
  * @param providerId - Provider id.
  * @param matchedQuote - Quote matched to this provider, when available.
@@ -61,14 +59,12 @@ type BuildProviderListItemsArgs = {
 /**
  * Builds the ordered provider list with an optional "Other options" separator,
  * matching mobile `ProviderSelection` sorting.
- *
- * @param args - Sorting inputs.
- * @param args.providers
- * @param args.quotes
- * @param args.quotesLoading
- * @param args.displayQuotes
- * @param args.selectedTokenAssetId
- * @returns Ordered list items for the provider selection UI.
+ * @param options0
+ * @param options0.providers
+ * @param options0.quotes
+ * @param options0.quotesLoading
+ * @param options0.displayQuotes
+ * @param options0.selectedTokenAssetId
  */
 export function buildProviderListItems({
   providers,

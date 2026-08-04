@@ -46,7 +46,6 @@ export type RampsBuildQuoteReadyViewModel = {
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
-  /** Inline link rendered after the error copy, when Figma specifies one. */
   quoteErrorLink: { label: string; onClick: () => void } | null;
   providerStatusLabel: string;
   isQuoteLoading: boolean;
@@ -311,7 +310,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     : '';
   const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
-  // `continueError` has no follow-up affordance in Figma, so it suppresses the
+  // `continueError` has no follow-up affordance, so it suppresses the
   // quote error's link along with its copy.
   const resolvedError = continueError
     ? { message: continueError }

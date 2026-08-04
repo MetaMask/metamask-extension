@@ -50,8 +50,6 @@ export function formatPaymentMethodLimits(
   const hasMin = Number.isFinite(limit.minAmount);
   const hasMax = Number.isFinite(limit.maxAmount);
 
-  // Figma shows the ceiling only ("$500 limit"); the row pairs this with the
-  // delay on a single line, so a min–max range does not fit.
   if (hasMax) {
     return t('rampsPaymentMethodLimit', [formatFiat(limit.maxAmount)]);
   }

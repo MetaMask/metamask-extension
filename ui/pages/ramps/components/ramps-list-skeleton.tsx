@@ -7,22 +7,11 @@ import {
 } from '@metamask/design-system-react';
 
 export type RampsListSkeletonProps = {
-  /** Number of placeholder rows to render. */
   rows?: number;
-  /** Renders a leading circular placeholder for rows that have an icon. */
   showAvatar?: boolean;
   testId?: string;
 };
 
-/**
- * Skeleton placeholder for the ramps provider / payment-method lists, matching
- * the `Pay with_loading` state in the Buy Figma spec.
- *
- * @param options0
- * @param options0.rows
- * @param options0.showAvatar
- * @param options0.testId
- */
 export default function RampsListSkeleton({
   rows = 3,
   showAvatar = false,
@@ -37,7 +26,7 @@ export default function RampsListSkeleton({
     >
       {Array.from({ length: rows }, (_, index) => (
         <Box
-          key={index}
+          key={`skeleton-row-${index}`}
           className="w-full"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}

@@ -24,7 +24,6 @@ export type RampsProviderListItemProps = {
   provider: Provider;
   isSelected?: boolean;
   isDisabled?: boolean;
-  /** Colored pill rendered inline after the provider name. */
   tag?: ProviderTag | null;
   subtitle?: string | null;
   showQuote?: boolean;
@@ -38,7 +37,6 @@ export type RampsProviderListItemProps = {
 /**
  * Provider row matching mobile ProviderSelection: name (+ optional subtitle)
  * on the left, quote amounts on the right.
- *
  * @param options0
  * @param options0.provider
  * @param options0.isSelected
@@ -82,8 +80,8 @@ export default function RampsProviderListItem({
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
 
-  // Rows are full-bleed in Figma, and `ButtonBase` defaults to `bg-muted`,
-  // which would make every row read as a card. Only the selected row is tinted.
+  // `ButtonBase` defaults to `bg-muted`, which would make every row read as a
+  // card. Only the selected row is tinted.
   const rowClassName = `w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed ${
     isSelected ? 'bg-background-muted' : 'bg-transparent'
   }`;

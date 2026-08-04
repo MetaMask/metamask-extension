@@ -21,10 +21,8 @@ type NamedSelection = {
   name: string;
 } | null;
 
-/** Fields used for provider quote matching. */
 type QuoteSelectionItem = Pick<Quote, 'provider'>;
 
-/** Fields used for provider quote error display. */
 type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
 
 /**
@@ -139,7 +137,11 @@ export function resolvePaymentMethodLabel(
  * rather than a per-order maximum.
  *
  * Providers only give us free-form strings on `QuoteError` (there is no error
- * code), so matching on the message is the only signal available.
+ * code), so matching on the message is the only signal available. This regex
+ * is intentionally conservative — if a provider changes its wording, the
+ * weekly-limit modal simply will not appear and the user falls through to the
+ * generic "enter a lower amount or change providers" copy instead. Add new
+ * patterns here as providers are observed to use different phrasing.
  *
  * @param rawError - The provider's raw error message.
  * @returns True when the error describes a weekly / time-based limit.

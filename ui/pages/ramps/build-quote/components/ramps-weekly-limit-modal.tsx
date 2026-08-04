@@ -29,24 +29,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export type RampsWeeklyLimitModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  /** Provider name used in the support button label. */
   providerName: string;
-  /** Support link for the selected provider, when it publishes one. */
   supportUrl: string | null;
   onContactSupport: () => void;
 };
 
-/**
- * Explains a rolling purchase-limit rejection, per the "Weekly limit reached"
- * frame in the Buy Figma spec.
- *
- * @param options0
- * @param options0.isOpen
- * @param options0.onClose
- * @param options0.providerName
- * @param options0.supportUrl
- * @param options0.onContactSupport
- */
 export default function RampsWeeklyLimitModal({
   isOpen,
   onClose,

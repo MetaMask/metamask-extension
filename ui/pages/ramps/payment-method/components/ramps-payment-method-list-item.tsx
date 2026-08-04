@@ -30,9 +30,7 @@ export type RampsPaymentMethodListItemProps = {
   paymentMethod: PaymentMethod;
   isSelected?: boolean;
   isDisabled?: boolean;
-  /** Shows the "Previously used" pill beside the name. */
   isPreviouslyUsed?: boolean;
-  /** Buy limits label when published by the selected provider. */
   limitText?: string | null;
   showQuote?: boolean;
   quote?: Quote | null;
@@ -47,7 +45,6 @@ export type RampsPaymentMethodListItemProps = {
 /**
  * Payment method row matching mobile `PaymentMethodListItem` layout:
  * logo, name, time estimate, optional limits, and optional quote preview.
- *
  * @param options0
  * @param options0.paymentMethod
  * @param options0.isSelected
@@ -85,7 +82,6 @@ export default function RampsPaymentMethodListItem({
     paymentMethod.icon,
   );
   const delayText = formatPaymentMethodDelay(paymentMethod.delay, t);
-  // Figma renders delay and limit as one line separated by a bullet.
   const detailText = [delayText, limitText].filter(Boolean).join(' • ');
   const subtitleText =
     quoteError && quoteErrorMessage ? quoteErrorMessage : detailText;
@@ -105,8 +101,8 @@ export default function RampsPaymentMethodListItem({
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
 
-  // Rows are full-bleed in Figma, and `ButtonBase` defaults to `bg-muted`,
-  // which would make every row read as a card. Only the selected row is tinted.
+  // `ButtonBase` defaults to `bg-muted`, which would make every row read as a
+  // card. Only the selected row is tinted.
   const rowClassName = `w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed ${
     isSelected ? 'bg-background-muted' : 'bg-transparent'
   }`;
