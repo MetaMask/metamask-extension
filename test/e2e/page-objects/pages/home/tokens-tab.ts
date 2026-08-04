@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { By, WebElement } from 'selenium-webdriver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
-import NetworkManager from '../network-manager';
 import HomePage from './homepage';
 
 /** Timeout for waiting on the import-confirm button to disappear after submit. */
@@ -103,9 +102,6 @@ class TokensTab extends HomePage {
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
-
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
@@ -1109,11 +1105,15 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
+  /**
+   * Clicks the network filter in the asset list control bar, which opens the
+   * network manager modal. Await `NetworkManager.checkPageIsLoaded` to wait for
+   * that modal.
+   */
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);
     await this.waitForNetworksToggleStable();
     await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitForSelector(this.modalCloseButton);
   }
 
   /**
@@ -1144,52 +1144,6 @@ class TokensTab extends HomePage {
   private async returnFromTokenManagementToHome(): Promise<void> {
     await this.driver.clickElement(this.tokenManagementBackButton);
     await this.driver.waitForSelector(this.multichainTokenListButton);
-  }
-
-  async selectAllNetworksInFilter(tab: string = 'Popular'): Promise<void> {
-    console.log('Selecting all networks in the asset list network filter');
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab(tab);
-    await networkManager.selectAllNetworks();
-  }
-
-  /**
-   * Opens the Network Manager modal and selects all popular networks.
-   */
-  async selectAllNetworksInNetworkFilter(): Promise<void> {
-    console.log(
-      'Selecting all popular networks in the asset list network filter',
-    );
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
-    await networkManager.selectAllNetworks();
-  }
-
-  async selectOnlyNetworkInFilter(
-    networkName: string,
-    tab: string = 'Popular',
-  ): Promise<void> {
-    console.log(
-      `Selecting only ${networkName} in the asset list network filter`,
-    );
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab(tab);
-    await networkManager.selectNetworkByNameWithWait(networkName);
-  }
-
-  /**
-   * Opens the Network Manager modal and selects only Tron, scoping the asset
-   * list to a single network.
-   */
-  async selectOnlyTronInNetworkFilter(): Promise<void> {
-    console.log('Selecting only Tron in the asset list network filter');
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
-    await networkManager.selectNetworkByNameWithWait('Tron');
   }
 
   async sortTokenList(

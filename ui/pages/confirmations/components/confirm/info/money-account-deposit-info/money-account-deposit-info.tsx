@@ -17,6 +17,7 @@ export const MoneyAccountDepositInfo = () => {
     <CustomAmountInfo
       autoFocusAmount
       currency={MONEY_ACCOUNT_DEPOSIT_CURRENCY}
+      displayAccountRow
       hidePayTokenAmount
     />
   );

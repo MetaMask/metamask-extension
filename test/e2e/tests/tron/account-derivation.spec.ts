@@ -203,6 +203,10 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
         await assertTronAddressesForAccounts(driver, 5, {
           absentAccountLabel: 'Account 6',
         });
