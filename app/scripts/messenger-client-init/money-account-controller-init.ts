@@ -4,6 +4,7 @@ import {
 } from '@metamask/money-account-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
+import { applyManifestFlagOverrides } from '../../../shared/lib/remote-feature-flag-utils';
 import type { MoneyAccountControllerInitMessenger } from './messengers/money-account-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
 
@@ -50,8 +51,12 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
     );
 
     // The same parser the availability gate and the UI selector use, so the
-    // three cannot disagree about what the flag means.
-    return isMoneyAccountEnabled(remoteFeatureFlags);
+    // three cannot disagree about what the flag means. `getState` returns the
+    // controller's state only, so the manifest overrides the UI gets for free
+    // via `getRemoteFeatureFlags` have to be applied explicitly here.
+    return isMoneyAccountEnabled(
+      applyManifestFlagOverrides(remoteFeatureFlags),
+    );
   };
 
   /**

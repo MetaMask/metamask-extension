@@ -11,6 +11,7 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import { createProjectLogger, type Hex } from '@metamask/utils';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
+import { applyManifestFlagOverrides } from '../../../../shared/lib/remote-feature-flag-utils';
 import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
@@ -125,9 +126,14 @@ export class MoneyAccountAvailabilityService {
    * @returns The availability, with the money address when available.
    */
   async getAvailability(): Promise<MoneyAccountAvailability> {
-    const { remoteFeatureFlags } = this.#messenger.call(
+    // `getState` returns the controller's state only. The manifest overrides the
+    // UI gets for free via `getRemoteFeatureFlags` must be applied explicitly
+    // here, or the background and the UI disagree about whether the feature is
+    // on and which vault is configured.
+    const { remoteFeatureFlags: stateFlags } = this.#messenger.call(
       'RemoteFeatureFlagController:getState',
     );
+    const remoteFeatureFlags = applyManifestFlagOverrides(stateFlags);
 
     if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
       return UNAVAILABLE;

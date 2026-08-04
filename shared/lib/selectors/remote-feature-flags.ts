@@ -1,7 +1,7 @@
-import merge from 'lodash/merge';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { createSelector } from 'reselect';
 import { getManifestFlags, ManifestFlags } from '../manifestFlags';
+import { applyManifestFlagOverrides } from '../remote-feature-flag-utils';
 
 export type RemoteFeatureFlagsState = {
   metamask: {
@@ -24,5 +24,8 @@ export const getRemoteFeatureFlags = createSelector(
     state: RemoteFeatureFlagsState,
   ): RemoteFeatureFlagControllerState['remoteFeatureFlags'] =>
     state.metamask.remoteFeatureFlags,
-  (manifestFlags, stateFlags) => merge({}, stateFlags, manifestFlags),
+  // The merge itself lives in `applyManifestFlagOverrides` so that background
+  // callers, which cannot use a reselect selector, share one implementation with
+  // the UI rather than each reimplementing the precedence.
+  (_manifestFlags, stateFlags) => applyManifestFlagOverrides(stateFlags),
 );
