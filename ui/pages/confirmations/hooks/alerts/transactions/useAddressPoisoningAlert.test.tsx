@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
