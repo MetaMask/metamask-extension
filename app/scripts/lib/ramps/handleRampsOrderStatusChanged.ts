@@ -18,6 +18,11 @@ import { isRampsAnalyticsEnabled } from './isRampsAnalyticsEnabled';
 type RampsOrderStatusChangedEventPayload =
   RampsControllerOrderStatusChangedEvent['payload'][0];
 
+// Dedupe set for terminal-order KPIs. Grows by one entry per
+// completed/failed order for the service worker's lifetime. In practice the
+// count is small (bounded by user ramp activity), and an MV3 service-worker
+// restart clears the set — which is safe because polling skips terminal
+// orders, so a restarted worker won't re-emit for an already-terminal order.
 const emittedTerminalOrders = new Set<string>();
 
 /**

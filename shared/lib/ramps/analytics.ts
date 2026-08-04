@@ -5,7 +5,7 @@
  */
 
 // The `metamask-ramps` schema requires `ramp_type` on every event.
-// ponytail: single const; promote to a param if the flow ever emits other
+// Single const for now; promote to a param if the flow ever emits other
 // ramp types (deposit/sell/headless).
 export const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
 
