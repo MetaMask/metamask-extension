@@ -5,12 +5,14 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import type { AuthenticationControllerProfileSignInEvent } from '@metamask/profile-sync-controller/auth';
+import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions =
   | KeyringControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction
   | SnapControllerHandleRequestAction;
 
 type MessengerEvents =
@@ -43,7 +45,11 @@ export function getAuthenticationControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['KeyringController:getState', 'SnapController:handleRequest'],
+    actions: [
+      'KeyringController:getState',
+      'SeedlessOnboardingController:getState',
+      'SnapController:handleRequest',
+    ],
     events: ['KeyringController:lock', 'KeyringController:unlock'],
   });
   return controllerMessenger;
