@@ -15,6 +15,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListDisabledNotifications } from './notifications-list-disabled-notifications';
 import { NotificationsListItem } from './notifications-list-item';
+import NotificationsListItemErrorBoundary from './notifications-list-item-error-boundary';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
@@ -82,7 +83,11 @@ const ErrorContent = () => {
 
 const NotificationItem = (props: { notification: INotification }) => {
   const { notification } = props;
-  return <NotificationsListItem notification={notification} />;
+  return (
+    <NotificationsListItemErrorBoundary fallback={() => null}>
+      <NotificationsListItem notification={notification} />
+    </NotificationsListItemErrorBoundary>
+  );
 };
 
 const NotificationsListStates = ({
