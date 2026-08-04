@@ -192,7 +192,10 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('discovers Tron accounts through Account 5 when each account has assets', async function () {
+  // TODO: re-enable when @metamask/tron-wallet-snap fixes the bip44:discover
+  // bidirectional enum bug (Object.values(ft) returning human-readable names
+  // like "Mainnet" in addition to scope IDs, causing Promise.all to reject).
+  it.skip('discovers Tron accounts through Account 5 when each account has assets', async function () {
     await withTronFixtures(
       {
         accounts: buildDiscoveryAccountsThrough(5),
