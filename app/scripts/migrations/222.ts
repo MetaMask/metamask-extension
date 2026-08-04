@@ -109,31 +109,31 @@ function transformState(
     }
 
     let didChange = false;
-    networkConfig.rpcEndpoints = networkConfig.rpcEndpoints.map(
-      (rpcEndpoint) => {
-        if (!isObject(rpcEndpoint) || typeof rpcEndpoint.url !== 'string') {
-          return rpcEndpoint;
-        }
+    for (let index = 0; index < networkConfig.rpcEndpoints.length; index++) {
+      const rpcEndpoint = networkConfig.rpcEndpoints[index];
 
-        // Skip if endpoint already has failover URLs.
-        if (
-          Array.isArray(rpcEndpoint.failoverUrls) &&
-          rpcEndpoint.failoverUrls.length > 0
-        ) {
-          return rpcEndpoint;
-        }
+      if (!isObject(rpcEndpoint) || typeof rpcEndpoint.url !== 'string') {
+        continue;
+      }
 
-        if (!shouldAddFailover(rpcEndpoint as RpcEndpoint)) {
-          return rpcEndpoint;
-        }
+      // Skip if endpoint already has failover URLs.
+      if (
+        Array.isArray(rpcEndpoint.failoverUrls) &&
+        rpcEndpoint.failoverUrls.length > 0
+      ) {
+        continue;
+      }
 
-        didChange = true;
-        return {
-          ...rpcEndpoint,
-          failoverUrls: [quickNodeUrl],
-        };
-      },
-    );
+      if (!shouldAddFailover(rpcEndpoint as RpcEndpoint)) {
+        continue;
+      }
+
+      networkConfig.rpcEndpoints[index] = {
+        ...rpcEndpoint,
+        failoverUrls: [quickNodeUrl],
+      };
+      didChange = true;
+    }
 
     if (didChange) {
       changedControllers.add('NetworkController');
