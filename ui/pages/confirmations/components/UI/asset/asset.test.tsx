@@ -129,6 +129,19 @@ describe('TokenAsset', () => {
     fireEvent.click(getByTestId('token-asset-0x1-TEST'));
     expect(mockOnClick).not.toHaveBeenCalled();
   });
+
+  it('renders tags from tagRenderers next to the token name', () => {
+    const { getByTestId } = render(
+      <Asset
+        asset={mockTokenAsset}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
 });
 
 describe('NFTAsset', () => {

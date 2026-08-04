@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -15,6 +15,7 @@ import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
+import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
@@ -58,6 +59,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isMoneyAccountDeposit =
+    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+  const { renderNoFeeTag } = usePayWithNoFeeToken();
+  const tagRenderers = useMemo(
+    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
+    [isMoneyAccountDeposit, renderNoFeeTag],
+  );
 
   const handleClose = useCallback(() => {
     onClose();
@@ -177,6 +185,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
             hideNfts
             tokenFilter={tokenFilter}
             onAssetSelect={handleTokenSelect}
+            tagRenderers={tagRenderers}
           />
         </ScrollContainer>
       </ModalContent>
