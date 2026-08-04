@@ -11655,10 +11655,6 @@
     "message": "View all",
     "description": "Link to show the full list for a Discover search section."
   },
-  "viewXMore": {
-    "message": "View $1 more",
-    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
-  },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
   },
@@ -11678,6 +11674,10 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
+  },
+  "viewXMore": {
+    "message": "View $1 more",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
