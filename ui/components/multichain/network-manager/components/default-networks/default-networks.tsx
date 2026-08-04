@@ -63,6 +63,7 @@ import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../sel
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
 import { useDispatch } from '../../../../../store/hooks';
+import { searchNetworks } from '../../utils/search-networks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
@@ -123,7 +124,11 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   );
 };
 
-const DefaultNetworks = memo(() => {
+type DefaultNetworksProps = {
+  searchQuery?: string;
+};
+
+const DefaultNetworks = memo(({ searchQuery = '' }: DefaultNetworksProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -309,7 +314,7 @@ const DefaultNetworks = memo(() => {
       });
     };
 
-    const filteredNetworks = getFilteredNetworks();
+    const filteredNetworks = searchNetworks(getFilteredNetworks(), searchQuery);
 
     return filteredNetworks.map((network) => {
       const networkChainId = network.chainId; // eip155:59144
@@ -382,39 +387,46 @@ const DefaultNetworks = memo(() => {
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
+    searchQuery,
   ]);
 
   // Memoize the additional network list items
   const additionalNetworkListItems = useMemo(() => {
-    return featuredNetworksNotYetEnabled.map((network) => (
-      <AdditionalNetwork
-        key={`additionnal-network-${network.chainId}`}
-        network={network}
-      ></AdditionalNetwork>
-    ));
-  }, [featuredNetworksNotYetEnabled]);
+    return searchNetworks(featuredNetworksNotYetEnabled, searchQuery).map(
+      (network) => (
+        <AdditionalNetwork
+          key={`additionnal-network-${network.chainId}`}
+          network={network}
+        ></AdditionalNetwork>
+      ),
+    );
+  }, [featuredNetworksNotYetEnabled, searchQuery]);
 
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Box
-          className="network-manager__all-popular-networks"
-          data-testid="network-manager-select-all"
-        >
-          <NetworkListItem
-            name={t('allPopularNetworks')}
-            onClick={selectAllDefaultNetworks}
-            iconSrc={IconName.Global}
-            iconSize={IconSize.Xl}
-            selected={isAllPopularNetworksSelected}
-            focus={false}
-          />
-        </Box>
+        {searchQuery === '' && (
+          <Box
+            className="network-manager__all-popular-networks"
+            data-testid="network-manager-select-all"
+          >
+            <NetworkListItem
+              name={t('allPopularNetworks')}
+              onClick={selectAllDefaultNetworks}
+              iconSrc={IconName.Global}
+              iconSize={IconSize.Xl}
+              selected={isAllPopularNetworksSelected}
+              focus={false}
+            />
+          </Box>
+        )}
         {networkListItems}
-        <>
-          <AdditionalNetworksInfo />
-          {additionalNetworkListItems}
-        </>
+        {(searchQuery === '' || additionalNetworkListItems.length > 0) && (
+          <>
+            <AdditionalNetworksInfo />
+            {additionalNetworkListItems}
+          </>
+        )}
       </Box>
     </>
   );

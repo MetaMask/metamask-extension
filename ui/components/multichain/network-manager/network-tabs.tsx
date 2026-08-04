@@ -4,6 +4,7 @@ import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDispatch } from '../../../store/hooks';
+import NetworkListSearch from '../network-list-menu/network-list-search/network-list-search';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
@@ -24,6 +25,8 @@ export const NetworkTabs = ({
   const dispatch = useDispatch();
   const t = useI18nContext();
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [, setFocusSearch] = useState(false);
   const handleClose = useCallback(() => {
     if (onClose) {
       onClose();
@@ -43,6 +46,11 @@ export const NetworkTabs = ({
         </ModalHeader>
       ) : null}
       <ModalBody style={{ padding: 0 }}>
+        <NetworkListSearch
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setFocusSearch={setFocusSearch}
+        />
         <Tabs
           style={{ padding: 0 }}
           activeTab={activeTab}
@@ -61,14 +69,14 @@ export const NetworkTabs = ({
             name={t('networkTabPopular')}
             className="flex-1"
           >
-            <DefaultNetworks />
+            <DefaultNetworks searchQuery={searchQuery} />
           </Tab>
           <Tab
             tabKey="custom-networks"
             name={t('networkTabCustom')}
             className="flex-1"
           >
-            <CustomNetworks />
+            <CustomNetworks searchQuery={searchQuery} />
           </Tab>
         </Tabs>
       </ModalBody>

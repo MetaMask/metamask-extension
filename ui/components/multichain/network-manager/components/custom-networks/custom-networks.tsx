@@ -39,8 +39,14 @@ import {
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
+import { searchNetworks } from '../../utils/search-networks';
 
-export const CustomNetworks = React.memo(() => {
+type CustomNetworksProps = {
+  searchQuery?: string;
+};
+
+export const CustomNetworks = React.memo((props: CustomNetworksProps) => {
+  const { searchQuery = '' } = props;
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -135,14 +141,17 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the rendered network lists with filtering
   const renderedCustomNetworks = useMemo(() => {
-    const filteredNetworks = orderedNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const filteredNetworks = searchNetworks(
+      orderedNetworks.filter((network) => {
+        // If EVM network is selected, only show EVM networks
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
+        }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
+      }),
+      searchQuery,
+    );
 
     return filteredNetworks.length > 0 ? (
       <Box paddingBottom={2}>
@@ -163,18 +172,22 @@ export const CustomNetworks = React.memo(() => {
     orderedNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    searchQuery,
     t,
   ]);
 
   const renderedTestNetworks = useMemo(() => {
-    const filteredTestNetworks = orderedTestNetworks.filter((network) => {
-      // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
-        return network.isEvm;
-      }
-      // If non-EVM network is selected, only show non-EVM networks
-      return !network.isEvm;
-    });
+    const filteredTestNetworks = searchNetworks(
+      orderedTestNetworks.filter((network) => {
+        // If EVM network is selected, only show EVM networks
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
+        }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
+      }),
+      searchQuery,
+    );
 
     return filteredTestNetworks.map((network) =>
       generateMultichainNetworkListItem(network),
@@ -183,6 +196,7 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    searchQuery,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

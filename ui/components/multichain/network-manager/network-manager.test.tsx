@@ -314,6 +314,32 @@ describe('NetworkManager Component', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders a network search field and filters the popular networks list', () => {
+    renderNetworkManager();
+
+    const searchBox = screen.getByPlaceholderText(messages.search.message);
+
+    expect(screen.getByText('Optimism')).toBeInTheDocument();
+    expect(screen.getByText('Arbitrum')).toBeInTheDocument();
+
+    fireEvent.change(searchBox, { target: { value: 'Optimism' } });
+
+    expect(screen.getByText('Optimism')).toBeInTheDocument();
+    expect(screen.queryByText('Arbitrum')).not.toBeInTheDocument();
+
+    // The select-all row is hidden while searching
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).not.toBeInTheDocument();
+
+    fireEvent.change(searchBox, { target: { value: '' } });
+
+    expect(screen.getByText('Arbitrum')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
+  });
+
   it('keeps the current route when dismissed outside from token management', () => {
     renderNetworkManagerWithLocationDisplay(TOKEN_MANAGEMENT_ROUTE);
 
