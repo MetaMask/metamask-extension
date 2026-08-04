@@ -155,8 +155,7 @@ run_package() {
   work_root="$(mktemp -d)"
   # Expand the path when registering the trap. With set -u, a trap that refs a
   # function-local on EXIT runs after the local is unbound and fails the job.
-  # ponytail: quote-embed is enough; runner is ephemeral either way.
-  trap 'rm -rf "'"${work_root}"'"' EXIT
+  trap "rm -rf \"${work_root}\"" EXIT
   script_ref="${FIREFOX_BUNDLE_SCRIPT_REF}"
   clone_dir="${work_root}/firefox-bundle-script"
 
