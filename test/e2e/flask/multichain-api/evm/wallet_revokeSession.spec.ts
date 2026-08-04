@@ -24,6 +24,9 @@ import {
  * Newest session-method row is prepended. If revoke resolves after
  * getSession but before we read, index 0 can be `true` instead of
  * a sessionScopes object — treat that as "not ready" and retry.
+ *
+ * @param driver - The E2E test Driver instance.
+ * @param testDapp - The multichain test dapp page object.
  */
 async function waitForEmptySessionAfterRevoke(
   driver: Driver,
