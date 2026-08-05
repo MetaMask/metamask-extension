@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
@@ -14,9 +14,8 @@ import {
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 
-type ExchangeRate = number | typeof LOADING | typeof FAILED | undefined;
+type ExchangeRate = number | typeof FAILED | undefined;
 
-const LOADING = 'loading';
 const FAILED = 'failed';
 
 /**
@@ -56,6 +55,70 @@ export default function useTokenExchangeRate(
     Record<string, ExchangeRate>
   >({});
 
+  // Track in-flight fetches to avoid duplicate requests and synchronous setState in effects
+  const fetchingKeys = useRef<Set<string>>(new Set());
+
+  // Cache key includes chainId to prevent cross-chain rate contamination
+  const cacheKey = tokenAddress ? `${chainId}-${tokenAddress}` : undefined;
+
+  const contractExchangeRates = crossChainTokenExchangeRates[chainId] ?? {};
+  const contractExchangeRate =
+    tokenAddress &&
+    (contractExchangeRates[tokenAddress] ||
+      (cacheKey ? exchangeRates[cacheKey] : undefined));
+
+  const isUnavailable =
+    cacheKey && (exchangeRates[cacheKey] as ExchangeRate) === FAILED;
+
+  useEffect(() => {
+    if (
+      !tokenAddress ||
+      !cacheKey ||
+      contractExchangeRate ||
+      isUnavailable ||
+      fetchingKeys.current.has(cacheKey)
+    ) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    const { current: inFlightKeys } = fetchingKeys;
+    inFlightKeys.add(cacheKey);
+
+    fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
+      .then((addressToExchangeRate) => {
+        if (!cancelled) {
+          setExchangeRates((prev) => ({
+            ...prev,
+            [cacheKey]: addressToExchangeRate[tokenAddress] || FAILED,
+          }));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setExchangeRates((prev) => ({
+            ...prev,
+            [cacheKey]: FAILED,
+          }));
+        }
+      })
+      .finally(() => {
+        inFlightKeys.delete(cacheKey);
+      });
+
+    return () => {
+      cancelled = true;
+      inFlightKeys.delete(cacheKey);
+    };
+  }, [
+    tokenAddress,
+    cacheKey,
+    contractExchangeRate,
+    isUnavailable,
+    nativeCurrency,
+    chainId,
+  ]);
+
   return useMemo(() => {
     if (!selectedNativeConversionRate) {
       return undefined;
@@ -70,41 +133,7 @@ export default function useTokenExchangeRate(
       return nativeConversionRate;
     }
 
-    // Cache key includes chainId to prevent cross-chain rate contamination
-    const cacheKey = `${chainId}-${tokenAddress}`;
-
-    const isLoadingOrUnavailable = tokenAddress
-      ? ([LOADING, FAILED] as ExchangeRate[]).includes(exchangeRates[cacheKey])
-      : false;
-
-    if (isLoadingOrUnavailable) {
-      return undefined;
-    }
-
-    const contractExchangeRates = crossChainTokenExchangeRates[chainId] ?? {};
-    const contractExchangeRate =
-      contractExchangeRates[tokenAddress] || exchangeRates[cacheKey];
-
-    if (!contractExchangeRate) {
-      // TODO: Fix "Calling setState from useMemo may trigger an infinite loop"
-      // eslint-disable-next-line react-hooks/set-state-in-render
-      setExchangeRates((prev) => ({
-        ...prev,
-        [cacheKey]: LOADING,
-      }));
-      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
-        .then((addressToExchangeRate) => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            [cacheKey]: addressToExchangeRate[tokenAddress] || FAILED,
-          }));
-        })
-        .catch(() => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            [cacheKey]: FAILED,
-          }));
-        });
+    if (isUnavailable || !contractExchangeRate) {
       return undefined;
     }
 
@@ -112,11 +141,9 @@ export default function useTokenExchangeRate(
       nativeConversionRate,
     );
   }, [
-    exchangeRates,
-    chainId,
-    nativeCurrency,
-    tokenAddress,
     selectedNativeConversionRate,
-    crossChainTokenExchangeRates,
+    tokenAddress,
+    isUnavailable,
+    contractExchangeRate,
   ]);
 }
