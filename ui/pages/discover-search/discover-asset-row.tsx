@@ -22,6 +22,13 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/net
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getChangeColor } from '../../components/app/perps/utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- reuse existing Security & Trust badge UI
+import { SecurityTrustInlineBadge } from '../asset/components/security-trust';
+// eslint-disable-next-line import-x/no-restricted-paths -- reuse existing Security & Trust badge mapping
+import {
+  getResultTypeConfig,
+  type SecurityTrustTranslate,
+} from '../asset/utils/security-utils';
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
@@ -39,9 +46,11 @@ const formatAssetPrice = (price: string | undefined) => {
     return '—';
   }
 
-  return new Intl.NumberFormat(undefined, {
+  // narrowSymbol yields "$" for USD (not "US$"), matching Perps row prices.
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: USD_CURRENCY,
+    currencyDisplay: 'narrowSymbol',
     maximumFractionDigits: value < 1 ? 6 : 2,
   }).format(value);
 };
@@ -81,7 +90,8 @@ const formatPriceChangePercent = (value: string): string | null => {
 };
 
 /**
- * Discover row for crypto / stocks: icon, name, cap·vol, price, 24h %.
+ * Discover row for crypto / stocks: icon, name, security badge, cap·vol, price, 24h %.
+ * Security badge TrendingTokenRowItem (`getResultTypeConfig` → inline badge).
  * @param options0
  * @param options0.asset
  * @param options0.onPress
@@ -92,7 +102,7 @@ export const DiscoverAssetRow = ({
   onPress,
   'data-testid': dataTestId,
 }: DiscoverAssetRowProps) => {
-  const t = useI18nContext();
+  const t = useI18nContext() as SecurityTrustTranslate;
 
   const imageUrl = useMemo(() => {
     if (!isCaipAssetType(asset.assetId)) {
@@ -128,6 +138,11 @@ export const DiscoverAssetRow = ({
   const changeColor = formattedChange
     ? getChangeColor(formattedChange)
     : TextColor.TextAlternative;
+
+  const securityBadge = useMemo(
+    () => getResultTypeConfig(asset.securityData?.resultType, t).badge,
+    [asset.securityData?.resultType, t],
+  );
 
   const handleClick = () => {
     onPress?.(asset);
@@ -174,12 +189,31 @@ export const DiscoverAssetRow = ({
         alignItems={BoxAlignItems.Start}
         gap={0}
       >
-        <Text
-          fontWeight={FontWeight.Medium}
-          className="block max-w-full truncate"
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="min-w-0 max-w-full"
         >
-          {asset.name || asset.symbol}
-        </Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="min-w-0 truncate"
+          >
+            {asset.name || asset.symbol}
+          </Text>
+          {securityBadge ? (
+            <Box className="shrink-0">
+              <SecurityTrustInlineBadge
+                badge={securityBadge}
+                testId={
+                  securityBadge.label === null
+                    ? 'security-badge-icon'
+                    : undefined
+                }
+              />
+            </Box>
+          ) : null}
+        </Box>
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}

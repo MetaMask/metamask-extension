@@ -16,7 +16,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { isCaipAssetType } from '@metamask/utils';
@@ -399,12 +398,11 @@ export const DiscoverSearchPage = () => {
         </Link>
         <TextFieldSearch
           autoFocus={true}
-          className="app-text-field-search min-w-0 flex-1"
+          className="min-w-0 flex-1"
           placeholder={t('searchTokens')}
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
           clearButtonOnClick={handleSearchClear}
-          size={TextFieldSize.Md}
           inputProps={
             {
               'data-testid': 'discover-search-input',
@@ -415,11 +413,12 @@ export const DiscoverSearchPage = () => {
       </Box>
 
       <Tabs
+        animated
         activeTab={activeTab}
         onTabClick={(tab) => setActiveTab(tab as DiscoverSearchTab)}
         className="min-h-0 flex-1"
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
-        tabContentProps={{ className: 'min-h-0 overflow-y-auto' }}
+        tabContentProps={{ className: 'min-h-0 overflow-y-auto pb-6' }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
           {allTabContent}
