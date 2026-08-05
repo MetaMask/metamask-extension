@@ -146,7 +146,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.switchToWindowWithUrl(DAPP_URL);
         await dappOne.checkPageIsLoaded();
         await dappOne.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
           {
@@ -249,7 +248,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await dappTwo.checkPageIsLoaded();
         await dappTwo.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmConnectAndUpdateSiteNetworks(driver, DAPP_ONE_ADDRESS, [
           {

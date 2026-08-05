@@ -82,7 +82,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Connect to dapp
         await testDapp.clickConnectAccountButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
           {
             networkName: 'Localhost 8545',
@@ -215,7 +214,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Connect to dapp
         await testDapp.clickConnectAccountButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
           {
             networkName: 'Localhost 8545',

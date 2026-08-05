@@ -2,12 +2,12 @@ import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../pages/dialog/edit-connected-accounts-modal';
-import { updateConnectedSiteNetworkSelection } from './permissions.flow';
-
-type NetworkSelectionUpdate = {
-  networkName: string;
-  shouldBeSelected: boolean;
-};
+import HomePage from '../pages/home/homepage';
+import {
+  type NetworkSelectionUpdate,
+  updateConnectedSiteNetworkSelection,
+  updateConnectedSiteNetworksToOnly,
+} from './permissions.flow';
 
 /**
  * Approve the MetaMask connect dialog after the dapp has initiated a
@@ -39,6 +39,14 @@ export async function approveConnect(
   await confirmation.confirmConnect();
 }
 
+async function confirmConnectFromDialog(driver: Driver): Promise<void> {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new ConnectAccountConfirmation(driver);
+  await confirmation.checkPageIsLoaded();
+  await confirmation.confirmConnect();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+}
+
 /**
  * Confirms the connect dialog, then narrows the connected site's network
  * permissions from the Connected sites page.
@@ -52,9 +60,28 @@ export async function confirmConnectAndUpdateSiteNetworks(
   hostname: string,
   networkUpdates: NetworkSelectionUpdate[],
 ): Promise<void> {
-  const confirmation = new ConnectAccountConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-  await confirmation.confirmConnect();
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await confirmConnectFromDialog(driver);
   await updateConnectedSiteNetworkSelection(driver, hostname, networkUpdates);
+}
+
+/**
+ * Confirms the connect dialog, then limits the connected site's network
+ * permissions to the provided list from the Connected sites page.
+ *
+ * @param driver - Selenium driver
+ * @param hostname - Site hostname shown on the permissions page
+ * @param selectedNetworkNames - Network display names that should remain selected
+ */
+export async function confirmConnectAndUpdateSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  await confirmConnectFromDialog(driver);
+  await new HomePage(driver).checkPageIsLoaded();
+  await updateConnectedSiteNetworksToOnly(
+    driver,
+    hostname,
+    selectedNetworkNames,
+  );
 }

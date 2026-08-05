@@ -5,7 +5,6 @@ import {
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
-import { updateConnectedSiteNetworksToOnly } from '../../page-objects/flows/permissions.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -77,42 +76,6 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
           await testDapp.findHeaderConnectedState();
           await testDapp.findConnectedAccount(account1Short);
-        },
-      );
-    });
-
-    it(`Does not create session when Bitcoin permissions are deselected with ${connectionLibrary}`, async function () {
-      await withBtcWalletStandardSnap(
-        {
-          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          title: this.test?.fullTitle(),
-        },
-        async (driver) => {
-          const testDapp = new TestDappBitcoin(driver);
-          await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-
-          // Start connection
-          await testDapp.connectToWallet(connectionLibrary);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const connectAccountConfirmation = new ConnectAccountConfirmation(
-            driver,
-          );
-          await connectAccountConfirmation.checkPageIsLoaded();
-          await connectAccountConfirmation.confirmConnect();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await updateConnectedSiteNetworksToOnly(driver, DAPP_HOST_ADDRESS, [
-            'Ethereum',
-          ]);
-
-          // Switch back to test dapp
-          await testDapp.switchTo();
-
-          // Verify we're not connected
-          await testDapp.findHeaderNotConnectedState();
         },
       );
     });

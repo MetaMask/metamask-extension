@@ -97,10 +97,23 @@ export async function getPermissionsPageForHost(
   return sitePermissionPage;
 }
 
-type NetworkSelectionUpdate = {
+export type NetworkSelectionUpdate = {
   networkName: string;
   shouldBeSelected: boolean;
 };
+
+async function editConnectedSiteNetworks(
+  driver: Driver,
+  hostname: string,
+  editNetworks: (modal: NetworkPermissionSelectModal) => Promise<void>,
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await editNetworks(networkPermissionSelectModal);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}
 
 /**
  * Updates the connected site's permitted networks from the Connected sites page.
@@ -114,19 +127,14 @@ export async function updateConnectedSiteNetworkSelection(
   hostname: string,
   updates: NetworkSelectionUpdate[],
 ): Promise<void> {
-  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
-  await sitePermissionPage.openNetworkPermissionsModal();
-  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.checkPageIsLoaded();
-
-  for (const { networkName, shouldBeSelected } of updates) {
-    await networkPermissionSelectModal.selectNetwork({
-      networkName,
-      shouldBeSelected,
-    });
-  }
-
-  await networkPermissionSelectModal.clickConfirmEditButton();
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    for (const { networkName, shouldBeSelected } of updates) {
+      await modal.selectNetwork({
+        networkName,
+        shouldBeSelected,
+      });
+    }
+  });
 }
 
 /**
@@ -142,10 +150,7 @@ export async function updateConnectedSiteNetworksToOnly(
   hostname: string,
   selectedNetworkNames: string[],
 ): Promise<void> {
-  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
-  await sitePermissionPage.openNetworkPermissionsModal();
-  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.checkPageIsLoaded();
-  await networkPermissionSelectModal.updateNetworkStatus(selectedNetworkNames);
-  await networkPermissionSelectModal.clickConfirmEditButton();
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    await modal.updateNetworkStatus(selectedNetworkNames);
+  });
 }
