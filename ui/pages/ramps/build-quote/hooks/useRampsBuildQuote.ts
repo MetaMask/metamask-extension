@@ -14,12 +14,14 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
+import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
 import {
   findSelectedQuote,
   isTokenStateSettled,
@@ -44,13 +46,22 @@ export type RampsBuildQuoteReadyViewModel = {
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
+  quoteErrorLink: { label: string; onClick: () => void } | null;
   providerStatusLabel: string;
   isQuoteLoading: boolean;
   canContinue: boolean;
+  isWeeklyLimitModalOpen: boolean;
+  isProviderSelectionModalOpen: boolean;
+  providerSelectionModalAmount: number;
+  providerSupportUrl: string | null;
+  providerName: string;
   handleBack: () => void;
   handlePaymentMethodPress: () => void;
   handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleContinue: () => void;
+  handleCloseWeeklyLimitModal: () => void;
+  handleCloseProviderSelectionModal: () => void;
+  handleContactProviderSupport: () => void;
 };
 
 export type RampsBuildQuoteViewModel =
@@ -146,6 +157,18 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     [quotesResponse, selectedProvider, selectedPaymentMethod],
   );
 
+  const { formatCurrency } = useFormatters();
+
+  const limitMessage = getProviderLimitMessage({
+    provider: selectedProvider,
+    fiatCurrency: currency,
+    paymentMethodId: selectedPaymentMethod?.id,
+    amount: debouncedAmount,
+    currency,
+    formatCurrency,
+    t,
+  });
+
   const displayedQuoteError = resolveDisplayedQuoteError({
     quoteFetchErrorMessage,
     hasAmount,
@@ -154,6 +177,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
     quotesResponse,
     selectedQuote,
+    limitMessage,
+    t,
   });
 
   const paymentMethodLabel = useMemo(
@@ -175,6 +200,33 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       state: { amount: debouncedAmount },
     });
   }, [debouncedAmount, navigate]);
+
+  const [isProviderSelectionModalOpen, setIsProviderSelectionModalOpen] =
+    useState(false);
+
+  const handleChangeProviderPress = useCallback(() => {
+    setIsProviderSelectionModalOpen(true);
+  }, []);
+
+  const handleCloseProviderSelectionModal = useCallback(() => {
+    setIsProviderSelectionModalOpen(false);
+  }, []);
+
+  const [isWeeklyLimitModalOpen, setIsWeeklyLimitModalOpen] = useState(false);
+
+  const handleCloseWeeklyLimitModal = useCallback(() => {
+    setIsWeeklyLimitModalOpen(false);
+  }, []);
+
+  const providerSupportUrl =
+    selectedProvider?.links?.find((link) => /support/iu.test(link.name))?.url ??
+    null;
+
+  const handleContactProviderSupport = useCallback(() => {
+    if (providerSupportUrl) {
+      global.platform.openTab({ url: providerSupportUrl });
+    }
+  }, [providerSupportUrl]);
 
   const canContinue = resolveCanContinue({
     hasAmount,
@@ -258,6 +310,25 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     : '';
   const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
+  // `continueError` has no follow-up affordance, so it suppresses the
+  // quote error's link along with its copy.
+  const resolvedError = continueError
+    ? { message: continueError }
+    : displayedQuoteError;
+
+  let quoteErrorLink: RampsBuildQuoteReadyViewModel['quoteErrorLink'] = null;
+  if (resolvedError?.action === 'weeklyLimit') {
+    quoteErrorLink = {
+      label: t('learnMoreUpperCase'),
+      onClick: () => setIsWeeklyLimitModalOpen(true),
+    };
+  } else if (resolvedError?.action === 'changeProvider') {
+    quoteErrorLink = {
+      label: t('rampsChangeProvidersLink'),
+      onClick: handleChangeProviderPress,
+    };
+  }
+
   return {
     kind: 'ready',
     pageTitle: selectedToken.symbol
@@ -267,20 +338,29 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     currencySymbol,
     amount,
     amountTextClassName: `text-[56px] font-normal leading-none ${
-      displayedQuoteError ? 'text-error-default' : 'text-default'
+      resolvedError ? 'text-error-default' : 'text-default'
     }`,
     paymentMethodLabel,
     showPaymentMethodSpinner:
       paymentMethodsStatus === 'loading' &&
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
-    displayedQuoteError: continueError ?? displayedQuoteError,
+    displayedQuoteError: resolvedError?.message ?? null,
+    quoteErrorLink,
     providerStatusLabel: providerLabel,
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,
+    isWeeklyLimitModalOpen,
+    isProviderSelectionModalOpen,
+    providerSelectionModalAmount: debouncedAmount,
+    providerSupportUrl,
+    providerName: selectedProvider?.name ?? '',
     handleBack,
     handlePaymentMethodPress,
     handleAmountChange,
     handleContinue,
+    handleCloseWeeklyLimitModal,
+    handleCloseProviderSelectionModal,
+    handleContactProviderSupport,
   };
 }

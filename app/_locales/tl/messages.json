@@ -7967,9 +7967,6 @@
     "message": "Bumibili sa pamamagitan ng $1.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "Magpalit ng provider."
-  },
   "rampsEligibilityFailedDescription": {
     "message": "Pakisubukan muli, o kontakin ang support kung patuloy itong mangyayari."
   },
@@ -8033,14 +8030,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "na min"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Pinakamataas $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Pinakamababa $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8048,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "Dating ginamit"
   },
-  "rampsProviders": {
-    "message": "Mga Provider"
-  },
   "rampsQuoteFetchError": {
     "message": "Nabigong kunin ang quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Mga quote na ipinapakita para sa $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pumili ng paraan ng pagbabayad"

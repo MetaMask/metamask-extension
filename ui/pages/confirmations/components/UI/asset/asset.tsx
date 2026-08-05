@@ -7,6 +7,9 @@ import {
   AvatarNetworkSize,
   BadgeWrapper,
   Box,
+  Icon,
+  IconName,
+  IconSize,
   Text,
   AvatarTokenSize,
 } from '../../../../../components/component-library';
@@ -15,6 +18,7 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
+  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -142,6 +146,7 @@ const TokenAsset = ({
     assetId,
     isNative,
     disabled,
+    disabledMessage,
   } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -157,7 +162,8 @@ const TokenAsset = ({
       })
     : (image ?? '');
 
-  const handleClick = disabled ? undefined : onClick;
+  const isExplained = Boolean(disabled && disabledMessage);
+  const handleClick = disabled && !isExplained ? undefined : onClick;
 
   return (
     <Box
@@ -175,7 +181,14 @@ const TokenAsset = ({
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
-      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      style={
+        disabled
+          ? {
+              opacity: 0.5,
+              ...(isExplained ? {} : { pointerEvents: 'none' }),
+            }
+          : undefined
+      }
     >
       <Box marginRight={4}>
         <BadgeWrapper
@@ -224,6 +237,15 @@ const TokenAsset = ({
           {symbol}
         </Text>
       </Box>
+      {isExplained && (
+        <Icon
+          name={IconName.Info}
+          size={IconSize.Md}
+          color={IconColor.iconAlternative}
+          marginLeft={2}
+          data-testid={`token-asset-disabled-info-${chainId}-${symbol}`}
+        />
+      )}
       {!hideBalances && (
         <Box
           display={Display.Flex}

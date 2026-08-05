@@ -4,7 +4,7 @@ exports[`formatPaymentMethodDelay matches snapshot for formatted delay labels 1`
 {
   "instant": "Instant",
   "lessThan": "Less than 10 mins",
-  "range": "5 - 10 mins",
+  "range": "5-10 mins",
 }
 `;
 

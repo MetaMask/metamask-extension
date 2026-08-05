@@ -1,27 +1,26 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { PaymentMethod } from '@metamask/ramps-controller';
 import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+  RampsOrderStatus,
+  type PaymentMethod,
+} from '@metamask/ramps-controller';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { RAMPS_PROVIDER_SELECTION_ROUTE } from '../../../helpers/constants/routes';
+import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import RampsListSkeleton from '../components/ramps-list-skeleton';
 import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import RampsProviderSelectionModal from '../provider-selection/provider-selection';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
@@ -44,6 +43,7 @@ export function RampsPaymentMethodScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
   const {
     paymentMethods,
     paymentMethodsLoading,
@@ -72,6 +72,17 @@ export function RampsPaymentMethodScreen() {
   const paymentMethodIds = useMemo(
     () => paymentMethods.map((paymentMethod) => paymentMethod.id),
     [paymentMethods],
+  );
+
+  // Mirrors the provider list's "Previously used" pill, sourced the same way:
+  // payment methods the user has already completed an order with.
+  const previouslyUsedPaymentMethodIds = useMemo(
+    () =>
+      controllerOrders
+        .filter((order) => order.status === RampsOrderStatus.Completed)
+        .map((order) => order.paymentMethod?.id)
+        .filter((id): id is string => Boolean(id)),
+    [controllerOrders],
   );
 
   const quoteFetchParams = useMemo(
@@ -114,11 +125,16 @@ export function RampsPaymentMethodScreen() {
     navigate(-1);
   }, [navigate]);
 
+  const [isProviderSelectionModalOpen, setIsProviderSelectionModalOpen] =
+    useState(false);
+
   const handleChangeProvider = useCallback(() => {
-    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
-      state: { amount },
-    });
-  }, [amount, navigate]);
+    setIsProviderSelectionModalOpen(true);
+  }, []);
+
+  const handleCloseProviderSelectionModal = useCallback(() => {
+    setIsProviderSelectionModalOpen(false);
+  }, []);
 
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
@@ -140,7 +156,7 @@ export function RampsPaymentMethodScreen() {
     [navigate, setSelectedPaymentMethod],
   );
 
-  const title = t('rampsSelectPaymentMethod');
+  const title = t('rampsPayWith');
   const backButtonTestId = 'ramps-payment-method-back';
 
   let testId = 'ramps-payment-method-screen';
@@ -157,14 +173,7 @@ export function RampsPaymentMethodScreen() {
   } else if (paymentMethodsLoading) {
     testId = 'ramps-payment-method-loading';
     body = (
-      <Box
-        className="flex-1"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-      >
-        <Spinner className="h-8 w-8" />
-      </Box>
+      <RampsListSkeleton showAvatar testId="ramps-payment-method-skeleton" />
     );
   } else if (showError) {
     testId = 'ramps-payment-method-error';
@@ -182,8 +191,8 @@ export function RampsPaymentMethodScreen() {
     );
   } else {
     body = (
-      <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+      <ScrollContainer className="flex-1 overflow-y-auto pb-4">
+        <Box flexDirection={BoxFlexDirection.Column}>
           {paymentMethods.map((paymentMethod) => {
             const matchedQuote =
               quotes?.success?.find(
@@ -201,6 +210,9 @@ export function RampsPaymentMethodScreen() {
                 paymentMethod={paymentMethod}
                 isSelected={selectedPaymentMethod?.id === paymentMethod.id}
                 isDisabled={isSelecting}
+                isPreviouslyUsed={previouslyUsedPaymentMethodIds.includes(
+                  paymentMethod.id,
+                )}
                 limitText={formatPaymentMethodLimits(
                   getProviderBuyLimit(
                     selectedProvider,
@@ -231,21 +243,30 @@ export function RampsPaymentMethodScreen() {
   }
 
   return (
-    <RampsSelectionPage
-      title={title}
-      onBack={handleBack}
-      testId={testId}
-      backButtonTestId={backButtonTestId}
-    >
-      {body}
-      {selectedProvider ? (
-        <RampsChangeProviderFooter
-          providerName={selectedProvider.name}
-          isDisabled={isSelecting}
-          onChangeProvider={handleChangeProvider}
+    <>
+      <RampsSelectionPage
+        title={title}
+        onBack={handleBack}
+        testId={testId}
+        backButtonTestId={backButtonTestId}
+      >
+        {body}
+        {selectedProvider ? (
+          <RampsChangeProviderFooter
+            providerName={selectedProvider.name}
+            isDisabled={isSelecting}
+            onChangeProvider={handleChangeProvider}
+          />
+        ) : null}
+      </RampsSelectionPage>
+      {isProviderSelectionModalOpen ? (
+        <RampsProviderSelectionModal
+          isOpen={isProviderSelectionModalOpen}
+          onClose={handleCloseProviderSelectionModal}
+          amount={amount}
         />
       ) : null}
-    </RampsSelectionPage>
+    </>
   );
 }
 

@@ -33,6 +33,42 @@ jest.mock('../../../../../components/component-library', () => ({
   ),
   ButtonVariant: { Link: 'link' },
   ButtonSize: { Sm: 'sm' },
+  Modal: ({
+    children,
+    isOpen: _isOpen,
+    onClose: _onClose,
+    ...props
+  }: {
+    children: React.ReactNode;
+    isOpen?: boolean;
+    onClose?: () => void;
+    [key: string]: unknown;
+  }) => <div {...props}>{children}</div>,
+  ModalOverlay: () => null,
+  ModalContent: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  ModalHeader: ({ children }: { children: React.ReactNode }) => (
+    <header>{children}</header>
+  ),
+  ModalBody: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  ModalFooter: ({
+    onSubmit,
+    submitButtonProps,
+  }: {
+    onSubmit: () => void;
+    submitButtonProps: { children: React.ReactNode; [key: string]: unknown };
+  }) => (
+    <button onClick={onSubmit} {...submitButtonProps}>
+      {submitButtonProps.children}
+    </button>
+  ),
+  AvatarIcon: () => null,
+  AvatarIconSize: { Md: 'md' },
+  IconName: { Info: 'info' },
+  IconSize: { Md: 'md' },
 }));
 jest.mock('../../UI/asset', () => ({
   Asset: ({
@@ -124,6 +160,49 @@ describe('AssetList', () => {
     const assetComponents = getAllByTestId('asset-component');
     expect(assetComponents).toHaveLength(3);
     expect(getByText(messages.nfts.message)).toBeInTheDocument();
+  });
+
+  it('opens the token unavailable modal for a disabled asset with an explanation', () => {
+    const disabledToken = {
+      address: '0xabc',
+      chainId: '1',
+      name: 'Token 3',
+      disabled: true,
+      disabledMessage: 'This token isn’t available in your region.',
+    };
+    const tokens = [disabledToken];
+
+    const { getAllByTestId, getByText, getByTestId, queryByTestId } = render(
+      <AssetList tokens={tokens} nfts={[]} allTokens={tokens} allNfts={[]} />,
+    );
+
+    expect(queryByTestId('asset-unavailable-modal')).not.toBeInTheDocument();
+
+    fireEvent.click(getAllByTestId('asset-component')[0]);
+
+    expect(getByTestId('asset-unavailable-modal')).toBeInTheDocument();
+    expect(getByText(disabledToken.disabledMessage)).toBeInTheDocument();
+    expect(mockGoToAmountRecipientPage).not.toHaveBeenCalled();
+    expect(mockUpdateAsset).not.toHaveBeenCalled();
+
+    fireEvent.click(getByTestId('asset-unavailable-modal-got-it'));
+
+    expect(queryByTestId('asset-unavailable-modal')).not.toBeInTheDocument();
+  });
+
+  it('does not open a modal for a disabled asset with no explanation', () => {
+    const tokens = [
+      { address: '0xabc', chainId: '1', name: 'Token 3', disabled: true },
+    ];
+
+    const { getAllByTestId, queryByTestId } = render(
+      <AssetList tokens={tokens} nfts={[]} allTokens={tokens} allNfts={[]} />,
+    );
+
+    fireEvent.click(getAllByTestId('asset-component')[0]);
+
+    expect(queryByTestId('asset-unavailable-modal')).not.toBeInTheDocument();
+    expect(mockUpdateAsset).not.toHaveBeenCalled();
   });
 
   it('renders only tokens when no nfts', () => {

@@ -7967,9 +7967,6 @@
     "message": "$1 के माध्यम से खरीदना।",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "प्रोवाइडर बदलें।"
-  },
   "rampsEligibilityFailedDescription": {
     "message": "कृपया फिर से प्रयास करें, या यदि ऐसा बार-बार हो रहा है तो सपोर्ट से संपर्क करें।"
   },
@@ -8033,14 +8030,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "मिनट"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "अधिकतम $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "न्यूनतम $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8048,18 +8037,11 @@
   "rampsPreviouslyUsed": {
     "message": "पहले इस्तेमाल किया गया"
   },
-  "rampsProviders": {
-    "message": "प्रोवाइडर्स"
-  },
   "rampsQuoteFetchError": {
     "message": "कोटेशन प्राप्त नहीं हो पाया।"
   },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "भुगतान विधि चुनें"

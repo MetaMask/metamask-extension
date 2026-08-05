@@ -50,19 +50,12 @@ export function formatPaymentMethodLimits(
   const hasMin = Number.isFinite(limit.minAmount);
   const hasMax = Number.isFinite(limit.maxAmount);
 
-  if (hasMin && hasMax) {
-    return t('rampsPaymentMethodLimits', [
-      formatFiat(limit.minAmount),
-      formatFiat(limit.maxAmount),
-    ]);
+  if (hasMax) {
+    return t('rampsPaymentMethodLimit', [formatFiat(limit.maxAmount)]);
   }
 
   if (hasMin) {
     return t('rampsPaymentMethodMinLimit', [formatFiat(limit.minAmount)]);
-  }
-
-  if (hasMax) {
-    return t('rampsPaymentMethodMaxLimit', [formatFiat(limit.maxAmount)]);
   }
 
   return null;

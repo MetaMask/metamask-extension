@@ -7975,9 +7975,6 @@
     "message": "$1을(를) 통해 매수합니다.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "공급자를 변경하세요."
-  },
   "rampsEligibilityFailedDescription": {
     "message": "다시 시도해 보세요. 계속 문제가 발생하면 고객지원팀에 문의하세요."
   },
@@ -8041,14 +8038,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "분"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "최대 $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "최소 $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8056,18 +8045,11 @@
   "rampsPreviouslyUsed": {
     "message": "사용한 적 있음"
   },
-  "rampsProviders": {
-    "message": "공급자"
-  },
   "rampsQuoteFetchError": {
     "message": "견적을 불러오지 못했습니다."
   },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1에 대한 견적을 표시합니다.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "결제 방법 선택"

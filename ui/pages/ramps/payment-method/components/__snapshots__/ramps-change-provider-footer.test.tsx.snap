@@ -19,7 +19,7 @@ exports[`RampsChangeProviderFooter matches snapshot 1`] = `
       <span
         class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        Change provider.
+        Change provider
       </span>
     </button>
   </div>
@@ -40,7 +40,7 @@ exports[`RampsChangeProviderFooter matches snapshot when disabled 1`] = `
     <p
       class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
     >
-      Change provider.
+      Change provider
     </p>
   </div>
 </div>
