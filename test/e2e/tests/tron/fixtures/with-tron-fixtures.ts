@@ -20,12 +20,7 @@ import {
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
-  mockTronGetBlock,
-  mockTronGetBlockByNum,
-  mockTronGetNowBlock,
   mockTronGetReward,
-  mockTronGetTransactions,
-  mockTronGetTrc20Transactions,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
@@ -248,17 +243,12 @@ async function mockTronFixtureApis(
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
     await mockTronGetReward(mockServer),
-    await mockTronGetBlock(mockServer),
-    await mockTronGetNowBlock(mockServer),
-    await mockTronGetBlockByNum(mockServer),
-    await mockTronGetTransactions(mockServer),
-    await mockTronGetTrc20Transactions(mockServer),
-    // NOTE: no static `broadcasttransaction` mock here. mockttp serves the
-    // first matching *unused* rule, so a static broadcast mock would swallow
-    // each test's single broadcast with a fake txid that the local node never
-    // sees — the tx then polls as pending forever. `proxyTronBlockchainCalls`
-    // below proxies broadcasts to the local Tron node and replays them as
-    // confirmed history.
+    // NOTE: do not register static getblock/getnowblock/getblockbynum or
+    // broadcasttransaction mocks here. mockttp serves the first matching
+    // `.always()` rule, so a static block mock makes the snap sign against a
+    // stale ref block and java-tron rejects the broadcast with TAPOS_ERROR.
+    // `proxyTronBlockchainCalls` proxies those endpoints to the local node and
+    // replays successful broadcasts as confirmed history.
     ...fixtureHistoryEndpoints,
     ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),

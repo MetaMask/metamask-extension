@@ -291,7 +291,7 @@ describe('useSignatureAddressAlerts', () => {
   it('surfaces a caution when the signature exceeds the address cap', () => {
     mockTrustSignalsFor({});
 
-    const signature = buildArraySignature(60);
+    const signature = buildArraySignature(15);
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
@@ -304,7 +304,7 @@ describe('useSignatureAddressAlerts', () => {
   it('does not surface the address-count caution at or below the cap', () => {
     mockTrustSignalsFor({});
 
-    const signature = buildArraySignature(50);
+    const signature = buildArraySignature(10);
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),

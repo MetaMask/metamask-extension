@@ -17,6 +17,7 @@ import Alerts from '../../components/app/alerts';
 
 import {
   ASSET_DETAILS_ROUTE,
+  ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -60,6 +61,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
@@ -88,6 +90,7 @@ import {
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
@@ -165,6 +168,7 @@ const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
 );
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
@@ -206,7 +210,12 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const SecurityTrustPage = mmLazy(
+  () => import('../asset/security-trust/index.ts'),
+);
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -285,6 +294,16 @@ export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
 };
 
+export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <DiscoverSearchPage />;
+};
+
 export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
@@ -356,6 +375,14 @@ export const routeConfig = [
         ),
       },
       {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
         element: <CustomTokenImportFeatureRoute />,
       },
@@ -422,6 +449,10 @@ export const routeConfig = [
       {
         path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
+      },
+      {
+        path: ASSET_SECURITY_TRUST_ROUTE,
+        element: <SecurityTrustPage />,
       },
       {
         path: ASSET_DETAILS_ROUTE,

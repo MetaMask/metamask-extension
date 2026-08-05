@@ -70,6 +70,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
     exportName: 'DEFI_CONTROLLER_V2_FLAG',
   },
+  {
+    key: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+    file: 'shared/lib/assets/security-trust-feature-flags.ts',
+    exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+  },
 ];
 
 /**

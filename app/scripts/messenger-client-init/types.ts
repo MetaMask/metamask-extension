@@ -150,16 +150,12 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
-  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
+  // TODO: Remove this once changePasswordWithPasskeyVerification is migrated to
+  // LegacyBackgroundApiService (the only remaining MetamaskController user of this mutex).
   /**
    * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
    */
   seedlessOperationMutex: Mutex;
-
-  /**
-   * The mutex used to serialize vault creation, seed export, and locking.
-   */
-  createVaultMutex: Mutex;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
@@ -238,6 +234,21 @@ export type MessengerClientInitRequest<
    * Gets the record of open MetaMask tab IDs.
    */
   getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Returns the current URL of the given browser tab.
+   *
+   * @param tabId - The ID of the tab to read.
+   */
+  getTabUrl: (tabId: number) => Promise<string | undefined>;
+
+  /**
+   * Navigates the given browser tab to the given URL.
+   *
+   * @param tabId - The ID of the tab to update.
+   * @param url - The URL to navigate the tab to.
+   */
+  updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
   /**
    * Marks the notification popup as having been automatically closed.

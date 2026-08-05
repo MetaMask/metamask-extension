@@ -3,16 +3,19 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 
 class Confirmation {
-  protected driver: Driver;
-
   private accountAddressDetails: RawLocator = {
     tag: 'p',
     text: 'Account address',
   };
 
+  private addressDisplaySelector =
+    '[data-testid="recipient-address"] [data-testid="confirm-info-row-display-name"]';
+
   private confirmationHeadingTitle: RawLocator = {
     text: 'Confirmation Dialog',
   };
+
+  protected driver: Driver;
 
   private footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
 
@@ -33,9 +36,6 @@ class Confirmation {
 
   private inlineAlertButton = '[data-testid="inline-alert"]';
 
-  private addressDisplaySelector =
-    '[data-testid="recipient-address"] [data-testid="confirm-info-row-display-name"]';
-
   private nameSelector = '.name';
 
   private navigationTitle = '[data-testid="confirm-page-nav-position"]';
@@ -51,13 +51,39 @@ class Confirmation {
 
   private scrollToBottomButton = '.confirm-scroll-to-bottom__button';
 
+  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
+
   private securityProviderBannerAlert =
     '[data-testid="security-provider-banner-alert"]';
 
-  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkAddressIsDisplayed(address: string): Promise<void> {
+    await this.driver.findElement({
+      css: '[data-testid="confirm-info-row-display-name"]',
+      text: address,
+    });
+  }
+
+  async checkNameIsDisplayed(
+    expectedValue: string,
+    isSaved: boolean,
+  ): Promise<void> {
+    const containerClass = isSaved ? 'name__saved' : 'name__missing';
+    const valueClass = isSaved ? 'name__name' : 'name__value';
+
+    await this.driver.findElement({
+      css: `.${containerClass} .${valueClass}`,
+      text: expectedValue,
+    });
+  }
+
+  async checkNavigationIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.navigationTitle, {
+      waitAtLeastGuard: 1000,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -76,81 +102,6 @@ class Confirmation {
     console.log('Confirmation page is loaded');
   }
 
-  async clickScrollToBottomButton() {
-    await this.driver.clickElementSafe(this.scrollToBottomButton);
-  }
-
-  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.securityProviderBannerAlert,
-      {
-        waitAtLeastGuard: 1000,
-      },
-    );
-  }
-
-  async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
-    await this.driver.waitForSelector(this.securityProviderBannerAlert);
-  }
-
-  async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.footerConfirmButton);
-  }
-
-  async clickHeaderAccountDetailsButton() {
-    const accountDetailsButton = await this.driver.findElement(
-      this.headerAccountDetailsButton,
-    );
-    await accountDetailsButton.sendKeys(Key.RETURN);
-    await this.driver.waitForSelector(this.accountAddressDetails);
-  }
-
-  async clickFooterCancelButton() {
-    await this.driver.clickElement(this.footerCancelButton);
-  }
-
-  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerConfirmButton,
-    );
-  }
-
-  async clickFooterConfirmButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
-  }
-
-  async clickFooterCancelButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerCancelButton,
-    );
-  }
-
-  async clickFooterCancelButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
-  }
-
-  async clickCollapseSectionButton() {
-    await this.driver.clickElement(this.sectionCollapseButton);
-  }
-
-  async clickInlineAlert() {
-    await this.driver.clickElement(this.inlineAlertButton);
-  }
-
-  async checkNavigationIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.navigationTitle, {
-      waitAtLeastGuard: 1000,
-    });
-  }
-
-  async clickNextPage(): Promise<void> {
-    await this.driver.clickElement(this.nextPageButton);
-  }
-
-  async clickPreviousPage(): Promise<void> {
-    await this.driver.clickElement(this.previousPageButton);
-  }
-
   async checkPageNumbers(
     currentPage: number,
     totalPages: number,
@@ -166,46 +117,81 @@ class Confirmation {
     }
   }
 
-  async clickRejectAllButtonWithoutWaiting(): Promise<void> {
-    console.log(
-      'Clicking reject all button without waiting for window to close',
-    );
-    await this.driver.clickElement(this.rejectAllButton);
-  }
-
-  async clickRejectAll(): Promise<void> {
-    await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
-  }
-
-  async verifyConfirmationHeadingTitle(): Promise<void> {
-    console.log('Verify confirmation heading title is Confirmation Dialog');
-    await this.driver.waitForSelector(this.confirmationHeadingTitle);
-  }
-
-  async verifyRejectAllButtonNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.rejectAllButton, {
-      timeout: 5000,
-    });
-  }
-
-  async checkNameIsDisplayed(
-    expectedValue: string,
-    isSaved: boolean,
+  async checkProposedNames(
+    value: string,
+    options: [string, string][],
   ): Promise<void> {
-    const containerClass = isSaved ? 'name__saved' : 'name__missing';
-    const valueClass = isSaved ? 'name__name' : 'name__value';
+    await this.clickName(value);
+    await this.driver.clickElement(this.formComboFieldSelector);
 
-    await this.driver.findElement({
-      css: `.${containerClass} .${valueClass}`,
-      text: expectedValue,
-    });
+    for (const option of options) {
+      await this.driver.findElement({
+        css: this.formComboFieldOptionPrimarySelector,
+        text: option[0],
+      });
+
+      await this.driver.findElement({
+        css: this.formComboFieldOptionSecondarySelector,
+        text: option[1],
+      });
+    }
   }
 
-  async checkAddressIsDisplayed(address: string): Promise<void> {
-    await this.driver.findElement({
-      css: '[data-testid="confirm-info-row-display-name"]',
-      text: address,
-    });
+  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      this.securityProviderBannerAlert,
+      {
+        waitAtLeastGuard: 1000,
+      },
+    );
+  }
+
+  async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
+    await this.driver.waitForSelector(this.securityProviderBannerAlert);
+  }
+
+  async clickCollapseSectionButton() {
+    await this.driver.clickElement(this.sectionCollapseButton);
+  }
+
+  async clickFooterCancelButton() {
+    await this.driver.clickElement(this.footerCancelButton);
+  }
+
+  async clickFooterCancelButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerCancelButton,
+    );
+  }
+
+  async clickFooterCancelButtonAndWaitToDisappear() {
+    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
+  }
+
+  async clickFooterConfirmButton() {
+    await this.driver.clickElement(this.footerConfirmButton);
+  }
+
+  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
+  }
+
+  async clickFooterConfirmButtonAndWaitToDisappear() {
+    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
+  }
+
+  async clickHeaderAccountDetailsButton() {
+    const accountDetailsButton = await this.driver.findElement(
+      this.headerAccountDetailsButton,
+    );
+    await accountDetailsButton.sendKeys(Key.RETURN);
+    await this.driver.waitForSelector(this.accountAddressDetails);
+  }
+
+  async clickInlineAlert() {
+    await this.driver.clickElement(this.inlineAlertButton);
   }
 
   async clickName(value: string): Promise<void> {
@@ -214,6 +200,29 @@ class Confirmation {
       css: this.nameSelector,
       text: value,
     });
+  }
+
+  async clickNextPage(): Promise<void> {
+    await this.driver.clickElement(this.nextPageButton);
+  }
+
+  async clickPreviousPage(): Promise<void> {
+    await this.driver.clickElement(this.previousPageButton);
+  }
+
+  async clickRejectAll(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
+  }
+
+  async clickRejectAllButtonWithoutWaiting(): Promise<void> {
+    console.log(
+      'Clicking reject all button without waiting for window to close',
+    );
+    await this.driver.clickElement(this.rejectAllButton);
+  }
+
+  async clickScrollToBottomButton() {
+    await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
 
   async saveName({
@@ -253,24 +262,15 @@ class Confirmation {
     await this.driver.clickElement(this.saveButtonSelector);
   }
 
-  async checkProposedNames(
-    value: string,
-    options: [string, string][],
-  ): Promise<void> {
-    await this.clickName(value);
-    await this.driver.clickElement(this.formComboFieldSelector);
+  async verifyConfirmationHeadingTitle(): Promise<void> {
+    console.log('Verify confirmation heading title is Confirmation Dialog');
+    await this.driver.waitForSelector(this.confirmationHeadingTitle);
+  }
 
-    for (const option of options) {
-      await this.driver.findElement({
-        css: this.formComboFieldOptionPrimarySelector,
-        text: option[0],
-      });
-
-      await this.driver.findElement({
-        css: this.formComboFieldOptionSecondarySelector,
-        text: option[1],
-      });
-    }
+  async verifyRejectAllButtonNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllButton, {
+      timeout: 5000,
+    });
   }
 }
 export default Confirmation;

@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "このトランザクションの予測される増減額が更新されました。先に進む前によく確認してください。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "未対応のウォレットです"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "結果が変更されました"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
@@ -1644,8 +1638,24 @@
     "message": "まず、$2の$1を有効化してください。",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "このトラストラインの追加中に問題が発生しました。もう一度お試しください。",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "過去のデータを取得できませんでした"
+  },
+  "assetDeactivate": {
+    "message": "削除",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "このトラストラインの削除中に問題が発生しました。もう一度お試しください。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "ウォレットにはまだ$1 $2が残っています。Stellarでこの資産を無効化する前に、すべて使用するか、他の通貨に交換する必要があります。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "非アクティブ",
@@ -3418,6 +3428,18 @@
   },
   "discover": {
     "message": "ディスカバリ"
+  },
+  "discoverSearchNoResults": {
+    "message": "結果が見つかりませんでした",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "他の人気資産をご覧ください",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "出来高",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snapのご紹介",
@@ -6983,6 +7005,10 @@
   "perpsDateYesterday": {
     "message": "昨日"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "入金する",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "ブリッジに失敗しました"
   },
@@ -7012,6 +7038,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "パーペチュアルアカウントに入金されました"
+  },
+  "perpsDepositedVerb": {
+    "message": "デポジット",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "デポジット"
@@ -7232,6 +7262,42 @@
   "perpsOraclePriceTooltip": {
     "message": "バリデーターにより報告された外部価格の中央値で、資金調達率の計算に使用されます"
   },
+  "perpsOrderBook": {
+    "message": "オーダーブック"
+  },
+  "perpsOrderBookApply": {
+    "message": "適用"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "オーダーブックの接続が失われました"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "グループ化"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "表示単位"
+  },
+  "perpsOrderBookLoading": {
+    "message": "オーダーブックを読み込んでいます"
+  },
+  "perpsOrderBookPrice": {
+    "message": "価格"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "再接続"
+  },
+  "perpsOrderBookSize": {
+    "message": "サイズ"
+  },
+  "perpsOrderBookSpread": {
+    "message": "スプレッド"
+  },
+  "perpsOrderBookTotal": {
+    "message": "合計"
+  },
+  "perpsOrderBookValueType": {
+    "message": "値の種類"
+  },
   "perpsOrderDate": {
     "message": "日付"
   },
@@ -7407,11 +7473,17 @@
   "perpsStatusCompleted": {
     "message": "完了"
   },
+  "perpsStatusFailed": {
+    "message": "失敗"
+  },
   "perpsStatusFilled": {
     "message": "約定済"
   },
   "perpsStatusOpen": {
     "message": "未約定"
+  },
+  "perpsStatusPending": {
+    "message": "保留中"
   },
   "perpsStatusQueued": {
     "message": "キュー待ち"
@@ -7643,6 +7715,9 @@
   "perpsUnrealizedPnl": {
     "message": "含み損益"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "この市場は非対応の担保が使用されているため、取引できません。"
+  },
   "perpsWatchlist": {
     "message": "ウォッチリスト"
   },
@@ -7722,6 +7797,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。mUSDへのスワップ時にMetaMaskの手数料は発生しません。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "出金",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "引き出し額:",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "受け取る"
@@ -7852,149 +7935,6 @@
   "publicAddress": {
     "message": "パブリックアドレス"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "$1のロングポジションがオープンしました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "$1のショートポジションがオープンしました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "リミット注文が約定しました"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "$1のロングがクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "$1のショートがクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "ポジションが清算されました"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "請求が作成されました"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "請求作成済み"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "請求が更新されました"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "請求更新済み"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "詳細を表示"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "プランが有効になりました。"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "お支払いに失敗したため、プランが一時停止されています。"
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMaskトランザクションシールド"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "支払情報を更新"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "$1のロングがストップロスでクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "$1のショートがストップロスでクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "ストップロスがトリガーされました"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "$1のロングが利益確定でクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "$1のショートが利益確定でクローズされました。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "利益確定がトリガーされました"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "$1 $2を受け取りました"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "トークンを受け取りました"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "資金の受領"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "$1 $2を送りました"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "トークンが送金されました"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "送金されました"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "新しいNFTを受け取りました"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "NFTの受領"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "NFTが送られました"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "NFTが送られました"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Lidoのステーキングに成功しました"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "ステーキング完了"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Lidoのステークの出金準備が完了しました"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "ステークの出金準備完了"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Lidoの出金に成功しました"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "出金完了"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Lidoの出金リクエストが送信されました"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "出金のリクエスト"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "RocketPoolのステーキングに成功しました"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "ステーキング完了"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "RocketPoolのステーキングの解除に成功しました"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "ステーキングの解除完了"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "MetaMaskスワップに成功しました"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "スワップ完了"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8109,6 +8049,9 @@
   "rampsBuyToken": {
     "message": "$1を購入",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "購入を開始できませんでした。もう一度お試しください。"
   },
   "rampsBuyingViaProvider": {
     "message": "$1経由で購入中。",
@@ -8857,6 +8800,300 @@
   },
   "securitySrpLabel": {
     "message": "シークレットリカバリーフレーズ"
+  },
+  "securityTrustBuySellTax": {
+    "message": "購入・売却税"
+  },
+  "securityTrustBuyTax": {
+    "message": "購入税"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "それでも続行"
+  },
+  "securityTrustCreated": {
+    "message": "作成されました"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "セキュリティデータが利用できません"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "このセキュリティレビューは評価目的のみのものであり、取引の承認または推奨とみなされるものではありません。"
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "不審なエアドロップ"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "ブラックリストへの登録が可能"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "ホワイトリストへの登録が可能"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "供給の集中"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "機密送金"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "不審な動作"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "外部コール"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "水増しされたトレーダー数"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "偽の出来高"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "取引クールダウン"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "多くのボットアクティビティ"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "所有者非開示"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "開示されていない供給"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "高い購入手数料"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "確立された評判"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "高い売却手数料"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "高い取引高"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "高い送金手数料"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "ハニーポットのリスク"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "なりすまし"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "なりすましの可能性が高い"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "未確定のなりすまし"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "なりすましの可能性"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "機密の資産になりすまします"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "不適切なコンテンツ"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "人為的な出来高"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "ロックされた流動性が低い"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "ミント可能"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "既知の悪意"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "取引所に登録済み"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "クリエイターの評判が低い"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "不審なメタデータ"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "変更可能な諸税"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "送金不可能"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "所有者が残高を変更可能"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "価格操作の可能性"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "プロキシコントラクト"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "ラグプルのリスク"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "制裁対象のクリエイター"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "悪意のあるコントラクトと類似"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "ローンチ時のボットアクティビティ"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "スパムテキスト"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "不審なコード"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "トークンバックドア"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "送金取り消しが有効"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "送金フックが有効"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "送金を停止可能"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "売却不可能なトークン"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "不安定な価格"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "公開されているコントラクト"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "ウオッシュトレード"
+  },
+  "securityTrustMalicious": {
+    "message": "悪意のある"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "悪意のある"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1は悪意があるとフラグされています。やり取りした相手から資金を盗む可能性が高いです。"
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "このトークンは悪意があるとフラグされています。やり取りした相手から資金を盗む可能性があります。"
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "$1で深刻なリスクシグナルが検出されました。このトークンは取引しないことをお勧めします。"
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "このトークンで深刻なリスクシグナルが検出されました。このトークンは取引しないことをお勧めします。"
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "悪質なトークン"
+  },
+  "securityTrustMore": {
+    "message": "他"
+  },
+  "securityTrustNa": {
+    "message": "該当なし"
+  },
+  "securityTrustNetwork": {
+    "message": "ネットワーク:"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "隠れた手数料は検出されませんでした"
+  },
+  "securityTrustNoIssues": {
+    "message": "問題なし"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "公式リンク"
+  },
+  "securityTrustOther": {
+    "message": "その他"
+  },
+  "securityTrustRisky": {
+    "message": "リスクのある"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1は不審であるとフラグされています。続ける前にリスクを確認してください。"
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "このトークンは不審であるとフラグされています。続ける前にリスクを確認してください。"
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "不審なトークン"
+  },
+  "securityTrustSellTax": {
+    "message": "売却税"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "リスクシグナルは検出されませんでした。どの資産でも取引前に必ず調査してください。"
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "深刻なリスクシグナルが検出されました。この資産は避けることをお勧めします。"
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "リスクシグナルは検出されませんでした。どの資産でも取引前に必ず調査してください。"
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "警告のシグナルが検出されました。この資産を取引する前に、フラグの付いた問題を慎重に確認してください。"
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "このトークンのセキュリティ分析情報を読み込めませんでした。"
+  },
+  "securityTrustSuspicious": {
+    "message": "不審"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1は不審なトークンです。"
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "これは不審なトークンです。"
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "セキュリティと信頼"
+  },
+  "securityTrustTokenAge": {
+    "message": "トークンの年齢"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "トークンの流通"
+  },
+  "securityTrustTokenInfo": {
+    "message": "トークン情報"
+  },
+  "securityTrustTop10Holders": {
+    "message": "トップ10のトークン"
+  },
+  "securityTrustTotalSupply": {
+    "message": "合計供給量"
+  },
+  "securityTrustTransfer": {
+    "message": "送金"
+  },
+  "securityTrustType": {
+    "message": "タイプ"
+  },
+  "securityTrustVerified": {
+    "message": "検証済み"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1はアクティブに取引され、広く認識されています。検証はMetaMaskによる承認ではありません。"
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "確認済みのトークン"
+  },
+  "securityTrustWebsite": {
+    "message": "Webサイト"
   },
   "seeAllPermissions": {
     "message": "すべてのアクセス許可を表示",
@@ -10316,18 +10553,6 @@
   "statusNotConnected": {
     "message": "未接続"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "このトラストラインの追加中に問題が発生しました。もう一度お試しください。",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "このトラストラインの削除中に問題が発生しました。もう一度お試しください。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "ウォレットにはまだ$1 $2が残っています。Stellarでこの資産を無効化する前に、すべて使用するか、他の通貨に交換する必要があります。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "$1に引き続き接続中です...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -11087,9 +11312,6 @@
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
-  "tutorial": {
-    "message": "チュートリアル"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -11297,6 +11519,10 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "すべて表示",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"

@@ -67,7 +67,7 @@ import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -414,15 +414,9 @@ const CoinButtons = ({
     // Only the Portfolio paths open a browser tab; when goToBuy navigates
     // in-app the "tab opened" toast would be misleading.
     if (opensBuyInPortfolioTab) {
-      toast.success(
-        <ToastContent
-          title={t('buyTabOpenedToastText')}
-          description={t('buyTabOpenedToastDescription')}
-        />,
-        {
-          id: 'buy-tab-opened-toast',
-          icon: <Icon name={IconName.Export} color={IconColor.IconDefault} />,
-        },
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
       );
     }
     trackEvent(

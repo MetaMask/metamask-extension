@@ -227,6 +227,35 @@ export type LegacyBackgroundApiServiceResetAccountAction = {
 };
 
 /**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
+ * Enables the given network, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ *
+ * @param chainId - The chain ID of the network to enable.
+ */
+export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledNetworks'];
+};
+
+/**
+ * Enables all popular networks, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ */
+export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
+};
+
+/**
  * @deprecated Avoid new references to the global network.
  * Will be removed once multi-chain support is fully implemented.
  *
@@ -419,6 +448,7 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
  *
  * @param transactionId - The ID of the transaction to update.
  * @param containerTypes - The container types to apply to the transaction.
+ * @param incrementToggleCount - Whether to increment the toggle interaction metric.
  */
 export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   {
@@ -450,6 +480,38 @@ export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
 export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
   type: `LegacyBackgroundApiService:rejectPendingApproval`;
   handler: LegacyBackgroundApiService['rejectPendingApproval'];
+};
+
+/**
+ * Resolve a pending approval. For hardware wallet transactions and signatures,
+ * this handles error parsing.
+ *
+ * @param id - The approval ID.
+ * @param value - The value to resolve with (for transactions, contains txMeta).
+ * @param options - Options for the approval.
+ * @param options.walletType - The hardware wallet type (if hardware wallet).
+ * @param options.waitForResult - Whether to wait for the result.
+ */
+export type LegacyBackgroundApiServiceResolvePendingApprovalAction = {
+  type: `LegacyBackgroundApiService:resolvePendingApproval`;
+  handler: LegacyBackgroundApiService['resolvePendingApproval'];
+};
+
+/**
+ * Approve a hardware wallet transaction with retry support.
+ * This is a convenience wrapper around resolvePendingApproval for the
+ * transaction confirmation flow, which passes txMeta in a specific format.
+ *
+ * @param opts - Options for the transaction.
+ * @param opts.txId - The transaction ID to approve.
+ * @param opts.txMeta - The transaction metadata.
+ * @param opts.actionId - The action ID for tracking.
+ * @param opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+ * @throws When hardware wallet error occurs (with recreatedTxId if recreation succeeded).
+ */
+export type LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction = {
+  type: `LegacyBackgroundApiService:approveHardwareWalletTransaction`;
+  handler: LegacyBackgroundApiService['approveHardwareWalletTransaction'];
 };
 
 /**
@@ -491,6 +553,132 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 };
 
 /**
+ * Attempts to create the Ledger transport app.
+ *
+ * @returns Whether the app was created successfully.
+ */
+export type LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction = {
+  type: `LegacyBackgroundApiService:attemptLedgerTransportCreation`;
+  handler: LegacyBackgroundApiService['attemptLedgerTransportCreation'];
+};
+
+/**
+ * Gets the app name and version from the Ledger device.
+ *
+ * @returns The app name and version.
+ */
+export type LegacyBackgroundApiServiceGetAppNameAndVersionAction = {
+  type: `LegacyBackgroundApiService:getAppNameAndVersion`;
+  handler: LegacyBackgroundApiService['getAppNameAndVersion'];
+};
+
+/**
+ * Gets the app configuration from the Ledger device.
+ *
+ * @returns The app configuration.
+ */
+export type LegacyBackgroundApiServiceGetLedgerAppConfigurationAction = {
+  type: `LegacyBackgroundApiService:getLedgerAppConfiguration`;
+  handler: LegacyBackgroundApiService['getLedgerAppConfiguration'];
+};
+
+/**
+ * Get the active Ledger handler mode based on the remote feature flag.
+ *
+ * Reads from `RemoteFeatureFlagController` state and merges with manifest
+ * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+ * builds without touching LaunchDarkly.
+ *
+ * @returns The Ledger handler mode.
+ */
+export type LegacyBackgroundApiServiceGetLedgerModeAction = {
+  type: `LegacyBackgroundApiService:getLedgerMode`;
+  handler: LegacyBackgroundApiService['getLedgerMode'];
+};
+
+/**
+ * Fetch account list from a hardware device.
+ *
+ * @param deviceName - The device name to connect.
+ * @param page - The page of accounts to fetch (-1 for previous, 1 for next,
+ * otherwise the first page).
+ * @param hdPath - An optional hd path to set on the device keyring.
+ * @returns The accounts.
+ */
+export type LegacyBackgroundApiServiceConnectHardwareAction = {
+  type: `LegacyBackgroundApiService:connectHardware`;
+  handler: LegacyBackgroundApiService['connectHardware'];
+};
+
+/**
+ * Check if the device is unlocked.
+ *
+ * @param deviceName - The device name to check.
+ * @param hdPath - An optional hd path to set on the device keyring.
+ * @returns Whether the device is unlocked.
+ */
+export type LegacyBackgroundApiServiceCheckHardwareStatusAction = {
+  type: `LegacyBackgroundApiService:checkHardwareStatus`;
+  handler: LegacyBackgroundApiService['checkHardwareStatus'];
+};
+
+/**
+ * Get the hd path currently configured on a Ledger hardware keyring.
+ *
+ * @returns The hd path.
+ */
+export type LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction = {
+  type: `LegacyBackgroundApiService:getHdPathForLedgerKeyring`;
+  handler: LegacyBackgroundApiService['getHdPathForLedgerKeyring'];
+};
+
+/**
+ * Gets the public key from the Ledger device.
+ *
+ * @param hdPath - The hd path to get the public key for.
+ * @returns The public key.
+ */
+export type LegacyBackgroundApiServiceGetLedgerPublicKeyAction = {
+  type: `LegacyBackgroundApiService:getLedgerPublicKey`;
+  handler: LegacyBackgroundApiService['getLedgerPublicKey'];
+};
+
+/**
+ * Gets the features from the Trezor device.
+ *
+ * @returns The features.
+ */
+export type LegacyBackgroundApiServiceGetTrezorFeaturesAction = {
+  type: `LegacyBackgroundApiService:getTrezorFeatures`;
+  handler: LegacyBackgroundApiService['getTrezorFeatures'];
+};
+
+/**
+ * Forget a hardware device.
+ *
+ * @param deviceName - The device name to forget.
+ * @returns `true` when the device has been forgotten.
+ */
+export type LegacyBackgroundApiServiceForgetDeviceAction = {
+  type: `LegacyBackgroundApiService:forgetDevice`;
+  handler: LegacyBackgroundApiService['forgetDevice'];
+};
+
+/**
+ * Imports an account from a Trezor or Ledger device.
+ *
+ * @param index - The account index to unlock.
+ * @param deviceName - The device name.
+ * @param hdPath - An optional hd path.
+ * @param hdPathDescription - An optional hd path description.
+ * @returns The unlocked account address and the current account list.
+ */
+export type LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction = {
+  type: `LegacyBackgroundApiService:unlockHardwareWalletAccount`;
+  handler: LegacyBackgroundApiService['unlockHardwareWalletAccount'];
+};
+
+/**
  * Capture an artificial error in a timeout handler for testing purposes.
  *
  * @param message - The error message.
@@ -515,14 +703,161 @@ export type LegacyBackgroundApiServiceThrowTestErrorAction = {
 };
 
 /**
- * Determines if the transaction relay supports the given chain.
+ * Creates a PRIMARY seed phrase backup for the user.
  *
- * @param chainId - The chain ID to check for relay support.
- * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+ * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
+ * Save the encrypted seed phrase in the metadata store.
+ *
+ * `createToprfKeyAndBackupSeedPhrase` already marks migration as V1 for new
+ * backups, so a separate `setMigrationVersion` call is unnecessary.
+ *
+ * @param password - The user's password.
+ * @param encodedSeedPhrase - The seed phrase to backup.
+ * @param keyringId - The keyring id of the backup seed phrase.
  */
+export type LegacyBackgroundApiServiceCreateSeedPhraseBackupAction = {
+  type: `LegacyBackgroundApiService:createSeedPhraseBackup`;
+  handler: LegacyBackgroundApiService['createSeedPhraseBackup'];
+};
+
+/**
+ * Syncs the seed phrases with the social login flow.
+ */
+export type LegacyBackgroundApiServiceSyncSeedPhrasesAction = {
+  type: `LegacyBackgroundApiService:syncSeedPhrases`;
+  handler: LegacyBackgroundApiService['syncSeedPhrases'];
+};
+
+/**
+ * Creates a new Vault and create a new keychain.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @returns created keyring object
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndKeychainAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndKeychain`;
+  handler: LegacyBackgroundApiService['createNewVaultAndKeychain'];
+};
+
+/**
+ * Creates a new vault and returns the seed phrase in a single atomic operation.
+ * Holding the vault mutex through seed export avoids races where concurrent
+ * keyring mutations leave no HD keyring available for export.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @returns The seed phrase encoded as UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndGetSeedPhraseAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase`;
+  handler: LegacyBackgroundApiService['createNewVaultAndGetSeedPhrase'];
+};
+
+/**
+ * Unlocks the vault and returns the seed phrase in a single atomic operation.
+ * Holding the vault mutex through seed export avoids races where concurrent
+ * keyring mutations leave no HD keyring available for export.
+ *
+ * @param password - The password used to unlock the vault.
+ * @returns The seed phrase encoded as UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceUnlockAndGetSeedPhraseAction = {
+  type: `LegacyBackgroundApiService:unlockAndGetSeedPhrase`;
+  handler: LegacyBackgroundApiService['unlockAndGetSeedPhrase'];
+};
+
+/**
+ * Discovers and creates accounts for the given keyring id.
+ *
+ * @param id - The keyring id to discover and create accounts for.
+ * @returns Discovered account counts by chain.
+ */
+export type LegacyBackgroundApiServiceDiscoverAndCreateAccountsAction = {
+  type: `LegacyBackgroundApiService:discoverAndCreateAccounts`;
+  handler: LegacyBackgroundApiService['discoverAndCreateAccounts'];
+};
+
+/**
+ * Imports a new mnemonic to the vault.
+ *
+ * @param mnemonic - The mnemonic to import.
+ * @param options - The options for the import.
+ * @param options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+ * @param options.shouldSelectAccount - whether to select the new account in the wallet
+ */
+export type LegacyBackgroundApiServiceImportMnemonicToVaultAction = {
+  type: `LegacyBackgroundApiService:importMnemonicToVault`;
+  handler: LegacyBackgroundApiService['importMnemonicToVault'];
+};
+
+/**
+ * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export type LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction =
+  {
+    type: `LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase`;
+    handler: LegacyBackgroundApiService['restoreSocialBackupAndGetSeedPhrase'];
+  };
+
+/**
+ * Create a new Vault and restore an existent keyring.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @param encodedSeedPhrase - The seed phrase, encoded as an array of UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndRestore`;
+  handler: LegacyBackgroundApiService['createNewVaultAndRestore'];
+};
+
 export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
   type: `LegacyBackgroundApiService:isRelaySupported`;
   handler: LegacyBackgroundApiService['isRelaySupported'];
+};
+
+/**
+ * Get Sentinel Network flags for the given chain.
+ *
+ * @param chainId - The chain ID to check for relay support.
+ * @returns The Sentinel network flags for the given chain, or undefined if not found.
+ */
+export type LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction = {
+  type: `LegacyBackgroundApiService:getSentinelNetworkFlags`;
+  handler: LegacyBackgroundApiService['getSentinelNetworkFlags'];
+};
+
+/**
+ * Runs when CAIP-25 permitted accounts are extended via the permission
+ * background API. If the origin is a referral partner and the globally
+ * selected account is EVM and included among the newly permitted accounts,
+ * it triggers the DeFi referral flow.
+ *
+ * @param details - Added accounts payload.
+ * @param details.origin - The origin whose permitted accounts were extended.
+ * @param details.newCaipAccountIds - The newly added CAIP-10 account ids.
+ */
+export type LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction =
+  {
+    type: `LegacyBackgroundApiService:handleDefiReferralOnPermittedAccountsAdded`;
+    handler: LegacyBackgroundApiService['handleDefiReferralOnPermittedAccountsAdded'];
+  };
+
+/**
+ * Handles DeFi referral approval flow for a partner.
+ * Shows approval confirmation screen if needed and manages referral URL redirection.
+ * This can be triggered by connection permission grants or existing connections.
+ *
+ * @param partner - The partner configuration.
+ * @param tabId - The browser tab ID to update.
+ * @param triggerType - The trigger type.
+ * @param options - Optional behavior.
+ * @param options.activePermittedAddressOverride - When set, use this permitted address for referral state instead of the first sorted permitted account.
+ */
+export type LegacyBackgroundApiServiceHandleDefiReferralAction = {
+  type: `LegacyBackgroundApiService:handleDefiReferral`;
+  handler: LegacyBackgroundApiService['handleDefiReferral'];
 };
 
 /**
@@ -548,6 +883,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
@@ -568,9 +906,34 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceResolvePendingApprovalAction
+  | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
+  | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction
+  | LegacyBackgroundApiServiceGetAppNameAndVersionAction
+  | LegacyBackgroundApiServiceGetLedgerAppConfigurationAction
+  | LegacyBackgroundApiServiceGetLedgerModeAction
+  | LegacyBackgroundApiServiceConnectHardwareAction
+  | LegacyBackgroundApiServiceCheckHardwareStatusAction
+  | LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction
+  | LegacyBackgroundApiServiceGetLedgerPublicKeyAction
+  | LegacyBackgroundApiServiceGetTrezorFeaturesAction
+  | LegacyBackgroundApiServiceForgetDeviceAction
+  | LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction
   | LegacyBackgroundApiServiceCaptureTestErrorAction
   | LegacyBackgroundApiServiceThrowTestErrorAction
-  | LegacyBackgroundApiServiceIsRelaySupportedAction;
+  | LegacyBackgroundApiServiceCreateSeedPhraseBackupAction
+  | LegacyBackgroundApiServiceSyncSeedPhrasesAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndKeychainAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceUnlockAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceDiscoverAndCreateAccountsAction
+  | LegacyBackgroundApiServiceImportMnemonicToVaultAction
+  | LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction
+  | LegacyBackgroundApiServiceIsRelaySupportedAction
+  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction
+  | LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction
+  | LegacyBackgroundApiServiceHandleDefiReferralAction;
