@@ -45,17 +45,22 @@ export function usePerpsWithdrawMultiSigCheck(): {
   // (a debug toggle) skips the check and fails open.
   const shouldCheck = isPerpsWithdraw && !isTestnet && Boolean(from);
 
+  // The result is tagged with the address it was fetched for, so a response
+  // that arrives late (after switching confirmation or account) never gates
+  // the current one.
   const { pending, value } = useAsyncResult(async () => {
     if (!shouldCheck || !from) {
-      return false;
+      return undefined;
     }
 
-    return await isHyperliquidMultiSigUser(from);
+    return { from, isMultiSig: await isHyperliquidMultiSigUser(from) };
   }, [shouldCheck, from]);
 
   return {
     pending: shouldCheck && pending,
-    isMultiSigAccount: value === true,
+    isMultiSigAccount: Boolean(
+      shouldCheck && value && value.from === from && value.isMultiSig,
+    ),
   };
 }
 
