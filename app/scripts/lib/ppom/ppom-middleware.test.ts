@@ -108,8 +108,7 @@ const createMiddleware = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
-    undefined,
-    originPath,
+    { originPath },
   );
   return { middlewareFunction, networkController };
 };
