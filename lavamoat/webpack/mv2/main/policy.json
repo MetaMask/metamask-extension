@@ -1,4 +1,4 @@
-  {
+{
   "resources": {
     "@babel/runtime": {
       "globals": {
@@ -1718,6 +1718,13 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/assets-controllers>@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/keyring-api>@metamask/keyring-utils": true,
@@ -1863,6 +1870,15 @@
       }
     },
     "@metamask/account-tree-controller>@metamask/keyring-api>@metamask/keyring-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/keyring-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
