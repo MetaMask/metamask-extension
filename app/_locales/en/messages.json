@@ -1525,6 +1525,12 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPerpsWithdrawMultiSigMessage": {
+    "message": "This Hyperliquid account uses multi-sig, which MetaMask doesn't support. Use the Hyperliquid app to withdraw."
+  },
+  "alertPerpsWithdrawMultiSigTitle": {
+    "message": "Multi-sig account not supported"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
   },
