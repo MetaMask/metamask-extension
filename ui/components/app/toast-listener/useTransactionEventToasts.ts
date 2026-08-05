@@ -11,6 +11,7 @@ import type {
   Transaction,
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -18,7 +19,6 @@ import {
 } from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
-import { TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
   dismissToast,
