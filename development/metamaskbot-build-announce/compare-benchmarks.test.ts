@@ -424,7 +424,13 @@ describe('compare-benchmarks', () => {
     });
 
     it('reports no-result benchmarks in an ERROR section of printReport', () => {
-      const benchmarks = [
+      // Annotated rather than inferred: the two entries carry different
+      // benchmark keys, so TS would widen `data` to a union in which each
+      // key is optional-undefined on the other member.
+      const benchmarks: {
+        name: string;
+        data: Record<string, BenchmarkResults>;
+      }[] = [
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
