@@ -192,10 +192,13 @@ export class LedgerOffscreenBridge implements Omit<
   deviceSignDelegationAuthorization(
     params: LedgerSignDelegationAuthorizationParams,
   ): Promise<LedgerSignDelegationAuthorizationResponse> {
-    return this.#sendMessage({
-      action: LedgerAction.signDelegationAuthorization,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signDelegationAuthorization,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT_MS },
+    );
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
