@@ -39,14 +39,6 @@ export async function approveConnect(
   await confirmation.confirmConnect();
 }
 
-async function confirmConnectFromDialog(driver: Driver): Promise<void> {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const confirmation = new ConnectAccountConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-  await confirmation.confirmConnect();
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-}
-
 /**
  * Confirms the connect dialog, then narrows the connected site's network
  * permissions from the Connected sites page.
@@ -60,7 +52,10 @@ export async function confirmConnectAndUpdateSiteNetworks(
   hostname: string,
   networkUpdates: NetworkSelectionUpdate[],
 ): Promise<void> {
-  await confirmConnectFromDialog(driver);
+  await approveConnect(driver);
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.ExtensionInFullScreenView,
+  );
   await updateConnectedSiteNetworkSelection(driver, hostname, networkUpdates);
 }
 
@@ -77,7 +72,10 @@ export async function confirmConnectAndUpdateSiteNetworksToOnly(
   hostname: string,
   selectedNetworkNames: string[],
 ): Promise<void> {
-  await confirmConnectFromDialog(driver);
+  await approveConnect(driver);
+  await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.ExtensionInFullScreenView,
+  );
   await new HomePage(driver).checkPageIsLoaded();
   await updateConnectedSiteNetworksToOnly(
     driver,
