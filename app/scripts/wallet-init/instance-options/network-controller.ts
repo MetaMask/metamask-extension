@@ -1,5 +1,5 @@
 import { WalletOptions } from '@metamask/wallet';
-import { getFailoverUrlsByChainId } from '../../../../shared/constants/network';
+import { getFailoverUrlsByChainId } from '../../../../shared/constants/network-failover';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,

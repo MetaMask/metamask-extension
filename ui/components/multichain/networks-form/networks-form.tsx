@@ -23,10 +23,10 @@ import {
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
-  getFailoverUrlsForChainId,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
