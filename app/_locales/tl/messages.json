@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Ipapadala mo ang mga asset mo sa burn address. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset mo."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Na-update na ang mga tinatayang pagbabago para sa transaksyong ito. Suriin ang mga ito nang mabuti bago magpatuloy."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Ito ang unang interaksyon mo sa address na ito. Siguraduhing tama ito bago ka magpatuloy."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Hindi sinusuportahan ang wallet"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Nagbago ang mga resulta"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"

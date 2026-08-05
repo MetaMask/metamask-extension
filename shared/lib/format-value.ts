@@ -1,6 +1,11 @@
 export const isValidAmount = (amount: number | null | undefined): boolean =>
   amount !== null && amount !== undefined && !Number.isNaN(amount);
 
+/**
+ * @deprecated Use the `useFormatters` hook instead.
+ * @param value
+ * @param includeParentheses
+ */
 export function formatValue(
   value: number | null | undefined,
   includeParentheses: boolean,
