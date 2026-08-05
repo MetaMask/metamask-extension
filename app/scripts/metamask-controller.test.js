@@ -24,7 +24,7 @@ import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionStatus } from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -688,6 +688,68 @@ describe('MetaMaskController', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('_onFinishedTransaction', () => {
+      it('skips finished transaction side effects for ordinary rejected transactions', async () => {
+        const createNotificationSpy = jest
+          .spyOn(metamaskController, '_createTransactionNotifcation')
+          .mockResolvedValue();
+        const updateNftOwnershipSpy = jest
+          .spyOn(metamaskController, '_updateNFTOwnership')
+          .mockResolvedValue();
+        const trackTransactionFailureSpy = jest
+          .spyOn(metamaskController, '_trackTransactionFailure')
+          .mockImplementation();
+        const updateBalancesSpy = jest
+          .spyOn(metamaskController.tokenBalancesController, 'updateBalances')
+          .mockResolvedValue();
+
+        await metamaskController._onFinishedTransaction({
+          status: TransactionStatus.rejected,
+          error: {
+            code: errorCodes.provider.userRejectedRequest,
+          },
+        });
+
+        expect(createNotificationSpy).not.toHaveBeenCalled();
+        expect(updateNftOwnershipSpy).not.toHaveBeenCalled();
+        expect(trackTransactionFailureSpy).not.toHaveBeenCalled();
+        expect(updateBalancesSpy).not.toHaveBeenCalled();
+      });
+
+      it('only creates a notification for a hardware wallet rejection', async () => {
+        const createNotificationSpy = jest
+          .spyOn(metamaskController, '_createTransactionNotifcation')
+          .mockResolvedValue();
+        const updateNftOwnershipSpy = jest
+          .spyOn(metamaskController, '_updateNFTOwnership')
+          .mockResolvedValue();
+        const trackTransactionFailureSpy = jest
+          .spyOn(metamaskController, '_trackTransactionFailure')
+          .mockImplementation();
+        const updateBalancesSpy = jest
+          .spyOn(metamaskController.tokenBalancesController, 'updateBalances')
+          .mockResolvedValue();
+        const transactionMeta = {
+          status: TransactionStatus.rejected,
+          error: {
+            code: errorCodes.provider.userRejectedRequest,
+            data: {
+              metadata: {
+                walletType: 'Ledger',
+              },
+            },
+          },
+        };
+
+        await metamaskController._onFinishedTransaction(transactionMeta);
+
+        expect(createNotificationSpy).toHaveBeenCalledWith(transactionMeta);
+        expect(updateNftOwnershipSpy).not.toHaveBeenCalled();
+        expect(trackTransactionFailureSpy).not.toHaveBeenCalled();
+        expect(updateBalancesSpy).not.toHaveBeenCalled();
       });
     });
 

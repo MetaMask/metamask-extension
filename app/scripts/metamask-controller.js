@@ -7824,12 +7824,23 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - Metadata for the transaction.
    */
   async _onFinishedTransaction(transactionMeta) {
+    if (transactionMeta.status === TransactionStatus.rejected) {
+      const isHardwareWalletRejection =
+        String(transactionMeta.error?.code) ===
+          String(errorCodes.provider.userRejectedRequest) &&
+        Boolean(transactionMeta.error?.data?.metadata?.walletType);
+
+      if (isHardwareWalletRejection) {
+        await this._createTransactionNotifcation(transactionMeta);
+      }
+
+      return;
+    }
+
     if (
-      ![
-        TransactionStatus.confirmed,
-        TransactionStatus.failed,
-        TransactionStatus.rejected,
-      ].includes(transactionMeta.status)
+      ![TransactionStatus.confirmed, TransactionStatus.failed].includes(
+        transactionMeta.status,
+      )
     ) {
       return;
     }
