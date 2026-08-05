@@ -83,6 +83,7 @@ export async function enforceSimulations({
   log('Data', data);
 
   return {
+    slippage,
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.txParams.data = data;
       transaction.txParams.to = to;
@@ -107,8 +108,17 @@ function generateCaveats(
   const { nativeBalanceChange, tokenBalanceChanges = [] } = simulationData;
 
   if (nativeBalanceChange) {
-    const { difference, isDecrease: enforceDecrease } = nativeBalanceChange;
-    const delta = applySlippage(difference, slippage, enforceDecrease);
+    const {
+      difference,
+      isDecrease: enforceDecrease,
+      previousBalance,
+    } = nativeBalanceChange;
+    const delta = applySlippage(
+      difference,
+      slippage,
+      enforceDecrease,
+      previousBalance,
+    );
 
     log('Caveat - Native Balance Change', {
       enforceDecrease,
@@ -136,6 +146,7 @@ function generateCaveats(
       address: token,
       standard,
       id: tokenIdHex,
+      previousBalance,
     } = tokenChange;
 
     const delta = BigInt(difference);
@@ -144,6 +155,7 @@ function generateCaveats(
       difference,
       slippage,
       enforceDecrease,
+      previousBalance,
     );
 
     const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
@@ -222,8 +234,18 @@ function applySlippage(
   value: Hex,
   slippage: number,
   isDecrease: boolean,
+  previousBalance: Hex,
 ): bigint {
   const valueBN = new BigNumber(value);
   const slippageMultiplier = (100 + (isDecrease ? slippage : -slippage)) / 100;
-  return BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
+  const valueWithSlippage = BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
+
+  if (!isDecrease) {
+    return valueWithSlippage;
+  }
+
+  const maximumDecrease = BigInt(previousBalance);
+  return valueWithSlippage > maximumDecrease
+    ? maximumDecrease
+    : valueWithSlippage;
 }
