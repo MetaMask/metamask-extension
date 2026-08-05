@@ -9,6 +9,7 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getNextRegularMarketOpen,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -46,6 +47,7 @@ export const useBridgeAlerts = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
     isStockMarketClosed,
+    isInOffHoursTrading,
     isQuoteExpired,
     isPriceImpactWarning,
     isPriceImpactError,
@@ -58,6 +60,9 @@ export const useBridgeAlerts = () => {
   );
 
   const toToken = useSelector(getToToken);
+  const nextRegularMarketOpen = useSelector((state: BridgeAppState) =>
+    getNextRegularMarketOpen(state, Date.now()),
+  );
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
 
   const {
@@ -113,6 +118,26 @@ export const useBridgeAlerts = () => {
         isConfirmationAlert: false,
         bannerAlertProps: {
           severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (isInOffHoursTrading) {
+      const formattedMarketOpen = nextRegularMarketOpen
+        ? new Date(nextRegularMarketOpen).toLocaleString(undefined, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          })
+        : '';
+      categorizeAlert({
+        id: 'off-hours',
+        isDismissable: true,
+        severity: 'warning',
+        title: t('bridgeOffHoursTitle'),
+        description: t('bridgeOffHoursDescription', [formattedMarketOpen]),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
         },
       });
     }
@@ -308,6 +333,8 @@ export const useBridgeAlerts = () => {
     formattedPriceImpactPercentage,
     formattedPriceImpactFiat,
     isInsufficientBalance,
+    isInOffHoursTrading,
+    nextRegularMarketOpen,
     isInsufficientGasForQuote,
     isLoading,
     isNoQuotesAvailable,

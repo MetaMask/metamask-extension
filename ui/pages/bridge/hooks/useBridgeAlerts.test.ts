@@ -11,6 +11,7 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getNextRegularMarketOpen,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -39,6 +40,7 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
+  getNextRegularMarketOpen: jest.fn(),
 }));
 
 const MOCK_FROM_CHAIN_ID = 'eip155:1';
@@ -68,6 +70,7 @@ const DEFAULT_VALIDATION_ERRORS = {
   isInsufficientGasForQuote: false,
   isInsufficientBalance: false,
   isStockMarketClosed: false,
+  isInOffHoursTrading: false,
   isQuoteExpired: false,
   isPriceImpactWarning: false,
   isPriceImpactError: false,
@@ -112,6 +115,7 @@ describe('useBridgeAlerts', () => {
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue(undefined as never);
     jest.mocked(getToToken).mockReturnValue(null as never);
+    jest.mocked(getNextRegularMarketOpen).mockReturnValue(undefined as never);
     jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
     jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(null as never);
@@ -154,6 +158,63 @@ describe('useBridgeAlerts', () => {
       );
       expect(result.current.alertsById['market-closed']).toBeDefined();
       expect(result.current.confirmationAlerts).toHaveLength(0);
+    });
+  });
+
+  describe('off-hours alert', () => {
+    it('adds off-hours warning to bannerAlerts with formatted market open time', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: true,
+      } as never);
+      jest
+        .mocked(getNextRegularMarketOpen)
+        .mockReturnValue('2026-06-19T14:30:00Z' as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.bannerAlerts).toHaveLength(1);
+      expect(result.current.bannerAlerts[0]).toStrictEqual(
+        expect.objectContaining({
+          id: 'off-hours',
+          severity: 'warning',
+          isDismissable: true,
+          title: 'bridgeOffHoursTitle',
+          isConfirmationAlert: false,
+          bannerAlertProps: { severity: BannerAlertSeverity.Warning },
+        }),
+      );
+      expect(result.current.bannerAlerts[0].description).toContain(
+        'bridgeOffHoursDescription',
+      );
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.confirmationAlerts).toHaveLength(0);
+    });
+
+    it('shows off-hours with empty market open when nextRegularMarketOpen is undefined', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: true,
+      } as never);
+      jest
+        .mocked(getNextRegularMarketOpen)
+        .mockReturnValue(undefined as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.bannerAlerts).toHaveLength(1);
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+    });
+
+    it('does not add off-hours alert when isInOffHoursTrading is false', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: false,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeUndefined();
     });
   });
 

@@ -4,6 +4,7 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import {
   useRWAToken,
   isTokenTradingOpenAt,
+  isTokenInOffHoursAt,
   isStockRWAToken,
   type RWATokenLike,
 } from './useRWAToken';
@@ -227,6 +228,72 @@ describe('isTokenTradingOpenAt', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+});
+
+describe('isTokenInOffHoursAt', () => {
+  it('returns false when token is undefined', () => {
+    expect(isTokenInOffHoursAt(undefined, NOON)).toBe(false);
+  });
+
+  it('returns false when rwaData is undefined', () => {
+    expect(
+      isTokenInOffHoursAt({ rwaData: undefined } as RWATokenLike, NOON),
+    ).toBe(false);
+  });
+
+  it('returns false when no offhours data is present', () => {
+    expect(isTokenInOffHoursAt(buildToken(), NOON)).toBe(false);
+  });
+
+  it('returns true when inside the off-hours window', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T11:00:00.000Z',
+        nextClose: '2026-03-02T13:00:00.000Z',
+      },
+    } as never);
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(true);
+  });
+
+  it('returns false when outside the off-hours window', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T14:00:00.000Z',
+        nextClose: '2026-03-02T16:00:00.000Z',
+      },
+    } as never);
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('returns false when offhours nextOpen is missing', () => {
+    const token = buildToken({
+      offhours: {
+        nextClose: '2026-03-02T13:00:00.000Z',
+      },
+    } as never);
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('returns false when offhours nextClose is missing', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T11:00:00.000Z',
+      },
+    } as never);
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('supports overnight off-hours windows', () => {
+    const lateEvening = new Date('2026-03-02T23:30:00.000Z').getTime();
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T22:00:00.000Z',
+        nextClose: '2026-03-03T04:00:00.000Z',
+      },
+    } as never);
+    expect(isTokenInOffHoursAt(token, lateEvening)).toBe(true);
   });
 });
 

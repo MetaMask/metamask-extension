@@ -102,6 +102,7 @@ import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
 import {
   isStockRWAToken,
   isTokenTradingOpenAt,
+  isTokenInOffHoursAt,
 } from '../../pages/bridge/hooks/useRWAToken';
 import { getQuoteStreamReasonString } from '../../pages/bridge/utils/quote-stream';
 import {
@@ -733,6 +734,53 @@ export const getIsStockMarketClosed = (
   return isFromClosed || isToClosed;
 };
 
+export const getIsInOffHoursTrading = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): boolean => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return false;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  return (
+    (isStockRWAToken(fromToken) &&
+      isTokenInOffHoursAt(fromToken, currentTimeInMs)) ||
+    (isStockRWAToken(toToken) &&
+      isTokenInOffHoursAt(toToken, currentTimeInMs))
+  );
+};
+
+/**
+ * Returns the next regular-market open time (ISO string) for whichever
+ * from/to token is currently in off-hours trading, or undefined if neither is.
+ */
+export const getNextRegularMarketOpen = (
+  state: BridgeAppState,
+  currentTimeInMs: number,
+): string | undefined => {
+  const isRWAEnabled = getIsRWATokensEnabled(state);
+  if (!isRWAEnabled) {
+    return undefined;
+  }
+  const fromToken = getFromToken(state);
+  const toToken = getToToken(state);
+  if (
+    isStockRWAToken(fromToken) &&
+    isTokenInOffHoursAt(fromToken, currentTimeInMs)
+  ) {
+    return fromToken?.rwaData?.market?.nextOpen;
+  }
+  if (
+    isStockRWAToken(toToken) &&
+    isTokenInOffHoursAt(toToken, currentTimeInMs)
+  ) {
+    return toToken?.rwaData?.market?.nextOpen;
+  }
+  return undefined;
+};
+
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
@@ -1215,6 +1263,10 @@ const getValidationErrorsAtTime = createParameterizedSelector(20)(
       currentTimeInMs === undefined
         ? false
         : getIsStockMarketClosed(state, currentTimeInMs),
+    isInOffHoursTrading:
+      currentTimeInMs === undefined
+        ? false
+        : getIsInOffHoursTrading(state, currentTimeInMs),
   }),
 );
 
@@ -1251,6 +1303,7 @@ export const getWarningLabels = (
     isPriceImpactError,
     isTxAlertPresent,
     isStockMarketClosed,
+    isInOffHoursTrading,
     isQuoteExpired,
   } = getValidationErrors(state, currentTimeInMs);
   const warnings: QuoteWarning[] = [];
@@ -1264,6 +1317,7 @@ export const getWarningLabels = (
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
   isStockMarketClosed && warnings.push('market_closed');
+  isInOffHoursTrading && warnings.push('off_hours' as QuoteWarning);
   isQuoteExpired && warnings.push('quote_expired');
   isInsufficientNativeReserve &&
     // @ts-expect-error: market_closed is not a valid QuoteWarning yet

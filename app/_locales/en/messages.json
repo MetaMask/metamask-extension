@@ -2145,6 +2145,12 @@
   "bridgeMarketClosedTitle": {
     "message": "Market closed"
   },
+  "bridgeOffHoursTitle": {
+    "message": "Off-hours trading"
+  },
+  "bridgeOffHoursDescription": {
+    "message": "Price during off-market hours is not necessarily reflective of the true market price. Waiting until $1 could result in a better price."
+  },
   "bridgeNoMMFee": {
     "message": "No MM fee"
   },

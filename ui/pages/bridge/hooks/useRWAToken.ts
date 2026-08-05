@@ -6,6 +6,16 @@ import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 type DateLike = string | null | undefined | Date;
 export type RWATokenLike = Pick<BridgeToken, 'rwaData'> | undefined;
 
+/**
+ * Off-hours trading window data. Present only when the asset's source
+ * reports off-hours tradability (e.g. extended-hours stock sessions).
+ * When absent, assume the asset does not support off-hours trading.
+ */
+export type OffHoursData = {
+  nextOpen?: string;
+  nextClose?: string;
+};
+
 const toMs = (value: DateLike): number | null => {
   if (!value) {
     return null;
@@ -13,6 +23,25 @@ const toMs = (value: DateLike): number | null => {
 
   const ms = new Date(value as string).getTime();
   return Number.isFinite(ms) ? ms : null;
+};
+
+/**
+ * Returns true when `nowMs` falls inside the time window defined by
+ * nextOpen/nextClose, using the same wraparound logic as regular market hours.
+ */
+const isInsideWindow = (
+  nextOpen: DateLike,
+  nextClose: DateLike,
+  nowMs: number,
+): boolean => {
+  const openMs = toMs(nextOpen);
+  const closeMs = toMs(nextClose);
+  if (openMs === null || closeMs === null) {
+    return false;
+  }
+  return closeMs > openMs
+    ? nowMs >= openMs && nowMs < closeMs
+    : nowMs < closeMs || nowMs >= openMs;
 };
 
 // Interval at which components re-evaluate market open/close status.
@@ -60,6 +89,35 @@ export const isTokenTradingOpenAt = (
     (!hasPauseStart && hasPauseEnd && nowMs < pauseEndMs);
 
   return marketIsOpen && !inPause;
+};
+
+/**
+ * Pure function: returns true when the token's off-hours trading window
+ * is currently active. This is independent of whether the regular market
+ * is open or closed — it only checks the offhours window.
+ *
+ * Returns false when:
+ * - The token has no rwaData or no offhours data
+ * - The offhours window timestamps are missing/invalid
+ * - The current time is outside the offhours window
+ *
+ * @param token - A token-like object that may contain rwaData.
+ * @param nowMs - The current timestamp in milliseconds to evaluate against.
+ */
+export const isTokenInOffHoursAt = (
+  token?: RWATokenLike,
+  nowMs: number = Date.now(),
+): boolean => {
+  if (!token?.rwaData) {
+    return false;
+  }
+
+  const offhours = (token.rwaData as { offhours?: OffHoursData }).offhours;
+  if (!offhours) {
+    return false;
+  }
+
+  return isInsideWindow(offhours.nextOpen, offhours.nextClose, nowMs);
 };
 
 /**
