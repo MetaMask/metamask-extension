@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import { Driver } from '../../webdriver/driver';
 import {
   enableNotificationsThroughGlobalMenu,
@@ -17,7 +17,6 @@ import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
-  const prodFlags = getProductionRemoteFlagApiResponse();
   return await server
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -27,11 +26,10 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [
-        ...prodFlags,
-        { assetsEnableNotificationsByDefault: false },
-        { assetsEnableNotificationsByDefaultV2: { value: false } },
-      ],
+      json: getProductionRemoteFlagApiResponseWithOverrides({
+        assetsEnableNotificationsByDefault: false,
+        assetsEnableNotificationsByDefaultV2: { value: false },
+      }),
     }));
 }
 

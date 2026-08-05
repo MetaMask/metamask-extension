@@ -14,32 +14,28 @@ import CustomTokenImportPage from '../../page-objects/pages/token-management/cus
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { PAGES, type Driver } from '../../webdriver/driver';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 // Disabling the non-EVM account types removes the flood of Bitcoin / Solana /
 // Tron background requests that otherwise slow the UI down enough to time out
 // in CI. Mirrors the approach in state-persistence.spec.ts.
-const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
-  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
-  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
-  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
-  {
-    enableMultichainAccounts: {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    },
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = {
+  bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  solanaAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  enableMultichainAccounts: {
+    enabled: false,
+    featureVersion: null,
+    minimumVersion: null,
   },
-  {
-    enableMultichainAccountsState2: {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    },
+  enableMultichainAccountsState2: {
+    enabled: false,
+    featureVersion: null,
+    minimumVersion: null,
   },
-];
+};
 
 const PULSECHAIN_CHAIN_ID_DECIMAL = 369;
 const PULSECHAIN_RPC_URL = 'https://rpc.pulsechain.com';
@@ -180,7 +176,6 @@ async function mockPulseChainAssetApis(mockServer: Mockttp): Promise<void> {
 }
 
 async function testSpecificMock(mockServer: Mockttp): Promise<void> {
-  const prodFlags = getProductionRemoteFlagApiResponse();
   await mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -191,7 +186,9 @@ async function testSpecificMock(mockServer: Mockttp): Promise<void> {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+      json: getProductionRemoteFlagApiResponseWithOverrides(
+        NON_EVM_ACCOUNT_FLAG_OVERRIDES,
+      ),
     }));
 
   await mockPulseChainRpc(mockServer);
