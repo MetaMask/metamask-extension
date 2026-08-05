@@ -152,6 +152,18 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        // Turning basic functionality off disables the remote feature flag
+        // controller, so the mocked `/v1/flags` response below is never
+        // fetched and the network filter falls back to its pre-redesign
+        // variant
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxNetworkManagement: {
+              enabled: true,
+              minimumVersion: '13.36.0',
+            },
+          },
+        },
         testSpecificMock: async (server: Mockttp) => {
           await mockFeatureFlagsForPrivacyTest(server);
           return mockApis(

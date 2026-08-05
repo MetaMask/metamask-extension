@@ -11,10 +11,6 @@ import {
   enableNativeTokenAsMainBalance,
   enableTestNetworks,
 } from './settings.flow';
-import {
-  selectAllNetworksFromNetworkSelect,
-  switchToNetworkFromNetworkSelect,
-} from './network.flow';
 
 /**
  * A JSON-like object type for representing persisted wallet state.
