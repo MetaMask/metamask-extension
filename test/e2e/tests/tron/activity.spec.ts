@@ -8,8 +8,11 @@ import {
   landOnTronHome,
   openAndCheckTronTransactionDetails,
 } from '../../page-objects/flows/tron-activity.flow';
+import {
+  selectAllNetworksFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { TRON_PORTFOLIO_ACCOUNT } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 import { TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
@@ -493,8 +496,7 @@ describe('Tron - Activity', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           const activity = await landOnTronActivity(driver);
-          const tokensTab = new TokensTab(driver);
-          await tokensTab.selectAllNetworksInNetworkFilter();
+          await selectAllNetworksFromNetworkSelect(driver);
           await activity.checkCompletedTxNumberDisplayedInActivity(2);
           await activity.checkTransactionActivityByText('Sent ETH');
           await activity.checkTransactionAmount('-4.56 ETH');
@@ -527,8 +529,7 @@ describe('Tron - Activity', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           const home = await landOnTronHome(driver);
-          const tokensTab = new TokensTab(driver);
-          await tokensTab.selectOnlyTronInNetworkFilter();
+          await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
           await home.goToActivityList();
 
           const activity = new ActivityTab(driver);
