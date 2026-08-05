@@ -90,7 +90,6 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  // HTML bootstrap splash (`app/html/partials/partial-body.html`), not `.loading-overlay`.
   private readonly loadingLogo = '.loading-logo';
 
   private readonly loadingOverlay = {
@@ -581,10 +580,6 @@ class HomePage {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
-  /**
-   * Waits for the HTML bootstrap splash (`.loading-logo`) to disappear.
-   * Distinct from {@link waitForLoadingOverlayToDisappear} (React LoadingScreen).
-   */
   async waitForLoadingLogoToDisappear(): Promise<void> {
     console.log('Wait for loading logo to disappear');
     await this.driver.assertElementNotPresent(this.loadingLogo, {
@@ -621,14 +616,14 @@ class HomePage {
           const callback = arguments[arguments.length - 1];
           const maxAttempts = 50;
           let attempts = 0;
-  
+
           const checkReduxReady = () => {
             attempts++;
-  
+
             if (window.stateHooks?.getCleanAppState) {
               try {
                 const state = window.stateHooks.getCleanAppState();
-  
+
                 if (state && typeof state === 'object') {
                   if (state.metamask && typeof state.metamask === 'object') {
                     console.log('Redux state is ready');
@@ -640,7 +635,7 @@ class HomePage {
                 console.log('Redux state not ready yet, attempt ' + attempts);
               }
             }
-  
+
             if (attempts >= maxAttempts) {
               console.log('Redux state check timeout, continuing anyway');
               callback();
