@@ -5,7 +5,10 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
-import { updateMoneyAccountDepositAmount } from '../../../../store/controller-actions/transaction-pay-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -32,6 +35,7 @@ jest.mock(
       '../../../../store/controller-actions/transaction-pay-controller',
     ),
     updateMoneyAccountDepositAmount: jest.fn(),
+    updateMoneyAccountWithdrawAmount: jest.fn(),
   }),
 );
 
@@ -147,6 +151,38 @@ describe('useUpdateTokenAmount', () => {
       );
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
       expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
+    it('dispatches the withdrawal commit path for a money account withdrawal batch', () => {
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue(true);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '2',
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
     });
 
     it('does nothing when data is undefined', () => {

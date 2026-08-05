@@ -1,4 +1,5 @@
 import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
@@ -41,7 +42,10 @@ type MoneyPayActions =
   | TransactionControllerUpdateTransactionMetadataAction
   // Deposit initiation submits the placeholder batch
   // (`create-deposit-transaction.ts`).
-  | TransactionControllerAddTransactionBatchAction;
+  | TransactionControllerAddTransactionBatchAction
+  // The withdraw commit path resolves the recipient from the selected
+  // account (`update-withdraw-amount.ts`).
+  | AccountsControllerGetSelectedAccountAction;
 
 /**
  * The messenger surface the Money Pay callbacks need.
