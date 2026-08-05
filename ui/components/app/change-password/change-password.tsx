@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
@@ -72,6 +72,7 @@ import {
 } from '../passkey-verification';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { useDispatch } from '../../../store/hooks';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -167,7 +168,6 @@ const ChangePassword = ({
       createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           status: 'started',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
@@ -190,7 +190,6 @@ const ChangePassword = ({
         createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
@@ -206,7 +205,6 @@ const ChangePassword = ({
         createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             status: 'failed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             passkey_renewal_enabled: isPasskeyRenewalEnabled,

@@ -13,22 +13,20 @@ import {
   ButtonIconSize,
   IconName,
   Button,
+  Tag,
+  TagSeverity,
 } from '@metamask/design-system-react';
 import {
   GatorPermissionStatus,
   PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
+import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getURLHost } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  TextColor as DesignSystemTextColor,
-} from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { useBoolean } from '../../../../../hooks/useBoolean';
-import { Tag } from '../../../../component-library';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 /**
@@ -53,8 +51,7 @@ function permissionDataForReview(permission: {
 
 type InactivePermissionStatusTag = {
   label: string;
-  backgroundColor: BackgroundColor;
-  labelColor: TextColor;
+  severity: TagSeverity;
 };
 
 function getInactivePermissionStatusTag(
@@ -67,14 +64,12 @@ function getInactivePermissionStatusTag(
     case 'Expired':
       return {
         label: translate('gatorPermissionsStatusExpired'),
-        backgroundColor: BackgroundColor.warningMuted,
-        labelColor: TextColor.WarningDefault,
+        severity: TagSeverity.Warning,
       };
     case 'Revoked':
       return {
         label: translate('gatorPermissionsStatusRevoked'),
-        backgroundColor: BackgroundColor.errorMuted,
-        labelColor: TextColor.ErrorDefault,
+        severity: TagSeverity.Danger,
       };
     default: {
       throw new Error(
@@ -213,14 +208,11 @@ export const ReviewGatorPermissionItem = ({
             {statusTag ? (
               <Tag
                 data-testid="review-gator-permission-status-tag"
-                label={statusTag.label}
-                backgroundColor={statusTag.backgroundColor}
-                labelProps={{
-                  color: statusTag.labelColor as DesignSystemTextColor,
-                }}
-                textVariant={TextVariant.BodySm}
+                severity={statusTag.severity}
                 style={{ flexShrink: 0 }}
-              />
+              >
+                {statusTag.label}
+              </Tag>
             ) : null}
           </Box>
           <Button

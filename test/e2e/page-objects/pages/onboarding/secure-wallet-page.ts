@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SecureWalletPage {
-  private driver: Driver;
-
   private readonly confirmPasswordButton =
     '[data-testid="reveal-recovery-phrase-continue"]';
 
@@ -13,6 +11,16 @@ class SecureWalletPage {
     text: 'Confirm your Secret Recovery Phrase',
     tag: 'h2',
   };
+
+  private readonly confirmSrpConfirmButton =
+    '[data-testid="confirm-srp-modal-button"]';
+
+  private readonly confirmSrpSuccessMessage = {
+    text: 'Perfect',
+    tag: 'h3',
+  };
+
+  private driver: Driver;
 
   private readonly passwordInput = '#account-details-authenticate';
 
@@ -32,14 +40,6 @@ class SecureWalletPage {
     text: 'Save your Secret Recovery Phrase',
     tag: 'h2',
   };
-
-  private readonly confirmSrpSuccessMessage = {
-    text: 'Perfect',
-    tag: 'h3',
-  };
-
-  private readonly confirmSrpConfirmButton =
-    '[data-testid="confirm-srp-modal-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

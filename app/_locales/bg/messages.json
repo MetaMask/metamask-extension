@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Точност до десетични знаци"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
-  },
   "delete": {
     "message": "Изтриване"
   },
@@ -352,9 +349,6 @@
   "networks": {
     "message": "Mрежи"
   },
-  "nevermind": {
-    "message": "Няма значение"
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
@@ -511,9 +505,6 @@
   },
   "sign": {
     "message": "Подпис"
-  },
-  "signatureRequest": {
-    "message": "Заявка за подпис"
   },
   "signed": {
     "message": "Подписан"

@@ -38,14 +38,39 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('confirmTitleSending'),
   };
 
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+
   private readonly editGasFeeIcon: RawLocator =
     '[data-testid="edit-gas-fee-icon"]';
 
   private readonly editGasFeeItemCustom: RawLocator =
     '[data-testid="edit-gas-fee-item-custom"]';
 
+  private readonly enforcedSimulationsRow: RawLocator =
+    '[data-testid="enforced-simulations-row"]';
+
+  private readonly enforcedSimulationsToggle: RawLocator =
+    '[data-testid="enforced-simulations-toggle"]';
+
+  private readonly enforcedSimulationsToggleUnchecked: RawLocator =
+    '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
+
+  private readonly estimatedSimulationDetails = (type: string): RawLocator => {
+    if (type === '') {
+      return this.simulationDetailsLayout;
+    }
+
+    return {
+      css: this.simulationDetailsLayout.toString(),
+      text: type,
+    };
+  };
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
+
   private readonly gasFeeCloseToastMessage: RawLocator =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly gasFeeEstimate = (amount: string): RawLocator => ({
     text: amount,
@@ -54,8 +79,7 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
-  private readonly paidByMetaMaskNotice: RawLocator =
-    '[data-testid="paid-by-meta-mask"]';
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
 
   private readonly gasFeeText: RawLocator = '[data-testid="first-gas-field"]';
 
@@ -83,75 +107,6 @@ class TransactionConfirmation extends Confirmation {
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
-  private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
-
-  private readonly sendAmountFiat = (amount: string): RawLocator => ({
-    text: amount,
-    css: '.text-alternative',
-  });
-
-  private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
-
-  private readonly recipientAddressDisplay = (address: string): RawLocator => ({
-    css: '[data-testid="recipient-address"]',
-    text: address,
-  });
-
-  private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
-    testId: 'gas-timing-time',
-    text: estimatedTime,
-  });
-
-  private readonly walletInitiatedHeadingTitle: RawLocator = {
-    text: tEn('confirmTitleSending'),
-  };
-
-  private readonly walletInitiatedBackButton =
-    '[data-testid="wallet-initiated-header-back-button"]';
-
-  private readonly tokenGasFeeDropdown =
-    '[data-testid="selected-gas-fee-token-arrow"]';
-
-  private readonly tokenGasFeeSymbol =
-    '[data-testid="gas-fee-token-list-item-symbol"]';
-
-  private readonly gasFeeField = '[data-testid="first-gas-field"]';
-
-  private readonly fiatFeeField = '[data-testid="native-currency"]';
-
-  private readonly shieldFooterCoverageIndicator = (status: string) => ({
-    css: '[data-alert-key="shieldFooterCoverageIndicator"]',
-    text: status,
-  });
-
-  private readonly enforcedSimulationsRow: RawLocator =
-    '[data-testid="enforced-simulations-row"]';
-
-  private readonly enforcedSimulationsToggle: RawLocator =
-    '[data-testid="enforced-simulations-toggle"]';
-
-  private readonly enforcedSimulationsToggleUnchecked: RawLocator =
-    '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
-
-  private readonly reviewAlertButton: RawLocator = {
-    tag: 'button',
-    text: 'Review alert',
-  };
-
-  private readonly simulationDetailsLayout: RawLocator =
-    '[data-testid="simulation-details-layout"]';
-
-  private readonly estimatedSimulationDetails = (type: string): RawLocator => {
-    if (type === '') {
-      return this.simulationDetailsLayout;
-    }
-
-    return {
-      css: this.simulationDetailsLayout.toString(),
-      text: type,
-    };
-  };
-
   private readonly outgoingIncomingSimulationDetails = (
     isOutgoing: boolean,
     index: number,
@@ -166,73 +121,57 @@ class TransactionConfirmation extends Confirmation {
     return css;
   };
 
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+  private readonly paidByMetaMaskNotice: RawLocator =
+    '[data-testid="paid-by-meta-mask"]';
+
+  private readonly recipientAddressDisplay = (address: string): RawLocator => ({
+    css: '[data-testid="recipient-address"]',
+    text: address,
+  });
+
+  private readonly reviewAlertButton: RawLocator = {
+    tag: 'button',
+    text: 'Review alert',
+  };
+
+  private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
+
+  private readonly sendAmountFiat = (amount: string): RawLocator => ({
+    text: amount,
+    css: '.text-alternative',
+  });
+
+  private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
+
+  private readonly shieldFooterCoverageIndicator = (status: string) => ({
+    css: '[data-alert-key="shieldFooterCoverageIndicator"]',
+    text: status,
+  });
+
+  private readonly simulationDetailsLayout: RawLocator =
+    '[data-testid="simulation-details-layout"]';
+
+  private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
+    testId: 'gas-timing-time',
+    text: estimatedTime,
+  });
+
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly walletInitiatedBackButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
+
+  private readonly walletInitiatedHeadingTitle: RawLocator = {
+    text: tEn('confirmTitleSending'),
+  };
 
   constructor(driver: Driver) {
     super(driver);
     this.driver = driver;
-  }
-
-  async expectBalanceChange({
-    isOutgoing,
-    index,
-    displayAmount,
-    assetName,
-  }: {
-    isOutgoing: boolean;
-    index: number;
-    displayAmount: string;
-    assetName: string;
-  }) {
-    console.log(
-      `Checking balance change ${isOutgoing} ${index} with text ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
-    );
-    const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
-
-    console.log(
-      `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
-    );
-    await this.driver.findElement({
-      css,
-      text: displayAmount,
-    });
-
-    console.log(
-      `Checking balance change ${css.toString()} with text ${assetName}  is displayed on transaction confirmation page.`,
-    );
-    await this.driver.findElement({
-      css,
-      text: assetName,
-    });
-  }
-
-  async checkEstimatedSimulationDetails(type: string) {
-    console.log(
-      `Checking estimated simulation details ${type} is displayed on transaction confirmation page.`,
-    );
-    await this.driver.waitForSelector(this.estimatedSimulationDetails(type));
-  }
-
-  async checkEstimatedSimulationDetailsNotDisplayed(waitAtLeastGuard: number) {
-    console.log(
-      `Checking estimated simulation details not displayed on transaction confirmation page.`,
-    );
-    await this.driver.assertElementNotPresent(
-      this.estimatedSimulationDetails(''),
-      { waitAtLeastGuard },
-    );
-  }
-
-  async checkEnforcedSimulationsRowIsDisplayed(): Promise<void> {
-    console.log(`Waiting for enforced simulations toggle to finish loading.`);
-    await this.driver.waitForSelector(this.enforcedSimulationsRow);
-    await this.driver.waitForSelector(this.enforcedSimulationsToggle);
-  }
-
-  async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
-    console.log(`Checking enforced simulations toggle is unchecked.`);
-    await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);
   }
 
   /**
@@ -252,6 +191,34 @@ class TransactionConfirmation extends Confirmation {
 
   async checkDappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
+  }
+
+  async checkEnforcedSimulationsRowIsDisplayed(): Promise<void> {
+    console.log(`Waiting for enforced simulations toggle to finish loading.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsRow);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggle);
+  }
+
+  async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
+    console.log(`Checking enforced simulations toggle is unchecked.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);
+  }
+
+  async checkEstimatedSimulationDetails(type: string) {
+    console.log(
+      `Checking estimated simulation details ${type} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.estimatedSimulationDetails(type));
+  }
+
+  async checkEstimatedSimulationDetailsNotDisplayed(waitAtLeastGuard: number) {
+    console.log(
+      `Checking estimated simulation details not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      this.estimatedSimulationDetails(''),
+      { waitAtLeastGuard },
+    );
   }
 
   async checkGasFee(amountToken: string) {
@@ -282,11 +249,6 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector({ text: label });
   }
 
-  async checkInlineAlertIsDisplayed(): Promise<void> {
-    console.log('Checking if inline alert is displayed');
-    await this.driver.waitForSelector(this.inlineAlert);
-  }
-
   async checkGasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
@@ -311,44 +273,9 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
-  async checkPaidByMetaMask() {
-    await this.driver.findElement({
-      css: this.paidByMetaMaskNotice,
-      text: tEn('paidByMetaMask'),
-    });
-  }
-
-  /**
-   * Checks that the sender account is displayed on the transaction confirmation page.
-   *
-   * @param account - The sender account to check.
-   */
-  async checkSenderAccountIsDisplayed(account: string): Promise<void> {
-    console.log(
-      `Checking sender account ${account} on transaction confirmation page.`,
-    );
-    await this.driver.waitForSelector({
-      css: this.senderAccount,
-      text: account,
-    });
-  }
-
-  async checkRecipientAddressDisplayed(address: string): Promise<void> {
-    console.log(
-      `Checking recipient address ${address} is displayed on confirmation screen`,
-    );
-    await this.driver.waitForSelector(
-      this.recipientAddressDisplay(address.substring(0, 6)),
-    );
-  }
-
-  /**
-   * Check the number of dapps connected
-   *
-   * @param numberOfDapps - The number of dapps connected
-   */
-  async checkNumberOfDappsConnected(numberOfDapps: string) {
-    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
+  async checkInlineAlertIsDisplayed(): Promise<void> {
+    console.log('Checking if inline alert is displayed');
+    await this.driver.waitForSelector(this.inlineAlert);
   }
 
   async checkNetworkIsDisplayed(network: string): Promise<void> {
@@ -391,6 +318,31 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  /**
+   * Check the number of dapps connected
+   *
+   * @param numberOfDapps - The number of dapps connected
+   */
+  async checkNumberOfDappsConnected(numberOfDapps: string) {
+    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
+  }
+
+  async checkPaidByMetaMask() {
+    await this.driver.findElement({
+      css: this.paidByMetaMaskNotice,
+      text: tEn('paidByMetaMask'),
+    });
+  }
+
+  async checkRecipientAddressDisplayed(address: string): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed on confirmation screen`,
+    );
+    await this.driver.waitForSelector(
+      this.recipientAddressDisplay(address.substring(0, 6)),
+    );
+  }
+
   async checkSendAmount(amount: string) {
     console.log(
       `Checking send amount ${amount} on transaction confirmation page.`,
@@ -406,6 +358,32 @@ class TransactionConfirmation extends Confirmation {
       `Checking send amount conversion ${amountFiat} on transaction confirmation page.`,
     );
     await this.driver.waitForSelector(this.sendAmountFiat(amountFiat));
+  }
+
+  /**
+   * Checks that the sender account is displayed on the transaction confirmation page.
+   *
+   * @param account - The sender account to check.
+   */
+  async checkSenderAccountIsDisplayed(account: string): Promise<void> {
+    console.log(
+      `Checking sender account ${account} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.senderAccount,
+      text: account,
+    });
+  }
+
+  async checkShieldCoverage(
+    status: 'covered' | 'not_covered' | 'malicious',
+  ): Promise<void> {
+    const statusText =
+      status === 'covered' ? tEn('shieldCovered') : tEn('shieldNotCovered');
+    console.log(`Checking if shield coverage indicator shows "${statusText}"`);
+    await this.driver.waitForSelector(
+      this.shieldFooterCoverageIndicator(statusText),
+    );
   }
 
   async checkSiteSuggestedGas(time: string) {
@@ -425,6 +403,13 @@ class TransactionConfirmation extends Confirmation {
       this.advancedDetailsButton,
     );
     await advancedDetailsButton.sendKeys(Key.ENTER);
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking wallet-initiated back button');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   async clickCustomNonceButton() {
@@ -447,20 +432,6 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 10000);
-  }
-
-  async clickBackButton(): Promise<void> {
-    console.log('Clicking wallet-initiated back button');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.walletInitiatedBackButton,
-    );
-  }
-
-  /**
-   * Opens the gas fee modal by clicking the edit gas fee icon.
-   */
-  async openGasFeeModal(): Promise<void> {
-    await this.driver.clickElement(this.editGasFeeIcon);
   }
 
   /**
@@ -500,6 +471,39 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.saveButton);
     await this.driver.waitForSelector(this.advancedGasSet);
     console.log('Gas fee values updated successfully');
+  }
+
+  async expectBalanceChange({
+    isOutgoing,
+    index,
+    displayAmount,
+    assetName,
+  }: {
+    isOutgoing: boolean;
+    index: number;
+    displayAmount: string;
+    assetName: string;
+  }) {
+    console.log(
+      `Checking balance change ${isOutgoing} ${index} with text ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
+    );
+    const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: displayAmount,
+    });
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${assetName}  is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: assetName,
+    });
   }
 
   async fillCustomNonce(nonce: string) {
@@ -545,10 +549,39 @@ class TransactionConfirmation extends Confirmation {
     return senderAccountName;
   }
 
+  /**
+   * Opens the gas fee modal by clicking the edit gas fee icon.
+   */
+  async openGasFeeModal(): Promise<void> {
+    await this.driver.clickElement(this.editGasFeeIcon);
+  }
+
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElementAndWaitToDisappear({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
+  }
+
   async setCustomNonce(nonce: string) {
     await this.clickCustomNonceButton();
     await this.fillCustomNonce(nonce);
     await this.clickSaveButton();
+  }
+
+  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: gasFee,
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: fiatFee,
+    });
+    console.log('Send fees validation successful');
   }
 
   async verifyAdvancedDetailsHexDataIsDisplayed(hexData: string) {
@@ -655,39 +688,6 @@ class TransactionConfirmation extends Confirmation {
         }
       }),
     );
-  }
-
-  async checkShieldCoverage(
-    status: 'covered' | 'not_covered' | 'malicious',
-  ): Promise<void> {
-    const statusText =
-      status === 'covered' ? tEn('shieldCovered') : tEn('shieldNotCovered');
-    console.log(`Checking if shield coverage indicator shows "${statusText}"`);
-    await this.driver.waitForSelector(
-      this.shieldFooterCoverageIndicator(statusText),
-    );
-  }
-
-  async selectTokenFee(tokenSymbol: string): Promise<void> {
-    console.log(`Select token ${tokenSymbol} to pay for the fees`);
-    await this.driver.clickElement(this.tokenGasFeeDropdown);
-    await this.driver.clickElementAndWaitToDisappear({
-      css: this.tokenGasFeeSymbol,
-      text: tokenSymbol,
-    });
-  }
-
-  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
-    // Wait for both fields to be present and have the expected values
-    await this.driver.waitForSelector({
-      css: this.gasFeeField,
-      text: gasFee,
-    });
-    await this.driver.waitForSelector({
-      css: this.fiatFeeField,
-      text: fiatFee,
-    });
-    console.log('Send fees validation successful');
   }
 
   async waitForReviewAlertToDisappear(): Promise<void> {

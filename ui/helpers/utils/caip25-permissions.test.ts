@@ -4,11 +4,9 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
 import {
   getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
-  getDefaultAccounts,
 } from './caip25-permissions';
 
 const baseCaip25CaveatValue = {
@@ -281,51 +279,5 @@ describe('getCaip25CaveatValueFromPermissions', () => {
       sessionProperties: {},
       isMultichainOrigin: false,
     });
-  });
-});
-
-describe('getDefaultAccounts', () => {
-  const buildAccount = (
-    caipAccountId: string,
-    lastSelected = 0,
-  ): MergedInternalAccountWithCaipAccountId =>
-    ({
-      caipAccountId,
-      metadata: { lastSelected },
-    }) as unknown as MergedInternalAccountWithCaipAccountId;
-
-  it('returns the supported requested accounts that match a requested namespace', () => {
-    const eth = buildAccount('eip155:1:0xaaa');
-    const sol = buildAccount('solana:101:abc');
-    const result = getDefaultAccounts(['eip155'], [eth, sol], []);
-
-    expect(result).toEqual([eth]);
-  });
-
-  it('fills unsatisfied namespaces from allAccounts sorted by lastSelected', () => {
-    const recentSol = buildAccount('solana:101:recent', 10);
-    const olderSol = buildAccount('solana:101:older', 1);
-    const eth = buildAccount('eip155:1:0xaaa');
-
-    const result = getDefaultAccounts(
-      ['eip155', 'solana'],
-      [eth],
-      [olderSol, recentSol, eth],
-    );
-
-    // eip155 satisfied by `eth`; solana picked from allAccounts ordered by
-    // lastSelected, so `recentSol` wins over `olderSol`.
-    expect(result).toEqual([eth, recentSol]);
-  });
-
-  it('skips namespaces with no available account in allAccounts', () => {
-    const eth = buildAccount('eip155:1:0xaaa');
-    const result = getDefaultAccounts(['eip155', 'solana'], [eth], [eth]);
-
-    expect(result).toEqual([eth]);
-  });
-
-  it('returns an empty array when no requested namespaces have any candidate', () => {
-    expect(getDefaultAccounts(['solana'], [], [])).toEqual([]);
   });
 });

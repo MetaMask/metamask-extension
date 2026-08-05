@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -141,6 +141,23 @@ describe('useRamps', () => {
     const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=1&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const { result } = renderHook(() => useRamps(), { wrapper });
     const buyURI = result.current.getBuyURI(evmChainId);
+    expect(buyURI).toBe(mockBuyURI);
+  });
+
+  it('should handle EVM chain IDs passed in CAIP format', () => {
+    const metaMaskEntry = 'ext_buy_sell_button';
+    const caipChainId = 'eip155:1';
+    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
+    mockStoreState = {
+      ...mockStoreState,
+      metamask: {
+        ...mockStoreState.metamask,
+        ...mockNetworkState({ chainId: '0x1' }),
+      },
+    };
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=1&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+    const { result } = renderHook(() => useRamps(), { wrapper });
+    const buyURI = result.current.getBuyURI(caipChainId);
     expect(buyURI).toBe(mockBuyURI);
   });
 

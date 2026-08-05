@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import type {
+  INotification,
   OnChainRawNotification,
   OnChainRawNotificationsWithNetworkFields,
   NetworkMetadata,
@@ -26,6 +27,24 @@ import {
   hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/lib/conversion.utils';
+
+/**
+ * Derives the `notification_type` analytics property (the producer-owned
+ * axis, e.g. `wallet_activity`) for a processed notification. API-backed
+ * notifications carry `notification_type` directly; snap and
+ * feature-announcement notifications don't, so fall back to their top-level
+ * `type` (`snap` / `features_announcement`).
+ *
+ * @param notification - a processed notification.
+ * @returns the `notification_type` value to report in analytics events.
+ */
+export function getNotificationTypeForAnalytics(
+  notification: INotification,
+): string {
+  return 'notification_type' in notification
+    ? notification.notification_type
+    : notification.type;
+}
 
 /**
  * Checks if 2 date objects are on the same day
@@ -127,8 +146,6 @@ const defaultFormatOptions = {
 export const getLeadingZeroCount = (num: number | string) => {
   const numToString = new BigNumber(num, 10).toString(10);
   const fractionalPart = numToString.split('.')[1] ?? '';
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return fractionalPart.match(/^0*/u)?.[0]?.length || 0;
 };
 

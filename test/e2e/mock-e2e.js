@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { escapeRegExp } = require('lodash');
+const { RulePriority } = require('mockttp');
 
 const {
   ACCOUNTS_PROD_API_BASE_URL,
@@ -142,12 +143,63 @@ const BITCOIN_DISCOVERY_BLOCKS = [
 const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
   '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
 
+// The canonical Bitcoin mainnet genesis block hash (height 0). The snap fetches
+// `/block-height/0` and verifies it against this known value during discovery.
+const BITCOIN_MAINNET_GENESIS_HASH =
+  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+
 const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
   1: 1,
   2: 1,
   3: 1,
   6: 1,
   144: 1,
+};
+
+// The canonical Solana mainnet genesis hash. `getGenesisHash` is the network
+// identity check the Solana snap runs during discovery — like Bitcoin's
+// `/block-height/0`, returning any other value makes the snap reject the network.
+const SOLANA_MAINNET_GENESIS_HASH =
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
+const SOLANA_RPC_CONTEXT = { apiVersion: '2.0.18', slot: 308460925 };
+
+// Well-formed empty/identity results for every JSON-RPC method the Solana snap
+// calls during account discovery. Mirrors the shapes in
+// `test/e2e/tests/solana/common-solana.ts`. Returning these (instead of letting
+// the requests fall through to the empty-200 catch-all) lets discovery resolve
+// to "no extra accounts" in a single pass instead of a retry storm.
+const SOLANA_DISCOVERY_RPC_RESULTS = {
+  getGenesisHash: SOLANA_MAINNET_GENESIS_HASH,
+  getHealth: 'ok',
+  getVersion: { 'solana-core': '2.0.18', 'feature-set': 3271415109 },
+  getSlot: SOLANA_RPC_CONTEXT.slot,
+  getBalance: { context: SOLANA_RPC_CONTEXT, value: 0 },
+  getAccountInfo: { context: SOLANA_RPC_CONTEXT, value: null },
+  getMultipleAccounts: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getProgramAccounts: [],
+  getTokenAccountsByOwner: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getTokenAccountBalance: {
+    context: SOLANA_RPC_CONTEXT,
+    value: { amount: '0', decimals: 9, uiAmount: null, uiAmountString: '0' },
+  },
+  getLatestBlockhash: {
+    context: SOLANA_RPC_CONTEXT,
+    value: {
+      blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
+      lastValidBlockHeight: 341034515,
+    },
+  },
+  getMinimumBalanceForRentExemption: 890880,
+  getFeeForMessage: { context: SOLANA_RPC_CONTEXT, value: 5000 },
+  getEpochInfo: {
+    absoluteSlot: 308460925,
+    blockHeight: 286665030,
+    epoch: 762,
+    slotIndex: 156925,
+    slotsInEpoch: 432000,
+    transactionCount: 386021115957,
+  },
 };
 
 /**
@@ -191,6 +243,30 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
 
+  // The Bitcoin snap fetches `/block-height/0` and verifies the genesis hash
+  // before deriving accounts — a network-identity check not covered by the
+  // discovery mocks above (#43817) nor by the Solana-scoped completion work
+  // (#43961/#43958), so this handler stays. Unmocked, the request falls to the
+  // empty-200 catch-all, whose malformed body retry-storms discovery and
+  // delays the non-EVM account icons past the default wait. Height 0 must
+  // return the real genesis hash: the snap's chain check rejects a tip hash
+  // there and crashes account creation.
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const height = request.url.match(/block-height\/(?<h>\d+)/u)?.groups?.h;
+      return {
+        statusCode: 200,
+        body:
+          height === '0'
+            ? BITCOIN_MAINNET_GENESIS_HASH
+            : BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+      };
+    });
+
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
@@ -233,6 +309,31 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
         result: [],
       },
     }));
+
+  // The Solana snap calls many more JSON-RPC methods than `getSignaturesForAddress`
+  // during discovery (balance, account info, blockhash, the `getGenesisHash`
+  // network check, …). Mock each with a well-formed empty/identity result so the
+  // request doesn't fall through to the empty-200 catch-all and trigger a retry
+  // storm. Registered at FALLBACK priority: mockttp always prefers a matching
+  // DEFAULT-priority rule (`.always()` rules included), so test-specific mocks
+  // that need richer Solana responses (e.g. the solana-wallet-standard specs)
+  // take precedence, and these defaults only answer methods no spec mocked.
+  // They still beat the empty-200 catch-all, which is also FALLBACK priority
+  // but loses to these rules within the set (`.always()` wins the first pass).
+  for (const [method, result] of Object.entries(SOLANA_DISCOVERY_RPC_RESULTS)) {
+    await server
+      .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+      .withJsonBodyIncluding({ method })
+      .asPriority(RulePriority.FALLBACK)
+      .always()
+      .thenCallback(async (request) => {
+        const body = await request.body.getJson();
+        return {
+          statusCode: 200,
+          json: { id: body?.id ?? '1337', jsonrpc: '2.0', result },
+        };
+      });
+  }
 }
 
 /**
@@ -295,31 +396,38 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
-      if (!host || !url) {
+  // FALLBACK priority so that this catch-all only handles requests no other
+  // DEFAULT-priority mock matches. This also lets other FALLBACK-priority
+  // defaults (e.g. the Solana discovery mocks below) take precedence over the
+  // catch-all while still yielding to test-specific and shared DEFAULT mocks.
+  await server
+    .forAnyRequest()
+    .asPriority(RulePriority.FALLBACK)
+    .thenPassThrough({
+      beforeRequest: ({ headers: { host }, url }) => {
+        if (!host || !url) {
+          return {
+            response: {
+              statusCode: 200,
+            },
+          };
+        }
+        if (blocklistedHosts.includes(host)) {
+          return {
+            url: 'http://localhost:8545',
+          };
+        } else if (ALLOWLISTED_URLS.includes(url)) {
+          // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+          return {};
+        }
         return {
+          // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
           response: {
             statusCode: 200,
           },
         };
-      }
-      if (blocklistedHosts.includes(host)) {
-        return {
-          url: 'http://localhost:8545',
-        };
-      } else if (ALLOWLISTED_URLS.includes(url)) {
-        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        return {};
-      }
-      return {
-        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
-        response: {
-          statusCode: 200,
-        },
-      };
-    },
-  });
+      },
+    });
 
   function getNetworkReport() {
     return { numNetworkReqs };
@@ -506,18 +614,23 @@ async function setupMocking(
       };
     });
 
-  // SENTRY_DSN_PERFORMANCE
+  // `SENTRY_DSN_PERFORMANCE`
+  // Intercept with a canned 200 rather than passing through: tracing emits
+  // hundreds of performance envelopes per test, and the real-network
+  // round-trips starve startup, flake the non-EVM account render, and consume
+  // the `metamask-performance` quota from CI.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenPassThrough({
-      beforeRequest: (req) => {
-        console.log(
-          'Request going to Sentry metamask-performance ============',
-          req.url,
-          false,
-        );
-        return {};
-      },
+    .thenCallback((req) => {
+      console.log(
+        'Request going to Sentry metamask-performance ============',
+        req.url,
+        false,
+      );
+      return {
+        statusCode: 200,
+        json: {},
+      };
     });
 
   await server
@@ -747,6 +860,24 @@ async function setupMocking(
           },
         ],
       };
+    });
+
+  // Token API: per-chain suggested occurrence floors — mocked globally so token
+  // list / spam-filter fetches do not hit the live endpoint in E2E.
+  await server
+    .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
+    .always()
+    .thenJson(200, {
+      1: 3,
+      143: 1,
+      204: 1,
+      232: 1,
+      690: 1,
+      1329: 1,
+      4663: 1,
+      10143: 1,
+      59144: 1,
+      98866: 1,
     });
 
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
@@ -1729,6 +1860,20 @@ async function setupMocking(
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
         },
+      };
+    });
+  }
+
+  // Geolocation API v2 (GeolocationController -> GeolocationApiService).
+  // Mirrors the legacy on-ramp mock above (US-TX) but in the v2 JSON shape.
+  for (const host of [
+    'geolocation.api.cx.metamask.io',
+    'geolocation.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
       };
     });
   }

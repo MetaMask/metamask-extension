@@ -112,7 +112,7 @@ export const NotificationSectionSubPage = ({
     <Box
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
-      className="h-full min-h-0"
+      className="h-full min-h-0 overflow-y-auto"
       paddingTop={3}
       paddingHorizontal={4}
       gap={6}

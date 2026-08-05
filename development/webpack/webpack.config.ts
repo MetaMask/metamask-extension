@@ -317,7 +317,7 @@ const isChunkableAsync = (chunk: Chunk) =>
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
-  target: '17',
+  target: '18',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
   threadLoaderEnabled: threadLoader !== null,

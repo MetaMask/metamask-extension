@@ -13,8 +13,6 @@ const QUOTE_READY_TIMEOUT = 30_000;
  * @see ui/pages/confirmations/components/confirm/info/perps-withdraw-info/perps-withdraw-info.tsx
  */
 export class PerpsWithdrawConfirmation {
-  private readonly driver: Driver;
-
   private readonly amountInput = { testId: 'custom-amount-input' };
 
   private readonly bridgeTimeRow = { testId: 'bridge-time-row' };
@@ -27,6 +25,8 @@ export class PerpsWithdrawConfirmation {
     testId: 'custom-amount-info',
     text,
   });
+
+  private readonly driver: Driver;
 
   private readonly headerBackButton = {
     testId: 'wallet-initiated-header-back-button',
@@ -43,10 +43,6 @@ export class PerpsWithdrawConfirmation {
   private readonly payWithSymbol = { testId: 'pay-with-symbol' };
 
   private readonly receiveRow = { testId: 'receive-row' };
-
-  private readonly successToast = {
-    testId: 'perps-withdraw-success-toast',
-  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -121,7 +117,9 @@ export class PerpsWithdrawConfirmation {
   }
 
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.confirmButton);
+    // Firefox WebDriver often reports a successful element.click() here without
+    // firing the React handler, leaving the confirmation unapproved.
+    await this.driver.clickElementUsingMouseMove(this.confirmButton);
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -143,10 +141,7 @@ export class PerpsWithdrawConfirmation {
 
   async waitForSuccessToast(): Promise<void> {
     await this.driver.waitForSelector(
-      {
-        ...this.successToast,
-        text: tEn('perpsWithdrawPostQuoteToastSuccessTitle'),
-      },
+      { text: tEn('perpsWithdrawPostQuoteToastSuccessTitle') },
       { timeout: QUOTE_READY_TIMEOUT },
     );
   }

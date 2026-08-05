@@ -257,13 +257,12 @@ export const HardwareWalletProvider = ({
 
   // Abort controller lifecycle
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/immutability
     refs.abortControllerRef.current = new AbortController();
     return () => {
       refs.abortControllerRef.current?.abort();
       refs.adapterRef.current?.destroy();
     };
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -276,7 +275,6 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.disconnected());
     resetConnectionRefs();
     resetAutoConnectState();
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
 
@@ -288,7 +286,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, resetHardwareWalletConnection]);
 
@@ -310,7 +307,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, walletType, resetHardwareWalletConnection]);
 

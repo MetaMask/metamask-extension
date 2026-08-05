@@ -14,7 +14,9 @@ import {
   assertValidPort,
   getAvailablePorts,
   isTcpPortAvailable,
+  isTcpPortRangeAvailable,
 } from '../ports';
+import { stopProcess } from '../stop-process';
 
 export const SOLANA_LOCAL_NODE_HOST = '127.0.0.1';
 export const SOLANA_LOCAL_NODE_RPC_PORT = 8899;
@@ -35,6 +37,19 @@ type SolanaRpcResponse<Result> = {
 };
 
 const PROCESS_OUTPUT_LIMIT = 8_000;
+
+/**
+ * Without an explicit `--dynamic-port-range`, `solana-test-validator` assigns
+ * its gossip/TVU/TPU ports from 8000 upwards. Gossip binds TCP
+ * `127.0.0.1:8000`, which shadows the E2E mock proxy listening on the
+ * wildcard address of the same port and silently breaks all browser traffic.
+ * A dedicated range keeps the validator away from the harness ports
+ * (8000 proxy, 8080+ dapps, 8088-8090 WebSocket mocks, 8545 anvil).
+ */
+const DYNAMIC_PORT_RANGE_SIZE = 32;
+const DYNAMIC_PORT_RANGE_MIN_START = 10_000;
+const DYNAMIC_PORT_RANGE_MAX_START = 60_000;
+const DYNAMIC_PORT_RANGE_ATTEMPTS = 20;
 
 export class SolanaNode {
   #ledgerDirectory: string | undefined;
@@ -85,7 +100,12 @@ export class SolanaNode {
     }
 
     if (ledgerDirectory) {
-      await rm(ledgerDirectory, { force: true, recursive: true });
+      await rm(ledgerDirectory, {
+        force: true,
+        maxRetries: 5,
+        recursive: true,
+        retryDelay: 200,
+      });
     }
   }
 
@@ -161,6 +181,10 @@ export class SolanaNode {
     });
 
     const [rpcPort, faucetPort] = await resolveValidatorPorts(options);
+    const dynamicPortRangeStart = await findAvailableDynamicPortRangeStart([
+      rpcPort,
+      faucetPort,
+    ]);
     const ledgerDirectory = await mkdtemp(
       join(tmpdir(), 'solana-test-validator-e2e-'),
     );
@@ -183,6 +207,12 @@ export class SolanaNode {
         String(rpcPort),
         '--faucet-port',
         String(faucetPort),
+        '--gossip-port',
+        String(dynamicPortRangeStart),
+        '--dynamic-port-range',
+        `${dynamicPortRangeStart}-${
+          dynamicPortRangeStart + DYNAMIC_PORT_RANGE_SIZE - 1
+        }`,
       ],
       {
         cwd: ledgerDirectory,
@@ -258,50 +288,48 @@ async function resolveValidatorPorts(
   ];
 }
 
-async function stopProcess(childProcess: ChildProcess): Promise<void> {
-  if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
-    return;
-  }
-
-  const exitPromise = new Promise<void>((resolvePromise) => {
-    childProcess.once('exit', () => resolvePromise());
-  });
-  killProcessTree(childProcess, 'SIGTERM');
-
-  const exitedAfterTerm = await Promise.race([
-    exitPromise,
-    new Promise<boolean>((resolvePromise) => {
-      setTimeout(() => {
-        resolvePromise(false);
-      }, 5_000);
-    }),
-  ]);
-
-  if (exitedAfterTerm !== false) {
-    return;
-  }
-
-  killProcessTree(childProcess, 'SIGKILL');
-  await Promise.race([
-    exitPromise,
-    new Promise<void>((resolvePromise) => setTimeout(resolvePromise, 1_000)),
-  ]);
-}
-
-function killProcessTree(
-  childProcess: ChildProcess,
-  signal: NodeJS.Signals,
-): void {
-  if (process.platform === 'win32') {
-    childProcess.kill(signal);
-    return;
-  }
-
-  if (childProcess.pid) {
-    try {
-      process.kill(-childProcess.pid, signal);
-    } catch {
-      childProcess.kill(signal);
+/**
+ * Finds the start of a free contiguous port range for the validator's
+ * dynamically assigned ports (gossip/TVU/TPU). Availability is checked over
+ * TCP; the validator mostly binds UDP within the range, but gossip also
+ * listens on TCP, which is the binding that can clash with the E2E harness.
+ *
+ * @param excludePorts - Ports that must not fall inside the chosen range
+ * (e.g. RPC and faucet ports allocated earlier).
+ * @returns The first port of an available range.
+ */
+async function findAvailableDynamicPortRangeStart(
+  excludePorts: Iterable<number> = [],
+): Promise<number> {
+  for (let attempt = 0; attempt < DYNAMIC_PORT_RANGE_ATTEMPTS; attempt += 1) {
+    const startPort =
+      DYNAMIC_PORT_RANGE_MIN_START +
+      Math.floor(
+        Math.random() *
+          (DYNAMIC_PORT_RANGE_MAX_START - DYNAMIC_PORT_RANGE_MIN_START),
+      );
+    if (
+      !dynamicPortRangeOverlapsExcludedPorts(startPort, excludePorts) &&
+      (await isTcpPortRangeAvailable(startPort, DYNAMIC_PORT_RANGE_SIZE))
+    ) {
+      return startPort;
     }
   }
+
+  throw new Error(
+    `Unable to find ${DYNAMIC_PORT_RANGE_SIZE} contiguous available ports for the Solana test validator`,
+  );
+}
+
+function dynamicPortRangeOverlapsExcludedPorts(
+  startPort: number,
+  excludePorts: Iterable<number>,
+): boolean {
+  const endPort = startPort + DYNAMIC_PORT_RANGE_SIZE - 1;
+  for (const port of excludePorts) {
+    if (port >= startPort && port <= endPort) {
+      return true;
+    }
+  }
+  return false;
 }

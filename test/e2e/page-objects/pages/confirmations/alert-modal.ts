@@ -1,6 +1,8 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AlertModal {
+  private confirmAlertButton = '[data-testid="alert-modal-button"]';
+
   private driver: Driver;
 
   private insufficientFundsAlert = {
@@ -8,14 +10,8 @@ class AlertModal {
     text: 'You do not have enough ETH in your account to pay for network fees.',
   };
 
-  private confirmAlertButton = '[data-testid="alert-modal-button"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async clickConfirmButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.confirmAlertButton);
   }
 
   async checkInsufficientBalanceMessageIsDisplayed(): Promise<void> {
@@ -23,6 +19,10 @@ class AlertModal {
       'Check insufficient balance message is displayed on alert modal',
     );
     await this.driver.waitForSelector(this.insufficientFundsAlert);
+  }
+
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.confirmAlertButton);
   }
 }
 

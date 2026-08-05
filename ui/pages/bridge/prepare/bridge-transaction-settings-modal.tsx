@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import {
   Button,
@@ -32,10 +32,11 @@ import {
   getIsRWASwap,
   getSlippage,
 } from '../../../ducks/bridge/selectors';
-import { setSlippage } from '../../../ducks/bridge/actions';
+import { setSlippageUserOverride } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 import { sanitizeAmountInput } from '../utils/quote';
+import { useDispatch } from '../../../store/hooks';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -56,6 +57,7 @@ export const BridgeTransactionSettingsModal = ({
 
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
+  const [isDirty, setIsDirty] = useState(false);
 
   /**
    * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
@@ -68,14 +70,20 @@ export const BridgeTransactionSettingsModal = ({
     undefined,
   );
 
-  // Initialize UI state when modal opens
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) {
+      setIsDirty(false);
+    } else if (!isDirty) {
       setSlippageValue(slippage);
       setInputValue('');
       setShowCustomInput(false);
     }
-  }, [slippage, shouldShowAutoOption, isOpen]);
+  }, [isOpen, isDirty, slippage]);
+
+  const selectSlippageOption = (value: number | undefined) => {
+    setSlippageValue(value);
+    setIsDirty(true);
+  };
 
   const getNotificationConfig = () => {
     if (slippageValue === undefined) {
@@ -154,7 +162,7 @@ export const BridgeTransactionSettingsModal = ({
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setSlippageValue(undefined);
+                  selectSlippageOption(undefined);
                 }}
               >
                 {t('swapSlippageAutoDescription')}
@@ -172,7 +180,7 @@ export const BridgeTransactionSettingsModal = ({
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setSlippageValue(hardcodedSlippage);
+                    selectSlippageOption(hardcodedSlippage);
                   }}
                 >
                   {hardcodedSlippage}%
@@ -225,7 +233,7 @@ export const BridgeTransactionSettingsModal = ({
                   setShowCustomInput(false);
                   const newSlippage = Number(inputValue);
                   if (!isNaN(newSlippage) && inputValue.length > 0) {
-                    setSlippageValue(newSlippage);
+                    selectSlippageOption(newSlippage);
                   }
                   setInputValue('');
                 }}
@@ -255,14 +263,12 @@ export const BridgeTransactionSettingsModal = ({
             variant={ButtonVariant.Primary}
             data-testid="bridge__tx-settings-modal-submit-button"
             disabled={
-              // Disable Submit if there is no change in slippage value
-              slippageValue === slippage ||
-              // Disable Submit if custom input is shown and value is invalid
+              !isDirty ||
               (showCustomInput &&
                 (isNaN(Number(inputValue)) || inputValue === ''))
             }
             onClick={() => {
-              dispatch(setSlippage(slippageValue));
+              dispatch(setSlippageUserOverride(slippageValue));
               onClose();
             }}
           >

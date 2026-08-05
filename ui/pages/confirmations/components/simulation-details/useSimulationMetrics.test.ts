@@ -6,7 +6,7 @@ import {
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -132,7 +132,6 @@ describe('useSimulationMetrics', () => {
       transactionId: TRANSACTION_ID_MOCK,
     });
 
-    expect(updateTransactionEventFragmentMock).toHaveBeenCalledTimes(1);
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expected,
       TRANSACTION_ID_MOCK,
@@ -755,7 +754,6 @@ describe('useSimulationMetrics', () => {
         }),
       );
 
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith(
         createEventBuilder(
           MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
@@ -787,7 +785,6 @@ describe('useSimulationMetrics', () => {
         }),
       );
 
-      expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith(
         createEventBuilder(
           MetaMetricsEventName.SimulationIncompleteAssetDisplayed,

@@ -154,6 +154,28 @@ describe('Actions', () => {
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
       sinon.stub();
+    // Vault / seedless methods live on LegacyBackgroundApiService and are only
+    // exposed via getApi(); stub them here for tests that use the controller
+    // stub instance as the background connection directly.
+    background.restoreSocialBackupAndGetSeedPhrase = sinon.stub();
+    background.syncSeedPhrases = sinon.stub();
+    background.createNewVaultAndRestore = sinon.stub();
+    background.createSeedPhraseBackup = sinon.stub();
+    background.createNewVaultAndKeychain = sinon.stub();
+    background.createNewVaultAndGetSeedPhrase = sinon.stub();
+    background.unlockAndGetSeedPhrase = sinon.stub();
+    background.importMnemonicToVault = sinon.stub();
+    background.discoverAndCreateAccounts = sinon.stub();
+
+    // Hardware wallet methods moved to `LegacyBackgroundApiService`, so they are
+    // no longer stubbed automatically by `createStubInstance(MetaMaskController)`.
+    background.connectHardware = sinon.stub();
+    background.checkHardwareStatus = sinon.stub();
+    background.forgetDevice = sinon.stub();
+    background.getAppNameAndVersion = sinon.stub();
+    background.getLedgerAppConfiguration = sinon.stub();
+    background.getLedgerPublicKey = sinon.stub();
+    background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -2441,7 +2463,6 @@ describe('Actions', () => {
 
     it('calls hideAsset in background with the assetId', async () => {
       const store = mockStore();
-      // eslint-disable-next-line prettier/prettier
       const assetId =
         'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
       const hideAssetStub = sinon.stub().resolves();
@@ -3814,6 +3835,68 @@ describe('Actions', () => {
 
       await actions.getUserProfileLineage();
       expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#getCustomerServiceToken', () => {
+    it('calls AuthenticationController:getCustomerServiceToken through the background messenger', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .resolves('customer-service-token');
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBe('customer-service-token');
+      expect(
+        messengerCallStub.calledOnceWith(
+          'AuthenticationController:getCustomerServiceToken',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('returns undefined when the background messenger call fails', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .rejects(new Error('auth failed'));
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when the background messenger call times out', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const messengerCallStub = sinon
+          .stub()
+          .withArgs('AuthenticationController:getCustomerServiceToken', [])
+          .returns(new Promise(() => undefined));
+
+        background.getApi.returns({
+          messengerCall: messengerCallStub,
+        });
+        setBackgroundConnection(background.getApi());
+
+        const resultPromise = actions.getCustomerServiceToken();
+        await jest.advanceTimersByTimeAsync(5000);
+        const result = await resultPromise;
+
+        expect(result).toBeUndefined();
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 

@@ -126,7 +126,9 @@ app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-p
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
-ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
+ui/components/app/import-token                  @MetaMask/core-extension-ux
+ui/components/app/toast-listener                @MetaMask/core-extension-ux
+ui/components/ui/toast                          @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
@@ -136,9 +138,6 @@ ui/pages/details                                @MetaMask/core-extension-ux
 ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
-ui/components/app/transaction-list              @MetaMask/core-extension-ux
-ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
-ui/components/app/transaction-list-item         @MetaMask/core-extension-ux
 ui/pages/settings/notifications-tab/**          @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notification*/**       @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notifications*/**      @MetaMask/core-extension-ux @MetaMask/engagement
@@ -149,25 +148,33 @@ ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @M
 ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
-ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 
 # Web3Auth / Onboarding
+app/scripts/services/oauth            @MetaMask/web3auth
 ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Web3Auth / Shield
-app/scripts/controller-init/claims              @MetaMask/web3auth
-app/scripts/controller-init/shield              @MetaMask/web3auth
-app/scripts/controller-init/subscription        @MetaMask/web3auth
-shared/lib/shield.ts                            @MetaMask/web3auth
-ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
-ui/components/app/shield-entry-modal            @MetaMask/web3auth
-ui/contexts/claims                              @MetaMask/web3auth
-ui/contexts/shield                              @MetaMask/web3auth
-ui/hooks/claims                                 @MetaMask/web3auth
-ui/hooks/subscription                           @MetaMask/web3auth
-ui/pages/shield                                 @MetaMask/web3auth
-ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+app/scripts/messenger-client-init/claims              @MetaMask/web3auth
+app/scripts/messenger-client-init/shield              @MetaMask/web3auth
+app/scripts/messenger-client-init/subscription        @MetaMask/web3auth
+shared/lib/shield.ts                                  @MetaMask/web3auth
+ui/components/app/modals/add-funds-modal              @MetaMask/web3auth
+ui/components/app/shield-entry-modal                  @MetaMask/web3auth
+ui/contexts/claims                                    @MetaMask/web3auth
+ui/contexts/shield                                    @MetaMask/web3auth
+ui/hooks/claims                                       @MetaMask/web3auth
+ui/hooks/subscription                                 @MetaMask/web3auth
+ui/pages/shield                                       @MetaMask/web3auth
+ui/pages/settings/transaction-shield-tab              @MetaMask/web3auth
+
+# Web3Auth / QrSync
+app/scripts/controllers/qr-sync                       @MetaMask/web3auth
+app/scripts/messenger-client-init/qr-sync             @MetaMask/web3auth
+app/scripts/messenger-client-init/messengers/qr-sync  @MetaMask/web3auth
+shared/constants/qr-sync.ts                           @MetaMask/web3auth
+ui/selectors/qr-sync                                  @MetaMask/web3auth
+ui/pages/settings/sync-accounts                       @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
@@ -187,9 +194,9 @@ ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx 
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
 
-# Assets
-ui/components/app/import-token                        @MetaMask/metamask-assets
-ui/components/app/assets                              @MetaMask/metamask-assets
+# Assets team
+app/**/assets/**                     @MetaMask/metamask-assets
+ui/**/assets/**                      @MetaMask/metamask-assets
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
@@ -270,6 +277,12 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # CI
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+
+# Store submission
+/.github/workflows/upload-extension-to-cws.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/adjust-cws-rollout.yml                  @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/upload-extension-to-amo.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/scripts/release-create-gh-release.sh              @MetaMask/extension-security-team @MetaMask/release-team
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform
 development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
@@ -280,7 +293,6 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 # Build
 development/build/                                    @MetaMask/extension-platform @itsyoboieltr
 development/webpack/                                  @MetaMask/extension-platform @itsyoboieltr
-development/generate-lavamoat-policies.js             @MetaMask/extension-platform @itsyoboieltr
 /babel.config.js                                      @MetaMask/extension-platform
 /tsconfig.json                                        @MetaMask/extension-platform
 /tsconfig.*.json                                      @MetaMask/extension-platform

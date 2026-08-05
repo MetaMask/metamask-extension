@@ -1,7 +1,7 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SnapSignTransactionConfirmation {
-  protected driver: Driver;
+  private addressTestId = 'snap-ui-address';
 
   private cancelButton = {
     testId: 'confirm-sign-transaction-cancel-snap-footer-button',
@@ -13,15 +13,33 @@ class SnapSignTransactionConfirmation {
     text: 'Confirm',
   };
 
+  protected driver: Driver;
+
   private header = {
     text: 'Sign transaction',
     tag: 'h2',
   };
 
-  private addressTestId = 'snap-ui-address';
+  private insufficientFundsBanner = {
+    text: 'Insufficient funds',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkConfirmButtonIsDisabled(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton, {
+      state: 'disabled',
+    });
+  }
+
+  async checkFeeAssetIsDisplayed(asset: string): Promise<void> {
+    await this.driver.findElement({ text: asset });
+  }
+
+  async checkInsufficientFundsBannerIsDisplayed(): Promise<void> {
+    await this.driver.findElement(this.insufficientFundsBanner);
   }
 
   async checkPageIsLoaded(): Promise<void> {
