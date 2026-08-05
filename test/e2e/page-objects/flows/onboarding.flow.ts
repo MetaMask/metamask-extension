@@ -41,7 +41,7 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // waitUntil completedOnboarding is true, then navigate once 
+  // waitUntil completedOnboarding is true, then navigate once
   await driver.waitUntil(
     async () => {
       const uiState = await getCleanAppState(driver);
