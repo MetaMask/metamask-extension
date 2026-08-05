@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { Box, TextButton, TextButtonSize } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
@@ -105,7 +106,7 @@ export function RampsTokenSelectionScreen() {
     allTokens.length > topTokens.length;
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleAssetSelect = useCallback(

@@ -360,7 +360,7 @@ const MultichainPrivateKeyList = ({
 
   const renderedPasswordInput = useMemo(
     () => (
-      <Box paddingTop={8} paddingBottom={4}>
+      <Box paddingTop={8} paddingBottom={4} paddingHorizontal={4}>
         <Box>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
             {t('enterYourPassword')}

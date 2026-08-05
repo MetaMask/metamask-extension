@@ -11,6 +11,7 @@ import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
@@ -177,7 +178,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handlePaymentMethodPress = useCallback(() => {

@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "此交易的预计更改已更新。继续之前请仔细审查。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "您首次与此地址交互。请确保地址正确，然后再继续。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "钱包不获支持"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "结果已发生变化"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
@@ -1644,8 +1638,24 @@
     "message": "在 $2 上激活 $1 即可开始。",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "添加此信任线时出错。请重试。",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "我们无法获取任何历史数据"
+  },
+  "assetDeactivate": {
+    "message": "去除",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "移除此信任线时出错。请重试。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "您的钱包中仍有 $1 $2。在 Stellar 上停用此资产前，必须将其全部发送或兑换。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "未激活",
@@ -3418,6 +3428,18 @@
   },
   "discover": {
     "message": "发现"
+  },
+  "discoverSearchNoResults": {
+    "message": "未找到结果",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "查看其他热门资产",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "交易量",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "探索 Snap",
@@ -6979,6 +7001,10 @@
   "perpsDateYesterday": {
     "message": "昨天"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "保证金",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "跨链桥操作失败"
   },
@@ -7008,6 +7034,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "您的永续合约账户已充值"
+  },
+  "perpsDepositedVerb": {
+    "message": "已存款",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "保证金"
@@ -7228,6 +7258,39 @@
   "perpsOraclePriceTooltip": {
     "message": "由验证器报告的外部价格中位数，用于计算资金费率"
   },
+  "perpsOrderBook": {
+    "message": "订单簿"
+  },
+  "perpsOrderBookApply": {
+    "message": "应用"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "订单簿连接丢失"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "分组依据"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "排序依据"
+  },
+  "perpsOrderBookPrice": {
+    "message": "价格"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "重新连接"
+  },
+  "perpsOrderBookSize": {
+    "message": "规模"
+  },
+  "perpsOrderBookSpread": {
+    "message": "买卖差价"
+  },
+  "perpsOrderBookTotal": {
+    "message": "共计"
+  },
+  "perpsOrderBookValueType": {
+    "message": "价值类型"
+  },
   "perpsOrderDate": {
     "message": "日期"
   },
@@ -7403,11 +7466,17 @@
   "perpsStatusCompleted": {
     "message": "已完成"
   },
+  "perpsStatusFailed": {
+    "message": "失败"
+  },
   "perpsStatusFilled": {
     "message": "已成交"
   },
   "perpsStatusOpen": {
     "message": "未平仓"
+  },
+  "perpsStatusPending": {
+    "message": "待定"
   },
   "perpsStatusQueued": {
     "message": "队列中"
@@ -7639,6 +7708,9 @@
   "perpsUnrealizedPnl": {
     "message": "未实现盈亏"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "该市场使用不受支持的抵押品，因此无法进行交易。"
+  },
   "perpsWatchlist": {
     "message": "关注列表"
   },
@@ -7718,6 +7790,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask 将为您兑换为您想要的代币。兑换至 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "提取",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "已提现",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "您收到"
@@ -7848,149 +7928,6 @@
   "publicAddress": {
     "message": "公钥"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "您的 $1 多头仓位现已开立。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "您的 $1 空头仓位现已开立。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "限价订单已成交"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "您的 $1 多头仓位已平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "您的 $1 空头仓位已平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "仓位已清算"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "您的索赔已创建"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "索赔已创建"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "您的索赔已更新"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "索赔已更新"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "了解详情"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "您的计划现已激活。"
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "您的计划因付款失败已被暂停。"
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask 交易防护功能"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "更新付款信息"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "您的 $1 多头仓位已触发止损平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "您的 $1 空头仓位已触发止损平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "止损已触发"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "您的 $1 多头仓位已达成止盈平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "您的 $1 空头仓位已达成止盈平仓。",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "止盈已触发"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "您收到了 $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "您已收到一些代币"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "已收到资金"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "您已成功发送 $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "您已成功发送一些代币"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "已发送资金"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "您已收到新的 NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "已收到 NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "您已成功发送一个 NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "NFT 已发送"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "您的 Lido 质押已成功"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "质押完成"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "您的 Lido 质押现在已准备好提取"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "可供提取的质押"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "您的 Lido 提取已成功"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "提取已完成"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "您的 Lido 提取请求已提交"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "已请求提取"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "您的 RocketPool 质押已成功"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "质押完成"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "您的 RocketPool 解除质押已成功"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "解除质押完成"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "您的 MetaMask 兑换已成功"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "兑换已完成"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8105,6 +8042,9 @@
   "rampsBuyToken": {
     "message": "购买 $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "无法开始您的购买。请重试。"
   },
   "rampsBuyingViaProvider": {
     "message": "正在通过$1购买。",
@@ -8853,6 +8793,300 @@
   },
   "securitySrpLabel": {
     "message": "私钥助记词"
+  },
+  "securityTrustBuySellTax": {
+    "message": "买卖税"
+  },
+  "securityTrustBuyTax": {
+    "message": "买入税"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "仍要继续"
+  },
+  "securityTrustCreated": {
+    "message": "已创建"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "无法获取安全数据"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "本安全审查仅供评估之用，不构成对交易的背书或推荐。"
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "可疑空投"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "可拉黑"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "可加入白名单"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "供应集中"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "机密转账"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "可疑行为"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "外部调用"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "交易者数量虚增"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "虚假成交量"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "交易冷却"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "大量机器人活动"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "隐藏所有者"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "未公开供应量"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "高额购买费"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "已建立信誉"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "高额卖出费"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "高交易量"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "高额转账费"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "蜜罐风险"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "冒充者"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "疑似冒充者"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "未确认冒充者"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "可能为冒充者"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "冒充敏感资产"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "不当内容"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "虚假交易量"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "低锁定流动性"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "可增发"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "已知恶意"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "已上线交易所"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "创建者信誉低"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "可疑元数据"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "可修改税率"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "不可转账"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "所有者可更改余额"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "可能的价格操纵"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "代理合约"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "跑路风险"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "受制裁的创建者"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "类似恶意合约"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "上线时机器人活动"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "垃圾信息"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "可疑代码"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "代币后门"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "已启用转账撤销功能"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "已启用转账钩子功能"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "转账可暂停"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "不可售代币"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "价格不稳定"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "已发布合约"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "刷单交易"
+  },
+  "securityTrustMalicious": {
+    "message": "恶意"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "恶意"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 已被标记为恶意。任何与之交互的人都可能被窃取资金。"
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "此代币已被标记为恶意。任何与之交互的人都可能被窃取资金。"
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "在 $1 上检测到严重风险信号。建议不要交易此代币。"
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "检测到此代币存在严重风险信号。我们建议不要交易此代币。"
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "恶意代币"
+  },
+  "securityTrustMore": {
+    "message": "更多"
+  },
+  "securityTrustNa": {
+    "message": "不适用"
+  },
+  "securityTrustNetwork": {
+    "message": "网络： "
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "未检测到隐藏费用"
+  },
+  "securityTrustNoIssues": {
+    "message": "未发现问题"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "官方链接"
+  },
+  "securityTrustOther": {
+    "message": "其他"
+  },
+  "securityTrustRisky": {
+    "message": "高风险"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 已被标记为可疑。请在继续前仔细查看相关风险。"
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "此代币已被标记为可疑。请在继续前仔细查看相关风险。"
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "可疑代币"
+  },
+  "securityTrustSellTax": {
+    "message": "卖出税"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "未检测到风险信号。交易任何资产前请务必自行研究。"
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "检测到严重风险信号。建议规避此资产。"
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "未检测到风险信号。交易任何资产前请务必自行研究。"
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "检测到警示信号。交易此资产前请仔细查看标记的问题。"
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "无法加载此代币的安全分析。"
+  },
+  "securityTrustSuspicious": {
+    "message": "可疑"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 是可疑代币。"
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "此代币是可疑代币。"
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "安全与信任"
+  },
+  "securityTrustTokenAge": {
+    "message": "代币年龄"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "代币分配"
+  },
+  "securityTrustTokenInfo": {
+    "message": "代币信息"
+  },
+  "securityTrustTop10Holders": {
+    "message": "前十大持有者"
+  },
+  "securityTrustTotalSupply": {
+    "message": "总供给量"
+  },
+  "securityTrustTransfer": {
+    "message": "转账"
+  },
+  "securityTrustType": {
+    "message": "类型"
+  },
+  "securityTrustVerified": {
+    "message": "已验证"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 交易活跃且广泛认可。验证并不代表 MetaMask 的认可。"
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "已验证代币"
+  },
+  "securityTrustWebsite": {
+    "message": "网站"
   },
   "seeAllPermissions": {
     "message": "查看所有许可",
@@ -11071,9 +11305,6 @@
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
   },
-  "tutorial": {
-    "message": "教程"
-  },
   "txAlertTitle": {
     "message": "该交易将撤销"
   },
@@ -11281,6 +11512,10 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "查看全部",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

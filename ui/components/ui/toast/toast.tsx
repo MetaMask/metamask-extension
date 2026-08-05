@@ -1,5 +1,10 @@
 import React, { type CSSProperties } from 'react';
-import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
+import {
+  type Toast,
+  toast,
+  ToastBar,
+  Toaster as ToasterBase,
+} from 'react-hot-toast';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -14,6 +19,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../status-icon/status-icon';
 
 export { toast } from 'react-hot-toast';
+
+export type ToastWithClose = Toast & {
+  onClose?: () => void;
+};
 
 const statusMap = {
   loading: 'loading',
@@ -36,7 +45,8 @@ export function Toaster() {
         bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{
-        className: 'w-[360px] max-w-[360px] border border-border-muted',
+        className:
+          'relative w-[360px] max-w-[360px] border border-border-muted',
         style: {
           background: 'var(--color-background-section)',
           color: 'var(--color-text-default)',
@@ -67,7 +77,11 @@ export function Toaster() {
                 ariaLabel={t('close')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                onClick={() => toast.dismiss(item.id)}
+                className="relative z-10 self-start"
+                onClick={() => {
+                  (item as ToastWithClose).onClose?.();
+                  toast.dismiss(item.id);
+                }}
               />
             </>
           )}

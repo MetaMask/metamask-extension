@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
 
@@ -18,14 +18,13 @@ const NetworkListSearch = ({
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
       <TextFieldSearch
         autoFocus
-        className="app-text-field-search"
+        className="w-full"
         clearButtonOnClick={() => setSearchQuery('')}
         data-testid="search-list"
         onBlur={() => setFocusSearch(false)}
         onFocus={() => setFocusSearch(true)}
         onChange={(event) => setSearchQuery(event.target.value)}
         placeholder={t('search')}
-        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>
