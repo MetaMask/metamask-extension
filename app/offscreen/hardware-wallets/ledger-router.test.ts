@@ -70,6 +70,8 @@ type LegacyModule = typeof import('./ledger');
 let initLedger: RouterModule['default'];
 let switchLedgerHandler: RouterModule['switchLedgerHandler'];
 let bootstrapLedger: RouterModule['bootstrapLedger'];
+let READ_ACTION_TIMEOUT_MS: RouterModule['READ_ACTION_TIMEOUT_MS'];
+let SIGN_ACTION_TIMEOUT_MS: RouterModule['SIGN_ACTION_TIMEOUT_MS'];
 let mockedDmkCtor: jest.Mock;
 let mockedLegacyCtor: jest.Mock;
 
@@ -141,6 +143,8 @@ describe('LedgerRouter', () => {
       initLedger = router.default;
       switchLedgerHandler = router.switchLedgerHandler;
       bootstrapLedger = router.bootstrapLedger;
+      READ_ACTION_TIMEOUT_MS = router.READ_ACTION_TIMEOUT_MS;
+      SIGN_ACTION_TIMEOUT_MS = router.SIGN_ACTION_TIMEOUT_MS;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const dmkModule = require('./ledger-dmk') as DmkModule;
       // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -360,9 +364,9 @@ describe('LedgerRouter', () => {
         await Promise.resolve();
         expect(sendResponse1).not.toHaveBeenCalled();
 
-        // Cross the read-action backstop (60s): the link rejects and the
+        // Cross the read-action backstop: the link rejects and the
         // handler is force-reset (synchronously, within the timer callback).
-        jest.advanceTimersByTime(60_000);
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
         expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
       } finally {
         // Always restore real timers so later tests don't hang on faked setTimeout.
@@ -414,9 +418,9 @@ describe('LedgerRouter', () => {
         );
 
         // Let the chain reach the wedged action, then cross the read-action
-        // backstop (60s). forceReset runs synchronously inside the timer.
+        // backstop. forceReset runs synchronously inside the timer.
         await Promise.resolve();
-        jest.advanceTimersByTime(60_000);
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
         expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
       } finally {
         jest.useRealTimers();
@@ -471,14 +475,16 @@ describe('LedgerRouter', () => {
         // Let the chain reach the wedged action.
         await Promise.resolve();
 
-        // Cross the read-action backstop (60s): a signing action is still pending.
-        jest.advanceTimersByTime(60_000);
+        // Cross the read-action backstop: a signing action is still pending.
+        jest.advanceTimersByTime(READ_ACTION_TIMEOUT_MS);
         expect(mockLegacyForceReset).not.toHaveBeenCalled();
         expect(sendResponse).not.toHaveBeenCalled();
 
-        // Cross the remaining sign-action backstop (330s total): now it times
+        // Cross the remaining sign-action backstop: now it times
         // out and force-resets the handler.
-        jest.advanceTimersByTime(330_000 - 60_000);
+        jest.advanceTimersByTime(
+          SIGN_ACTION_TIMEOUT_MS - READ_ACTION_TIMEOUT_MS,
+        );
         expect(mockLegacyForceReset).toHaveBeenCalledTimes(1);
       } finally {
         jest.useRealTimers();

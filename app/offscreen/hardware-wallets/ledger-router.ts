@@ -47,9 +47,9 @@ let messageListener: ChromeMessageListener | null = null;
 let actionChain: Promise<unknown> = Promise.resolve();
 
 /** Backstop timeout for non-signing actions (above the 30s bridge read timeout). */
-const READ_ACTION_TIMEOUT_MS = 60_000;
+export const READ_ACTION_TIMEOUT_MS = 60_000;
 /** Backstop timeout for signing actions (above the 300s bridge sign timeout). */
-const SIGN_ACTION_TIMEOUT_MS = 330_000;
+export const SIGN_ACTION_TIMEOUT_MS = 330_000;
 const SIGN_ACTIONS = new Set<LedgerAction>([
   LedgerAction.signTransaction,
   LedgerAction.signPersonalMessage,

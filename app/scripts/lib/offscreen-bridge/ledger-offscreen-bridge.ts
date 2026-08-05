@@ -14,7 +14,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
-const MESSAGE_TIMEOUT = 4000;
+export const MESSAGE_TIMEOUT_MS = 4000;
 
 /**
  * Timeout for `getPublicKey` requests sent to the offscreen document.
@@ -24,7 +24,7 @@ const MESSAGE_TIMEOUT = 4000;
  * appropriate. If the offscreen/WebHID round-trip wedges, this converts the
  * otherwise-indefinite hang into a recoverable rejection.
  */
-const GET_PUBLIC_KEY_TIMEOUT = 30_000;
+export const GET_PUBLIC_KEY_TIMEOUT_MS = 30_000;
 
 /**
  * Timeout for signing requests sent to the offscreen document.
@@ -32,7 +32,7 @@ const GET_PUBLIC_KEY_TIMEOUT = 30_000;
  * Signing requires the user to physically confirm on the Ledger device, which
  * can take longer; allow up to 5 minutes before giving up.
  */
-const SIGN_TIMEOUT = 300_000;
+export const SIGN_TIMEOUT_MS = 300_000;
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -91,7 +91,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.makeApp,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -101,7 +101,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.updateTransport,
         params: { transportType },
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -110,7 +110,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.getAppNameAndVersion,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -119,7 +119,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.getAppConfiguration,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -133,7 +133,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.getPublicKey,
         params,
       },
-      { timeout: GET_PUBLIC_KEY_TIMEOUT },
+      { timeout: GET_PUBLIC_KEY_TIMEOUT_MS },
     );
   }
 
@@ -147,7 +147,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.signTransaction,
         params,
       },
-      { timeout: SIGN_TIMEOUT },
+      { timeout: SIGN_TIMEOUT_MS },
     );
   }
 
@@ -160,7 +160,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.signPersonalMessage,
         params,
       },
-      { timeout: SIGN_TIMEOUT },
+      { timeout: SIGN_TIMEOUT_MS },
     );
   }
 
@@ -172,7 +172,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.signTypedData,
         params,
       },
-      { timeout: SIGN_TIMEOUT },
+      { timeout: SIGN_TIMEOUT_MS },
     );
   }
 
