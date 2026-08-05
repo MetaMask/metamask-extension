@@ -329,7 +329,8 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
-    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
+    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@29.0.0-preview-98d77bc2a"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -450,7 +451,7 @@
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.8.1",
     "@metamask/profile-metrics-controller": "^4.0.3",
-    "@metamask/profile-sync-controller": "^29.0.0",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@29.0.0-preview-98d77bc2a",
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
