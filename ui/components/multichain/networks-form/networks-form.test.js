@@ -725,7 +725,7 @@ describe('NetworkForm Component', () => {
       },
     });
 
-    expect(getByLabelText('Failover RPC URL')).toHaveValue(
+    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
       'failover.example',
     );
   });
