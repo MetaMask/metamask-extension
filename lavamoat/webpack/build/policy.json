@@ -2584,11 +2584,7 @@
         "performance": true,
         "requestAnimationFrame": true,
         "setInterval.apply": true,
-        "setTimeout.apply": true
-      }
-    },
-    "wait-on>rxjs": {
-      "globals": {
+        "setTimeout.apply": true,
         "setTimeout": true
       }
     },
@@ -2636,7 +2632,6 @@
         "sass-embedded>colorjs.io": true,
         "sass-embedded>immutable": true,
         "rxjs": true,
-        "wait-on>rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>sync-child-process": true,
         "sass-embedded>varint": true
