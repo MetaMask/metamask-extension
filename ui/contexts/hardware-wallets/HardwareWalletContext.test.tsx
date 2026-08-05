@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { render, renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -112,41 +112,85 @@ describe('HardwareWalletContext', () => {
 
   describe('useHardwareWallet', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWallet());
+      const HookConsumer = () => {
+        useHardwareWallet();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWallet must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWallet must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletConfig', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletConfig());
+      const HookConsumer = () => {
+        useHardwareWalletConfig();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletConfig must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletConfig must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletState', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletState());
+      const HookConsumer = () => {
+        useHardwareWalletState();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletState must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletState must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('useHardwareWalletActions', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletActions());
+      const HookConsumer = () => {
+        useHardwareWalletActions();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletActions must be used within HardwareWalletProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletActions must be used within HardwareWalletProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 

@@ -1,5 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationDetailCopyButton } from './notification-detail-copy-button';
 
@@ -24,13 +27,18 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn().mockReturnValue((key: string) => key),
 }));
 
+const mockStore = configureStore();
+const store = mockStore({ ...mockState });
+
 describe('NotificationDetailCopyButton', () => {
   it('renders without crashing', () => {
     const { getByTestId } = render(
-      <NotificationDetailCopyButton
-        text="test text"
-        displayText="display text"
-      />,
+      <Provider store={store}>
+        <NotificationDetailCopyButton
+          text="test text"
+          displayText="display text"
+        />
+      </Provider>,
     );
     expect(getByTestId('address-copy-button-text')).toBeInTheDocument();
   });
@@ -40,10 +48,12 @@ describe('NotificationDetailCopyButton', () => {
     (useCopyToClipboard as jest.Mock).mockReturnValue([false, handleCopy]);
 
     const { getByTestId } = render(
-      <NotificationDetailCopyButton
-        text="test text"
-        displayText="display text"
-      />,
+      <Provider store={store}>
+        <NotificationDetailCopyButton
+          text="test text"
+          displayText="display text"
+        />
+      </Provider>,
     );
 
     fireEvent.click(getByTestId('address-copy-button-text'));

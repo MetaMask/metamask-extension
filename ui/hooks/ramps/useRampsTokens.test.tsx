@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useRampsTokens } from './useRampsTokens';
 import { createRampsTestWrapper } from './test-utils';
 

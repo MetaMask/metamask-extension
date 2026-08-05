@@ -6,33 +6,16 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappTron {
-  private readonly driver: Driver;
-
-  private readonly tronChainDisplay = {
-    text: 'Mainnet',
-    css: 'option',
-  };
-
-  private readonly walletModalSelector = '.adapter-modal-wrapper';
-
-  private readonly metamaskButtonSelector = {
-    css: '.adapter-react-button',
-    text: 'MetaMask',
-  };
-
-  private readonly headerConnectionStateSelector = {
-    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
-    text: 'Connected',
-  };
-
-  private readonly headerConnectionNotConnectedStateSelector = {
-    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
-    text: 'Not connected',
-  };
-
   private readonly connectButtonSelector = {
     testId: dataTestIds.testPage.header.connect,
     tag: 'button',
+  };
+
+  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+
+  private readonly disconnectButtonDropdownItemSelector = {
+    css: '.adapter-dropdown-list-item',
+    text: 'Disconnect',
   };
 
   private readonly disconnectButtonSelector = {
@@ -40,37 +23,38 @@ export class TestDappTron {
     tag: 'button',
   };
 
-  private readonly disconnectButtonDropdownItemSelector = {
-    css: '.adapter-dropdown-list-item',
-    text: 'Disconnect',
+  private readonly driver: Driver;
+
+  private readonly headerConnectionNotConnectedStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Not connected',
   };
 
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+  private readonly headerConnectionStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Connected',
+  };
+
+  private readonly metamaskButtonSelector = {
+    css: '.adapter-react-button',
+    text: 'MetaMask',
+  };
 
   private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
+
+  private readonly tronChainDisplay = {
+    text: 'Mainnet',
+    css: 'option',
+  };
 
   private readonly trxTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendTRX.transactionHash}"]`;
 
   private readonly usdtTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendUSDT.transactionHash}"]`;
 
+  private readonly walletModalSelector = '.adapter-modal-wrapper';
+
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * Open the tron test dapp page.
-   *
-   * @param options - The options for opening the test dapp page.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the new page is opened.
-   */
-  async openTestDappPage({
-    url = DAPP_URL,
-  }: {
-    url?: string;
-  } = {}): Promise<void> {
-    await this.driver.openNewPage(url);
-    await this.checkPageIsLoaded();
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -84,45 +68,6 @@ export class TestDappTron {
       throw e;
     }
     console.log('Tron Test Dapp page is loaded');
-  }
-
-  /**
-   * Focus on the tron test dapp window.
-   */
-  async switchTo() {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
-    await this.checkPageIsLoaded();
-  }
-
-  /**
-   * Get wallet modal.
-   *
-   * @returns The wallet modal component helper methods.
-   */
-  async getWalletModal() {
-    await this.driver.waitForSelector(this.walletModalSelector);
-
-    return {
-      connectToMetaMaskWallet: async () => {
-        await this.driver.clickElement(this.metamaskButtonSelector);
-      },
-    };
-  }
-
-  /**
-   * Find the header connected state.
-   */
-  async findHeaderConnectedState() {
-    await this.driver.findElement(this.headerConnectionStateSelector);
-  }
-
-  /**
-   * Find the header not connected state.
-   */
-  async findHeaderNotConnectedState() {
-    await this.driver.findElement(
-      this.headerConnectionNotConnectedStateSelector,
-    );
   }
 
   /**
@@ -154,24 +99,19 @@ export class TestDappTron {
   }
 
   /**
-   * Set the message to sign input field.
-   *
-   * @param message - The message to sign.
+   * Find the header connected state.
    */
-  async setMessage(message: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.signMessage.message },
-      message,
-    );
+  async findHeaderConnectedState() {
+    await this.driver.findElement(this.headerConnectionStateSelector);
   }
 
   /**
-   * Sign the message.
+   * Find the header not connected state.
    */
-  async signMessage() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signMessage.signMessage,
-    });
+  async findHeaderNotConnectedState() {
+    await this.driver.findElement(
+      this.headerConnectionNotConnectedStateSelector,
+    );
   }
 
   /**
@@ -187,44 +127,20 @@ export class TestDappTron {
   }
 
   /**
-   * Set the TRX recipient address.
-   *
-   * @param address - The TRX recipient address to set.
+   * Find the signed TRX transaction.
    */
-  async setTRXRecipientAddress(address: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.sendTRX.address },
-      address,
-    );
-  }
-
-  /**
-   * Set the TRX amount.
-   *
-   * @param amount - The TRX amount to set.
-   */
-  async setTRXAmount(amount: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.sendTRX.amount },
-      amount,
-    );
-  }
-
-  /**
-   * Sign the TRX transaction.
-   */
-  async signTRXTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendTRX.signTransaction,
+  async findSignedTRXTransaction() {
+    await this.driver.findElement({
+      testId: dataTestIds.testPage.sendTRX.signedTransaction,
     });
   }
 
   /**
-   * Send the TRX transaction.
+   * Find the signed USDT transaction.
    */
-  async sendTRXTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendTRX.sendTransaction,
+  async findSignedUSDTTransaction() {
+    await this.driver.findElement({
+      testId: dataTestIds.testPage.sendUSDT.signedTransaction,
     });
   }
 
@@ -241,22 +157,98 @@ export class TestDappTron {
   }
 
   /**
-   * Find the signed TRX transaction.
+   * Find the USDT transaction hash.
+   *
+   * @param transactionHash - The USDT transaction hash to find.
    */
-  async findSignedTRXTransaction() {
+  async findUSDTTransactionHash(transactionHash: string) {
     await this.driver.findElement({
-      testId: dataTestIds.testPage.sendTRX.signedTransaction,
+      css: this.usdtTransactionHashSelectorTestId,
+      text: transactionHash,
     });
   }
 
   /**
-   * Set the USDT recipient address.
+   * Get wallet modal.
    *
-   * @param address - The USDT recipient address to set.
+   * @returns The wallet modal component helper methods.
    */
-  async setUSDTRecipientAddress(address: string) {
+  async getWalletModal() {
+    await this.driver.waitForSelector(this.walletModalSelector);
+
+    return {
+      connectToMetaMaskWallet: async () => {
+        await this.driver.clickElement(this.metamaskButtonSelector);
+      },
+    };
+  }
+
+  /**
+   * Open the tron test dapp page.
+   *
+   * @param options - The options for opening the test dapp page.
+   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
+   * @returns A promise that resolves when the new page is opened.
+   */
+  async openTestDappPage({
+    url = DAPP_URL,
+  }: {
+    url?: string;
+  } = {}): Promise<void> {
+    await this.driver.openNewPage(url);
+    await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Send the TRX transaction.
+   */
+  async sendTRXTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendTRX.sendTransaction,
+    });
+  }
+
+  /**
+   * Send the USDT transaction.
+   */
+  async sendUSDTTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendUSDT.sendTransaction,
+    });
+  }
+
+  /**
+   * Set the message to sign input field.
+   *
+   * @param message - The message to sign.
+   */
+  async setMessage(message: string) {
     await this.driver.fill(
-      { testId: dataTestIds.testPage.sendUSDT.address },
+      { testId: dataTestIds.testPage.signMessage.message },
+      message,
+    );
+  }
+
+  /**
+   * Set the TRX amount.
+   *
+   * @param amount - The TRX amount to set.
+   */
+  async setTRXAmount(amount: string) {
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendTRX.amount },
+      amount,
+    );
+  }
+
+  /**
+   * Set the TRX recipient address.
+   *
+   * @param address - The TRX recipient address to set.
+   */
+  async setTRXRecipientAddress(address: string) {
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendTRX.address },
       address,
     );
   }
@@ -274,6 +266,36 @@ export class TestDappTron {
   }
 
   /**
+   * Set the USDT recipient address.
+   *
+   * @param address - The USDT recipient address to set.
+   */
+  async setUSDTRecipientAddress(address: string) {
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendUSDT.address },
+      address,
+    );
+  }
+
+  /**
+   * Sign the message.
+   */
+  async signMessage() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signMessage.signMessage,
+    });
+  }
+
+  /**
+   * Sign the TRX transaction.
+   */
+  async signTRXTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendTRX.signTransaction,
+    });
+  }
+
+  /**
    * Sign the USDT transaction.
    */
   async signUSDTTransaction() {
@@ -283,32 +305,10 @@ export class TestDappTron {
   }
 
   /**
-   * Find the USDT transaction hash.
-   *
-   * @param transactionHash - The USDT transaction hash to find.
+   * Focus on the tron test dapp window.
    */
-  async findUSDTTransactionHash(transactionHash: string) {
-    await this.driver.findElement({
-      css: this.usdtTransactionHashSelectorTestId,
-      text: transactionHash,
-    });
-  }
-
-  /**
-   * Send the USDT transaction.
-   */
-  async sendUSDTTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendUSDT.sendTransaction,
-    });
-  }
-
-  /**
-   * Find the signed USDT transaction.
-   */
-  async findSignedUSDTTransaction() {
-    await this.driver.findElement({
-      testId: dataTestIds.testPage.sendUSDT.signedTransaction,
-    });
+  async switchTo() {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
+    await this.checkPageIsLoaded();
   }
 }

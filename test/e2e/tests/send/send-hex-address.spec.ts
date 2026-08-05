@@ -14,7 +14,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 

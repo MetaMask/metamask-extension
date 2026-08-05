@@ -7,7 +7,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
@@ -59,6 +58,7 @@ import {
 } from '../../../components/app/musd/constants';
 import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 
 const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
 const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
@@ -110,7 +110,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -195,10 +195,10 @@ const MusdEducationScreen = () => {
           | undefined,
         chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
       });
-      // Flag off opens Portfolio in a new tab, so send the user home; flag on
-      // navigates in-app (build-quote, or a blocking modal on the education
-      // screen), so leave routing to goToBuy.
-      if (!isRampsEnabled) {
+      // The Portfolio paths open a new tab, so send the user home; the in-app
+      // path navigates itself (build-quote, or a blocking modal on the
+      // education screen), so leave routing to goToBuy.
+      if (opensBuyInPortfolioTab) {
         navigate(DEFAULT_ROUTE);
       }
       return;
@@ -242,7 +242,7 @@ const MusdEducationScreen = () => {
     isDeeplink,
     isGeoBlocked,
     goToBuy,
-    isRampsEnabled,
+    opensBuyInPortfolioTab,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,
