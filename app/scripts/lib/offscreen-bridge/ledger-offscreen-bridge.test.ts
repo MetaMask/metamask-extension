@@ -8,7 +8,12 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import { LedgerOffscreenBridge } from './ledger-offscreen-bridge';
+import {
+  LedgerOffscreenBridge,
+  MESSAGE_TIMEOUT_MS,
+  GET_PUBLIC_KEY_TIMEOUT_MS,
+  SIGN_TIMEOUT_MS,
+} from './ledger-offscreen-bridge';
 
 type SendMessageCallback = (response: unknown) => void;
 
@@ -295,14 +300,68 @@ describe('LedgerOffscreenBridge', () => {
   });
 
   describe('timeout handling', () => {
-    it('rejects with "Ledger iframe timeout" after the configured timeout', async () => {
+    it('rejects with a descriptive timeout error after the configured timeout', async () => {
       jest.useFakeTimers();
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.attemptMakeApp();
 
-      jest.advanceTimersByTime(LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS);
+      // attemptMakeApp uses MESSAGE_TIMEOUT_MS; cross it.
+      jest.advanceTimersByTime(MESSAGE_TIMEOUT_MS + 1_000);
 
-      await expect(promise).rejects.toThrow('Ledger iframe timeout');
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-make-app" within ${MESSAGE_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('getPublicKey rejects after GET_PUBLIC_KEY_TIMEOUT_MS (30s) when the offscreen never responds', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      // Just under the timeout: still pending.
+      jest.advanceTimersByTime(GET_PUBLIC_KEY_TIMEOUT_MS - 1_000);
+      const settled = await Promise.race([
+        promise.then(
+          () => 'resolved',
+          () => 'rejected',
+        ),
+        Promise.resolve('pending'),
+      ]);
+      expect(settled).toBe('pending');
+
+      // Cross the threshold.
+      jest.advanceTimersByTime(2_000);
+
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-unlock" within ${GET_PUBLIC_KEY_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('deviceSignTransaction rejects after SIGN_TIMEOUT_MS (5min) when the offscreen never responds', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const promise = bridge.deviceSignTransaction({
+        hdPath: "m/44'/60'/0'/0/0",
+        tx: '0x0',
+      });
+
+      jest.advanceTimersByTime(SIGN_TIMEOUT_MS + 1);
+
+      await expect(promise).rejects.toThrow(
+        `Ledger device did not respond to "ledger-sign-transaction" within ${SIGN_TIMEOUT_MS}ms`,
+      );
+    });
+
+    it('getPublicKey still resolves if the offscreen responds before the timeout', async () => {
+      jest.useFakeTimers();
+      const bridge = new LedgerOffscreenBridge();
+      const expected = { publicKey: '04abcd', address: '0xabc' };
+      const promise = bridge.getPublicKey({ hdPath: "m/44'/60'/0'/0/0" });
+
+      jest.advanceTimersByTime(1_000);
+      respond({ success: true, payload: expected });
+
+      await expect(promise).resolves.toEqual(expected);
     });
   });
 });

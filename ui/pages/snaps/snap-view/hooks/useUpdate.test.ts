@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockUIMessenger } from '../../../../../test/lib/mock-ui-messenger';
 import type { UIMessenger } from '../../../../messengers/ui-messenger';
