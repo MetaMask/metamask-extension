@@ -749,6 +749,14 @@ export const getIsInOffHoursTrading = (
   if (!isRWAEnabled) {
     return false;
   }
+  // If any stock leg is fully closed (not tradable even via off-hours),
+  // market-closed takes precedence — keep these flags mutually exclusive
+  // so the UI does not show both the danger market-closed banner and the
+  // dismissable off-hours warning (e.g. weekends when only one RWA supports
+  // extended hours).
+  if (getIsStockMarketClosed(state, currentTimeInMs)) {
+    return false;
+  }
   const fromToken = getFromToken(state);
   const toToken = getToToken(state);
   return (
@@ -761,6 +769,8 @@ export const getIsInOffHoursTrading = (
 /**
  * Returns the next regular-market open time (ISO string) for whichever
  * from/to token is currently in off-hours trading, or undefined if neither is.
+ * Returns undefined when any stock leg is fully closed (market-closed takes
+ * precedence over off-hours).
  * @param state
  * @param currentTimeInMs
  */
@@ -768,8 +778,7 @@ export const getNextRegularMarketOpen = (
   state: BridgeAppState,
   currentTimeInMs: number,
 ): string | undefined => {
-  const isRWAEnabled = getIsRWATokensEnabled(state);
-  if (!isRWAEnabled) {
+  if (!getIsInOffHoursTrading(state, currentTimeInMs)) {
     return undefined;
   }
   const fromToken = getFromToken(state);
