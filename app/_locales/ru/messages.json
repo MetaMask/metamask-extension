@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Вы отправляете свои активы на адрес для сжигания. Если вы продолжите, вы потеряете их."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Предполагаемые изменения для этой транзакции обновлены. Прежде чем продолжить, внимательно просмотрите их."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Вы впервые взаимодействуете с этим адресом. Прежде чем продолжить, убедитесь, что он верный."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Кошелек не поддерживается"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Результаты изменились"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1-е взаимодействие"
