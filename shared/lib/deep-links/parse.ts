@@ -54,7 +54,7 @@ type ParseOptions = {
    * EXTERNAL is used for links originating from outside the application.
    * INTERNAL is used for links originating from within the application itself.
    */
-  navigationOrigin?: NavigationOrigin
+  navigationOrigin?: NavigationOrigin;
 };
 
 export type ParsedDeepLink<

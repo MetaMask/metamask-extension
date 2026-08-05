@@ -34,24 +34,29 @@ describe('shouldShowDeepLinkInterstitial', () => {
     });
 
     it('allows a valid signature when the user opted out of warnings', () => {
+      const getSkipDeepLinkInterstitial = jest.fn(() => true);
+
       const result = shouldShowDeepLinkInterstitial({
         source: 'intercepted',
         signatureStatus: VALID,
-        skipDeepLinkInterstitial: true,
-        getSkipDeepLinkInterstitial: () => false,
+        getSkipDeepLinkInterstitial,
       });
 
       expect(result).toBe(false);
+      expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
     });
 
     it('shows the interstitial for a valid signature when the user did not opt out', () => {
+      const getSkipDeepLinkInterstitial = jest.fn(() => false);
+
       const result = shouldShowDeepLinkInterstitial({
         source: 'intercepted',
         signatureStatus: VALID,
-        skipDeepLinkInterstitial: false,
+        getSkipDeepLinkInterstitial,
       });
 
       expect(result).toBe(true);
+      expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
     });
 
     for (const signatureStatus of [MISSING, INVALID]) {
@@ -61,7 +66,7 @@ describe('shouldShowDeepLinkInterstitial', () => {
         const result = shouldShowDeepLinkInterstitial({
           source: 'intercepted',
           signatureStatus,
-          getSkipDeepLinkInterstitial: () => false,
+          getSkipDeepLinkInterstitial,
         });
 
         expect(result).toBe(true);
