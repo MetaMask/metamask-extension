@@ -357,9 +357,9 @@ class BridgeQuotePage {
         await this.driver.clickElement(this.networkSelector);
 
         // Now select the destination network
-        await this.driver.clickElementAndWaitToDisappear({
-          text: quote.toChain,
-        });
+        await this.driver.clickElementAndWaitToDisappear(
+          this.networkNameSelector(quote.toChain),
+        );
       }
       if (quote.tokenTo) {
         await this.driver.pasteIntoField(

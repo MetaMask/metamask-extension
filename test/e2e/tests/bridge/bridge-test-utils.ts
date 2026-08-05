@@ -19,6 +19,7 @@ import {
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
@@ -590,12 +591,10 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [
-          {
-            bridgeConfig: featureFlags,
-            ...additionalFlags,
-          },
-        ],
+        json: getProductionRemoteFlagApiResponseWithOverrides({
+          bridgeConfig: featureFlags,
+          ...additionalFlags,
+        }),
       };
     });
 }
