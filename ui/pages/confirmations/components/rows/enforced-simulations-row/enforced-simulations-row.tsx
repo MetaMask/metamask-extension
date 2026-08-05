@@ -32,6 +32,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
+import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../../shared/lib/transaction/enforced-simulations';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/manage-crypto/transactions/simulations/';
@@ -73,7 +74,7 @@ export function EnforcedSimulationsRow() {
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
     ])
-      .then(() => {
+      .then(({ enforcedSimulationsSlippage }) => {
         if (
           requestId !== autoEnableRequestId.current ||
           transactionId !== currentTransactionIdRef.current
@@ -85,6 +86,10 @@ export function EnforcedSimulationsRow() {
           {
             properties: {
               enforced_simulations_default_enabled: true,
+              enforced_simulation_slippage_bps:
+                getEnforcedSimulationsSlippageMetric(
+                  enforcedSimulationsSlippage,
+                ),
             },
           },
           transactionId,
@@ -135,6 +140,21 @@ export function EnforcedSimulationsRow() {
     );
   }, [transactionId, updateTransactionEventFragment]);
 
+  const handleAppliedSlippage = useCallback(
+    (slippage: number | undefined) => {
+      updateTransactionEventFragment(
+        {
+          properties: {
+            enforced_simulation_slippage_bps:
+              getEnforcedSimulationsSlippageMetric(slippage),
+          },
+        },
+        transactionId,
+      );
+    },
+    [transactionId, updateTransactionEventFragment],
+  );
+
   if (isUnavailable || !hasAutoEnabled) {
     return null;
   }
@@ -159,6 +179,7 @@ export function EnforcedSimulationsRow() {
           isEnabled={Boolean(hasEnforcedSimulations)}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
+          onAppliedSlippage={handleAppliedSlippage}
         />
       </Box>
 
@@ -171,11 +192,13 @@ function EnforcedSimulationsCheckbox({
   isEnabled,
   containerTypes,
   transactionId,
-}: {
+  onAppliedSlippage,
+}: Readonly<{
   isEnabled: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
-}) {
+  onAppliedSlippage: (slippage: number | undefined) => void;
+}>) {
   const [pendingEnabled, setPendingEnabled] = useState<boolean | null>(null);
 
   const isToggling = pendingEnabled !== null;
@@ -209,15 +232,17 @@ function EnforcedSimulationsCheckbox({
     }
 
     try {
-      await applyTransactionContainersExisting(
-        transactionId,
-        newContainerTypes,
-        true,
-      );
+      const { enforcedSimulationsSlippage } =
+        await applyTransactionContainersExisting(
+          transactionId,
+          newContainerTypes,
+          true,
+        );
+      onAppliedSlippage(enforcedSimulationsSlippage);
     } catch {
       setPendingEnabled(null);
     }
-  }, [containerTypes, isEnabled, transactionId]);
+  }, [containerTypes, isEnabled, onAppliedSlippage, transactionId]);
 
   if (isToggling) {
     return (
@@ -240,6 +265,14 @@ function EnforcedSimulationsCheckbox({
       inputProps={{ 'data-testid': 'enforced-simulations-toggle-input' }}
     />
   );
+}
+
+function getEnforcedSimulationsSlippageMetric(
+  slippage: number | undefined,
+): number | null {
+  return slippage === undefined
+    ? null
+    : getEnforcedSimulationsSlippageBasisPoints(slippage);
 }
 
 function TitleRow({

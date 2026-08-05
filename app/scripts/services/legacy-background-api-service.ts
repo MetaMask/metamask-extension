@@ -209,7 +209,6 @@ import {
 } from '../lib/transaction/sentinel-api';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { getEnforcedSimulationsSlippageBasisPoints } from '../../../shared/lib/transaction/enforced-simulations';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
@@ -255,8 +254,6 @@ import {
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
-const ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME =
-  'enforced_simulation_slippage_bps';
 
 /**
  * The methods that the {@link LegacyBackgroundApiService} exposes to the messenger.
@@ -1660,7 +1657,7 @@ export class LegacyBackgroundApiService {
     transactionId: string,
     containerTypes: TransactionContainerType[],
     incrementToggleCount = false,
-  ): Promise<void> {
+  ): Promise<{ enforcedSimulationsSlippage?: number }> {
     const { transactions } = await this.#messenger.call(
       'TransactionController:getState',
     );
@@ -1707,16 +1704,7 @@ export class LegacyBackgroundApiService {
       },
     );
 
-    this.upsertTransactionUIMetricsFragment(transactionId, {
-      properties: {
-        [ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME]:
-          enforcedSimulationsSlippage === undefined
-            ? null
-            : getEnforcedSimulationsSlippageBasisPoints(
-                enforcedSimulationsSlippage,
-              ),
-      },
-    });
+    return { enforcedSimulationsSlippage };
   }
 
   /**

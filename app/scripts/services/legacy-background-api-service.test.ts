@@ -3130,7 +3130,7 @@ describe('LegacyBackgroundApiService', () => {
           updateEditableParamsMock,
         );
 
-        await rootMessenger.call(
+        const result = await rootMessenger.call(
           'LegacyBackgroundApiService:applyTransactionContainersExisting',
           TRANSACTION_ID_MOCK,
           [TransactionContainerType.EnforcedSimulations],
@@ -3154,15 +3154,9 @@ describe('LegacyBackgroundApiService', () => {
             },
           },
         );
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
-          expect.any(String),
-          {
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              enforced_simulation_slippage_bps: 250,
-            },
-          },
-        );
+        expect(result).toStrictEqual({
+          enforcedSimulationsSlippage: 2.5,
+        });
       });
     });
 

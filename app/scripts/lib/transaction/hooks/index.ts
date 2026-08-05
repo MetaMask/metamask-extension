@@ -40,8 +40,6 @@ export type TransactionControllerHookRequest = {
 
 const TRANSACTION_SUBMISSION_METHOD_METRIC_NAME =
   'transaction_submission_method';
-const ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME =
-  'enforced_simulation_slippage_bps';
 
 const TRANSACTION_SUBMISSION_METHOD = {
   SENTINEL_STX: 'sentinel_stx',
@@ -83,10 +81,7 @@ function beforePublishHook({ messenger }: TransactionControllerHookRequest) {
     messenger.call('InstitutionalSnapController:publishHook', transactionMeta);
 }
 
-function beforeSignHook({
-  getTransactionMetricsRequest,
-  messenger,
-}: TransactionControllerHookRequest) {
+function beforeSignHook({ messenger }: TransactionControllerHookRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const m = messenger as any;
   return new EnforceSimulationHook({
@@ -98,15 +93,6 @@ function beforeSignHook({
           m.call('RemoteFeatureFlagController:getState'),
         ),
       }),
-    onApplied: (transactionId, slippageBps) =>
-      getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
-        transactionId,
-        {
-          properties: {
-            [ENFORCED_SIMULATION_SLIPPAGE_BPS_METRIC_NAME]: slippageBps,
-          },
-        },
-      ),
   }).getBeforeSignHook();
 }
 

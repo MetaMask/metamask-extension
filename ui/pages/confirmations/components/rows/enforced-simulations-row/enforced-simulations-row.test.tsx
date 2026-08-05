@@ -16,7 +16,7 @@ import { EnforcedSimulationsRow } from './enforced-simulations-row';
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../store/actions'),
-  applyTransactionContainersExisting: jest.fn().mockResolvedValue(undefined),
+  applyTransactionContainersExisting: jest.fn().mockResolvedValue({}),
 }));
 jest.mock('../../../hooks/useIsEnforcedSimulationsEligible');
 jest.mock('../../../hooks/useTransactionEventFragment');
@@ -138,7 +138,7 @@ describe('EnforcedSimulationsRow', () => {
 
   it('ignores stale auto-enable failures', async () => {
     let rejectFirstRequest: (error: Error) => void;
-    const firstRequest = new Promise<void>((_, reject) => {
+    const firstRequest = new Promise<never>((_, reject) => {
       rejectFirstRequest = reject;
     });
     const consoleError = jest
@@ -164,7 +164,7 @@ describe('EnforcedSimulationsRow', () => {
     jest
       .mocked(applyTransactionContainersExisting)
       .mockImplementationOnce(() => firstRequest)
-      .mockResolvedValueOnce(undefined);
+      .mockResolvedValueOnce({});
 
     render({
       containerTypes: undefined,
@@ -185,6 +185,10 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('records when enforced simulations are enabled by default', async () => {
+    jest.mocked(applyTransactionContainersExisting).mockResolvedValueOnce({
+      enforcedSimulationsSlippage: 2.5,
+    });
+
     render({ containerTypes: undefined });
 
     await waitFor(() => {
@@ -192,6 +196,7 @@ describe('EnforcedSimulationsRow', () => {
         {
           properties: {
             enforced_simulations_default_enabled: true,
+            enforced_simulation_slippage_bps: 250,
           },
         },
         expect.any(String),
@@ -306,6 +311,14 @@ describe('EnforcedSimulationsRow', () => {
       expect.any(String),
       [],
       true,
+    );
+    expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+      {
+        properties: {
+          enforced_simulation_slippage_bps: null,
+        },
+      },
+      expect.any(String),
     );
   });
 

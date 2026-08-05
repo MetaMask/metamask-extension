@@ -5,7 +5,6 @@ import {
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
-import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../shared/lib/transaction/enforced-simulations';
 import { applyTransactionContainers } from '../containers/util';
 
 const log = createProjectLogger('enforce-simulation-hook');
@@ -15,20 +14,15 @@ export class EnforceSimulationHook {
 
   readonly #isEligible: (transactionMeta: TransactionMeta) => boolean;
 
-  readonly #onApplied: (transactionId: string, slippageBps: number) => void;
-
   constructor({
     messenger,
     isEligible,
-    onApplied = () => undefined,
   }: {
     messenger: TransactionControllerInitMessenger;
     isEligible: (transactionMeta: TransactionMeta) => boolean;
-    onApplied?: (transactionId: string, slippageBps: number) => void;
   }) {
     this.#messenger = messenger;
     this.#isEligible = isEligible;
-    this.#onApplied = onApplied;
   }
 
   getBeforeSignHook(): BeforeSignHook {
@@ -65,20 +59,12 @@ export class EnforceSimulationHook {
       throw new Error('Original transaction parameters not found');
     }
 
-    const { enforcedSimulationsSlippage, updateTransaction } =
-      await applyTransactionContainers({
-        isApproved: true,
-        messenger: this.#messenger,
-        transactionMeta,
-        types: containerTypes,
-      });
-
-    this.#onApplied(
-      transactionMeta.id,
-      getEnforcedSimulationsSlippageBasisPoints(
-        enforcedSimulationsSlippage as number,
-      ),
-    );
+    const { updateTransaction } = await applyTransactionContainers({
+      isApproved: true,
+      messenger: this.#messenger,
+      transactionMeta,
+      types: containerTypes,
+    });
 
     return {
       updateTransaction,

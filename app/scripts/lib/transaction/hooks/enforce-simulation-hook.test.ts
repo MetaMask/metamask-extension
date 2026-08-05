@@ -78,7 +78,6 @@ describe('EnforceSimulationHook', () => {
 
   it('applies containers with isApproved at beforeSign', async () => {
     const updateTransactionMock = jest.fn();
-    const onAppliedMock = jest.fn();
 
     applyTransactionContainersMock.mockResolvedValue({
       enforcedSimulationsSlippage: 2.5,
@@ -88,7 +87,6 @@ describe('EnforceSimulationHook', () => {
     const hook = new EnforceSimulationHook({
       messenger,
       isEligible: isEligibleMock,
-      onApplied: onAppliedMock,
     }).getBeforeSignHook();
 
     const { updateTransaction } =
@@ -106,7 +104,6 @@ describe('EnforceSimulationHook', () => {
         isApproved: true,
       }),
     );
-    expect(onAppliedMock).toHaveBeenCalledWith(TRANSACTION_META_MOCK.id, 250);
   });
 
   describe('does nothing if', () => {
