@@ -6,9 +6,17 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
+import type {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerGetNonceLockAction,
+  TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
@@ -73,7 +81,16 @@ type InitMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
-  | TransactionControllerIsAtomicBatchSupportedAction;
+  | TransactionControllerIsAtomicBatchSupportedAction
+  // The Money Pay callbacks resolve the vault config, the money chain's
+  // network client, and the money account through the init messenger — see
+  // `app/scripts/lib/money/pay/pay-context.ts`.
+  | MoneyAccountControllerGetMoneyAccountAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionMetadataAction;
 
 type InitMessengerEvents = never;
 
@@ -99,8 +116,14 @@ export function getTransactionPayControllerInitMessenger(
     actions: [
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'MoneyAccountController:getMoneyAccount',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
       'TransactionController:getNonceLock',
+      'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
+      'TransactionController:updateTransactionMetadata',
     ],
     events: [],
   });
