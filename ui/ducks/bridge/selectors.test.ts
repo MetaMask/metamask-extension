@@ -72,7 +72,6 @@ import {
   getFormattedPriceImpactFiat,
   getIsStockMarketClosed,
   getIsInOffHoursTrading,
-  getNextRegularMarketOpen,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
   resolveMinimumBalanceToKeep,
@@ -4401,120 +4400,6 @@ describe('Bridge selectors', () => {
       });
       expect(getIsStockMarketClosed(state as never, now)).toBe(true);
       expect(getIsInOffHoursTrading(state as never, now)).toBe(false);
-    });
-  });
-
-  describe('getNextRegularMarketOpen', () => {
-    it('returns undefined when RWA is not enabled', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {},
-        },
-      });
-      const result = getNextRegularMarketOpen(state as never, Date.now());
-      expect(result).toBeUndefined();
-    });
-
-    it('returns the market nextOpen when fromToken is in off-hours', () => {
-      const now = Date.now();
-      const marketNextOpen = new Date(now + 100000).toISOString();
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {},
-          rwaTokensEnabled: true,
-        } as never,
-        bridgeSliceOverrides: {
-          fromToken: toBridgeToken({
-            decimals: 18,
-            assetId: 'eip155:1/erc20:0xstock',
-            symbol: 'AAPL',
-            name: 'Apple',
-            rwaData: {
-              instrumentType: 'stock',
-              market: {
-                nextOpen: marketNextOpen,
-                nextClose: new Date(now + 200000).toISOString(),
-              },
-              offhours: {
-                nextOpen: new Date(now - 50000).toISOString(),
-                nextClose: new Date(now + 50000).toISOString(),
-              },
-            },
-          }),
-        },
-      });
-      const result = getNextRegularMarketOpen(state as never, now);
-      expect(result).toBe(marketNextOpen);
-    });
-
-    it('returns undefined when no token is in off-hours', () => {
-      const now = Date.now();
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {},
-          rwaTokensEnabled: true,
-        } as never,
-        bridgeSliceOverrides: {
-          fromToken: toBridgeToken({
-            decimals: 18,
-            assetId: 'eip155:1/erc20:0xstock',
-            symbol: 'AAPL',
-            name: 'Apple',
-            rwaData: {
-              instrumentType: 'stock',
-              market: {
-                nextOpen: new Date(now + 100000).toISOString(),
-                nextClose: new Date(now + 200000).toISOString(),
-              },
-            },
-          }),
-        },
-      });
-      const result = getNextRegularMarketOpen(state as never, now);
-      expect(result).toBeUndefined();
-    });
-
-    it('returns undefined when one stock is in off-hours but another is fully closed', () => {
-      const now = Date.now();
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {},
-          rwaTokensEnabled: true,
-        } as never,
-        bridgeSliceOverrides: {
-          fromToken: toBridgeToken({
-            decimals: 18,
-            assetId: 'eip155:1/erc20:0xstock-aapl',
-            symbol: 'AAPL',
-            name: 'Apple',
-            rwaData: {
-              instrumentType: 'stock',
-              market: {
-                nextOpen: new Date(now + 100000).toISOString(),
-                nextClose: new Date(now + 200000).toISOString(),
-              },
-              offhours: {
-                nextOpen: new Date(now - 50000).toISOString(),
-                nextClose: new Date(now + 50000).toISOString(),
-              },
-            },
-          }),
-          toToken: toBridgeToken({
-            decimals: 18,
-            assetId: 'eip155:1/erc20:0xstock-tsla',
-            symbol: 'TSLA',
-            name: 'Tesla',
-            rwaData: {
-              instrumentType: 'stock',
-              market: {
-                nextOpen: new Date(now + 100000).toISOString(),
-                nextClose: new Date(now + 200000).toISOString(),
-              },
-            },
-          }),
-        },
-      });
-      expect(getNextRegularMarketOpen(state as never, now)).toBeUndefined();
     });
   });
 

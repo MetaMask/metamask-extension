@@ -591,6 +591,137 @@ describe('TokenCellTitle', () => {
       expect(mockIsStockToken).toHaveBeenCalledTimes(2);
     });
 
+    it('re-renders when rwaData.offhours.nextOpen changes', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(false);
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market: {
+            nextOpen: '2026-01-01T10:00:00Z',
+            nextClose: '2026-01-01T16:00:00Z',
+          },
+          offhours: {
+            nextOpen: '2026-01-01T16:00:00Z',
+            nextClose: '2026-01-01T20:00:00Z',
+          },
+        },
+      });
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
+
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'true',
+      );
+
+      mockIsTokenTradingOpen.mockReturnValue(true);
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market: {
+                nextOpen: '2026-01-01T10:00:00Z',
+                nextClose: '2026-01-01T16:00:00Z',
+              },
+              offhours: {
+                nextOpen: '2026-01-01T17:00:00Z',
+                nextClose: '2026-01-01T20:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsTokenTradingOpen).toHaveBeenCalledTimes(2);
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'false',
+      );
+    });
+
+    it('re-renders when rwaData.offhours.nextClose changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          offhours: {
+            nextOpen: '2026-01-01T16:00:00Z',
+            nextClose: '2026-01-01T20:00:00Z',
+          },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              offhours: {
+                nextOpen: '2026-01-01T16:00:00Z',
+                nextClose: '2026-01-01T22:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.offhours arrives without market/nextPause changes', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(false);
+      const market = {
+        nextOpen: '2026-01-01T10:00:00Z',
+        nextClose: '2026-01-01T16:00:00Z',
+      };
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market,
+        },
+      });
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
+
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'true',
+      );
+
+      mockIsTokenTradingOpen.mockReturnValue(true);
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market,
+              offhours: {
+                nextOpen: '2026-01-01T16:00:00Z',
+                nextClose: '2026-01-01T20:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsTokenTradingOpen).toHaveBeenCalledTimes(2);
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'false',
+      );
+    });
+
     it('skips re-render when rwaData is undefined for both renders', () => {
       const token = createMockToken({ title: 'ETH', rwaData: undefined });
       const { getByTestId, rerender } = render(

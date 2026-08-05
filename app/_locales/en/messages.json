@@ -2146,7 +2146,7 @@
     "message": "No price information"
   },
   "bridgeOffHoursDescription": {
-    "message": "Price during off-market hours is not necessarily reflective of the true market price. Waiting until $1 could result in a better price."
+    "message": "Market closed: Price is issuer-calculated, not live market data. It may differ when markets reopen at the next available trading session."
   },
   "bridgeOffHoursTitle": {
     "message": "Off-hours trading"

@@ -11,11 +11,9 @@ import {
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
-  getNextRegularMarketOpen,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BannerAlertSeverity } from '../../../components/component-library';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
@@ -41,12 +39,6 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
-  getNextRegularMarketOpen: jest.fn(),
-}));
-
-jest.mock('../../../ducks/locale/locale', () => ({
-  ...jest.requireActual('../../../ducks/locale/locale'),
-  getIntlLocale: jest.fn(),
 }));
 
 const MOCK_FROM_CHAIN_ID = 'eip155:1';
@@ -121,8 +113,6 @@ describe('useBridgeAlerts', () => {
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue(undefined as never);
     jest.mocked(getToToken).mockReturnValue(null as never);
-    jest.mocked(getNextRegularMarketOpen).mockReturnValue(undefined as never);
-    jest.mocked(getIntlLocale).mockReturnValue('en-US' as never);
     jest.mocked(getActiveQuotePriceData).mockReturnValue(null as never);
     jest.mocked(getFormattedPriceImpactPercentage).mockReturnValue('7.0%');
     jest.mocked(getFormattedPriceImpactFiat).mockReturnValue(null as never);
@@ -169,24 +159,14 @@ describe('useBridgeAlerts', () => {
   });
 
   describe('off-hours alert', () => {
-    it('adds off-hours warning to bannerAlerts with formatted market open time', () => {
+    it('adds off-hours warning to bannerAlerts', () => {
       jest.mocked(getValidationErrors).mockReturnValue({
         ...DEFAULT_VALIDATION_ERRORS,
         isInOffHoursTrading: true,
       } as never);
-      jest
-        .mocked(getNextRegularMarketOpen)
-        .mockReturnValue('2026-06-19T14:30:00Z' as never);
-      jest.mocked(getIntlLocale).mockReturnValue('fr-FR' as never);
-
-      const toLocaleStringSpy = jest.spyOn(Date.prototype, 'toLocaleString');
 
       const { result } = renderHook();
 
-      expect(toLocaleStringSpy).toHaveBeenCalledWith('fr-FR', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
       expect(result.current.bannerAlerts).toHaveLength(1);
       expect(result.current.bannerAlerts[0]).toStrictEqual(
         expect.objectContaining({
@@ -194,30 +174,13 @@ describe('useBridgeAlerts', () => {
           severity: 'warning',
           isDismissable: true,
           title: 'bridgeOffHoursTitle',
+          description: 'bridgeOffHoursDescription',
           isConfirmationAlert: false,
           bannerAlertProps: { severity: BannerAlertSeverity.Warning },
         }),
       );
-      expect(result.current.bannerAlerts[0].description).toContain(
-        'bridgeOffHoursDescription',
-      );
       expect(result.current.alertsById['off-hours']).toBeDefined();
       expect(result.current.confirmationAlerts).toHaveLength(0);
-
-      toLocaleStringSpy.mockRestore();
-    });
-
-    it('shows off-hours with empty market open when nextRegularMarketOpen is undefined', () => {
-      jest.mocked(getValidationErrors).mockReturnValue({
-        ...DEFAULT_VALIDATION_ERRORS,
-        isInOffHoursTrading: true,
-      } as never);
-      jest.mocked(getNextRegularMarketOpen).mockReturnValue(undefined as never);
-
-      const { result } = renderHook();
-
-      expect(result.current.bannerAlerts).toHaveLength(1);
-      expect(result.current.alertsById['off-hours']).toBeDefined();
     });
 
     it('does not add off-hours alert when isInOffHoursTrading is false', () => {
@@ -238,9 +201,6 @@ describe('useBridgeAlerts', () => {
         isStockMarketClosed: false,
         isInOffHoursTrading: true,
       } as never);
-      jest
-        .mocked(getNextRegularMarketOpen)
-        .mockReturnValue('2026-06-19T14:30:00Z' as never);
 
       const { result } = renderHook();
 

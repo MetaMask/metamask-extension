@@ -766,38 +766,6 @@ export const getIsInOffHoursTrading = (
   );
 };
 
-/**
- * Returns the next regular-market open time (ISO string) for whichever
- * from/to token is currently in off-hours trading, or undefined if neither is.
- * Returns undefined when any stock leg is fully closed (market-closed takes
- * precedence over off-hours).
- * @param state
- * @param currentTimeInMs
- */
-export const getNextRegularMarketOpen = (
-  state: BridgeAppState,
-  currentTimeInMs: number,
-): string | undefined => {
-  if (!getIsInOffHoursTrading(state, currentTimeInMs)) {
-    return undefined;
-  }
-  const fromToken = getFromToken(state);
-  const toToken = getToToken(state);
-  if (
-    isStockRWAToken(fromToken) &&
-    isTokenInOffHoursAt(fromToken, currentTimeInMs)
-  ) {
-    return fromToken?.rwaData?.market?.nextOpen;
-  }
-  if (
-    isStockRWAToken(toToken) &&
-    isTokenInOffHoursAt(toToken, currentTimeInMs)
-  ) {
-    return toToken?.rwaData?.market?.nextOpen;
-  }
-  return undefined;
-};
-
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
