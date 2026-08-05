@@ -20,11 +20,11 @@ import type { ActivityListItem } from '../../../shared/lib/activity/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
 import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
+import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
-  getActivityDetailsPath,
   getActivityItemIdentifier,
   getLastEvmItemIndex,
   getItemKey,
@@ -51,7 +51,6 @@ export function ActivityList({
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const detailsHashOpenRef = useRef(false);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
@@ -102,13 +101,12 @@ export function ActivityList({
   });
 
   useEventListener('popstate', () => {
-    detailsHashOpenRef.current = false;
     dialogRef.current?.close?.();
   });
 
   const handleClick = (item: ActivityListItem) => {
-    const detailsPath = getActivityDetailsPath(item);
-    if (!detailsPath) {
+    const identifier = getActivityItemIdentifier(item);
+    if (!identifier || !item.chainId) {
       return;
     }
 
@@ -128,14 +126,16 @@ export function ActivityList({
       dialogRef.current.showModal?.();
     }
 
-    const detailsHash = `#${detailsPath}`;
+    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
+    const alreadyOnDetails = window.location.hash.includes(
+      `${TX_DETAILS_ROUTE}/`,
+    );
 
-    if (detailsHashOpenRef.current) {
+    if (alreadyOnDetails) {
       window.history.replaceState(null, '', detailsHash);
       return;
     }
 
-    detailsHashOpenRef.current = true;
     window.history.pushState(null, '', detailsHash);
   };
 
@@ -157,8 +157,7 @@ export function ActivityList({
         .build(),
     );
 
-    if (detailsHashOpenRef.current) {
-      detailsHashOpenRef.current = false;
+    if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
       window.history.back();
     }
   };

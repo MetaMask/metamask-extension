@@ -199,7 +199,7 @@ describe('ActivityList', () => {
     expect(pushStateSpy).toHaveBeenCalledWith(
       null,
       '',
-      '#/ramps/order/eip155:1/native-uuid',
+      '#/tx/eip155:1/native-uuid',
     );
     pushStateSpy.mockRestore();
   });
@@ -237,12 +237,12 @@ describe('ActivityList', () => {
     expect(pushStateSpy).toHaveBeenCalledWith(
       null,
       '',
-      '#/ramps/order/eip155:1/order-a',
+      '#/tx/eip155:1/order-a',
     );
     expect(replaceStateSpy).toHaveBeenCalledWith(
       null,
       '',
-      '#/ramps/order/eip155:1/order-b',
+      '#/tx/eip155:1/order-b',
     );
     pushStateSpy.mockRestore();
     replaceStateSpy.mockRestore();
