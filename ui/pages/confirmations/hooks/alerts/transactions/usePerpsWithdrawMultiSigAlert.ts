@@ -1,6 +1,7 @@
 'use no memo';
 
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -10,6 +11,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { HYPERLIQUID_INFO_API_URL } from '../../../../../../shared/constants/defi-referrals';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { selectPerpsIsTestnet } from '../../../../../selectors/perps-controller';
 import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
 
@@ -32,22 +34,27 @@ export function usePerpsWithdrawMultiSigCheck(): {
   isMultiSigAccount: boolean;
 } {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isTestnet = useSelector(selectPerpsIsTestnet);
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
   const from = currentConfirmation?.txParams?.from as Hex | undefined;
 
   // This hook runs for every confirmation type, so only query HyperLiquid
-  // when the confirmation actually is a perps withdrawal.
+  // when the confirmation actually is a perps withdrawal. The endpoint is
+  // mainnet-only and multi-sig status differs per network, so testnet mode
+  // (a debug toggle) skips the check and fails open.
+  const shouldCheck = isPerpsWithdraw && !isTestnet && Boolean(from);
+
   const { pending, value } = useAsyncResult(async () => {
-    if (!isPerpsWithdraw || !from) {
+    if (!shouldCheck || !from) {
       return false;
     }
 
     return await isHyperliquidMultiSigUser(from);
-  }, [isPerpsWithdraw, from]);
+  }, [shouldCheck, from]);
 
   return {
-    pending: isPerpsWithdraw && Boolean(from) && pending,
+    pending: shouldCheck && pending,
     isMultiSigAccount: value === true,
   };
 }
