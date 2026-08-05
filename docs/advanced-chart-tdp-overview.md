@@ -42,7 +42,7 @@ package. This is the strategic single-engine direction (Perps is expected to
 migrate to AC later too), so both clients consume one implementation instead of
 maintaining separate charts.
 
-### 2.2 How mobile integrates AC (briefly)
+### 2.2 How mobile integrates AC
 
 On mobile a React Native **`WebView`** loads an HTML template
 (`app/components/UI/Charts/AdvancedChart/AdvancedChartTemplate.ts`) that boots the
@@ -99,7 +99,7 @@ the mechanism before any deploy.
 
 ---
 
-### Source references (jump points)
+### Source references
 
 - Extension current chart: `ui/pages/asset/components/chart/asset-chart.tsx`,
   `ui/pages/asset/hooks/useHistoricalPrices.ts`, `ui/pages/asset/util.ts`
