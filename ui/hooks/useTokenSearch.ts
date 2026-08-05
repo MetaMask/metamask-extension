@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import {
+  keepPreviousData,
   useInfiniteQuery,
+  type InfiniteData,
   type UseInfiniteQueryResult,
 } from '@tanstack/react-query';
 import {
@@ -27,7 +29,7 @@ export type UseTokenSearchOptions = {
 };
 
 export type UseTokenSearchResult = Omit<
-  UseInfiniteQueryResult<TokenSearchResponse, Error>,
+  UseInfiniteQueryResult<InfiniteData<TokenSearchResponse>, Error>,
   'data'
 > & {
   data?: TokenSearchResponse;
@@ -75,7 +77,7 @@ export const useTokenSearch = ({
   const isBrowseMode = enableTokenBrowse && trimmedQuery.length === 0;
   const isEnabled = enabled && (isBrowseMode || trimmedQuery.length > 0);
 
-  const queryResult = useInfiniteQuery<TokenSearchResponse, Error>({
+  const queryResult = useInfiniteQuery({
     queryKey: [
       ...TOKEN_SEARCH_QUERY_KEY_ROOT,
       isBrowseMode ? 'browse' : 'search',
@@ -83,13 +85,7 @@ export const useTokenSearch = ({
       networksKey,
       first,
     ] as const,
-    queryFn: async ({
-      signal,
-      pageParam,
-    }: {
-      signal?: AbortSignal;
-      pageParam?: string;
-    }) => {
+    queryFn: async ({ signal, pageParam }) => {
       if (isBrowseMode) {
         return browseTokens({
           networks: networksKey.length > 0 ? networksKey : undefined,
@@ -107,15 +103,16 @@ export const useTokenSearch = ({
         signal,
       });
     },
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? lastPage.pageInfo.endCursor || undefined
         : undefined,
     enabled: isEnabled,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
     retry: false,
     staleTime: TOKEN_SEARCH_STALE_TIME_MS,
-    cacheTime: TOKEN_SEARCH_GC_TIME_MS,
+    gcTime: TOKEN_SEARCH_GC_TIME_MS,
   });
 
   const data = useMemo(

@@ -77,7 +77,7 @@ export const useDiscoverCryptoSearch = ({
       }),
     enabled: enabled && !isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   const searchQuery = useQuery<CryptoSearchPage, Error>({
@@ -113,7 +113,7 @@ export const useDiscoverCryptoSearch = ({
     },
     enabled: enabled && isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   if (isSearch) {
