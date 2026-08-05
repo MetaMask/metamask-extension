@@ -779,4 +779,108 @@ describe('NetworkForm Component', () => {
 
     expect(getByText(messages.failover.message)).toBeInTheDocument();
   });
+
+  it('suppresses persisted failoverUrls for a map chain when the shared config env is unset', () => {
+    // The chain is in the shared failover map but its QuickNode env is unset,
+    // so the shared config resolves to an empty array. That empty array takes
+    // precedence over the persisted failoverUrls, matching what the
+    // NetworkController uses at runtime (defaultFailoverUrls ?? persisted).
+    delete process.env.QUICKNODE_BSC_URL;
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc.example/rpc',
+          failoverUrls: ['https://persisted.example'],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
+  });
+
+  it('falls back to persisted failoverUrls for a chain not in the shared config', () => {
+    // 0x2328 (9000) is not in the shared failover map, so the form falls back
+    // to the endpoint's own persisted failoverUrls.
+    const existingNetwork = {
+      chainId: '0x2328',
+      name: 'Some Custom Network',
+      nativeCurrency: 'CUSTOM',
+      blockExplorerUrls: ['https://explorer.example/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'custom',
+          type: 'custom',
+          url: 'https://custom.example/rpc',
+          failoverUrls: ['https://persisted.example'],
+        },
+      ],
+    };
+
+    const { getByLabelText, getByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '9000',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
+      'persisted.example',
+    );
+    expect(getByText(messages.failover.message)).toBeInTheDocument();
+  });
 });
