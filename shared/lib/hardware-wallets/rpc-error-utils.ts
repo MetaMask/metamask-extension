@@ -836,6 +836,73 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   );
 }
 
+/**
+ * Whether a TransactionController-persisted transaction error represents a
+ * hardware-wallet user rejection/cancellation.
+ *
+ * TransactionController's `normalizeTxError` only keeps `name` / `message` /
+ * `stack` / `code` (and optional `rpc`). It does **not** persist `error.data`,
+ * so `data.metadata.walletType` from `#handleHardwareWalletError` is unavailable
+ * when `transactionStatusUpdated` drives finished-transaction side effects.
+ *
+ * Do not treat a bare EIP-1193 `userRejectedRequest` (UI "Reject") as a hardware
+ * rejection — that path should stay silent for browser notifications.
+ *
+ * @param error - The persisted transaction error to inspect
+ * @returns True when the error looks like a hardware-wallet user rejection
+ */
+export function isPersistedHardwareWalletRejectionError(
+  error: unknown,
+): boolean {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const errorRecord = error as {
+    name?: unknown;
+    message?: unknown;
+    code?: unknown;
+    data?: { metadata?: { walletType?: unknown } };
+  };
+
+  const hwCode = getHardwareWalletErrorCode(error);
+  if (
+    hwCode === ErrorCode.UserRejected ||
+    hwCode === ErrorCode.UserCancelled
+  ) {
+    return true;
+  }
+
+  // Structured code was lost, but the HardwareWalletError text still indicates
+  // a user rejection/cancellation on device.
+  if (
+    errorRecord.name === 'HardwareWalletError' &&
+    hasUserRejectedMessage(error)
+  ) {
+    return true;
+  }
+
+  const isUserRejectedRequestCode =
+    String(errorRecord.code) ===
+    String(errorCodes.provider.userRejectedRequest);
+
+  if (!isUserRejectedRequestCode) {
+    return false;
+  }
+
+  // TransactionController may normalize device denials to EIP-1193 4001 with
+  // this signing-path message (distinct from the UI cancel default).
+  if (
+    typeof errorRecord.message === 'string' &&
+    /denied transaction signature/iu.test(errorRecord.message)
+  ) {
+    return true;
+  }
+
+  // Forward-compat if `data.metadata.walletType` is ever persisted on tx meta.
+  return Boolean(errorRecord.data?.metadata?.walletType);
+}
+
 // Helper to extract message from error (handles plain objects from RPC boundary)
 const getErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {

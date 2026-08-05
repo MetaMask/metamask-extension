@@ -732,15 +732,15 @@ describe('MetaMaskController', () => {
         const updateBalancesSpy = jest
           .spyOn(metamaskController.tokenBalancesController, 'updateBalances')
           .mockResolvedValue();
+        // Shape that TransactionController actually persists via normalizeTxError
+        // (name/message/stack/code) — not data.metadata.walletType.
         const transactionMeta = {
           status: TransactionStatus.rejected,
           error: {
+            name: 'HardwareWalletError',
             code: errorCodes.provider.userRejectedRequest,
-            data: {
-              metadata: {
-                walletType: 'Ledger',
-              },
-            },
+            message:
+              'MetaMask Tx Signature: User denied transaction signature.',
           },
         };
 
@@ -750,6 +750,25 @@ describe('MetaMaskController', () => {
         expect(updateNftOwnershipSpy).not.toHaveBeenCalled();
         expect(trackTransactionFailureSpy).not.toHaveBeenCalled();
         expect(updateBalancesSpy).not.toHaveBeenCalled();
+      });
+
+      it('creates a notification for persisted HardwareWalletError user rejection text', async () => {
+        const createNotificationSpy = jest
+          .spyOn(metamaskController, '_createTransactionNotifcation')
+          .mockResolvedValue();
+
+        const transactionMeta = {
+          status: TransactionStatus.rejected,
+          error: {
+            name: 'HardwareWalletError',
+            code: errorCodes.provider.userRejectedRequest,
+            message: 'Ledger: User rejected action on device',
+          },
+        };
+
+        await metamaskController._onFinishedTransaction(transactionMeta);
+
+        expect(createNotificationSpy).toHaveBeenCalledWith(transactionMeta);
       });
     });
 

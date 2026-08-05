@@ -1,4 +1,4 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, errorCodes } from '@metamask/rpc-errors';
 import {
   HardwareWalletError,
   ErrorCode,
@@ -13,6 +13,7 @@ import {
   toHardwareWalletError,
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
+  isPersistedHardwareWalletRejectionError,
   extractTrezorCodeFromMessage,
   extractMessageFromUnknownError,
   hasUserRejectedMessage,
@@ -1059,6 +1060,62 @@ describe('rpc-error-utils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('isPersistedHardwareWalletRejectionError', () => {
+    it('returns true for persisted HardwareWalletError UserRejected codes', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          code: ErrorCode.UserRejected,
+          message: 'Ledger: User rejected action on device',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true for persisted HardwareWalletError rejection text without structured code', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          message: 'Ledger: User rejected action on device',
+          stack:
+            'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true for TxController-normalized denial message with EIP-1193 4001', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          code: errorCodes.provider.userRejectedRequest,
+          message: 'MetaMask Tx Signature: User denied transaction signature.',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false for ordinary UI userRejectedRequest errors', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          code: errorCodes.provider.userRejectedRequest,
+          message: 'User rejected the request.',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for connection errors that collide with EIP-1193 4001', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          code: ErrorCode.ConnectionClosed,
+          message: 'Connection closed',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for nullish values', () => {
+      expect(isPersistedHardwareWalletRejectionError(null)).toBe(false);
+      expect(isPersistedHardwareWalletRejectionError(undefined)).toBe(false);
     });
   });
 

@@ -351,6 +351,35 @@ describe('extension platform', () => {
       );
     });
 
+    it('shows user rejected signing message for HardwareWalletError user rejection codes', async () => {
+      const txMeta = {
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: {
+          name: 'HardwareWalletError',
+          code: 2000,
+          message: 'Ledger: User rejected action on device',
+        },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      const expectedErrorMessage = t(
+        'notificationTransactionFailedUserRejectedMessage',
+      );
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
+
     it('does not show error.stack in the generic failure notification', async () => {
       const stack =
         'Error\n    at Object.<anonymous> (app/scripts/platforms/extension.js:1:1)';

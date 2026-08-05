@@ -10,6 +10,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../../../shared/lib/translate';
+import { isPersistedHardwareWalletRejectionError } from '../../../shared/lib/hardware-wallets';
 
 export default class ExtensionPlatform {
   //
@@ -136,8 +137,9 @@ export default class ExtensionPlatform {
       status === TransactionStatus.failed ||
       status === TransactionStatus.rejected
     ) {
-      // TransactionController persists EIP-1193 `userRejectedRequest` (4001) for HW
-      // cancellations; only branch on that code here.
+      // Prefer user-rejection copy for EIP-1193 4001 and for HardwareWalletError
+      // shapes that survive TransactionController's `normalizeTxError` (code/message/
+      // name/stack only — not `data.metadata.walletType`).
       if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
         await this._showFailedTransaction(
           txMeta,
@@ -145,7 +147,8 @@ export default class ExtensionPlatform {
         );
       } else if (
         String(txMeta.error?.code) ===
-        String(errorCodes.provider.userRejectedRequest)
+          String(errorCodes.provider.userRejectedRequest) ||
+        isPersistedHardwareWalletRejectionError(txMeta.error)
       ) {
         await this._showFailedTransaction(
           txMeta,
