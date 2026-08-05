@@ -1644,8 +1644,24 @@
     "message": "Başlamak için $2 üzerinde $1 aktivasyonunu gerçekleştirin.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Bu trustline eklenirken bir şeyler ters gitti. Tekrar deneyin.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Herhangi bir geçmiş veri getiremedik"
+  },
+  "assetDeactivate": {
+    "message": "Kaldır",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Bu trustline kaldırılırken bir şeyler ters gitti. Tekrar deneyin.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Bu cüzdanda hala $1 $2 var. Stellar üzerinde bu varlığı devre dışı bırakmadan önce tamamını göndermeli veya takas etmelisiniz.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Aktif değil",
@@ -3418,6 +3434,18 @@
   },
   "discover": {
     "message": "Keşfet"
+  },
+  "discoverSearchNoResults": {
+    "message": "Sonuç bulunamadı",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Diğer popüler varlıkları inceleyin",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "hac",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snap'leri keşfedin",
@@ -6983,6 +7011,10 @@
   "perpsDateYesterday": {
     "message": "Dün"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Para Yatır",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Köprü işlemi başarısız oldu"
   },
@@ -7012,6 +7044,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Sürekli Vadeli İşlem Sözleşmelerinize fon yatırıldı"
+  },
+  "perpsDepositedVerb": {
+    "message": "Yatırıldı",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Yatırma İşlemleri"
@@ -7232,6 +7268,42 @@
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
   },
+  "perpsOrderBook": {
+    "message": "Emir defteri"
+  },
+  "perpsOrderBookApply": {
+    "message": "Uygula"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Emir defteri bağlantısı kesildi"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Gruplandırma ölçütü"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listeleyen"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Emir defteri yükleniyor"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Fiyat"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Tekrar bağla"
+  },
+  "perpsOrderBookSize": {
+    "message": "Boyut"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Toplam"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Değer türü"
+  },
   "perpsOrderDate": {
     "message": "Tarih"
   },
@@ -7407,11 +7479,17 @@
   "perpsStatusCompleted": {
     "message": "Tamamlandı"
   },
+  "perpsStatusFailed": {
+    "message": "Başarısız oldu"
+  },
   "perpsStatusFilled": {
     "message": "Gerçekleşti"
   },
   "perpsStatusOpen": {
     "message": "Açık"
+  },
+  "perpsStatusPending": {
+    "message": "Bekliyor"
   },
   "perpsStatusQueued": {
     "message": "Kuyruğa alındı"
@@ -7647,6 +7725,9 @@
   "perpsUnrealizedPnl": {
     "message": "Gerçekleşmemiş K&Z"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Bu piyasada desteklenmeyen teminat kullanılıyor ve işlem yapılamaz."
+  },
   "perpsWatchlist": {
     "message": "İzleme Listesi"
   },
@@ -7726,6 +7807,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Çekme işlemi",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Çekildi",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Aldığınız"
@@ -7970,6 +8059,9 @@
   "rampsBuyToken": {
     "message": "$1 Al",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Satın alma işleminiz başlatılamıyor. Lütfen tekrar deneyin."
   },
   "rampsBuyingViaProvider": {
     "message": "$1 üzerinden satın alınıyor.",
@@ -8718,6 +8810,300 @@
   },
   "securitySrpLabel": {
     "message": "GİZLİ KURTARMA İFADELERİ"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Alış/Satış Vergisi"
+  },
+  "securityTrustBuyTax": {
+    "message": "Alış vergisi"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Yine de devam et"
+  },
+  "securityTrustCreated": {
+    "message": "Oluşturuldu"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Güvenlik verileri mevcut değil"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Bu güvenlik incelemesi yalnızca değerlendirme amaçlıdır ve onay veya işlem tavsiyesi teşkil etmez."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Şüpheli airdrop"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Kara listeye alabilir"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Beyaz listeye alabilir"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Konsantre arz"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Gizli transferler"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Şüpheli davranış"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Harici çağrılar"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Şişirilmiş yatırımcı sayısı"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Sahte hacim"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "İşlem bekleme süresi"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Yoğun bot aktivitesi"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Gizli sahip"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Açıklanmamış arz"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Yüksel alış ücreti"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "İtibarı kanıtlanmış"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Yüksek satış ücreti"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Yüksek işlem hacmi"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Yüksek transfer ücreti"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Honeypot (bal küpü/satış engeli) riski"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Taklitçi"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Muhtemel taklitçi"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Onaylanmamış taklitçi"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Olası taklitçi"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Hassas bir varlığı taklit ediyor"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Uygunsuz içerik"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Yapay hacim"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Düşük kilitli likidite"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mint edilebilir"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Kötü amaçlı olarak biliniyor"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Borsada listelenmiş"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "İçerik oluşturucunun itibarı düşük"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Şüpheli meta veri"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Değiştirilebilir vergiler"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Transfer edilemez"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Sahibi bakiyeyi değiştirebilir"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Olası fiyat manipülasyonu"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Proxy sözleşme"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Rugpull (likidite boşaltma) riski"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Yaptırım uygulanan içerik oluşturucu"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Kötü amaçlı sözleşmeye benziyor"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Lansman sırasında bot aktivitesi"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Spam metin"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Şüpheli kod"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Token arka kapısı"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Transfer geri döndürme etkin"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Transfer kancası etkin"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transferler duraklatılabilir"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Satılamayan token"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "İstikrarsız fiyat"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Yayınlanmış sözleşme"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading (kendi kendine işlem yaparak hacim şişirme)"
+  },
+  "securityTrustMalicious": {
+    "message": "Kötü amaçlı"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Kötü amaçlı"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 kötü amaçlı olarak işaretlenmiş. Onunla etkileşime giren herkesin fonlarını çalması muhtemeldir."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Bu token kötü amaçlı olarak işaretlenmiş. Bununla etkileşimde bulunan herkesten fon çalması muhtemeldir."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "$1 üzerinde ciddi risk sinyalleri tespit edildi. Bu token ile işlem yapmamanızı tavsiye ederiz."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Bu tokenda ciddi risk sinyalleri algılandı. Bu token ile işlem yapılmamasını öneririz."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Kötü amaçlı tokenlar"
+  },
+  "securityTrustMore": {
+    "message": "daha fazla"
+  },
+  "securityTrustNa": {
+    "message": "Yok"
+  },
+  "securityTrustNetwork": {
+    "message": "Ağ:"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Gizli ücret algılanmadı"
+  },
+  "securityTrustNoIssues": {
+    "message": "Sorun yok"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Resmi Bağlantılar"
+  },
+  "securityTrustOther": {
+    "message": "Diğer"
+  },
+  "securityTrustRisky": {
+    "message": "Riskli"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 şüpheli olarak işaretlendi. Devam etmeden önce risklere bakın."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Bu token şüpheli olarak işaretlenmiş. Devam etmeden önce risklere göz atın."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Şüpheli tokenlar"
+  },
+  "securityTrustSellTax": {
+    "message": "Satış vergisi"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Ciddi risk sinyalleri algılandı. Bu varlıktan kaçınmanızı tavsiye ederiz."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Uyarı sinyalleri tespit edildi. Bu varlıkla işlem yapmadan önce işaretli sorunları dikkatli bir şekilde inceleyin."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Bu token için güvenlik analizi yüklenemedi."
+  },
+  "securityTrustSuspicious": {
+    "message": "Şüpheli"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 şüpheli bir token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Bu şüpheli bir tokendır."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Güvenlik ve güven"
+  },
+  "securityTrustTokenAge": {
+    "message": "Token yaşı"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Token dağılımı"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Token Bilgileri"
+  },
+  "securityTrustTop10Holders": {
+    "message": "En büyük 10 hissedar"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Toplam arz"
+  },
+  "securityTrustTransfer": {
+    "message": "Transfer"
+  },
+  "securityTrustType": {
+    "message": "Tür"
+  },
+  "securityTrustVerified": {
+    "message": "Doğrulandı"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 aktif olarak işlem görmekte olup yaygın olarak tanınmaktadır. Doğrulama, MetaMask tarafından onaylandığı anlamına gelmez."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Doğrulanmış tokenlar"
+  },
+  "securityTrustWebsite": {
+    "message": "Web Sitesi"
   },
   "seeAllPermissions": {
     "message": "Tüm izinleri gör",
@@ -11143,6 +11529,10 @@
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Tümünü görüntüle",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"
