@@ -46,7 +46,9 @@ const log = createProjectLogger('ppom-util');
 
 const { sentry } = global;
 
-export function getSenderOriginPath(url: string | undefined): string | undefined {
+export function getSenderOriginPath(
+  url: string | undefined,
+): string | undefined {
   if (!url) {
     return undefined;
   }
