@@ -6,16 +6,16 @@ import { useToastLabel } from './useToastLabel';
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
 type Props = {
+  toastId?: string;
   transactionId?: string;
   to?: string;
-  id?: string;
 };
 
 const TransactionToastContent = ({
+  toastId,
   status,
   transactionId,
   to,
-  id,
 }: { status: ToastStatus } & Props) => {
   const { title, description } = useToastLabel(status, transactionId);
 
@@ -28,7 +28,7 @@ const TransactionToastContent = ({
           to={to}
           aria-label={title}
           className="absolute inset-0 z-[1] cursor-pointer"
-          onClick={() => toast.dismiss(id)}
+          onClick={() => toast.dismiss(toastId)}
         />
       )}
     </>
@@ -36,20 +36,26 @@ const TransactionToastContent = ({
 };
 
 export function showPendingToast(id: string, props?: Props) {
-  toast.loading(<TransactionToastContent status="pending" {...props} />, {
-    id,
-  });
+  toast.loading(
+    <TransactionToastContent status="pending" toastId={id} {...props} />,
+    { id },
+  );
 }
 
 export function showSuccessToast(id: string, props?: Props) {
   toast.success(
-    <TransactionToastContent status="success" {...props} id={id} />,
+    <TransactionToastContent status="success" toastId={id} {...props} />,
     { id },
   );
 }
 
 export function showFailedToast(id: string, props?: Props) {
-  toast.error(<TransactionToastContent status="failed" {...props} />, { id });
+  toast.error(
+    <TransactionToastContent status="failed" toastId={id} {...props} />,
+    {
+      id,
+    },
+  );
 }
 
 export function dismissToast(id: string) {

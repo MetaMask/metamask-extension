@@ -99,8 +99,8 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
-function getDetailsRoute(chainId: Hex, hash?: string) {
-  if (!hash) {
+function getDetailsRoute(chainId?: Hex, hash?: string) {
+  if (!chainId || !hash) {
     return undefined;
   }
 
@@ -170,15 +170,17 @@ export function useTransactionEventToasts(): void {
       }
 
       const toastId = generateToastId(id);
-      const props = { transactionId: id };
+      const props = {
+        transactionId: id,
+        to: getDetailsRoute(chainId, hash),
+      };
 
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {
           showPendingToast(toastId, props);
         }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        const to = getDetailsRoute(chainId, hash);
-        showSuccessToast(toastId, { ...props, to });
+        showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
           const transactions = store.getState().metamask?.transactions ?? [];
