@@ -2793,7 +2793,6 @@ describe('MetaMaskController', () => {
             });
           },
         );
-
       });
     });
 
