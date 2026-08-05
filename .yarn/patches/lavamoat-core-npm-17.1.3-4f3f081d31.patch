@@ -1,0 +1,40 @@
+diff --git a/src/endowmentsToolkit.js b/src/endowmentsToolkit.js
+index 81786950e8b3dbf46c274642961a7231492623bf..7aaf7310f0e20b8aa80e9e1fd8452afc9e512593 100644
+--- a/src/endowmentsToolkit.js
++++ b/src/endowmentsToolkit.js
+@@ -102,26 +102,21 @@ function endowmentsToolkit({
+           explicitlyBanned.push(path)
+           return
+         }
+-        // write access handled elsewhere
++        whitelistedReads.push(path)
+         if (packagePolicyValue === 'write') {
+-          if (!handleGlobalWrite) {
+-            return
+-          }
+-          if (pathParts.length > 1) {
+-            throw new Error(
+-              `LavaMoat - write access is only allowed at the top level, saw "${path}"`
+-            )
++          if (handleGlobalWrite) {
++            if (pathParts.length > 1) {
++              throw new Error(
++                `LavaMoat - write access is only allowed at the top level, saw "${path}"`
++              )
++            }
++            allowedWriteFields.add(path)
+           }
+-          allowedWriteFields.add(path)
+-          whitelistedReads.push(path)
+-          return
+-        }
+-        if (packagePolicyValue !== true) {
++        } else if (packagePolicyValue !== true) {
+           throw new Error(
+             `LavaMoat - unrecognizable policy value (${typeof packagePolicyValue}) for path "${path}"`
+           )
+         }
+-        whitelistedReads.push(path)
+       }
+     )
+     // sort by length to optimize further steps

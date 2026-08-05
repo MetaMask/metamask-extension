@@ -315,7 +315,10 @@
     "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
-    "@sentry/core@npm:10.38.0": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch"
+    "@sentry/core@npm:10.38.0": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch",
+    "lavamoat-core@npm:^18.0.4": "patch:lavamoat-core@npm%3A18.0.4#~/.yarn/patches/lavamoat-core-npm-18.0.4-b42360b41e.patch",
+    "lavamoat-core@npm:^17.1.3": "patch:lavamoat-core@npm%3A17.1.3#~/.yarn/patches/lavamoat-core-npm-17.1.3-4f3f081d31.patch",
+    "lavamoat-core@npm:^17.1.2": "patch:lavamoat-core@npm%3A17.1.3#~/.yarn/patches/lavamoat-core-npm-17.1.3-4f3f081d31.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

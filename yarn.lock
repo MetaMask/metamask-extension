@@ -31678,7 +31678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.1.2, lavamoat-core@npm:^17.1.3":
+"lavamoat-core@npm:17.1.3":
   version: 17.1.3
   resolution: "lavamoat-core@npm:17.1.3"
   dependencies:
@@ -31694,7 +31694,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^18.0.4":
+"lavamoat-core@npm:18.0.4":
   version: 18.0.4
   resolution: "lavamoat-core@npm:18.0.4"
   dependencies:
@@ -31706,6 +31706,37 @@ __metadata:
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
   checksum: 10/28eee28b61275c349ab9d846e7d58f5a03499de2ea120448d463243217b4e6345cb7df902e72fdd331148b486229091bf9bd56939aa3d284bf811fb2e28c36fb
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@patch:lavamoat-core@npm%3A17.1.3#~/.yarn/patches/lavamoat-core-npm-17.1.3-4f3f081d31.patch":
+  version: 17.1.3
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A17.1.3#~/.yarn/patches/lavamoat-core-npm-17.1.3-4f3f081d31.patch::version=17.1.3&hash=3b9640"
+  dependencies:
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.1.0"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^8.1.1"
+    merge-deep: "npm:3.0.3"
+    ses: "npm:1.14.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/505859d5ff7c5e0e6a3dbeb873824d5beb95393431a4acddc57e6103cb986abaa7d9883808d1e3e3114c0547ee5f8b0590f96e29ae15951a6fc8cf314e556cf6
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@patch:lavamoat-core@npm%3A18.0.4#~/.yarn/patches/lavamoat-core-npm-18.0.4-b42360b41e.patch":
+  version: 18.0.4
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A18.0.4#~/.yarn/patches/lavamoat-core-npm-18.0.4-b42360b41e.patch::version=18.0.4&hash=2a820c"
+  dependencies:
+    "@babel/types": "npm:7.29.0"
+    "@lavamoat/types": "npm:^1.0.1"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^9.0.2"
+    ses: "npm:1.15.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/0b5dfc40e6eb52f681135126a51f6097adf880f83cea3f116b2190b425e2e6b85e941760a0a89d997d0ebeaeb60b8551515a711cbe09e5876dd23640cc3a3d37
   languageName: node
   linkType: hard
 

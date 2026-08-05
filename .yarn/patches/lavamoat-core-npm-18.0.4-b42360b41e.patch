@@ -1,0 +1,63 @@
+diff --git a/src/endowmentsToolkit.js b/src/endowmentsToolkit.js
+index c6ca33909c23d30321b5628346528db145666f48..e5a1e954387b309e18a1aab08f09dc194d94403f 100644
+--- a/src/endowmentsToolkit.js
++++ b/src/endowmentsToolkit.js
+@@ -103,26 +103,21 @@ function endowmentsToolkit({
+           explicitlyBanned.push(path)
+           return
+         }
+-        // write access handled elsewhere
++        whitelistedReads.push(path)
+         if (packagePolicyValue === 'write') {
+-          if (!handleGlobalWrite) {
+-            return
+-          }
+-          if (pathParts.length > 1) {
+-            throw new Error(
+-              `LavaMoat - write access is only allowed at the top level, saw "${path}"`
+-            )
++          if (handleGlobalWrite) {
++            if (pathParts.length > 1) {
++              throw new Error(
++                `LavaMoat - write access is only allowed at the top level, saw "${path}"`
++              )
++            }
++            allowedWriteFields.add(path)
+           }
+-          allowedWriteFields.add(path)
+-          whitelistedReads.push(path)
+-          return
+-        }
+-        if (packagePolicyValue !== true) {
++        } else if (packagePolicyValue !== true) {
+           throw new Error(
+             `LavaMoat - unrecognizable policy value (${typeof packagePolicyValue}) for path "${path}"`
+           )
+         }
+-        whitelistedReads.push(path)
+       }
+     )
+     // sort by length to optimize further steps
+@@ -742,7 +737,11 @@ function instrumentDynamicValueAtPath(pathParts, sourceRef, targetRef) {
+ }
+ 
+ /**
+- * @import {SomeFunction, ContextTestFn, SomeParameters} from './internal.js';
++ * @import {
++ *   ContextTestFn,
++ *   SomeFunction,
++ *   SomeParameters
++ * } from './internal.js'
+  */
+ 
+ /**
+@@ -769,8 +768,8 @@ function instrumentDynamicValueAtPath(pathParts, sourceRef, targetRef) {
+  */
+ function defaultCreateFunctionWrapper(sourceValue, unwrapTest, unwrapTo) {
+   /**
+-   * @returns {ReturnType<T>}
+    * @this {U | Record<PropertyKey, any>}
++   * @returns {ReturnType<T>}
+    */
+   const newValue = function () {
+     'use strict'
