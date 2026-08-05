@@ -52,7 +52,10 @@ export function getSenderOriginPath(
   if (!url) {
     return undefined;
   }
-  const { origin, pathname } = new URL(url);
+  const { origin, pathname, protocol } = new URL(url);
+  if (protocol !== 'https:' && protocol !== 'http:') {
+    return undefined;
+  }
   return origin + pathname;
 }
 
