@@ -1644,8 +1644,24 @@
     "message": "Активируйте $1 в сети $2, чтобы начать.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Что-то пошло не так при добавлении этой линии доверия. Попробуйте еще раз.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Мы не смогли получить никаких исторических данных"
+  },
+  "assetDeactivate": {
+    "message": "Удалить",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Что-то пошло не так при удалении этой линии доверия. Попробуйте еще раз.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "На этом кошельке все еще остается $1 $2. Вы должны отправить или обменять эти средства полностью, прежде чем деактивировать этот актив в Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Неактивно",
@@ -3418,6 +3434,18 @@
   },
   "discover": {
     "message": "Обзор"
+  },
+  "discoverSearchNoResults": {
+    "message": "Результаты не найдены",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Посмотрите другие популярные активы",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "об.",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Откройте для себя Snaps",
@@ -6979,6 +7007,10 @@
   "perpsDateYesterday": {
     "message": "Вчера"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Внести депозит",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Сбой моста"
   },
@@ -7008,6 +7040,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Ваш счет Перпов пополнен"
+  },
+  "perpsDepositedVerb": {
+    "message": "Внесено",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Депозиты"
@@ -7228,6 +7264,42 @@
   "perpsOraclePriceTooltip": {
     "message": "Медианное значение внешних цен, сообщенных валидаторами, используется для расчета ставки финансирования"
   },
+  "perpsOrderBook": {
+    "message": "Реестр ордеров"
+  },
+  "perpsOrderBookApply": {
+    "message": "Применить"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Соединение с книгой ордеров потеряно"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Группировать по"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Размещено"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Загрузка реестра ордеров"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Цена"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Переподключить"
+  },
+  "perpsOrderBookSize": {
+    "message": "Размер"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Спред"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Итого"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Тип стоимости"
+  },
   "perpsOrderDate": {
     "message": "Дата"
   },
@@ -7403,11 +7475,17 @@
   "perpsStatusCompleted": {
     "message": "Завершено"
   },
+  "perpsStatusFailed": {
+    "message": "Ошибка"
+  },
   "perpsStatusFilled": {
     "message": "Выполнен"
   },
   "perpsStatusOpen": {
     "message": "Открыть"
+  },
+  "perpsStatusPending": {
+    "message": "Ожидающий"
   },
   "perpsStatusQueued": {
     "message": "В очереди"
@@ -7639,6 +7717,9 @@
   "perpsUnrealizedPnl": {
     "message": "Нереализованные П/У"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "На этом рынке используется неподдерживаемое обеспечение, и на нем нельзя торговать."
+  },
   "perpsWatchlist": {
     "message": "Список наблюдения"
   },
@@ -7718,6 +7799,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Вывод средств",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Отозвано",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Вы получаете"
@@ -7962,6 +8051,9 @@
   "rampsBuyToken": {
     "message": "Купить $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Не удалось начать покупку. Попробуйте еще раз."
   },
   "rampsBuyingViaProvider": {
     "message": "Покупка через $1.",
@@ -8710,6 +8802,300 @@
   },
   "securitySrpLabel": {
     "message": "СЕКРЕТНЫЕ ФРАЗЫ ДЛЯ ВОССТАНОВЛЕНИЯ"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Налог на куплю-продажу"
+  },
+  "securityTrustBuyTax": {
+    "message": "Налог на покупку"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Все равно продолжить"
+  },
+  "securityTrustCreated": {
+    "message": "Создан"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Данные о безопасности недоступны"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Данный обзор безопасности носит исключительно ознакомительный характер и не является рекомендацией или одобрением для совершения сделок."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Подозрительный аирдроп"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Может добавлять в черный список"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Может добавлять в белый список"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Концентрированное предложение"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Конфиденциальные переводы"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Подозрительное поведение"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Внешние вызовы"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Завышенное количество трейдеров"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Поддельный объем"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Период расхолаживания при торговле"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Высокая активность ботов"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Скрытый владелец"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Скрытое предложение"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Высокая комиссия за покупку"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Устоявшая репутация"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Высокая комиссия за продажу"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Высокий объем торгов"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Высокая комиссия за перевод"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Риск ловушки"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Самозванец"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Вероятный самозванец"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Неподтвержденный самозванец"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Возможный самозванец"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Выдает себя за чувствительный актив"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Неприемлемый контент"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Искусственный объем"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Низкая заблокированная ликвидность"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Возможен минт"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Известный вредоносный"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "В листинге на бирже"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "У создателя низкая репутация"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Подозрительные метаданные"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Изменяемые налоги"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Не подлежит передаче"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Владелец может изменить баланс"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Возможная манипуляция ценой"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Прокси-контракт"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Риск экзит-скама (rugpull)"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Создатель под санкциями"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Похож на вредоносный контракт"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Активность ботов при запуске"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Спам-текст"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Подозрительный код"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Бэкдор в токене"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Включена отмена переводов"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Включен перехват переводов"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Переводы можно приостановить"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Непродаваемый токен"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Нестабильная цена"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Опубликованный контракт"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Фиктивный трейдинг"
+  },
+  "securityTrustMalicious": {
+    "message": "Вредоносный"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Вредоносный"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 отмечен как вредоносный. Вероятно, он крадет средства у любого, кто с ним взаимодействует."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Этот токен отмечен как вредоносный. Вероятно, он крадет средства у всех, кто с ним взаимодействует."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Обнаружены серьезные сигналы риска для $1. Мы рекомендуем воздержаться от торговли этим токеном."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "По этому токену обнаружены серьезные сигналы риска. Мы рекомендуем не торговать им."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Вредоносный токен"
+  },
+  "securityTrustMore": {
+    "message": "больше"
+  },
+  "securityTrustNa": {
+    "message": "Н.Д."
+  },
+  "securityTrustNetwork": {
+    "message": "Сеть:"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Скрытых платежей не обнаружено"
+  },
+  "securityTrustNoIssues": {
+    "message": "Нет проблем"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Официальные ссылки"
+  },
+  "securityTrustOther": {
+    "message": "Другое"
+  },
+  "securityTrustRisky": {
+    "message": "Рискованный"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 отмечен как подозрительный. Ознакомьтесь с рисками перед продолжением."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Этот токен отмечен как подозрительный. Ознакомьтесь с рисками, прежде чем продолжить."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Подозрительный токен"
+  },
+  "securityTrustSellTax": {
+    "message": "Налог на продажу"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Сигналы риска не обнаружены. Всегда проводите анализ любого актива перед совершением сделки."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Обнаружены серьезные сигналы риска. Рекомендуем воздержаться от покупки этого актива."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Сигналы риска не обнаружены. Всегда проводите анализ любого актива перед совершением сделки."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Обнаружены предупреждающие сигналы. Внимательно изучите отмеченные проблемы, прежде чем совершать сделки с этим активом."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Не удалось загрузить анализ безопасности для этого токена."
+  },
+  "securityTrustSuspicious": {
+    "message": "Подозрительный"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 — подозрительный токен."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Это подозрительный токен."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Безопасность и доверие"
+  },
+  "securityTrustTokenAge": {
+    "message": "Возраст токена"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Распределение токенов"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Информация о токене"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Топ-10 держателей"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Общий запас"
+  },
+  "securityTrustTransfer": {
+    "message": "Перевести"
+  },
+  "securityTrustType": {
+    "message": "Тип"
+  },
+  "securityTrustVerified": {
+    "message": "Проверенный"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 активно торгуется и широко известен. Подтверждение не является одобрением со стороны MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Проверенный токен"
+  },
+  "securityTrustWebsite": {
+    "message": "Веб-сайт"
   },
   "seeAllPermissions": {
     "message": "Смотреть все разрешения",
@@ -10928,9 +11314,6 @@
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"
   },
-  "tutorial": {
-    "message": "Руководство"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -11138,6 +11521,10 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Смотреть все",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"

@@ -132,6 +132,11 @@ class NetworkManager {
     }
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Checking the network manager is loaded');
+    await this.driver.waitForSelector(this.networkManagerCloseButton);
+  }
+
   async checkTabIsSelected(tabName: string): Promise<void> {
     console.log(`Checking if ${tabName} tab is selected`);
     // Find the active tab and verify it contains "Custom" text
@@ -203,7 +208,7 @@ class NetworkManager {
   async openNetworkManager(): Promise<void> {
     console.log(`Opening the network manager`);
     await this.driver.clickElement(this.networkManagerToggle);
-    await this.driver.waitForSelector(this.networkManagerCloseButton);
+    await this.checkPageIsLoaded();
   }
 
   async selectAllNetworks(): Promise<void> {
