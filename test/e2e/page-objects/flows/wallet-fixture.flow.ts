@@ -143,13 +143,7 @@ export const generateDefaultFixtureState = async (
   // Set the settings to match the desired fixture state:
   // 1. enabled native balance and 2. enabled test networks
   await enableNativeTokenAsMainBalance(driver);
-
-  // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-  await selectAllNetworksFromNetworkSelect(driver);
-
   await enableTestNetworks(driver);
-
-  await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
 
   // Fiat value should be displayed as we mock the price and that is not a 'test network'
   await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
