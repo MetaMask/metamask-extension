@@ -376,21 +376,12 @@
     "message": "Đã chuyển đổi sang $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "Nạp tiền thất bại"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Đang gửi $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Đã gửi $1",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "Thêm ví"
   },
+  "add_device_error_connection": {
+    "message": "Chúng tôi không thể duy trì kết nối an toàn với điện thoại của bạn. Hãy kiểm tra kết nối Internet và thử lại."
+  },
+  "add_device_error_expired": {
+    "message": "Phiên đồng bộ này đã hết hạn. Hãy bắt đầu lại để tạo mã QR mới."
+  },
+  "add_device_error_generic": {
+    "message": "Đã xảy ra lỗi khi đồng bộ với điện thoại của bạn. Vui lòng thử lại."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Mã xác minh không chính xác. Hãy bắt đầu lại để thử đồng bộ điện thoại của bạn."
+  },
+  "add_device_error_rejected": {
+    "message": "Quá trình đồng bộ đã bị hủy trên điện thoại của bạn. Hãy bắt đầu lại để thử đồng bộ."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Chúng tôi không thể hoàn tất quá trình đồng bộ tài khoản với điện thoại của bạn. Vui lòng thử lại."
+  },
+  "add_device_error_title": {
+    "message": "Không thể hoàn tất quá trình đồng bộ"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "Đã đồng bộ $1 tài khoản đã nhập vào điện thoại của bạn.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Bạn đang tương tác với một địa chỉ không xác định. Điều này giúp ngăn chặn các giao dịch độc hại."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Bao gồm $1 để tăng cường bảo vệ",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Không bắt buộc"
@@ -1628,8 +1644,24 @@
     "message": "Kích hoạt $1 trên $2 để bắt đầu.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Đã xảy ra lỗi khi thêm trustline này. Vui lòng thử lại.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Chúng tôi không thể tìm nạp bất kỳ dữ liệu lịch sử nào"
+  },
+  "assetDeactivate": {
+    "message": "Xóa",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Đã xảy ra lỗi khi xóa trustline này. Vui lòng thử lại.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Bạn vẫn còn $1 $2 trong ví này. Bạn phải gửi hoặc hoán đổi toàn bộ trước khi hủy kích hoạt tài sản này trên Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Chưa kích hoạt",
@@ -3226,6 +3258,9 @@
   "deepLink_theSwapsPage": {
     "message": "trang hoán đổi"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "trang Theo dõi giao dịch"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "trang lá chắn giao dịch"
   },
@@ -3399,6 +3434,18 @@
   },
   "discover": {
     "message": "Khám phá"
+  },
+  "discoverSearchNoResults": {
+    "message": "Không tìm thấy kết quả",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Khám phá các tài sản phổ biến khác",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "khối lượng",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Khám phá Snap",
@@ -3676,6 +3723,9 @@
   "enter_verification_code_expires_in": {
     "message": "Hết hạn sau $1 giây",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Đã nhập sai quá nhiều lần. Hãy bắt đầu với mã QR mới."
   },
   "enter_your_password": {
     "message": "Nhập mật khẩu"
@@ -4220,6 +4270,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Đã kết nối với ví cứng"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Thiết bị mất quá nhiều thời gian để phản hồi hoặc kết nối đã hết thời gian chờ. Hãy đảm bảo thiết bị của bạn đã được kết nối và mở khóa, sau đó thử lại."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Tiếp tục"
@@ -5644,6 +5697,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Không được hỗ trợ đối với tài khoản này."
+  },
   "networkOptions": {
     "message": "Tùy chọn mạng"
   },
@@ -6907,6 +6963,12 @@
   "perpsCloseAmount": {
     "message": "Số lượng đóng"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Giá không được chênh lệch quá 95% so với giá thị trường"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Nhập giá giới hạn hợp lệ để tiếp tục."
+  },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
@@ -6915,6 +6977,9 @@
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Giá hiện tại không khả dụng. Hãy thử lại sau ít phút."
   },
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
@@ -6946,6 +7011,10 @@
   "perpsDateYesterday": {
     "message": "Hôm qua"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Nạp tiền",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Cầu nối thất bại"
   },
@@ -6975,6 +7044,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Tài khoản Hợp đồng vĩnh cửu đã được nạp tiền"
+  },
+  "perpsDepositedVerb": {
+    "message": "Đã nạp",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Nạp tiền"
@@ -7195,6 +7268,42 @@
   "perpsOraclePriceTooltip": {
     "message": "Giá trung vị từ các nguồn bên ngoài do người xác thực báo cáo, được dùng để tính tỷ lệ tài trợ"
   },
+  "perpsOrderBook": {
+    "message": "Sổ lệnh"
+  },
+  "perpsOrderBookApply": {
+    "message": "Áp dụng"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Mất kết nối với sổ lệnh"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Nhóm theo"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Niêm yết bởi"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Đang tải sổ lệnh"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Giá"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Kết nối lại"
+  },
+  "perpsOrderBookSize": {
+    "message": "Kích thước"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Chênh lệch giá"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Tổng cộng"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Loại giá trị"
+  },
   "perpsOrderDate": {
     "message": "Ngày"
   },
@@ -7370,11 +7479,17 @@
   "perpsStatusCompleted": {
     "message": "Đã hoàn tất"
   },
+  "perpsStatusFailed": {
+    "message": "Thất bại"
+  },
   "perpsStatusFilled": {
     "message": "Đã khớp"
   },
   "perpsStatusOpen": {
     "message": "Mở"
+  },
+  "perpsStatusPending": {
+    "message": "Chờ xử lý"
   },
   "perpsStatusQueued": {
     "message": "Đã đưa vào hàng đợi"
@@ -7445,6 +7560,10 @@
     "message": "Lãi/Lỗ của bạn là $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Không thể đặt lệnh đóng vị thế",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Đã nạp $1 ký quỹ vào vị thế $2",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7496,6 +7615,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Đã đóng một phần vị thế",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Không thể đặt lệnh đóng một phần vị thế",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Vị thế của bạn vẫn đang hoạt động",
@@ -7602,6 +7725,9 @@
   "perpsUnrealizedPnl": {
     "message": "Lãi/Lỗ chưa thực hiện"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Thị trường này sử dụng tài sản thế chấp không được hỗ trợ và không thể giao dịch."
+  },
   "perpsWatchlist": {
     "message": "Danh sách theo dõi"
   },
@@ -7681,6 +7807,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Rút tiền",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Đã rút",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Bạn nhận được"
@@ -7811,149 +7945,6 @@
   "publicAddress": {
     "message": "Địa chỉ công khai"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Vị thế mua khống $1 của bạn hiện đã mở.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Vị thế bán khống $1 của bạn hiện đã mở.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Lệnh giới hạn đã khớp"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã bị đóng.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã bị đóng.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Vị thế đã bị thanh lý"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Yêu cầu bồi thường của bạn đã được tạo"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Yêu cầu bồi thường đã được tạo"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Yêu cầu bồi thường của bạn đã được cập nhật"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Yêu cầu bồi thường đã được cập nhật"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Tìm hiểu thêm"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Gói của bạn hiện đã được kích hoạt."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Gói của bạn đã bị tạm dừng do lỗi thanh toán."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask Lá chắn Giao dịch"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "Cập nhật thanh toán"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã đóng tại mức cắt lỗ.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã đóng tại mức cắt lỗ.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Đã kích hoạt cắt lỗ"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã đóng tại mức chốt lời.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã đóng tại mức chốt lời.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Đã kích hoạt chốt lời"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Bạn đã nhận được $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Bạn đã nhận được một ít token"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Đã nhận tiền"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Bạn đã gửi thành công $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Bạn đã gửi thành công một ít token"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Đã gửi tiền"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Bạn đã nhận được NFT mới"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Đã nhận NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Bạn đã gửi thành công một NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Đã gửi NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Quá trình Ký gửi Lido của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Hoàn tất ký gửi"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Tài sản ký gửi Lido của bạn hiện đã sẵn sàng để rút"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Tài sản ký gửi đã sẵn sàng để rút"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Quá trình Rút Lido của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Đã hoàn tất rút tiền"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Yêu cầu rút Lido của bạn đã được gửi"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Đã yêu cầu rút tiền"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Quá trình Ký gửi RocketPool của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Hoàn tất ký gửi"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Quá trình Hủy ký gửi RocketPool của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Hoàn tất hủy ký gửi"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Quá trình Hoán đổi MetaMask của bạn đã thành công"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Đã hoàn tất hoán đổi"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8062,8 +8053,131 @@
   "quotedTotalCost": {
     "message": "Tổng chi phí: $1"
   },
+  "rampsBestRate": {
+    "message": "Tỷ giá tốt nhất"
+  },
+  "rampsBuyToken": {
+    "message": "Mua $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Không thể bắt đầu giao dịch mua của bạn. Vui lòng thử lại."
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Mua qua $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Thay đổi nhà cung cấp."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Vui lòng thử lại hoặc liên hệ bộ phận hỗ trợ nếu sự cố này vẫn tiếp diễn."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Chúng tôi không thể xác minh khu vực của bạn"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Lỗi khi tải phương thức thanh toán"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Lỗi khi tải token"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Giá trị mua tối đa là $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Giá trị mua tối thiểu là $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Đáng tin cậy nhất"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Không có phương thức thanh toán khả dụng."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Hiện không có nhà cung cấp nào."
+  },
   "rampsNoTokensAvailable": {
     "message": "Không có token khả dụng"
+  },
+  "rampsOnNetwork": {
+    "message": "trên $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Tùy chọn khác"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Ngay lập tức"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Ít hơn"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "phút"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "phút"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Tối đa $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Tối thiểu $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Đã sử dụng trước đây"
+  },
+  "rampsProviders": {
+    "message": "Nhà cung cấp"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Tìm nạp báo giá không thành công."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Không có báo giá."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Báo giá được hiển thị cho $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Chọn phương thức thanh toán"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Chúng tôi đang gặp sự cố dịch vụ. Vui lòng thử lại sau."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Tính năng mua tạm thời không khả dụng"
+  },
+  "rampsShowAllTokens": {
+    "message": "Hiển thị tất cả token"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Tính năng mua tiền mã hóa hiện chưa được hỗ trợ tại khu vực của bạn."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Tính năng mua hiện không khả dụng tại đây"
   },
   "rank": {
     "message": "Xếp hạng"
@@ -8696,6 +8810,300 @@
   },
   "securitySrpLabel": {
     "message": "CỤM TỪ KHÔI PHỤC BÍ MẬT"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Thuế mua/bán"
+  },
+  "securityTrustBuyTax": {
+    "message": "Thuế mua"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Vẫn tiếp tục"
+  },
+  "securityTrustCreated": {
+    "message": "Đã tạo"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Không có dữ liệu bảo mật"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Đánh giá bảo mật này chỉ nhằm mục đích thẩm định và không cấu thành sự chứng thực hoặc khuyến nghị giao dịch."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Tặng thưởng đáng ngờ"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Có thể đưa vào danh sách đen"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Có thể đưa vào danh sách cho phép"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Nguồn cung tập trung"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Chuyển khoản bảo mật"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Hành vi đáng ngờ"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Các lệnh gọi bên ngoài"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Số lượng nhà giao dịch bị thổi phồng"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Khối lượng giao dịch giả"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Thời gian chờ giao dịch"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Hoạt động bot dày đặc"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Chủ sở hữu ẩn"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Nguồn cung chưa được công bố"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Phí mua cao"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Đã thiết lập được uy tín"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Phí bán cao"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Khối lượng giao dịch cao"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Phí chuyển khoản cao"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Rủi ro bẫy lừa đảo"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Mạo danh"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Có khả năng mạo danh"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Kẻ mạo danh chưa được xác nhận"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Có thể là mạo danh"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Mạo danh tài sản nhạy cảm"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Nội dung không phù hợp"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Khối lượng giả mạo"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Thanh khoản bị khóa thấp"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Có thể đúc"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Đã biết là độc hại"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Được niêm yết trên sàn giao dịch"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Người tạo có uy tín thấp"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Metadata đáng ngờ"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Thuế có thể điều chỉnh"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Không thể chuyển khoản"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Chủ sở hữu có thể thay đổi số dư"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Có khả năng thao túng giá"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Hợp đồng proxy"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Rủi ro rút vốn bất ngờ"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Người tạo bị trừng phạt"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Giống hợp đồng độc hại"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Hoạt động của bot khi ra mắt"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Tin nhắn rác"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Mã đáng ngờ"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Lỗ hổng token"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Cho phép đảo ngược chuyển khoản"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Bật móc chuyển khoản"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Có thể tạm dừng chuyển khoản"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Token không thể bán"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Giá không ổn định"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Đã công bố hợp đồng"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Giao dịch giả tạo"
+  },
+  "securityTrustMalicious": {
+    "message": "Độc hại"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Độc hại"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 bị đánh dấu là độc hại. Có khả năng sẽ đánh cắp tài sản từ bất kỳ ai tương tác với nó."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Token này bị đánh dấu là độc hại. Có khả năng sẽ đánh cắp tài sản từ bất kỳ ai tương tác với nó."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Phát hiện tín hiệu rủi ro nghiêm trọng đối với $1. Chúng tôi khuyến nghị không giao dịch token này."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Phát hiện các dấu hiệu rủi ro nghiêm trọng đối với token này. Chúng tôi khuyến nghị không giao dịch token này."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Token độc hại"
+  },
+  "securityTrustMore": {
+    "message": "thêm"
+  },
+  "securityTrustNa": {
+    "message": "Không áp dụng"
+  },
+  "securityTrustNetwork": {
+    "message": "Mạng"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Không phát hiện phí ẩn"
+  },
+  "securityTrustNoIssues": {
+    "message": "Không có vấn đề"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Liên kết chính thức"
+  },
+  "securityTrustOther": {
+    "message": "Khác"
+  },
+  "securityTrustRisky": {
+    "message": "Rủi ro"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 bị đánh dấu là đáng ngờ. Hãy xem xét các rủi ro trước khi tiếp tục."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Token này bị đánh dấu là đáng ngờ. Hãy xem xét các rủi ro trước khi tiếp tục."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Token đáng ngờ"
+  },
+  "securityTrustSellTax": {
+    "message": "Thuế bán"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Không phát hiện tín hiệu rủi ro. Luôn nghiên cứu bất kỳ tài sản nào trước khi giao dịch."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Phát hiện tín hiệu rủi ro nghiêm trọng. Chúng tôi khuyến nghị tránh giao dịch với tài sản này."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Không phát hiện tín hiệu rủi ro. Luôn nghiên cứu bất kỳ tài sản nào trước khi giao dịch."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Phát hiện tín hiệu cảnh báo. Hãy xem xét kỹ các vấn đề đã được đánh dấu trước khi giao dịch tài sản này."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Không thể tải phân tích bảo mật cho token này."
+  },
+  "securityTrustSuspicious": {
+    "message": "Đáng ngờ"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 là một token đáng ngờ."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Đây là một token đáng ngờ."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Bảo mật và độ tin cậy"
+  },
+  "securityTrustTokenAge": {
+    "message": "Tuổi token"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Phân bổ token"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Thông tin token"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Top 10 người nắm giữ"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Tổng nguồn cung"
+  },
+  "securityTrustTransfer": {
+    "message": "Chuyển"
+  },
+  "securityTrustType": {
+    "message": "Loại"
+  },
+  "securityTrustVerified": {
+    "message": "Đã xác minh"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 đang được giao dịch tích cực và được công nhận rộng rãi. Việc xác minh không phải là sự chứng thực của MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Token đã xác minh"
+  },
+  "securityTrustWebsite": {
+    "message": "Trang web"
   },
   "seeAllPermissions": {
     "message": "Xem tất cả quyền",
@@ -10155,18 +10563,6 @@
   "statusNotConnected": {
     "message": "Chưa kết nối"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Đã xảy ra lỗi khi thêm trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Đã xảy ra lỗi khi xóa trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Bạn vẫn còn $1 $2 trong ví này. Bạn phải gửi hoặc hoán đổi toàn bộ trước khi hủy kích hoạt tài sản này trên Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10676,6 +11072,9 @@
   "tokenDecimal": {
     "message": "Số thập phân của token"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Nhập một số nguyên từ 0 đến 36."
+  },
   "tokenDetails": {
     "message": "Thông tin token"
   },
@@ -10923,9 +11322,6 @@
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
   },
-  "tutorial": {
-    "message": "Hướng dẫn"
-  },
   "txAlertTitle": {
     "message": "Giao dịch này sẽ được hoàn tác"
   },
@@ -11133,6 +11529,10 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Xem tất cả",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Xem trên trình khám phá khối"

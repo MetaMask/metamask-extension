@@ -20,7 +20,6 @@ import {
   Text,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 import { TextVariant } from '../../../helpers/constants/design-system';
@@ -160,12 +159,11 @@ export const AccountList = () => {
           paddingBottom={2}
         >
           <TextFieldSearch
-            className="app-text-field-search"
+            className="w-full"
             clearButtonOnClick={() => setSearchPattern('')}
             data-testid="multichain-account-list-search"
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
-            size={TextFieldSize.Lg}
             value={searchPattern}
           />
         </Box>

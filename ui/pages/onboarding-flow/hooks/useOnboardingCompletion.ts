@@ -8,13 +8,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
 } from '../../../../shared/lib/deep-links/utils';
+import { createEvent } from '../../../../shared/lib/deep-links/metrics';
 import {
+  DeferredDeepLink,
   DeferredDeepLinkRoute,
   DeferredDeepLinkRouteType,
 } from '../../../../shared/lib/deep-links/types';
@@ -81,13 +82,22 @@ export function useOnboardingCompletion() {
   const isFinishingOnboardingRef = useRef(false);
 
   const handleOnDoneNavigation = useCallback(
-    (
+    async (
       deferredDeepLinkResult: DeferredDeepLinkRoute | null,
-      hasDeferredDeepLink: boolean,
+      deferredDeepLinkToUse: DeferredDeepLink | null,
       completedWithSidePanelFlow: boolean,
     ) => {
-      if (hasDeferredDeepLink) {
+      if (deferredDeepLinkToUse) {
         dispatch(removeDeferredDeepLink());
+      }
+
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        await trackEvent(
+          createEvent({
+            signature: deferredDeepLinkResult.signature,
+            url: new URL(deferredDeepLinkToUse.referringLink),
+          }),
+        );
       }
 
       if (deferredDeepLinkResult) {
@@ -119,7 +129,7 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -133,7 +143,7 @@ export function useOnboardingCompletion() {
       autoCompleteWithoutUserGesture: boolean;
     }): Promise<boolean> => {
       try {
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return false;
         }
@@ -146,12 +156,17 @@ export function useOnboardingCompletion() {
           return false;
         }
 
+        const { windowId } = tabs[0];
+        if (windowId === undefined) {
+          return false;
+        }
+
         // `browser.sidePanel.open()` requires a user gesture. Auto-complete
         // runs from `useEffect`, so skip the call there. Navigate/Interstitial
         // deferred deep links also skip opening so the popup can route first.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
           await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
+            windowId,
           });
           setIsSidePanelOpen(true);
         }
@@ -163,9 +178,9 @@ export function useOnboardingCompletion() {
         // Auto-complete passes `completedWithSidePanelFlow: false` so navigation
         // uses popup rules (home redirect, `_blank` external redirects) even
         // though the panel did not open in this popup context.
-        handleOnDoneNavigation(
+        await handleOnDoneNavigation(
           deferredDeepLinkResult,
-          Boolean(deferredDeepLink),
+          deferredDeepLink,
           !autoCompleteWithoutUserGesture,
         );
 
@@ -183,9 +198,9 @@ export function useOnboardingCompletion() {
     async (deferredDeepLinkResult: DeferredDeepLinkRoute | null) => {
       await dispatch(setCompletedOnboarding());
 
-      handleOnDoneNavigation(
+      await handleOnDoneNavigation(
         deferredDeepLinkResult,
-        Boolean(deferredDeepLink),
+        deferredDeepLink,
         false,
       );
     },

@@ -5,6 +5,7 @@ import {
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -43,6 +44,7 @@ function createRampsLifecycleManager(
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;
         }
+        removeStalePrecreatedOrders(messengerClient);
         messengerClient.startOrderPolling();
       })
       .catch((error) => {
@@ -102,13 +104,14 @@ function registerRampsLifecycleSubscriptions(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to hydrate from.
  * @param request.initMessenger - Messenger for onboarding and preferences state.
+ * @param request.platform
  * @returns The initialized controller and background API.
  */
 export const RampsControllerInit: MessengerClientInitFunction<
   RampsController,
   RampsControllerMessenger,
   RampsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger }) => {
+> = ({ controllerMessenger, persistedState, initMessenger, platform }) => {
   const messengerClient = new RampsController({
     messenger: controllerMessenger,
     state: persistedState.RampsController ?? getDefaultRampsControllerState(),
@@ -142,7 +145,7 @@ export const RampsControllerInit: MessengerClientInitFunction<
   return {
     messengerClient,
     api: {
-      ...getRampsControllerApi(messengerClient),
+      ...getRampsControllerApi(messengerClient, platform),
       startRampsLifecycle: tryStartRampsLifecycle,
       stopRampsLifecycle,
     },
