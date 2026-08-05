@@ -19,7 +19,7 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import { isCaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
@@ -28,8 +28,12 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
+import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
-import type { DiscoverSearchTab } from '../../hooks/discover-search/types';
+import type {
+  DiscoverSearchSectionId,
+  DiscoverSearchTab,
+} from '../../hooks/discover-search/types';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
@@ -57,23 +61,34 @@ const EmptyState = ({ message }: { message: string }) => (
   </Box>
 );
 
-type DiscoverAllEmptyStateProps = {
+type DiscoverSearchEmptyStateProps = {
   noResultsMessage: string;
-  onAssetPress: (assetId: CaipAssetType) => void;
   query: string;
 };
 
-const DiscoverAllEmptyState = ({
+const DiscoverSearchEmptyState = ({
   noResultsMessage,
-  onAssetPress,
   query,
-}: DiscoverAllEmptyStateProps) => {
+}: DiscoverSearchEmptyStateProps) => {
+  const navigate = useNavigate();
+
   if (query) {
-    return <DiscoverNoResultsState query={query} onAssetPress={onAssetPress} />;
+    return (
+      <DiscoverNoResultsState
+        query={query}
+        onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
+      />
+    );
   }
 
   return <EmptyState message={noResultsMessage} />;
 };
+
+const DiscoverSearchSectionDivider = () => (
+  <Box className="px-4 py-2">
+    <Box className="border-t border-muted" />
+  </Box>
+);
 
 /**
  * Discover search page: search + All / Crypto / Perps / Stock tabs.
@@ -130,7 +145,39 @@ export const DiscoverSearchPage = () => {
     setActiveTab(tab);
   }, []);
 
+  const getSectionViewAllLabel = useCallback(
+    (
+      sectionId: DiscoverSearchSectionId,
+      visibleCount: number,
+      serverTotal?: number,
+      isLoading = false,
+    ): string | null => {
+      if (isLoading) {
+        return null;
+      }
+
+      const action = getDiscoverViewMoreAction(
+        sectionId,
+        visibleCount,
+        searchQuery,
+        serverTotal,
+      );
+
+      if (!action) {
+        return null;
+      }
+
+      if (action.kind === 'viewMore') {
+        return t('viewXMore', [String(action.count)]);
+      }
+
+      return t('viewAll');
+    },
+    [searchQuery, t],
+  );
+
   const trimmedSearchQuery = searchQuery.trim();
+  const noResultsMessage = t('discoverSearchNoResults');
 
   const previewCrypto = useMemo(
     () => cryptoSection.items.slice(0, DISCOVER_SEARCH_PREVIEW_COUNT),
@@ -157,6 +204,10 @@ export const DiscoverSearchPage = () => {
 
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
+  const showCryptoPreview = previewCrypto.length > 0 || cryptoSection.isLoading;
+  const showPerpsPreview =
+    isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
+  const showStocksPreview = previewStocks.length > 0 || stocks.isLoading;
 
   const renderAllTabSkeleton = () => (
     <Box
@@ -172,6 +223,7 @@ export const DiscoverSearchPage = () => {
 
       {isPerpsAvailable ? (
         <>
+          <DiscoverSearchSectionDivider />
           <DiscoverSearchSectionHeader
             title={t('perps')}
             showViewAll={false}
@@ -181,6 +233,7 @@ export const DiscoverSearchPage = () => {
         </>
       ) : null}
 
+      <DiscoverSearchSectionDivider />
       <DiscoverSearchSectionHeader
         title={t('perpsFilterStocks')}
         showViewAll={false}
@@ -199,7 +252,12 @@ export const DiscoverSearchPage = () => {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
     }
     if (items.length === 0) {
-      return <EmptyState message={t('discoverSearchNoResults')} />;
+      return (
+        <DiscoverSearchEmptyState
+          noResultsMessage={noResultsMessage}
+          query={trimmedSearchQuery}
+        />
+      );
     }
     return items.map((asset) => (
       <DiscoverAssetRow
@@ -216,7 +274,12 @@ export const DiscoverSearchPage = () => {
       return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
     }
     if (items.length === 0) {
-      return <EmptyState message={t('discoverSearchNoResults')} />;
+      return (
+        <DiscoverSearchEmptyState
+          noResultsMessage={noResultsMessage}
+          query={trimmedSearchQuery}
+        />
+      );
     }
     return items.map((market) => (
       <MarketRow
@@ -235,20 +298,25 @@ export const DiscoverSearchPage = () => {
     }
     if (showAllEmpty) {
       return (
-        <DiscoverAllEmptyState
-          noResultsMessage={t('discoverSearchNoResults')}
-          onAssetPress={(assetId) => navigate(buildAssetRoutePath(assetId))}
+        <DiscoverSearchEmptyState
+          noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
         />
       );
     }
     return (
       <Box flexDirection={BoxFlexDirection.Column}>
-        {previewCrypto.length > 0 || cryptoSection.isLoading ? (
+        {showCryptoPreview ? (
           <>
             <DiscoverSearchSectionHeader
               title={t('perpsFilterCrypto')}
               onViewAll={() => handleViewAll('crypto')}
+              viewAllLabel={getSectionViewAllLabel(
+                'crypto',
+                cryptoSection.items.length,
+                cryptoSection.totalCount,
+                cryptoSection.isLoading,
+              )}
               data-testid="discover-section-crypto"
             />
             {renderAssetList(
@@ -259,22 +327,38 @@ export const DiscoverSearchPage = () => {
           </>
         ) : null}
 
-        {isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading) ? (
+        {showPerpsPreview ? (
           <>
+            {showCryptoPreview ? <DiscoverSearchSectionDivider /> : null}
             <DiscoverSearchSectionHeader
               title={t('perps')}
               onViewAll={() => handleViewAll('perps')}
+              viewAllLabel={getSectionViewAllLabel(
+                'perps',
+                perps.items.length,
+                undefined,
+                perps.isLoading,
+              )}
               data-testid="discover-section-perps"
             />
             {renderPerpsList(previewPerps, perps.isLoading)}
           </>
         ) : null}
 
-        {previewStocks.length > 0 || stocks.isLoading ? (
+        {showStocksPreview ? (
           <>
+            {showCryptoPreview || showPerpsPreview ? (
+              <DiscoverSearchSectionDivider />
+            ) : null}
             <DiscoverSearchSectionHeader
               title={t('perpsFilterStocks')}
               onViewAll={() => handleViewAll('stocks')}
+              viewAllLabel={getSectionViewAllLabel(
+                'stocks',
+                stocks.items.length,
+                stocks.totalCount,
+                stocks.isLoading,
+              )}
               data-testid="discover-section-stocks"
             />
             {renderAssetList(
@@ -296,7 +380,7 @@ export const DiscoverSearchPage = () => {
       data-testid="discover-search-page"
     >
       <Box
-        className="shrink-0 gap-2 px-4 py-3"
+        className="shrink-0 gap-2 px-4 py-4"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
@@ -314,6 +398,7 @@ export const DiscoverSearchPage = () => {
           />
         </Link>
         <TextFieldSearch
+          autoFocus={true}
           className="app-text-field-search min-w-0 flex-1"
           placeholder={t('searchTokens')}
           value={searchQuery}
@@ -323,7 +408,6 @@ export const DiscoverSearchPage = () => {
           inputProps={
             {
               'data-testid': 'discover-search-input',
-              autoFocus: true,
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }
@@ -334,7 +418,7 @@ export const DiscoverSearchPage = () => {
         activeTab={activeTab}
         onTabClick={(tab) => setActiveTab(tab as DiscoverSearchTab)}
         className="min-h-0 flex-1"
-        tabListProps={{ className: 'px-4 shrink-0' }}
+        tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{ className: 'min-h-0 overflow-y-auto' }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">

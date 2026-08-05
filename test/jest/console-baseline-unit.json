@@ -524,9 +524,6 @@
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
     },
-    "ui/hooks/useAsync.test.ts": {
-      "Test errors: Uncaught Errors": 2
-    },
     "ui/hooks/useCurrencyRatePolling.test.ts": {
       "React: Act warnings (component updates not wrapped)": 3
     },
