@@ -438,13 +438,25 @@ describe('PerpsTransactionDetailsPage', () => {
         screen.getByText(messages.perpsFundingRate.message),
       ).toBeInTheDocument();
       expect(screen.getByText(messages.amount.message)).toBeInTheDocument();
-      expect(screen.getByText('+8.30')).toBeInTheDocument();
+      expect(screen.getAllByText('+8.30').length).toBeGreaterThan(0);
     });
 
     it('renders a positive funding amount in the success color', () => {
       renderWithTransaction(findTransaction('tx-003'));
 
-      expect(screen.getByText('+8.30')).toHaveClass('text-success-default');
+      // +8.30 appears in both the hero and the amount row; the row value carries the color
+      const signedValues = screen
+        .getAllByText('+8.30')
+        .filter((el) => el.classList.contains('text-success-default'));
+      expect(signedValues.length).toBeGreaterThan(0);
+    });
+
+    it('shows the funding fee amount in the hero, not the symbol', () => {
+      renderWithTransaction(findTransaction('tx-003'));
+
+      const hero = screen.getByTestId('perps-transaction-details-hero-amount');
+      expect(hero).toHaveTextContent('+8.30');
+      expect(hero).not.toHaveTextContent('ETH');
     });
   });
 

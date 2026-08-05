@@ -303,7 +303,9 @@ const PerpsTransactionDetailsPage = () => {
             fontWeight={FontWeight.Medium}
             data-testid="perps-transaction-details-hero-amount"
           >
-            {transaction.subtitle}
+            {transaction.type === 'funding' && transaction.fundingAmount
+              ? transaction.fundingAmount.fee
+              : transaction.subtitle}
           </Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
