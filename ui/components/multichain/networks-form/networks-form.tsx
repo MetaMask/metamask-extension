@@ -567,7 +567,9 @@ export const NetworksForm = ({
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+              <RpcListItem
+                rpcEndpoint={{ ...item, failoverUrls: getFailoverUrls(item) }}
+              />
             ) : (
               <Text
                 as="span"

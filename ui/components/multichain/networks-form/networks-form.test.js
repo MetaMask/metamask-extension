@@ -729,4 +729,54 @@ describe('NetworkForm Component', () => {
       'failover.example',
     );
   });
+
+  it('shows the failover tag on the rpc list item from shared config when persisted failoverUrls is empty', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          // An Infura endpoint renders through RpcListItem rather than the
+          // inline custom branch.
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByText(messages.failover.message)).toBeInTheDocument();
+  });
 });
