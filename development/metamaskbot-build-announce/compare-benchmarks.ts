@@ -335,6 +335,8 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  * @param result - Comparison results.
  * @param result.comparisons
  * @param result.anyFailed
+ * @param result.mockMode
+ * @param result.enforced
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
@@ -437,15 +439,15 @@ export function printReport(result: {
     console.log(
       '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
     );
-  } else if (!enforced) {
+  } else if (enforced) {
+    console.log('\nRESULT: PASS — all benchmarks within constant limits');
+  } else {
     const breaches = withLines.filter(
       (w) => w.comparison.absoluteFailed,
     ).length;
     console.log(
       `\nRESULT: PASS (ceilings not enforced) — ${breaches} benchmark(s) exceeded a constant fail limit, reported as warnings`,
     );
-  } else {
-    console.log('\nRESULT: PASS — all benchmarks within constant limits');
   }
 }
 
