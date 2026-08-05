@@ -136,10 +136,9 @@ export const NetworksForm = ({
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const networkChainIdHex = chainId ? toHex(chainId) : undefined;
-  const chainFailoverUrls =
-    networkChainIdHex && isStrictHexString(networkChainIdHex)
-      ? getFailoverUrlsForChainId(networkChainIdHex)
-      : undefined;
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : undefined;
 
   const getFailoverUrls = (endpoint?: { failoverUrls?: string[] }) =>
     chainFailoverUrls ?? endpoint?.failoverUrls;

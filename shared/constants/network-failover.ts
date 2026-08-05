@@ -36,6 +36,19 @@ const INFURA_NETWORK_NAME_BY_CHAIN_ID = [
 ])[];
 
 /**
+ * The same mapping as an object for O(1) chain ID lookups. Built from the tuple
+ * list so the two never drift. The URLs themselves are resolved lazily (they
+ * depend on env), so only the chain ID to Infura network name lookup is cached
+ * here.
+ */
+const INFURA_NETWORK_NAME_BY_CHAIN_ID_LOOKUP: Partial<
+  Record<Hex, keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME>
+> = {};
+for (const [chainId, infuraNetworkName] of INFURA_NETWORK_NAME_BY_CHAIN_ID) {
+  INFURA_NETWORK_NAME_BY_CHAIN_ID_LOOKUP[chainId] = infuraNetworkName;
+}
+
+/**
  * Returns the QuickNode failover URLs for a chain, mirroring the map the
  * NetworkController is initialized with. Returns `undefined` for chains that
  * have no mapped failover so callers can fall back to an endpoint's own
@@ -45,10 +58,10 @@ const INFURA_NETWORK_NAME_BY_CHAIN_ID = [
  * @returns The failover URLs, or `undefined` if the chain has no mapped failover.
  */
 export function getFailoverUrlsForChainId(chainId: Hex): string[] | undefined {
-  const entry = INFURA_NETWORK_NAME_BY_CHAIN_ID.find(
-    ([mappedChainId]) => mappedChainId === chainId,
-  );
-  return entry ? getFailoverUrlsForInfuraNetwork(entry[1]) : undefined;
+  const infuraNetworkName = INFURA_NETWORK_NAME_BY_CHAIN_ID_LOOKUP[chainId];
+  return infuraNetworkName
+    ? getFailoverUrlsForInfuraNetwork(infuraNetworkName)
+    : undefined;
 }
 
 /**
