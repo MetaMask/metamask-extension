@@ -1462,9 +1462,6 @@
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
   },
@@ -1527,9 +1524,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Results have changed"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1st interaction"
@@ -7020,6 +7014,10 @@
   "perpsCancelOrder": {
     "message": "Cancel order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order could not be cancelled. Try again.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Set candle interval"
   },
@@ -7644,6 +7642,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit must be $1 $2 price",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "This order is no longer open",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Failed to cancel order",
@@ -11674,6 +11676,10 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
+  },
+  "viewXMore": {
+    "message": "View $1 more",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

@@ -28,6 +28,7 @@ jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
 
 const getDefaultDiscoverSearchResult = () => ({
   crypto: {
+    id: 'crypto' as const,
     items: [
       {
         assetId: 'eip155:1/slip44:60',
@@ -42,13 +43,16 @@ const getDefaultDiscoverSearchResult = () => ({
     ],
     isLoading: false,
     error: null,
+    totalCount: 1,
   },
   perps: {
+    id: 'perps' as const,
     items: [],
     isLoading: false,
     error: null,
   },
   stocks: {
+    id: 'stocks' as const,
     items: [
       {
         assetId: 'eip155:1/erc20:0xstock',
@@ -63,22 +67,26 @@ const getDefaultDiscoverSearchResult = () => ({
     ],
     isLoading: false,
     error: null,
+    totalCount: 1,
   },
   isDebouncing: false,
 });
 
 const getEmptyDiscoverSearchResult = () => ({
   crypto: {
+    id: 'crypto' as const,
     items: [],
     isLoading: false,
     error: null,
   },
   perps: {
+    id: 'perps' as const,
     items: [],
     isLoading: false,
     error: null,
   },
   stocks: {
+    id: 'stocks' as const,
     items: [],
     isLoading: false,
     error: null,
@@ -144,6 +152,70 @@ describe('DiscoverSearchPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows View X more when an active search has more matches than the preview', () => {
+    const cryptoItems = Array.from({ length: 5 }, (_, index) => ({
+      assetId: `eip155:1/slip44:${60 + index}`,
+      name: `Token ${index}`,
+      symbol: `T${index}`,
+      decimals: 18,
+      price: '1',
+      marketCap: 1,
+      aggregatedUsdVolume: 1,
+      priceChangePct: { h24: '1.23456' },
+    }));
+
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        id: 'crypto',
+        items: cryptoItems,
+        isLoading: false,
+        error: null,
+        totalCount: 12,
+      },
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: 'eth' },
+    });
+
+    expect(
+      screen.getByText(messages.viewXMore.message.replace('$1', '9')),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the view-more action when search results fit in the preview', () => {
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        id: 'crypto',
+        items: getDefaultDiscoverSearchResult().crypto.items,
+        isLoading: false,
+        error: null,
+        totalCount: 2,
+      },
+      stocks: {
+        id: 'stocks',
+        items: [],
+        isLoading: false,
+        error: null,
+        totalCount: 0,
+      },
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: 'eth' },
+    });
+
+    expect(
+      screen.queryByTestId('discover-section-crypto-view-all'),
+    ).not.toBeInTheDocument();
+  });
+
   it('navigates home on back', () => {
     renderPage();
 
@@ -201,5 +273,29 @@ describe('DiscoverSearchPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       '/asset/bip122:000000000019d6689c085ae165831e93/bip122%3A000000000019d6689c085ae165831e93%2Fslip44%3A0',
     );
+  });
+
+  it('renders no-results search design on empty category tabs', () => {
+    const searchQuery = 'erwerwqer';
+
+    mockUseDiscoverSearch.mockReturnValue(getEmptyDiscoverSearchResult());
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: searchQuery },
+    });
+    fireEvent.click(screen.getByTestId('discover-tab-crypto'));
+
+    expect(
+      screen.getByTestId('discover-search-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.discoverSearchNoResultsFor.message.replace('$1', searchQuery),
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.discoverSearchPopularAssets.message),
+    ).toBeInTheDocument();
   });
 });

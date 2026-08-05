@@ -39,7 +39,8 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
   const securityAlertsEnabled =
     transactionMetricsRequest.getSecurityAlertsEnabled();
   if (securityAlertsEnabled) {
-    const { to } = transactionMeta.txParams;
+    const to =
+      transactionMeta.txParamsOriginal?.to ?? transactionMeta.txParams.to;
     if (typeof to === 'string' && transactionMeta.chainId) {
       const cacheKey = createCacheKey(transactionMeta.chainId, to);
       const cachedResponse =
@@ -56,6 +57,8 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
       ...blockaidProperties,
       ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
       address_alert_response: addressAlertResponse,
+      transaction_contract_verified:
+        addressAlertResponse === ResultType.Trusted,
     },
     sensitiveProperties: {},
   };

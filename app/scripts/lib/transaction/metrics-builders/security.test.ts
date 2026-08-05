@@ -34,6 +34,7 @@ describe('security builder', () => {
 
     expect(result.properties.gas_estimation_failed).toBe(true);
     expect(result.properties.address_alert_response).toBe('Malicious');
+    expect(result.properties.transaction_contract_verified).toBe(false);
     expect(result.properties.ui_customizations).toEqual(
       expect.arrayContaining([
         'flagged_as_malicious',
@@ -117,5 +118,37 @@ describe('security builder', () => {
 
     expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     expect(result.properties.address_alert_response).toBe('not_applicable');
+  });
+
+  it('reports verified contracts using the original recipient address', async () => {
+    const getAddressSecurityAlertResponse = jest
+      .fn()
+      .mockReturnValue({ result_type: 'Trusted' });
+    const result = await getSecurityMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          txParamsOriginal: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x3333333333333333333333333333333333333333',
+          },
+          txParams: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x4444444444444444444444444444444444444444',
+          },
+          chainId: '0x1',
+        } as never,
+        transactionMetricsRequest: {
+          ...createBuilderRequest().transactionMetricsRequest,
+          getAddressSecurityAlertResponse,
+        } as never,
+      }),
+    );
+
+    expect(getAddressSecurityAlertResponse).toHaveBeenCalledWith(
+      '0x1:0x3333333333333333333333333333333333333333',
+    );
+    expect(result.properties.address_alert_response).toBe('Trusted');
+    expect(result.properties.transaction_contract_verified).toBe(true);
   });
 });
