@@ -148,13 +148,16 @@ describe('DiscoverSearchPage', () => {
     expect(screen.getByText('$0.00')).toBeInTheDocument();
   });
 
-  it('restores the search query from the route query string', () => {
-    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth` });
+  it('restores the search query and active tab from the route query string', () => {
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=crypto` });
 
     expect(screen.getByTestId('discover-search-input')).toHaveValue('eth');
     expect(mockUseDiscoverSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ query: 'eth' }),
+      expect.objectContaining({ query: 'eth', activeTab: 'crypto' }),
     );
+    expect(
+      screen.getByTestId('discover-crypto-eip155:1/slip44:60'),
+    ).toBeInTheDocument();
   });
 
   it('renders risky security badges for suspicious assets', () => {

@@ -89,6 +89,55 @@ const DiscoverSearchSectionDivider = () => (
   </Box>
 );
 
+const SEARCH_QUERY_PARAM = 'q';
+const SEARCH_TAB_PARAM = 'tab';
+const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
+
+const isDiscoverSearchTab = (
+  value: string | null,
+): value is DiscoverSearchTab =>
+  value === 'all' ||
+  value === 'crypto' ||
+  value === 'perps' ||
+  value === 'stocks';
+
+type DiscoverSearchRouteParamUpdates = {
+  query?: string;
+  tab?: DiscoverSearchTab;
+};
+
+const getInitialDiscoverSearchTab = (
+  searchParams: URLSearchParams,
+): DiscoverSearchTab => {
+  const tab = searchParams.get(SEARCH_TAB_PARAM);
+  return isDiscoverSearchTab(tab) ? tab : DEFAULT_DISCOVER_SEARCH_TAB;
+};
+
+const getNextDiscoverSearchParams = (
+  previousParams: URLSearchParams,
+  updates: DiscoverSearchRouteParamUpdates,
+) => {
+  const nextParams = new URLSearchParams(previousParams);
+
+  if (updates.query !== undefined) {
+    if (updates.query) {
+      nextParams.set(SEARCH_QUERY_PARAM, updates.query);
+    } else {
+      nextParams.delete(SEARCH_QUERY_PARAM);
+    }
+  }
+
+  if (updates.tab !== undefined) {
+    if (updates.tab === DEFAULT_DISCOVER_SEARCH_TAB) {
+      nextParams.delete(SEARCH_TAB_PARAM);
+    } else {
+      nextParams.set(SEARCH_TAB_PARAM, updates.tab);
+    }
+  }
+
+  return nextParams;
+};
+
 /**
  * Discover search page: search + All / Crypto / Perps / Stock tabs.
  */
@@ -100,9 +149,11 @@ export const DiscoverSearchPage = () => {
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   const [searchQuery, setSearchQuery] = useState(
-    () => searchParams.get('q') ?? '',
+    () => searchParams.get(SEARCH_QUERY_PARAM) ?? '',
   );
-  const [activeTab, setActiveTab] = useState<DiscoverSearchTab>('all');
+  const [activeTab, setActiveTab] = useState<DiscoverSearchTab>(() =>
+    getInitialDiscoverSearchTab(searchParams),
+  );
 
   const {
     crypto: cryptoSection,
@@ -121,23 +172,23 @@ export const DiscoverSearchPage = () => {
     [navigate, runCloseTransition],
   );
 
-  const updateSearchQuery = useCallback(
-    (nextQuery: string) => {
-      setSearchQuery(nextQuery);
+  const updateRouteSearchParams = useCallback(
+    (updates: DiscoverSearchRouteParamUpdates) => {
       setSearchParams(
-        (previousParams) => {
-          const nextParams = new URLSearchParams(previousParams);
-          if (nextQuery) {
-            nextParams.set('q', nextQuery);
-          } else {
-            nextParams.delete('q');
-          }
-          return nextParams;
-        },
+        (previousParams) =>
+          getNextDiscoverSearchParams(previousParams, updates),
         { replace: true },
       );
     },
     [setSearchParams],
+  );
+
+  const updateSearchQuery = useCallback(
+    (nextQuery: string) => {
+      setSearchQuery(nextQuery);
+      updateRouteSearchParams({ query: nextQuery });
+    },
+    [updateRouteSearchParams],
   );
 
   const handleSearchClear = useCallback(() => {
@@ -149,6 +200,14 @@ export const DiscoverSearchPage = () => {
       updateSearchQuery(event.target.value);
     },
     [updateSearchQuery],
+  );
+
+  const updateActiveTab = useCallback(
+    (tab: DiscoverSearchTab) => {
+      setActiveTab(tab);
+      updateRouteSearchParams({ tab });
+    },
+    [updateRouteSearchParams],
   );
 
   const handleAssetPress = useCallback(
@@ -169,9 +228,12 @@ export const DiscoverSearchPage = () => {
     [navigate],
   );
 
-  const handleViewAll = useCallback((tab: DiscoverSearchTab) => {
-    setActiveTab(tab);
-  }, []);
+  const handleViewAll = useCallback(
+    (tab: DiscoverSearchTab) => {
+      updateActiveTab(tab);
+    },
+    [updateActiveTab],
+  );
 
   const getSectionViewAllLabel = useCallback(
     (
@@ -444,7 +506,7 @@ export const DiscoverSearchPage = () => {
       <Tabs
         animated
         activeTab={activeTab}
-        onTabClick={(tab) => setActiveTab(tab as DiscoverSearchTab)}
+        onTabClick={(tab) => updateActiveTab(tab as DiscoverSearchTab)}
         className="min-h-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
