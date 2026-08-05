@@ -53,8 +53,6 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
   PERF_DEBUG,
 }) => {
-  'use no memo';
-
   const scrollableContainerRef = useRef(null);
   const scrollRef = useRef(null);
 
