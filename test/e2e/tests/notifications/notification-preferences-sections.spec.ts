@@ -8,6 +8,7 @@ import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { goToNotificationsSettingsPage } from '../../page-objects/flows/notifications.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices } from './mocks';
@@ -91,7 +92,12 @@ describe('Notification Preferences Sections', function () {
         // Re-open Settings > Notifications from a fresh (locked then unlocked)
         // session so the preferences are re-fetched from authenticated user
         // storage rather than read from in-memory state.
-        await driver.navigate();
+        //
+        // Leave Settings through the UI instead of reloading the page: a reload
+        // restarts authentication, user storage and notification fetches, and
+        // `setLocked` then queues behind that work in the background for longer
+        // than the unlock page wait allows.
+        await closeSettings(driver);
         await lockAndWaitForLoginPage(driver);
         await login(driver);
         await goToNotificationsSettingsPage(driver);
