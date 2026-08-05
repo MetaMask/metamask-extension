@@ -11,7 +11,12 @@ import type { Migrate } from './types';
 export const version = 222;
 
 type StorageServiceEntry = [string, unknown];
-type BrowserStorageLocal = Pick<typeof browser.storage.local, 'get' | 'remove'>;
+type BrowserStorageLocal = Pick<
+  typeof browser.storage.local,
+  'get' | 'remove'
+> & {
+  getKeys?: () => Promise<string[]>;
+};
 
 function getStorageServiceEntries(
   storageData: Record<string, unknown>,
@@ -21,12 +26,33 @@ function getStorageServiceEntries(
   });
 }
 
-function getBrowserStorageLocal(): BrowserStorageLocal | undefined {
-  const storageLocal = (
-    browser as unknown as {
-      storage?: { local?: Partial<BrowserStorageLocal> };
+async function getStorageServiceEntriesFromStorageLocal(
+  storageLocal: BrowserStorageLocal,
+): Promise<StorageServiceEntry[]> {
+  // avoid reading ALL data from all keys in browser.storage.local by using
+  // getKeys if available (added in chrome 130 and firefox 143)
+  if (typeof storageLocal.getKeys === 'function') {
+    const storageServiceKeys = (await storageLocal.getKeys()).filter((key) => {
+      return key.startsWith(STORAGE_KEY_PREFIX);
+    });
+
+    if (storageServiceKeys.length === 0) {
+      return [];
     }
-  ).storage?.local;
+
+    const storageData = await storageLocal.get(storageServiceKeys);
+
+    return storageServiceKeys
+      .filter((key) => key in storageData)
+      .map((key) => [key, storageData[key]]);
+  }
+
+  const allStorage = await storageLocal.get(null);
+  return getStorageServiceEntries(allStorage);
+}
+
+function getBrowserStorageLocal(): BrowserStorageLocal | undefined {
+  const storageLocal = browser.storage?.local;
 
   if (
     typeof storageLocal?.get !== 'function' ||
@@ -58,8 +84,8 @@ export const migrate = (async (versionedData) => {
       return;
     }
 
-    const allStorage = await storageLocal.get(null);
-    const storageServiceEntries = getStorageServiceEntries(allStorage);
+    const storageServiceEntries =
+      await getStorageServiceEntriesFromStorageLocal(storageLocal);
 
     if (storageServiceEntries.length === 0) {
       return;

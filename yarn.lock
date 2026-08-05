@@ -17366,10 +17366,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webextension-polyfill@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "@types/webextension-polyfill@npm:0.10.4"
-  checksum: 10/f5aa3d24d3214a1d82328dc14c2f9b8d07d36e149281968959992f29ef78017dc1cf6055759d18ce46d29528d22b87fcfb30a289432382704869c7f3e1962f52
+"@types/webextension-polyfill@npm:^0.12.5":
+  version: 0.12.5
+  resolution: "@types/webextension-polyfill@npm:0.12.5"
+  checksum: 10/839f9be4c1d8b5aa6014ae479447f5f3331ece0c4a9c7304fa5b50b06b1366fbe1a846c398b12d69e5e20fa9f218a8ea9b2535aa5878f542e533ea3586134bb5
   languageName: node
   linkType: hard
 
@@ -33147,7 +33147,7 @@ __metadata:
     "@types/unzipper": "npm:^0.10.10"
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
-    "@types/webextension-polyfill": "npm:^0.10.4"
+    "@types/webextension-polyfill": "npm:^0.12.5"
     "@types/ws": "npm:^8.5.10"
     "@types/xml2js": "npm:^0"
     "@types/yargs": "npm:^17.0.32"
@@ -33350,7 +33350,7 @@ __metadata:
     viem: "npm:^2.21.8"
     wait-on: "npm:^9.0.5"
     web-vitals: "npm:^4.2.4"
-    webextension-polyfill: "npm:^0.8.0"
+    webextension-polyfill: "npm:^0.12.0"
     webpack: "npm:^5.104.1"
     webpack-bundle-analyzer: "patch:webpack-bundle-analyzer@npm%3A5.3.0#~/.yarn/patches/webpack-bundle-analyzer-npm-5.3.0-946883e2fa.patch"
     webpack-cli: "npm:^6.0.1"
@@ -43681,13 +43681,6 @@ __metadata:
   version: 0.12.0
   resolution: "webextension-polyfill@npm:0.12.0"
   checksum: 10/77e648b958b573ef075e75a0c180e2bbd74dee17b3145e86d21fcbb168c4999e4a311654fe634b8178997bee9b35ea5808d8d3d3e5ff2ad138f197f4f0ea75d9
-  languageName: node
-  linkType: hard
-
-"webextension-polyfill@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "webextension-polyfill@npm:0.8.0"
-  checksum: 10/2ba19ab9246809cc2ec9795cad31728e98ea983b75efb0a1bb144567b95770648dc9a57aa91c11508d610989f7f11228b6a00513c0bae2afda9bc6e5bffd14b3
   languageName: node
   linkType: hard
 

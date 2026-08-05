@@ -13,6 +13,7 @@ jest.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: jest.fn(),
+      getKeys: jest.fn(),
       remove: jest.fn(),
     },
   },
@@ -56,6 +57,7 @@ describe(`migration #${version}`, () => {
     jest.clearAllMocks();
     await deleteDatabase();
     mockBrowser.storage.local.get.mockResolvedValue({});
+    mockBrowser.storage.local.getKeys.mockResolvedValue([]);
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
   });
 
@@ -75,12 +77,11 @@ describe(`migration #${version}`, () => {
 
   it('does nothing when there are no storageService keys in browser.storage.local', async () => {
     const oldStorage = buildVersionedData();
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      unrelated: 'value',
-    });
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
 
     await migrate(oldStorage, new Set());
 
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
 
@@ -107,6 +108,10 @@ describe(`migration #${version}`, () => {
       data: { '0xToken': { name: 'Token' } },
     };
     const oldStorage = buildVersionedData();
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
+      STORAGE_SERVICE_KEY,
+      'unrelated',
+    ]);
     mockBrowser.storage.local.get.mockResolvedValueOnce({
       [STORAGE_SERVICE_KEY]: storageServiceValue,
       unrelated: 'value',
@@ -127,6 +132,9 @@ describe(`migration #${version}`, () => {
     expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
       STORAGE_SERVICE_KEY,
     ]);
+    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith([
+      STORAGE_SERVICE_KEY,
+    ]);
   });
 
   it('does not overwrite storageService keys that already exist in IndexedDB', async () => {
@@ -139,6 +147,9 @@ describe(`migration #${version}`, () => {
     );
     await database.set({ [STORAGE_SERVICE_KEY]: indexedDBValue });
     database.close();
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
+      STORAGE_SERVICE_KEY,
+    ]);
     mockBrowser.storage.local.get.mockResolvedValueOnce({
       [STORAGE_SERVICE_KEY]: legacyValue,
     });
@@ -166,6 +177,9 @@ describe(`migration #${version}`, () => {
     jest
       .spyOn(IndexedDBStore.prototype, 'open')
       .mockRejectedValue(blockedError);
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
+      STORAGE_SERVICE_KEY,
+    ]);
     mockBrowser.storage.local.get.mockResolvedValueOnce({
       [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
     });
@@ -181,7 +195,7 @@ describe(`migration #${version}`, () => {
   it('does not throw when migration storage access fails', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     const storageError = new Error('storage.local failed');
-    mockBrowser.storage.local.get.mockRejectedValueOnce(storageError);
+    mockBrowser.storage.local.getKeys.mockRejectedValueOnce(storageError);
     const oldStorage = buildVersionedData();
 
     await migrate(oldStorage, new Set());
@@ -191,5 +205,28 @@ describe(`migration #${version}`, () => {
       `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
       storageError,
     );
+  });
+
+  it('falls back to get(null) when getKeys is unavailable', async () => {
+    const storageServiceValue = { sourceCode: 'legacy-source-code' };
+    const oldStorage = buildVersionedData();
+    const storageLocalWithoutGetKeys = mockBrowser.storage.local as {
+      get: typeof mockBrowser.storage.local.get;
+      remove: typeof mockBrowser.storage.local.remove;
+      getKeys?: typeof mockBrowser.storage.local.getKeys;
+    };
+
+    storageLocalWithoutGetKeys.getKeys = undefined;
+    mockBrowser.storage.local.get.mockResolvedValueOnce({
+      [STORAGE_SERVICE_KEY]: storageServiceValue,
+      unrelated: 'value',
+    });
+
+    await migrate(oldStorage, new Set());
+
+    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith(null);
+    expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
+      STORAGE_SERVICE_KEY,
+    ]);
   });
 });
