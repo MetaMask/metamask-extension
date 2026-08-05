@@ -580,6 +580,19 @@ function mockSseEventSource(
   );
 }
 
+/**
+ * Production routes smart transactions to the per-network sentinel hosts, while
+ * the mocks below answer the pre-migration `transaction.api.cx.metamask.io`
+ * endpoints. Pinning the migration flags off keeps the request URLs these
+ * fixtures mock.
+ */
+const STX_SENTINEL_MIGRATION_OFF = {
+  stxMigrationBatchStatus: { value: false },
+  stxMigrationCancel: { value: false },
+  stxMigrationGetFees: { value: false },
+  stxMigrationSubmitTransactions: { value: false },
+};
+
 async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
@@ -593,6 +606,7 @@ async function mockFeatureFlags(
         statusCode: 200,
         json: getProductionRemoteFlagApiResponseWithOverrides({
           bridgeConfig: featureFlags,
+          ...STX_SENTINEL_MIGRATION_OFF,
           ...additionalFlags,
         }),
       };
