@@ -121,21 +121,8 @@ export const DiscoverSearchPage = () => {
     [navigate, runCloseTransition],
   );
 
-  const handleSearchClear = useCallback(() => {
-    setSearchQuery('');
-    setSearchParams(
-      (previousParams) => {
-        const nextParams = new URLSearchParams(previousParams);
-        nextParams.delete('q');
-        return nextParams;
-      },
-      { replace: true },
-    );
-  }, [setSearchParams]);
-
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const nextQuery = event.target.value;
+  const updateSearchQuery = useCallback(
+    (nextQuery: string) => {
       setSearchQuery(nextQuery);
       setSearchParams(
         (previousParams) => {
@@ -151,6 +138,17 @@ export const DiscoverSearchPage = () => {
       );
     },
     [setSearchParams],
+  );
+
+  const handleSearchClear = useCallback(() => {
+    updateSearchQuery('');
+  }, [updateSearchQuery]);
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      updateSearchQuery(event.target.value);
+    },
+    [updateSearchQuery],
   );
 
   const handleAssetPress = useCallback(
@@ -406,11 +404,11 @@ export const DiscoverSearchPage = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      className="w-full h-full min-h-0"
+      className="h-full min-h-0 w-full overflow-hidden"
       data-testid="discover-search-page"
     >
       <Box
-        className="shrink-0 gap-2 px-4 py-4"
+        className="shrink-0 gap-2 bg-background-default px-4 py-4"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
@@ -448,8 +446,11 @@ export const DiscoverSearchPage = () => {
         activeTab={activeTab}
         onTabClick={(tab) => setActiveTab(tab as DiscoverSearchTab)}
         className="min-h-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
-        tabContentProps={{ className: 'min-h-0 overflow-y-auto pb-6' }}
+        tabContentProps={{
+          className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
+        }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
           {allTabContent}

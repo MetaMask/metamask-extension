@@ -116,7 +116,6 @@ const getDiscoverSearchSecurityBadge = (
 
 /**
  * Discover row for crypto / stocks: icon, name, security badge, cap·vol, price, 24h %.
- * Security badge TrendingTokenRowItem (`getResultTypeConfig` → inline badge).
  * @param options0
  * @param options0.asset
  * @param options0.onPress
