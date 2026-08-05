@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
 import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -12,24 +11,15 @@ import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
 
 type Props = {
   chainId: string | undefined;
   txIdentifier: string | undefined;
   onBack: () => void;
-  /**
-   * Optional pre-resolved activity item (e.g. from the activity list dialog).
-   * When provided, skips local/API/non-EVM resolution.
-   */
-  item?: ActivityListItem;
 };
 
-export function TransactionDetails({
-  chainId,
-  txIdentifier,
-  onBack,
-  item,
-}: Props) {
+export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const selectedAddress = useSelector(selectEvmAddress);
   const isEvm = chainId?.startsWith('eip155:');
 
@@ -44,6 +34,8 @@ export function TransactionDetails({
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
+  const rampsActivityItem = useRampsDetailsItem(txIdentifier);
+
   const apiTransaction = useApiTransaction({
     chainId,
     txHash:
@@ -56,8 +48,10 @@ export function TransactionDetails({
   });
 
   const transaction = useMemo(() => {
-    if (item) {
-      return item;
+    // Ramps first so settled orders keep the ramp classification over the
+    // generic transaction that shares their settlement hash.
+    if (rampsActivityItem) {
+      return rampsActivityItem;
     }
 
     const apiActivityItem =
@@ -96,9 +90,9 @@ export function TransactionDetails({
     return undefined;
   }, [
     apiTransaction,
-    item,
     localActivityItem,
     nonEvmActivityItem,
+    rampsActivityItem,
     selectedAddress,
   ]);
 

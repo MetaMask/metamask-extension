@@ -215,7 +215,6 @@ export function ActivityList({
         onClose={handleClose}
       >
         <TransactionDetails
-          item={selectedItem ?? undefined}
           chainId={selectedItem?.chainId}
           txIdentifier={
             selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
