@@ -17,13 +17,13 @@
     "message": "Rechazar"
   },
   "QRHardwareSignRequestDescription": {
-    "message": "Después de firmar con su monedero, haga clic en \"Obtener firma\" para recibir la firma"
+    "message": "Después de firmar con tu billetera, haz clic en \"Obtener firma\" para recibir la firma"
   },
   "QRHardwareSignRequestGetSignature": {
     "message": "Obtener firma"
   },
   "QRHardwareSignRequestSubtitle": {
-    "message": "Escanee código QR con su monedero"
+    "message": "Escanee código QR con tu billetera"
   },
   "QRHardwareSignRequestTitle": {
     "message": "Solicitar firma"
@@ -1644,8 +1644,24 @@
     "message": "Activa $1 en $2 para comenzar.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Se produjo un error al agregar esta línea de confianza. Inténtalo de nuevo.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "No pudimos obtener ningún dato histórico"
+  },
+  "assetDeactivate": {
+    "message": "Eliminar",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Se produjo un error al eliminar esta línea de confianza. Inténtalo de nuevo.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Aún tienes $1 $2 en esta billetera. Debes enviarlos o canjearlos por completo antes de desactivar este activo en Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Inactivo",
@@ -6983,6 +6999,10 @@
   "perpsDateYesterday": {
     "message": "Ayer"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Depósito",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Puente fallido"
   },
@@ -7012,6 +7032,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Se depositaron fondos en tu cuenta de contratos perpetuos"
+  },
+  "perpsDepositedVerb": {
+    "message": "Depositado",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Depósitos"
@@ -7232,6 +7256,42 @@
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
   },
+  "perpsOrderBook": {
+    "message": "Libro de órdenes"
+  },
+  "perpsOrderBookApply": {
+    "message": "Aplicar"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Se perdió la conexión con el libro de órdenes"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Agrupar por"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Ordenado por"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Cargando libro de órdenes"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Precio"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconectar"
+  },
+  "perpsOrderBookSize": {
+    "message": "Tamaño"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Diferencial"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Tipo de valor"
+  },
   "perpsOrderDate": {
     "message": "Fecha"
   },
@@ -7407,11 +7467,17 @@
   "perpsStatusCompleted": {
     "message": "Completado"
   },
+  "perpsStatusFailed": {
+    "message": "Fallida"
+  },
   "perpsStatusFilled": {
     "message": "Ejecutada"
   },
   "perpsStatusOpen": {
     "message": "Abierto"
+  },
+  "perpsStatusPending": {
+    "message": "Pendiente"
   },
   "perpsStatusQueued": {
     "message": "En cola"
@@ -7647,6 +7713,9 @@
   "perpsUnrealizedPnl": {
     "message": "P&L no realizado"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Este mercado utiliza garantías no compatibles y no se puede operar con él."
+  },
   "perpsWatchlist": {
     "message": "Lista de seguimiento"
   },
@@ -7726,6 +7795,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask realizará el canje por el token que desees. No se aplica ninguna tarifa de MetaMask al canjear a mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Retiro",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Retiraste",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Tú recibes"
@@ -7970,6 +8047,9 @@
   "rampsBuyToken": {
     "message": "Comprar $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "No se puede iniciar tu compra. Inténtalo de nuevo."
   },
   "rampsBuyingViaProvider": {
     "message": "Comprando mediante $1.",
@@ -8718,6 +8798,300 @@
   },
   "securitySrpLabel": {
     "message": "FRASES SECRETAS DE RECUPERACIÓN"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Impuesto de compra/venta"
+  },
+  "securityTrustBuyTax": {
+    "message": "Impuesto de compra"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Continúa de todos modos"
+  },
+  "securityTrustCreated": {
+    "message": "Creado"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Datos de seguridad no disponibles"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Esta revisión de seguridad es solo para fines de evaluación y no constituye un respaldo ni una recomendación para operar."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Airdrop sospechoso"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Puede bloquear direcciones"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Puede permitir solo direcciones específicas"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Suministro concentrado"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Transferencias confidenciales"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Comportamiento sospechoso"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Llamadas externas"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Cantidad de traders inflada"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Volumen falso"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Período de espera en trading"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Gran actividad de bots"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Propietario oculto"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Suministro no revelado"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Alta comisión de compra"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Reputación consolidada"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Alta comisión de venta"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Alto volumen de trading"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Alta comisión de transferencia"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Riesgo de honeypot (no permite vender)"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Suplantador"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Probable suplantador"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Posible suplantador"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Posible suplantador"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Suplanta un activo sensible"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Contenido inapropiado"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Volumen artificial"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Baja liquidez bloqueada"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Permite mint"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Malicioso confirmado"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Listado en el cambio"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "El creador tiene baja reputación"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Metadatos sospechosos"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Impuestos modificables"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "No transferible"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "El propietario puede cambiar el saldo"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Posible manipulación de precios"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Contrato de proxy"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Riesgo de rug pull (retirada de liquidez)"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Creador sancionado"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Se asemeja a un contrato malicioso"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Actividad de bots en el lanzamiento"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Texto no deseado"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Código sospechoso"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Puerta trasera en el token"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Se permiten reversiones de transferencias"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Hook de transferencia activo"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transferencias pausables"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Token no vendible"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Precio inestable"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Contrato publicado"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading (operaciones ficticias)"
+  },
+  "securityTrustMalicious": {
+    "message": "Malicioso"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Malicioso"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 está marcado como malicioso. Es probable que robe fondos a cualquiera que interactúe con él."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Este token está marcado como malicioso. Es probable que robe fondos a cualquiera que interactúe con él."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Se detectaron señales de riesgo grave para $1. Te recomendamos no operar con este token."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Se detectaron señales de riesgo grave para este token. Te recomendamos no operar con este token."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Token malicioso"
+  },
+  "securityTrustMore": {
+    "message": "más"
+  },
+  "securityTrustNa": {
+    "message": "N/A"
+  },
+  "securityTrustNetwork": {
+    "message": "Red"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "No se detectaron tarifas ocultas"
+  },
+  "securityTrustNoIssues": {
+    "message": "Sin problemas"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Enlaces oficiales"
+  },
+  "securityTrustOther": {
+    "message": "Otro"
+  },
+  "securityTrustRisky": {
+    "message": "Riesgoso"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 está marcado como sospechoso. Revisa los riesgos antes de continuar."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Este token está marcado como sospechoso. Revise los riesgos antes de continuar."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Token sospechoso"
+  },
+  "securityTrustSellTax": {
+    "message": "Impuesto de venta"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "No se detectaron señales de riesgo. Siempre investiga cualquier activo antes de operar."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Se detectaron señales de riesgo grave. Te recomendamos evitar este activo."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "No se detectaron señales de riesgo. Siempre investiga cualquier activo antes de operar."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Se detectaron señales de precaución. Revisa cuidadosamente los problemas señalados antes de operar con este activo."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "No se pudo cargar el análisis de seguridad de este token."
+  },
+  "securityTrustSuspicious": {
+    "message": "Sospechoso"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 es un token sospechoso."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Este es un token sospechoso."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Seguridad y confianza"
+  },
+  "securityTrustTokenAge": {
+    "message": "Antigüedad del token"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Distribución de tokens"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Información del token"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Los 10 principales titulares"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Suministro total"
+  },
+  "securityTrustTransfer": {
+    "message": "Transferir"
+  },
+  "securityTrustType": {
+    "message": "Tipo"
+  },
+  "securityTrustVerified": {
+    "message": "Verificado"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 opera activamente y goza de amplio reconocimiento. La verificación no implica el respaldo de MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Token verificado"
+  },
+  "securityTrustWebsite": {
+    "message": "Sitio web"
   },
   "seeAllPermissions": {
     "message": "Ver todos los permisos",
