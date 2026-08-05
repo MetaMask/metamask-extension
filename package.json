@@ -173,6 +173,7 @@
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
+    "ip-address": "^10.3.1",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "napi-postinstall": "npm:npm-empty-package@1.0.0",
