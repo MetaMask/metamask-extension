@@ -57,7 +57,7 @@ jest.mock('../../../store/background-connection', () => ({
   }),
 }));
 
-const renderComponent = (props) => {
+const renderComponent = ({ isRpcFailoverEnabled, ...props } = {}) => {
   const store = configureMockStore([thunk])({
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -70,6 +70,9 @@ const renderComponent = (props) => {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: 'eip155:1',
       isEvmSelected: true,
+      remoteFeatureFlags: {
+        walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+      },
     },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
@@ -157,6 +160,7 @@ describe('NetworkForm Component', () => {
 
   afterEach(() => {
     nock.cleanAll();
+    delete process.env.QUICKNODE_BSC_URL;
   });
 
   it('should render add new network form correctly', async () => {
@@ -674,5 +678,55 @@ describe('NetworkForm Component', () => {
         }),
       );
     });
+  });
+
+  it('shows failover from shared config for a map chain with empty persisted failoverUrls', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByLabelText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByLabelText('Failover RPC URL')).toHaveValue(
+      'failover.example',
+    );
   });
 });

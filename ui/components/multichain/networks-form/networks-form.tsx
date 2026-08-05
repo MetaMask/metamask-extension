@@ -23,6 +23,7 @@ import {
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
+  getFailoverUrlsForChainId,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
@@ -133,6 +134,14 @@ export const NetworksForm = ({
     rpcUrls.defaultRpcEndpointIndex === undefined
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
+  const chainFailoverUrls =
+    chainId && isStrictHexString(toHex(chainId))
+      ? getFailoverUrlsForChainId(toHex(chainId) as Hex)
+      : undefined;
+
+  const getFailoverUrls = (endpoint?: { failoverUrls?: string[] }) =>
+    chainFailoverUrls ?? endpoint?.failoverUrls;
 
   const { safeChains } = useSafeChains();
 
@@ -558,6 +567,7 @@ export const NetworksForm = ({
               <RpcListItem rpcEndpoint={item} />
             ) : (
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -568,8 +578,7 @@ export const NetworksForm = ({
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
                 {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
+                (getFailoverUrls(item)?.length ?? 0) > 0 ? (
                   <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
@@ -614,8 +623,7 @@ export const NetworksForm = ({
 
         {isRpcFailoverEnabled &&
         defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        (getFailoverUrls(defaultRpcEndpoint)?.length ?? 0) > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -628,7 +636,9 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(
+              (getFailoverUrls(defaultRpcEndpoint) as string[])[0],
+            )}
             disabled={true}
           />
         ) : null}
