@@ -10,6 +10,8 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { HYPERLIQUID_INFO_API_URL } from '../../../../../../shared/constants/defi-referrals';
+import getFetchWithTimeout from '../../../../../../shared/lib/fetch-with-timeout';
+import { TEN_SECONDS_IN_MILLISECONDS } from '../../../../../../shared/lib/transactions-controller-utils';
 import { selectPerpsIsTestnet } from '../../../../../selectors/perps-controller';
 import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
@@ -59,8 +61,8 @@ export function usePerpsWithdrawMultiSigCheck(): {
 
     let stale = false;
 
-    // Never rejects: `fetchIsMultiSigUser` resolves `false` on any failure.
-     
+    // Never rejects: `isHyperliquidMultiSigUser` resolves `false` on any
+    // failure, including the fetch timeout.
     isHyperliquidMultiSigUser(from).then((isMultiSig) => {
       if (!stale) {
         setResult({ from, isMultiSig });
@@ -110,7 +112,12 @@ function isHyperliquidMultiSigUser(address: Hex): Promise<boolean> {
   let status = multiSigStatusByAddress.get(cacheKey);
 
   if (!status) {
-    status = fetchIsMultiSigUser(address);
+    status = fetchIsMultiSigUser(address).catch(() => {
+      // Fail open (never block withdrawals on a failed pre-flight check) and
+      // drop the cache entry so the next confirmation retries.
+      multiSigStatusByAddress.delete(cacheKey);
+      return false;
+    });
     multiSigStatusByAddress.set(cacheKey, status);
   }
 
@@ -118,23 +125,20 @@ function isHyperliquidMultiSigUser(address: Hex): Promise<boolean> {
 }
 
 async function fetchIsMultiSigUser(address: Hex): Promise<boolean> {
-  try {
-    const response = await fetch(HYPERLIQUID_INFO_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'userToMultiSigSigners', user: address }),
-    });
+  const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
 
-    if (!response.ok) {
-      return false;
-    }
+  const response = await fetchWithTimeout(HYPERLIQUID_INFO_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'userToMultiSigSigners', user: address }),
+  });
 
-    // Returns `{ authorizedUsers, threshold }` for multi-sig users, null
-    // otherwise. Only block on a positively identified multi-sig config.
-    const result = await response.json();
-    return Array.isArray(result?.authorizedUsers);
-  } catch {
-    // Fail open: never block withdrawals on a failed pre-flight check.
-    return false;
+  if (!response.ok) {
+    throw new Error(`HyperLiquid info request failed: ${response.status}`);
   }
+
+  // Returns `{ authorizedUsers, threshold }` for multi-sig users, null
+  // otherwise. Only block on a positively identified multi-sig config.
+  const result = await response.json();
+  return Array.isArray(result?.authorizedUsers);
 }
