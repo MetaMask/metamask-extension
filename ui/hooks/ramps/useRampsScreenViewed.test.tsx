@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useRampsScreenViewed } from './useRampsScreenViewed';
 import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
