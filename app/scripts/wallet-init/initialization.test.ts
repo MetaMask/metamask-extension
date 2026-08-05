@@ -122,8 +122,11 @@ describe('initializeWallet', () => {
           infuraProjectId: 'fake-infura-project-id',
           failoverUrls: {
             '0x1': [],
+            '0x10e6': [],
             '0x13b2': [],
+            '0x144': [],
             '0x2105': [],
+            '0x38': [],
             '0x3e7': [],
             '0x531': [],
             '0x89': [],

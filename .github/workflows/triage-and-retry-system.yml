@@ -13,10 +13,12 @@
 #   1. Emits a lightweight "cancelled" event to Sentry and exits
 #      (no full classification needed)
 #
-# Retry is label-gated for all events that have an originating PR:
+# Retry has two budgets for events that have an originating PR:
 #
 #   - pull_request / merge_group:
-#     Retry only when the `retry-ci` label is present on the PR.
+#     Retry retryable failures once by default (attempt 1 → attempt 2).
+#     If the `retry-ci` label is present, retryable failures can retry up
+#     to attempt 4. Label-funded retries consume/remove the label.
 #     For merge_group, the PR number is extracted from the branch name
 #     (gh-readonly-queue/{base}/pr-{N}-{sha}).
 #
@@ -24,9 +26,9 @@
 #     Observation only — no retry (no originating PR to label).
 #
 # Reruns call `gh run rerun --failed`, which triggers a new main.yml
-# completion → workflow_run fires again. A maximum of 4 attempts are
-# allowed (configurable via MAX_ATTEMPTS in classify-failures.mts and
-# the matching guard in ci-status-gate.yml).
+# completion → workflow_run fires again. The default budget allows attempt 2;
+# retry-ci extends the budget through attempt 4. Keep these limits in sync with
+# classify-failures.mts and ci-status-gate.yml.
 #
 # Merge queue interaction:
 #   The merge queue requires two checks (configured via a repository
@@ -41,19 +43,17 @@
 #     Monitors the commit status posted by ci-status-gate.yml.
 #
 #   Both must agree before the queue merges or ejects. ci-status-gate
-#   exploits this: on early merge_group failures, it skips posting
-#   the commit status when retry-ci is present, keeping Rule 2
-#   pending. This blocks Rule 1 from ejecting, giving triage time
-#   to retry.
+#   exploits this: on early merge_group failures, it skips posting the
+#   commit status while a retry budget is still available, keeping Rule 2
+#   pending. This blocks Rule 1 from ejecting, giving triage time to retry.
 #
 #   When triage calls `gh run rerun --failed`, it resets main.yml's check
 #   suite to in_progress and triggers a new attempt. On the final
-#   attempt (no retry-ci label), ci-status-gate posts the commit
+#   attempt (no retry budget available), ci-status-gate posts the commit
 #   status, unblocking the queue to merge or eject.
 #
-#   Edge case: if retry-ci is present but triage classifies the
-#   failure as non-retryable, ci-status-gate has already deferred
-#   (skipped) the commit status. This workflow must post the failure
+#   Edge case: if ci-status-gate deferred but triage classifies the
+#   failure as non-retryable, this workflow must post the failure
 #   status itself to unblock the queue for ejection. Without this,
 #   "All jobs pass" stays pending forever and auto-merge re-queues
 #   the PR in an infinite loop.
@@ -73,8 +73,8 @@ jobs:
     # Pseudocode:
     #   if run.conclusion not in ['failure','cancelled'] → skip
     #   if run.repo != run.head_repo          → skip (cross-repo — no permissions)
-    #   if run.event == 'merge_group'         → run  (label-gated retry via PR)
-    #   if run.event == 'pull_request'        → run  (label-gated retry via PR)
+    #   if run.event == 'merge_group'         → run  (retry budget via PR)
+    #   if run.event == 'pull_request'        → run  (retry budget via PR)
     #   if run.event == 'push'
     #     and run.branch in ['main','stable'] → run  (observation only — no retry)
     #   else                                  → skip (release/*, workflow_dispatch, etc.)
@@ -146,30 +146,70 @@ jobs:
         id: classify
         run: node .github/scripts/classify-failures.mts
 
-      # -- Label-gated retry: requires `retry-ci` label on the originating PR --
-      # The classify step already checked for the label and outputs will-retry,
-      # has-retry-label, and pr-number. This step just acts on those outputs.
+      - name: Verify current merge queue entry
+        id: verify-queue-entry
+        # The verifier posts a terminal failure status for stale or
+        # unverified entries; the retry step runs only for current entries.
+        if: >-
+          ${{
+            steps.classify.outputs.will-retry == 'true'
+            && env.WORKFLOW_EVENT == 'merge_group'
+          }}
+        env:
+          PR_NUMBER: ${{ steps.classify.outputs.pr-number }}
+        run: node .github/scripts/verify-merge-queue-entry.mts
+
+      # -- Retry retryable failures when a retry budget is available --
+      # The classify step decides whether this is an automatic retry or a
+      # retry-ci-funded retry, then outputs whether retry-ci should be consumed.
       #
       # Order matters: rerun BEFORE removing the label. If the rerun API
       # call fails, the label stays on the PR — signaling that the retry
       # was attempted but didn't go through.
-      - name: Retry (if retry-ci label)
+      - name: Retry (if retry budget available)
         id: retry
-        if: ${{ steps.classify.outputs.will-retry == 'true' }}
+        if: >-
+          ${{
+            steps.classify.outputs.will-retry == 'true'
+            && (env.WORKFLOW_EVENT != 'merge_group'
+              || steps.verify-queue-entry.outputs.state == 'current')
+          }}
         run: |
           PR="${{ steps.classify.outputs.pr-number }}"
+          CONSUME_RETRY_LABEL="${{ steps.classify.outputs.consume-retry-label }}"
+
+          # A pushed commit can supersede this failed PR run before triage
+          # starts. Rerunning the old run would reuse its concurrency group and
+          # can cancel the current commit's CI, so only retry an exact head.
+          if [[ "$WORKFLOW_EVENT" == 'pull_request' ]]; then
+            if ! CURRENT_HEAD=$(gh api "repos/$REPO/pulls/$PR" --jq '.head.sha' 2>/dev/null); then
+              echo "::warning::Could not verify PR #$PR head — skipping retry"
+              exit 0
+            fi
+
+            if [[ "$CURRENT_HEAD" != "$HEAD_SHA" ]]; then
+              echo "PR #$PR advanced from $HEAD_SHA to $CURRENT_HEAD — skipping stale retry"
+              exit 0
+            fi
+
+            echo "PR #$PR head still matches failed run $HEAD_SHA"
+          fi
 
           echo "Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
           echo "Rerun triggered."
 
-          echo "Removing retry-ci label from PR #$PR..."
-          gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
-            || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"
+          if [[ "$CONSUME_RETRY_LABEL" == "true" ]]; then
+            echo "Removing retry-ci label from PR #$PR..."
+            gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
+              || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"
+          else
+            echo "Retry did not consume retry-ci label."
+          fi
 
       # -- Rescue: post deferred failure status when triage job fails --
       #
-      # If ci-status-gate deferred the commit status (merge_group + retry-ci)
+      # If ci-status-gate deferred the commit status (merge_group + retry budget)
       # and anything in this job failed or timed out, "All jobs pass" is
       # stuck pending. Post it as failure so the merge queue can eject
       # instead of stalling.

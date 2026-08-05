@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 import { type Hex } from '@metamask/utils';
 import { type AdvancedGasFeePreferences } from '../../../../../shared/constants/gas';
 import { setAdvancedGasFee } from '../../../../store/actions';
+import { useDispatch } from '../../../../store/hooks';
 
 export function usePersistGasFeePreference() {
   const dispatch = useDispatch();

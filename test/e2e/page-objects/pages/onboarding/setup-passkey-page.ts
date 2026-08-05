@@ -33,14 +33,14 @@ class SetupPasskeyPage {
     console.log('Setup passkey page is loaded');
   }
 
-  async skipPasskeySetup(): Promise<void> {
-    console.log('Skip passkey setup');
-    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
-  }
-
   async clickSetUpPasskey(): Promise<void> {
     console.log('Click Set up biometrics during onboarding');
     await this.driver.clickElement(this.setUpPasskeyButton);
+  }
+
+  async skipPasskeySetup(): Promise<void> {
+    console.log('Skip passkey setup');
+    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
   }
 
   async waitForEnrollmentSteps(): Promise<void> {
