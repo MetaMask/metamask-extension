@@ -14,28 +14,33 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
-import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-const NON_EVM_ACCOUNT_FLAG_OVERRIDES = {
-  bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  solanaAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
-  enableMultichainAccounts: {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = [
+  { bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { solanaAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  { tronAccounts: { enabled: false, minimumVersion: '0.0.0' } },
+  {
+    enableMultichainAccounts: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
   },
-  enableMultichainAccountsState2: {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
+  {
+    enableMultichainAccountsState2: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
   },
-};
+];
 
 async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
   return [
     await mockServer
       .forGet(FEATURE_FLAGS_URL)
@@ -46,9 +51,7 @@ async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
       })
       .thenCallback(() => ({
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponseWithOverrides(
-          NON_EVM_ACCOUNT_FLAG_OVERRIDES,
-        ),
+        json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
       })),
   ];
 }
