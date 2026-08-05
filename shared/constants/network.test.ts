@@ -5,6 +5,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
   NETWORK_TO_NAME_MAP,
+  getFailoverUrlsForChainId,
 } from './network';
 
 describe('NetworkConstants', () => {
@@ -100,5 +101,34 @@ describe('NetworkConstants', () => {
       );
       expect(baseRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
+  });
+});
+
+describe('getFailoverUrlsForChainId', () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it('returns the QuickNode failover url for a mapped chain when the env is set', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.BSC)).toStrictEqual([
+      'https://failover.example/bsc',
+    ]);
+  });
+
+  it('returns an empty array for a mapped chain when the env is unset', () => {
+    delete process.env.QUICKNODE_MEGAETH_URL;
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.MEGAETH_MAINNET)).toStrictEqual(
+      [],
+    );
+  });
+
+  it('returns undefined for a chain that has no mapped failover', () => {
+    // Sepolia is not in the failover map
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toBeUndefined();
   });
 });
