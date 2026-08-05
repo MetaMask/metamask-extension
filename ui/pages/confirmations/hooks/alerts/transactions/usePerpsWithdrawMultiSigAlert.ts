@@ -1,6 +1,6 @@
 'use no memo';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -10,7 +10,6 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { HYPERLIQUID_INFO_API_URL } from '../../../../../../shared/constants/defi-referrals';
-import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { selectPerpsIsTestnet } from '../../../../../selectors/perps-controller';
 import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
@@ -45,22 +44,39 @@ export function usePerpsWithdrawMultiSigCheck(): {
   // (a debug toggle) skips the check and fails open.
   const shouldCheck = isPerpsWithdraw && !isTestnet && Boolean(from);
 
-  // The result is tagged with the address it was fetched for, so a response
-  // that arrives late (after switching confirmation or account) never gates
-  // the current one.
-  const { pending, value } = useAsyncResult(async () => {
+  const [result, setResult] = useState<
+    { from: Hex; isMultiSig: boolean } | undefined
+  >();
+
+  // Effect with cleanup instead of `useAsyncResult`, so a response that
+  // arrives after the confirmation or account changed is discarded instead
+  // of being applied to the wrong one. The result is also tagged with the
+  // address it was fetched for and only honored while that address matches.
+  useEffect(() => {
     if (!shouldCheck || !from) {
       return undefined;
     }
 
-    return { from, isMultiSig: await isHyperliquidMultiSigUser(from) };
+    let stale = false;
+
+    // Never rejects: `fetchIsMultiSigUser` resolves `false` on any failure.
+     
+    isHyperliquidMultiSigUser(from).then((isMultiSig) => {
+      if (!stale) {
+        setResult({ from, isMultiSig });
+      }
+    });
+
+    return () => {
+      stale = true;
+    };
   }, [shouldCheck, from]);
 
+  const hasResult = shouldCheck && result?.from === from;
+
   return {
-    pending: shouldCheck && pending,
-    isMultiSigAccount: Boolean(
-      shouldCheck && value && value.from === from && value.isMultiSig,
-    ),
+    pending: shouldCheck && !hasResult,
+    isMultiSigAccount: Boolean(hasResult && result?.isMultiSig),
   };
 }
 
