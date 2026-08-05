@@ -76,7 +76,6 @@ export async function confirmConnectAndUpdateSiteNetworksToOnly(
   await driver.switchToWindowWithTitle(
     WINDOW_TITLES.ExtensionInFullScreenView,
   );
-  await new HomePage(driver).checkPageIsLoaded();
   await updateConnectedSiteNetworksToOnly(
     driver,
     hostname,
