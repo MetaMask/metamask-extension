@@ -16,6 +16,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { login } from '../../page-objects/flows/login.flow';
 import { confirmConnectAndUpdateSiteNetworks } from '../../page-objects/flows/connect.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { PAGES } from '../../webdriver/driver';
 
 const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
   aggregators: [],
@@ -89,9 +90,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           },
         ]);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        await driver.navigate(PAGES.HOME);
 
         // Network Selector
         const networkManager = new NetworkManager(driver);
@@ -224,9 +223,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           },
         ]);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        await driver.navigate(PAGES.HOME);
 
         // Network Selector
         const networkManager = new NetworkManager(driver);
