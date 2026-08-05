@@ -427,6 +427,79 @@ describe('useRWAToken', () => {
     ).toBe(false);
   });
 
+  it('returns true when regular market is closed but off-hours trading is open', () => {
+    jest.setSystemTime(new Date('2026-03-02T20:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-03T14:30:00.000Z',
+            nextClose: '2026-03-03T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
+          },
+        } as never),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true during off-hours even when a regular-hours pause is present', () => {
+    jest.setSystemTime(new Date('2026-03-02T20:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-03T14:30:00.000Z',
+            nextClose: '2026-03-03T21:00:00.000Z',
+          },
+          nextPause: {
+            start: '2026-03-02T19:00:00.000Z',
+            end: '2026-03-02T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
+          },
+        } as never),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when both regular market and off-hours are closed', () => {
+    jest.setSystemTime(new Date('2026-03-02T03:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-02T14:30:00.000Z',
+            nextClose: '2026-03-02T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
+          },
+        } as never),
+      ),
+    ).toBe(false);
+  });
+
   it('updates market status when the internal clock ticks', () => {
     jest.setSystemTime(new Date('2026-03-02T12:00:00.000Z'));
     const { result } = renderHookWithProvider(

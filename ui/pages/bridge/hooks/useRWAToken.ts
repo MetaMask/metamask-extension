@@ -28,6 +28,9 @@ const toMs = (value: DateLike): number | null => {
 /**
  * Returns true when `nowMs` falls inside the time window defined by
  * nextOpen/nextClose, using the same wraparound logic as regular market hours.
+ * @param nextOpen
+ * @param nextClose
+ * @param nowMs
  */
 const isInsideWindow = (
   nextOpen: DateLike,
@@ -117,7 +120,7 @@ export const isTokenInOffHoursAt = (
     return false;
   }
 
-  const offhours = (token.rwaData as { offhours?: OffHoursData }).offhours;
+  const {offhours} = (token.rwaData as { offhours?: OffHoursData });
   if (!offhours) {
     return false;
   }
@@ -135,7 +138,13 @@ export const isStockRWAToken = (token?: RWATokenLike): boolean =>
 
 /**
  * Hook that provides helpers to check whether a token is a stock RWA token
- * and whether its market is currently open.
+ * and whether it is currently tradable.
+ *
+ * `isTokenTradingOpen` is true during regular market hours **or** an active
+ * off-hours session — matching `getIsStockMarketClosed`'s notion of
+ * "not closed". Callers that gate selection / show a market-closed modal
+ * (e.g. bridge asset picker) must use this so off-hours tokens remain
+ * selectable and can reach the off-hours warning.
  *
  * `nowMs` is a cached timestamp updated every {@link RWA_TIME_TICK_MS} (60 s).
  * It exists solely to trigger periodic re-renders so that market open/close
@@ -169,7 +178,11 @@ export function useRWAToken() {
       if (!isRWAEnabled) {
         return true;
       }
-      return isTokenTradingOpenAt(token, nowMs);
+      // Off-hours sessions are tradable even when regular hours are closed
+      // (and even when a regular-hours pause is present).
+      return (
+        isTokenTradingOpenAt(token, nowMs) || isTokenInOffHoursAt(token, nowMs)
+      );
     },
     [isRWAEnabled, nowMs],
   );
