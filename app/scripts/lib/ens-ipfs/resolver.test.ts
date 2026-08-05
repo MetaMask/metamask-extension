@@ -32,6 +32,7 @@ jest.mock('@ensdomains/content-hash', () => ({
 
 const mockContract = Contract as jest.MockedClass<typeof Contract>;
 const mockContentHash = contentHash as jest.Mocked<typeof contentHash>;
+const mockCidV0ToV1Base32 = jest.mocked(contentHash.helpers.cidV0ToV1Base32);
 
 const EMPTY_HEX =
   '0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -85,10 +86,8 @@ describe('resolveEnsToIpfsContentId', () => {
     mockContract.mockReset();
     mockContentHash.decode.mockReset();
     mockContentHash.getCodec.mockReset();
-    mockContentHash.helpers.cidV0ToV1Base32.mockReset();
-    mockContentHash.helpers.cidV0ToV1Base32.mockImplementation(
-      (cid: string) => `v1-${cid}`,
-    );
+    mockCidV0ToV1Base32.mockReset();
+    mockCidV0ToV1Base32.mockImplementation((cid: string) => `v1-${cid}`);
   });
 
   it('throws when the chain has no known ENS registry', async () => {
@@ -133,9 +132,7 @@ describe('resolveEnsToIpfsContentId', () => {
     });
 
     expect(result).toStrictEqual({ type: 'ipfs-ns', hash: 'v1-QmOldCid' });
-    expect(mockContentHash.helpers.cidV0ToV1Base32).toHaveBeenCalledWith(
-      'QmOldCid',
-    );
+    expect(mockCidV0ToV1Base32).toHaveBeenCalledWith('QmOldCid');
   });
 
   it('resolves EIP-1577 ipns contenthash with cid conversion', async () => {
@@ -168,7 +165,7 @@ describe('resolveEnsToIpfsContentId', () => {
     });
 
     expect(result).toStrictEqual({ type: 'onion', hash: 'onionhash' });
-    expect(mockContentHash.helpers.cidV0ToV1Base32).not.toHaveBeenCalled();
+    expect(mockCidV0ToV1Base32).not.toHaveBeenCalled();
   });
 
   it('resolves legacy swarm content()', async () => {
