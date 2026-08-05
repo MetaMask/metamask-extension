@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Navigate,
   createSearchParams,
@@ -72,6 +72,7 @@ import {
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
+import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -127,12 +128,14 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -286,6 +289,17 @@ const PerpsMarketDetailPage = () => {
   const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { setFlowAttribution } = usePerpsAttribution();
+
+  // Re-assert this screen's entry point on mount so `trackingData` for actions
+  // taken here (close / cancel / TP-SL / margin) reflects asset_details even
+  // after returning from the order-entry screen, which sets trade_screen on the
+  // shared provider.
+  useEffect(() => {
+    setFlowAttribution({
+      entryPoint: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    });
+  }, [setFlowAttribution]);
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -381,12 +395,34 @@ const PerpsMarketDetailPage = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  // Find market data for the given symbol. Computed before the screen-view
+  // tracking below so the asset_details event can be gated on the market
+  // existing (an unknown symbol renders the error state instead).
+  const market = useMemo(() => {
+    if (!decodedSymbol) {
+      return undefined;
+    }
+    return allMarkets.find(
+      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
+    );
+  }, [decodedSymbol, allMarkets]);
+  const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
+  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
+    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
+    // Gate on `market` so an unknown symbol emits only the error screen view
+    // below (not both asset_details and error for one rendered error screen).
+    conditions:
+      marketCatalogReady &&
+      Boolean(decodedSymbol) &&
+      account !== null &&
+      Boolean(market),
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
@@ -395,6 +431,8 @@ const PerpsMarketDetailPage = () => {
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      // watchlisted only surfaces on the asset_detail screen.
+      [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
     },
     resetKey: decodedSymbol,
   });
@@ -441,17 +479,24 @@ const PerpsMarketDetailPage = () => {
     };
   }, [decodedSymbol, selectedAddress]);
 
-  // Find market data for the given symbol
-  const market = useMemo(() => {
-    if (!decodedSymbol) {
-      return undefined;
-    }
-    return allMarkets.find(
-      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
-    );
-  }, [decodedSymbol, allMarkets]);
-
   const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
+
+  // Market-not-found renders a displayed error state (see the `!market` branch
+  // below); emit the error screen view for that funnel state.
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: marketCatalogReady && Boolean(decodedSymbol) && !market,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+        PERPS_EVENT_VALUE.ERROR_TYPE.MARKET_NOT_FOUND,
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+    },
+    // Re-arm per symbol so navigating between distinct invalid symbols tracks
+    // each one (otherwise the one-shot guard suppresses the second).
+    resetKey: decodedSymbol,
+  });
 
   // Find position for this market (if exists)
   const position = useMemo(() => {
@@ -578,14 +623,16 @@ const PerpsMarketDetailPage = () => {
   const [isReverseModalOpen, setIsReverseModalOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  // Which CTA opened the close modal (close vs reduce_exposure), surfaced on the
+  // position_close PERPS_SCREEN_VIEWED event.
+  const [closeButtonClicked, setCloseButtonClicked] = useState<string>(
+    PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE,
+  );
   const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
     null,
   );
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
-  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
-    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
-  );
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -835,6 +882,7 @@ const PerpsMarketDetailPage = () => {
       if (!position) {
         return;
       }
+      setCloseButtonClicked(PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE);
       setIsCloseModalOpen(true);
     }).catch((error: unknown) => {
       console.error(error);
@@ -936,6 +984,7 @@ const PerpsMarketDetailPage = () => {
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
       });
+      setCloseButtonClicked(PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE);
       setIsModifyMenuOpen(false);
       setIsCloseModalOpen(true);
     }).catch((error: unknown) => {
@@ -989,8 +1038,13 @@ const PerpsMarketDetailPage = () => {
     });
     submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
-    ]).catch((e) => {
-      console.warn('[Perps] Toggle watchlist failed:', e);
+    ]).catch((error) => {
+      // The star icon renders from `isInWatchlist`, a controller-backed Redux
+      // selector — not optimistic local state. A failed toggle leaves the store
+      // (and therefore the icon) unchanged, so the UI is already consistent and
+      // there is nothing to revert. Surface the failure to Sentry rather than
+      // swallowing it, since a silently dropped favorite is still a real defect.
+      captureException(error);
     });
   }, [decodedSymbol, track]);
 
@@ -1010,7 +1064,7 @@ const PerpsMarketDetailPage = () => {
   }
 
   // Show loading state while market data is being fetched
-  if (marketsLoading) {
+  if (!marketCatalogReady) {
     return <PerpsDetailPageSkeleton />;
   }
 
@@ -2111,6 +2165,8 @@ const PerpsMarketDetailPage = () => {
           currentPrice={currentPrice}
           markPrice={livePrice?.markPrice}
           sizeDecimals={marketInfo?.szDecimals}
+          buttonClicked={closeButtonClicked}
+          buttonLocation={PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS}
           displayPrice={displayPrice}
           displayChange={displayChange}
         />

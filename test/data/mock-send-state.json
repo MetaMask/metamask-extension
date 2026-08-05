@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "isLoading": false,
     "modal": {
       "open": false,
@@ -67,7 +68,7 @@
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
-    "completedMetaMetricsOnboarding": true,
+    "consentDecisionMade": true,
     "optedIn": false,
     "gasEstimateType": "fee-market",
     "gasFeeEstimates": {

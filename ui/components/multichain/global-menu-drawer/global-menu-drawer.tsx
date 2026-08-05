@@ -63,6 +63,9 @@ export const GlobalMenuDrawer = ({
   const [contentTopOffset, setContentTopOffset] = useState(0);
   const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
     useState(false);
+  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+  const isLargeDrawer =
+    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
@@ -362,9 +365,9 @@ export const GlobalMenuDrawer = ({
           style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
-            className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
+            className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
             backgroundColor={
-              isPureBlack
+              isPureBlack && isLargeDrawer
                 ? BoxBackgroundColor.BackgroundAlternative
                 : BoxBackgroundColor.BackgroundDefault
             }

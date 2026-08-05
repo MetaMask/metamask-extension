@@ -18,6 +18,7 @@
     "importNftsModal": {
       "open": false
     },
+    "showPermittedNetworkToastOpen": false,
     "isLoading": false,
     "modal": {
       "open": false,
@@ -63,7 +64,7 @@
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
-    "completedMetaMetricsOnboarding": true,
+    "consentDecisionMade": true,
     "optedIn": false,
     "passkeyRecord": null,
     "gasEstimateType": "fee-market",

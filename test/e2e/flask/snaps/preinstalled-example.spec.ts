@@ -118,10 +118,10 @@ describe('Preinstalled example Snap', function () {
         await testSnaps.scrollAndClickButton('showPreinstalledDialogButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
-          css: '.snap-ui-renderer__text',
-          text: 'This is a custom dialog. It has a custom footer and can be resolved to any value.',
-        });
+        await testSnaps.checkMessageResultSpan(
+          'snapUiRendererText',
+          'This is a custom dialog. It has a custom footer and can be resolved to any value.',
+        );
       },
     );
   });
@@ -135,7 +135,7 @@ describe('Preinstalled example Snap', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -188,7 +188,7 @@ describe('Preinstalled example Snap', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -237,7 +237,7 @@ describe('Preinstalled example Snap', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
