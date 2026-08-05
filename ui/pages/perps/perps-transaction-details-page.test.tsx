@@ -5,6 +5,7 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import {
   DEFAULT_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
   PERPS_TRANSACTION_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
@@ -101,25 +102,15 @@ describe('PerpsTransactionDetailsPage', () => {
     expect(screen.getByTestId('navigate-to')).toHaveTextContent(DEFAULT_ROUTE);
   });
 
-  it('shows a not-found state when no transaction is present in router state', () => {
+  it('redirects to the activity list when no transaction is present in router state', () => {
+    // Router state is destroyed when the popup closes, so the reopen
+    // mechanism can restore this path without state. Redirecting to the
+    // activity list is better than showing a blank "no transaction" view.
     renderWithTransaction();
 
-    expect(
-      screen.getByTestId('perps-transaction-details-not-found'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsNoTransactions.message),
-    ).toBeInTheDocument();
-  });
-
-  it('navigates back when the back button is clicked from the not-found state', () => {
-    renderWithTransaction();
-
-    fireEvent.click(
-      screen.getByTestId('perps-transaction-details-back-button'),
+    expect(screen.getByTestId('navigate-to')).toHaveTextContent(
+      PERPS_ACTIVITY_ROUTE,
     );
-
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   describe('order transaction (tx-004)', () => {

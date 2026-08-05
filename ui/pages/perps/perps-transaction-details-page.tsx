@@ -6,7 +6,6 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
@@ -19,7 +18,10 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
+} from '../../helpers/constants/routes';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsFillTag } from '../../components/app/perps/perps-fill-tag';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
@@ -256,40 +258,13 @@ const PerpsTransactionDetailsPage = () => {
   const state = location.state as { transaction?: PerpsTransaction } | null;
   const transaction = state?.transaction;
 
+  // The transaction is passed via router state from the activity list/recent-
+  // activity widgets. Router state is destroyed when the popup is closed, so
+  // if the reopen mechanism restores this path without state (e.g. the user
+  // had this screen open when they closed the popup) we redirect to the
+  // activity list rather than displaying an unhelpful empty view.
   if (!transaction) {
-    return (
-      <Page data-testid="perps-transaction-details-page">
-        <Header
-          startAccessory={
-            <ButtonIcon
-              data-testid="perps-transaction-details-back-button"
-              iconName={IconName.ArrowLeft}
-              ariaLabel={t('back')}
-              size={ButtonIconSize.Md}
-              onClick={handleBackClick}
-            />
-          }
-        >
-          {t('perpsDetails')}
-        </Header>
-        <Content>
-          <Box
-            paddingTop={8}
-            paddingBottom={8}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
-            data-testid="perps-transaction-details-not-found"
-          >
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsNoTransactions')}
-            </Text>
-          </Box>
-        </Content>
-      </Page>
-    );
+    return <Navigate to={PERPS_ACTIVITY_ROUTE} replace />;
   }
 
   const displaySymbol = getDisplaySymbol(transaction.symbol);
