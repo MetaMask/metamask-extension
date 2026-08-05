@@ -293,10 +293,13 @@ describe('PerpsTransactionDetailsPage', () => {
       });
 
       const base = findTransaction('tx-004b');
+      if (!base.order) {
+        throw new Error('tx-004b fixture is missing an order');
+      }
       const triggeredOrder: PerpsTransaction = {
         ...base,
         order: {
-          ...base.order!,
+          ...base.order,
           text: PerpsOrderTransactionStatus.Triggered,
           statusType: PerpsOrderTransactionStatusType.Filled,
         },
