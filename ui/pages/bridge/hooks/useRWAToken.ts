@@ -120,7 +120,7 @@ export const isTokenInOffHoursAt = (
     return false;
   }
 
-  const {offhours} = (token.rwaData as { offhours?: OffHoursData });
+  const { offhours } = token.rwaData as { offhours?: OffHoursData };
   if (!offhours) {
     return false;
   }

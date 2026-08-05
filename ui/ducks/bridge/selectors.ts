@@ -754,14 +754,15 @@ export const getIsInOffHoursTrading = (
   return (
     (isStockRWAToken(fromToken) &&
       isTokenInOffHoursAt(fromToken, currentTimeInMs)) ||
-    (isStockRWAToken(toToken) &&
-      isTokenInOffHoursAt(toToken, currentTimeInMs))
+    (isStockRWAToken(toToken) && isTokenInOffHoursAt(toToken, currentTimeInMs))
   );
 };
 
 /**
  * Returns the next regular-market open time (ISO string) for whichever
  * from/to token is currently in off-hours trading, or undefined if neither is.
+ * @param state
+ * @param currentTimeInMs
  */
 export const getNextRegularMarketOpen = (
   state: BridgeAppState,

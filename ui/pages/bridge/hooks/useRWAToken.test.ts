@@ -229,7 +229,6 @@ describe('isTokenTradingOpenAt', () => {
       jest.useRealTimers();
     }
   });
-
 });
 
 describe('isTokenInOffHoursAt', () => {
