@@ -38,13 +38,13 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-      # Resolve the latest available E2E timing reports, used for E2E shard balancing.
-      - name: Resolve latest E2E timing reports
-        id: timing-reports
-        run: node .github/scripts/resolve-e2e-timing-reports.mts
+      # Resolve the run IDs holding the latest available E2E reports, used for shard balancing.
+      - name: Resolve latest E2E report run IDs
+        id: e2e-reports
+        run: node .github/scripts/resolve-e2e-report-run-ids.mts
 
       - name: Download test-e2e-chrome-report
-        if: ${{ steps.timing-reports.outputs.chrome-run-id != '' }}
+        if: ${{ steps.e2e-reports.outputs.chrome-run-id != '' }}
         # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
         # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
         continue-on-error: true
@@ -53,10 +53,10 @@ jobs:
           name: test-e2e-chrome-report
           path: test/test-results/
           github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ steps.timing-reports.outputs.chrome-run-id }}
+          run-id: ${{ steps.e2e-reports.outputs.chrome-run-id }}
 
       - name: Download test-e2e-firefox-report
-        if: ${{ steps.timing-reports.outputs.firefox-run-id != '' }}
+        if: ${{ steps.e2e-reports.outputs.firefox-run-id != '' }}
         # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
         # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
         continue-on-error: true
@@ -65,7 +65,7 @@ jobs:
           name: test-e2e-firefox-report
           path: test/test-results/
           github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ steps.timing-reports.outputs.firefox-run-id }}
+          run-id: ${{ steps.e2e-reports.outputs.firefox-run-id }}
 
       - name: Upload test-runs-for-splitting
         uses: actions/upload-artifact@v6
