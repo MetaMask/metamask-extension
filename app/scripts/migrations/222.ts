@@ -8,7 +8,7 @@ import {
 import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
 import type { Migrate } from './types';
 
-export const version = 216;
+export const version = 222;
 
 type StorageServiceEntry = [string, unknown];
 type BrowserStorageLocal = Pick<typeof browser.storage.local, 'get' | 'remove'>;
