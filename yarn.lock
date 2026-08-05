@@ -8569,10 +8569,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.33.1-preview-7d4d14cb":
-  version: 1.33.1-preview-7d4d14cb
-  resolution: "@metamask-previews/tron-wallet-snap@npm:1.33.1-preview-7d4d14cb"
-  checksum: 10/79a2d2b8d8d28eda776fee28f4f469a7a9bc81c803914288c1382d6f10e035d42db74a859283415bed0f4144b3733ba17c4c3f18ba122a90c7c4b53af56a08c3
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@2.0.0-preview-0f6974b":
+  version: 2.0.0-preview-0f6974b
+  resolution: "@metamask-previews/tron-wallet-snap@npm:2.0.0-preview-0f6974b"
+  checksum: 10/2a0e6a6f1da8c8ec7b6f0fd2a4d965d5de40e933818d0aa416f418baf2f83ac080ca9ceb036e34efe458d3922487751b4be44dc4a73fc8b0506fb27ce2d0bab5
   languageName: node
   linkType: hard
 
@@ -32907,7 +32907,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.1.0"
     "@metamask/transaction-pay-controller": "npm:^26.0.0"
-    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.33.1-preview-7d4d14cb"
+    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@2.0.0-preview-0f6974b"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^7.0.1"
