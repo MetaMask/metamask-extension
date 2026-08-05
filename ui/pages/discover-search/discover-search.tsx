@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import {
@@ -95,10 +95,13 @@ const DiscoverSearchSectionDivider = () => (
 export const DiscoverSearchPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get('q') ?? '',
+  );
   const [activeTab, setActiveTab] = useState<DiscoverSearchTab>('all');
 
   const {
@@ -120,7 +123,35 @@ export const DiscoverSearchPage = () => {
 
   const handleSearchClear = useCallback(() => {
     setSearchQuery('');
-  }, []);
+    setSearchParams(
+      (previousParams) => {
+        const nextParams = new URLSearchParams(previousParams);
+        nextParams.delete('q');
+        return nextParams;
+      },
+      { replace: true },
+    );
+  }, [setSearchParams]);
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const nextQuery = event.target.value;
+      setSearchQuery(nextQuery);
+      setSearchParams(
+        (previousParams) => {
+          const nextParams = new URLSearchParams(previousParams);
+          if (nextQuery) {
+            nextParams.set('q', nextQuery);
+          } else {
+            nextParams.delete('q');
+          }
+          return nextParams;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
   const handleAssetPress = useCallback(
     (asset: TrendingAsset) => {
@@ -401,7 +432,7 @@ export const DiscoverSearchPage = () => {
           className="min-w-0 flex-1"
           placeholder={t('searchTokens')}
           value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
+          onChange={handleSearchChange}
           clearButtonOnClick={handleSearchClear}
           inputProps={
             {

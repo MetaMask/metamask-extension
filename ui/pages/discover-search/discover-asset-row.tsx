@@ -11,6 +11,7 @@ import {
   BoxFlexDirection,
   ButtonBase,
   FontWeight,
+  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -33,6 +34,9 @@ import {
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
 const USD_CURRENCY = 'USD';
+type SecurityResultType = NonNullable<
+  TrendingAsset['securityData']
+>['resultType'];
 
 export type DiscoverAssetRowProps = {
   asset: TrendingAsset;
@@ -51,7 +55,8 @@ const formatAssetPrice = (price: string | undefined) => {
     style: 'currency',
     currency: USD_CURRENCY,
     currencyDisplay: 'narrowSymbol',
-    maximumFractionDigits: value < 1 ? 6 : 2,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value);
 };
 
@@ -87,6 +92,26 @@ const formatPriceChangePercent = (value: string): string | null => {
 
   const sign = numericValue > 0 ? '+' : '';
   return `${sign}${numericValue.toFixed(2)}%`;
+};
+
+const getSecurityResultType = (securityData: TrendingAsset['securityData']) =>
+  securityData?.resultType ??
+  (securityData as { type?: SecurityResultType } | undefined)?.type;
+
+const getDiscoverSearchSecurityBadge = (
+  resultType: SecurityResultType | undefined,
+  t: SecurityTrustTranslate,
+) => {
+  const badge = getResultTypeConfig(resultType, t).badge;
+
+  if (badge && (resultType === 'Warning' || resultType === 'Spam')) {
+    return {
+      ...badge,
+      icon: IconName.Danger,
+    };
+  }
+
+  return badge;
 };
 
 /**
@@ -140,8 +165,12 @@ export const DiscoverAssetRow = ({
     : TextColor.TextAlternative;
 
   const securityBadge = useMemo(
-    () => getResultTypeConfig(asset.securityData?.resultType, t).badge,
-    [asset.securityData?.resultType, t],
+    () =>
+      getDiscoverSearchSecurityBadge(
+        getSecurityResultType(asset.securityData),
+        t,
+      ),
+    [asset.securityData, t],
   );
 
   const handleClick = () => {
@@ -195,14 +224,11 @@ export const DiscoverAssetRow = ({
           gap={1}
           className="min-w-0 max-w-full"
         >
-          <Text
-            fontWeight={FontWeight.Medium}
-            className="min-w-0 truncate"
-          >
+          <Text fontWeight={FontWeight.Medium} className="min-w-0 truncate">
             {asset.name || asset.symbol}
           </Text>
           {securityBadge ? (
-            <Box className="shrink-0">
+            <Box className="flex shrink-0 items-center leading-none">
               <SecurityTrustInlineBadge
                 badge={securityBadge}
                 testId={
