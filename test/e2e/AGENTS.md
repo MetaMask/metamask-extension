@@ -13,6 +13,7 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 - **Testing philosophy:** [docs/testing.md](../../docs/testing.md)
 - **E2E Driver API:** [webdriver/README.md](./webdriver/README.md)
 - **Flask E2E:** [flask/README.md](./flask/README.md)
+- **Playwright migration (`*.pw.spec.ts`):** [playwright/README.md](./playwright/README.md) — Selenium → Playwright migration guide
 - **Playwright benchmark:** [playwright/benchmark/README.md](./playwright/benchmark/README.md)
 - **Forking mainnet for testing:** [docs/forking-mainnet-for-testing.md](../../docs/forking-mainnet-for-testing.md)
 - **QA migrations:** [docs/QA_MIGRATIONS_GUIDE.md](../../docs/QA_MIGRATIONS_GUIDE.md)

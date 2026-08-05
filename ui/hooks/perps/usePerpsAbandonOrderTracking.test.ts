@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { usePerpsAbandonOrderTracking } from './usePerpsAbandonOrderTracking';
 
