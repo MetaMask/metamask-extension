@@ -11,7 +11,10 @@ import { parseStandardTokenTransactionData } from '../../../../../shared/lib/tra
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
-import { updateMoneyAccountDepositAmount } from '../../../../store/controller-actions/transaction-pay-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
 
@@ -77,14 +80,22 @@ export function useUpdateTokenAmount() {
     }
   }, [isUpdating, transactionId]);
 
-  const isMoneyAccountDeposit = useMemo(
-    () =>
-      transactionMeta?.type === TransactionType.moneyAccountDeposit ||
-      (transactionMeta?.nestedTransactions?.some(
-        (tx) => tx.type === TransactionType.moneyAccountDeposit,
-      ) ??
+  const hasMoneyType = useCallback(
+    (type: TransactionType) =>
+      transactionMeta?.type === type ||
+      (transactionMeta?.nestedTransactions?.some((tx) => tx.type === type) ??
         false),
     [transactionMeta],
+  );
+
+  const isMoneyAccountDeposit = useMemo(
+    () => hasMoneyType(TransactionType.moneyAccountDeposit),
+    [hasMoneyType],
+  );
+
+  const isMoneyAccountWithdraw = useMemo(
+    () => hasMoneyType(TransactionType.moneyAccountWithdraw),
+    [hasMoneyType],
   );
 
   const updateTokenAmount = useCallback(
@@ -101,6 +112,21 @@ export function useUpdateTokenAmount() {
           (error) => {
             console.error(
               'Failed to update money account deposit amount',
+              error,
+            );
+          },
+        );
+        return;
+      }
+
+      // Same shape as deposits: the placeholder withdraw + transfer batch has
+      // no calldata to parse, and the background commit path resolves the
+      // recipient (the selected account) and the vault rate.
+      if (isMoneyAccountWithdraw) {
+        updateMoneyAccountWithdrawAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account withdrawal amount',
               error,
             );
           },
@@ -159,6 +185,7 @@ export function useUpdateTokenAmount() {
       decimals,
       dispatch,
       isMoneyAccountDeposit,
+      isMoneyAccountWithdraw,
       nestedCallIndex,
       to,
       transactionId,
