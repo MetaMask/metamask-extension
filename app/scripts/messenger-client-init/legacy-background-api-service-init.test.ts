@@ -39,6 +39,7 @@ describe('LegacyBackgroundApiServiceInit', () => {
       messenger: expect.any(Object),
       getOpenMetamaskTabsIds: undefined,
       getRequestAccountTabIds: undefined,
+      getUIState: expect.any(Function),
       infuraProjectId: undefined,
       offscreenPromise: expect.any(Promise),
       seedlessOperationMutex: undefined,

@@ -1894,6 +1894,76 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('createCancelTransaction', () => {
+    it('stops the transaction and returns the updated UI state', async () => {
+      const uiState = { isInitialized: true, transactions: [] };
+      const stopTransaction = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        { options: { getUIState: jest.fn().mockReturnValue(uiState) } },
+        async ({ rootMessenger, serviceMessenger }) => {
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          rootMessenger.registerActionHandler(
+            'TransactionController:stopTransaction',
+            stopTransaction,
+          );
+
+          const customGasSettings = { gasPrice: '0x1' };
+          const options = { estimatedBaseFee: '0x2' };
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:createCancelTransaction',
+            '123',
+            customGasSettings,
+            options,
+          );
+
+          expect(callSpy).toHaveBeenCalledWith(
+            'TransactionController:stopTransaction',
+            '123',
+            customGasSettings,
+            options,
+          );
+          expect(result).toStrictEqual(uiState);
+        },
+      );
+    });
+  });
+
+  describe('createSpeedUpTransaction', () => {
+    it('speeds up the transaction and returns the updated UI state', async () => {
+      const uiState = { isInitialized: true, transactions: [] };
+      const speedUpTransaction = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        { options: { getUIState: jest.fn().mockReturnValue(uiState) } },
+        async ({ rootMessenger, serviceMessenger }) => {
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          rootMessenger.registerActionHandler(
+            'TransactionController:speedUpTransaction',
+            speedUpTransaction,
+          );
+
+          const customGasSettings = { gasPrice: '0x1' };
+          const options = { estimatedBaseFee: '0x2' };
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:createSpeedUpTransaction',
+            '123',
+            customGasSettings,
+            options,
+          );
+
+          expect(callSpy).toHaveBeenCalledWith(
+            'TransactionController:speedUpTransaction',
+            '123',
+            customGasSettings,
+            options,
+          );
+          expect(result).toStrictEqual(uiState);
+        },
+      );
+    });
+  });
+
   describe('resetAccount', () => {
     it('resets the account and returns the selected address', async () => {
       const selectedAddress = '0x123';
@@ -5518,6 +5588,8 @@ function getMessenger(
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',
+      'TransactionController:stopTransaction',
+      'TransactionController:speedUpTransaction',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'PermissionController:acceptPermissionsRequest',
@@ -5565,6 +5637,7 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
+    getUIState: jest.fn().mockReturnValue({}),
     seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,

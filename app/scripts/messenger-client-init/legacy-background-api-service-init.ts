@@ -15,6 +15,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
  * @param request.requestSafeReload - A function that triggers a safe reload of the extension.
  * @param request.sendUpdate - A function to send updates to the UI.
+ * @param request.getUIState - A function that returns the MetaMask UI state.
  * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
  * @param request.offscreenPromise - A promise that resolves when the offscreen document is ready.
  * @returns The initialized service.
@@ -30,6 +31,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   markNotificationPopupAsAutomaticallyClosed,
   requestSafeReload,
   sendUpdate,
+  getUIState,
   seedlessOperationMutex,
   offscreenPromise,
 }) => {
@@ -41,6 +43,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
+    getUIState,
     seedlessOperationMutex,
     offscreenPromise,
   });
