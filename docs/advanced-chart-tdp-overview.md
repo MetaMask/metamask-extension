@@ -94,8 +94,6 @@ grant `'unsafe-inline'`) and a real origin (same-origin inner frame works), so i
 *should* clear both walls — **but this follows from the constraints above and has
 not been validated yet.** It is also a deliberate **remote-code** decision that
 must be **gated on security review** — a candidate direction, not a full design.
-See [Can we verify this locally?](#4-can-we-verify-this-locally) for how to test
-the mechanism before any deploy.
 
 ---
 
@@ -182,30 +180,90 @@ remains the leading **option to try (untested)**.
 
 ---
 
-## 4. Can we verify this locally?
+## 4. Policy & store-compliance alignment
 
-**Yes** — the remote-hosting option can be validated locally before any real
-deploy. The point is to prove the **mechanism**: a real (non-extension) web origin
-clears both walls at once.
+**Question:** is the recommended path — serving the TradingView Advanced Charts
+library + the chart page from a **MetaMask-owned web origin**, embedded in a
+**cross-origin `iframe`** and talking over **`postMessage`** — aligned with
+TradingView licensing and browser-extension **store policies**?
 
-1. **Serve the AC page from a local static web server** (e.g.
-   `http://localhost:8080`): the sandbox `index.html` + the
-   `@metamask/advanced-chart-core` engine bundle + the vendored TradingView lib. A
-   plain static server sends no/permissive CSP, so the inner-frame **inline
-   bootstrap scripts run** *and* the inner frame is **same-origin** — both walls
-   disappear, because `localhost` is a **real web origin**, not an extension page.
-2. **Point the extension's chart `<iframe src>`** at the `http://localhost:8080/…`
-   URL instead of the `chrome-extension://…/advanced-chart/index.html` page.
-3. **Allow that origin in the manifest `extension_pages` CSP:** add
-   `frame-src http://localhost:8080` (and `connect-src` if the page fetches
-   directly). MV3 **allows** extension pages to embed **remote iframes** via
-   `frame-src` — only remote *scripts* are forbidden — so this is permitted.
-4. **Rebuild and open the SOL TDP.** Success = the candlestick chart renders from
-   the localhost origin and the `postMessage` bridge works.
+**Net verdict:** **This path is policy-sanctioned, not a workaround.** Chrome MV3
+**explicitly exempts** isolated iframe contexts from the remote-code ban,
+self-hosting the library from a MetaMask-owned origin is **TradingView's intended
+model**, and Firefox AMO's same-origin carve-out **covers it** (with a pre-review).
+The **only** genuine open item is a single TradingView account-manager
+confirmation that browser-extension use counts as a **"public" implementation**.
+Everything else is standard store-review execution. **Ship it once TradingView
+signs off.**
 
-### Caveat — local success ≠ ship-ready
+### 4.1 TradingView Advanced Charts — conditionally aligned
 
-Localhost proves the **mechanism only**. Production still needs **HTTPS** + a
-**MetaMask-owned, version-pinned** origin, the manifest `frame-src`/`connect-src`
-pointed at that origin, and the **security review** for remote code. A passing
-local test does not make it shippable.
+- **Self-hosting from a MetaMask origin is the intended model.** Serving the
+  library from an origin you own (e.g.
+  `charting-assets.static.metamask.io`) IS the documented "self-host" pattern.
+  ([Getting started](https://www.tradingview.com/charting-library-docs/latest/getting_started/),
+  [FAQ](https://www.tradingview.com/charting-library-docs/latest/getting_started/Frequently-Asked-Questions/),
+  [Free Charting Library](https://www.tradingview.com/free-charting-libraries/))
+- **Genuine ambiguity:** the free tier requires a **"public" (non-paywalled)
+  implementation**, and TradingView's public docs do **not** explicitly address
+  **browser-extension** use. This needs confirmation from a TradingView
+  **account manager** / a **signed Free Advanced Charts Agreement**.
+
+### 4.2 Chrome Web Store / MV3 — explicitly permitted (nuanced)
+
+This is the key result. Google's MV3 program policy **explicitly exempts isolated
+contexts** from the remote-code ban:
+
+> "code run in contexts that are isolated from extension APIs (such as iframes and
+> sandboxed pages) are exempt from the restriction on loading code from remote
+> sources; however ... it must still be possible to determine the full
+> functionality of your extension and the interaction must still comply with our
+> user data policies, including Limited Use and the extension's Privacy Policy."
+> — [MV3 Program Policies](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)
+
+- So a cross-origin `<iframe>` on a real `https://` origin, **isolated from
+  `chrome.*` APIs**, communicating only via `postMessage`, is **allowed remote
+  content** — **not** prohibited remote-hosted *code*.
+  ([Deal with remote hosted code violations](https://developer.chrome.com/docs/extensions/develop/migrate/remote-hosted-code),
+  [Improve extension security](https://developer.chrome.com/docs/extensions/develop/migrate/improve-security))
+- **Conditions:**
+  - Full functionality must stay **discernible at review**.
+  - Add the MetaMask origin to **`frame-src`** (and **`connect-src`** if the
+    extension fetches from it).
+  - Keep the `extension_pages` CSP within **`self` / `none` / `wasm-unsafe-eval`**.
+  - Update the **Privacy Policy / Limited-Use disclosures** to cover data sent to
+    `*.metamask.io`.
+  - A first-party origin **isn't required**, but is **lower review-risk**.
+
+### 4.3 Firefox AMO — likely allowed, stricter / less explicit
+
+- AMO's headline rule **bans remote code**, but a policy **footnote** permits
+  remote code executed "in documents with the **same origin as the code being
+  executed**, or, under limited circumstances, in carefully constructed
+  sandboxes" and **never** "in privileged contexts." The remote chart page runs
+  **same-origin-to-itself** in a **non-privileged web context**, which fits.
+  ([Add-on Policies](https://extensionworkshop.com/documentation/publish/add-on-policies/),
+  [Build a secure extension](https://extensionworkshop.com/documentation/develop/build-a-secure-extension/))
+- Because the carve-out is **footnote-level** and AMO **reviews manually**, treat
+  AMO as the **higher review-risk** store and get a **pre-review**. The
+  extension's own CSP must **not** be loosened.
+
+### 4.4 Security team review
+
+Engage **MetaMask's internal Security team** in **two ordered steps** — verify the
+problem and hunt for a simpler fix first; only if none exists, pressure-test the
+proposed remote-origin design:
+
+1. **First — verify the problem + look for a simpler workaround.** Have Security
+   review/verify the core issue (the **MV3 CSP wall** — that an extension-local
+   page can't satisfy TradingView's **inline-`<script>` bootstrap** *and*
+   **same-origin DOM access** at once) and explore whether there's an
+   **easier/simpler workaround** we've missed, **before** committing to a bigger
+   solution.
+2. **Then — if there's no simpler workaround, validate the suggested path.** Have
+   Security confirm that the proposed direction (remote **MetaMask-owned chart
+   origin** + cross-origin `<iframe>` + `postMessage`) actually **makes sense and
+   is feasible/sound**.
+
+Finally, obtain **Security team sign-off before Chrome / Firefox store
+submission**.
