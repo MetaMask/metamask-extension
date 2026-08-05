@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
   subscribeToMessengerEvent,

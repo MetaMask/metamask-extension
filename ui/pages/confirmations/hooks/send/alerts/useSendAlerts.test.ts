@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useSendContext } from '../../../context/send';
 import { useTokenContractSendAlert } from './useTokenContractSendAlert';
 import { useFirstTimeInteractionSendAlert } from './useFirstTimeInteractionSendAlert';
