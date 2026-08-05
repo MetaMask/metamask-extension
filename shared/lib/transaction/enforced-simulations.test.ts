@@ -288,7 +288,7 @@ describe('enforced-simulations', () => {
         ).toBe(true);
       });
 
-      it('treats a chain with no slug mapping as cache-driven, not auto-enforced', () => {
+      it('returns false when an unmapped chain recipient has a cached Trusted verdict', () => {
         expect(
           isEnforcedSimulationsEligible(
             {

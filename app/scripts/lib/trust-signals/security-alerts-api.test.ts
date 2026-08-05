@@ -13,7 +13,7 @@ const ADDRESS_MOCK = '0xABCDEF0000000000000000000000000000000001';
 const CACHE_KEY_MOCK = `${CHAIN_ID_MOCK}:${ADDRESS_MOCK.toLowerCase()}`;
 
 describe('mapAddressScanResult', () => {
-  it('maps controller ErrorResult wire value to extension ErrorResult wire value', () => {
+  it('maps the controller ErrorResult value to the extension Error value', () => {
     expect(
       mapAddressScanResult({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -81,28 +81,43 @@ describe('scanAddressAndAddToCache', () => {
     expect(scanAddressMock).not.toHaveBeenCalled();
   });
 
-  it('writes a Loading entry keyed by chainId before the controller resolves', async () => {
+  it('writes a Loading entry keyed by chain ID while the controller scan is pending', async () => {
     const addMock = jest.fn();
-    scanAddressMock.mockResolvedValue({
+    let resolveScan!: (result: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      result_type: AddressScanResultType.Benign,
-      label: '',
-    });
-    await scanAddressAndAddToCache(
+      result_type: AddressScanResultType;
+      label: string;
+    }) => void;
+    scanAddressMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveScan = resolve;
+      }),
+    );
+
+    const scanPromise = scanAddressAndAddToCache(
       ADDRESS_MOCK,
       jest.fn().mockReturnValue(undefined),
       addMock,
       CHAIN_ID_MOCK,
       phishingControllerMock,
     );
-    expect(addMock).toHaveBeenNthCalledWith(1, CACHE_KEY_MOCK, {
+
+    expect(addMock).toHaveBeenCalledTimes(1);
+    expect(addMock).toHaveBeenCalledWith(CACHE_KEY_MOCK, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: ResultType.Loading,
       label: '',
     });
+
+    resolveScan({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Benign,
+      label: '',
+    });
+    await scanPromise;
   });
 
-  it('caches the mapped controller result and returns it', async () => {
+  it('caches and returns a successful controller result', async () => {
     const addMock = jest.fn();
     scanAddressMock.mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/naming-convention

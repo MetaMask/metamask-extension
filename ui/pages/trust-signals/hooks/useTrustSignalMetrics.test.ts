@@ -142,7 +142,7 @@ describe('useTrustSignalMetrics', () => {
       expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
     });
 
-    it('updates event fragments with cache-driven trust signal metrics for a chain id with no legacy EVM chain mapping', () => {
+    it('updates event fragments from a cached response for a chain ID absent from the legacy mapping', () => {
       renderHookWithConfirmContextProvider(
         () => useTrustSignalMetrics(),
         TX_STATE_MOCK_UNMAPPED_CHAIN,

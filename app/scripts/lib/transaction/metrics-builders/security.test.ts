@@ -45,7 +45,7 @@ describe('security builder', () => {
     expect(result.sensitiveProperties).toStrictEqual({});
   });
 
-  it('returns a cache-driven address alert response for a chain id with no legacy EVM chain mapping', async () => {
+  it('returns the cached address alert response for a chain ID absent from the legacy mapping', async () => {
     const getAddressSecurityAlertResponseMock = jest
       .fn()
       .mockReturnValue({ result_type: 'Malicious' });
@@ -73,7 +73,7 @@ describe('security builder', () => {
     expect(result.properties.address_alert_response).toBe('Malicious');
   });
 
-  it('returns a cache-driven Loading address alert response when the chain has not been scanned yet', async () => {
+  it('returns Loading when no cached response exists for the chain and address', async () => {
     const result = await getSecurityMetricsProperties(
       createBuilderRequest({
         transactionMeta: {
