@@ -11,6 +11,7 @@ import {
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
 import { getMoneyAccountAmountData } from '../lib/money/pay/amount-data-callback';
+import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { getMoneyAccountPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import { updateMoneyAccountDepositAmount } from '../lib/money/pay/update-deposit-amount';
 import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
@@ -64,6 +65,8 @@ function getApi(
   moneyPayMessenger: MoneyPayMessenger,
 ): MessengerClientInitResult<TransactionPayController>['api'] {
   return {
+    createMoneyAccountDepositTransaction: (batchId: Hex) =>
+      createMoneyAccountDepositTransaction(moneyPayMessenger, batchId),
     updateMoneyAccountDepositAmount: (
       transactionId: string,
       amountHuman: string,
