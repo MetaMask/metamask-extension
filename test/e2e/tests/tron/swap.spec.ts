@@ -13,12 +13,23 @@ import {
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
+// The redesigned network picker is enabled for everyone in production and the
+// page objects target it, so these fixtures have to turn it on too.
+const NETWORK_MANAGEMENT_FLAGS = {
+  manifestFlags: {
+    remoteFeatureFlags: {
+      extensionUxNetworkManagement: { enabled: true, minimumVersion: '0.0.0' },
+    },
+  },
+};
+
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApis,
         ignoredConsoleErrors: [
           `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
@@ -58,6 +69,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -89,6 +101,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApisNoQuotes,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -120,6 +133,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApis,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -155,6 +169,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApis,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -185,6 +200,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApis,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -222,6 +238,7 @@ describe('Swap on Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockTronSwapApis,
       },
       async ({ driver }: { driver: Driver }) => {

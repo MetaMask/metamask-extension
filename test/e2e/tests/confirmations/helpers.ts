@@ -6,7 +6,6 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -653,9 +652,11 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
         return {
           ok: true,
           statusCode: 200,
-          json: getProductionRemoteFlagApiResponseWithOverrides({
-            assetsDefiPositionsEnabled: true,
-          }),
+          json: [
+            {
+              assetsDefiPositionsEnabled: true,
+            },
+          ],
         };
       }),
   ];

@@ -18,6 +18,17 @@ describe('Check DeFi empty state when no defi positions', function () {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockNoDeFiPositionFeatureFlag,
+        // The flag mock replaces the whole /v1/flags response, so the
+        // redesigned network picker the page objects target has to be
+        // re-enabled here.
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxNetworkManagement: {
+              enabled: true,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);

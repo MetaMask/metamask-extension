@@ -2,7 +2,6 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import type { Json } from '@metamask/utils';
 import {
   QuoteStreamCompleteReason,
   TokenFeature,
@@ -10,7 +9,6 @@ import {
 } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -58,6 +56,12 @@ import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
+
+// The redesigned network picker is enabled for everyone in production and the
+// page objects target it, so these fixtures have to turn it on too.
+const NETWORK_MANAGEMENT_FLAG = {
+  extensionUxNetworkManagement: { enabled: true, minimumVersion: '0.0.0' },
+};
 
 export class BridgePage {
   driver: Driver;
@@ -584,7 +588,7 @@ function mockSseEventSource(
 async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
-  additionalFlags: Record<string, Json> = {},
+  additionalFlags: Record<string, unknown> = {},
 ) {
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -592,10 +596,12 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponseWithOverrides({
-          bridgeConfig: featureFlags as Json,
-          ...additionalFlags,
-        }),
+        json: [
+          {
+            bridgeConfig: featureFlags,
+            ...additionalFlags,
+          },
+        ],
       };
     });
 }
@@ -1439,6 +1445,7 @@ export const getBridgeFixtures = ({
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1512,6 +1519,7 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1575,6 +1583,7 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1630,6 +1639,7 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1751,6 +1761,7 @@ export const getBridgeL2Fixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_LINEA_NETWORK_CONFIG,
       },
     },
@@ -1909,6 +1920,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -2050,6 +2062,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        ...NETWORK_MANAGEMENT_FLAG,
         smartTransactionsNetworks: {
           '0x1': {
             maxDeadline: 160,
