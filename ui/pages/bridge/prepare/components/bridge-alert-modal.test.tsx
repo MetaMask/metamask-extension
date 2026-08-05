@@ -116,7 +116,7 @@ describe('BridgeAlertModal', () => {
                 },
               [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
                 {
-                  exchangeRate: '0.61',
+                  exchangeRate: '2524.259',
                   usdExchangeRate: '1',
                 },
             },
@@ -185,7 +185,7 @@ describe('BridgeAlertModal', () => {
                 },
               [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
                 {
-                  exchangeRate: '0.61',
+                  exchangeRate: '2524.259',
                   usdExchangeRate: '1',
                 },
             },

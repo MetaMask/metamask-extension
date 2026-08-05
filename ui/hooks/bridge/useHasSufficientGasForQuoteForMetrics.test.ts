@@ -178,13 +178,6 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
 });
 
 describe('computeHasSufficientGasForQuoteForMetrics', () => {
-  const nativeToken = NATIVE_TOKEN as unknown as ReturnType<
-    typeof bridgeSelectors.getFromToken
-  >;
-  const erc20Token = ERC20_TOKEN as unknown as ReturnType<
-    typeof bridgeSelectors.getFromToken
-  >;
-
   it('returns null when the native balance is missing', () => {
     expect(
       computeHasSufficientGasForQuoteForMetrics({

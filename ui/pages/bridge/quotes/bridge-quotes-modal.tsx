@@ -142,7 +142,6 @@ export const BridgeQuotesModal = ({
           {sortedQuotes.map(
             (quote: QuoteMetadata & QuoteResponse, index: number) => {
               const {
-                toTokenAmount,
                 quote: { dest, protocols, requestId },
               } = quote;
               const totalNetworkFee = getTotalNetworkFee(quote);

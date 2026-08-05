@@ -81,6 +81,11 @@ import {
   type SmartTransactionsState,
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
+import {
+  safeAmountForCalc,
+  getPriceImpactNumber,
+  getTotalNetworkFee,
+} from '../../pages/bridge/utils/quote';
 import { getInternalAccountsByScope } from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
@@ -106,13 +111,8 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
-import type { MetaMaskReduxState } from '../../store/store';
-import {
-  getPriceImpactNumber,
-  getTotalNetworkFee,
-  safeAmountForCalc,
-} from '../../pages/bridge/utils/quote';
 import { getCurrentCurrency } from '../metamask/metamask';
+import type { MetaMaskReduxState } from '../../store/store';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
