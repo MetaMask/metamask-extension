@@ -1,4 +1,3 @@
-'use no memo';
 
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';

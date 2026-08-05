@@ -1,4 +1,3 @@
-'use no memo';
 
 import { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';

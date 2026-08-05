@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-'use no memo';
 
 import {
   Box,

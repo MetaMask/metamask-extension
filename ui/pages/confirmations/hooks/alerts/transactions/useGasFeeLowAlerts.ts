@@ -1,4 +1,3 @@
-'use no memo';
 
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';

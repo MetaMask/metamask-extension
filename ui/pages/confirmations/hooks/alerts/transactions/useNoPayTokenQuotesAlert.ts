@@ -1,4 +1,3 @@
-'use no memo';
 
 import { useMemo } from 'react';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
