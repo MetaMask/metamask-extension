@@ -43,6 +43,7 @@ export const usePermittedNetworkToast = () => {
         />,
         {
           id: permittedNetworkToastId,
+          duration: Infinity,
           icon: (
             <AvatarNetwork
               size={AvatarNetworkSize.Md}

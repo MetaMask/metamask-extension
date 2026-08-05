@@ -84,6 +84,7 @@ describe('usePermittedNetworkToast', () => {
     expect(options).toEqual(
       expect.objectContaining({
         id: permittedNetworkToastId,
+        duration: Infinity,
       }),
     );
 
