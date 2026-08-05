@@ -23,6 +23,11 @@ class AccountListPage {
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
 
+  private readonly addAccountButtonSyncing = {
+    css: '[data-testid="add-multichain-account-button"]',
+    text: 'Syncing...',
+  };
+
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
 
@@ -33,6 +38,18 @@ class AccountListPage {
 
   private readonly addMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
+
+  private readonly addMultichainAccountButtonByIndex = (
+    buttonIndex: number,
+  ) => ({
+    xpath: `(//*[@data-testid="add-multichain-account-button"])[${buttonIndex + 1}]`,
+  });
+
+  private readonly addMultichainAccountButtonReadyByIndex = (
+    buttonIndex: number,
+  ) => ({
+    xpath: `(//*[@data-testid="add-multichain-account-button"])[${buttonIndex + 1}][normalize-space(.)="Add account"]`,
+  });
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
@@ -268,27 +285,10 @@ class AccountListPage {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
     const buttonIndex = options?.srpIndex ?? 0;
-    const expectedCount = buttonIndex + 1;
-    let createMultichainAccountButtons: Awaited<
-      ReturnType<typeof this.driver.findElements>
-    > = [];
-    await this.driver.waitUntil(
-      async () => {
-        createMultichainAccountButtons = await this.driver.findElements(
-          this.addMultichainAccountButton,
-        );
-        return createMultichainAccountButtons.length >= expectedCount;
-      },
-      { timeout: 10000, interval: 500 },
+    await this.waitForAddAccountButtonStablyReady(buttonIndex);
+    await this.driver.clickElement(
+      this.addMultichainAccountButtonByIndex(buttonIndex),
     );
-    await createMultichainAccountButtons[buttonIndex].click();
-
-    // Wait for the account creation to complete by waiting for loading state to finish
-    // The button shows "Adding account..." during loading and "Add account" when done
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Adding account...',
-    });
   }
 
   /**
@@ -1034,6 +1034,34 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.viewAccountOnExplorerButton);
+  }
+
+  /**
+   * Wait for the add account button at the specified index to be stably ready.
+   * @param buttonIndex - Zero-based index of the add-multichain-account button
+   */
+  async waitForAddAccountButtonStablyReady(
+    buttonIndex: number = 0,
+  ): Promise<void> {
+    console.log(
+      `Wait for add account button at index ${buttonIndex} to be stably ready`,
+    );
+    await this.driver.waitUntil(
+      async () => {
+        const syncing = await this.driver.isElementPresentAndVisible(
+          this.addAccountButtonSyncing,
+          500,
+        );
+        if (syncing) {
+          return false;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.addMultichainAccountButtonReadyByIndex(buttonIndex),
+          500,
+        );
+      },
+      { timeout: 20000, interval: 500, stableFor: 1000 },
+    );
   }
 
   /**
