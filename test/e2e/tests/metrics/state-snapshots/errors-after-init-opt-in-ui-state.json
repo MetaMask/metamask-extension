@@ -58,7 +58,12 @@
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
-  "gas": { "customData": { "limit": null, "price": null } },
+  "gas": {
+    "customData": {
+      "limit": null,
+      "price": null
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/",
     "redirectAfterDefaultPage": null
@@ -106,7 +111,10 @@
     "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
-    "browserEnvironment": { "browser": "string", "os": "string" },
+    "browserEnvironment": {
+      "browser": "string",
+      "os": "string"
+    },
     "cacheTimestamp": "number",
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
@@ -122,7 +130,10 @@
     "countries": "object",
     "country": "string",
     "coverageResults": "object",
-    "cryptocurrencies": ["btc", "sol"],
+    "cryptocurrencies": [
+      "btc",
+      "sol"
+    ],
     "currencyRates": {
       "ETH": {
         "conversionDate": "object",
@@ -177,7 +188,6 @@
     "hasPlacedFirstOrder": "object",
     "hasSeenOnboardingCompletionPage": true,
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "hiddenAccountList": "object",
     "hip3ConfigVersion": "number",
     "historicalPrices": "object",
     "ignoredNfts": "object",
@@ -189,7 +199,10 @@
     "inputPrimaryDenomination": "string",
     "insights": "object",
     "interfaces": "object",
-    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
+    "internalAccounts": {
+      "accounts": "object",
+      "selectedAccount": "string"
+    },
     "ipfsGateway": "string",
     "isAccountSyncingEnabled": true,
     "isAccountTreeSyncingInProgress": "boolean",
@@ -296,7 +309,6 @@
     "permissionHistory": "object",
     "perpsBalances": "object",
     "perpsTabBadgeSeen": "boolean",
-    "pinnedAccountList": "object",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "preferences": {
@@ -317,7 +329,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
-      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
@@ -339,8 +353,14 @@
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
     "rates": {
-      "btc": { "conversionDate": 0, "conversionRate": 0 },
-      "sol": { "conversionDate": 0, "conversionRate": 0 }
+      "btc": {
+        "conversionDate": 0,
+        "conversionRate": 0
+      },
+      "sol": {
+        "conversionDate": 0,
+        "conversionRate": 0
+      }
     },
     "rawRemoteFeatureFlags": "object",
     "recentlyViewedMarkets": "object",
@@ -351,7 +371,10 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": {
+        "name": "groupA",
+        "value": "valueA"
+      }
     },
     "requests": "object",
     "rewardsAccounts": "object",
@@ -380,7 +403,10 @@
     "signatureSecurityAlertResponses": "object",
     "slides": "object",
     "smartTransactionsState": {
-      "fees": { "approvalTxFees": null, "tradeTxFees": null },
+      "fees": {
+        "approvalTxFees": null,
+        "tradeTxFees": null
+      },
       "feesByChainId": "object",
       "liveness": true,
       "livenessByChainId": "object",
@@ -458,5 +484,7 @@
   "rewards": "object",
   "smartAccounts": "object",
   "swaps": "object",
-  "unconnectedAccount": { "state": "CLOSED" }
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  }
 }

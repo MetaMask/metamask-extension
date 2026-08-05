@@ -120,7 +120,6 @@ import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SubscriptionService } from '../services/subscription/subscription-service';
-import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { AppMetadataController } from '../controllers/app-metadata';
@@ -138,7 +137,6 @@ import { LegacyBackgroundApiService } from '../services/legacy-background-api-se
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
  */
 export type MessengerClient =
-  | AccountOrderController
   | AccountTrackerController
   | AccountsController
   | AddressBookController
@@ -258,8 +256,7 @@ export type MessengerClient =
  * Flat state object for all messenger clients supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type MessengerClientFlatState = AccountOrderController['state'] &
-  AccountsController['state'] &
+export type MessengerClientFlatState = AccountsController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &
   AddressBookController['state'] &

@@ -5300,19 +5300,6 @@ export function updateNetworksList(
 }
 
 /**
- * Updates the pinned accounts list
- *
- * @param pinnedAccountList
- */
-export function updateAccountsList(
-  pinnedAccountList: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
-  };
-}
-
-/**
  * Sets the enabled networks in the controller state.
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
@@ -5344,21 +5331,6 @@ export function setEnabledAllPopularNetworks(): ThunkAction<
 > {
   return async () => {
     await submitRequestToBackground('setEnabledAllPopularNetworks');
-  };
-}
-
-/**
- * Hides account in the accounts list
- *
- * @param hiddenAccountList
- */
-export function updateHiddenAccountsList(
-  hiddenAccountList: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateHiddenAccountsList', [
-      hiddenAccountList,
-    ]);
   };
 }
 

@@ -11,9 +11,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  Icon,
   IconName,
-  IconSize,
   Tag,
   Text,
   TextColor,
@@ -72,9 +70,7 @@ const AccountListItem = ({
   onClick,
   closeMenu,
   connectedAvatar,
-  isPinned = false,
   menuType = AccountListItemMenuTypes.None,
-  isHidden = false,
   currentTabOrigin,
   isActive = false,
   startAccessory,
@@ -241,21 +237,6 @@ const AccountListItem = ({
                 alignItems={BoxAlignItems.Center}
                 gap={2}
               >
-                {isPinned ? (
-                  <Icon
-                    name={IconName.Pin}
-                    size={IconSize.Xs}
-                    className="account-pinned-icon"
-                    data-testid="account-pinned-icon"
-                  />
-                ) : null}
-                {isHidden ? (
-                  <Icon
-                    name={IconName.EyeSlash}
-                    size={IconSize.Xs}
-                    className="account-hidden-icon"
-                  />
-                ) : null}
                 <Text
                   asChild
                   variant={TextVariant.BodyMd}
@@ -380,8 +361,6 @@ const AccountListItem = ({
               !isSolanaAccount(account)
             }
             closeMenu={closeMenu}
-            isPinned={isPinned}
-            isHidden={isHidden}
             isConnected={isConnected}
           />
         )}
@@ -431,14 +410,6 @@ AccountListItem.propTypes = {
    * Represents the type of menu to be rendered
    */
   menuType: PropTypes.string,
-  /**
-   * Represents pinned accounts
-   */
-  isPinned: PropTypes.bool,
-  /**
-   * Represents hidden accounts
-   */
-  isHidden: PropTypes.bool,
   /**
    * Represents current tab origin
    */

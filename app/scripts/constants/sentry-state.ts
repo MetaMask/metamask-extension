@@ -62,10 +62,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   NetworkEnablementController: {
     enabledNetworkMap: {},
   },
-  AccountOrderController: {
-    pinnedAccountList: [],
-    hiddenAccountList: [],
-  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,

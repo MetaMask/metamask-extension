@@ -171,7 +171,6 @@ import { getSubjectMetadataControllerMessenger } from './subject-metadata-contro
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
-import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
@@ -215,7 +214,6 @@ import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 
-export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
 export {
   getAccountTrackerControllerMessenger,
@@ -348,10 +346,6 @@ export { getProfileMetricsServiceMessenger } from './profile-metrics-service-mes
 export { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 
 export const MESSENGER_FACTORIES = {
-  AccountOrderController: {
-    getMessenger: getAccountOrderControllerMessenger,
-    getInitMessenger: noop,
-  },
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,

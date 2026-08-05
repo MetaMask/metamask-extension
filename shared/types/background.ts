@@ -64,7 +64,6 @@ import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
-import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
 import type { AppStateControllerState } from '../../app/scripts/controllers/app-state-controller';
 import type { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
@@ -88,8 +87,6 @@ export type ControllerStatePropertiesEnumerated = {
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
   srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
-  pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
-  hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
   currentAppVersion: AppMetadataControllerState['currentAppVersion'];
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
@@ -344,7 +341,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
-  AccountOrderControllerState &
   AppMetadataControllerState &
   ApprovalControllerState &
   AppStateControllerState &

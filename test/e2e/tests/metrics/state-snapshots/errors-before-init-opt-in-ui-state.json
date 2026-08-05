@@ -1,9 +1,5 @@
 {
   "data": {
-    "AccountOrderController": {
-      "hiddenAccountList": "object",
-      "pinnedAccountList": "object"
-    },
     "AccountTracker": {
       "accountsByChainId": "object"
     },
@@ -158,7 +154,10 @@
     },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
-      "cryptocurrencies": ["btc", "sol"],
+      "cryptocurrencies": [
+        "btc",
+        "sol"
+      ],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
