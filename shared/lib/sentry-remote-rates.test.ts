@@ -109,16 +109,60 @@ describe('applySentryRemoteRates', () => {
     expect(client.options.tracesSampleRate).toBe(0.0075);
   });
 
-  it('falls back when stateHooks is unavailable', async () => {
+  it('falls back to the compile-time rate when the hook never registers', async () => {
+    jest.useFakeTimers();
     const client = mockClient();
 
-    await expect(applySentryRemoteRates(client)).resolves.toStrictEqual({
-      tracesSampleRate: undefined,
+    const applied = applySentryRemoteRates(client);
+    // Exhaust the bounded wait without the hook ever appearing.
+    await jest.advanceTimersByTimeAsync(50 * 100);
+
+    // The give-up path returns before the rate object is built, so it is empty
+    // rather than a three-key object of `undefined`s.
+    await expect(applied).resolves.toStrictEqual({});
+    expect(client.options.tracesSampleRate).toBe(0.0075);
+    expect(getRemoteWrapperSampleRate()).toBeUndefined();
+    jest.useRealTimers();
+  });
+
+  it('waits for the persisted-state hook, then applies once it registers', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    // Hook absent at call time (sentry-install runs before setup-initial-state-hooks).
+    const applied = applySentryRemoteRates(client);
+    // State-hooks registers a few ticks later.
+    mockPersistedState({ tracesSampleRate: 0.03 });
+    await jest.advanceTimersByTimeAsync(100);
+
+    await expect(applied).resolves.toStrictEqual({
+      tracesSampleRate: 0.03,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
     });
-    expect(client.options.tracesSampleRate).toBe(0.0075);
-    expect(getRemoteWrapperSampleRate()).toBeUndefined();
+    expect(client.options.tracesSampleRate).toBe(0.03);
+    jest.useRealTimers();
+  });
+
+  it('still applies when the hook registers on the last poll interval', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    // Absent through nearly the whole poll window (50 × 100ms).
+    const applied = applySentryRemoteRates(client);
+    await jest.advanceTimersByTimeAsync(49 * 100);
+    // Registers right at the end — must still be picked up (not missed by the
+    // check-then-wait off-by-one).
+    mockPersistedState({ tracesSampleRate: 0.04 });
+    await jest.advanceTimersByTimeAsync(100);
+
+    await expect(applied).resolves.toStrictEqual({
+      tracesSampleRate: 0.04,
+      wrapperSampleRate: undefined,
+      transactionSampleRates: undefined,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.04);
+    jest.useRealTimers();
   });
 
   it('falls back when reading persisted state throws', async () => {
