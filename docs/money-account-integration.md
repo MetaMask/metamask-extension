@@ -132,13 +132,15 @@ guard itself is correct.
 1. ~~Resolve the entropy-id question~~ **DONE** — no defect; see above.
 2. ~~Write an e2e spec~~ **DONE** —
    `test/e2e/tests/money/money-account-vault-restore.spec.ts`, passing.
-3. **Commit the e2e session's work** (spec, `manifestFlags` fix, regenerated
-   LavaMoat policies, this doc) and finish any policy regeneration still
-   outstanding (`webpack:lavamoat:policy:mv3` + `:mv2`; CI fails on any diff).
-4. **D11** — Pay strategy + callbacks. Largest remaining piece. Read the bignumber
-   callout and the ROUND_UP/ROUND_DOWN note in the D11 ticket **before** writing any
-   amount maths; both are traps that produce silently wrong money amounts.
-5. Then D12, D13.
+3. ~~Commit the e2e session's work~~ **DONE** — committed as four commits
+   (`ebe34cc871`…`54c64ff540`), all LavaMoat policies regenerated.
+4. ~~D11~~ **DONE** — see the D11 status section.
+5. **D12** — `useMoneyAccountDeposit` + real entry point. D11 built the intent
+   map (`ui/helpers/money/deposit-intent.ts`, with the exported setter the
+   initiator needs) and the commit path is callable from the UI via
+   `updateMoneyAccountDepositAmount` in
+   `ui/store/controller-actions/transaction-pay-controller.ts`.
+6. Then D13.
 
 ### Debts recorded elsewhere in this doc
 
@@ -588,7 +590,7 @@ overrides a declared range, so a bump can appear to do nothing.
    `corepack yarn webpack:tsc` once: the postinstall that would generate the
    launcher is the same one the `approvedGitRepositories` error kills.
 2. **Run one spec:** `corepack yarn test:e2e:single test/e2e/tests/<x>.spec.ts
-   --browser=chrome`.
+--browser=chrome`.
 3. **Remote flags in a spec** go through
    `withFixtures({ manifestFlags: { remoteFeatureFlags: {...} } })` — the
    harness rewrites `_flags` in the dist manifest per run (replace, not merge,
@@ -1061,6 +1063,43 @@ The largest and highest-risk deliverable. Ext's `getStrategy` currently returns
   return, the zero-amount no-op, and **both** the atomic and non-atomic branches;
   assert the decoded calldata rather than that a mock was called.
 - **Depends on:** D0a, **D0b**, D1, D2, D10.
+
+## D11 — status: **DONE** (2026-08-05)
+
+All in `app/scripts/lib/money/pay/` (callbacks + `pay-context.ts` +
+`update-deposit-amount.ts`), wired in `transaction-pay-controller-init.ts`,
+with the init messenger extended (six new delegated actions). 47 tests
+across 7 suites; acceptance criteria met — calldata asserted by **decoding**
+real builder output (the builders run for real against a stubbed EIP-1193
+provider answering `previewDeposit`/`getRate`).
+
+Port decisions and divergences from mobile, all deliberate:
+
+- **Mobile passes no `getStrategy`; the extension keeps its Relay-only one.**
+  Removing it would switch every Pay flow to flag-driven strategy routing —
+  its own change with unrelated blast radius. Money flows work under Relay.
+- **Sources:** mobile hand-rolls the batch builders in
+  `app/components/UI/Money/utils/moneyAccountTransactions.ts`; the extension
+  uses `@metamask/money-account-utils` (same encoding, but the package
+  builders **throw on zero**, hence explicit zero-guards at every call site
+  that mobile does not have).
+- **The chain comes from the vault config** (mobile hardcodes Monad in the
+  payment-override path); `getAmountData` and the commit path use the
+  transaction's own chain, as mobile does.
+- **Rounding:** deposits `ROUND_UP`, withdraw override `ROUND_DOWN`, via
+  bignumber 4's `.round(0, mode)` — the `toMusdBaseUnits` helper in
+  `payment-override-callback.ts` is deliberately not shared across flows.
+- **The commit path takes a transaction id**, not a `TransactionMeta`
+  (mobile's hook passes the meta in-process; over the background API an id is
+  the honest input and the meta is read fresh from controller state). Exposed
+  as `updateMoneyAccountDepositAmount` on the Pay init api.
+- **Intent map is UI-side** (`ui/helpers/money/deposit-intent.ts`): all of
+  mobile's consumers are hooks. Unlike mobile it exports a setter, because
+  the initiator (D12) lives in a different module here. Not persisted across
+  UI reloads; mobile's fallback derivation from the transaction's payment
+  method covers that and should be ported with D12's toast/status work.
+- `TransactionController:getState` narrowing fails in the messenger union —
+  cast at the call site, mirroring `lib/transaction/hooks`.
 
 ## D12 — `useMoneyAccountDeposit` + real entry point
 
