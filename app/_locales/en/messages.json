@@ -7020,6 +7020,10 @@
   "perpsCancelOrder": {
     "message": "Cancel order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order could not be cancelled. Try again.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Set candle interval"
   },
@@ -7644,6 +7648,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit must be $1 $2 price",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "This order is no longer open",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Failed to cancel order",
