@@ -23,7 +23,7 @@ jest.mock('../routes/global-menu-route-transition', () => ({
 }));
 
 jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
-  useDiscoverSearch: () => mockUseDiscoverSearch(),
+  useDiscoverSearch: (options: unknown) => mockUseDiscoverSearch(options),
 }));
 
 const getDefaultDiscoverSearchResult = () => ({
@@ -39,6 +39,7 @@ const getDefaultDiscoverSearchResult = () => ({
         marketCap: 20_000_000_000,
         aggregatedUsdVolume: 126_000_000,
         priceChangePct: { h24: '0.02' },
+        securityData: { resultType: 'Verified' },
       },
     ],
     isLoading: false,
@@ -59,7 +60,7 @@ const getDefaultDiscoverSearchResult = () => ({
         name: 'Stock1',
         symbol: 'STK1',
         decimals: 18,
-        price: '406.78',
+        price: '0.000131',
         marketCap: 20_000_000_000,
         aggregatedUsdVolume: 126_000_000,
         priceChangePct: { h24: '9.4' },
@@ -107,7 +108,10 @@ describe('DiscoverSearchPage', () => {
     mockUseDiscoverSearch.mockReturnValue(getDefaultDiscoverSearchResult());
   });
 
-  const renderPage = ({ currentCurrency = 'usd' } = {}) => {
+  const renderPage = ({
+    currentCurrency = 'usd',
+    route = DISCOVER_SEARCH_ROUTE,
+  } = {}) => {
     const store = mockStore({
       ...mockState,
       metamask: {
@@ -124,7 +128,7 @@ describe('DiscoverSearchPage', () => {
         <DiscoverSearchPage />
       </QueryClientProvider>,
       store,
-      DISCOVER_SEARCH_ROUTE,
+      route,
     );
   };
 
@@ -138,6 +142,42 @@ describe('DiscoverSearchPage', () => {
     expect(screen.getByTestId('discover-tab-stocks')).toBeInTheDocument();
     expect(
       screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('$2,500.00')).toBeInTheDocument();
+    expect(screen.getByTestId('security-badge-icon')).toBeInTheDocument();
+    expect(screen.getByText('<$0.01')).toBeInTheDocument();
+  });
+
+  it('restores the search query and active tab from the route query string', () => {
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=crypto` });
+
+    expect(screen.getByTestId('discover-search-input')).toHaveValue('eth');
+    expect(mockUseDiscoverSearch).toHaveBeenCalledWith(
+      expect.objectContaining({ query: 'eth', activeTab: 'crypto' }),
+    );
+    expect(
+      screen.getByTestId('discover-crypto-eip155:1/slip44:60'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders risky security badges for suspicious assets', () => {
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        ...getDefaultDiscoverSearchResult().crypto,
+        items: [
+          {
+            ...getDefaultDiscoverSearchResult().crypto.items[0],
+            securityData: { type: 'Warning' },
+          },
+        ],
+      },
+    });
+
+    renderPage();
+
+    expect(
+      screen.getByText(messages.securityTrustRisky.message),
     ).toBeInTheDocument();
   });
 

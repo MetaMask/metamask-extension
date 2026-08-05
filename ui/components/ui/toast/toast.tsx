@@ -45,7 +45,8 @@ export function Toaster() {
         bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{
-        className: 'w-[360px] max-w-[360px] border border-border-muted',
+        className:
+          'relative w-[360px] max-w-[360px] border border-border-muted',
         style: {
           background: 'var(--color-background-section)',
           color: 'var(--color-text-default)',
@@ -76,7 +77,7 @@ export function Toaster() {
                 ariaLabel={t('close')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                className="self-start"
+                className="relative z-10 self-start"
                 onClick={() => {
                   (item as ToastWithClose).onClose?.();
                   toast.dismiss(item.id);

@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Anda mengirimkan aset ke alamat burn. Jika dilanjutkan, aset Anda akan hilang."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Estimasi perubahan untuk transaksi ini telah diperbarui. Tinjau dengan saksama sebelum melanjutkan."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Anda berinteraksi dengan alamat ini untuk pertama kalinya. Pastikan alamat tersebut benar sebelum melanjutkan."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Dompet tidak didukung"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Hasil telah berubah"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
