@@ -3,6 +3,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { ConvertibleToken } from '../../pages/musd/types';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useMusdConversion } from './useMusdConversion';
 
 const mockNavigate = jest.fn();
@@ -476,7 +477,7 @@ describe('useMusdConversion', () => {
         result.current.cancelConversion();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
