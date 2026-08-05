@@ -127,6 +127,8 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 
 # Core Extension UX
 ui/components/app/import-token                  @MetaMask/core-extension-ux
+ui/components/app/toast-listener                @MetaMask/core-extension-ux
+ui/components/ui/toast                          @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
