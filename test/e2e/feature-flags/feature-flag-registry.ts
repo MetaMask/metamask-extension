@@ -114,6 +114,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  ledgerDmk: {
+    name: 'ledgerDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   enableMultichainAccounts: {
     name: 'enableMultichainAccounts',
     type: FeatureFlagType.Remote,
@@ -222,6 +234,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  defiControllerV2: {
+    name: 'defiControllerV2',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: {
+      versions: {
+        '13.41.0': {
+          enabled: false,
+        },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   assetsEnableNotificationsByDefault: {
     name: 'assetsEnableNotificationsByDefault',
     type: FeatureFlagType.Remote,
@@ -260,12 +286,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: '13.33.0',
           deprecatedControllers: [],
           enabled: true,
+          tracesEnabled: false,
         },
         '13.15.0': {
           deprecatedControllers: [],
           enabled: false,
           featureVersion: null,
           minimumVersion: null,
+          tracesEnabled: false,
         },
       },
     },
@@ -575,6 +603,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       refreshRate: 30000,
       minimumVersion: '0.0.0',
     },
+    status: FeatureFlagStatus.Active,
+  },
+
+  dappOpenSidepanelEnabled: {
+    name: 'dappOpenSidepanelEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
   },
 
@@ -2250,6 +2286,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
+  perpsClosePositionLimitOrderEnabled: {
+    name: 'perpsClosePositionLimitOrderEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   perpsEnabled: {
     name: 'perpsEnabled',
     type: FeatureFlagType.Remote,
@@ -2274,6 +2318,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: '',
+    status: FeatureFlagStatus.Active,
+  },
+
+  perpsOrderBookEnabled: {
+    name: 'perpsOrderBookEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Dark-launched: default OFF in production until rollout.
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.30.0',
+    },
     status: FeatureFlagStatus.Active,
   },
 
@@ -2861,14 +2917,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  ledgerDmk: {
-    name: 'ledgerDmk',
+  extensionTrustAndSecurityTdp: {
+    name: 'extensionTrustAndSecurityTdp',
     type: FeatureFlagType.Remote,
-    inProd: true,
+    inProd: false,
     productionDefault: {
       enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
+      minimumVersion: '13.40.0',
     },
     status: FeatureFlagStatus.Active,
   },

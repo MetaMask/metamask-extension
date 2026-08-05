@@ -115,6 +115,7 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
+        await perpsTab.waitForWatchlistMarket('ETH'); // layout settled
 
         // Add AVAX to watchlist
         await marketListPage.navigateToMarketList();

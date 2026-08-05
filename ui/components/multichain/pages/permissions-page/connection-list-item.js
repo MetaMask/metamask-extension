@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
+import { AvatarFavicon } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,7 +17,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  AvatarFavicon,
   Box,
   Icon,
   IconName,
@@ -31,8 +31,9 @@ import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multi
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const permittedChains = useSelector((state) =>
-    getAllPermittedChainsForSelectedTab(state, connection.origin),
+  const permittedChains = useSelector(
+    (state) => getAllPermittedChainsForSelectedTab(state, connection.origin),
+    shallowEqual,
   );
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 

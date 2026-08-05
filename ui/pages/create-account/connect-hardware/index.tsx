@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable react-compiler/react-compiler */
 import React, {
   useCallback,
   useContext,
@@ -9,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { upperFirst } from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
@@ -60,6 +59,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -154,7 +154,9 @@ const ConnectHardwareForm = () => {
   const [browserSupported, setBrowserSupported] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
-  const [isFirefox, setIsFirefox] = useState(false);
+  const [isFirefox] = useState(() =>
+    /Firefox/u.test(window.navigator.userAgent),
+  );
   const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
     activeQrCodeScanRequest,
   );
@@ -193,22 +195,18 @@ const ConnectHardwareForm = () => {
     [keyrings],
   );
 
-  // Update balances when accounts change
-  useEffect(() => {
-    setHardwareAccounts((prev) => {
-      if (prev.length === 0) {
-        return prev;
-      }
-      return prev.map((account) => {
+  const hardwareAccountsWithBalances = useMemo(
+    () =>
+      hardwareAccounts.map((account) => {
         const normalizedAddress = account.address.toLowerCase();
         const balanceValue = accounts[normalizedAddress]?.balance || null;
         return {
           ...account,
           balance: balanceValue ? formatBalance(balanceValue, 6) : '...',
         };
-      });
-    });
-  }, [accounts]);
+      }),
+    [hardwareAccounts, accounts],
+  );
 
   const showTemporaryAlert = useCallback(() => {
     dispatch(actions.showAlert(t('hardwareWalletConnected') as string));
@@ -296,6 +294,18 @@ const ConnectHardwareForm = () => {
           }
         }
 
+        if (deviceName === HardwareDeviceNames.qr) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Qr);
+
+          if (
+            hwError.code === ErrorCode.PermissionCameraDenied ||
+            hwError.code === ErrorCode.PermissionCameraPromptDismissed
+          ) {
+            setError(t('youNeedToAllowCameraAccess') as string);
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
@@ -309,8 +319,15 @@ const ConnectHardwareForm = () => {
           errorMessage === 'LEDGER_WRONG_APP'
         ) {
           setError(t('ledgerLocked') as string);
-        } else if (errorMessage.includes('timeout')) {
-          setError(t('ledgerTimeout') as string);
+        } else if (
+          errorMessage.includes('timeout') ||
+          errorMessage.includes('timed out')
+        ) {
+          setError(
+            (deviceName === HardwareDeviceNames.ledger
+              ? t('ledgerTimeout')
+              : t('hardwareWalletConnectionTimeout')) as string,
+          );
         } else if (ledgerErrorCode) {
           setError(
             `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
@@ -344,12 +361,6 @@ const ConnectHardwareForm = () => {
       unlocked,
     ],
   );
-
-  useEffect(() => {
-    if (/Firefox/u.test(window.navigator.userAgent)) {
-      setIsFirefox(true);
-    }
-  }, []);
 
   useEffect(() => {
     const previousScanRequest = previousActiveQrCodeScanRequest.current;
@@ -414,6 +425,7 @@ const ConnectHardwareForm = () => {
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
+      createEventBuilder,
       defaultHdPaths,
       getPage,
       hardwareAccounts.length,
@@ -492,7 +504,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [createEventBuilder, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -594,6 +606,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      createEventBuilder,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,
@@ -705,7 +718,7 @@ const ConnectHardwareForm = () => {
         onPathChange={onPathChange}
         selectedPath={defaultHdPaths[device]}
         device={device}
-        accounts={hardwareAccounts}
+        accounts={hardwareAccountsWithBalances}
         connectedAccounts={connectedAccounts}
         selectedAccounts={selectedAccounts}
         onAccountChange={onAccountChange}

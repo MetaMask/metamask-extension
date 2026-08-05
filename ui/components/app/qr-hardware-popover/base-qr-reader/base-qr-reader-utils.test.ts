@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys use snake_case */
+/* eslint-disable @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case */
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   MetaMetricsEventCategory,

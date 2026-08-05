@@ -25,6 +25,7 @@ const SIMPLE_HEADER_TYPES = [TransactionType.musdConversion];
 
 const CONFIRMATIONS_WITH_ALT_HEADER = [
   ...SIMPLE_HEADER_TYPES,
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdClaim,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,

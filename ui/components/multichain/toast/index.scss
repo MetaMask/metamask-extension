@@ -2,7 +2,7 @@
 
 .toasts-container {
   position: fixed;
-  bottom: 16px;
+  bottom: var(--toaster-bottom-offset, 16px);
   left: 0;
   right: 0;
   margin-left: auto;
@@ -42,6 +42,7 @@
 
   [role=status] {
     justify-content: flex-start;
+    margin-block: 0;
   }
 }
 

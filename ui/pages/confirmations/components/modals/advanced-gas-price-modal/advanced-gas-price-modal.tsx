@@ -13,7 +13,6 @@ import {
   BoxAlignItems,
   ButtonSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
 
 import {
   Modal,
@@ -32,6 +31,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const AdvancedGasPriceModal = ({
   setActiveModal,

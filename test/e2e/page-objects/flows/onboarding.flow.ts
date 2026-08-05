@@ -18,7 +18,7 @@ import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 
@@ -41,8 +41,14 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Give the onboarding completion time to process (needed for sidepanel)
-  await driver.delay(2000);
+  // waitUntil completedOnboarding is true, then navigate once
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.completedOnboarding);
+    },
+    { timeout: 30000, interval: 500 },
+  );
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window

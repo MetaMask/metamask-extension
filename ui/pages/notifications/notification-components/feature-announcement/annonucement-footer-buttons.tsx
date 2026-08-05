@@ -11,6 +11,7 @@ import {
   isInternalRouteHref,
   resolveTrustedDeepLinkHref,
 } from '../../../../helpers/utils/resolve-deep-link-href';
+import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
 import { FeatureAnnouncementNotification } from './types';
 
 type ResolvedHref = {
@@ -36,12 +37,24 @@ function shouldUseDefaultLinkNavigation(
   );
 }
 
+function getClientRouteFromExtensionLinkRoute(
+  extensionLinkRoute: string,
+): string | undefined {
+  if (extensionLinkRoute === 'home.html') {
+    return '/';
+  }
+
+  const [, hashRoute] = /^home\.html#(\/.*)$/u.exec(extensionLinkRoute) ?? [];
+
+  return hashRoute && isInternalRouteHref(hashRoute) ? hashRoute : undefined;
+}
+
 const useAnalyticEventCallback = (props: {
-  id: string;
-  type: string;
-  clickType: 'external_link' | 'internal_link';
+  notification: FeatureAnnouncementNotification;
+  clickType: 'cta_button';
 }) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { notification, clickType } = props;
 
   const analyticsEvent = useCallback(() => {
     trackEvent(
@@ -49,18 +62,16 @@ const useAnalyticEventCallback = (props: {
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_id: props.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_type: props.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          clicked_item: props.clickType,
+          /* eslint-disable @typescript-eslint/naming-convention */
+          notification_id: notification.id,
+          notification_type: getNotificationTypeForAnalytics(notification),
+          notification_subtype: notification.notification_subtype,
+          clicked_item: clickType,
+          /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
-  }, [createEventBuilder, props.clickType, props.id, props.type, trackEvent]);
+  }, [clickType, createEventBuilder, notification, trackEvent]);
 
   return analyticsEvent;
 };
@@ -68,25 +79,42 @@ const useAnalyticEventCallback = (props: {
 export const ExtensionLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
+  const navigate = useNavigate();
   const { notification } = props;
-  const onClick = useAnalyticEventCallback({
-    id: notification.id,
-    type: notification.type,
-    clickType: 'internal_link',
+
+  const analyticCallback = useAnalyticEventCallback({
+    notification,
+    clickType: 'cta_button',
   });
 
-  if (!notification.data.extensionLink) {
+  const { extensionLink } = notification.data;
+
+  if (!extensionLink) {
     return null;
   }
+
+  const href = `/${extensionLink.extensionLinkRoute}`;
+  const clientRoute = getClientRouteFromExtensionLinkRoute(
+    extensionLink.extensionLinkRoute,
+  );
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    analyticCallback();
+
+    if (!clientRoute || shouldUseDefaultLinkNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate(clientRoute);
+  };
 
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Primary}
-      text={notification.data.extensionLink.extensionLinkText}
-      href={`/${notification.data.extensionLink.extensionLinkRoute}`}
-      // Even if the link is not external, it will open in a new tab
-      // to avoid breaking the popup
-      isExternal={true}
+      text={extensionLink.extensionLinkText}
+      href={href}
+      isExternal={!clientRoute}
       onClick={onClick}
     />
   );
@@ -98,9 +126,8 @@ export const ExternalLinkButton = (props: {
   const navigate = useNavigate();
   const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
-    id: notification.id,
-    type: notification.type,
-    clickType: 'external_link',
+    notification,
+    clickType: 'cta_button',
   });
 
   const { externalLink } = notification.data;

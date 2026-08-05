@@ -1,9 +1,11 @@
 import { Driver } from '../../webdriver/driver';
 
 class TokenOverviewPage {
-  private driver: Driver;
-
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
+
+  private readonly backButton = '.asset-page__back-button';
+
+  private driver: Driver;
 
   private readonly moreButton = '[data-testid="coin-overview-more"]';
 
@@ -23,8 +25,6 @@ class TokenOverviewPage {
     text: 'View Asset in explorer',
     tag: 'div',
   };
-
-  private readonly backButton = '.asset-page__back-button';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -63,6 +63,10 @@ class TokenOverviewPage {
     }
   }
 
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
+  }
+
   async clickReceive(): Promise<void> {
     await this.driver.clickElement(this.moreButton);
     await this.driver.waitForSelector(this.receiveButton);
@@ -86,10 +90,6 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
-  }
-
-  async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
   }
 }
 

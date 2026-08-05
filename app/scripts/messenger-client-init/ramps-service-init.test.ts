@@ -9,7 +9,7 @@ import { getRampsServiceMessenger } from './messengers';
 import { RampsServiceInit } from './ramps-service-init';
 
 jest.mock('@metamask/ramps-controller');
-jest.mock('./ramps-environment', () => ({
+jest.mock('../../../shared/lib/ramps/environment', () => ({
   getRampsEnvironment: jest.fn(() => 'staging'),
 }));
 

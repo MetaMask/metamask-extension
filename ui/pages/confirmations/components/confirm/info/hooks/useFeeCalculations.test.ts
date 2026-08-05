@@ -3,7 +3,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { merge } from 'lodash';
 
 import {
@@ -32,6 +32,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
@@ -60,6 +61,9 @@ describe('useFeeCalculations', () => {
     const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
       metamask: {
         currencyRates: {
+          ETH: {
+            usdConversionRate: 556.12,
+          },
           SepoliaETH: {
             conversionRate: 0,
           },
@@ -81,6 +85,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": "$0.07",
+        "addedProtectionFeeUsd": 0.069707754,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.14",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -128,6 +133,7 @@ describe('useFeeCalculations', () => {
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -157,6 +163,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -188,6 +195,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -216,6 +224,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$2.57",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -248,7 +257,7 @@ describe('useFeeCalculations', () => {
 
   it('returns the correct estimate if quoted swap is displayed in info', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
-      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
       isQuotedSwapDisplayedInInfo: true,
@@ -268,6 +277,7 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$3.24",
         "estimatedFeeFiatWith18SignificantDigits": null,
