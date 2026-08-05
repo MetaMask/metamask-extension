@@ -96,6 +96,11 @@ export const isTokenTradingOpenAt = (
  * is currently active. This is independent of whether the regular market
  * is open or closed — it only checks the offhours window.
  *
+ * Intentionally ignores `rwaData.nextPause`: pauses (e.g. dividends,
+ * corporate actions) apply only to regular market hours, which are gated
+ * by {@link isTokenTradingOpenAt}. Off-hours sessions remain tradable
+ * even when a regular-hours pause is present.
+ *
  * Returns false when:
  * - The token has no rwaData or no offhours data
  * - The offhours window timestamps are missing/invalid
