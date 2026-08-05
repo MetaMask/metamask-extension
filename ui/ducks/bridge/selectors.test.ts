@@ -189,7 +189,7 @@ describe('Bridge selectors', () => {
         exchangeRate: '1',
         usdExchangeRate,
       },
-    } as never);
+    }) as never;
 
   const createTronBridgeState = ({
     fromTokenInputValue = '1',
