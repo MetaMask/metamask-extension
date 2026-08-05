@@ -135,13 +135,16 @@ export const NetworksForm = ({
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
+  const networkChainIdHex = chainId ? toHex(chainId) : undefined;
   const chainFailoverUrls =
-    chainId && isStrictHexString(toHex(chainId))
-      ? getFailoverUrlsForChainId(toHex(chainId) as Hex)
+    networkChainIdHex && isStrictHexString(networkChainIdHex)
+      ? getFailoverUrlsForChainId(networkChainIdHex)
       : undefined;
 
   const getFailoverUrls = (endpoint?: { failoverUrls?: string[] }) =>
     chainFailoverUrls ?? endpoint?.failoverUrls;
+
+  const defaultFailoverUrls = getFailoverUrls(defaultRpcEndpoint);
 
   const { safeChains } = useSafeChains();
 
@@ -622,8 +625,8 @@ export const NetworksForm = ({
         )}
 
         {isRpcFailoverEnabled &&
-        defaultRpcEndpoint &&
-        (getFailoverUrls(defaultRpcEndpoint)?.length ?? 0) > 0 ? (
+        defaultFailoverUrls &&
+        defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -636,9 +639,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(
-              (getFailoverUrls(defaultRpcEndpoint) as string[])[0],
-            )}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
             disabled={true}
           />
         ) : null}

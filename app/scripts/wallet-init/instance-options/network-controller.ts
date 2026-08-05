@@ -1,9 +1,5 @@
 import { WalletOptions } from '@metamask/wallet';
-import { Hex } from '@metamask/utils';
-import {
-  getFailoverUrlsForChainId,
-  INFURA_NETWORK_NAME_BY_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { getFailoverUrlsByChainId } from '../../../../shared/constants/network';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -19,12 +15,7 @@ export function getNetworkControllerInstanceOptions(
 ): WalletOptions['instanceOptions']['networkController'] {
   return {
     infuraProjectId,
-    failoverUrls: Object.fromEntries(
-      (Object.keys(INFURA_NETWORK_NAME_BY_CHAIN_ID) as Hex[]).map((chainId) => [
-        chainId,
-        getFailoverUrlsForChainId(chainId) as string[],
-      ]),
-    ),
+    failoverUrls: getFailoverUrlsByChainId(),
   };
 }
 
