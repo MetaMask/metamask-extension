@@ -105,7 +105,6 @@ describe('Request-queue UI changes', function () {
 
         // Open network manager and select custom network
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Custom',
           'Localhost 8546',
         );
 
@@ -245,7 +244,6 @@ describe('Request-queue UI changes', function () {
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
           await new NetworkManager(driver).openNetworkAndSelectNetwork(
-            'Custom',
             'Localhost 7777',
           );
           await validateBalanceAndActivity(driver, '25');
@@ -253,14 +251,12 @@ describe('Request-queue UI changes', function () {
 
         // Validate second network, where transaction was rejected
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Custom',
           'Localhost 8546',
         );
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Custom',
           'Localhost 8545',
         );
         await validateBalanceAndActivity(driver, '25');
@@ -311,17 +307,14 @@ describe('Request-queue UI changes', function () {
         );
 
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Popular',
           NetworkId.LINEA,
         );
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Popular',
           NetworkId.ETHEREUM,
         );
 
         // Open Network Manager and delete custom network
         await new NetworkManager(driver).openNetworkAndDeleteNetwork(
-          'Custom',
           CHAIN_IDS.LOCALHOST,
         );
 
@@ -428,7 +421,6 @@ describe('Request-queue UI changes', function () {
 
         // Check if Ethereum is selected
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Popular',
           NetworkId.ETHEREUM,
         );
 
@@ -508,7 +500,6 @@ describe('Request-queue UI changes', function () {
 
         // Check if Ethereum is selected
         await new NetworkManager(driver).openNetworkAndSelectNetwork(
-          'Popular',
           NetworkId.ETHEREUM,
         );
 

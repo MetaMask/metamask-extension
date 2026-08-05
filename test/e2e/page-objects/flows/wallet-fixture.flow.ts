@@ -149,7 +149,7 @@ export const generateDefaultFixtureState = async (
 
   await enableTestNetworks(driver);
 
-  await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8545');
+  await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
 
   // Fiat value should be displayed as we mock the price and that is not a 'test network'
   await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');

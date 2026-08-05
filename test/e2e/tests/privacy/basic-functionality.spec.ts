@@ -185,7 +185,7 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
 
@@ -229,7 +229,7 @@ describe('MetaMask onboarding', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
 

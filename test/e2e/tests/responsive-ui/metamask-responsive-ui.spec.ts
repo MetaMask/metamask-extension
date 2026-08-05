@@ -155,11 +155,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8545',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
 
         // check confirmed transaction is displayed in activity list
         await homePage.goToActivityList();

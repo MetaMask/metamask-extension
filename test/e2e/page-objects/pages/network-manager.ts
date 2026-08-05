@@ -31,14 +31,6 @@ class NetworkManager {
   private readonly allNetworksItem =
     '[data-testid="home-network-filter-all-default"]';
 
-  // The redesigned filter splits user-added networks from test networks into
-  // separate sections, where the old Custom tab listed both together.
-  private readonly customNetworkRow =
-    ':is([data-testid^="home-network-filter-custom-"], [data-testid^="home-network-filter-test-"])';
-
-  private readonly defaultNetworkRow =
-    '[data-testid^="home-network-filter-network-"]';
-
   private readonly deselectedAllNetworksItem = `${this.allNetworksItem}.bg-transparent`;
 
   private readonly deselectedNetworkListItem = (selector: string) =>
@@ -49,8 +41,6 @@ class NetworkManager {
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
 
-  // The redesigned filter renders the design-system `ModalHeader`, whose close
-  // button is only identifiable by its aria label.
   private readonly modalCloseButton = 'header button[aria-label="Close"]';
 
   private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
@@ -74,8 +64,6 @@ class NetworkManager {
 
   private readonly networksPageList = '[data-testid="networks-page-list"]';
 
-  // "All networks" is a plain button rather than a network list item, so its
-  // selected state shows through the background utility class.
   private readonly selectedAllNetworksItem = `${this.allNetworksItem}.bg-muted`;
 
   private readonly selectedNetworkListItem = (selector: string) =>
@@ -151,28 +139,13 @@ class NetworkManager {
     await this.driver.waitForSelector(this.allNetworksItem);
   }
 
-  /**
-   * The redesigned filter lists every category at once instead of behind tabs,
-   * so this asserts the matching section is rendered.
-   *
-   * @param tabName - Either `Custom` or `Popular`.
-   */
-  async checkTabIsSelected(tabName: string): Promise<void> {
-    console.log(`Checking if ${tabName} networks are listed`);
-    await this.driver.waitForSelector(
-      tabName === 'Custom' ? this.customNetworkRow : this.defaultNetworkRow,
-    );
-    console.log(`${tabName} networks are listed`);
-  }
-
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
     await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
   }
 
   /**
-   * Deletes a network from the networks page. The filter modal itself no longer
-   * exposes per-network options, so `openManageNetworks` must run first.
+   * Deletes a network from the networks page. `openManageNetworks` must run first.
    *
    * @param chainId - The hexadecimal chain id of the network to delete.
    */
@@ -208,28 +181,17 @@ class NetworkManager {
     await this.driver.waitForSelector(this.networksPageList);
   }
 
-  async openNetworkAndDeleteNetwork(
-    tabName: string,
-    networkName: string,
-  ): Promise<void> {
-    console.log(
-      `Opening network manager and deleting ${networkName} on ${tabName} tab`,
-    );
+  async openNetworkAndDeleteNetwork(networkName: string): Promise<void> {
+    console.log(`Opening network manager and deleting ${networkName}`);
     await this.openNetworkManager();
     await this.openManageNetworks();
     await this.deleteNetworkByChainId(networkName as `0x${string}`);
     await this.leaveNetworksPage();
   }
 
-  async openNetworkAndSelectNetwork(
-    tabName: string,
-    networkName: string,
-  ): Promise<void> {
-    console.log(
-      `Opening network manager and selecting ${networkName} on ${tabName} tab`,
-    );
+  async openNetworkAndSelectNetwork(networkName: string): Promise<void> {
+    console.log(`Opening network manager and selecting ${networkName}`);
     await this.openNetworkManager();
-    await this.selectTab(tabName);
     if (networkName.startsWith('eip155:')) {
       await this.selectNetworkByChainId(networkName);
     } else {
@@ -263,23 +225,6 @@ class NetworkManager {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );
-  }
-
-  /**
-   * The Popular and Custom tabs were merged into a single scrolling list, so
-   * there is nothing to switch to. Retained so callers can keep expressing
-   * which category they are about to pick from.
-   *
-   * @param tabName - Either `Custom` or `Popular`.
-   */
-  async selectTab(tabName: string): Promise<void> {
-    console.log(`Selecting tab: ${tabName}`);
-    await this.waitForCategoryContent(tabName);
-  }
-
-  async waitForCategoryContent(networkCategory: string): Promise<void> {
-    console.log(`Waiting for ${networkCategory} networks to load`);
-    await this.checkPageIsLoaded();
   }
 }
 
