@@ -1528,6 +1528,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Couldn't check your Perps balance. Try again."
+  },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
   },
@@ -1563,6 +1566,9 @@
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
+  },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Balance unavailable"
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
