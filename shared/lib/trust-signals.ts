@@ -126,8 +126,11 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const HEX_STRING_REGEX = /^0x[0-9a-fA-F]+$/u;
 const DECIMAL_STRING_REGEX = /^[0-9]+$/u;
-// The address space (2^160). Values are reduced into it, as the signer does.
-const ADDRESS_MODULUS = 2n ** 160n;
+// The address space (2^160), written as a literal (0x1 followed by 40 hex
+// zeros) so the value is not produced with the `**` operator, which some build
+// targets down-compile to `Math.pow` and cannot evaluate on BigInt operands.
+// Values are reduced into this space, as the signer does.
+const ADDRESS_MODULUS = 0x10000000000000000000000000000000000000000n;
 
 // Cap the number of addresses returned for a single signature. A legitimate
 // signature references far fewer; exceeding this is treated as unusual and
