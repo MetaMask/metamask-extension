@@ -4270,7 +4270,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
         },
       });
@@ -4324,7 +4324,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
         },
       });
@@ -4382,7 +4382,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
           toToken: toBridgeToken({
             decimals: 18,
@@ -4439,7 +4439,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
         },
       });
@@ -4497,7 +4497,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
           toToken: toBridgeToken({
             decimals: 18,
@@ -4658,7 +4658,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
         },
       });
@@ -4690,7 +4690,7 @@ describe('Bridge selectors', () => {
                 nextOpen: new Date(now - 50000).toISOString(),
                 nextClose: new Date(now + 50000).toISOString(),
               },
-            } as never,
+            },
           }),
           toToken: toBridgeToken({
             decimals: 18,

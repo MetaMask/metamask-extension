@@ -212,9 +212,7 @@ describe('useBridgeAlerts', () => {
         ...DEFAULT_VALIDATION_ERRORS,
         isInOffHoursTrading: true,
       } as never);
-      jest
-        .mocked(getNextRegularMarketOpen)
-        .mockReturnValue(undefined as never);
+      jest.mocked(getNextRegularMarketOpen).mockReturnValue(undefined as never);
 
       const { result } = renderHook();
 

@@ -252,7 +252,7 @@ describe('isTokenInOffHoursAt', () => {
         nextOpen: '2026-03-02T11:00:00.000Z',
         nextClose: '2026-03-02T13:00:00.000Z',
       },
-    } as never);
+    });
     expect(isTokenInOffHoursAt(token, NOON)).toBe(true);
   });
 
@@ -262,7 +262,7 @@ describe('isTokenInOffHoursAt', () => {
         nextOpen: '2026-03-02T14:00:00.000Z',
         nextClose: '2026-03-02T16:00:00.000Z',
       },
-    } as never);
+    });
     expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
   });
 
@@ -271,7 +271,7 @@ describe('isTokenInOffHoursAt', () => {
       offhours: {
         nextClose: '2026-03-02T13:00:00.000Z',
       },
-    } as never);
+    });
     expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
   });
 
@@ -280,7 +280,7 @@ describe('isTokenInOffHoursAt', () => {
       offhours: {
         nextOpen: '2026-03-02T11:00:00.000Z',
       },
-    } as never);
+    });
     expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
   });
 
@@ -291,7 +291,7 @@ describe('isTokenInOffHoursAt', () => {
         nextOpen: '2026-03-02T22:00:00.000Z',
         nextClose: '2026-03-03T04:00:00.000Z',
       },
-    } as never);
+    });
     expect(isTokenInOffHoursAt(token, lateEvening)).toBe(true);
   });
 });
@@ -444,7 +444,7 @@ describe('useRWAToken', () => {
             nextOpen: '2026-03-02T18:00:00.000Z',
             nextClose: '2026-03-02T22:00:00.000Z',
           },
-        } as never),
+        }),
       ),
     ).toBe(true);
   });
@@ -471,7 +471,7 @@ describe('useRWAToken', () => {
             nextOpen: '2026-03-02T18:00:00.000Z',
             nextClose: '2026-03-02T22:00:00.000Z',
           },
-        } as never),
+        }),
       ),
     ).toBe(true);
   });
@@ -494,7 +494,7 @@ describe('useRWAToken', () => {
             nextOpen: '2026-03-02T18:00:00.000Z',
             nextClose: '2026-03-02T22:00:00.000Z',
           },
-        } as never),
+        }),
       ),
     ).toBe(false);
   });

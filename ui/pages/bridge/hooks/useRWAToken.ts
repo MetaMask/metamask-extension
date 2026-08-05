@@ -6,16 +6,6 @@ import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
 type DateLike = string | null | undefined | Date;
 export type RWATokenLike = Pick<BridgeToken, 'rwaData'> | undefined;
 
-/**
- * Off-hours trading window data. Present only when the asset's source
- * reports off-hours tradability (e.g. extended-hours stock sessions).
- * When absent, assume the asset does not support off-hours trading.
- */
-export type OffHoursData = {
-  nextOpen?: string;
-  nextClose?: string;
-};
-
 const toMs = (value: DateLike): number | null => {
   if (!value) {
     return null;
@@ -120,7 +110,7 @@ export const isTokenInOffHoursAt = (
     return false;
   }
 
-  const { offhours } = token.rwaData as { offhours?: OffHoursData };
+  const { offhours } = token.rwaData;
   if (!offhours) {
     return false;
   }
