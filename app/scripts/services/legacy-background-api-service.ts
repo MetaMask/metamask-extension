@@ -207,6 +207,7 @@ import {
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type {
   PasskeyAuthenticationResponse,
+  PasskeyControllerChangePasswordWithPasskeyVerificationAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -355,6 +356,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'attemptLedgerTransportCreation',
   'captureTestError',
   'changePassword',
+  'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
@@ -507,6 +509,7 @@ type AllowedActions =
   | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PasskeyControllerChangePasswordWithPasskeyVerificationAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -1659,6 +1662,37 @@ export class LegacyBackgroundApiService {
     }
 
     await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Changes the wallet password using a verified passkey assertion.
+   *
+   * Delegates the actual password change and vault-key renewal to
+   * `PasskeyController:changePasswordWithPasskeyVerification`, but wraps the call
+   * in the shared `seedlessOperationMutex` so it stays serialized against the
+   * other keyring/seedless operations (password change, SRP backups, keyring
+   * encryption key sync) that mutate the same keyring encryption key and vault.
+   * The PasskeyController has its own internal mutex, which only serializes
+   * passkey operations against each other, so the extension-level lock is still
+   * required to avoid interleaving with those flows.
+   *
+   * @param params - Passkey password-change parameters.
+   * @param params.newPassword - The new wallet password.
+   * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+   * @param params.options - Optional flow controls.
+   * @param params.options.renewVaultKeyProtection - Re-wrap the vault key after the password change.
+   */
+  async changePasswordWithPasskeyVerification(params: {
+    newPassword: string;
+    authenticationResponse: PasskeyAuthenticationResponse;
+    options?: { renewVaultKeyProtection?: boolean };
+  }): Promise<void> {
+    await this.#seedlessOperationMutex.runExclusive(() =>
+      this.#messenger.call(
+        'PasskeyController:changePasswordWithPasskeyVerification',
+        params,
+      ),
+    );
   }
 
   /**

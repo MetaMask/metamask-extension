@@ -711,7 +711,7 @@ describe('MetaMaskController', function () {
     });
 
     describe('#changePasswordWithPasskeyVerification', function () {
-      it('delegates to the passkey controller action with reshaped params', async function () {
+      it('delegates to the legacy background API service action which serializes the change', async function () {
         const callSpy = jest
           .spyOn(metamaskController.controllerMessenger, 'call')
           .mockResolvedValue(undefined);
@@ -725,7 +725,7 @@ describe('MetaMaskController', function () {
           });
 
         expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:changePasswordWithPasskeyVerification',
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
           {
             newPassword: 'new-password',
             authenticationResponse,
@@ -748,7 +748,7 @@ describe('MetaMaskController', function () {
           });
 
         expect(callSpy).toHaveBeenCalledWith(
-          'PasskeyController:changePasswordWithPasskeyVerification',
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
           {
             newPassword: 'new-password',
             authenticationResponse,

@@ -2927,7 +2927,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       changePasswordWithPasskeyVerification: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'PasskeyController:changePasswordWithPasskeyVerification',
+        'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
       ),
 
       // network management

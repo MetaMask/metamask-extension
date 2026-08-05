@@ -88,6 +88,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PreferencesController:setAccountsReferralApproved',
       'PreferencesController:setPasswordForgotten',
       'PasskeyController:unlockWithPasskey',
+      'PasskeyController:changePasswordWithPasskeyVerification',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
