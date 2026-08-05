@@ -223,7 +223,7 @@ export function ContactsListPage() {
             padding={4}
             paddingBottom={6}
             paddingTop={4}
-            className="shrink-0 bg-background-default"
+            className="shrink-0 bg-background-default cta-footer"
           >
             <Button
               variant={ButtonVariant.Primary}
