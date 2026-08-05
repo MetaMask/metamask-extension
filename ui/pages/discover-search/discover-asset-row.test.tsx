@@ -35,13 +35,25 @@ describe('DiscoverAssetRow', () => {
     expect(queryByText(/^US\$/u)).not.toBeInTheDocument();
   });
 
+  it('formats non-zero sub-cent prices as less than one cent', () => {
+    const { getByText } = renderRow({
+      ...baseAsset,
+      price: '0.000131',
+    });
+
+    expect(getByText('<$0.01')).toBeInTheDocument();
+  });
+
   it('renders verified badge for Verified security result type', () => {
-    const { getByTestId } = renderRow({
+    const { getByLabelText, getByTestId } = renderRow({
       ...baseAsset,
       securityData: { resultType: 'Verified' } as TrendingAsset['securityData'],
     });
 
     expect(getByTestId('security-badge-icon')).toBeInTheDocument();
+    expect(
+      getByLabelText(messages.securityTrustVerified.message),
+    ).toBeInTheDocument();
   });
 
   it('renders Risky tag for Warning security result type', () => {

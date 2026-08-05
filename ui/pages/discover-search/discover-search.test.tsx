@@ -145,7 +145,7 @@ describe('DiscoverSearchPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('$2,500.00')).toBeInTheDocument();
     expect(screen.getByTestId('security-badge-icon')).toBeInTheDocument();
-    expect(screen.getByText('$0.00')).toBeInTheDocument();
+    expect(screen.getByText('<$0.01')).toBeInTheDocument();
   });
 
   it('restores the search query and active tab from the route query string', () => {

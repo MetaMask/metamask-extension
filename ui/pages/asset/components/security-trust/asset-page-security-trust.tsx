@@ -18,12 +18,12 @@ import {
   getResultTypeConfig,
   type ResultTypeConfig,
 } from '../../utils/security-utils';
+import { SecurityTrustVerifiedBadge } from '../../../../components/app/security-trust';
 import { SecurityBanner } from './security-banner';
 import {
   SecurityTrustEntryCard,
   type SecurityTrustEntryCardToken,
 } from './security-trust-entry-card';
-import { SecurityTrustVerifiedBadge } from './security-trust-inline-badge';
 import { SecurityTrustInfoModal } from './security-trust-info-modal';
 import type { SecurityTrustSheetParams } from './security-trust-sheet-types';
 import { getSecurityTrustInfoSheetParams } from './use-security-trust-info-sheet';

@@ -23,17 +23,16 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/net
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getChangeColor } from '../../components/app/perps/utils';
-// eslint-disable-next-line import-x/no-restricted-paths -- reuse existing Security & Trust badge UI
-import { SecurityTrustInlineBadge } from '../asset/components/security-trust';
-// eslint-disable-next-line import-x/no-restricted-paths -- reuse existing Security & Trust badge mapping
 import {
-  getResultTypeConfig,
+  getSecurityTrustBadgeConfig,
+  SecurityTrustInlineBadge,
   type SecurityTrustTranslate,
-} from '../asset/utils/security-utils';
+} from '../../components/app/security-trust';
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
 const USD_CURRENCY = 'USD';
+const MIN_DISPLAY_PRICE = 0.01;
 type SecurityResultType = NonNullable<
   TrendingAsset['securityData']
 >['resultType'];
@@ -50,12 +49,15 @@ const formatAssetPrice = (price: string | undefined) => {
     return '—';
   }
 
+  if (value > 0 && value < MIN_DISPLAY_PRICE) {
+    return '<$0.01';
+  }
+
   // narrowSymbol yields "$" for USD (not "US$"), matching Perps row prices.
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: USD_CURRENCY,
     currencyDisplay: 'narrowSymbol',
-    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
 };
@@ -102,7 +104,7 @@ const getDiscoverSearchSecurityBadge = (
   resultType: SecurityResultType | undefined,
   t: SecurityTrustTranslate,
 ) => {
-  const badge = getResultTypeConfig(resultType, t).badge;
+  const badge = getSecurityTrustBadgeConfig(resultType, t);
 
   if (badge && (resultType === 'Warning' || resultType === 'Spam')) {
     return {
