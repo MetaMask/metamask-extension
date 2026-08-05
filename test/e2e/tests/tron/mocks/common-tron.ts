@@ -200,10 +200,8 @@ export async function mockTronFeatureFlags(
         // these tests already ran against when the flag was absent entirely.
         { bridgeConfig: {} },
         // Account discovery queries every popular EVM chain, and these fixtures
-        // only mock the Infura endpoints. With failover on, an Infura endpoint
-        // the fixtures answer thinly is treated as unavailable and the request
-        // is retried against the Quicknode hosts, which the privacy snapshot
-        // does not allow.
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
         { corePlatformRpcFailoverMode: 'disabled' },
       ],
     }));
