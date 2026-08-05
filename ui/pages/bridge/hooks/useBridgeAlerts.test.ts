@@ -216,6 +216,24 @@ describe('useBridgeAlerts', () => {
 
       expect(result.current.alertsById['off-hours']).toBeUndefined();
     });
+
+    it('shows only off-hours warning when market is tradable via off-hours', () => {
+      // Selectors keep these mutually exclusive: off-hours => not market-closed.
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isStockMarketClosed: false,
+        isInOffHoursTrading: true,
+      } as never);
+      jest
+        .mocked(getNextRegularMarketOpen)
+        .mockReturnValue('2026-06-19T14:30:00Z' as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.alertsById['market-closed']).toBeUndefined();
+      expect(result.current.bannerAlerts).toHaveLength(1);
+    });
   });
 
   describe('no-quotes alert', () => {

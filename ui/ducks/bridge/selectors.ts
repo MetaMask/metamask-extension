@@ -726,11 +726,16 @@ export const getIsStockMarketClosed = (
   }
   const fromToken = getFromToken(state);
   const toToken = getToToken(state);
+  // Off-hours sessions occur while the regular market window is closed, but
+  // trading remains available — so those tokens are not treated as closed.
   const isFromClosed =
     isStockRWAToken(fromToken) &&
-    !isTokenTradingOpenAt(fromToken, currentTimeInMs);
+    !isTokenTradingOpenAt(fromToken, currentTimeInMs) &&
+    !isTokenInOffHoursAt(fromToken, currentTimeInMs);
   const isToClosed =
-    isStockRWAToken(toToken) && !isTokenTradingOpenAt(toToken, currentTimeInMs);
+    isStockRWAToken(toToken) &&
+    !isTokenTradingOpenAt(toToken, currentTimeInMs) &&
+    !isTokenInOffHoursAt(toToken, currentTimeInMs);
   return isFromClosed || isToClosed;
 };
 

@@ -4246,6 +4246,37 @@ describe('Bridge selectors', () => {
       const result = getIsStockMarketClosed(state as never, now);
       expect(result).toBe(true);
     });
+
+    it('returns false when regular market is closed but off-hours trading is open', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            } as never,
+          }),
+        },
+      });
+      expect(getIsStockMarketClosed(state as never, now)).toBe(false);
+      expect(getIsInOffHoursTrading(state as never, now)).toBe(true);
+    });
   });
 
   describe('getIsInOffHoursTrading', () => {
@@ -4517,7 +4548,7 @@ describe('Bridge selectors', () => {
       expect(result).toContain('price_impact');
     });
 
-    it('returns off_hours when token is in off-hours trading', () => {
+    it('returns off_hours without market_closed when off-hours trading is open', () => {
       const now = Date.now();
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -4546,6 +4577,7 @@ describe('Bridge selectors', () => {
       });
       const result = getWarningLabels(state as never, now);
       expect(result).toContain('off_hours');
+      expect(result).not.toContain('market_closed');
     });
   });
 
