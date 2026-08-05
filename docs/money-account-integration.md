@@ -136,15 +136,16 @@ guard itself is correct.
    (`ebe34cc871`…`54c64ff540`), all LavaMoat policies regenerated.
 4. ~~D11~~ **DONE** — see the D11 status section.
 5. ~~D12~~ **DONE** — see the D12 status section.
-6. **D13** — `useMoneyAccountWithdrawal`. The withdraw builders are already
-   exercised by D11's payment-override path; D13 adds the placeholder batch
-   initiation (mirror `create-deposit-transaction.ts` with
-   `buildMoneyAccountWithdrawPlaceholderBatch`), the hook (mirror
-   `useMoneyAccountDeposit`), and recipient resolution from the selected EVM
-   account.
-7. **Manual verification of the deposit flow end-to-end** needs an SRP with a
-   live Monad delegation and the flags served — same blocker as the D9
-   balance-row check.
+6. ~~D13~~ **DONE** — see the D13 status section. **All planned deliverables
+   (D0–D15) are now complete.**
+7. **Manual verification of the deposit and withdrawal flows end-to-end**
+   needs an SRP with a live Monad delegation and the flags served — same
+   blocker as the D9 balance-row check.
+8. Remaining known debts: production entry-point placement (product
+   decision), D5's restart-surviving balance (`AppStateController` ticket),
+   the toast/status consumers + intent fallback derivation, the
+   quote-pipeline flag as a kill-switch (needs the legacy pipeline), and
+   `MUSD_CURRENCY` dedup into the shared package.
 
 ### Debts recorded elsewhere in this doc
 
@@ -1191,6 +1192,35 @@ Port decisions and divergences from mobile, all deliberate:
   from the selected EVM account, plus the hook.
 - **Availability:** same gate as D12 — hidden entirely when unavailable.
 - **Depends on:** D11, D12, D14 (shares the confirmation and Pay plumbing).
+
+## D13 — status: **DONE** (2026-08-05)
+
+Mirrors D12's shape exactly:
+`app/scripts/lib/money/pay/create-withdraw-transaction.ts` (placeholder
+withdraw + transfer batch; **no `requiredAssets`** — the withdrawal consumes
+the vault balance — and **no caller batch id**, there is no intent map for
+withdrawals, so the controller-generated id resolves the created
+transaction), `update-withdraw-amount.ts` (the commit path), both on the Pay
+init api, `ui/hooks/money/useMoneyAccountWithdrawal.ts`, and a withdraw
+branch in `useUpdateTokenAmount`.
+
+- **Recipient resolution happens at commit time, not initiation** — the
+  placeholder carries no recipient, so `update-withdraw-amount.ts` reads
+  `AccountsController:getSelectedAccount` (the extension's
+  `selectEvmAddress` equivalent; the action is marked deprecated upstream
+  but is what the repo still uses) each time the amount is committed. A
+  user who switches accounts mid-confirmation gets the mUSD at the account
+  selected when they last edited the amount — same behaviour as mobile.
+- **ROUND_UP** in the commit path, matching mobile's
+  `updateMoneyAccountWithdrawTokenAmount`. The ROUND_DOWN rule is only the
+  payment-override Max path (D11), where the amount is bounded by the
+  withdrawable balance rather than typed.
+- **No withdrawal entry point surface yet** — like deposits, placement is a
+  product decision; the hook throws when unavailable and callers gate on
+  `useMoneyAccountInfo`. No dev button was added for it.
+- Share conversion verified by decoding: `ceil(amount × ONE_SHARE / rate)`
+  against a stubbed `getRate`, transfer to the selected account at the
+  exact rounded amount.
 
 ## D14 — Money account availability gate
 

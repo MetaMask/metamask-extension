@@ -11,8 +11,10 @@ import {
 } from '../lib/transaction/delegation';
 import { getMoneyAccountAmountData } from '../lib/money/pay/amount-data-callback';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
+import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import { getMoneyAccountPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import { updateMoneyAccountDepositAmount } from '../lib/money/pay/update-deposit-amount';
+import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
@@ -66,6 +68,17 @@ function getApi(
   return {
     createMoneyAccountDepositTransaction: (batchId: Hex) =>
       createMoneyAccountDepositTransaction(moneyPayMessenger, batchId),
+    createMoneyAccountWithdrawTransaction: () =>
+      createMoneyAccountWithdrawTransaction(moneyPayMessenger),
+    updateMoneyAccountWithdrawAmount: (
+      transactionId: string,
+      amountHuman: string,
+    ) =>
+      updateMoneyAccountWithdrawAmount(
+        moneyPayMessenger,
+        transactionId,
+        amountHuman,
+      ),
     updateMoneyAccountDepositAmount: (
       transactionId: string,
       amountHuman: string,

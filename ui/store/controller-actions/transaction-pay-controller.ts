@@ -48,6 +48,42 @@ export async function createMoneyAccountDepositTransaction(
 }
 
 /**
+ * Creates the placeholder Money Account withdrawal batch in the background
+ * and returns the created transaction's id for confirmation navigation.
+ *
+ * @returns The created transaction id and the batch id.
+ */
+export async function createMoneyAccountWithdrawTransaction(): Promise<{
+  transactionId: string;
+  batchId: Hex;
+}> {
+  return await submitRequestToBackground(
+    'createMoneyAccountWithdrawTransaction',
+    [],
+  );
+}
+
+/**
+ * Prepares and commits a Money Account withdrawal amount in the background:
+ * re-encodes the withdraw + transfer calldata for the new amount, with the
+ * redeemed mUSD forwarded to the currently selected account. Superseded
+ * intents resolve `false`.
+ *
+ * @param transactionId - Id of the Money Account withdrawal transaction.
+ * @param amountHuman - Exact human-readable amount.
+ * @returns Whether this intent committed transaction metadata.
+ */
+export async function updateMoneyAccountWithdrawAmount(
+  transactionId: string,
+  amountHuman: string,
+): Promise<boolean> {
+  return await submitRequestToBackground('updateMoneyAccountWithdrawAmount', [
+    transactionId,
+    amountHuman,
+  ]);
+}
+
+/**
  * Prepares and commits a Money Account deposit amount in the background:
  * re-encodes the nested approve + deposit calldata for the new amount and
  * writes it into the transaction. Superseded intents resolve `false`.
