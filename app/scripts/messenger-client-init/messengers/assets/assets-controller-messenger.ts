@@ -54,6 +54,11 @@ export function getAssetsControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
+      'BackendWebSocketService:subscribe',
+      'BackendWebSocketService:getConnectionInfo',
+      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      'BackendWebSocketService:addChannelCallback',
+      'BackendWebSocketService:removeChannelCallback',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
@@ -78,7 +83,8 @@ export function getAssetsControllerMessenger(
       'NetworkController:networkRemoved',
       // RpcDataSource + StakedBalanceDataSource
       'NetworkController:stateChange',
-      // Snap + tx + preferences
+      // Snap + WS + tx + preferences
+      'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
@@ -87,7 +93,6 @@ export function getAssetsControllerMessenger(
       'TransactionController:unapprovedTransactionAdded',
       // Real-time post-tx balances (AccountActivityService WS path)
       'AccountActivityService:balanceUpdated',
-      'AccountActivityService:statusChanged',
       'RemoteFeatureFlagController:stateChange',
     ],
   });
