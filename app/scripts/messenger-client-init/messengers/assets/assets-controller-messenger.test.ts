@@ -151,7 +151,7 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        actions: expect.arrayContaining([
+        events: expect.arrayContaining([
           'AccountActivityService:statusChanged',
         ]),
       }),
