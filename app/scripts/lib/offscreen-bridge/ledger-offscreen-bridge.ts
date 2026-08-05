@@ -19,7 +19,10 @@ import {
   HardwareWalletType,
   toHardwareWalletError,
 } from '../../../../shared/lib/hardware-wallets';
-import { SerializedLedgerError, isSerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
+import {
+  SerializedLedgerError,
+  isSerializedLedgerError,
+} from '../../../offscreen/hardware-wallets/ledger-utils';
 
 export const MESSAGE_TIMEOUT_MS = 4000;
 
@@ -280,7 +283,7 @@ export class LedgerOffscreenBridge implements Omit<
       typeof response.payload === 'object' &&
       'error' in response.payload
     ) {
-      return (response.payload).error;
+      return response.payload.error;
     }
     return response?.error;
   }

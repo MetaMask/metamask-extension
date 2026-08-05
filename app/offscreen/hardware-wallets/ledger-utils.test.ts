@@ -6,7 +6,11 @@ import {
   Severity,
 } from '@metamask/hw-wallet-sdk';
 
-import { serializeError, serializeLedgerError, isSerializedLedgerError } from './ledger-utils';
+import {
+  serializeError,
+  serializeLedgerError,
+  isSerializedLedgerError,
+} from './ledger-utils';
 
 describe('ledger-utils', () => {
   describe('serializeError', () => {

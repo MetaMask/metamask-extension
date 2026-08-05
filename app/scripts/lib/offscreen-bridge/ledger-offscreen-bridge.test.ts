@@ -253,7 +253,12 @@ describe('LedgerOffscreenBridge', () => {
       // `createLedgerError` via the known status code.
       respond({
         success: false,
-        payload: { error: { message: 'User rejected action on device', statusCode: 0x6985 } },
+        payload: {
+          error: {
+            message: 'User rejected action on device',
+            statusCode: 0x6985,
+          },
+        },
       });
 
       // createLedgerError() returns a HardwareWalletError with a numeric
@@ -271,7 +276,9 @@ describe('LedgerOffscreenBridge', () => {
       // Real payloads always carry `message` (from `serializeLedgerError`).
       respond({
         success: false,
-        payload: { error: { message: 'Transport status error', statusCode: 0x6fff } },
+        payload: {
+          error: { message: 'Transport status error', statusCode: 0x6fff },
+        },
       });
 
       // TransportStatusError carries statusCode on the instance.
@@ -311,7 +318,9 @@ describe('LedgerOffscreenBridge', () => {
 
       const rejection = await promise.catch((error: unknown) => error);
       expect(rejection).toBeInstanceOf(Error);
-      expect((rejection as Error).message).toBe('Unknown Ledger error occurred');
+      expect((rejection as Error).message).toBe(
+        'Unknown Ledger error occurred',
+      );
       expect((rejection as Error).cause).toBe('something went wrong');
     });
   });
