@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
+  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -11,17 +14,14 @@ import {
   Text,
   TextColor,
   TextVariant,
-  twMerge,
 } from '@metamask/design-system-react';
 import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 
 import { getCaipAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  formatSignedChangePercent,
-  getChangeColor,
-} from '../../components/app/perps/utils';
+import { getChangeColor } from '../../components/app/perps/utils';
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
@@ -46,6 +46,40 @@ const formatAssetPrice = (price: string | undefined) => {
   }).format(value);
 };
 
+const getNetworkImageMapKey = ({
+  namespace,
+  reference,
+}: {
+  namespace: string;
+  reference: string;
+}) => {
+  if (namespace === 'eip155') {
+    return `0x${BigInt(reference).toString(16)}`;
+  }
+
+  return `${namespace}:${reference}`;
+};
+
+/**
+ * Formats 24h % change like mobile Explore: sign + `toFixed(2)` + `%`.
+ *
+ * @param value - Raw percentage from the API
+ * @returns Display label, or null when non-numeric
+ */
+const formatPriceChangePercent = (value: string): string | null => {
+  const numericValue = Number.parseFloat(value.replace('%', ''));
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  if (numericValue === 0) {
+    return '0.00%';
+  }
+
+  const sign = numericValue > 0 ? '+' : '';
+  return `${sign}${numericValue.toFixed(2)}%`;
+};
+
 /**
  * Discover row for crypto / stocks: icon, name, cap·vol, price, 24h %.
  * @param options0
@@ -67,6 +101,20 @@ export const DiscoverAssetRow = ({
     return getCaipAssetImageUrl(asset.assetId);
   }, [asset.assetId]);
 
+  const network = useMemo(() => {
+    if (!isCaipAssetType(asset.assetId)) {
+      return undefined;
+    }
+
+    const parsedAssetId = parseCaipAssetType(asset.assetId);
+    const imageMapKey = getNetworkImageMapKey(parsedAssetId.chain);
+
+    return {
+      name: parsedAssetId.chainId,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[imageMapKey],
+    };
+  }, [asset.assetId]);
+
   const secondaryText = useMemo(() => {
     const cap = formatCompactCurrency(asset.marketCap, USD_CURRENCY);
     const vol = formatCompactCurrency(asset.aggregatedUsdVolume, USD_CURRENCY);
@@ -74,8 +122,11 @@ export const DiscoverAssetRow = ({
   }, [asset.aggregatedUsdVolume, asset.marketCap, t]);
 
   const changePct = asset.priceChangePct?.h24 ?? '';
-  const changeColor = changePct
-    ? getChangeColor(changePct)
+  const formattedChange = changePct
+    ? formatPriceChangePercent(changePct)
+    : null;
+  const changeColor = formattedChange
+    ? getChangeColor(formattedChange)
     : TextColor.TextAlternative;
 
   const handleClick = () => {
@@ -92,41 +143,70 @@ export const DiscoverAssetRow = ({
 
   return (
     <ButtonBase
-      className={twMerge(ROW_STYLES)}
+      className={ROW_STYLES}
       isFullWidth={true}
       data-testid={testId}
       onClick={handleClick}
     >
-      <AvatarToken
-        name={asset.symbol}
-        src={imageUrl}
-        size={AvatarTokenSize.Md}
+      <BadgeWrapper
         className="shrink-0"
-      />
+        badge={
+          network?.imageUrl ? (
+            <AvatarNetwork
+              name={network.name}
+              src={network.imageUrl}
+              size={AvatarNetworkSize.Xs}
+              className="h-4 w-4 min-w-4 rounded-md border-2 border-background-default bg-background-default"
+              data-testid={`${testId}-network`}
+            />
+          ) : null
+        }
+      >
+        <AvatarToken
+          name={asset.symbol}
+          src={imageUrl}
+          size={AvatarTokenSize.Lg}
+        />
+      </BadgeWrapper>
       <Box
-        className="min-w-0 flex-1"
+        className="min-w-0 flex-1 overflow-hidden"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
-        gap={1}
+        gap={0}
       >
-        <Text fontWeight={FontWeight.Medium} className="min-w-0 truncate">
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="block max-w-full truncate"
+        >
           {asset.name || asset.symbol}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="block max-w-full truncate"
+        >
           {secondaryText}
         </Text>
       </Box>
       <Box
-        className="shrink-0"
+        className="w-24 shrink-0 overflow-hidden"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          className="block max-w-full truncate text-right"
+        >
           {formatAssetPrice(asset.price)}
         </Text>
-        <Text variant={TextVariant.BodySm} color={changeColor}>
-          {changePct ? formatSignedChangePercent(changePct) : '—'}
+        <Text
+          variant={TextVariant.BodySm}
+          color={changeColor}
+          className="block max-w-full truncate text-right"
+        >
+          {formattedChange ?? '—'}
         </Text>
       </Box>
     </ButtonBase>

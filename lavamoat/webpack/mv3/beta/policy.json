@@ -1143,8 +1143,10 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "eth-chainlist": true
       }
     },
     "@metamask/compliance-controller": {
@@ -1165,7 +1167,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
+        "@metamask/config-registry-controller>@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
