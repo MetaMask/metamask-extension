@@ -199,6 +199,12 @@ export async function mockTronFeatureFlags(
         // resolves to the bridge controller's built-in default, which is what
         // these tests already ran against when the flag was absent entirely.
         { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoints. With failover on, an Infura endpoint
+        // the fixtures answer thinly is treated as unavailable and the request
+        // is retried against the Quicknode hosts, which the privacy snapshot
+        // does not allow.
+        { corePlatformRpcFailoverMode: 'disabled' },
       ],
     }));
 }
