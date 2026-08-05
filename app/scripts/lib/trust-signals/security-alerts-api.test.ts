@@ -39,6 +39,9 @@ describe('mapAddressScanResult', () => {
     }
   });
 
+  // `scanAddress` forwards the API response without validating `result_type`,
+  // and the API can return `Trusted` even though the controller enum omits it.
+  // TODO: Remove the assertion after https://consensyssoftware.atlassian.net/browse/PSAFE-584
   it('passes a Trusted verdict through even though the controller type omits it', () => {
     expect(
       mapAddressScanResult({
