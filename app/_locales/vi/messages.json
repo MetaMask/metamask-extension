@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "Khám phá"
   },
-  "discoverSearchNoResults": {
-    "message": "Không tìm thấy kết quả",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "Khám phá các tài sản phổ biến khác",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "khối lượng",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Khám phá Snap",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11532,10 +11520,6 @@
   "viewAddressOnExplorer": {
     "message": "Xem trên $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "Xem tất cả",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Xem trên trình khám phá khối"

@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "Tuklasin"
   },
-  "discoverSearchNoResults": {
-    "message": "Walang nahanap na mga resulta",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "Tumingin ng iba pang popular na asset",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "vol",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Diskubrehin ang mga Snap",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11524,10 +11512,6 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "Tingnan lahat",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"

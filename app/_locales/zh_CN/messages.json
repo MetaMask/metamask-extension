@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "发现"
   },
-  "discoverSearchNoResults": {
-    "message": "未找到结果",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "查看其他热门资产",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "交易量",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "探索 Snap",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11521,10 +11509,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "查看全部",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

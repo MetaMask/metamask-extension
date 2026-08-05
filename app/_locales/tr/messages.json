@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "Keşfet"
   },
-  "discoverSearchNoResults": {
-    "message": "Sonuç bulunamadı",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "Diğer popüler varlıkları inceleyin",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "hac",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Snap'leri keşfedin",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11532,10 +11520,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "Tümünü görüntüle",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"

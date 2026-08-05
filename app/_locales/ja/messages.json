@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "ディスカバリ"
   },
-  "discoverSearchNoResults": {
-    "message": "結果が見つかりませんでした",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "他の人気資産をご覧ください",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "出来高",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Snapのご紹介",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11528,10 +11516,6 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "すべて表示",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"

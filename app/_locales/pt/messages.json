@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "Descobrir"
   },
-  "discoverSearchNoResults": {
-    "message": "Nenhum resultado encontrado",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "Confira outros ativos populares",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "vol",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Descobrir Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11524,10 +11512,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "Exibir tudo",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

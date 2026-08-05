@@ -3435,18 +3435,6 @@
   "discover": {
     "message": "खोजें"
   },
-  "discoverSearchNoResults": {
-    "message": "कोई रिज़ल्ट नहीं मिला",
-    "description": "Empty state when Discover search returns no matching assets."
-  },
-  "discoverSearchPopularAssets": {
-    "message": "अन्य लोकप्रिय एसेट्स देखें",
-    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
-  },
-  "discoverSearchVol": {
-    "message": "वॉल",
-    "description": "Abbreviated label for volume in Discover search result rows."
-  },
   "discoverSnaps": {
     "message": "Snaps के बारे में और जानें",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11521,10 +11509,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
-  },
-  "viewAll": {
-    "message": "सभी देखें",
-    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर पर देखें"
