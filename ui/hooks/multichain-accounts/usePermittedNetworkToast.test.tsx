@@ -1,15 +1,33 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { REVIEW_PERMISSIONS } from '../constants/routes';
+import { REVIEW_PERMISSIONS } from '../../helpers/constants/routes';
 import {
-  dismissPermittedNetworkToast,
   permittedNetworkToastId,
-  showPermittedNetworkToast,
-} from './show-permitted-network-toast';
+  usePermittedNetworkToast,
+} from './usePermittedNetworkToast';
 
+const mockNavigate = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastDismiss = jest.fn();
+const mockT = jest.fn((key: string, args?: string[]) => {
+  if (key === 'permittedChainToastUpdate') {
+    return `${args?.[0]}::${args?.[1]}`;
+  }
+  if (key === 'editPermissions') {
+    return 'edit-permissions-action';
+  }
+  return key;
+});
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../useI18nContext', () => ({
+  useI18nContext: () => mockT,
+}));
 
 jest.mock('../../components/ui/toast/toast', () => ({
   toast: {
@@ -48,28 +66,17 @@ const network = {
   isEvm: true,
 } as unknown as MultichainNetworkConfiguration;
 
-describe('showPermittedNetworkToast', () => {
+describe('usePermittedNetworkToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('shows a success toast with host, network name, and edit-permissions action', () => {
-    const navigate = jest.fn();
-    const t = jest.fn((key: string, args?: string[]) => {
-      if (key === 'permittedChainToastUpdate') {
-        return `${args?.[0]}::${args?.[1]}`;
-      }
-      if (key === 'editPermissions') {
-        return 'edit-permissions-action';
-      }
-      return key;
-    });
+    const { result } = renderHook(() => usePermittedNetworkToast());
 
-    showPermittedNetworkToast({
+    result.current.showPermittedNetworkToast({
       origin: 'https://dapp.example.com',
       network,
-      t: t as never,
-      navigate,
     });
 
     expect(mockToastSuccess).toHaveBeenCalledTimes(1);
@@ -88,13 +95,16 @@ describe('showPermittedNetworkToast', () => {
 
     fireEvent.click(screen.getByText('edit-permissions-action'));
     expect(mockToastDismiss).toHaveBeenCalledWith(permittedNetworkToastId);
-    expect(navigate).toHaveBeenCalledWith(
+    expect(mockNavigate).toHaveBeenCalledWith(
       `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent('https://dapp.example.com')}`,
     );
   });
 
   it('dismisses the permitted-network toast by id', () => {
-    dismissPermittedNetworkToast();
+    const { result } = renderHook(() => usePermittedNetworkToast());
+
+    result.current.dismissPermittedNetworkToast();
+
     expect(mockToastDismiss).toHaveBeenCalledWith(permittedNetworkToastId);
   });
 });

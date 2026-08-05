@@ -43,10 +43,15 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   })),
 }));
 
-jest.mock('../../../../helpers/utils/show-permitted-network-toast', () => ({
-  dismissPermittedNetworkToast: jest.fn(),
-  showPermittedNetworkToast: jest.fn(),
-}));
+jest.mock(
+  '../../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      dismissPermittedNetworkToast: jest.fn(),
+      showPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../../../store/actions', () => ({
   forceUpdateMetamaskState: jest.fn(),

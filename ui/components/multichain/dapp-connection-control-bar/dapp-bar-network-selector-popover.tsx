@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { type Hex } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
@@ -19,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import {
   AvatarNetworkSize,
   Popover,
@@ -27,7 +27,6 @@ import {
 } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { showPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
 import { NetworkListItem } from '../network-list-item';
 import {
   getAllDomains,
@@ -88,9 +87,9 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { showPermittedNetworkToast } = usePermittedNetworkToast();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
@@ -182,8 +181,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             showPermittedNetworkToast({
               origin: selectedTabOrigin,
               network,
-              t,
-              navigate,
             });
           }
 
@@ -239,8 +236,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       tokenNetworkFilter,
       trackEvent,
       createEventBuilder,
-      navigate,
-      t,
+      showPermittedNetworkToast,
       onClose,
     ],
   );

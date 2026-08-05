@@ -6,7 +6,6 @@ import {
   DropResult,
 } from '@hello-pangea/dnd';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -30,7 +29,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
-import { showPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
+import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
@@ -170,9 +169,9 @@ const isCustomNetworkConfiguration = (
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
+  const { showPermittedNetworkToast } = usePermittedNetworkToast();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -435,8 +434,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
             showPermittedNetworkToast({
               origin: selectedTabOrigin,
               network: getMultichainNetworkConfigurationOrThrow(chainId),
-              t,
-              navigate,
             });
           }
 
@@ -475,6 +472,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       allChainIds,
       tokenNetworkFilter,
       dispatch,
+      getMultichainNetworkConfigurationOrThrow,
+      showPermittedNetworkToast,
     ],
   );
 

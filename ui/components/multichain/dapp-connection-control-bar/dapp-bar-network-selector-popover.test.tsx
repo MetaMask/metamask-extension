@@ -43,10 +43,16 @@ const mockSetTokenNetworkFilter = jest.fn((_) => ({
   type: 'SET_TOKEN_NETWORK_FILTER',
 }));
 
-jest.mock('../../../helpers/utils/show-permitted-network-toast', () => ({
-  showPermittedNetworkToast: (...args: unknown[]) =>
-    mockShowPermittedNetworkToast(...args),
-}));
+jest.mock(
+  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      showPermittedNetworkToast: (...args: unknown[]) =>
+        mockShowPermittedNetworkToast(...args),
+      dismissPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
