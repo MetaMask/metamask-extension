@@ -21,8 +21,7 @@ describe('Reset Wallet - ', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        // Flake fix: sidepanel post-onboarding wait lives in handleSidepanelPostOnboarding
-        // (onboarding.flow.ts) — wait for completedOnboarding before home.html navigate.
+        // Complete initial onboarding with SRP create
         await completeCreateNewWalletOnboardingFlow({
           driver,
           skipSRPBackup: true,

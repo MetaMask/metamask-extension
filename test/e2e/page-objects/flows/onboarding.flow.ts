@@ -41,9 +41,7 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Problem: Done's async completion + sidepanel open can outlast a fixed 2s delay,
-  // so navigating to home.html races completedOnboarding and flakes under CI load.
-  // Why: waitUntil completedOnboarding is true, then navigate once — no fixed delay.
+  // waitUntil completedOnboarding is true, then navigate once 
   await driver.waitUntil(
     async () => {
       const uiState = await getCleanAppState(driver);
