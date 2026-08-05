@@ -24,6 +24,9 @@ import {
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
+/** Idle grace period before closing the WebHID transport between action bursts. */
+const TRANSPORT_IDLE_TIMEOUT_MS = 5_000;
+
 /**
  * Checks if WebHID API is available in this environment.
  *
@@ -91,6 +94,15 @@ export class LedgerLegacyHandler {
   private hidDisconnectListener:
     | ((event: { device: HIDDevice }) => void)
     | null = null;
+
+  // Idle timer that closes the transport between bursts of actions; cleared on
+  // each new action and in `destroy()`.
+  private idleCloseTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // In-flight `transport.close()` promise, if any. Tracked so a new
+  // `handleAction` can await it before opening a transport, avoiding an
+  // open/close overlap on the same HID device.
+  private closeInProgress: Promise<void> | null = null;
 
   /**
    * Attempts to open a transport to an already-permitted Ledger device.
@@ -173,16 +185,52 @@ export class LedgerLegacyHandler {
    * Clears state synchronously first to prevent races with reconnection.
    */
   private async closeTransport(): Promise<void> {
+    this.clearIdleClose();
     const transportToClose = this.transport;
     this.transport = null;
     this.ethApp = null;
 
-    if (transportToClose) {
+    if (!transportToClose) {
+      return;
+    }
+
+    // Track the close so a concurrent `handleAction` awaits it before opening
+    // a new transport. Assigned synchronously before the first `await`.
+    const closePromise = (async () => {
       try {
         await transportToClose.close();
       } catch {
         // Ignore close errors
       }
+    })();
+    this.closeInProgress = closePromise;
+    try {
+      await closePromise;
+    } finally {
+      if (this.closeInProgress === closePromise) {
+        this.closeInProgress = null;
+      }
+    }
+  }
+
+  /**
+   * Best-effort synchronous reset of the transport, called by the router when
+   * an action has wedged past its timeout. Drops the transport/app
+   * references synchronously (so the next action opens a fresh transport with a
+   * fresh `_appAPIlock`) and fire-and-forgets the close — a hung close must
+   * not block recovery.
+   */
+  forceReset(): void {
+    this.clearIdleClose();
+    this.closeInProgress = null;
+    this.pendingMakeApp = null;
+    const transportToClose = this.transport;
+    this.transport = null;
+    this.ethApp = null;
+    if (transportToClose) {
+      Promise.resolve(transportToClose.close()).catch(() => {
+        /* best-effort: ignore close failures during forced reset */
+      });
     }
   }
 
@@ -538,9 +586,8 @@ export class LedgerLegacyHandler {
    * Public entry point for processing Ledger actions.
    *
    * Used by the centralized ledger-router so both DMK and Legacy handlers
-   * expose the same `handleAction` surface for the message listener.
-   * Closes the underlying WebHID transport after every action so the device
-   * is released back to the OS even when the action fails.
+   * expose the same `handleAction` surface. The transport is kept open across
+   * actions and closed after an idle period (`TRANSPORT_IDLE_TIMEOUT_MS`).
    *
    * @param action - The Ledger action to perform (e.g. `getPublicKey`,
    * `signTransaction`). Must be a member of `LedgerAction`.
@@ -555,10 +602,33 @@ export class LedgerLegacyHandler {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown> {
+    this.clearIdleClose();
+    // If the idle timer already fired, wait for the in-flight close before
+    // opening a transport (avoids an open/close overlap on the HID device).
+    if (this.closeInProgress) {
+      await this.closeInProgress;
+    }
     try {
       return await this.handleLedgerAction(action, params);
     } finally {
-      await this.closeTransport();
+      this.scheduleIdleClose();
+    }
+  }
+
+  /** Schedules a deferred `closeTransport()` after the idle timeout. */
+  private scheduleIdleClose(): void {
+    this.clearIdleClose();
+    this.idleCloseTimer = setTimeout(() => {
+      this.idleCloseTimer = null;
+      this.closeTransport();
+    }, TRANSPORT_IDLE_TIMEOUT_MS);
+  }
+
+  /** Cancels a pending idle close. Called at the start of each action and in `destroy()`. */
+  private clearIdleClose(): void {
+    if (this.idleCloseTimer) {
+      clearTimeout(this.idleCloseTimer);
+      this.idleCloseTimer = null;
     }
   }
 
@@ -570,6 +640,7 @@ export class LedgerLegacyHandler {
    * Safe to call multiple times.
    */
   async destroy(): Promise<void> {
+    this.clearIdleClose();
     if (this.hidConnectListener && typeof navigator !== 'undefined') {
       navigator.hid.removeEventListener('connect', this.hidConnectListener);
       this.hidConnectListener = null;
@@ -583,6 +654,10 @@ export class LedgerLegacyHandler {
       this.hidDisconnectListener = null;
     }
 
+    // Wait for any in-flight idle close before our own (no-op) close.
+    if (this.closeInProgress) {
+      await this.closeInProgress;
+    }
     await this.closeTransport();
   }
 

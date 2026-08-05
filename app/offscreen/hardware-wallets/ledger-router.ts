@@ -15,6 +15,12 @@ type LedgerHandler = {
     action: LedgerAction,
     params?: Record<string, unknown>,
   ): Promise<unknown>;
+  /**
+   * Best-effort synchronous reset of the underlying transport, invoked when an
+   * action has wedged past its timeout. Drops transport/app references so the
+   * next action opens a fresh transport instead of queuing behind the hung one.
+   */
+  forceReset?: () => void;
 };
 
 /** The currently-active ledger handler (DMK bridge or legacy). */
@@ -29,6 +35,73 @@ type ChromeMessageListener = Parameters<
 
 /** Reference to the router's own chrome.runtime.onMessage listener. */
 let messageListener: ChromeMessageListener | null = null;
+
+/**
+ * Serializes all Ledger actions through a single promise chain so concurrent
+ * messages never overlap on the shared transport (which would reject with
+ * `TransportLocked`). Each link races `handleAction` against a timeout so a
+ * wedged offscreen WebHID round-trip rejects (unblocking later messages)
+ * instead of stalling the chain forever; on timeout the handler is
+ * force-reset so retries can open a fresh transport.
+ */
+let actionChain: Promise<unknown> = Promise.resolve();
+
+/** Backstop timeout for non-signing actions (above the 30s bridge read timeout). */
+export const READ_ACTION_TIMEOUT_MS = 60_000;
+/** Backstop timeout for signing actions (above the 300s bridge sign timeout). */
+export const SIGN_ACTION_TIMEOUT_MS = 330_000;
+const SIGN_ACTIONS = new Set<LedgerAction>([
+  LedgerAction.signTransaction,
+  LedgerAction.signPersonalMessage,
+  LedgerAction.signTypedData,
+]);
+
+function actionTimeoutMs(action: LedgerAction): number {
+  return SIGN_ACTIONS.has(action)
+    ? SIGN_ACTION_TIMEOUT_MS
+    : READ_ACTION_TIMEOUT_MS;
+}
+
+/**
+ * Race a Ledger action against a timeout without dropping the losing promise.
+ *
+ * Unlike `Promise.race`, this attaches a handler to the action promise so its
+ * eventual settlement is always consumed. When the timeout wins, the in-flight
+ * `handleAction` typically rejects a moment later once `forceReset` closes the
+ * transport; without the attached handler that late rejection would surface as
+ * unhandled. Mirrors `withTrezorDeviceTimeout`. On timeout the handler is
+ * force-reset so the next action opens a fresh transport instead of queuing
+ * behind the hung one.
+ * @param handler
+ * @param action
+ * @param params
+ */
+function raceActionWithTimeout(
+  handler: LedgerHandler,
+  action: LedgerAction,
+  params: Record<string, unknown> | undefined,
+): Promise<unknown> {
+  return new Promise<unknown>((resolve, reject) => {
+    const timeoutMs = actionTimeoutMs(action);
+    const timer = setTimeout(() => {
+      handler.forceReset?.();
+      reject(
+        new Error(`Ledger action "${action}" timed out after ${timeoutMs}ms`),
+      );
+    }, timeoutMs);
+
+    handler.handleAction(action, params).then(
+      (result) => {
+        clearTimeout(timer);
+        resolve(result);
+      },
+      (error: unknown) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
 
 /**
  * Tracks the in-flight `initLedger` call.  When `switchLedgerHandler` is
@@ -80,22 +153,24 @@ function ensureMessageListener(): void {
         ? (message.params as Record<string, unknown>)
         : undefined;
 
-    activeHandler
-      .handleAction(action, params)
-      .then((result) => {
-        sendResponse({
-          success: true,
-          payload: result,
-        });
-      })
-      .catch((error: unknown) => {
-        sendResponse({
-          success: false,
-          payload: {
-            error: serializeLedgerError(error),
-          },
-        });
-      });
+    // Chain onto the in-flight action so concurrent messages never overlap on
+    // the shared transport. Race the offscreen link against a timeout so a
+    // wedged action rejects (freeing the chain) instead of stalling it; on
+    // timeout, force-reset the handler so retries open a fresh transport.
+    const handler = activeHandler;
+    actionChain = actionChain
+      .then(() => raceActionWithTimeout(handler, action, params))
+      .then(
+        (result) => {
+          sendResponse({ success: true, payload: result });
+        },
+        (error: unknown) => {
+          sendResponse({
+            success: false,
+            payload: { error: serializeLedgerError(error) },
+          });
+        },
+      );
 
     return true;
   };
