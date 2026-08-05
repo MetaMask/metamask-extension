@@ -27,7 +27,7 @@ exports[`SelectedAccount Component should match snapshot 1`] = `
             Test Account
           </p>
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--display-flex mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-xs mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
             data-testid="selected-account-address"
           >
             0x0DCD5...3E7bc

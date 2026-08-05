@@ -64,6 +64,10 @@ jobs:
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
+      QUICKNODE_BSC_URL: ${{ secrets.QUICKNODE_BSC_URL }}
+      QUICKNODE_ZKSYNC_URL: ${{ secrets.QUICKNODE_ZKSYNC_URL }}
+      QUICKNODE_MEGAETH_URL: ${{ secrets.QUICKNODE_MEGAETH_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -77,22 +81,20 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
-      # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node
-      # can only run javascript, so we need a transpilation step before building.
+      # Webpack uses TypeScript, but lavamoat node can only run JavaScript, so we need a transpilation step before building.
       - name: Run tsc
-        if: ${{ contains(inputs.build-name, 'webpack') }}
         run: yarn webpack:tsc
 
       - name: Run build
         run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
 
       - name: Validate source maps
-        run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
+        run: yarn validate-source-maps
 
       - name: Run mozilla-lint
         if: ${{ contains(inputs.build-name, 'mv2') }}
@@ -100,7 +102,7 @@ jobs:
 
       - name: Upload bundle analyzer report to S3
         if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -112,7 +114,7 @@ jobs:
         run: rm -f dist/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ inputs.build-name }}
           path: |
@@ -121,7 +123,7 @@ jobs:
 
       - name: Upload 'builds' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}

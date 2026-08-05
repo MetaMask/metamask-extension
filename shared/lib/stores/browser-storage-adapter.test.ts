@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 
 const { BrowserStorageAdapter } = jest.requireActual(
-  './browser-storage-adapter',
+  './indexeddb-storage-adapter',
 );
 
 jest.mock('webextension-polyfill', () => ({

@@ -1,4 +1,9 @@
 {
+  "resolutions": {
+    "sass-embedded": {
+      "@bufbuild/protobuf/codegenv2": "./node_modules/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js"
+    }
+  },
   "resources": {
     "chokidar": {
       "packages": {
@@ -142,11 +147,11 @@
     },
     "html-bundler-webpack-plugin": {
       "packages": {
-        "eta": true,
+        "html-bundler-webpack-plugin>eta": true,
         "css-loader": true
       }
     },
-    "eta": {
+    "html-bundler-webpack-plugin>eta": {
       "builtin": {
         "node:fs": true,
         "node:path": true
@@ -369,23 +374,15 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
-    "@metamask/build-utils>@metamask/utils": {
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
       }
     }
   }

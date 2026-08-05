@@ -118,17 +118,6 @@ describe('PerpsWithdrawInfo', () => {
     ).toBeInTheDocument();
   });
 
-  it('passes hasMax to show percentage buttons', () => {
-    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
-
-    expect(customAmountInfoMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        hasMax: true,
-      }),
-      expect.anything(),
-    );
-  });
-
   it('passes the default destination token from `usePerpsWithdrawDefaultToken` as `preferredToken`', () => {
     const lastUsed = {
       address: '0x9999999999999999999999999999999999999999' as const,

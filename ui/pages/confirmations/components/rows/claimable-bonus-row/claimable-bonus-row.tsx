@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   FontWeight,
   IconColor,
@@ -22,7 +22,7 @@ import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../../../components/app/musd/constants';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -36,7 +36,7 @@ export function ClaimableBonusRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: Readonly<ClaimableBonusRowProps>) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isLoading = useIsTransactionPayLoading();
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
@@ -67,14 +67,9 @@ export function ClaimableBonusRow({
           ariaLabel={t('musdClaimableBonusTooltipAria') as string}
           data-testid="claimable-bonus-tooltip-popover"
         >
-          <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+          <Text variant={TextVariant.BodyMd}>
             {t('musdClaimableBonusTooltip', [
-              <TextButton
-                key="terms-link"
-                size={TextButtonSize.BodyMd}
-                isInverse
-                asChild
-              >
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
@@ -86,11 +81,14 @@ export function ClaimableBonusRow({
                       url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
                     };
 
-                    trackEvent({
-                      event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
-                      category: MetaMetricsEventCategory.MusdConversion,
-                      properties,
-                    });
+                    trackEvent(
+                      createEventBuilder(
+                        MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                      )
+                        .addCategory(MetaMetricsEventCategory.MusdConversion)
+                        .addProperties(properties)
+                        .build(),
+                    );
                   }}
                 >
                   {t('musdTermsApply')}

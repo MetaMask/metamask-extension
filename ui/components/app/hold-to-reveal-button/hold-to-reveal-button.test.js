@@ -9,17 +9,22 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 describe('HoldToRevealButton', () => {
   const mockStore = configureMockState([thunk])(mockState);
@@ -60,9 +65,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the locked padlock when a button is long pressed and then should show it after it was lifted off before the animation concludes', async () => {
     const { getByText, queryByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <HoldToRevealButton {...props} />
-      </MetaMetricsContext.Provider>,
+      <HoldToRevealButton {...props} />,
       mockStore,
     );
 
@@ -89,9 +92,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the unlocked padlock when a button is long pressed for the duration of the animation', async () => {
     const { getByText, queryByLabelText, getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <HoldToRevealButton {...props} />
-      </MetaMetricsContext.Provider>,
+      <HoldToRevealButton {...props} />,
       mockStore,
     );
 
@@ -112,25 +113,28 @@ describe('HoldToRevealButton', () => {
     await waitFor(() => {
       expect(circleUnlocked).toBeInTheDocument();
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
+        name: MetaMetricsEventName.SrpHoldToRevealClickStarted,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpHoldToRevealCompleted,
+        name: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealViewed,
+        name: MetaMetricsEventName.SrpRevealViewed,
         properties: {
+          category: MetaMetricsEventCategory.Keys,
           key_type: MetaMetricsEventKeyType.Srp,
         },
+        sensitiveProperties: {},
       });
     });
   });

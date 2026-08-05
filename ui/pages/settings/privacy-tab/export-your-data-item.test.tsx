@@ -6,10 +6,24 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { captureException } from '../../../../shared/lib/sentry';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import * as exportUtils from '../../../helpers/utils/export-utils';
 import { backupUserData } from '../../../store/actions';
 import { ExportYourDataItem } from './export-your-data-item';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../helpers/utils/export-utils', () => ({
   ...jest.requireActual('../../../helpers/utils/export-utils'),
@@ -34,25 +48,12 @@ const mockCaptureException = captureException as jest.MockedFunction<
   typeof captureException
 >;
 
-const metricsProvider = (children: React.ReactNode) => (
-  <MetaMetricsContext.Provider
-    value={{
-      trackEvent: jest.fn().mockResolvedValue(undefined),
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    }}
-  >
-    {children}
-  </MetaMetricsContext.Provider>
-);
-
 describe('ExportYourDataItem', () => {
   const mockStore = configureMockStore([thunk])(mockState);
-  const trackEvent = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
   });
 
   it('renders the button with correct text', () => {
@@ -67,7 +68,7 @@ describe('ExportYourDataItem', () => {
   });
 
   it('opens the export modal when the row is clicked', () => {
-    renderWithProvider(metricsProvider(<ExportYourDataItem />), mockStore);
+    renderWithProvider(<ExportYourDataItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('privacy-tab-export-your-data-button'));
 
@@ -86,19 +87,7 @@ describe('ExportYourDataItem', () => {
     } as never);
     mockExportAsFile.mockResolvedValue(undefined);
 
-    renderWithProvider(
-      <MetaMetricsContext.Provider
-        value={{
-          trackEvent,
-          bufferedTrace: jest.fn(),
-          bufferedEndTrace: jest.fn(),
-          onboardingParentContext: { current: null },
-        }}
-      >
-        <ExportYourDataItem />
-      </MetaMetricsContext.Provider>,
-      mockStore,
-    );
+    renderWithProvider(<ExportYourDataItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('privacy-tab-export-your-data-button'));
     fireEvent.click(
@@ -114,11 +103,14 @@ describe('ExportYourDataItem', () => {
       '{"accounts":[]}',
       exportUtils.ExportableContentType.JSON,
     );
-    expect(trackEvent).toHaveBeenCalledWith({
-      event: 'User Data Exported',
-      category: 'Backup',
-      properties: {},
-    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'User Data Exported',
+        properties: expect.objectContaining({
+          category: 'Backup',
+        }),
+      }),
+    );
   });
 
   it('supports filename responses from the typed action', async () => {
@@ -128,19 +120,7 @@ describe('ExportYourDataItem', () => {
     });
     mockExportAsFile.mockResolvedValue(undefined);
 
-    renderWithProvider(
-      <MetaMetricsContext.Provider
-        value={{
-          trackEvent,
-          bufferedTrace: jest.fn(),
-          bufferedEndTrace: jest.fn(),
-          onboardingParentContext: { current: null },
-        }}
-      >
-        <ExportYourDataItem />
-      </MetaMetricsContext.Provider>,
-      mockStore,
-    );
+    renderWithProvider(<ExportYourDataItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('privacy-tab-export-your-data-button'));
     fireEvent.click(
@@ -159,19 +139,7 @@ describe('ExportYourDataItem', () => {
   it('closes the modal and captures the error when backup fails', async () => {
     mockBackupUserData.mockRejectedValue(new Error('backup failed'));
 
-    renderWithProvider(
-      <MetaMetricsContext.Provider
-        value={{
-          trackEvent,
-          bufferedTrace: jest.fn(),
-          bufferedEndTrace: jest.fn(),
-          onboardingParentContext: { current: null },
-        }}
-      >
-        <ExportYourDataItem />
-      </MetaMetricsContext.Provider>,
-      mockStore,
-    );
+    renderWithProvider(<ExportYourDataItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('privacy-tab-export-your-data-button'));
     fireEvent.click(
@@ -187,6 +155,6 @@ describe('ExportYourDataItem', () => {
     expect(
       screen.queryByTestId('export-your-data-modal-download-button'),
     ).not.toBeInTheDocument();
-    expect(trackEvent).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });

@@ -225,9 +225,9 @@ describe('Send ETH - Advanced', function () {
 
           await sendPage.selectToken('0x539', 'ETH');
 
-          await sendPage.fillRecipient(
-            '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
-          );
+          await sendPage.fillRecipient({
+            recipientAddress: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+          });
 
           await sendPage.fillHexData(
             '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',

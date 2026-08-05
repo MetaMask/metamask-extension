@@ -39,6 +39,15 @@ jest.mock('../../compliance', () => {
   };
 });
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => {
+  const buildTpslTrackingData = (input: Record<string, unknown>) => input;
+  return {
+    usePerpsAttribution: () => ({
+      buildTpslTrackingData,
+    }),
+  };
+});
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -142,6 +151,25 @@ describe('UpdateTPSLModalContent', () => {
       },
       pushPositionsWithOverrides: jest.fn(),
     });
+  });
+
+  // A successful save deliberately schedules a 2.5s reconciliation that outlives
+  // the modal. Under real timers it also outlives the test and fires a stray
+  // `perpsGetPositions` inside a later one, making this suite order-dependent.
+  // `advanceTimers: true` keeps the fake clock tracking real time so existing
+  // `waitFor`/`findBy` calls behave unchanged; the drain in afterEach means no
+  // pending timer ever crosses a test boundary.
+  beforeEach(() => {
+    jest.useFakeTimers({ advanceTimers: true });
+  });
+
+  afterEach(() => {
+    // Tests that manage their own clock may already have restored real timers,
+    // in which case there is nothing left to drain.
+    if (jest.isMockFunction(setTimeout)) {
+      jest.runOnlyPendingTimers();
+    }
+    jest.useRealTimers();
   });
 
   describe('rendering', () => {
@@ -416,6 +444,69 @@ describe('UpdateTPSLModalContent', () => {
       expect(
         screen.queryByTestId('perps-update-tpsl-estimated-sl-pnl-row'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks entry price, liquidation price, and estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-entry-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-tp-pnl-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-sl-pnl-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('does not mask the current price, which is public market data', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+    });
+
+    it('uses the default text color instead of green/red for estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      const tpPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-tp-pnl-value',
+      );
+      const slPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-sl-pnl-value',
+      );
+      expect(tpPnl).toHaveClass('text-default');
+      expect(tpPnl).not.toHaveClass('text-success-default');
+      expect(tpPnl).not.toHaveClass('text-error-default');
+      expect(slPnl).toHaveClass('text-default');
+      expect(slPnl).not.toHaveClass('text-success-default');
+      expect(slPnl).not.toHaveClass('text-error-default');
     });
   });
 
@@ -846,11 +937,17 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                positionSize: 2.5,
+                isEditingExistingPosition: true,
+              }),
+            }),
           ],
         );
       });
@@ -869,11 +966,16 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithoutTPSL.symbol,
               takeProfitPrice: undefined,
               stopLossPrice: undefined,
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                isEditingExistingPosition: false,
+              }),
+            }),
           ],
         );
       });
@@ -965,11 +1067,15 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+              }),
+            }),
           ],
         );
       });

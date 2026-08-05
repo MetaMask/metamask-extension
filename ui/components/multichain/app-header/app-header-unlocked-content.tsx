@@ -1,21 +1,17 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import {
-  Box as BoxDeprecated,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
-  IconName as IconNameDeprecated,
-  Text,
-} from '../../component-library';
+  IconName,
+} from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
   MetaMetricsEventName,
@@ -26,9 +22,11 @@ import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { getIsDefaultAddressEnabled } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+} from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
@@ -39,6 +37,8 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
+import { useDispatch } from '../../../store/hooks';
+import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -49,7 +49,7 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -62,6 +62,7 @@ export const AppHeaderUnlockedContent = ({
   );
   const accountListStats = useSelector(getAccountListStats);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
 
@@ -79,13 +80,14 @@ export const AppHeaderUnlockedContent = ({
   const handleMainMenuToggle = useCallback(() => {
     const isMenuOpen = !accountOptionsMenuOpen;
     if (isMenuOpen) {
-      trackEvent({
-        event: MetaMetricsEventName.NavMainMenuOpened,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          location: 'Home',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavMainMenuOpened)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Home',
+          })
+          .build(),
+      );
     }
 
     setSearchParams((prev) => {
@@ -96,18 +98,26 @@ export const AppHeaderUnlockedContent = ({
       }
       return prev;
     });
-  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
+  }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
+
+  const handleOpenDiscoverSearch = useCallback(() => {
+    transitionForward(() =>
+      navigate(DISCOVER_SEARCH_ROUTE, {
+        state: {
+          globalMenuTransition: 'forward',
+        },
+      }),
+    );
+  }, [navigate]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <BoxDeprecated style={{ overflow: 'hidden' }}>
+      <Box style={{ overflow: 'hidden' }}>
         {/* Prevent overflow of account picker by long account names */}
-        <Text
-          as="div"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          ellipsis
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
+          className="min-w-0"
         >
           <AccountPicker
             address={''} // No address shown in multichain mode
@@ -119,33 +129,32 @@ export const AppHeaderUnlockedContent = ({
                 op: TraceOperation.AccountUi,
               });
               transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
-              trackEvent({
-                event: MetaMetricsEventName.NavAccountMenuOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  pinned_count: accountListStats.pinnedCount,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  hidden_count: accountListStats.hiddenCount,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  total_accounts: accountListStats.totalAccounts,
-                },
-              });
+              trackEvent(
+                createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
+                  .addCategory(MetaMetricsEventCategory.Navigation)
+                  .addProperties({
+                    location: 'Home',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    pinned_count: accountListStats.pinnedCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    hidden_count: accountListStats.hiddenCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    total_accounts: accountListStats.totalAccounts,
+                  })
+                  .build(),
+              );
             }}
             disabled={disableAccountPicker}
             paddingLeft={2}
             paddingRight={2}
           />
-        </Text>
+        </Box>
         {selectedMultichainAccountId && (
-          <BoxDeprecated
-            marginTop={1}
-            marginLeft={2}
-            style={{ width: 'fit-content' }}
+          <Box
+            className="ml-2 mt-1 w-fit"
             data-testid="networks-subtitle-test-id"
           >
             <MultichainTriggeredAddressRowsList
@@ -163,9 +172,9 @@ export const AppHeaderUnlockedContent = ({
                 groupId={selectedMultichainAccountId}
               />
             </MultichainTriggeredAddressRowsList>
-          </BoxDeprecated>
+          </Box>
         )}
-      </BoxDeprecated>
+      </Box>
     );
   }, [
     accountName,
@@ -174,48 +183,54 @@ export const AppHeaderUnlockedContent = ({
     selectedMultichainAccountId,
     navigate,
     trackEvent,
+    createEventBuilder,
     accountListStats,
   ]);
 
   return (
     <>
-      <BoxDeprecated
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
         className="min-w-0"
       >
         {multichainAccountAppContent}
-      </BoxDeprecated>
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexEnd}
-        style={{ marginLeft: 'auto' }}
+      </Box>
+      <Box
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.End}
+        className="ml-auto"
       >
-        <BoxDeprecated display={Display.Flex} gap={2}>
-          <BoxDeprecated
-            display={Display.Flex}
-            justifyContent={JustifyContent.flexEnd}
-            width={BlockSize.Full}
-            style={{ position: 'relative' }}
-          >
-            {!accountOptionsMenuOpen && (
-              <BoxDeprecated onClick={handleMainMenuToggle}>
-                <NotificationsTagCounter noLabel />
-              </BoxDeprecated>
-            )}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.End}
+          className="relative w-full"
+          gap={2}
+        >
+          {!accountOptionsMenuOpen && (
+            <Box onClick={handleMainMenuToggle}>
+              <NotificationsTagCounter noLabel />
+            </Box>
+          )}
+          {isDiscoverSearchEnabled && (
             <ButtonIcon
-              ref={menuRef}
-              iconName={IconNameDeprecated.Menu}
-              data-testid="account-options-menu-button"
-              ariaLabel={t('accountOptions')}
-              onClick={handleMainMenuToggle}
-              size={ButtonIconSize.Lg}
+              iconName={IconName.Search}
+              data-testid="discover-search-button"
+              ariaLabel={t('searchTokens')}
+              onClick={handleOpenDiscoverSearch}
+              size={ButtonIconSize.Md}
             />
-          </BoxDeprecated>
-        </BoxDeprecated>
+          )}
+          <ButtonIcon
+            ref={menuRef}
+            iconName={IconName.Menu}
+            data-testid="account-options-menu-button"
+            ariaLabel={t('accountOptions')}
+            onClick={handleMainMenuToggle}
+            size={ButtonIconSize.Md}
+          />
+        </Box>
         <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
@@ -225,7 +240,7 @@ export const AppHeaderUnlockedContent = ({
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
-      </BoxDeprecated>
+      </Box>
     </>
   );
 };

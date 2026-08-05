@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention, camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';

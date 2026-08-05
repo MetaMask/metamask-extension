@@ -2,13 +2,15 @@ interface Template {
   titles: string[];
 }
 
-// An enum for different templates and issue/PR can match
-export enum TemplateType {
-  GeneralIssue,
-  BugReportIssue,
-  PullRequest,
-  None,
-}
+// The different templates an issue/PR can match.
+export const TemplateType = {
+  GeneralIssue: 0,
+  BugReportIssue: 1,
+  PullRequest: 2,
+  None: 3,
+} as const;
+
+export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];
 
 // Titles of general issue template
 const generalIssueTemplateTitles = [

@@ -152,6 +152,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
@@ -200,6 +203,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
@@ -239,6 +245,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 

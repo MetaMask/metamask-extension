@@ -13,6 +13,21 @@ import {
 } from '../../selectors';
 import RestoreVaultPage from './restore-vault';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({

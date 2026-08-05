@@ -23,11 +23,11 @@ import {
 import ToggleButton from '../../../ui/toggle-button';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 
 export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
@@ -72,33 +72,34 @@ const FeatureToggle = ({
   isBackupAndSyncEnabled: boolean;
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
   const isFeatureEnabled = useSelector(section.featureReduxSelector);
 
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_group: 'backup_and_sync',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: section.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: isFeatureEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: newValue,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_group: 'backup_and_sync',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: section.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: isFeatureEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: newValue,
+          })
+          .build(),
+      );
     },
-    [trackEvent, isFeatureEnabled, section.id],
+    [trackEvent, createEventBuilder, isFeatureEnabled, section.id],
   );
 
   const handleToggleFeature = async () => {

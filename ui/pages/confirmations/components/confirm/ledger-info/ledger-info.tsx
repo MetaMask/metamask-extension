@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
@@ -28,6 +28,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
+import { useDispatch } from '../../../../../store/hooks';
 
 const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();
@@ -76,8 +77,6 @@ const LedgerInfo = () => {
           variant={ButtonVariant.Link}
           textAlign={TextAlign.Left}
           fontWeight={FontWeight.Normal}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
@@ -95,8 +94,6 @@ const LedgerInfo = () => {
             variant={ButtonVariant.Link}
             textAlign={TextAlign.Left}
             fontWeight={FontWeight.Normal}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 let connectedDevices: HIDDevice[] = [];

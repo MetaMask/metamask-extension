@@ -11,7 +11,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 **UI Framework:** React with functional components + hooks
 **State Management:** Redux + BaseController architecture
 **Testing:** Jest (unit), Playwright (E2E)
-**Build System:** Browserify (production), Webpack (development)
+**Build System:** Webpack (with LavaMoat for production)
 **Security:** LavaMoat policies required for all dependency changes
 
 ### Critical Rules for Agents
@@ -149,8 +149,8 @@ yarn download-builds --build-type test
 **Build System Notes:**
 
 - `yarn start` uses Webpack (faster, development)
-- `yarn dist` uses Browserify + LavaMoat (production)
-- `--apply-lavamoat=false` flag speeds up development builds
+- `yarn dist` uses Webpack + LavaMoat (production)
+- `yarn start` skips LavaMoat by default for speed; use `yarn start:lavamoat` to enable it
 - Test builds are required for E2E tests (not dev builds)
 
 ### Testing
@@ -259,7 +259,7 @@ yarn lint:lockfile:dedupe:fix
 yarn allow-scripts auto
 
 # 4. Update LavaMoat policies
-yarn lavamoat:auto         # Updates both build system and webapp policies
+yarn lavamoat:auto         # Regenerates the webpack LavaMoat policies
 
 # 5. Update attributions
 yarn attributions:generate
@@ -345,8 +345,7 @@ yarn build:test
 # 7. Commit all changes including:
 #    - package.json
 #    - yarn.lock
-#    - lavamoat/browserify/*/policy.json
-#    - lavamoat/build-system/policy.json
+#    - lavamoat/webpack/*/policy.json
 #    - attribution.txt
 ```
 
@@ -754,8 +753,7 @@ ui/ducks/foo/foo.ts → ALSO UPDATE:
 ```
 package.json → MUST UPDATE:
 ├── yarn.lock (run yarn install)
-├── lavamoat/browserify/*/policy.json (run yarn lavamoat:auto)
-├── lavamoat/build-system/policy.json (run yarn lavamoat:auto)
+├── lavamoat/webpack/*/policy.json (run yarn lavamoat:auto)
 └── attribution.txt (run yarn attributions:generate)
 ```
 
@@ -850,7 +848,7 @@ Update policies whenever you:
 **Automated (Recommended):**
 
 ```bash
-# Update all policies (build system + webapp)
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 
 # Or use MetaMask bot (team members only):
@@ -860,37 +858,36 @@ yarn lavamoat:auto
 **Manual:**
 
 ```bash
-# Update webapp policies (app/scripts)
-yarn lavamoat:webapp:auto
+# Compile the webpack build tooling
+yarn webpack:tsc
 
-# Update build system policies
-yarn lavamoat:build:auto
+# Regenerate the webpack build tooling policy
+yarn webpack:lavamoat:policy:build
+
+# Regenerate the Firefox MV2 application policies
+yarn webpack:lavamoat:policy:mv2
+
+# Regenerate the Chrome MV3 application policies
+yarn webpack:lavamoat:policy:mv3
 
 # If policies still fail after regeneration:
-rm -rf node_modules/ && yarn && yarn lavamoat:auto
+rm -rf node_modules/ && yarn
+# Then compile the webpack build tooling and rerun the affected policy command above.
 ```
 
-### Debugging Policy Issues
-
-```bash
-# Generate debug output
-yarn lavamoat:debug:build         # Build system debug
-yarn lavamoat:debug:webapp        # Webapp debug
-```
-
-**Common Issues:**
+### Common Policy Issues
 
 - **Policy fails on macOS/Windows:** Platform-specific optional dependencies. Regenerate on the target platform.
 - **Dynamic imports fail:** LavaMoat's static analysis may miss dynamic code. May need manual policy updates.
-- **Can't build at all:** Try `--apply-lavamoat=false` for development, but fix before merging.
+- **Can't build at all:** Use `yarn start` (LavaMoat off by default) for development, but fix before merging.
 
 ### Development Without LavaMoat
 
-For faster iteration during development:
+For faster iteration during development (LavaMoat is off by default):
 
 ```bash
-yarn start --apply-lavamoat=false       # Development build
-yarn start:test --apply-lavamoat=false  # Test build
+yarn start       # Development build
+yarn start:test  # Test build
 ```
 
 **⚠️ Warning:** Always test with LavaMoat enabled before merging!
@@ -1493,7 +1490,7 @@ Before marking a component complete:
    → Check if on correct platform (macOS vs Linux)
    → Platform-specific dependencies need regeneration on that platform
 4. IF blocked during development:
-   → Temporarily use: yarn start --apply-lavamoat=false
+   → Temporarily use: yarn start (LavaMoat off by default)
    → MUST fix before merging
 ```
 
@@ -1619,8 +1616,7 @@ yarn lavamoat:auto
 yarn attributions:generate
 
 # 5. Verify all policy files are included in changes:
-# - lavamoat/browserify/*/policy.json
-# - lavamoat/build-system/policy.json
+# - lavamoat/webpack/*/policy.json
 # - attribution.txt
 ```
 
@@ -1717,9 +1713,39 @@ Performance Checks (React Components):
 - **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
 
+### EVM Swaps/Bridge Agent Entrypoints
+
+- **EVM Swaps/Bridge Standard:** [`docs/add-evm-swaps-bridge-network.md`](./docs/add-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding a new EVM network to the unified swaps/bridge flow (bridge allowlist, default token pair, stablecoin slippage, and `bridgeConfigV2` rollout). Follows the MegaETH/Robinhood pattern.
+- **Cursor Skill:** [`.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md) - Local Cursor skill entrypoint for the shared standard.
+
 ### External Resources
 
 - **MetaMask Contributor Docs:** https://github.com/MetaMask/contributor-docs
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+
+### Node version gotcha (important)
+
+- The repo requires Node `>=24.13` (`.nvmrc` → `v24.13`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.13.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+
+### Running / building the extension
+
+- It is a browser extension, so `yarn start` does not open a UI — it webpack-builds + watches into `dist/chrome` (MV3). Initial build takes ~45s and then prints `compiled successfully` / `Watching for changes…`. Load `dist/chrome` as an unpacked extension in a Chromium browser to use it. Use `yarn start:mv2` for Firefox (`dist/firefox`).
+- `.metamaskrc` uses a **placeholder `INFURA_PROJECT_ID` (`00000000000`)**, which is enough to build and to onboard/create a wallet locally, but **all live RPC fails** (you'll see "Unable to connect to <network>"). For any on-chain flow (balances, sending, swaps), provide a real `INFURA_PROJECT_ID`, or point networks at a local `yarn anvil` chain (`:8545`).
+- Build config precedence is **`process.env` > `.metamaskprodrc` > `.metamaskrc` > `builds.yml`** (`development/webpack/utils/config.ts`; env vars win). So the Cursor Cloud secret named `INFURA_PROJECT_ID` is picked up automatically by the build in any **new** VM session (it overrides the placeholder in `.metamaskrc` with no file edit needed). Note secrets are injected only into new VMs, not one already running when the secret is added.
+
+### Visual / interactive verification (`mm` CLI)
+
+- The `mm` CLI (`node_modules/.bin/mm`, from `@metamask/client-mcp-core`) drives the extension via Playwright and is the fastest way to click through onboarding/unlock/send flows. It requires **Playwright's Chromium**, which is not part of `yarn install`: run `yarn playwright install chromium` once (cached under `~/.cache/ms-playwright`) before `mm launch`. It also needs an X display — one is available at `DISPLAY=:1` (set `export DISPLAY=:1`).
+- Launch against the existing dev build with `mm launch --context prod --extension-path dist/chrome --state onboarding`, then use `mm describe-screen` / `mm click --testid <id>` / `mm type`. During create-wallet, the on-home **Terms of Use** dialog's Agree button stays disabled until you click `terms-of-use-scroll-button` (repeatedly) to scroll the terms to the bottom. Always finish with `mm cleanup`. See `test/e2e/playwright/llm-workflow/README.md`.
+
+### E2E tests
+
+- Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.

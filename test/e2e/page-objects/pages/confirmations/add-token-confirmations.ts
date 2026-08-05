@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AddTokenConfirmation {
-  driver: Driver;
-
   private readonly addTokenConfirmationTitle = {
     css: '.page-container__title',
     text: 'Add suggested tokens',
@@ -10,6 +8,8 @@ class AddTokenConfirmation {
 
   private readonly confirmAddTokenButton =
     '[data-testid="page-container-footer-next"]';
+
+  driver: Driver;
 
   private readonly rejectAddTokenButton =
     '[data-testid="page-container-footer-cancel"]';

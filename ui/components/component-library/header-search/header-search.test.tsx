@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -18,10 +17,7 @@ describe('HeaderSearch', () => {
         <HeaderSearch
           variant={HeaderSearchVariant.Screen}
           onClickBackButton={onClickBackButton}
-          textFieldSearchProps={{
-            ...defaultSearchProps,
-            inputProps: { 'data-testid': 'header-search-input' },
-          }}
+          textFieldSearchProps={defaultSearchProps}
         />,
       );
 

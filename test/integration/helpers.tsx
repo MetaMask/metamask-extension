@@ -30,6 +30,13 @@ export const createMockImplementation = <T,>(requests: Record<string, T>) => {
     if (method === 'getBearerToken') {
       return Promise.resolve('mock-bearer-token-for-tests');
     }
+    if (
+      method === 'trackAnalyticsEvent' ||
+      method === 'trackMetaMetricsEvent' ||
+      method === 'addEventBeforeMetricsOptIn'
+    ) {
+      return Promise.resolve(undefined);
+    }
     if (method in requests) {
       return Promise.resolve(requests[method]);
     }

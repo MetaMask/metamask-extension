@@ -1,22 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ExperimentalSettings {
-  private readonly driver: Driver;
-
   // Locators
   private readonly addAccountSnapToggle =
     '[data-testid="add-account-snap-toggle-div"]';
+
+  private readonly driver: Driver;
 
   private readonly experimentalPageTitle = {
     text: 'Enable "Add account Snap (Beta)"',
     tag: 'p',
   };
 
-  private readonly watchAccountToggleState =
-    '[data-testid="watch-account-toggle"]';
-
   private readonly watchAccountToggle =
     '[data-testid="watch-account-toggle-div"]';
+
+  private readonly watchAccountToggleState =
+    '[data-testid="watch-account-toggle"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

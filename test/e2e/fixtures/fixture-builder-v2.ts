@@ -69,6 +69,7 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -132,6 +133,8 @@ type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  consentDecisionMade?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -296,11 +299,20 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      ...metaMetricsControllerPatch
+    } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (analyticsId !== undefined || optedIn !== undefined) {
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined
+    ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -315,6 +327,9 @@ class FixtureBuilderV2 {
       }
       if (optedIn !== undefined) {
         analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
       }
       merge(analyticsController, analyticsPatch);
     }
@@ -763,55 +778,68 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    }).withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
               },
             },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: ledgerAddressLower,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
               },
             },
           },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:1': { amount: '25' },
+          },
           [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: ledgerAddressLower,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Ledger 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Ledger Hardware',
-              },
-              lastSelected: 1724486729083,
+            'eip155:1337/slip44:1': {
+              amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
             },
           },
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    });
+      });
     return this;
   }
 
@@ -883,6 +911,38 @@ class FixtureBuilderV2 {
       };
     }
     return this;
+  }
+
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
   }
 
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
@@ -1355,7 +1415,9 @@ class FixtureBuilderV2 {
           'eip155:1337/slip44:1': { amount: '25' },
         },
         [HARDWARE_WALLET_ACCOUNT_ID]: {
-          'eip155:1337/slip44:1': { amount: '100' },
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+          },
         },
       },
     })

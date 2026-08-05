@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
+  HotModuleReplacementPlugin,
   ProvidePlugin,
   type Chunk,
   type Configuration,
@@ -22,7 +23,9 @@ import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
+  JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
+  TYPESCRIPT_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -37,11 +40,8 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { injectEntryScripts } from './utils/dev-server';
-import {
-  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
-  UI_RELOAD_CLIENT_ENTRY_NAME,
-} from './utils/dev-server/reload-protocol';
+import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
@@ -56,6 +56,7 @@ const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
+const isDevelopmentWatchMode = isDevelopment && args.watch;
 const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -153,22 +154,12 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject dev-only ui and background reload clients into the relevant HTML pages.
+    // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
       if (!args.watch) {
         return content;
       }
-      // UI pages (identified by the `#app-content` React mount point, present
-      // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the UI reload client
-      if (content.includes('id="app-content"')) {
-        return injectEntryScripts(
-          content,
-          compilation,
-          UI_RELOAD_CLIENT_ENTRY_NAME,
-        );
-      }
-      // The MV2 (Firefox) background page gets the background reload client,
+      // The MV2 (Firefox) background page gets the background client,
       // which triggers `chrome.runtime.reload()` only when a background or
       // content-script bundle changes. (On MV3 the client is bundled into the
       // service worker instead, since it loads a single JS file.)
@@ -176,7 +167,7 @@ const plugins: WebpackPluginInstance[] = [
         return injectEntryScripts(
           content,
           compilation,
-          BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+          BACKGROUND_CLIENT_ENTRY_NAME,
         );
       }
       return content;
@@ -277,6 +268,18 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (isDevelopmentWatchMode) {
+  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+  plugins.push(
+    new HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin({
+      include: UI_DIR_RE,
+      overlay: false,
+      runtimeEntry: false,
+    }),
+  );
+}
+
 if (args.bundleAnalyzer) {
   const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
   plugins.push(
@@ -286,11 +289,27 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+
+const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsxLoader = getSwcLoader(
+  'typescript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+const reactRefreshJsxLoader = getSwcLoader(
+  'ecmascript',
+  true,
+  safeVariables,
+  swcReactRefreshConfig,
+);
+
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
@@ -298,7 +317,7 @@ const isChunkableAsync = (chunk: Chunk) =>
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
-  target: '17',
+  target: '18',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
   threadLoaderEnabled: threadLoader !== null,
@@ -351,28 +370,6 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // TODO: Remove this workaround after upgrading to React 18
-    // WORKAROUND: Alias for React JSX runtime to handle ESM module resolution issues.
-    // This is needed because @metamask/design-system-react uses @radix-ui/react-slot,
-    // which is distributed as an ESM module (.mjs) that imports 'react/jsx-runtime'
-    // without the file extension. Webpack 5's strict ESM resolution requires fully
-    // specified imports, so we explicitly map these to the actual files.
-    //
-    // This issue only affects React 17. React 18+ properly exports jsx-runtime
-    // with correct ESM module resolution, so this workaround can be removed after upgrading.
-    //
-    // Related issues:
-    // - https://github.com/radix-ui/primitives/issues/3413
-    // - Fix example: https://github.com/xyflow/xyflow/issues/4683#issuecomment-2388049017
-    //
-    // Potential solutions until React 18 upgrade:
-    // 1. Current workaround: webpack aliases (what we're using)
-    // 2. @metamask/design-system-react could patch the Radix UI packages
-    // 3. @metamask/design-system-react could re-export components with a build step that fixes imports
-    alias: {
-      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
-      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -435,17 +432,47 @@ const config = {
         use: threadLoader,
       },
       // own typescript, and own typescript with jsx
-      {
-        test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: tsxLoader,
-      },
+      ...(isDevelopmentWatchMode
+        ? [
+            {
+              test: TYPESCRIPT_FILE_RE,
+              include: UI_DIR_RE,
+              use: reactRefreshTsxLoader,
+            },
+            {
+              test: TYPESCRIPT_FILE_RE,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: tsxLoader,
+            },
+          ]
+        : [
+            {
+              test: TYPESCRIPT_FILE_RE,
+              exclude: NODE_MODULES_RE,
+              use: tsxLoader,
+            },
+          ]),
       // own javascript, and own javascript with jsx
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        use: jsxLoader,
-      },
+      ...(isDevelopmentWatchMode
+        ? [
+            {
+              test: JAVASCRIPT_FILE_RE,
+              include: UI_DIR_RE,
+              use: reactRefreshJsxLoader,
+            },
+            {
+              test: JAVASCRIPT_FILE_RE,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: jsxLoader,
+            },
+          ]
+        : [
+            {
+              test: JAVASCRIPT_FILE_RE,
+              exclude: NODE_MODULES_RE,
+              use: jsxLoader,
+            },
+          ]),
       // React Compiler for UI component files (must appear after SWC rules)
       { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
@@ -606,6 +633,11 @@ const config = {
   // don't warn about large JS assets, unless they are going to be too big for Firefox
   performance: { maxAssetSize: 1 << 22 },
   watch: args.watch,
+  devServer: getDevServerOptions({
+    uiClientRule: {
+      include: join(context, 'scripts/load/ui.ts'),
+    },
+  }),
   watchOptions: {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues

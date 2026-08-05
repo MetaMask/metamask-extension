@@ -145,6 +145,26 @@ module.exports = [
   },
 
   // ===========================================================================
+  // REACT 18 MIGRATION (temporary — will be removed by
+  // https://github.com/MetaMask/MetaMask-planning/issues/6934)
+  // ===========================================================================
+
+  {
+    match: /Warning: ReactDOM\.render is no longer/u,
+    group: null,
+  },
+
+  {
+    match: /Warning: `ReactDOMTestUtils\.act` is deprecated/u,
+    group: null,
+  },
+
+  {
+    match: /Warning: unmountComponentAtNode is deprecated/u,
+    group: null,
+  },
+
+  // ===========================================================================
   // DEPRECATION WARNINGS
   // ===========================================================================
 

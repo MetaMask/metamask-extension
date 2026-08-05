@@ -1,12 +1,12 @@
 import React from 'react';
 import { Icon, IconName, IconSize, Text } from '@metamask/design-system-react';
 import { usePendingTransactionGasModal } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
-import { TransactionListItemPendingActions } from '../../../components/app/transaction-list-item/transaction-list-item-pending-actions';
-import { StatusIcon } from '../../../components/ui/icon/status-icon';
+import { StatusIcon } from '../../../components/ui/status-icon/status-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { ActivityRowProps } from '../types';
 import { useActivityCellStatus } from '../helpers';
 import { ActivityRowLayout } from './activity-row-layout';
+import { TransactionListItemPendingActions } from './pending-transaction-actions';
 import { useActivityRowContent } from './useActivityRowContent';
 
 export function PendingActivityRow({

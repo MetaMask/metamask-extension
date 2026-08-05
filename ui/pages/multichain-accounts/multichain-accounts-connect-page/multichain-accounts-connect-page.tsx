@@ -74,7 +74,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
@@ -131,7 +131,7 @@ export const MultichainAccountsConnectPage = ({
   targetSubjectMetadata,
 }: MultichainConnectPageProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
@@ -479,16 +479,17 @@ export const MultichainAccountsConnectPage = ({
   ]);
 
   const setModeToEditAccounts = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedAccounts,
-      properties: {
-        location:
-          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ViewPermissionedAccounts)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location:
+            'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+        })
+        .build(),
+    );
     setPageMode(MultichainAccountsConnectPageMode.EditAccounts);
-  }, [trackEvent]);
+  }, [trackEvent, createEventBuilder]);
 
   const handleCancelConnection = useCallback(() => {
     rejectPermissionsRequest(permissionsRequestId);

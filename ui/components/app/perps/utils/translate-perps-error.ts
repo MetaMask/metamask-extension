@@ -6,7 +6,7 @@ import type { PerpsErrorCode } from '@metamask/perps-controller';
  * Keys that fall through to `somethingWentWrong` do not have
  * user-meaningful distinctions beyond a generic failure message.
  */
-export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
+export const ERROR_CODE_TO_I18N_KEY = {
   // Client lifecycle
   [PERPS_ERROR_CODES.CLIENT_NOT_INITIALIZED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.CLIENT_REINITIALIZING]: 'somethingWentWrong',
@@ -75,6 +75,9 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   [PERPS_ERROR_CODES.SPOT_PAIR_NOT_FOUND]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.PRICE_UNAVAILABLE]: 'somethingWentWrong',
 
+  // Market / collateral
+  [PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL]: 'perpsUnsupportedCollateral',
+
   // Batch operations
   [PERPS_ERROR_CODES.BATCH_CANCEL_FAILED]: 'perpsBatchCancelFailed',
   [PERPS_ERROR_CODES.BATCH_CLOSE_FAILED]: 'perpsBatchCloseFailed',
@@ -95,6 +98,27 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   // Network / service
   [PERPS_ERROR_CODES.SERVICE_UNAVAILABLE]: 'perpsServiceUnavailable',
   [PERPS_ERROR_CODES.NETWORK_ERROR]: 'perpsNetworkError',
+  // `as const satisfies` rather than a `Record<PerpsErrorCode, string>`
+  // annotation: the annotation widens every value to `string`, which would let
+  // `CANCEL_ORDER_I18N_KEY_OVERRIDES` below key off a message key that no longer
+  // exists here without a compile error. `satisfies` alone is not enough — the
+  // keys are computed, so TS falls back to an index signature and re-widens the
+  // values. Exhaustiveness over `PerpsErrorCode` is unchanged.
+} as const satisfies Record<PerpsErrorCode, string>;
+
+/**
+ * Cancel-flow remapping of the keys above.
+ *
+ * Every `ORDER_*` code funnels into `perpsOrderFailed` ("Order could not be
+ * placed."), which is the wrong verb on a screen where the user just pressed
+ * Cancel order — `ORDER_UNKNOWN_COIN` reaches it through the cancel retry.
+ * Remapping the resolved key rather than enumerating codes keeps this correct
+ * as the controller adds more `ORDER_*` codes.
+ */
+export const CANCEL_ORDER_I18N_KEY_OVERRIDES: Partial<
+  Record<(typeof ERROR_CODE_TO_I18N_KEY)[PerpsErrorCode], string>
+> = {
+  perpsOrderFailed: 'perpsCancelOrderFailed',
 };
 
 /**
@@ -174,12 +198,17 @@ export const API_ERROR_PATTERNS: {
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
+ * @param i18nKeyOverrides - Optional flow-specific remapping of the resolved
+ * message key, e.g. `CANCEL_ORDER_I18N_KEY_OVERRIDES`.
  * @returns A translated user-facing string, or `null` if no specific translation found.
  */
 export function translatePerpsError(
   error: unknown,
   t: (key: string) => string,
+  i18nKeyOverrides?: Partial<Record<string, string>>,
 ): string | null {
+  const translate = (i18nKey: string) =>
+    t(i18nKeyOverrides?.[i18nKey] ?? i18nKey);
   const errorObj = error instanceof Error ? error : null;
   const errorCode =
     errorObj &&
@@ -191,14 +220,14 @@ export function translatePerpsError(
   // 1. Code-first lookup — narrow to PerpsErrorCode only after membership check
   if (errorCode && errorCode in ERROR_CODE_TO_I18N_KEY) {
     const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode as PerpsErrorCode];
-    return t(i18nKey);
+    return translate(i18nKey);
   }
 
   // 2. Message-as-code lookup — handles plain strings that ARE error codes
   //    (e.g. WithdrawResult.error wrapped in `new Error(code)`)
   const message = errorObj?.message ?? '';
   if (message && message in ERROR_CODE_TO_I18N_KEY) {
-    return t(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
+    return translate(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
   }
 
   // 3. Pattern match against raw error message
@@ -206,7 +235,7 @@ export function translatePerpsError(
     for (const { pattern, code } of API_ERROR_PATTERNS) {
       if (pattern.test(message)) {
         const i18nKey = ERROR_CODE_TO_I18N_KEY[code];
-        return t(i18nKey);
+        return translate(i18nKey);
       }
     }
   }

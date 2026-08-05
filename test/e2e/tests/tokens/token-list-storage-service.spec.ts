@@ -1,13 +1,15 @@
 import { Context } from 'mocha';
 import { Mockttp } from 'mockttp';
-import {
-  CHAIN_IDS,
-  MAINNET_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
@@ -17,6 +19,7 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import { mockTokenMetadataApis } from './utils/mocks';
 
 describe('Token List via StorageService', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -24,6 +27,7 @@ describe('Token List via StorageService', function () {
   const tokenName = 'Musical Token';
   const tokenSymbol = 'MSCL';
   const mUsdAddress = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+  const tokenAssetId = `eip155:1/erc20:${tokenAddress}`;
 
   const tokenListData = {
     [tokenAddress]: {
@@ -46,13 +50,58 @@ describe('Token List via StorageService', function () {
           .withTokenListControllerStorageServiceData([
             { chainId, data: tokenListData },
           ])
+          .withTokensController({
+            allTokens: {
+              [chainId]: {
+                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
+                  {
+                    address: tokenAddress,
+                    symbol: tokenSymbol,
+                    decimals: 18,
+                    name: tokenName,
+                  },
+                ],
+              },
+            },
+          })
+          .withAssetsController({
+            customAssets: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: [tokenAssetId],
+            },
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [tokenAssetId]: { amount: '1' },
+              },
+            },
+            assetsInfo: {
+              [tokenAssetId]: {
+                aggregators: ['CoinGecko', 'Uniswap'],
+                decimals: 18,
+                name: tokenName,
+                symbol: tokenSymbol,
+                type: 'erc20',
+              },
+            },
+          })
           .build(),
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
+        unifiedEvmAccountsApiBalances: {
+          mainnetAdditionalBalances: [
+            {
+              assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+              balance: '1',
+            },
+            {
+              assetId: `eip155:1/erc20:${mUsdAddress.toLowerCase()}`,
+              balance: '0',
+            },
+          ],
+        },
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         title: (this as Context).test?.fullTitle(),
@@ -62,6 +111,24 @@ describe('Token List via StorageService', function () {
           await mockFiatExchangeRates(mockServer),
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceApiSupportedNetworks(mockServer),
+          ...(await mockTokenMetadataApis(
+            mockServer,
+            [
+              {
+                address: tokenAddress,
+                symbol: tokenSymbol,
+                name: tokenName,
+                decimals: 18,
+              },
+              {
+                address: mUsdAddress,
+                symbol: 'MUSD',
+                name: 'mUSD',
+                decimals: 6,
+              },
+            ],
+            { includeAssetsV3: false },
+          )),
           // Token Search API – /tokens/search
           await mockServer
             .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
@@ -219,12 +286,11 @@ describe('Token List via StorageService', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
 
-        await tokensTab.importTokenBySearch({
-          tokenName,
-          networkName: MAINNET_DISPLAY_NAME,
-        });
+        await homePage.checkPageIsLoaded();
+        await homePage.goToTokensTab();
         await tokensTab.checkTokenExistsInList(tokenName);
       },
     );

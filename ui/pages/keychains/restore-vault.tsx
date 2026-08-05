@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -31,6 +31,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
@@ -42,13 +43,13 @@ import SrpInputForm from '../srp-input-form';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useDispatch } from '../../store/hooks';
 
 function RestoreVaultPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = React.useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
 
@@ -83,10 +84,11 @@ function RestoreVaultPage() {
           createNewVaultAndRestore(password, secretRecoveryPhrase),
         );
 
-        trackEvent({
-          category: MetaMetricsEventCategory.Retention,
-          event: MetaMetricsEventName.WalletRestored,
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.WalletRestored)
+            .addCategory(MetaMetricsEventCategory.Retention)
+            .build(),
+        );
 
         setRestorePassword(password);
         // clear SRP from state after restoring vault is successful
@@ -107,6 +109,7 @@ function RestoreVaultPage() {
       }
     },
     [
+      createEventBuilder,
       isSocialLoginFlow,
       isPasskeyFeatureAvailable,
       secretRecoveryPhrase,

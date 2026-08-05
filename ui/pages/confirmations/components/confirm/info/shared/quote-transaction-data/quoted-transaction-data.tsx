@@ -2,7 +2,7 @@ import React from 'react';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { Box } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
@@ -22,7 +22,7 @@ import { TransactionData } from '../transaction-data/transaction-data';
 const QuotedSwapTransactionDataContent = ({
   selectedQuote,
 }: {
-  selectedQuote: QuoteResponse;
+  selectedQuote: QuoteResponseV1;
 }) => {
   const { approval, trade } = selectedQuote;
 

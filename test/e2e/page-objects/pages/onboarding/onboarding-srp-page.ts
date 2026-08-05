@@ -3,12 +3,12 @@ import { Driver } from '../../../webdriver/driver';
 import { E2E_SRP } from '../../../constants';
 
 class OnboardingSrpPage {
-  private driver: Driver;
-
   private readonly clearAllButton = {
     tag: 'span',
     text: 'Clear all',
   };
+
+  private driver: Driver;
 
   private readonly importDescription = {
     tag: 'p',
@@ -33,6 +33,14 @@ class OnboardingSrpPage {
     this.driver = driver;
   }
 
+  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
+    console.log('Check that confirm SRP button is disabled');
+    const confirmSeedPhrase = await this.driver.findElement(
+      this.srpConfirmButton,
+    );
+    assert.equal(await confirmSeedPhrase.isEnabled(), false);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -52,6 +60,11 @@ class OnboardingSrpPage {
       throw e;
     }
     console.log('Onboarding srp page is loaded');
+  }
+
+  async checkSrpError(): Promise<void> {
+    console.log('Check that SRP error is displayed');
+    await this.driver.waitForSelector(this.srpError);
   }
 
   async clickConfirmButton(): Promise<void> {
@@ -97,19 +110,6 @@ class OnboardingSrpPage {
         }
       }
     }
-  }
-
-  async checkConfirmSrpButtonIsDisabled(): Promise<void> {
-    console.log('Check that confirm SRP button is disabled');
-    const confirmSeedPhrase = await this.driver.findElement(
-      this.srpConfirmButton,
-    );
-    assert.equal(await confirmSeedPhrase.isEnabled(), false);
-  }
-
-  async checkSrpError(): Promise<void> {
-    console.log('Check that SRP error is displayed');
-    await this.driver.waitForSelector(this.srpError);
   }
 }
 

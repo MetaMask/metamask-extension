@@ -1,4 +1,5 @@
-import React from 'react';
+import type { AccountGroupId } from '@metamask/account-api';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Text } from '../../../../../components/component-library';
 import {
@@ -16,51 +17,74 @@ import type { MultichainAccountsState } from '../../../../../selectors/multichai
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+function getMultichainAccountsState(
+  state: unknown,
+): MultichainAccountsState | undefined {
+  const maybeState = state as Partial<MultichainAccountsState>;
+
+  return maybeState.metamask?.accountTree?.wallets
+    ? (state as MultichainAccountsState)
+    : undefined;
+}
+
+function selectAccountGroupId(state: unknown): AccountGroupId | undefined {
+  const multichainAccountsState = getMultichainAccountsState(state);
+  return multichainAccountsState
+    ? getSelectedAccountGroup(multichainAccountsState)
+    : undefined;
+}
+
+function selectFirstAccountGroupName(state: unknown): string | undefined {
+  const multichainAccountsState = getMultichainAccountsState(state);
+  return multichainAccountsState
+    ? getAllAccountGroups(multichainAccountsState).find(
+        (group) => group.metadata.name,
+      )?.metadata.name
+    : undefined;
+}
+
 export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
   const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
-  const selectedAccountGroupId = useSelector((state) => {
-    const multichainAccountsState = getMultichainAccountsState(state);
-    return multichainAccountsState
-      ? getSelectedAccountGroup(multichainAccountsState)
-      : undefined;
-  });
+  const selectedAccountGroupId = useSelector(selectAccountGroupId);
 
   const {
     txParams: { from },
   } = transactionMeta;
 
-  const accountName = useSelector((state) => {
-    const multichainAccountsState = getMultichainAccountsState(state);
-    return multichainAccountsState
-      ? selectAccountGroupNameByAddress(multichainAccountsState, from)
-      : undefined;
-  });
-  const selectedAccountGroupName = useSelector((state) => {
-    const multichainAccountsState = getMultichainAccountsState(state);
+  const selectAccountName = useMemo(
+    () => (state: unknown) => {
+      const multichainAccountsState = getMultichainAccountsState(state);
+      return multichainAccountsState
+        ? selectAccountGroupNameByAddress(multichainAccountsState, from)
+        : undefined;
+    },
+    [from],
+  );
+  const accountName = useSelector(selectAccountName);
 
-    if (!multichainAccountsState || !selectedAccountGroupId) {
-      return undefined;
-    }
+  const selectSelectedAccountGroupName = useMemo(
+    () => (state: unknown) => {
+      const multichainAccountsState = getMultichainAccountsState(state);
+      if (!multichainAccountsState || !selectedAccountGroupId) {
+        return undefined;
+      }
+      return getMultichainAccountGroupById(
+        multichainAccountsState,
+        selectedAccountGroupId,
+      )?.metadata.name;
+    },
+    [selectedAccountGroupId],
+  );
+  const selectedAccountGroupName = useSelector(selectSelectedAccountGroupName);
 
-    return getMultichainAccountGroupById(
-      multichainAccountsState,
-      selectedAccountGroupId,
-    )?.metadata.name;
-  });
-  const firstAccountGroupName = useSelector((state) => {
-    const multichainAccountsState = getMultichainAccountsState(state);
-    return multichainAccountsState
-      ? getAllAccountGroups(multichainAccountsState).find(
-          (group) => group.metadata.name,
-        )?.metadata.name
-      : undefined;
-  });
+  const firstAccountGroupName = useSelector(selectFirstAccountGroupName);
 
-  const displayName =
-    accountName || selectedAccountGroupName || firstAccountGroupName;
+  const displayName = useMemo(
+    () => accountName || selectedAccountGroupName || firstAccountGroupName,
+    [accountName, selectedAccountGroupName, firstAccountGroupName],
+  );
 
   if (!hasPaymentDetails || !displayName) {
     return null;
@@ -76,14 +100,4 @@ export function TransactionDetailsAccountRow() {
       </Text>
     </TransactionDetailsRow>
   );
-}
-
-function getMultichainAccountsState(
-  state: unknown,
-): MultichainAccountsState | undefined {
-  const maybeState = state as Partial<MultichainAccountsState>;
-
-  return maybeState.metamask?.accountTree?.wallets
-    ? (state as MultichainAccountsState)
-    : undefined;
 }

@@ -1,11 +1,15 @@
-import { act } from '@testing-library/react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import {
   SimulationError,
+  TransactionContainerType,
+  TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
@@ -13,6 +17,14 @@ import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { GasFeesDetails } from './gas-fees-details';
+
+const mockUpdateTransactionEventFragment = jest.fn();
+
+jest.mock('../../../../../hooks/useTransactionEventFragment', () => ({
+  useTransactionEventFragment: () => ({
+    updateTransactionEventFragment: mockUpdateTransactionEventFragment,
+  }),
+}));
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
@@ -33,28 +45,54 @@ function getStore({
   selectedGasFeeToken,
   simulationFails,
   userFeeLevel,
+  chainId,
+  isEnforcedSimulations,
+  usdConversionRate = 556.12,
 }: {
   isAdvanced?: boolean;
   selectedGasFeeToken?: Hex;
   simulationFails?: SimulationError;
   userFeeLevel?: UserFeeLevel;
+  chainId?: Hex;
+  isEnforcedSimulations?: boolean;
+  usdConversionRate?: number;
 } = {}) {
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    chainId,
+    selectedGasFeeToken,
+    simulationFails,
+    userFeeLevel,
+  }) as TransactionMeta;
+
+  if (isEnforcedSimulations) {
+    confirmation.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+    confirmation.txParamsOriginal = { ...confirmation.txParams };
+    confirmation.txParams.gas = '0x156ee';
+  } else if (isEnforcedSimulations === false) {
+    confirmation.containerTypes = [];
+  }
+
   return configureStore(
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        selectedGasFeeToken,
-        simulationFails,
-        userFeeLevel,
-      }),
-      {
-        metamask: {
-          preferences: {
-            showFiatInTestnets: true,
-            showConfirmationAdvancedDetails: isAdvanced ?? false,
+    getMockConfirmStateForTransaction(confirmation, {
+      metamask: {
+        currencyRates: {
+          ETH: {
+            conversionRate: 556.12,
+            usdConversionRate,
+          },
+          SepoliaETH: {
+            conversionRate: 556.12,
+            usdConversionRate,
           },
         },
+        preferences: {
+          showFiatInTestnets: true,
+          showConfirmationAdvancedDetails: isAdvanced ?? false,
+        },
       },
-    ),
+    }),
   );
 }
 
@@ -67,10 +105,10 @@ describe('<GasFeesDetails />', () => {
     );
   });
 
-  it('renders fiat gas fee', async () => {
+  it('renders fiat gas fee and records zero added fee when enforced simulations are disabled', async () => {
     const { getByText } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore(),
+      getStore({ isEnforcedSimulations: false }),
     );
 
     await act(async () => {
@@ -78,12 +116,24 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(getByText('$0.07')).toBeInTheDocument();
+    expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: 0,
+        },
+      },
+      expect.any(String),
+    );
   });
 
   it('renders max fee if advanced', async () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore({ isAdvanced: true }),
+      getStore({
+        isAdvanced: true,
+        chainId: CHAIN_IDS.SEPOLIA,
+        isEnforcedSimulations: true,
+      }),
     );
 
     await act(async () => {
@@ -91,12 +141,30 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(getByTestId('gas-fee-details-max-fee')).toBeInTheDocument();
+    expect(getByTestId('added-protection-network-fee')).toHaveTextContent(
+      messages.addedProtectionIncludesNetworkFee.message.replace('$1', '$0.07'),
+    );
+    await waitFor(() => {
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        {
+          properties: {
+            enforced_simulation_added_network_fee_usd: expect.any(Number),
+          },
+        },
+        expect.any(String),
+      );
+    });
   });
 
   it('does not render max fee if advanced and selected gas fee token', async () => {
     const { queryByTestId } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore({ isAdvanced: true, selectedGasFeeToken: '0x123' }),
+      getStore({
+        isAdvanced: true,
+        isEnforcedSimulations: true,
+        selectedGasFeeToken: '0x123',
+        usdConversionRate: 0,
+      }),
     );
 
     await act(async () => {
@@ -104,6 +172,14 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(queryByTestId('gas-fee-details-max-fee')).toBeNull();
+    expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: 0,
+        },
+      },
+      expect.any(String),
+    );
   });
 
   it('does not render gas timing if selected gas fee token', async () => {

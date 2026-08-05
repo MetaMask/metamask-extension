@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -12,7 +12,7 @@ import {
   setShowDefaultAddress,
   setDefaultAddressScope,
 } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -23,11 +23,12 @@ import {
 } from '../../../../shared/constants/default-address';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PREFERENCES_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
@@ -44,17 +45,18 @@ export const ShowDefaultAddressItem = () => {
     enabled: boolean,
     scope: DefaultAddressScope,
   ) => {
-    trackEvent({
-      event: MetaMetricsEventName.SettingsUpdated,
-      category: MetaMetricsEventCategory.Settings,
-      properties: {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        show_default_address: enabled,
-        default_address_network: scope,
-        /* eslint-enable @typescript-eslint/naming-convention */
-        location: 'Settings Page',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          /* eslint-disable @typescript-eslint/naming-convention */
+          show_default_address: enabled,
+          default_address_network: scope,
+          /* eslint-enable @typescript-eslint/naming-convention */
+          location: 'Settings Page',
+        })
+        .build(),
+    );
   };
 
   const handleToggle = (value: boolean) => {

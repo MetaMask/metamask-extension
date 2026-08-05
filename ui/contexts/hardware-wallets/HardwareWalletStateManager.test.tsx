@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -116,6 +116,7 @@ describe('HardwareWalletStateManager', () => {
       expect(refs.connectRef).toEqual({ current: null });
       expect(refs.walletTypeRef).toEqual({ current: null });
       expect(refs.previousWalletTypeRef).toEqual({ current: null });
+      expect(refs.isSigningInProgressRef).toEqual({ current: false });
     });
 
     it('syncs walletType with walletTypeRef', () => {
@@ -161,6 +162,37 @@ describe('HardwareWalletStateManager', () => {
 
       expect(result.current.state.walletType).toBe(null);
       expect(result.current.state.isHardwareWalletAccount).toBe(false);
+    });
+
+    describe('resetConnectionRefs', () => {
+      it('resets connection refs including isSigningInProgressRef', () => {
+        const store = mockStore(createMockState(KeyringTypes.trezor));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        result.current.refs.connectingPromiseRef.current = Promise.resolve();
+        result.current.refs.ensureDeviceReadyPromiseRef.current.set(
+          'key',
+          Promise.resolve(true),
+        );
+        result.current.refs.currentConnectionIdRef.current = 1;
+        result.current.refs.isConnectingRef.current = true;
+        result.current.refs.isSigningInProgressRef.current = true;
+
+        act(() => {
+          result.current.setters.resetConnectionRefs();
+        });
+
+        expect(result.current.refs.connectingPromiseRef.current).toBe(null);
+        expect(
+          result.current.refs.ensureDeviceReadyPromiseRef.current.size,
+        ).toBe(0);
+        expect(result.current.refs.currentConnectionIdRef.current).toBe(null);
+        expect(result.current.refs.isConnectingRef.current).toBe(false);
+        expect(result.current.refs.isSigningInProgressRef.current).toBe(false);
+      });
     });
 
     describe('resetAutoConnectState', () => {

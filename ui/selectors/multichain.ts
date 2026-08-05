@@ -17,16 +17,19 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
+  MULTICHAIN_TESTNET_NETWORKS,
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
 import { Numeric } from '../../shared/lib/Numeric';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
@@ -37,8 +40,6 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -325,14 +326,9 @@ export function getMultichainIsTestnet(
 
   // TODO: For now we only check for Bitcoin, Solana, and Tron, but we will need to
   // update this for other non-EVM networks later!
-  return [
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-    MultichainNetworks.SOLANA_DEVNET,
-    MultichainNetworks.SOLANA_TESTNET,
-    MultichainNetworks.TRON_NILE,
-    MultichainNetworks.TRON_SHASTA,
-  ].includes(providerConfig.chainId as MultichainNetworks);
+  return MULTICHAIN_TESTNET_NETWORKS.includes(
+    providerConfig.chainId as MultichainNetworks,
+  );
 }
 
 // TODO: Update all references to use asset-migration.ts
@@ -377,10 +373,21 @@ function getNonEvmCachedBalance(
 }
 
 export function getImageForChainId(chainId: string): string | undefined {
-  return {
+  const imageMap: Record<string, string> = {
     ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  }[chainId];
+  };
+
+  const directMatch = imageMap[chainId];
+  if (directMatch) {
+    return directMatch;
+  }
+
+  if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
+    return imageMap[convertCaipToHexChainId(chainId)];
+  }
+
+  return undefined;
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected

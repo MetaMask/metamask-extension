@@ -33,13 +33,23 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false
+      "optedIn": false,
+      "consentDecisionMade": false,
+      "preConsentEventQueue": {
+        "00000000-0000-4000-8000-000000000000": {
+          "type": "track",
+          "eventName": "App Installed",
+          "messageId": "00000000-0000-4000-8000-000000000000",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "properties": {}
+        }
+      }
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 215,
+      "currentMigrationVersion": 221,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -63,13 +73,13 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -98,6 +108,7 @@
       "inputPrimaryDenomination": "token_amount"
     },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
@@ -129,6 +140,9 @@
         }
       },
       "currentCurrency": "usd"
+    },
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -193,15 +207,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "completedMetaMetricsOnboarding": false,
       "dataCollectionForMarketing": null,
-      "eventsBeforeMetricsOptIn": [
-        {
-          "category": "App",
-          "event": "App Installed",
-          "properties": {}
-        }
-      ],
       "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [
@@ -284,6 +290,18 @@
           "isEvm": false,
           "name": "Solana Devnet",
           "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
+        },
+        "stellar:pubnet": {
+          "chainId": "stellar:pubnet",
+          "isEvm": false,
+          "name": "Stellar",
+          "nativeCurrency": "stellar:pubnet/slip44:148"
+        },
+        "stellar:testnet": {
+          "chainId": "stellar:testnet",
+          "isEvm": false,
+          "name": "Stellar Testnet",
+          "nativeCurrency": "stellar:testnet/slip44:148"
         },
         "tron:2494104990": {
           "chainId": "tron:2494104990",
@@ -573,6 +591,10 @@
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
+        "stellar": {
+          "stellar:pubnet": false,
+          "stellar:testnet": false
+        },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
@@ -617,6 +639,7 @@
     "OnboardingController": {
       "completedOnboarding": false,
       "firstTimeFlowType": null,
+      "hasSeenOnboardingCompletionPage": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2028,7 +2051,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -2044,7 +2066,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2057,7 +2081,6 @@
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {},
-        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
@@ -2093,6 +2116,17 @@
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
       "syncQueue": {}
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2287,6 +2321,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 215
+    "version": 221
   }
 }

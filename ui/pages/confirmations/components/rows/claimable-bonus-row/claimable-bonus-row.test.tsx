@@ -13,33 +13,19 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { useIsTransactionPayLoading } from '../../../hooks/pay/useTransactionPayData';
 import { ClaimableBonusRow } from './claimable-bonus-row';
 
-jest.mock('../../../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const _trackEvent = jest.fn().mockResolvedValue(undefined);
-  const ctx = ReactActual.createContext({
-    trackEvent: _trackEvent,
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  ctx.Provider = (({ children }: { children: React.ReactNode }) =>
-    ReactActual.createElement(
-      ReactActual.Fragment,
-      null,
-      children,
-    )) as unknown as typeof ctx.Provider;
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext: ctx,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __mockTrackEvent: _trackEvent,
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
-const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __mockTrackEvent: jest.Mock;
-}>('../../../../../contexts/metametrics');
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 
@@ -141,7 +127,7 @@ describe('ClaimableBonusRow', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+        name: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
         properties: expect.objectContaining({
           location: 'percentage_row',
           url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,

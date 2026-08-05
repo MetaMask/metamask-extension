@@ -1,6 +1,6 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
@@ -62,6 +62,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
+import { useDispatch } from '../../../../../store/hooks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
@@ -81,7 +82,6 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
       width={BlockSize.Full}
-      onClick={() => handleAdditionalNetworkClick(network)}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
@@ -117,6 +117,7 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         padding={0}
         marginLeft={'auto'}
         ariaLabel={t('addNetwork')}
+        onClick={() => handleAdditionalNetworkClick(network)}
       />
     </Box>
   );

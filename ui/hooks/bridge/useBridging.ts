@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   FeatureId,
   formatChainIdToCaip,
@@ -26,6 +26,8 @@ import {
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
+
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -92,8 +94,6 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-          // TODO: Remove @ts-expect-error once @metamask/bridge-controller is
-          // updated to 75.2.0, which adds environment_type to the type.
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
         }),

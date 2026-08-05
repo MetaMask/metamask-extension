@@ -5,7 +5,8 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
-import { LedgerOffscreenHandler } from './ledger';
+import initLegacy, { LedgerLegacyHandler } from './ledger';
+import { serializeLedgerError } from './ledger-utils';
 
 // Mock functions - defined before jest.mock calls
 const mockTransportClose = jest.fn();
@@ -132,18 +133,9 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => {
 
 describe('Ledger Offscreen', () => {
   let mockAddEventListener: jest.Mock;
+  let mockRemoveEventListener: jest.Mock;
   let mockGetDevices: jest.Mock;
   let mockSendMessage: jest.Mock;
-  let mockAddListener: jest.Mock;
-  let capturedMessageListener: (
-    msg: {
-      target: string;
-      action: LedgerAction;
-      params?: Record<string, unknown>;
-    },
-    sender: unknown,
-    sendResponse: (response: unknown) => void,
-  ) => boolean;
   let capturedConnectListener: (event: { device: HIDDevice }) => void;
   let capturedDisconnectListener: (event: { device: HIDDevice }) => void;
 
@@ -169,12 +161,14 @@ describe('Ledger Offscreen', () => {
         capturedDisconnectListener = callback;
       }
     });
+    mockRemoveEventListener = jest.fn();
     mockGetDevices = jest.fn().mockResolvedValue([ledgerDevice]);
 
     Object.defineProperty(globalThis, 'navigator', {
       value: {
         hid: {
           addEventListener: mockAddEventListener,
+          removeEventListener: mockRemoveEventListener,
           getDevices: mockGetDevices,
         },
       },
@@ -184,17 +178,11 @@ describe('Ledger Offscreen', () => {
 
     // Set up chrome.runtime mock
     mockSendMessage = jest.fn();
-    mockAddListener = jest.fn((callback) => {
-      capturedMessageListener = callback;
-    });
 
     Object.defineProperty(globalThis, 'chrome', {
       value: {
         runtime: {
           sendMessage: mockSendMessage,
-          onMessage: {
-            addListener: mockAddListener,
-          },
         },
       },
       writable: true,
@@ -206,9 +194,16 @@ describe('Ledger Offscreen', () => {
     mockCreate.mockResolvedValue(mockTransport);
   });
 
+  afterEach(() => {
+    // handleAction now schedules a deferred idle close instead of closing
+    // immediately; clear any leaked timers so they don't fire in later tests.
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
   describe('init', () => {
-    it('sets up device and message listeners', async () => {
-      const handler = new LedgerOffscreenHandler();
+    it('sets up device listeners', async () => {
+      const handler = new LedgerLegacyHandler();
       await handler.init();
 
       expect(mockAddEventListener).toHaveBeenCalledWith(
@@ -219,11 +214,10 @@ describe('Ledger Offscreen', () => {
         'disconnect',
         expect.any(Function),
       );
-      expect(mockAddListener).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it('notifies extension when Ledger device is already connected', async () => {
-      const handler = new LedgerOffscreenHandler();
+      const handler = new LedgerLegacyHandler();
       await handler.init();
 
       expect(mockSendMessage).toHaveBeenCalledWith({
@@ -232,11 +226,93 @@ describe('Ledger Offscreen', () => {
         payload: true,
       });
     });
+
+    it('skips device listeners and checks when WebHID is unavailable', async () => {
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      Object.defineProperty(globalThis, 'navigator', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      const handler = new LedgerLegacyHandler();
+      await handler.init();
+
+      expect(mockAddEventListener).not.toHaveBeenCalled();
+      expect(mockGetDevices).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'WebHID not supported, skipping device event listeners',
+      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'WebHID not supported, Ledger functionality will be limited',
+      );
+      consoleWarnSpy.mockRestore();
+    });
+
+    it('logs an error when checking permitted devices fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockGetDevices.mockRejectedValue(new Error('HID permission denied'));
+
+      const handler = new LedgerLegacyHandler();
+      await handler.init();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error checking for permitted Ledger devices:',
+        expect.any(Error),
+      );
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('initLegacy', () => {
+    it('returns an uninitialised handler instance', () => {
+      const handler = initLegacy();
+
+      expect(handler).toBeInstanceOf(LedgerLegacyHandler);
+      expect(mockAddEventListener).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('destroy', () => {
+    it('removes HID listeners and closes transport', async () => {
+      const handler = new LedgerLegacyHandler();
+      await handler.init();
+      await handler.handleAction(LedgerAction.makeApp);
+
+      await handler.destroy();
+
+      expect(mockRemoveEventListener).toHaveBeenCalledWith(
+        'connect',
+        capturedConnectListener,
+      );
+      expect(mockRemoveEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        capturedDisconnectListener,
+      );
+      expect(mockTransportClose).toHaveBeenCalled();
+    });
+
+    it('closes transport even when listeners were never registered', async () => {
+      const handler = new LedgerLegacyHandler();
+      await handler.handleAction(LedgerAction.makeApp);
+
+      await handler.destroy();
+
+      expect(mockRemoveEventListener).not.toHaveBeenCalled();
+      expect(mockTransportClose).toHaveBeenCalled();
+    });
   });
 
   describe('device events', () => {
+    let handler: LedgerLegacyHandler;
+
     beforeEach(async () => {
-      const handler = new LedgerOffscreenHandler();
+      handler = new LedgerLegacyHandler();
       await handler.init();
       mockSendMessage.mockClear();
     });
@@ -261,6 +337,20 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    it('closes transport when Ledger device is unplugged', async () => {
+      // handleAction closes transport in its finally block, so seed an open
+      // transport to verify the disconnect listener cleans up stale state.
+      (handler as unknown as { transport: typeof mockTransport }).transport =
+        mockTransport;
+      mockTransportClose.mockClear();
+
+      capturedDisconnectListener({ device: ledgerDevice });
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(mockTransportClose).toHaveBeenCalled();
+    });
+
     it('ignores non-Ledger devices', () => {
       capturedConnectListener({ device: nonLedgerDevice });
       capturedDisconnectListener({ device: nonLedgerDevice });
@@ -270,40 +360,28 @@ describe('Ledger Offscreen', () => {
   });
 
   describe('message handling', () => {
+    let handler: LedgerLegacyHandler;
+
     beforeEach(async () => {
-      const handler = new LedgerOffscreenHandler();
+      handler = new LedgerLegacyHandler();
       await handler.init();
       mockSendMessage.mockClear();
     });
 
-    const sendAction = (
+    const sendAction = async (
       action: LedgerAction,
       params?: Record<string, unknown>,
     ): Promise<{ success: boolean; payload: unknown }> => {
-      return new Promise((resolve) => {
-        capturedMessageListener(
-          {
-            target: OffscreenCommunicationTarget.ledgerOffscreen,
-            action,
-            params,
-          },
-          {},
-          resolve as (response: unknown) => void,
-        );
-      });
+      try {
+        const result = await handler.handleAction(action, params);
+        return { success: true, payload: result };
+      } catch (error) {
+        return {
+          success: false,
+          payload: { error: serializeLedgerError(error) },
+        };
+      }
     };
-
-    it('ignores messages for other targets', () => {
-      const sendResponse = jest.fn();
-      const result = capturedMessageListener(
-        { target: 'other-target', action: LedgerAction.makeApp },
-        {},
-        sendResponse,
-      );
-
-      expect(result).toBe(false);
-      expect(sendResponse).not.toHaveBeenCalled();
-    });
 
     describe('makeApp', () => {
       it('creates transport and app', async () => {
@@ -329,6 +407,89 @@ describe('Ledger Offscreen', () => {
           }),
         });
         consoleSpy.mockRestore();
+      });
+
+      it('reuses an already-connected transport from openConnected without create()', async () => {
+        mockOpenConnected.mockResolvedValue(mockTransport);
+
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockOpenConnected).toHaveBeenCalled();
+        expect(mockCreate).not.toHaveBeenCalled();
+      });
+
+      it('reuses the open transport when getAppConfiguration still responds', async () => {
+        mockGetAppConfiguration.mockResolvedValue({ version: '1.0.0' });
+
+        await handler.handleAction(LedgerAction.makeApp);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        mockCreate.mockClear();
+        mockGetAppConfiguration.mockClear();
+
+        // Second makeApp finds an existing responsive app and skips reopening.
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockGetAppConfiguration).toHaveBeenCalled();
+        expect(mockCreate).not.toHaveBeenCalled();
+      });
+
+      it('reconnects when the existing app is no longer responsive', async () => {
+        mockGetAppConfiguration.mockResolvedValue({ version: '1.0.0' });
+        await handler.handleAction(LedgerAction.makeApp);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        mockCreate.mockClear();
+        mockTransportClose.mockClear();
+
+        // The device stopped responding: makeApp must close and reopen.
+        mockGetAppConfiguration.mockRejectedValueOnce(
+          new Error('disconnected'),
+        );
+        await handler.handleAction(LedgerAction.makeApp);
+
+        expect(mockTransportClose).toHaveBeenCalled();
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+      });
+
+      it('deduplicates concurrent makeApp calls (opens only one transport)', async () => {
+        mockOpenConnected.mockResolvedValue(null);
+        let resolveCreate!: () => void;
+        mockCreate.mockReturnValue(
+          new Promise((resolve) => {
+            resolveCreate = () => resolve(mockTransport);
+          }),
+        );
+
+        const a = handler.handleAction(LedgerAction.makeApp);
+        const b = handler.handleAction(LedgerAction.makeApp);
+
+        // Both calls share the single pendingMakeApp; only one create() in flight.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        resolveCreate();
+        await Promise.all([a, b]);
+
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('getAppNameAndVersion', () => {
+      it('parses the app name and version from the raw transport response', async () => {
+        const name = 'Ethereum';
+        const version = '1.2.3';
+        const response = Buffer.concat([
+          Buffer.from([0x00, name.length]),
+          Buffer.from(name, 'ascii'),
+          Buffer.from([version.length]),
+          Buffer.from(version, 'ascii'),
+        ]);
+        mockTransportSend.mockResolvedValue(response);
+
+        const responseObj = await sendAction(LedgerAction.getAppNameAndVersion);
+
+        expect(responseObj.success).toBe(true);
+        expect(responseObj.payload).toEqual({ appName: name, version });
+        expect(mockTransportSend).toHaveBeenCalledWith(0xb0, 0x01, 0x00, 0x00);
       });
     });
 
@@ -406,6 +567,44 @@ describe('Ledger Offscreen', () => {
 
         expect(response.success).toBe(true);
         expect(response.payload).toEqual(defaultSignature);
+      });
+
+      it('returns an error when hdPath is missing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          tx: '0x0',
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Missing hdPath or tx parameter',
+          }),
+        });
+        expect(mockClearSignTransaction).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+
+      it('returns an error when tx is missing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(LedgerAction.signTransaction, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Missing hdPath or tx parameter',
+          }),
+        });
+        expect(mockClearSignTransaction).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
       });
 
       it('calls clearSignTransaction with "erc20: true" for ERC20 approve selector', async () => {
@@ -623,7 +822,7 @@ describe('Ledger Offscreen', () => {
         expect(response.success).toBe(false);
         expect(response.payload).toEqual({
           error: expect.objectContaining({
-            message: 'CONDITIONS_OF_USE_NOT_SATISFIED',
+            message: 'User rejected action on device',
             statusCode: 0x6985,
           }),
         });
@@ -732,37 +931,133 @@ describe('Ledger Offscreen', () => {
     });
 
     describe('transport cleanup', () => {
-      const flushPromises = () =>
-        new Promise((resolve) => setTimeout(resolve, 0));
-
-      it('closes transport after a successful action', async () => {
+      it('keeps the transport open across consecutive actions and closes it after the idle timeout', async () => {
         mockGetAddress.mockResolvedValue({
           publicKey: '04abcd1234',
           address: '0x1234567890abcdef',
           chainCode: 'chaincode123',
         });
 
+        jest.useFakeTimers();
+
         await sendAction(LedgerAction.getPublicKey, {
           hdPath: "m/44'/60'/0'/0/0",
         });
-        await flushPromises();
+        // Transport opened once, not closed yet (idle timer pending).
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        expect(mockTransportClose).not.toHaveBeenCalled();
 
-        expect(mockTransportClose).toHaveBeenCalled();
+        // Second action within the idle window reuses the open transport.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+        expect(mockTransportClose).not.toHaveBeenCalled();
+
+        // After the idle timeout, the transport is finally closed.
+        jest.advanceTimersByTime(5_000);
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+
+        jest.useRealTimers();
       });
 
-      it('closes transport after a failed action', async () => {
+      it('closes transport after a failed action once idle', async () => {
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
         mockGetAddress.mockRejectedValue(new Error('Device error'));
 
+        jest.useFakeTimers();
+
         await sendAction(LedgerAction.getPublicKey, {
           hdPath: "m/44'/60'/0'/0/0",
         });
-        await flushPromises();
+        // The transport stays open immediately after the failure; only the idle
+        // timer is (re)scheduled.
+        expect(mockTransportClose).not.toHaveBeenCalled();
 
+        jest.advanceTimersByTime(5_000);
         expect(mockTransportClose).toHaveBeenCalled();
+
         consoleSpy.mockRestore();
+        jest.useRealTimers();
+      });
+
+      it('waits for an in-flight idle close to settle before opening a new transport', async () => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: '0x1234567890abcdef',
+          chainCode: 'chaincode123',
+        });
+
+        // Hold the idle close's `transport.close()` in flight so we can prove
+        // a new action waits for it instead of racing to open a new transport.
+        let resolveClose!: () => void;
+        mockTransportClose.mockReturnValue(
+          new Promise<void>((resolve) => {
+            resolveClose = resolve;
+          }),
+        );
+
+        jest.useFakeTimers();
+
+        // First action opens transport T1.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // Idle window elapses: T1.close() starts and stays pending.
+        jest.advanceTimersByTime(5_000);
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // A new action arrives while T1.close() is still pending. It must NOT
+        // reopen the transport until the close settles.
+        const secondAction = sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        // handleAction has run its synchronous preamble and is now suspended at
+        // `await closeInProgress`; the transport is not reopened yet.
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        // Let the close settle; the new action proceeds to open T2.
+        resolveClose();
+        await secondAction;
+        expect(mockCreate).toHaveBeenCalledTimes(2);
+
+        jest.useRealTimers();
+      });
+
+      it('forceReset drops the transport synchronously and fire-and-forgets the close', async () => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: '0x1234567890abcdef',
+          chainCode: 'chaincode123',
+        });
+
+        // Open a transport via an action.
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(1);
+
+        mockTransportClose.mockClear();
+        (handler as unknown as { forceReset: () => void }).forceReset();
+
+        // References are dropped synchronously; close is best-effort.
+        expect(
+          (handler as unknown as { transport: unknown }).transport,
+        ).toBeNull();
+        expect((handler as unknown as { ethApp: unknown }).ethApp).toBeNull();
+        expect(mockTransportClose).toHaveBeenCalledTimes(1);
+
+        // A subsequent action opens a fresh transport.
+        mockGetAddress.mockClear();
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/1'/0/0",
+        });
+        expect(mockCreate).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -781,11 +1076,10 @@ describe('Ledger Offscreen', () => {
 
         expect(response.success).toBe(false);
         expect(response.payload).toEqual({
-          error: {
-            message: 'Locked device',
-            name: 'Error',
+          error: expect.objectContaining({
+            message: 'Device locked',
             statusCode: 0x6b0c,
-          },
+          }),
         });
         consoleSpy.mockRestore();
       });
