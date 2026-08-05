@@ -46,10 +46,11 @@ export function getDefaultConnectChainIds({
   isSolanaWalletStandardRequest,
   isTronWalletAdapterRequest,
 }: GetDefaultConnectChainIdsParams): CaipChainId[] {
-  const allNetworksList = new Set([
-    ...nonTestNetworkConfigurations,
-    ...testNetworkConfigurations,
-  ].map(({ caipChainId }) => caipChainId));
+  const allNetworksList = new Set(
+    [...nonTestNetworkConfigurations, ...testNetworkConfigurations].map(
+      ({ caipChainId }) => caipChainId,
+    ),
+  );
 
   // If globally selected network is a test network, include that in the default
   // selected networks for connection request
