@@ -23,7 +23,11 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { getPerpsTransactionDestination } from '../../components/app/perps/utils/getPerpsTransactionDestination';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -139,7 +143,7 @@ const PerpsActivityPage = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   // Navigate to the transaction's details view. Orders/trades/funding open

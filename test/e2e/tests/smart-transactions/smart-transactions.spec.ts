@@ -12,6 +12,7 @@ import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -117,6 +118,7 @@ describe('Smart Transactions', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         const homePage = new HomePage(driver);
         const activityTab = new ActivityTab(driver);
+        const txToastNotification = new TxToastNotification(driver);
 
         await createInternalTransaction({
           driver,
@@ -127,6 +129,11 @@ describe('Smart Transactions', function () {
 
         await transactionConfirmation.selectTokenFee('USDC');
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+
+        // 2 toast notifications appear, one for the gas payment and one for the main transaction.
+        // The 2nd toast obfuscates the Activity tab, so we need to actively close one to be able to click on the Activity tab without error.
+        await txToastNotification.checkTxConfirmedToast();
+        await txToastNotification.closeToastNotification();
 
         await homePage.goToActivityList();
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);

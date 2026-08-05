@@ -1441,6 +1441,8 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
   [MultichainNetworks.TRON]: 'https://app.metamask.io/explore/networks/tron',
+  [MultichainNetworks.STELLAR]:
+    'https://app.metamask.io/explore/networks/stellar',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1576,6 +1578,9 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
   'arc-mainnet': () => process.env.QUICKNODE_ARC_URL,
   'robinhood-mainnet': () => process.env.QUICKNODE_ROBINHOOD_URL,
+  'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
+  'zksync-mainnet': () => process.env.QUICKNODE_ZKSYNC_URL,
+  'megaeth-mainnet': () => process.env.QUICKNODE_MEGAETH_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1641,7 +1646,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('bsc-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1686,7 +1691,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('zksync-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1761,7 +1766,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('megaeth-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],

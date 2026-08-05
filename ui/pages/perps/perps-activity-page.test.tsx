@@ -7,6 +7,8 @@ import {
   DEFAULT_ROUTE,
   PERPS_TRANSACTION_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -144,7 +146,7 @@ describe('PerpsActivityPage', () => {
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('redirects when perps experience is unavailable', () => {

@@ -1,0 +1,449 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [BRIDGE] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (NATIVE, eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": true,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:1). Sentinel supports RELAY, STX, SEND_BUNDLE and SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:10). Sentinel only supports SIMULATION_INCLUDE_FEES. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": false,
+  "gasIncluded7702": false,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:137). Sentinel only supports RELAY, STX. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX OFF, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge OFF  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;
+
+exports[` [SWAP] useGasIncludedSupport returns the correct gasless request params (eip155:143). Sentinel only supports RELAY. Client settings: STX ON, gasless7702Bridge ON  1`] = `
+{
+  "gasIncluded": true,
+  "gasIncluded7702": true,
+  "nativeGasIncluded": undefined,
+}
+`;

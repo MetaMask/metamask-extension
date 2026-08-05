@@ -8,6 +8,7 @@ import {
   willFlipPosition,
   formatOrderLabel,
   getOrderStatusI18nKey,
+  isOrderNoLongerOpenError,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -748,6 +749,32 @@ describe('orderUtils', () => {
 
     it('defaults to the "open" i18n key when status text is undefined', () => {
       expect(getOrderStatusI18nKey(undefined)).toBe('perpsStatusOpen');
+    });
+  });
+
+  describe('isOrderNoLongerOpenError', () => {
+    it('matches the provider rejection for an order that is already gone', () => {
+      const error = new Error(
+        'cancel 0: Order was never placed, already canceled, or filled. asset=4',
+      );
+
+      expect(isOrderNoLongerOpenError(error)).toBe(true);
+    });
+
+    it('matches the rejection when it arrives as a plain string', () => {
+      expect(
+        isOrderNoLongerOpenError(
+          'Order 0: Order was never placed, already canceled, or filled',
+        ),
+      ).toBe(true);
+    });
+
+    it('does not match an unrelated failure', () => {
+      expect(isOrderNoLongerOpenError(new Error('Network error'))).toBe(false);
+    });
+
+    it('does not match a missing error', () => {
+      expect(isOrderNoLongerOpenError(undefined)).toBe(false);
     });
   });
 });

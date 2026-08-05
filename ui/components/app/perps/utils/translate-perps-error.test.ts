@@ -2,6 +2,7 @@ import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import {
   ERROR_CODE_TO_I18N_KEY,
   API_ERROR_PATTERNS,
+  CANCEL_ORDER_I18N_KEY_OVERRIDES,
   translatePerpsError,
   handlePerpsError,
 } from './translate-perps-error';
@@ -277,6 +278,39 @@ describe('translatePerpsError', () => {
       code: PERPS_ERROR_CODES.BATCH_CANCEL_FAILED,
     });
     expect(translatePerpsError(error, mockT)).toBe('[perpsBatchCancelFailed]');
+  });
+
+  describe('with CANCEL_ORDER_I18N_KEY_OVERRIDES', () => {
+    it('remaps placement copy to cancel copy for a code lookup', () => {
+      const error = Object.assign(new Error('unknown coin'), {
+        code: PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+      });
+      expect(translatePerpsError(error, mockT)).toBe('[perpsOrderFailed]');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('remaps for a message-as-code lookup', () => {
+      const error = new Error('ORDER_UNKNOWN_COIN');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('remaps for a pattern match', () => {
+      const error = new Error('cancel 0: asset not found');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('leaves keys outside the override map alone', () => {
+      const error = new Error('network error');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsNetworkError]');
+    });
   });
 });
 
