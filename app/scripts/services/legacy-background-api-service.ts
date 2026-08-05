@@ -1688,7 +1688,7 @@ export class LegacyBackgroundApiService {
 
     updateTransaction(newTransactionMeta);
 
-    this.#messenger.call(
+    await this.#messenger.call(
       'TransactionController:updateEditableParams',
       transactionId,
       {

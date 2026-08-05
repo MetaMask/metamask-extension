@@ -3160,6 +3160,37 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('rejects if the transaction container update fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 2.5,
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [TRANSACTION_META_MOCK] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({ gas: ESTIMATE_GAS_MOCK }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          jest.fn().mockRejectedValue(new Error('Update failed')),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow('Update failed');
+      });
+    });
+
     it('increments the toggle count but does not persist a gas fallback when container estimation fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
