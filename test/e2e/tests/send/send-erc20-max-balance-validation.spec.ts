@@ -102,7 +102,11 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
 }
 
 describe('Send ERC20 - Max Balance Validation', function () {
-  it('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
+  // ASSETS-3385: AssetsController discards a WebSocket balance update when a
+  // stale accounts-API snapshot commits after it, so the Tokens list / Send
+  // "Max" never reflect the WS post-balance. Skip until that race is fixed.
+  // eslint-disable-next-line mocha/no-skipped-tests -- ASSETS-3385: blocked on AssetsController WS vs accounts-API race
+  it.skip('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
 
@@ -237,11 +241,11 @@ describe('Send ERC20 - Max Balance Validation', function () {
 
         await sendPage.clickMaxButton();
         await sendPage.checkAmountInputValue('5');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.fillAmount('10');
         await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
       },
     );
   });

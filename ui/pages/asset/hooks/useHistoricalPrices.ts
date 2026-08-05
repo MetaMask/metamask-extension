@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CaipChainId, Hex, parseCaipAssetType } from '@metamask/utils';
+import { getAssetId } from '@metamask/assets-controllers';
+import {
+  CaipChainId,
+  Hex,
+  isStrictHexString,
+  parseCaipAssetType,
+} from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
@@ -119,19 +125,30 @@ function getV3HistoricalPricesCaipParams(
   chainId: Hex | CaipChainId,
   address: string,
 ): { caipChainId: CaipChainId; assetType: string } | null {
-  const caipAssetType = toAssetId(address, chainId);
-  if (!caipAssetType) {
+  try {
+    // getAssetId re-uses the assets-controllers v3 spot-prices logic and apply on V3 historical-prices
+    const caipAssetType = isStrictHexString(chainId)
+      ? (getAssetId({
+          chainId,
+          tokenAddress: address,
+        }) ?? toAssetId(address, chainId))
+      : toAssetId(address, chainId);
+
+    if (!caipAssetType) {
+      return null;
+    }
+    const {
+      chainId: caipChainId,
+      assetNamespace,
+      assetReference,
+    } = parseCaipAssetType(caipAssetType);
+    return {
+      caipChainId,
+      assetType: `${assetNamespace}:${assetReference}`,
+    };
+  } catch {
     return null;
   }
-  const {
-    chainId: caipChainId,
-    assetNamespace,
-    assetReference,
-  } = parseCaipAssetType(caipAssetType);
-  return {
-    caipChainId,
-    assetType: `${assetNamespace}:${assetReference}`,
-  };
 }
 
 /**

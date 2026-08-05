@@ -376,22 +376,11 @@
     "message": "Na-convert sa $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": "Nabigo ang pagdeposito"
-  },
   "activity_deposit_failed_title": {
     "message": "Nabigo ang pagdeposito"
   },
-  "activity_deposit_pending_description": {
-    "message": "Nagdedeposito ng $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_deposit_pending_title": {
     "message": "Nagdedeposito ng $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": "Naideposito ang $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_title": {
@@ -1002,12 +991,10 @@
     "message": "Nabigo ang pag-swap"
   },
   "activity_swap_pending_title": {
-    "message": "Nagsu-swap ng $1 para sa $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Nagsu-swap"
   },
   "activity_swap_success_title": {
-    "message": "Nai-swap ang $1 para sa $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Nai-swap"
   },
   "activity_unwrap_failed_description": {
     "message": "Nabigo ang pag-unwrap"
@@ -1178,6 +1165,27 @@
   "addWallet": {
     "message": "Magdagdag ng wallet"
   },
+  "add_device_error_connection": {
+    "message": "Hindi namin mapanatili ang maayos na koneksyon sa iyong telepono. Suriin ang iyong koneksyon sa internet at subukan muli."
+  },
+  "add_device_error_expired": {
+    "message": "Nag-expire ang sync session na ito. Magsimula muli para makalikha ng bagong QR code."
+  },
+  "add_device_error_generic": {
+    "message": "Nagkaproblema habang sini-sync sa iyong telepono. Pakisubukan muli."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Mali ang verification code. Magsimula muli para subukang i-sync ang iyong telepono."
+  },
+  "add_device_error_rejected": {
+    "message": "Kinansela ang sync sa iyong telepono. Simulan muli para subukang i-sync."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Hindi namin matapos ang pag-sync ng iyong mga account sa iyong telepono. Pakisubukan muli."
+  },
+  "add_device_error_title": {
+    "message": "Hindi makumpleto ang pag-sync"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "Naka-sync ang $1 imported account sa telepono mo.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1239,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Nakikipag-ugnayan ka sa hindi kilalang address. Nakakatulong ito na maiwasan ang mga mapaminsalang transaksyon."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "May kasamang $1 para sa karagdagang proteksyon",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Opsyonal"
@@ -1632,8 +1644,24 @@
     "message": "I-activate ang $1 sa $2 para magsimula.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Nagkaproblema habang idinaragdag ang trustline na ito. Subukan ulit.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Hindi ako makakuha ng anumang dating data"
+  },
+  "assetDeactivate": {
+    "message": "Alisin",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Nagkaproblema habang tinatanggal ang trustline na ito. Subukan ulit.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "May $1 $2 ka pa sa wallet na ito. Dapat mong ipadala o i-swap ang lahat ng ito bago i-deactivate ang asset na ito sa Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Hindi aktibo",
@@ -1998,12 +2026,6 @@
   "bridgeApproval": {
     "message": "Aprubahan ang $1 para sa bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "Pinahihintulutan mo ang access sa $1 $2. Hindi gagamitin ng kontrata ang anumang karagdagang pondo."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $3. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nakopya ang link ng block explorer"
@@ -2453,9 +2475,6 @@
   },
   "clear": {
     "message": "I-clear"
-  },
-  "clearActivity": {
-    "message": "I-clear ang aktibidad at datos ng nonce"
   },
   "clearActivityDescription": {
     "message": "Nire-reset ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
@@ -3239,6 +3258,9 @@
   "deepLink_theSwapsPage": {
     "message": "ang pahina ng mga swap"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "ang page ng Follow Trading"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "ang page ng transaction shield"
   },
@@ -3412,6 +3434,18 @@
   },
   "discover": {
     "message": "Tuklasin"
+  },
+  "discoverSearchNoResults": {
+    "message": "Walang nahanap na mga resulta",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Tumingin ng iba pang popular na asset",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Diskubrehin ang mga Snap",
@@ -3689,6 +3723,9 @@
   "enter_verification_code_expires_in": {
     "message": "Mai-expire pagkalipas ng $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Masyado ng maraming maling pagtatangka. Magsimula gamit ang bagong QR code."
   },
   "enter_your_password": {
     "message": "Ilagay ang password mo"
@@ -4165,9 +4202,6 @@
   "gotIt": {
     "message": "Nakuha ko"
   },
-  "grantExactAccess": {
-    "message": "Payagan ang eksaktong access"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -4232,6 +4266,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Nakakonekta ang wallet na hardware"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Masyadong natatagalan ang device sa pagtugon o nag-time out ang koneksyon. Tiyaking nakakonekta ang iyong device at naka-unlock, pagkatapos ay subukan muli."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Magpatuloy"
@@ -5656,6 +5693,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Hindi suportado ng account na ito."
+  },
   "networkOptions": {
     "message": "Mga pagpipilian na network"
   },
@@ -5700,9 +5740,6 @@
   },
   "networksSmallCase": {
     "message": "mga network"
-  },
-  "nevermind": {
-    "message": "Huwag na"
   },
   "new": {
     "message": "Bago!"
@@ -6922,6 +6959,12 @@
   "perpsCloseAmount": {
     "message": "Isara ang halaga"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Hindi maaaring malayo ng higit sa 95% ang presyo sa market price"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Ilagay ang wastong limit price para mapagpatuloy."
+  },
   "perpsCloseLong": {
     "message": "Isara ang long"
   },
@@ -6930,6 +6973,9 @@
   },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Hindi available ang kasalukuyang presyo. Subukan muli sa ilang sandali."
   },
   "perpsCloseShort": {
     "message": "Isara ang short"
@@ -6961,6 +7007,10 @@
   "perpsDateYesterday": {
     "message": "Kahapon"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Magdeposito",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Nabigo ang pag-bridge"
   },
@@ -6990,6 +7040,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Napondohan ang iyong Perps account"
+  },
+  "perpsDepositedVerb": {
+    "message": "Naideposito",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Mga deposito"
@@ -7210,6 +7264,42 @@
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
   },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookApply": {
+    "message": "Ilapat"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Nawala ang koneksyon sa order book"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Grupo ayon sa"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Nakalista ayon sa"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Nilo-load ang order book"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Presyo"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Kumonekta muli"
+  },
+  "perpsOrderBookSize": {
+    "message": "Laki"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Kabuuan"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Uri ng halaga"
+  },
   "perpsOrderDate": {
     "message": "Petsa"
   },
@@ -7385,11 +7475,17 @@
   "perpsStatusCompleted": {
     "message": "Nakumpleto"
   },
+  "perpsStatusFailed": {
+    "message": "Pumalya"
+  },
   "perpsStatusFilled": {
     "message": "Na-fill"
   },
   "perpsStatusOpen": {
     "message": "Bukas"
+  },
+  "perpsStatusPending": {
+    "message": "Nakabinbin"
   },
   "perpsStatusQueued": {
     "message": "Naka-queue"
@@ -7460,6 +7556,10 @@
     "message": "Ang iyong PnL ay $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Nabigong ilagay ang close order",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Nagdagdag ng $1 na margin sa $2 na posisyon",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7507,6 +7607,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Bahagyang naisara ang posisyon",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Nabigong ilagay ang partial close order",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Aktibo pa rin ang iyong posisyon",
@@ -7613,6 +7717,9 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Ang market na ito ay gumagamit ng di suportadong kolateral at hindi maaaring i-trade."
+  },
   "perpsWatchlist": {
     "message": "Watchlist"
   },
@@ -7692,6 +7799,14 @@
   "perpsWithdrawTooltip": {
     "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Pag-withdraw",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Na-withdraw",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Nakatanggap ka ng"
@@ -7822,149 +7937,6 @@
   "publicAddress": {
     "message": "Pampublikong address"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Bukas na ang long position mo na $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Bukas na ang short position mo na $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Na-fill ang limit order"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Isinara na ang iyong long position sa $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Isinara na ang iyong short position sa $1.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Na-liquidate ang posisyon"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Nagawa na ang claim mo"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Nagawa ang claim"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Na-update na ang claim mo"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Na-update ang claim"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Matuto pa"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Aktibo na ngayon ang plan mo."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Inihinto ang plan mo dahil sa hindi pagbabayad."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "Transaction Shield ng MetaMask"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "I-update ang paraan ng pagbabayad"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Nag-long close ang iyong $1 sa itinakda mong stop loss.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Nag-short close ang iyong $1 sa itinakda mong stop loss.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Na-trigger ang stop loss"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Nag-long close ang iyong $1 sa itinakda mong take profit.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Nag-short close ang iyong $1 sa itinakda mong take profit.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Na-trigger ang take profit"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Nakatanggap ka ng $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Nakatanggap ka ng ilang token"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Natanggap ang pondo"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Matagumpay kang nakapagpadala ng $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Matagumpay mong naipadala ang ilang token"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Naipadala ang pondo"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Nakatanggap ka ng mga bagong NFT"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Natanggap ang NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Matagumpay mong naipadala ang NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Naipadala ang NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Matagumpay ang pag-stake mo sa Lido"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-stake"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Ang stake mo sa Lido ay handa ng i-withdraw ngayon"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Handa nang i-withdraw ang stake"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Matagumpay ang pag-withdraw mo sa Lido"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Nakumpleto ang pag-withdraw"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Naisumite ang hiling mo na pag-withdraw sa Lido."
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Hiniling ang pag-withdraw"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Matagumpay ang pag-stake mo sa RocketPool"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-stake"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Matagumpay ang pag-unstake mo sa RocketPool"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Nakumpleto ang pag-unstake"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Matagumpay ang Pag-swap mo sa MetaMask"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Nakumpleto ang pag-swap"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8073,8 +8045,131 @@
   "quotedTotalCost": {
     "message": "Kabuuang halaga: $1"
   },
+  "rampsBestRate": {
+    "message": "Pinakasulit na rate"
+  },
+  "rampsBuyToken": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Hindi makapagsimula sa iyong pagbili. Pakisubukan muli."
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Bumibili sa pamamagitan ng $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Magpalit ng provider."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Pakisubukan muli, o kontakin ang support kung patuloy itong mangyayari."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Hindi namin ma-verify ang rehiyon mo"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Error ang pag-load sa mga paraan ng pagbabayad"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Error ang pag-load sa mga token"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Ang pinakamataas na pagbili ay $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Ang pinakamababang pagbili ay $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Pinakamaasahan"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Walang available na mga paraan ng pagbabayad."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Wala available na mga provider."
+  },
   "rampsNoTokensAvailable": {
     "message": "Walang available na token"
+  },
+  "rampsOnNetwork": {
+    "message": "sa $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Iba pang opsyon"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "business day"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "na business day"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "oras"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "(na) oras"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instant"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Mas mababa sa"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "na min"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Pinakamataas $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Pinakamababa $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Dating ginamit"
+  },
+  "rampsProviders": {
+    "message": "Mga Provider"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Nabigong kunin ang quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Hindi available ang quote."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Mga quote na ipinapakita para sa $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Pumili ng paraan ng pagbabayad"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Nakakaranas kami ng pagkaantala sa serbisyo. Pakisubukan muli mamaya."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Pansamantalang hindi available ang Pagbili"
+  },
+  "rampsShowAllTokens": {
+    "message": "Ipakita ang lahat ng token"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Hindi pa suportado sa iyong rehiyon ang pagbili ng crypto."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Hindi available dito ang pagbili"
   },
   "rank": {
     "message": "Rank"
@@ -8707,6 +8802,300 @@
   },
   "securitySrpLabel": {
     "message": "MGA LIHIM NA PARIRALA SA PAGBAWI"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Buwis sa Pagbili/Pagbebenta"
+  },
+  "securityTrustBuyTax": {
+    "message": "Buwis sa pagbili"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Magpatuloy pa rin"
+  },
+  "securityTrustCreated": {
+    "message": "Ginawa"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Hindi available ang data ng seguridad"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Ang pagsusuri sa seguridad na ito ay para sa ebalwasyon lamang at hindi nangangahulugan ng pag-eendorso o rekomendasyon na mag-trade."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Kahina-hinalang airdrop"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Puwedeng mag-blacklist"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Puwedeng mag-whitelist"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Concentrated supply"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Mga kumpidensyal na transfer"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Kahina-hinalang gawi"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Mga tawag sa labas"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Na-inflate na bilang ng trader"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Pekeng dami"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Cooldown sa pag-trade"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Matinding aktibidad ng bot"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Nakatagong may-ari"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Hindi inihayag na supply"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Mataas na bayad sa pagbili"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Magandang reputasyon"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Mataas na bayad sa pagbebenta"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Mataas na dami ng pag-trade"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Mataas na bayad sa transfer"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Panganib ng honeypot"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Nagpapanggap na ibang tao"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Malamang na nagpapanggap na ibang tao"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Hindi nakumpirmang impersonator"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Posibleng nangpapanggap na ibang tao"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Nagpapanggap na isang sensitibong asset"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Hindi naangkop na content"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Artipisyal na dami"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Mababang naka-lock na liquidity"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Nami-mint"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Kilalang mapaminsala"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Nakalista sa palitan"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Hindi maganda ang reputasyon ng creator"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Kahina-hinalang metadata"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Mga nababagong buwis"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Hindi nata-transfer"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Puwede palitan ng may-ari ang balanse"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Posibleng pagmamanipula ng presyo"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Proxy na kontrata"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Panganib ng rugpull"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Pinarusahang creator"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Mukhang mapaminsalang kontrata"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Paglulunsad ng aktibidad ng bot"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Spam text"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Kahina-hinalang code"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Backdoor ng token"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Na-enable ang mga pagbabalik ng transfer"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Na-enable ang pag-hook ng transfer"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Puwedeng ihinto ang mga transfer"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Hindi maibentang token"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Pabago-bagong presyo"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Naka-publish na kontrata"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash na pag-trade"
+  },
+  "securityTrustMalicious": {
+    "message": "Mapaminsala"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Mapaminsala"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "Na-flag na mapaminsala ang $1. Malamang na magnakaw ito ng pondo mula sa sinumang gagamit nito."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Na-flag na mapaminsala ang token na ito. Malamang na magnakaw ito ng pondo mula sa sinumang gagamit nito."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Natuklasan ang mga senyales ng malubhang panganib sa $1. Inirerekomenda namin na huwag i-trade ang token na ito."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Natuklasan ang mga senyales ng malubhang panganib sa token na ito. Inirerekomenda namin na huwag i-trade ang token na ito."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Mapanganib na token"
+  },
+  "securityTrustMore": {
+    "message": "iba pa"
+  },
+  "securityTrustNa": {
+    "message": "N/A"
+  },
+  "securityTrustNetwork": {
+    "message": "Network:"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Walang natuklasang mga nakatagong bayarin"
+  },
+  "securityTrustNoIssues": {
+    "message": "Walang mga isyu"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Mga Opisyal na Link"
+  },
+  "securityTrustOther": {
+    "message": "Iba pa"
+  },
+  "securityTrustRisky": {
+    "message": "Mapanganib"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "Na-flag na kahina-hinala ang $1. Alamin ang mga panganib bago magpatuloy."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Na-flag na mapaminsala ang token na ito. Tingnan ang mga panganib bago ka magpatuloy."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Kahina-hinalang token"
+  },
+  "securityTrustSellTax": {
+    "message": "Buwis sa pagbebenta"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Walang natuklasang mga senyales ng panganib. Laging saliksikin ang anumang asset bago mag-trade."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Natuklasan ang mga senyales ng malubhang panganib. Inirerekomenda namin na iwasan ang asset na ito."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Walang natuklasang mga senyales ng panganib. Laging saliksikin ang anumang asset bago mag-trade."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Natuklasan ang mga senyales ng pag-iingat sa. Maingat na suriin ang mga nai-flag na isyu bago i-trade ang asset na ito."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Hindi mai-load ang pagsusuri sa seguridad para sa token na ito."
+  },
+  "securityTrustSuspicious": {
+    "message": "Kahina-hinala"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "Ang $1 ay isang kahina-hinalang token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Ito ay isang kahina-hinalang token."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Seguridad at tiwala"
+  },
+  "securityTrustTokenAge": {
+    "message": "Tagal ng token"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Pamamahagi ng token"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Impormasyon ng Token"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Nangungunang 10 na holder"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Kabuuang supply"
+  },
+  "securityTrustTransfer": {
+    "message": "Maglipat"
+  },
+  "securityTrustType": {
+    "message": "Uri"
+  },
+  "securityTrustVerified": {
+    "message": "Na-verify"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "Ang $1 ay aktibong tini-trade at malawakang kinikilala. Ang verification ay hindi pag-eendorso ng MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Na-verify na token"
+  },
+  "securityTrustWebsite": {
+    "message": "Website"
   },
   "seeAllPermissions": {
     "message": "Tingnan ang lahat ng pahintulot",
@@ -10166,18 +10555,6 @@
   "statusNotConnected": {
     "message": "Hindi konektado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Nagkaproblema habang idinaragdag ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Nagkaproblema habang tinatanggal ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "May $1 $2 ka pa sa wallet na ito. Dapat mong ipadala o i-swap ang lahat ng ito bago i-deactivate ang asset na ito sa Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10687,6 +11064,9 @@
   "tokenDecimal": {
     "message": "Decimal na token"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Ilagay ang buong numero sa pagitan ng 0 at 36."
+  },
   "tokenDetails": {
     "message": "Mga detalye ng token"
   },
@@ -10934,9 +11314,6 @@
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
   },
-  "tutorial": {
-    "message": "Pagtuturo"
-  },
   "txAlertTitle": {
     "message": "Ibabalik ang transaksyong ito"
   },
@@ -11145,6 +11522,10 @@
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "Tingnan lahat",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"
   },
@@ -11260,12 +11641,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprubahan ang token para sa bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprubahan ang token para sa swap."
   },
   "withdrawTo": {
     "message": "Tumanggap",

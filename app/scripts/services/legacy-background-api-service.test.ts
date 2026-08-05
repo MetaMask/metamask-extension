@@ -8,6 +8,9 @@ import {
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { AccountImportStrategy } from '@metamask/keyring-controller';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -19,6 +22,11 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  BtcAccountType,
+  SolAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
@@ -27,7 +35,9 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
@@ -38,15 +48,36 @@ import { DecodedTransactionDataSource } from '../../../shared/types/transaction-
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
 import {
+  HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
+const mockToHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
+
+jest.mock('../../../shared/lib/hardware-wallets', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
+  toHardwareWalletError: (...args: unknown[]) =>
+    mockToHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
+
 jest.mock('../lib/transaction/containers/enforced-simulations');
+
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
+}));
+
+const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
   ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
@@ -60,7 +91,13 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -311,7 +348,10 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:getAssets',
           accounts,
-          { ...options, forceUpdate: true },
+          {
+            ...options,
+            forceUpdate: true,
+          },
         );
       });
     });
@@ -421,6 +461,51 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('requestSafeReload', () => {
+    it('triggers a safe reload of the extension', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:requestSafeReload',
+          );
+
+          expect(mockRequestSafeReload).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('openUpdateTabAndReload', () => {
+    it('opens the update tab and reloads with the injected requestSafeReload', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+      jest.mocked(openUpdateTabAndReload).mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:openUpdateTabAndReload',
+          );
+
+          expect(openUpdateTabAndReload).toHaveBeenCalledWith(
+            mockRequestSafeReload,
+          );
+        },
+      );
+    });
+  });
+
   describe('getPhishingResult', () => {
     it('updates the phishing state and returns the test result for the website', async () => {
       const website = 'https://example.com';
@@ -447,6 +532,30 @@ describe('LegacyBackgroundApiService', () => {
         expect(mockTestOrigin).toHaveBeenCalledWith(website);
         expect(result).toBe(phishingResult);
       });
+    });
+  });
+
+  describe('markNotificationPopupAsAutomaticallyClosed', () => {
+    it('marks the notification popup as automatically closed', async () => {
+      const mockMarkNotificationPopupAsAutomaticallyClosed = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markNotificationPopupAsAutomaticallyClosed:
+              mockMarkNotificationPopupAsAutomaticallyClosed,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+          );
+
+          expect(
+            mockMarkNotificationPopupAsAutomaticallyClosed,
+          ).toHaveBeenCalled();
+        },
+      );
     });
   });
 
@@ -534,6 +643,1077 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).resolves.toStrictEqual('0x123');
+      });
+    });
+  });
+
+  describe('hardware wallets', () => {
+    /**
+     * Registers a `KeyringController:withKeyringV2` handler that invokes its
+     * callback with the given mocked keyring, so tests can exercise the
+     * hardware methods that route through `#withKeyringForDevice`.
+     *
+     * @param rootMessenger - The root messenger to register the handler on.
+     * @param keyring - The mocked keyring to pass to the callback.
+     */
+    function registerWithKeyringV2(
+      rootMessenger: RootMessenger,
+      keyring: Record<string, unknown>,
+    ): void {
+      // Read methods run their callback through `withKeyringV2Unsafe` (the
+      // lock-free device-read path) while still preparing the keyring under
+      // `withKeyringV2`; mutating methods (`forgetDevice`,
+      // `unlockHardwareWalletAccount`) use `withKeyringV2` only. Registering
+      // both with the same mock keyring covers every path.
+      const handler = jest
+        .fn()
+        .mockImplementation((_selector, callback) => callback({ keyring }));
+      rootMessenger.registerActionHandler(
+        'KeyringController:withKeyringV2',
+        handler,
+      );
+      rootMessenger.registerActionHandler(
+        'KeyringController:withKeyringV2Unsafe',
+        handler,
+      );
+    }
+
+    describe('connectHardware', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'Some random device name',
+              0,
+              `m/44/0'/0'`,
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('adds the Ledger keyring if missing and returns the first page of accounts', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x1', balance: null, index: 0 }]);
+          const bridge = { updateTransportMethod: jest.fn() };
+          const addNewKeyring = jest.fn();
+
+          const withController = jest
+            .fn()
+            .mockImplementation(async (callback) =>
+              callback({ keyrings: [], addNewKeyring }),
+            );
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            withController,
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge,
+            getFirstPage,
+            getPreviousPage: jest.fn(),
+            getNextPage: jest.fn(),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'ledger',
+            0,
+          );
+
+          expect(withController).toHaveBeenCalled();
+          // The keyring does not exist yet, so it is created.
+          expect(addNewKeyring).toHaveBeenCalledWith(LedgerKeyring.type);
+          expect(getFirstPage).toHaveBeenCalled();
+          expect(result).toStrictEqual([
+            { address: '0x1', balance: null, index: 0 },
+          ]);
+        });
+      });
+
+      it('adds the Trezor keyring if missing and returns the first page of accounts', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x2', balance: null, index: 0 }]);
+          const addNewKeyring = jest.fn();
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            getModel: jest.fn().mockReturnValue('model-t'),
+            getFirstPage,
+            getPreviousPage: jest.fn(),
+            getNextPage: jest.fn(),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'trezor',
+            0,
+          );
+
+          expect(addNewKeyring).toHaveBeenCalledWith(TrezorKeyring.type);
+          expect(result).toStrictEqual([
+            { address: '0x2', balance: null, index: 0 },
+          ]);
+        });
+      });
+
+      it('returns the next / previous page based on the page argument', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getNextPage = jest.fn().mockResolvedValue([{ index: 1 }]);
+          const getPreviousPage = jest.fn().mockResolvedValue([{ index: -1 }]);
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring: jest.fn() }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getFirstPage: jest.fn(),
+            getNextPage,
+            getPreviousPage,
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              1,
+            ),
+          ).resolves.toStrictEqual([{ index: 1 }]);
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              'ledger',
+              -1,
+            ),
+          ).resolves.toStrictEqual([{ index: -1 }]);
+        });
+      });
+    });
+
+    describe('#setLedgerTransportPreference (via connectHardware)', () => {
+      /**
+       * Runs a ledger `connectHardware` with the given bridge, which routes
+       * through `#setLedgerTransportPreference`.
+       *
+       * @param rootMessenger - The root messenger to register handlers on.
+       * @param bridge - The mocked keyring bridge.
+       */
+      async function connectLedgerWithBridge(
+        rootMessenger: RootMessenger,
+        bridge: Record<string, unknown>,
+      ): Promise<void> {
+        rootMessenger.registerActionHandler(
+          'KeyringController:withController',
+          jest
+            .fn()
+            .mockImplementation(async (callback) =>
+              callback({ keyrings: [], addNewKeyring: jest.fn() }),
+            ),
+        );
+        registerWithKeyringV2(rootMessenger, {
+          bridge,
+          getFirstPage: jest.fn().mockResolvedValue([]),
+          getNextPage: jest.fn(),
+          getPreviousPage: jest.fn(),
+        });
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:connectHardware',
+          'ledger',
+          0,
+        );
+      }
+
+      it('calls the bridge transport update when available', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+
+          await connectLedgerWithBridge(rootMessenger, {
+            updateTransportMethod,
+          });
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      it('does nothing when the bridge does not expose transport updates', async () => {
+        await withService(async ({ rootMessenger }) => {
+          // A bridge without `updateTransportMethod`; connectHardware should
+          // still resolve.
+          await expect(
+            connectLedgerWithBridge(rootMessenger, {}),
+          ).resolves.toBeUndefined();
+        });
+      });
+
+      it('rethrows errors from the bridge transport update', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const error = new Error('transport failed');
+
+          await expect(
+            connectLedgerWithBridge(rootMessenger, {
+              updateTransportMethod: jest.fn().mockRejectedValue(error),
+            }),
+          ).rejects.toThrow(error);
+        });
+      });
+
+      it('times out an abandoned device read when the device wedges', async () => {
+        await withService(async ({ rootMessenger }) => {
+          // A wedged device leaves the page read pending forever.
+          const getFirstPage = jest
+            .fn()
+            .mockReturnValue(new Promise(() => undefined));
+          const addNewKeyring = jest.fn();
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getFirstPage,
+          });
+
+          // Intercept the device-read backstop timer so it can be fired
+          // deterministically without faking every timer in the app.
+          const originalSetTimeout = global.setTimeout;
+          let fireDeviceReadTimeout: (() => void) | undefined;
+          const setTimeoutSpy = jest
+            .spyOn(global, 'setTimeout')
+            .mockImplementation(((
+              handler: () => void,
+              timeout?: number,
+              ...args: unknown[]
+            ) => {
+              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
+                fireDeviceReadTimeout = handler;
+                return 0 as unknown as ReturnType<typeof setTimeout>;
+              }
+              return originalSetTimeout(handler, timeout, ...args);
+            }) as typeof setTimeout);
+
+          try {
+            const wedged = rootMessenger.call(
+              'LegacyBackgroundApiService:connectHardware',
+              HardwareDeviceNames.ledger,
+              0,
+              `m/44'/60'/0'/0`,
+            );
+            // Swallow the timeout rejection asserted below so the abandoned
+            // read never surfaces as an unhandled rejection.
+            wedged.catch(() => undefined);
+
+            // Wait until `connectHardware` reaches the (hanging) device read.
+            await new Promise<void>((resolve) => {
+              const poll = () =>
+                getFirstPage.mock.calls.length > 0
+                  ? resolve()
+                  : originalSetTimeout(poll, 5);
+              poll();
+            });
+
+            fireDeviceReadTimeout?.();
+            await expect(wedged).rejects.toThrow(
+              'Hardware wallet device read timed out',
+            );
+          } finally {
+            setTimeoutSpy.mockRestore();
+          }
+        });
+      });
+    });
+
+    describe('checkHardwareStatus', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:checkHardwareStatus',
+              'Some random device name',
+              `m/44/0'/0'`,
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('returns the unlocked status of the device', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const setHdPath = jest.fn();
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            isUnlocked: jest.fn().mockReturnValue(true),
+            setHdPath,
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:checkHardwareStatus',
+            'ledger',
+            "m/44'/60'/0'/0",
+          );
+
+          expect(result).toStrictEqual(true);
+          expect(setHdPath).toHaveBeenCalledWith("m/44'/60'/0'/0");
+        });
+      });
+
+      it('creates the QR keyring before probing reconnect status', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
+          // QR keyrings report pairing via `getMode()`, not `isUnlocked()`
+          // (which they do not implement).
+          const getMode = jest.fn().mockReturnValue('hd');
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, { getMode });
+
+          const status = await rootMessenger.call(
+            'LegacyBackgroundApiService:checkHardwareStatus',
+            HardwareDeviceNames.qr,
+            `m/44'/60'/0'/0`,
+          );
+
+          expect(status).toStrictEqual(true);
+          expect(addNewKeyring).toHaveBeenCalledWith(QrKeyring.type);
+          expect(getMode).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      it('returns false when the QR keyring is unpaired', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
+          // An unpaired QR keyring has no mode set, so `getMode()` is
+          // `undefined` and the reconnect status is `false`.
+          const getMode = jest.fn().mockReturnValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+
+          registerWithKeyringV2(rootMessenger, { getMode });
+
+          const status = await rootMessenger.call(
+            'LegacyBackgroundApiService:checkHardwareStatus',
+            HardwareDeviceNames.qr,
+            `m/44'/60'/0'/0`,
+          );
+
+          expect(status).toStrictEqual(false);
+          expect(getMode).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe('getLedgerAppConfiguration', () => {
+      it('returns the app configuration from the Ledger bridge', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const mockConfiguration = {
+            arbitraryDataEnabled: 1,
+            erc20ProvisioningNecessary: 0,
+            starkEnabled: 0,
+            starkv2Supported: 0,
+            version: '1.0.0',
+          };
+
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+          const getAppConfiguration = jest
+            .fn()
+            .mockResolvedValue(mockConfiguration);
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod, getAppConfiguration },
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getLedgerAppConfiguration',
+          );
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+          expect(getAppConfiguration).toHaveBeenCalledTimes(1);
+          expect(result).toStrictEqual(mockConfiguration);
+        });
+      });
+    });
+
+    describe('getLedgerMode', () => {
+      it('returns Legacy when the ledgerDmk flag is missing', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {},
+              cacheTimestamp: 0,
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns Legacy when ledgerDmk is disabled', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {
+                ledgerDmk: {
+                  enabled: false,
+                  featureVersion: null,
+                  minimumVersion: null,
+                },
+              },
+              cacheTimestamp: 0,
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns DMK when ledgerDmk is enabled', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {
+                ledgerDmk: {
+                  enabled: true,
+                  featureVersion: '13.36.0',
+                  minimumVersion: '13.36.0',
+                },
+              },
+              cacheTimestamp: 0,
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('dmk');
+        });
+      });
+
+      it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            // Incomplete state on purpose to exercise the fallback path.
+            () => ({}) as never,
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns DMK when a manifest override enables ledgerDmk', async () => {
+        mockGetManifestFlags.mockReturnValue({
+          remoteFeatureFlags: {
+            ledgerDmk: {
+              enabled: true,
+              featureVersion: '13.36.0',
+              minimumVersion: '13.36.0',
+            },
+          },
+        });
+
+        try {
+          await withService(async ({ rootMessenger }) => {
+            rootMessenger.registerActionHandler(
+              'RemoteFeatureFlagController:getState',
+              () => ({
+                remoteFeatureFlags: {},
+                cacheTimestamp: 0,
+              }),
+            );
+
+            expect(
+              rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+            ).toBe('dmk');
+          });
+        } finally {
+          mockGetManifestFlags.mockReturnValue({});
+        }
+      });
+    });
+
+    describe('forgetDevice', () => {
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:forgetDevice',
+              'Some random device name',
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('removes each account then forgets the device', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          const forgetDevice = jest.fn().mockResolvedValue(undefined);
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getAccounts: jest
+              .fn()
+              .mockResolvedValue([{ address: '0xabc' }, { address: '0xdef' }]),
+            forgetDevice,
+          });
+
+          const updatePermissionsByCaveat = jest.fn();
+          rootMessenger.registerActionHandler(
+            'PermissionController:updatePermissionsByCaveat',
+            updatePermissionsByCaveat,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:forgetDevice',
+            'ledger',
+          );
+
+          expect(result).toStrictEqual(true);
+          expect(forgetDevice).toHaveBeenCalled();
+          // `onAccountRemoved` is invoked for each account, which delegates to
+          // the permission controller. Two accounts -> two removals.
+          expect(callSpy).toHaveBeenCalledWith(
+            'PermissionController:updatePermissionsByCaveat',
+            Caip25CaveatType,
+            expect.any(Function),
+          );
+          expect(updatePermissionsByCaveat).toHaveBeenCalledTimes(2);
+        });
+      });
+    });
+
+    describe('getTrezorFeatures', () => {
+      it('throws when the bridge does not support getFeatures', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: {},
+            getModel: jest.fn().mockReturnValue('model-t'),
+          });
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          await expect(
+            rootMessenger.call('LegacyBackgroundApiService:getTrezorFeatures'),
+          ).rejects.toThrow('Trezor bridge does not support getFeatures');
+        });
+      });
+
+      it('returns the features from the bridge', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { getFeatures: jest.fn().mockResolvedValue({ major: 2 }) },
+            getModel: jest.fn().mockReturnValue('model-t'),
+          });
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getTrezorFeatures',
+          );
+
+          expect(result).toStrictEqual({ major: 2 });
+        });
+      });
+    });
+
+    describe('unlockHardwareWalletAccount', () => {
+      it('creates the account and selects it', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest.fn().mockResolvedValue([{ address: '0xABC' }]),
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([{ id: 'account-1', address: '0xabc' }]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'account-1', address: '0xabc' }),
+          );
+          const setSelectedAccount = jest.fn();
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            setSelectedAccount,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'ledger',
+            "m/44'/60'/0'/0",
+          );
+
+          expect(result.unlockedAccount).toStrictEqual('0xabc');
+          expect(result.accounts).toStrictEqual([
+            { id: 'account-1', address: '0xabc' },
+          ]);
+          expect(callSpy).toHaveBeenCalledWith(
+            'AccountsController:setSelectedAccount',
+            'account-1',
+          );
+        });
+      });
+
+      it('creates and selects the account for a Trezor device', async () => {
+        await withService(async ({ rootMessenger, serviceMessenger }) => {
+          const createAccounts = jest
+            .fn()
+            .mockResolvedValue([{ address: '0xDEF' }]);
+          registerWithKeyringV2(rootMessenger, {
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            getModel: jest.fn().mockReturnValue('model-t'),
+            createAccounts,
+          });
+
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([{ id: 'account-2', address: '0xdef' }]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'account-2', address: '0xdef' }),
+          );
+          const setSelectedAccount = jest.fn();
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            setSelectedAccount,
+          );
+
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'trezor',
+          );
+
+          expect(createAccounts).toHaveBeenCalled();
+          expect(result.unlockedAccount).toStrictEqual('0xdef');
+          expect(callSpy).toHaveBeenCalledWith(
+            'AccountsController:setSelectedAccount',
+            'account-2',
+          );
+        });
+      });
+
+      it('times out the abandoned account creation when the device wedges', async () => {
+        await withService(async ({ rootMessenger }) => {
+          // A wedged device leaves `createAccounts` pending forever. Account
+          // creation mutates vault state and runs under the controller lock,
+          // so it cannot use the lock-free `deviceRead` path; the timeout is
+          // applied by `unlockHardwareWalletAccount` itself.
+          const createAccounts = jest
+            .fn()
+            .mockReturnValue(new Promise(() => undefined));
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts,
+          });
+
+          const originalSetTimeout = global.setTimeout;
+          let fireCreateTimeout: (() => void) | undefined;
+          const setTimeoutSpy = jest
+            .spyOn(global, 'setTimeout')
+            .mockImplementation(((
+              handler: () => void,
+              timeout?: number,
+              ...args: unknown[]
+            ) => {
+              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
+                fireCreateTimeout = handler;
+                return 0 as unknown as ReturnType<typeof setTimeout>;
+              }
+              return originalSetTimeout(handler, timeout, ...args);
+            }) as typeof setTimeout);
+
+          try {
+            const wedged = rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'ledger',
+              "m/44'/60'/0'/0",
+            );
+            // Swallow the timeout rejection asserted below so the abandoned
+            // creation never surfaces as an unhandled rejection.
+            wedged.catch(() => undefined);
+
+            // Wait until account creation has actually started.
+            await new Promise<void>((resolve) => {
+              const poll = () =>
+                createAccounts.mock.calls.length > 0
+                  ? resolve()
+                  : originalSetTimeout(poll, 5);
+              poll();
+            });
+
+            fireCreateTimeout?.();
+            await expect(wedged).rejects.toThrow(
+              'Hardware wallet account creation timed out',
+            );
+          } finally {
+            setTimeoutSpy.mockRestore();
+          }
+        });
+      });
+
+      it('throws if it receives an unknown device name', async () => {
+        await withService(async ({ rootMessenger }) => {
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'Some random device name',
+            ),
+          ).rejects.toThrow(
+            'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+          );
+        });
+      });
+
+      it('throws if the keyring does not create an account', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest.fn().mockResolvedValue([]),
+          });
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'ledger',
+            ),
+          ).rejects.toThrow('No account created for device: ledger');
+        });
+      });
+
+      it('throws when the unlocked account cannot be found', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            createAccounts: jest.fn().mockResolvedValue([{ address: '0xABC' }]),
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue(undefined),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'ledger',
+              "m/44'/60'/0'/0",
+            ),
+          ).rejects.toThrow('No account found for address: 0xabc');
+        });
+      });
+
+      it('creates and selects the account for a QR device in account mode', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const createAccounts = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x111' }]);
+          registerWithKeyringV2(rootMessenger, {
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            getMode: jest.fn().mockReturnValue('account'),
+            getName: jest.fn().mockReturnValue('QR Hardware'),
+            createAccounts,
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([{ id: 'qr-1', address: '0x111' }]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'qr-1', address: '0x111' }),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            jest.fn(),
+          );
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'QR Hardware',
+          );
+
+          expect(createAccounts).toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'custom', addressIndex: 0 }),
+          );
+          expect(result.unlockedAccount).toStrictEqual('0x111');
+        });
+      });
+
+      it('creates the account for a QR device in HD mode', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const createAccounts = jest
+            .fn()
+            .mockResolvedValue([{ address: '0x222' }]);
+          registerWithKeyringV2(rootMessenger, {
+            entropySource: 'entropy-1',
+            hdPath: "m/44'/60'/0'/0",
+            getMode: jest.fn().mockReturnValue('hd'),
+            getName: jest.fn().mockReturnValue('QR Hardware'),
+            createAccounts,
+          });
+
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'qr-2', address: '0x222' }),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            jest.fn(),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            'QR Hardware',
+          );
+
+          expect(createAccounts).toHaveBeenCalledWith(
+            expect.objectContaining({
+              type: 'bip44:derive-index',
+              groupIndex: 0,
+            }),
+          );
+        });
+      });
+    });
+
+    describe('attemptLedgerTransportCreation', () => {
+      it('creates the Ledger transport app', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const attemptMakeApp = jest.fn().mockResolvedValue(true);
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            attemptMakeApp,
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:attemptLedgerTransportCreation',
+          );
+
+          expect(attemptMakeApp).toHaveBeenCalled();
+          expect(result).toBe(true);
+        });
+      });
+    });
+
+    describe('getAppNameAndVersion', () => {
+      it('returns the app name and version from the Ledger device', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const appInfo = { appName: 'Ethereum', version: '1.0.0' };
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getAppNameAndVersion: jest.fn().mockResolvedValue(appInfo),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getAppNameAndVersion',
+          );
+
+          expect(result).toStrictEqual(appInfo);
+        });
+      });
+    });
+
+    describe('getHdPathForLedgerKeyring', () => {
+      it('returns the configured hd path', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            hdPath: "m/44'/60'/0'/0",
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getHdPathForLedgerKeyring',
+          );
+
+          expect(result).toStrictEqual("m/44'/60'/0'/0");
+        });
+      });
+    });
+
+    describe('getLedgerPublicKey', () => {
+      it('returns the public key for the given hd path', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const publicKey = { publicKey: '0xpub', address: '0xabc' };
+          const getPublicKey = jest.fn().mockResolvedValue(publicKey);
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn(), getPublicKey },
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:getLedgerPublicKey',
+            "m/44'/60'/0'/0",
+          );
+
+          expect(getPublicKey).toHaveBeenCalledWith({
+            hdPath: "m/44'/60'/0'/0",
+          });
+          expect(result).toStrictEqual(publicKey);
+        });
+      });
+    });
+
+    describe('#withKeyringForDevice additional coverage', () => {
+      it('adds the OneKey keyring if missing and returns the first page', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const getFirstPage = jest.fn().mockResolvedValue([{ index: 0 }]);
+          const addNewKeyring = jest.fn();
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest
+              .fn()
+              .mockImplementation(async (callback) =>
+                callback({ keyrings: [], addNewKeyring }),
+              ),
+          );
+          rootMessenger.registerActionHandler(
+            'AppStateController:setTrezorModel',
+            jest.fn(),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            getModel: jest.fn().mockReturnValue('onekey-model'),
+            getFirstPage,
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          });
+
+          const result = await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'oneKey',
+            0,
+          );
+
+          expect(addNewKeyring).toHaveBeenCalledWith(OneKeyKeyring.type);
+          expect(result).toStrictEqual([{ index: 0 }]);
+        });
+      });
+
+      it('does not create the keyring when it already exists', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const addNewKeyring = jest.fn();
+
+          rootMessenger.registerActionHandler(
+            'KeyringController:withController',
+            jest.fn().mockImplementation(async (callback) =>
+              callback({
+                keyrings: [{ type: LedgerKeyring.type }],
+                addNewKeyring,
+              }),
+            ),
+          );
+
+          registerWithKeyringV2(rootMessenger, {
+            bridge: { updateTransportMethod: jest.fn() },
+            getFirstPage: jest.fn().mockResolvedValue([]),
+            getNextPage: jest.fn(),
+            getPreviousPage: jest.fn(),
+          });
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:connectHardware',
+            'ledger',
+            0,
+          );
+
+          expect(addNewKeyring).not.toHaveBeenCalled();
+        });
       });
     });
   });
@@ -768,12 +1948,18 @@ describe('LegacyBackgroundApiService', () => {
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
-          { address: selectedAddress, chainId: '0x1' },
+          {
+            address: selectedAddress,
+            chainId: '0x1',
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
           'SmartTransactionsController:wipeSmartTransactions',
-          { address: selectedAddress, ignoreNetwork: false },
+          {
+            address: selectedAddress,
+            ignoreNetwork: false,
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
@@ -815,6 +2001,164 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(globalChainId);
+      });
+    });
+  });
+
+  describe('lookupSelectedNetworks', () => {
+    it('looks up the selected network and each enabled network client', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const lookupNetwork = jest.fn().mockResolvedValue(undefined);
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+                '0xe708': false,
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+              '0xe708': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetwork,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'NetworkEnablementController:getState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('NetworkController:getState');
+        expect(lookupNetwork).toHaveBeenCalledWith();
+        expect(lookupNetwork).toHaveBeenCalledWith('mainnet');
+        expect(lookupNetwork).not.toHaveBeenCalledWith('linea-mainnet');
+      });
+    });
+  });
+
+  describe('setEnabledNetworks', () => {
+    it('enables the network then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableNetwork = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableNetwork',
+            enableNetwork,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          );
+
+          expect(enableNetwork).toHaveBeenCalledWith('0x1');
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling the network fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableNetwork',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('setEnabledAllPopularNetworks', () => {
+    it('enables all popular networks then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableAllPopularNetworks = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableAllPopularNetworks',
+            enableAllPopularNetworks,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          );
+
+          expect(enableAllPopularNetworks).toHaveBeenCalledTimes(1);
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling all popular networks fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable all failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableAllPopularNetworks',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -1538,7 +2882,9 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.call(
           'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
           '',
-          { properties: { foo: 'bar' } },
+          {
+            properties: { foo: 'bar' },
+          },
         );
 
         expect(callSpy).not.toHaveBeenCalled();
@@ -1898,7 +3244,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-            { captureSentryError: true },
+            {
+              captureSentryError: true,
+            },
           ),
         ).rejects.toThrow(error);
 
@@ -1930,7 +3278,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { encryptionKey: 'encryption-key' },
+            {
+              encryptionKey: 'encryption-key',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -1967,7 +3317,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { password: 'password' },
+            {
+              password: 'password',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -2007,7 +3359,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { password: 'password' },
+            {
+              password: 'password',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -2617,7 +3971,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:submitGlobalPassword',
-          { globalPassword: 'global-password', maxKeyChainLength: 20 },
+          {
+            globalPassword: 'global-password',
+            maxKeyChainLength: 20,
+          },
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
@@ -2879,6 +4236,56 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
+        );
+
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('rejectPendingApproval', () => {
@@ -2894,7 +4301,11 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.call(
           'LegacyBackgroundApiService:rejectPendingApproval',
           'DUMMY_ID',
-          { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          {
+            code: 1,
+            message: 'DUMMY_MESSAGE',
+            data: 'DUMMY_DATA',
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
@@ -2924,7 +4335,11 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.call(
             'LegacyBackgroundApiService:rejectPendingApproval',
             'DUMMY_ID',
-            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+            {
+              code: 1,
+              message: 'DUMMY_MESSAGE',
+              data: 'DUMMY_DATA',
+            },
           ),
         ).not.toThrow(error);
       });
@@ -2945,9 +4360,243 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.call(
             'LegacyBackgroundApiService:rejectPendingApproval',
             'DUMMY_ID',
-            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+            {
+              code: 1,
+              message: 'DUMMY_MESSAGE',
+              data: 'DUMMY_DATA',
+            },
           ),
         ).toThrow(error);
+      });
+    });
+  });
+
+  describe('resolvePendingApproval', () => {
+    beforeEach(() => {
+      mockToHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).resolves.not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+
+    it('normalizes null options before calling ApprovalController:acceptRequest', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          null,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          undefined,
+        );
+      });
+    });
+
+    it('passes only waitForResult to ApprovalController:acceptRequest options', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          {
+            waitForResult: true,
+            walletType: HardwareWalletType.Ledger,
+          },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          { waitForResult: true },
+        );
+      });
+    });
+
+    it('transforms hardware wallet errors to internal JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Ledger transport disconnected');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'Device disconnected',
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Please reconnect your device',
+          metadata: {
+            transport: 'usb',
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x3' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: -32603,
+          data: {
+            code: ErrorCode.DeviceDisconnected,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Please reconnect your device',
+            metadata: {
+              transport: 'usb',
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+
+        expect(mockToHardwareWalletError).toHaveBeenCalledWith(
+          error,
+          HardwareWalletType.Ledger,
+        );
+      });
+    });
+
+    it('transforms user-rejected hardware wallet errors to user-rejected JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('User rejected on device');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'User rejected',
+          code: ErrorCode.UserRejected,
+          severity: Severity.Info,
+          category: Category.UserAction,
+          userMessage: 'Request rejected',
+          metadata: {
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+        mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x4' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: 4001,
+          data: {
+            code: ErrorCode.UserRejected,
+            severity: Severity.Info,
+            category: Category.UserAction,
+            userMessage: 'Request rejected',
+            metadata: {
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+      });
+    });
+  });
+
+  describe('approveHardwareWalletTransaction', () => {
+    it('delegates to resolvePendingApproval with transaction payload and hardware wallet options', async () => {
+      await withService(async ({ service }) => {
+        const resolvePendingApprovalSpy = jest
+          .spyOn(service, 'resolvePendingApproval')
+          .mockResolvedValue();
+
+        const txMeta = {
+          id: '42',
+          txParams: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        };
+
+        await service.approveHardwareWalletTransaction({
+          txId: 42,
+          txMeta,
+          actionId: 'action-id',
+          walletType: HardwareWalletType.Ledger,
+        });
+
+        expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
+          '42',
+          { txMeta, actionId: 'action-id' },
+          { waitForResult: true, walletType: HardwareWalletType.Ledger },
+        );
       });
     });
   });
@@ -3452,6 +5101,251 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('createSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+
+    it('captures the error and rethrows when backup creation fails', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('backup failed');
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
+
+          await expect(
+            service.createSeedPhraseBackup(
+              'password',
+              encodedSeedPhrase,
+              'keyring-id',
+            ),
+          ).rejects.toThrow('backup failed');
+
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(
+              TraceName.OnboardingCreateKeyAndBackupSrpError,
+              error,
+            ),
+          );
+        },
+      );
+    });
+  });
+
+  describe('createNewVaultAndKeychain', () => {
+    it('clears wallet state when a wallet reset is in progress', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const clearPermissionState = jest.fn();
+        const clearSnapState = jest.fn().mockResolvedValue(undefined);
+        const clearAccountTreeState = jest.fn();
+        const updateHiddenAccountsList = jest.fn();
+        const clearUnapprovedTransactions = jest.fn();
+        const createWallet = jest.fn().mockResolvedValue(undefined);
+        const setIsWalletResetInProgress = jest.fn();
+        const updateAccounts = jest.fn().mockResolvedValue(undefined);
+        const reinit = jest.fn();
+        const primaryKeyring = {
+          type: 'HD Key Tree',
+          accounts: ['0xabc'],
+          metadata: { id: 'kr1' },
+        };
+
+        rootMessenger.registerActionHandler(
+          'AppStateController:getIsWalletResetInProgress',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'PermissionController:clearState',
+          clearPermissionState,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapController:clearState',
+          clearSnapState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:clearState',
+          clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountOrderController:updateHiddenAccountsList',
+          updateHiddenAccountsList,
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:clearUnapprovedTransactions',
+          clearUnapprovedTransactions,
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createMultichainAccountWallet',
+          createWallet,
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setIsWalletResetInProgress',
+          setIsWalletResetInProgress,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ keyrings: [primaryKeyring] }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:updateAccounts',
+          updateAccounts,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:reinit',
+          reinit,
+        );
+
+        const result = await service.createNewVaultAndKeychain('password');
+
+        expect(clearPermissionState).toHaveBeenCalled();
+        expect(clearSnapState).toHaveBeenCalled();
+        expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
+        expect(clearUnapprovedTransactions).toHaveBeenCalled();
+        expect(createWallet).toHaveBeenCalledWith({
+          type: 'create',
+          password: 'password',
+        });
+        expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
+        expect(result).toStrictEqual(primaryKeyring);
+      });
+    });
+  });
+
+  describe('syncSeedPhrases', () => {
+    it('imports private key secrets that are not backed up locally', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const privateKeyData = new Uint8Array(32).fill(1);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:fetchAllSecretData',
+          jest.fn().mockResolvedValue([
+            { data: new Uint8Array([1]), type: SecretType.Mnemonic },
+            { data: privateKeyData, type: SecretType.PrivateKey },
+          ]),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getSecretDataBackupState',
+          jest.fn().mockReturnValue(null),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+
+        const importSpy = jest
+          .spyOn(service, 'importAccountWithStrategy')
+          .mockResolvedValue(undefined);
+
+        await service.syncSeedPhrases();
+
+        expect(importSpy).toHaveBeenCalledWith(
+          AccountImportStrategy.privateKey,
+          [expect.any(String)],
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
+      });
+    });
+  });
+
+  describe('addNewSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+    it('captures the error and rethrows when adding secret data fails', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('add failed');
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getState',
+            jest.fn().mockReturnValue({ completedOnboarding: false }),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:addNewSecretData',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
+
+          await expect(
+            service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
+          ).rejects.toThrow('add failed');
+
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(TraceName.OnboardingAddSrpError, error),
+          );
+        },
+      );
+    });
+  });
+
+  describe('discoverAndCreateAccounts', () => {
+    it('counts discovered accounts by provider', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([
+                { type: SolAccountType.DataAccount },
+                { type: BtcAccountType.P2wpkh },
+                { type: TrxAccountType.Eoa },
+              ]),
+          }),
+        );
+
+        const counts = await service.discoverAndCreateAccounts();
+
+        expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
+      });
+    });
+  });
+
   describe('isRelaySupported', () => {
     const isRelaySupportedMock = jest.mocked(isRelaySupported);
 
@@ -3531,17 +5425,24 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:lookupNetwork',
+      'NetworkEnablementController:getState',
+      'NetworkEnablementController:enableNetwork',
+      'NetworkEnablementController:enableAllPopularNetworks',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:getAssets',
       'AssetsController:setSelectedCurrency',
       'KeyringController:exportSeedPhrase',
+      'KeyringController:getState',
       'AccountsController:getSelectedAccount',
       'ApprovalController:getState',
       'ApprovalController:acceptRequest',
       'SnapInterfaceController:deleteInterface',
+      'SnapController:clearState',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
+      'TransactionController:clearUnapprovedTransactions',
       'ApprovalController:rejectRequest',
       'TransactionController:wipeTransactions',
       'SmartTransactionsController:wipeSmartTransactions',
@@ -3549,17 +5450,24 @@ function getMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
+      'KeyringController:withController',
       'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:listAccounts',
       'AccountsController:setAccountName',
       'AccountsController:setSelectedAccount',
       'SeedlessOnboardingController:addNewSecretData',
+      'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+      'SeedlessOnboardingController:fetchAllSecretData',
+      'SeedlessOnboardingController:getSecretDataBackupState',
       'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:clearState',
       'PermissionController:rejectPermissionsRequest',
       'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
+      'PreferencesController:getState',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
@@ -3581,15 +5489,27 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountOrderController:updateHiddenAccountsList',
+      'AccountTreeController:clearState',
       'AccountTreeController:init',
+      'AccountTreeController:reinit',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountTreeController:syncWithUserStorage',
+      'AccountTreeController:syncWithUserStorageAtLeastOnce',
+      'AppStateController:getIsWalletResetInProgress',
+      'AppStateController:setIsWalletResetInProgress',
+      'MultichainAccountService:createMultichainAccountWallet',
+      'MultichainAccountService:getMultichainAccountWallet',
       'MultichainAccountService:init',
+      'MultichainAccountService:removeMultichainAccountWallet',
       'MultichainAccountService:resyncAccounts',
       'MultichainAccountService:alignWallets',
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
+      'AppStateController:setTrezorModel',
+      'KeyringController:withKeyringV2Unsafe',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',
       'MetaMetricsController:createEventFragment',
@@ -3642,9 +5562,10 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    markNotificationPopupAsAutomaticallyClosed: jest.fn(),
+    requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
-    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

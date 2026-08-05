@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -25,6 +25,7 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -95,11 +96,9 @@ import {
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../components/component-library';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -109,11 +108,8 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-} from '../../../shared/constants/network';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { filterExcludedAssetList } from '../../components/app/assets/enablement/networks-customization';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -609,21 +605,7 @@ export const TokenManagementPage = () => {
       }),
     );
 
-    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
-    // display duplicate. Hide it here too — it can re-enter via imported tokens
-    // even though the asset selector already filters it from balances. The
-    // chain id can be hex (0x13b2) or CAIP (eip155:5042) and the address may
-    // only live inside the assetId, so normalize both before comparing.
-    const visibleAssets = dedupedAssets.filter((asset) => {
-      if (normalizeToHexChainId(String(asset.chainId)) !== CHAIN_IDS.ARC) {
-        return true;
-      }
-      const assetAddress =
-        'address' in asset && asset.address
-          ? asset.address
-          : getAssetReferenceFromAssetId(asset.assetId);
-      return assetAddress?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
-    });
+    const visibleAssets = filterExcludedAssetList(dedupedAssets);
 
     const accountAssets = sortAssetsWithPriority(
       visibleAssets,
@@ -691,14 +673,7 @@ export const TokenManagementPage = () => {
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
-    return results.filter((result) => {
-      const chainPart = String(result.assetId).split('/')[0];
-      if (normalizeToHexChainId(chainPart) !== CHAIN_IDS.ARC) {
-        return true;
-      }
-      const reference = getAssetReferenceFromAssetId(result.assetId);
-      return reference?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
-    });
+    return filterExcludedAssetList(results);
   }, [deferredNormalizedQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
@@ -1581,16 +1556,17 @@ export const TokenManagementPage = () => {
         paddingBottom={2}
       >
         <TextFieldSearch
-          value={searchQuery}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleSearchClear}
-          size={TextFieldSearchSize.Lg}
           className="w-full"
-          inputProps={{
-            'data-testid': 'token-management-search-input',
-            spellCheck: false,
-          }}
+          clearButtonOnClick={handleSearchClear}
+          inputProps={
+            {
+              'data-testid': 'token-management-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={handleSearchChange}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          value={searchQuery}
         />
       </Box>
 

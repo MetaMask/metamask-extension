@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { lt as semverLt, parse as semverParse } from 'semver';
-import { useAppSelector } from '../store/store';
+import { useAppSelector } from '../store/hooks';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 // Version threshold for BIP-44 multichain accounts introduction

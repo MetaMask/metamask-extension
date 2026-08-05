@@ -200,7 +200,7 @@ export function ActivityList({
 
       <dialog
         ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default"
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
         onClose={handleClose}
       >
         <TransactionDetails
