@@ -23,6 +23,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { transitionBack } from '../../../components/ui/transition';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -499,7 +500,7 @@ const SecurityTrustPage = () => {
       return;
     }
 
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [assetId, isFeatureEnabled, navigate]);
 
   const {
@@ -587,7 +588,7 @@ const SecurityTrustPage = () => {
         })
         .build(),
     );
-    transitionBack(() => navigate(-1));
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
   };
 
   if (!isFeatureEnabled) {
