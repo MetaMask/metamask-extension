@@ -3600,8 +3600,7 @@
       },
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
-        "react": true,
-        "react-redux>use-sync-external-store": true
+        "react": true
       }
     },
     "@tanstack/react-virtual": {
