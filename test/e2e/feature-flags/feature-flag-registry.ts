@@ -3162,6 +3162,38 @@ export function getProductionRemoteFlagApiResponse(): Json[] {
 }
 
 /**
+ * Returns the production flag defaults in the raw API response format, with the
+ * named flags replaced by the given values.
+ *
+ * Prefer this over hand-building a `/v1/flags` response. A response holding only
+ * the flags a test cares about leaves every other flag absent, and absent flags
+ * resolve to their "off" fallback rather than their production value — so the
+ * test silently exercises a UI that no user sees.
+ *
+ * @param overrides - Flag name to value, replacing the production default. Values
+ * are accepted as `unknown` because the controller-owned flag types declare
+ * optional properties, which `Json` rejects.
+ * @returns Array of `{ flagName: value }` objects matching the client-config API format
+ */
+export function getProductionRemoteFlagApiResponseWithOverrides(
+  overrides: Record<string, unknown>,
+): Json[] {
+  const overrideNames = new Set(Object.keys(overrides));
+
+  return [
+    ...getProductionRemoteFlagApiResponse().filter(
+      (entry) =>
+        !Object.keys(entry as Record<string, Json>).some((name) =>
+          overrideNames.has(name),
+        ),
+    ),
+    ...Object.entries(overrides).map(([name, value]) => ({
+      [name]: value as Json,
+    })),
+  ];
+}
+
+/**
  * Returns production flag defaults as a flat key-value map.
  * This is the "resolved" format used in Redux state (after the controller
  * processes the API response).

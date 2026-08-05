@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../../feature-flags';
 
 // Bitcoin mainnet chain ID formats
 export const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
@@ -202,11 +203,9 @@ export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
       return {
         ok: true,
         statusCode: 200,
-        json: [
-          {
-            bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS,
-          },
-        ],
+        json: getProductionRemoteFlagApiResponseWithOverrides({
+          bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS,
+        }),
       };
     });
 }

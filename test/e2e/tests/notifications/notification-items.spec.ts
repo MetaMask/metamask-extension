@@ -3,7 +3,7 @@ import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notifi
 import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponseWithOverrides } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   goToNotificationsList,
@@ -21,7 +21,6 @@ import {
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
-  const prodFlags = getProductionRemoteFlagApiResponse();
   return await server
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -31,11 +30,10 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [
-        ...prodFlags,
-        { assetsEnableNotificationsByDefault: false },
-        { assetsEnableNotificationsByDefaultV2: { value: false } },
-      ],
+      json: getProductionRemoteFlagApiResponseWithOverrides({
+        assetsEnableNotificationsByDefault: false,
+        assetsEnableNotificationsByDefaultV2: { value: false },
+      }),
     }));
 }
 
