@@ -866,10 +866,7 @@ export function isPersistedHardwareWalletRejectionError(
   };
 
   const hwCode = getHardwareWalletErrorCode(error);
-  if (
-    hwCode === ErrorCode.UserRejected ||
-    hwCode === ErrorCode.UserCancelled
-  ) {
+  if (hwCode === ErrorCode.UserRejected || hwCode === ErrorCode.UserCancelled) {
     return true;
   }
 

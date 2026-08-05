@@ -7716,9 +7716,7 @@ export default class MetamaskController extends EventEmitter {
       // persists only name/message/stack/code via `normalizeTxError`, and
       // `#handleHardwareWalletError` adds walletType on the UI RPC path after
       // `transactionStatusUpdated` has already driven this handler.
-      if (
-        isPersistedHardwareWalletRejectionError(transactionMeta.error)
-      ) {
+      if (isPersistedHardwareWalletRejectionError(transactionMeta.error)) {
         await this._createTransactionNotifcation(transactionMeta);
       }
 
