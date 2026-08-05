@@ -17,6 +17,7 @@ import { setFromTokenInputValue } from '../../../ducks/bridge/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlertSeverity } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -63,6 +64,7 @@ export const useBridgeAlerts = () => {
   const nextRegularMarketOpen = useSelector((state: BridgeAppState) =>
     getNextRegularMarketOpen(state, Date.now()),
   );
+  const locale = useSelector(getIntlLocale);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
 
   const {
@@ -124,7 +126,7 @@ export const useBridgeAlerts = () => {
 
     if (isInOffHoursTrading) {
       const formattedMarketOpen = nextRegularMarketOpen
-        ? new Date(nextRegularMarketOpen).toLocaleString(undefined, {
+        ? new Date(nextRegularMarketOpen).toLocaleString(locale, {
             dateStyle: 'medium',
             timeStyle: 'short',
           })
@@ -334,6 +336,7 @@ export const useBridgeAlerts = () => {
     formattedPriceImpactFiat,
     isInsufficientBalance,
     isInOffHoursTrading,
+    locale,
     nextRegularMarketOpen,
     isInsufficientGasForQuote,
     isLoading,
