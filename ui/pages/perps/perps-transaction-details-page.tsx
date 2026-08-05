@@ -33,7 +33,7 @@ import {
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { formatPnl } from '../../../shared/lib/perps-formatters';
-import { PerpsOrderTransactionStatus } from '../../components/app/perps/types';
+import { PerpsOrderTransactionStatusType } from '../../components/app/perps/types';
 import type { PerpsTransaction } from '../../components/app/perps/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Row } from '../details/components/shared';
@@ -92,7 +92,9 @@ const OrderDetailRows = ({
   // Mobile only shows non-zero fee amounts once the order has actually
   // filled (unfilled/canceled/queued orders never incurred a fee) — zero the
   // rows out rather than hiding them so the breakdown's shape stays constant.
-  const isFilled = order.text === PerpsOrderTransactionStatus.Filled;
+  // Triggered orders (TP/SL that executed) share statusType Filled and also
+  // incurred fees, so check statusType rather than text.
+  const isFilled = order.statusType === PerpsOrderTransactionStatusType.Filled;
   const getFeeDisplay = (amount: number | undefined) =>
     formatPerpsFiatUniversal(isFilled ? (amount ?? 0) : 0);
 

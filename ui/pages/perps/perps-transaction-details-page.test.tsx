@@ -11,6 +11,10 @@ import {
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
+import {
+  PerpsOrderTransactionStatus,
+  PerpsOrderTransactionStatusType,
+} from '../../components/app/perps/types';
 import type { PerpsTransaction } from '../../components/app/perps/types';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import PerpsTransactionDetailsPage from './perps-transaction-details-page';
@@ -268,6 +272,45 @@ describe('PerpsTransactionDetailsPage', () => {
       ).toBe('$0');
       expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
         '$0',
+      );
+    });
+
+    it('shows actual fees for a triggered order (TP/SL that executed)', () => {
+      jest.mocked(usePerpsOrderFees).mockReturnValue({
+        feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
+        metamaskFeeRateDiscountPercentage: undefined,
+        feeResult: {
+          feeRate: 0.00145,
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.001,
+          feeAmount: 6.525,
+          protocolFeeAmount: 2.025,
+          metamaskFeeAmount: 4.5,
+        },
+        isLoading: false,
+        hasError: false,
+      });
+
+      const base = findTransaction('tx-004b');
+      const triggeredOrder: PerpsTransaction = {
+        ...base,
+        order: {
+          ...base.order!,
+          text: PerpsOrderTransactionStatus.Triggered,
+          statusType: PerpsOrderTransactionStatusType.Filled,
+        },
+      };
+      renderWithTransaction(triggeredOrder);
+
+      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
+        '$4.5',
+      );
+      expect(
+        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
+      ).toBe('$2.025');
+      expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
+        '$6.525',
       );
     });
   });
