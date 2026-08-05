@@ -17,8 +17,14 @@ export type UseDiscoverStocksSearchOptions = {
 
 export type UseDiscoverStocksSearchResult = {
   data: TrendingAsset[];
+  totalCount?: number;
   isLoading: boolean;
   error: Error | null;
+};
+
+type StocksSearchPage = {
+  data: TrendingAsset[];
+  totalCount: number;
 };
 
 const normalizeRwaToken = (
@@ -56,14 +62,14 @@ export const useDiscoverStocksSearch = ({
     [hasQuery],
   );
 
-  const stocksQuery = useQuery<TrendingAsset[], Error>({
+  const stocksQuery = useQuery<StocksSearchPage, Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
       trimmedQuery,
       chainIds,
     ] as const,
-    queryFn: async (): Promise<TrendingAsset[]> => {
+    queryFn: async (): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
         chainIds,
         query: hasQuery ? trimmedQuery : undefined,
@@ -71,7 +77,11 @@ export const useDiscoverStocksSearch = ({
         limit: DISCOVER_SEARCH_PAGE_SIZE,
       });
 
-      return response.data.map(normalizeRwaToken);
+      const data = response.data.map(normalizeRwaToken);
+      return {
+        data,
+        totalCount: response.totalCount ?? data.length,
+      };
     },
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
@@ -79,7 +89,8 @@ export const useDiscoverStocksSearch = ({
   });
 
   return {
-    data: stocksQuery.data ?? [],
+    data: stocksQuery.data?.data ?? [],
+    totalCount: stocksQuery.data?.totalCount,
     isLoading: stocksQuery.isLoading || stocksQuery.isFetching,
     error: stocksQuery.error ?? null,
   };
