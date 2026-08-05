@@ -4,6 +4,7 @@ import { Suite } from 'mocha';
 import {
   ACCOUNT_2,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  DAPP_HOST_ADDRESS,
   DAPP_PATH,
   DAPP_URL,
   WINDOW_TITLES,
@@ -13,6 +14,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
+import { updateConnectedSiteNetworkSelection } from '../../page-objects/flows/permissions.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
@@ -208,8 +210,15 @@ describe('MM Connect-EVM', function (this: Suite) {
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
           await testDapp.connectLegacy();
-          // Default connect grants all enabled networks, including Polygon.
           await approveConnect(driver);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          // Enable Polygon so the switch only tests chain-switching, not
+          // the combined "approve new network + switch" flow.
+          await updateConnectedSiteNetworkSelection(driver, DAPP_HOST_ADDRESS, [
+            { networkName: 'Polygon', shouldBeSelected: true },
+          ]);
           await testDapp.switchTo();
           await testDapp.checkLegacyCardVisible();
 
