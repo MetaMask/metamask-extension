@@ -1,27 +1,31 @@
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 
+import { useMoneyAccountDeposit } from '../../../../../hooks/money/useMoneyAccountDeposit';
+import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
 import { DeveloperButton } from '../developer-button';
-import {
-  MUSD_DEVELOPER_HARNESS_CHAIN_ID,
-  MUSD_TOKEN,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../constants/musd';
-import { useDeveloperTransferTransaction } from '../utils';
 
+/**
+ * Developer trigger for the real Money Account deposit flow: the placeholder
+ * approve + deposit batch from the money account, re-encoded by Pay once an
+ * amount is chosen. Hidden entirely — not disabled — when the money account
+ * is unavailable, the same rule every production entry point follows.
+ */
 export const MoneyAccountDepositButton = () => {
-  const { isLoading, handleTrigger } = useDeveloperTransferTransaction({
-    chainId: MUSD_DEVELOPER_HARNESS_CHAIN_ID,
-    tokenAddress: MUSD_TOKEN_ADDRESS,
-    decimals: MUSD_TOKEN.decimals,
-    type: TransactionType.moneyAccountDeposit,
-    errorMessage: 'Failed to create money account deposit transaction',
-  });
+  const { hasMoneyAccount } = useMoneyAccountInfo();
+  const { initiateDeposit, isLoading } = useMoneyAccountDeposit();
+
+  if (!hasMoneyAccount) {
+    return null;
+  }
 
   return (
     <DeveloperButton
       title="Money Account Deposit"
-      onPress={handleTrigger}
+      onPress={() =>
+        initiateDeposit().catch((error) =>
+          console.error('Failed to initiate money account deposit', error),
+        )
+      }
       disabled={isLoading}
     />
   );

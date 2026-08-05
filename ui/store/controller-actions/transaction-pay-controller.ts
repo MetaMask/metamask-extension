@@ -30,6 +30,24 @@ export async function setIsMaxAmount(
 }
 
 /**
+ * Creates the placeholder Money Account deposit batch in the background and
+ * returns the created transaction's id for confirmation navigation. The
+ * caller generates and supplies the batch id so the deposit intent can be
+ * recorded against it before this call.
+ *
+ * @param batchId - Caller-generated batch id.
+ * @returns The created transaction id and the batch id.
+ */
+export async function createMoneyAccountDepositTransaction(
+  batchId: Hex,
+): Promise<{ transactionId: string; batchId: Hex }> {
+  return await submitRequestToBackground(
+    'createMoneyAccountDepositTransaction',
+    [batchId],
+  );
+}
+
+/**
  * Prepares and commits a Money Account deposit amount in the background:
  * re-encodes the nested approve + deposit calldata for the new amount and
  * writes it into the transaction. Superseded intents resolve `false`.

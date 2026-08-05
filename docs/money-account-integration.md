@@ -135,12 +135,16 @@ guard itself is correct.
 3. ~~Commit the e2e session's work~~ **DONE** — committed as four commits
    (`ebe34cc871`…`54c64ff540`), all LavaMoat policies regenerated.
 4. ~~D11~~ **DONE** — see the D11 status section.
-5. **D12** — `useMoneyAccountDeposit` + real entry point. D11 built the intent
-   map (`ui/helpers/money/deposit-intent.ts`, with the exported setter the
-   initiator needs) and the commit path is callable from the UI via
-   `updateMoneyAccountDepositAmount` in
-   `ui/store/controller-actions/transaction-pay-controller.ts`.
-6. Then D13.
+5. ~~D12~~ **DONE** — see the D12 status section.
+6. **D13** — `useMoneyAccountWithdrawal`. The withdraw builders are already
+   exercised by D11's payment-override path; D13 adds the placeholder batch
+   initiation (mirror `create-deposit-transaction.ts` with
+   `buildMoneyAccountWithdrawPlaceholderBatch`), the hook (mirror
+   `useMoneyAccountDeposit`), and recipient resolution from the selected EVM
+   account.
+7. **Manual verification of the deposit flow end-to-end** needs an SRP with a
+   live Monad delegation and the flags served — same blocker as the D9
+   balance-row check.
 
 ### Debts recorded elsewhere in this doc
 
@@ -1136,6 +1140,50 @@ Port decisions and divergences from mobile, all deliberate:
   the multi-stage fiat path for it now.
 
 - **Depends on:** D11, D14.
+
+## D12 — status: **DONE** (2026-08-05)
+
+- **Initiation is a background method** —
+  `app/scripts/lib/money/pay/create-deposit-transaction.ts`, exposed on the
+  Pay init api as `createMoneyAccountDepositTransaction(batchId)`, called via
+  `ui/store/controller-actions/transaction-pay-controller.ts`. It builds the
+  placeholder batch (`buildMoneyAccountDepositPlaceholderBatch`, no calldata,
+  no provider), submits via `TransactionController:addTransactionBatch` with
+  mobile's exact flags (`from` = money account, `requiredAssets` = mUSD at
+  `0x0`, `disableHook`/`disableSequential`/`disableUpgrade`/`isInternal`/
+  `skipInitialGasEstimate`, `isGasFeeSponsored` iff the vault chain is Monad
+  mainnet), then resolves the created transaction by batch id — the result
+  carries only the batch id, and the UI needs the transaction id to navigate.
+- **`useMoneyAccountDeposit`** (`ui/hooks/money/`): generates the batch id,
+  records an explicit intent (`card`/`addMusd`) **before** the async work,
+  calls the background, navigates with `ConfirmationLoader.CustomAmount`; on
+  failure clears the intent, invokes `onDepositSetupFailure`, rethrows.
+- **Navigation order flipped vs mobile, deliberately:** mobile navigates
+  early to a skeleton and rolls back on failure; the extension's established
+  pattern navigates after creation. Consequences: no navigation rollback, no
+  toast (nothing was shown), and **no user-rejection path at initiation** —
+  rejection happens inside the confirmation. Mobile's
+  `preferredPaymentToken`/`autoSelectFiatPayment`/`replaceConfirmation`
+  options are confirmation features the extension lacks; add them with the
+  flows that need them.
+- **Amount updates**: `useUpdateTokenAmount` now branches on
+  moneyAccountDeposit (parent or nested type) and dispatches D11's commit
+  path. The placeholder batch has no transfer calldata, so without this
+  branch amount edits silently no-op. **The legacy (non-optimized) pipeline
+  was not ported** — mobile keeps it as the flag-off/addMusd/card fallback;
+  here the commit path is the only implementation, which means the
+  deposit-quote-pipeline flag is currently **not** consulted and cannot act
+  as a kill-switch. Revisit when addMusd/card entry points arrive.
+- **The dev button now runs the real flow** and is hidden — not disabled —
+  when `useMoneyAccountInfo().hasMoneyAccount` is false. The old tagged
+  ERC-20 transfer harness is gone from this button;
+  `useDeveloperTransferTransaction` remains for the other dev buttons.
+- **Not done:** mobile's `resolveMoneyDepositIntent` fallback derivation and
+  the toast/status consumers (`useMoneyTransactionStatus`) — they belong with
+  a transaction-status/toast ticket; the intent map's terminal-state clearing
+  currently has no caller.
+- **End-to-end manual verification pending** — needs a live Monad delegation
+  (same blocker as D9's balance row).
 
 ## D13 — `useMoneyAccountWithdrawal`
 

@@ -5,6 +5,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import { updateMoneyAccountDepositAmount } from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -21,6 +22,16 @@ jest.mock(
       '../../../../store/controller-actions/transaction-controller',
     ),
     updateAtomicBatchData: jest.fn(),
+  }),
+);
+
+jest.mock(
+  '../../../../store/controller-actions/transaction-pay-controller',
+  () => ({
+    ...jest.requireActual(
+      '../../../../store/controller-actions/transaction-pay-controller',
+    ),
+    updateMoneyAccountDepositAmount: jest.fn(),
   }),
 );
 
@@ -104,6 +115,40 @@ describe('useUpdateTokenAmount', () => {
   });
 
   describe('updateTokenAmount', () => {
+    it('dispatches the money deposit commit path for a money account deposit batch', () => {
+      const updateMoneyAmountMock = jest
+        .mocked(updateMoneyAccountDepositAmount)
+        .mockResolvedValue(true);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'approve' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        // The placeholder batch has no transfer calldata to parse.
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(updateMoneyAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '1.5',
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
     it('does nothing when data is undefined', () => {
       const { result } = runHook({
         tokenTransferData: {

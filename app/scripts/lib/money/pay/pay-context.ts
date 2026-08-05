@@ -9,6 +9,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
@@ -37,7 +38,10 @@ type MoneyPayActions =
   // The deposit-amount commit path resolves the transaction and writes the
   // re-encoded calldata back (`update-deposit-amount.ts`).
   | TransactionControllerGetStateAction
-  | TransactionControllerUpdateTransactionMetadataAction;
+  | TransactionControllerUpdateTransactionMetadataAction
+  // Deposit initiation submits the placeholder batch
+  // (`create-deposit-transaction.ts`).
+  | TransactionControllerAddTransactionBatchAction;
 
 /**
  * The messenger surface the Money Pay callbacks need.

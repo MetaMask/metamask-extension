@@ -13,6 +13,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
@@ -89,6 +90,7 @@ type InitMessengerActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerGetStateAction
   | TransactionControllerUpdateTransactionMetadataAction;
 
@@ -120,6 +122,7 @@ export function getTransactionPayControllerInitMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
+      'TransactionController:addTransactionBatch',
       'TransactionController:getNonceLock',
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
