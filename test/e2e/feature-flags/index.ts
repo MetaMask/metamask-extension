@@ -4,7 +4,6 @@ export {
   FeatureFlagType,
   getDeprecatedFlags,
   getProductionRemoteFlagApiResponse,
-  getProductionRemoteFlagApiResponseWithOverrides,
   getProductionRemoteFlagDefaults,
   getRegisteredFlagNames,
   getRegistryEntriesByStatus,

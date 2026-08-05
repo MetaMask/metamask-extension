@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { login } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { getProductionRemoteFlagApiResponseWithOverrides } from '../feature-flags/feature-flag-registry';
+import { getProductionRemoteFlagApiResponse } from '../feature-flags/feature-flag-registry';
 
 /**
  * Mocks the client-config flags API so that confirmations_eip_7702 has
@@ -16,13 +16,18 @@ import { getProductionRemoteFlagApiResponseWithOverrides } from '../feature-flag
  * @returns An array of mockttp requests to mock the flags API.
  */
 async function mockEip7702SupportedChains(server: Mockttp) {
-  const flagsWithEip7702 = getProductionRemoteFlagApiResponseWithOverrides({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    confirmations_eip_7702: {
-      supportedChains: ['0x539'],
-      contracts: {},
+  const flags = getProductionRemoteFlagApiResponse();
+
+  const flagsWithEip7702 = [
+    ...flags,
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      confirmations_eip_7702: {
+        supportedChains: ['0x539'],
+        contracts: {},
+      },
     },
-  });
+  ];
 
   return [
     await server
