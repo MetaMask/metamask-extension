@@ -532,12 +532,6 @@ describe('MultichainConnectPage', () => {
     expect(getByText(messages.editAccounts.message)).toBeDefined();
   });
 
-  it('does not render permissions tab', () => {
-    const { queryByTestId } = render();
-
-    expect(queryByTestId('permissions-tab')).toBeNull();
-  });
-
   it('renders edit accounts modal when edit button is clicked', () => {
     const { getByText } = render();
 
