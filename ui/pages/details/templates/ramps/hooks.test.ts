@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { mapRampsOrderSafely } from '../../../../hooks/ramps/utils/mapRampsOrderSafely';
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
