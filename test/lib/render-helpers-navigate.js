@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -206,7 +205,7 @@ export function renderHookWithProvider(
  * @template {(...args: any) => any} Hook
  * @template {Parameters<Hook>} HookParams
  * @template {ReturnType<Hook>} HookReturn
- * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
+ * @template {import('@testing-library/react').RenderHookResult<HookReturn, HookParams>} RenderHookResult
  * @param {Hook} hook - The hook to be rendered.
  * @param [state] - The initial state for the store.
  * @param [pathname] - The initial pathname for the history.

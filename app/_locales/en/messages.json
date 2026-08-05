@@ -3492,6 +3492,26 @@
   "discover": {
     "message": "Discover"
   },
+  "discoverSearchCap": {
+    "message": "cap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "No results found",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "No results found for “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Check out other popular assets",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -7000,6 +7020,10 @@
   "perpsCancelOrder": {
     "message": "Cancel order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order could not be cancelled. Try again.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Set candle interval"
   },
@@ -7329,6 +7353,82 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookApply": {
+    "message": "Apply"
+  },
+  "perpsOrderBookBuy": {
+    "message": "Buy: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Listed by & Group by"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Order book connection lost"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Buy $1%, sell $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Group by"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listed by"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Loading order book"
+  },
+  "perpsOrderBookNoData": {
+    "message": "No order book data"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Price"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconnect"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconnecting to order book"
+  },
+  "perpsOrderBookResize": {
+    "message": "Resize order book"
+  },
+  "perpsOrderBookSell": {
+    "message": "Sell: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
+  "perpsOrderBookSize": {
+    "message": "Size"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookUsePrice": {
+    "message": "Use $1 as limit price",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
+  "perpsOrderBookValueType": {
+    "message": "Value type"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Order book showing bids and asks",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Order book showing bids only",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Order book showing asks only",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
+  },
   "perpsOrderDate": {
     "message": "Date"
   },
@@ -7548,6 +7648,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit must be $1 $2 price",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "This order is no longer open",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Failed to cancel order",
@@ -11347,9 +11451,6 @@
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "This transaction will be reverted"
   },
@@ -11558,6 +11659,10 @@
     "message": "View on $1",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "View all",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
   },
@@ -11577,6 +11682,10 @@
   },
   "viewTokenDetails": {
     "message": "View token details"
+  },
+  "viewXMore": {
+    "message": "View $1 more",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",

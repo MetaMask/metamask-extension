@@ -33,14 +33,25 @@ const config: PlaywrightTestConfig = {
         outputFolder: `${logOutputFolder}/html/`,
       },
     ],
-    ['junit', { outputFile: `${logOutputFolder}/junit/test-results.xml` }],
+    [
+      'junit',
+      {
+        outputFile: `${logOutputFolder}/junit/test-results.xml`,
+      },
+    ],
+    // Mocha-compatible JUnit reporter used by the central e2e test
+    // report (`.github/scripts/create-e2e-test-report.mts`). Activates
+    // only when `PLAYWRIGHT_JUNIT_OUTPUT_FILE` is set, which the
+    // Playwright e2e CI jobs (chrome-e2e / firefox-e2e) export.
+    // See: test/e2e/playwright/shared/mocha-compat-junit-reporter.ts
+    ['./test/e2e/playwright/shared/mocha-compat-junit-reporter.ts'],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
+    // We capture our own diagnostics via verboseReportOnFailure
+    trace: 'off',
     video: 'off',
     /* Run tests headless in local */
     headless: isHeadless('PLAYWRIGHT'),
@@ -59,9 +70,33 @@ const config: PlaywrightTestConfig = {
       fullyParallel: false,
       timeout: 600 * 1000, // 10 minutes
     },
+    // Migrated Selenium specs running through the PlaywrightDriver shim.
+    //
+    // `use.*` options (video, trace, viewport, etc.) are inert here: these
+    // specs don't consume Playwright's built-in `page`/`context` fixtures.
+    // withFixtures spawns its own context via buildPlaywrightDriver →
+    // launchPersistentContext, which the runner never sees and therefore
+    // can't apply config to. To honor any `use.*` option, plumb it through
+    // the harness explicitly (see how `headless` is wired).
+    {
+      name: 'chrome-e2e',
+      testDir: 'test/e2e/tests',
+      testMatch: '**/*.pw.spec.ts',
+      fullyParallel: false,
+      workers: 1,
+      timeout: 5 * 60 * 1000,
+    },
+    {
+      name: 'firefox-e2e',
+      testDir: 'test/e2e/tests',
+      testMatch: '**/*.pw.spec.ts',
+      fullyParallel: false,
+      workers: 1,
+      timeout: 5 * 60 * 1000,
+    },
   ],
 
-  /* Folder for test artifacts such as screenshots, videos, traces, etc. */
+  /* Folder for test artifacts such as screenshots, videos, etc. */
   outputDir: `${logOutputFolder}/test-artifacts/`,
 };
 

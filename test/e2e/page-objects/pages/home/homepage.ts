@@ -60,7 +60,7 @@ class HomePage {
   protected readonly buySellButton = { css: 'button', text: 'Buy' };
 
   private readonly closeSurveyToastBannerButton =
-    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
