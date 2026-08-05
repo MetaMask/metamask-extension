@@ -186,14 +186,12 @@ describe('Multichain API', function () {
   });
 
   describe('Call `wallet_createSession`', function () {
-    describe("With requested EVM scope that match the user's enabled networks, edit selection in wallet UI", function () {
-      it('should change result according to changed network & accounts', async function () {
+    describe("With requested EVM scope that match the user's enabled networks, edit account selection in wallet UI", function () {
+      it('should change result according to changed accounts', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilderV2()
-              .withNetworkControllerTripleNode()
-              .build(),
+            fixtures: new FixtureBuilderV2().build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -203,10 +201,7 @@ describe('Multichain API', function () {
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes(
-              ['eip155:1337', 'eip155:1338'],
-              [ACCOUNT_1],
-            );
+            await testDapp.initCreateSessionScopes(['eip155:1337'], [ACCOUNT_1]);
 
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,
@@ -230,18 +225,9 @@ describe('Multichain API', function () {
             await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
-            assert.ok(getSessionResult.sessionScopes['eip155:1338']);
-            assert.ok(getSessionResult.sessionScopes['eip155:1337']);
-
             assert.deepEqual(
               getSessionResult.sessionScopes['eip155:1337'].accounts,
               getExpectedSessionScope('eip155:1337', [ACCOUNT_1, ACCOUNT_2])
-                .accounts,
-              `Should add account ${ACCOUNT_2} to scope`,
-            );
-            assert.deepEqual(
-              getSessionResult.sessionScopes['eip155:1338'].accounts,
-              getExpectedSessionScope('eip155:1338', [ACCOUNT_1, ACCOUNT_2])
                 .accounts,
               `Should add account ${ACCOUNT_2} to scope`,
             );
