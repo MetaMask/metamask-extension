@@ -220,7 +220,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: provider?.name || t(labelKeys.description.key, [symbol]),
+          // No provider name means no subtitle: the ramp description repeats
+          // the row title verbatim.
+          subtitle: provider?.name || undefined,
           primaryAmount:
             activity.status === 'pending' && token && !hasCryptoAmount
               ? formatPendingRampTokenLabel(symbol)
