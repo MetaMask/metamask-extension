@@ -106,12 +106,15 @@ function getItemHash(item: ActivityListItem) {
 /**
  * Details-route identifier: settlement hash, or internal ramps order code.
  *
- * @param item - The activity item.
+ * @param item - The activity item, or null/undefined when nothing is selected.
  * @returns The hash or ramp order code, if any.
  */
 export function getActivityItemIdentifier(
-  item: ActivityListItem,
+  item: ActivityListItem | null | undefined,
 ): string | undefined {
+  if (!item) {
+    return undefined;
+  }
   if (item.hash) {
     return item.hash;
   }

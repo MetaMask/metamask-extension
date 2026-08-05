@@ -26,6 +26,11 @@ function makeItem(
 }
 
 describe('getActivityItemIdentifier', () => {
+  it('returns undefined when no item is selected', () => {
+    expect(getActivityItemIdentifier(undefined)).toBeUndefined();
+    expect(getActivityItemIdentifier(null)).toBeUndefined();
+  });
+
   it('reduces a provider-prefixed ramp order id to its order code', () => {
     const rampBuy = makeItem({
       timestamp: 1,

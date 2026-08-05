@@ -215,9 +215,7 @@ export function ActivityList({
       >
         <TransactionDetails
           chainId={selectedItem?.chainId}
-          txIdentifier={
-            selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
-          }
+          txIdentifier={getActivityItemIdentifier(selectedItem)}
           onBack={() => dialogRef.current?.close?.()}
         />
       </dialog>
