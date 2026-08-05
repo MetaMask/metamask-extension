@@ -35,8 +35,6 @@ function setDefaultMocks(rive: Record<string, jest.Mock> | null = null) {
     isWasmReady: true,
     loading: false,
     error: undefined,
-    urlBufferMap: {},
-    setUrlBufferCache: jest.fn(),
     animationCompleted: {},
     setIsAnimationCompleted: jest.fn(),
   });
@@ -81,8 +79,6 @@ describe('FoxAppearAnimation', () => {
       isWasmReady: false,
       loading: true,
       error: undefined,
-      urlBufferMap: {},
-      setUrlBufferCache: jest.fn(),
       animationCompleted: {},
       setIsAnimationCompleted: jest.fn(),
     });

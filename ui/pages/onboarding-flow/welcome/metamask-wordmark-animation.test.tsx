@@ -40,8 +40,6 @@ function setDefaultMocks({
     isWasmReady,
     loading: false,
     error: wasmError,
-    urlBufferMap: {},
-    setUrlBufferCache: jest.fn(),
     animationCompleted: {},
     setIsAnimationCompleted: jest.fn(),
   });
@@ -110,8 +108,6 @@ describe('MetamaskWordMarkAnimation', () => {
       isWasmReady: true,
       loading: false,
       error: undefined,
-      urlBufferMap: {},
-      setUrlBufferCache: jest.fn(),
       animationCompleted: {},
       setIsAnimationCompleted,
     });

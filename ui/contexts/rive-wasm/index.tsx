@@ -26,7 +26,7 @@ const RIVE_WASM_URL = new URL(
 let riveWasmInitPromise: Promise<void> | null = null;
 
 function ensureRiveWasmLoaded(): Promise<void> {
-  if (!riveWasmInitPromise) {
+  if (riveWasmInitPromise === null) {
     riveWasmInitPromise = (async () => {
       if (typeof RuntimeLoader === 'undefined') {
         return;
@@ -94,8 +94,6 @@ const RiveWasmContext = createContext<{
   isWasmReady: boolean;
   loading: boolean;
   error: Error | undefined;
-  urlBufferMap: Record<string, ArrayBuffer>;
-  setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
   animationCompleted: Record<string, boolean>;
   setIsAnimationCompleted: (
     animationName: string,
@@ -105,9 +103,6 @@ const RiveWasmContext = createContext<{
   isWasmReady: false,
   loading: false,
   error: undefined,
-  urlBufferMap: {},
-  // eslint-disable-next-line no-empty-function
-  setUrlBufferCache: () => {},
   animationCompleted: {},
   // eslint-disable-next-line no-empty-function
   setIsAnimationCompleted: () => {},
@@ -118,19 +113,9 @@ export default function RiveWasmProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [urlBufferMap, setUrlBufferMap] = useState<Record<string, ArrayBuffer>>(
-    {},
-  );
   const [animationCompleted, setAnimationCompleted] = useState<
     Record<string, boolean>
   >({});
-
-  const setUrlBufferCache = useCallback(
-    (url: string, buffer: ArrayBuffer) => {
-      setUrlBufferMap((prev) => ({ ...prev, [url]: buffer }));
-    },
-    [setUrlBufferMap],
-  );
 
   const setIsAnimationCompleted = useCallback(
     (animationName: string, isAnimationCompleted: boolean) => {
@@ -149,20 +134,10 @@ export default function RiveWasmProvider({
       isWasmReady,
       loading,
       error,
-      urlBufferMap,
-      setUrlBufferCache,
       animationCompleted,
       setIsAnimationCompleted,
     }),
-    [
-      isWasmReady,
-      loading,
-      error,
-      urlBufferMap,
-      setUrlBufferCache,
-      animationCompleted,
-      setIsAnimationCompleted,
-    ],
+    [isWasmReady, loading, error, animationCompleted, setIsAnimationCompleted],
   );
 
   return (
@@ -191,7 +166,7 @@ function loadRivBuffer(url: string): Promise<ArrayBuffer> {
   }
 
   const inFlight = rivBufferPromises.get(url);
-  if (inFlight) {
+  if (inFlight !== undefined) {
     return inFlight;
   }
 
@@ -216,29 +191,40 @@ function loadRivBuffer(url: string): Promise<ArrayBuffer> {
   return promise;
 }
 
+/**
+ * Load a .riv into an ArrayBuffer, cached in a module-level Map so one
+ * animation finishing a fetch does not re-run effects or re-render siblings.
+ *
+ * @param url - Path to the .riv asset
+ */
 export const useRiveWasmFile = (url: string) => {
-  const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
-  const [rawBuffer, setRawBuffer] = useState<ArrayBuffer | undefined>(
-    () => urlBufferMap[url] ?? rivBufferCache.get(url),
+  const { isWasmReady } = useRiveWasmContext();
+  const [rawBuffer, setRawBuffer] = useState<ArrayBuffer | undefined>(() =>
+    rivBufferCache.get(url),
   );
-  const [loading, setLoading] = useState(() => !rawBuffer);
+  const [loading, setLoading] = useState(() => !rivBufferCache.has(url));
   const [error, setError] = useState<Error | undefined>(undefined);
+  const [loadedUrl, setLoadedUrl] = useState(url);
+
+  // Sync from the module Map when `url` changes (render-time adjust).
+  if (url !== loadedUrl) {
+    setLoadedUrl(url);
+    const cached = rivBufferCache.get(url);
+    setRawBuffer(cached);
+    setLoading(!cached);
+    setError(undefined);
+  }
 
   useEffect(() => {
-    let cancelled = false;
-    const cached = urlBufferMap[url] ?? rivBufferCache.get(url);
-    if (cached) {
-      setRawBuffer(cached);
-      setLoading(false);
-      setError(undefined);
+    // Cache hits are handled during render above; only fetch on miss.
+    if (rivBufferCache.has(url)) {
       return undefined;
     }
 
-    setLoading(true);
+    let cancelled = false;
     loadRivBuffer(url)
       .then((loaded) => {
         if (!cancelled) {
-          setUrlBufferCache(url, loaded);
           setRawBuffer(loaded);
           setLoading(false);
           setError(undefined);
@@ -254,7 +240,7 @@ export const useRiveWasmFile = (url: string) => {
     return () => {
       cancelled = true;
     };
-  }, [url, urlBufferMap, setUrlBufferCache]);
+  }, [url]);
 
   // Do not expose .riv bytes until WASM is ready. Callers pass `buffer` into
   // useRiveFile / useRive; a failed load while the runtime is unloaded can
