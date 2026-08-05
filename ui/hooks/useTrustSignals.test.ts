@@ -459,7 +459,7 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns a cache-driven result for a chain id that has no legacy EVM chain mapping', () => {
+      it('returns the cached result for a chain ID absent from the legacy mapping', () => {
         const UNMAPPED_CHAIN_ID_MOCK = '0x123456789';
 
         getAddressSecurityAlertResponseMock.mockReturnValue({
