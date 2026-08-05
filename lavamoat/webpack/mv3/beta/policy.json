@@ -1479,6 +1479,24 @@
         "@metamask/eth-qr-keyring>hdkey": true
       }
     },
+    "@metamask/eth-money-keyring": {
+      "packages": {
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true
+      }
+    },
+    "@metamask/money-account-controller>@metamask/eth-money-keyring": {
+      "packages": {
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/superstruct": true,
+        "async-mutex": true
+      }
+    },
     "@metamask/eth-qr-keyring": {
       "globals": {
         "Buffer.concat": true,
@@ -1794,11 +1812,15 @@
       }
     },
     "@metamask/keyring-sdk": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "async-mutex": true,
@@ -1908,6 +1930,64 @@
         "@metamask/mobile-wallet-protocol-core": true,
         "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": true,
         "@metamask/mobile-wallet-protocol-dapp-client>uuid": true
+      }
+    },
+    "@metamask/money-account-api-data-service": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true
+      }
+    },
+    "@metamask/money-account-balance-service": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true
+      }
+    },
+    "@metamask/money-account-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/accounts-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/money-account-controller>@metamask/eth-money-keyring": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/utils": true,
+        "async-mutex": true
+      }
+    },
+    "@metamask/money-account-utils": {
+      "packages": {
+        "@metamask/transaction-controller": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -2297,7 +2377,8 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "@tanstack/react-query": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
