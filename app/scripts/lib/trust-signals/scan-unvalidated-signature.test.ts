@@ -32,9 +32,17 @@ const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/u;
 
 // Build a minimal but valid EIP-712 payload whose schema types each address-
 // shaped message value as `address` (so the schema-driven extractor collects it).
-const buildTypedData = (message: Record<string, unknown>, primaryType = 'X') =>
+const buildTypedData = (
+  message: Record<string, unknown>,
+  primaryType = 'X',
+  {
+    verifyingContract = '0x0000000000000000000000000000000000000001',
+  }: {
+    verifyingContract?: string;
+  } = {},
+) =>
   JSON.stringify({
-    domain: { verifyingContract: '0x0000000000000000000000000000000000000001' },
+    domain: verifyingContract ? { verifyingContract } : {},
     message,
     primaryType,
     types: {
@@ -95,6 +103,39 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     const scanned = mockScan.mock.calls.map((call) => call[0]);
     expect(scanned).toEqual(expect.arrayContaining([SPENDER, RECIPIENT]));
     expect(scanned).not.toContain(SIGNER);
+  });
+
+  it('excludes the top-level spender for permit types with a verifying contract', () => {
+    run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+      SIGNER,
+      buildTypedData({ spender: SPENDER, recipient: RECIPIENT }, 'Permit'),
+    ]);
+
+    const scanned = mockScan.mock.calls.map((call) => call[0]);
+    expect(scanned).toContain(RECIPIENT);
+    expect(scanned).not.toContain(SPENDER);
+  });
+
+  it('scans the top-level spender for permit types without a verifying contract', () => {
+    run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+      SIGNER,
+      buildTypedData({ spender: SPENDER, recipient: RECIPIENT }, 'Permit', {
+        verifyingContract: '',
+      }),
+    ]);
+
+    const scanned = mockScan.mock.calls.map((call) => call[0]);
+    expect(scanned).toEqual(expect.arrayContaining([SPENDER, RECIPIENT]));
+  });
+
+  it('scans a field named spender for non-permit types', () => {
+    run(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+      SIGNER,
+      buildTypedData({ spender: SPENDER, recipient: RECIPIENT }, 'X'),
+    ]);
+
+    const scanned = mockScan.mock.calls.map((call) => call[0]);
+    expect(scanned).toEqual(expect.arrayContaining([SPENDER, RECIPIENT]));
   });
 
   it('is a no-op for non-typed-data methods', () => {

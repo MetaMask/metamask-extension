@@ -6,6 +6,7 @@ import {
   mapChainIdToSupportedEVMChain,
   extractSignatureAddresses,
 } from '../../../../shared/lib/trust-signals';
+import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
@@ -73,8 +74,21 @@ export function scanUnvalidatedSignatureAddresses({
 
   const signerAddress = typeof params[0] === 'string' ? params[0] : undefined;
 
+  // Match the exclusions applied by `useSignatureAddressAlerts` so the scanned
+  // set and the set the UI raises alerts about stay identical. The trust-signals
+  // middleware only scans the permit `spender` when the domain has a
+  // `verifyingContract`, so exclude it here only in that case; otherwise keep
+  // scanning it so it is not dropped.
+  const isPermit = PRIMARY_TYPES_PERMIT.some(
+    (type) => type === typedDataMessage.primaryType,
+  );
+  const hasVerifyingContract = Boolean(
+    typedDataMessage.domain?.verifyingContract,
+  );
+
   const { addresses } = extractSignatureAddresses(typedDataMessage, {
     exclude: signerAddress ? [signerAddress] : [],
+    excludeFields: isPermit && hasVerifyingContract ? ['spender'] : [],
   });
 
   for (const address of addresses) {
