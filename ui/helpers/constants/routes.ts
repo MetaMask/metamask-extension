@@ -15,6 +15,8 @@ export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const ASSET_DETAILS_ROUTE =
   `${ASSET_ROUTE}/:chainId/:asset?/:id?` as const;
+export const ASSET_SECURITY_TRUST_ROUTE =
+  `${ASSET_ROUTE}/:chainId/:asset?/:id?/security-trust` as const;
 export const ASSET_IMAGE_ROUTE = `${ASSET_ROUTE}/image/:asset/:id` as const;
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
@@ -90,6 +92,7 @@ export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
+export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
@@ -300,6 +303,11 @@ export const ROUTES = [
   {
     path: ASSET_DETAILS_ROUTE,
     label: 'Asset Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ASSET_SECURITY_TRUST_ROUTE,
+    label: 'Asset Security Trust Page',
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
@@ -558,6 +566,11 @@ export const ROUTES = [
   {
     path: TOKEN_MANAGEMENT_ROUTE,
     label: 'Token Management Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: DISCOVER_SEARCH_ROUTE,
+    label: 'Discover Search Page',
     trackInAnalytics: true,
   },
   {

@@ -1,7 +1,7 @@
 import { type SignatureStatus, VALID } from './verify';
 
 /**
- * SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
  *
  * This module is the single policy boundary that decides whether an intercepted
  * or deferred deep link must show the security interstitial. Keep this decision
@@ -25,7 +25,11 @@ type InterceptedDeepLinkContext = {
   source: 'intercepted';
   requestOrigin?: string;
   signatureStatus: SignatureStatus;
-  skipDeepLinkInterstitial: boolean;
+  /**
+   * Reads the local interstitial preference. This remains lazy because reading
+   * controller state is unnecessary for trusted origins or invalid links.
+   */
+  getSkipDeepLinkInterstitial: () => boolean;
 };
 
 type DeferredDeepLinkContext = {
@@ -47,7 +51,8 @@ export type DeepLinkInterstitialContext =
  *
  * This function must remain synchronous. In particular, asset reputation,
  * product configuration, feature flags, and other remote data must never
- * influence this decision.
+ * influence this decision. The intercepted preference getter is evaluated
+ * only for valid signatures from untrusted origins.
  *
  * @param context - The trusted inputs available for the relevant deep-link
  * flow.
@@ -64,5 +69,7 @@ export function shouldShowDeepLinkInterstitial(
     return false;
   }
 
-  return context.signatureStatus !== VALID || !context.skipDeepLinkInterstitial;
+  return (
+    context.signatureStatus !== VALID || !context.getSkipDeepLinkInterstitial()
+  );
 }

@@ -1,5 +1,5 @@
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
-import { parse } from '../../../shared/lib/deep-links/parse';
+import { NavigationOrigin, parse } from '../../../shared/lib/deep-links/parse';
 
 export function isInternalRouteHref(href: string): boolean {
   return href.startsWith('/') && !href.startsWith('//');
@@ -41,8 +41,9 @@ export async function resolveTrustedDeepLinkHref(
       return href;
     }
 
-    // Trusted content bypasses the interstitial, so signature status is ignored.
-    const parsed = await parse(url, { verify: false });
+    const parsed = await parse(url, {
+      navigationOrigin: NavigationOrigin.INTERNAL,
+    });
 
     if (!parsed) {
       // Unsupported MetaMask deep links intentionally fall back to the original

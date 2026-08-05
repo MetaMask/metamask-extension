@@ -17,10 +17,7 @@ describe('HeaderSearch', () => {
         <HeaderSearch
           variant={HeaderSearchVariant.Screen}
           onClickBackButton={onClickBackButton}
-          textFieldSearchProps={{
-            ...defaultSearchProps,
-            inputProps: { 'data-testid': 'header-search-input' },
-          }}
+          textFieldSearchProps={defaultSearchProps}
         />,
       );
 

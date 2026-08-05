@@ -3,7 +3,7 @@ import { SIG_PARAM } from './constants';
 import { getKeyData, sigToBytes } from './helpers';
 
 /**
- * SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
  *
  * Deep-link verification is asynchronous only because Web Crypto is
  * asynchronous. It must remain local and must never depend on a remote API,

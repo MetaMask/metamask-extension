@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AvatarAccountSize,
   AvatarNetwork,
@@ -15,6 +15,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { useDispatch } from '../../../store/hooks';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -302,7 +303,7 @@ export function EditContactForm({
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
+          className="flex-1 rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}

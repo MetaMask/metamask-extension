@@ -8,14 +8,17 @@ describe('shouldShowDeepLinkInterstitial', () => {
       'https://app.metamask.io',
     ]) {
       it(`allows the explicitly trusted web origin ${requestOrigin} to bypass the interstitial`, () => {
+        const getSkipDeepLinkInterstitial = jest.fn(() => false);
+
         const result = shouldShowDeepLinkInterstitial({
           source: 'intercepted',
           requestOrigin,
           signatureStatus: MISSING,
-          skipDeepLinkInterstitial: false,
+          getSkipDeepLinkInterstitial,
         });
 
         expect(result).toBe(false);
+        expect(getSkipDeepLinkInterstitial).not.toHaveBeenCalled();
       });
     }
 
@@ -24,41 +27,50 @@ describe('shouldShowDeepLinkInterstitial', () => {
         source: 'intercepted',
         requestOrigin: 'https://portfolio.metamask.io',
         signatureStatus: MISSING,
-        skipDeepLinkInterstitial: false,
+        getSkipDeepLinkInterstitial: () => false,
       });
 
       expect(result).toBe(true);
     });
 
     it('allows a valid signature when the user opted out of warnings', () => {
+      const getSkipDeepLinkInterstitial = jest.fn(() => true);
+
       const result = shouldShowDeepLinkInterstitial({
         source: 'intercepted',
         signatureStatus: VALID,
-        skipDeepLinkInterstitial: true,
+        getSkipDeepLinkInterstitial,
       });
 
       expect(result).toBe(false);
+      expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
     });
 
     it('shows the interstitial for a valid signature when the user did not opt out', () => {
+      const getSkipDeepLinkInterstitial = jest.fn(() => false);
+
       const result = shouldShowDeepLinkInterstitial({
         source: 'intercepted',
         signatureStatus: VALID,
-        skipDeepLinkInterstitial: false,
+        getSkipDeepLinkInterstitial,
       });
 
       expect(result).toBe(true);
+      expect(getSkipDeepLinkInterstitial).toHaveBeenCalledTimes(1);
     });
 
     for (const signatureStatus of [MISSING, INVALID]) {
       it(`shows the interstitial for a ${signatureStatus} signature even when the user opted out`, () => {
+        const getSkipDeepLinkInterstitial = jest.fn(() => true);
+
         const result = shouldShowDeepLinkInterstitial({
           source: 'intercepted',
           signatureStatus,
-          skipDeepLinkInterstitial: true,
+          getSkipDeepLinkInterstitial,
         });
 
         expect(result).toBe(true);
+        expect(getSkipDeepLinkInterstitial).not.toHaveBeenCalled();
       });
     }
   });

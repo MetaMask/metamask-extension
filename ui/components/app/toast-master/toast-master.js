@@ -1,10 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
@@ -20,24 +16,16 @@ import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
-  REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  hidePermittedNetworkToast,
-  toggleDefaultView,
-} from '../../../store/actions';
+import { toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
-import { SurveyToast } from '../../ui/survey-toast';
+import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -53,6 +41,8 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -84,7 +74,6 @@ import {
 // Memoized to prevent re-renders when ToastMaster re-renders due to location changes.
 const MemoizedSurveyToast = memo(SurveyToast);
 const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
-const MemoizedPermittedNetworkToast = memo(PermittedNetworkToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
@@ -111,7 +100,6 @@ export function ToastMaster() {
         <MemoizedStorageErrorToast />
         <MemoizedSurveyToast />
         <MemoizedPrivacyPolicyToast />
-        <MemoizedPermittedNetworkToast />
         <MemoizedInfuraSwitchToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
@@ -180,64 +168,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function PermittedNetworkToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const isPermittedNetworkToastOpen = useSelector(
-    (state) => state.appState.showPermittedNetworkToastOpen,
-  );
-
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-  const navigate = useNavigate();
-
-  // Use dapp's active network if available, otherwise fall back to global network
-  const displayNetwork = dappActiveNetwork || currentNetwork;
-
-  // Get the correct image URL - dapp network structure is different
-  const getNetworkImageUrl = () => {
-    if (dappActiveNetwork) {
-      // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      return (
-        dappActiveNetwork.rpcPrefs?.imageUrl ||
-        (dappActiveNetwork.chainId &&
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId])
-      );
-    }
-    // For global network, use existing logic
-    return currentNetwork?.rpcPrefs?.imageUrl || '';
-  };
-
-  return (
-    isPermittedNetworkToastOpen && (
-      <Toast
-        key="switched-permitted-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Md}
-            className="border-transparent"
-            src={getNetworkImageUrl()}
-            name={displayNetwork?.name || displayNetwork?.nickname}
-          />
-        }
-        text={t('permittedChainToastUpdate', [
-          getURLHost(activeTabOrigin),
-          displayNetwork?.name || displayNetwork?.nickname,
-        ])}
-        actionText={t('editPermissions')}
-        onActionClick={() => {
-          dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
-        }}
-        onClose={() => dispatch(hidePermittedNetworkToast())}
       />
     )
   );

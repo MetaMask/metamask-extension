@@ -5,8 +5,6 @@ import { Driver } from '../../../webdriver/driver';
  * Replaces the old settings contact list tab.
  */
 class ContactsSettings {
-  private readonly driver: Driver;
-
   private readonly addContactButton =
     '[data-testid="contacts-add-contact-button"]';
 
@@ -14,25 +12,21 @@ class ContactsSettings {
     testId: 'page-container-footer-next',
   };
 
-  private readonly networkSelector = {
-    testId: 'network-selector',
-  };
-
   private readonly contactListItem = '[data-testid="contact-list-item"]';
-
-  private readonly contactListItemLabel =
-    '[data-testid="contact-list-item-label"]';
 
   private readonly contactListItemAddress =
     '[data-testid="contact-list-item-address"]';
+
+  private readonly contactListItemLabel =
+    '[data-testid="contact-list-item-label"]';
 
   private readonly contactsPage = {
     testId: 'contacts-page',
   };
 
-  private readonly createContactNicknameInput = '#contact-nickname';
-
   private readonly createContactAddressInput = '#contact-address';
+
+  private readonly createContactNicknameInput = '#contact-nickname';
 
   private readonly deleteContactButton = {
     testId: 'view-contact-delete-button',
@@ -42,35 +36,24 @@ class ContactsSettings {
     testId: 'delete-contact-confirm-button',
   };
 
+  private readonly driver: Driver;
+
+  private readonly editContactAddressInput = '#edit-contact-address';
+
   private readonly editContactButton = {
     testId: 'view-contact-edit-button',
   };
 
+  private readonly editContactMemoInput = '#edit-contact-memo';
+
   private readonly editContactNicknameInput = '#edit-contact-nickname';
 
-  private readonly editContactAddressInput = '#edit-contact-address';
-
-  private readonly editContactMemoInput = '#edit-contact-memo';
+  private readonly networkSelector = {
+    testId: 'network-selector',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.contactsPage);
-    } catch (e) {
-      console.log('Timeout while waiting for Contacts page to be loaded', e);
-      throw e;
-    }
-    console.log('Contacts page is loaded');
-  }
-
-  /**
-   * Clicks the add contact button (same for empty state and when contacts exist).
-   */
-  private async clickAddContact(): Promise<void> {
-    await this.driver.clickElement(this.addContactButton);
   }
 
   /**
@@ -114,6 +97,60 @@ class ContactsSettings {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
+  }
+
+  /**
+   * Check if a contact is displayed on the contacts page.
+   *
+   * @param params - The parameters object
+   * @param params.contactName - The name of the contact.
+   * @param params.address - The address of the contact.
+   * @param params.shouldDisplay - Whether the contact should be displayed. Defaults to true.
+   */
+  async checkContactDisplayed({
+    contactName,
+    address,
+    shouldDisplay = true,
+  }: {
+    contactName: string;
+    address: string;
+    shouldDisplay?: boolean;
+  }): Promise<void> {
+    console.log(
+      `Checking if contact ${contactName} is displayed on contacts page`,
+    );
+    if (shouldDisplay) {
+      await this.driver.waitForSelector({
+        text: contactName,
+        css: this.contactListItemLabel,
+      });
+      await this.driver.waitForSelector({
+        css: this.contactListItemAddress,
+        text: address,
+      });
+    } else {
+      await this.driver.assertElementNotPresent({
+        text: contactName,
+        css: this.contactListItem,
+      });
+    }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.contactsPage);
+    } catch (e) {
+      console.log('Timeout while waiting for Contacts page to be loaded', e);
+      throw e;
+    }
+    console.log('Contacts page is loaded');
+  }
+
+  /**
+   * Clicks the add contact button (same for empty state and when contacts exist).
+   */
+  private async clickAddContact(): Promise<void> {
+    await this.driver.clickElement(this.addContactButton);
   }
 
   /**
@@ -168,43 +205,6 @@ class ContactsSettings {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
-  }
-
-  /**
-   * Check if a contact is displayed on the contacts page.
-   *
-   * @param params - The parameters object
-   * @param params.contactName - The name of the contact.
-   * @param params.address - The address of the contact.
-   * @param params.shouldDisplay - Whether the contact should be displayed. Defaults to true.
-   */
-  async checkContactDisplayed({
-    contactName,
-    address,
-    shouldDisplay = true,
-  }: {
-    contactName: string;
-    address: string;
-    shouldDisplay?: boolean;
-  }): Promise<void> {
-    console.log(
-      `Checking if contact ${contactName} is displayed on contacts page`,
-    );
-    if (shouldDisplay) {
-      await this.driver.waitForSelector({
-        text: contactName,
-        css: this.contactListItemLabel,
-      });
-      await this.driver.waitForSelector({
-        css: this.contactListItemAddress,
-        text: address,
-      });
-    } else {
-      await this.driver.assertElementNotPresent({
-        text: contactName,
-        css: this.contactListItem,
-      });
-    }
   }
 }
 
