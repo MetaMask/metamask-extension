@@ -619,9 +619,7 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
       );
 
       expect(spanB).toBeTruthy();
-      expect(
-        spanB && Sentry.spanToJSON(spanB).parent_span_id,
-      ).toBeUndefined();
+      expect(spanB && Sentry.spanToJSON(spanB).parent_span_id).toBeUndefined();
     });
   });
 
