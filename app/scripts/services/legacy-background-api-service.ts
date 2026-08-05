@@ -1782,11 +1782,13 @@ export class LegacyBackgroundApiService {
    *
    * @param transactionId - The ID of the transaction to update.
    * @param containerTypes - The container types to apply to the transaction.
+   * @param incrementToggleCount - Whether to increment the toggle interaction metric.
    */
   async applyTransactionContainersExisting(
     transactionId: string,
     containerTypes: TransactionContainerType[],
-  ): Promise<void> {
+    incrementToggleCount = false,
+  ): Promise<{ enforcedSimulationsSlippage?: number }> {
     const { transactions } = await this.#messenger.call(
       'TransactionController:getState',
     );
@@ -1797,19 +1799,27 @@ export class LegacyBackgroundApiService {
       throw new Error(`Transaction with ID ${transactionId} not found.`);
     }
 
-    const { updateTransaction } = await applyTransactionContainers({
-      isApproved: false,
-      messenger:
-        this.#messenger as unknown as TransactionControllerInitMessenger,
-      transactionMeta,
-      types: containerTypes,
-    });
+    if (incrementToggleCount) {
+      this.#incrementTransactionUIMetricsFragmentProperty(
+        transactionId,
+        'enforced_simulation_toggle_count',
+      );
+    }
+
+    const { enforcedSimulationsSlippage, updateTransaction } =
+      await applyTransactionContainers({
+        isApproved: false,
+        messenger:
+          this.#messenger as unknown as TransactionControllerInitMessenger,
+        transactionMeta,
+        types: containerTypes,
+      });
 
     const newTransactionMeta = cloneDeep(transactionMeta);
 
     updateTransaction(newTransactionMeta);
 
-    this.#messenger.call(
+    await this.#messenger.call(
       'TransactionController:updateEditableParams',
       transactionId,
       {
@@ -1824,6 +1834,8 @@ export class LegacyBackgroundApiService {
         value: newTransactionMeta.txParams.value,
       },
     );
+
+    return { enforcedSimulationsSlippage };
   }
 
   /**
@@ -1889,6 +1901,27 @@ export class LegacyBackgroundApiService {
       canDeleteIfAbandoned: true,
       properties: payload.properties ?? {},
       sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
+  /**
+   * Increments a numeric property in a transaction UI metrics fragment.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param property - The metrics property to increment.
+   */
+  #incrementTransactionUIMetricsFragmentProperty(
+    transactionId: string,
+    property: string,
+  ): void {
+    const fragment = this.#getTransactionUIMetricsFragment(transactionId);
+    const currentValue = fragment?.properties?.[property];
+    const nextValue = (typeof currentValue === 'number' ? currentValue : 0) + 1;
+
+    this.upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        [property]: nextValue,
+      },
     });
   }
 
