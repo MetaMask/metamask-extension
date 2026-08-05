@@ -13,17 +13,24 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useConfirmContext } from '../../../context/confirm';
 import { AlertsName } from '../constants';
 
+// Session-scoped cache so the alert hook and the footer share one request.
+const multiSigStatusByAddress = new Map<string, Promise<boolean>>();
+
 /**
- * Blocking alert when the account is a HyperLiquid multi-sig user.
+ * Pre-flight check for the HyperLiquid multi-sig status of the account.
  *
  * HyperLiquid rejects every single-signature action from an account that was
  * converted to a multi-sig user (`Multi-sig required`), so the withdrawal
  * would always fail at the final `sendAsset` step. MetaMask cannot produce
- * HyperLiquid multi-sig signatures, so block the confirmation up front with a
- * clear reason instead.
+ * HyperLiquid multi-sig signatures, so the confirmation is blocked up front:
+ * `usePerpsWithdrawMultiSigAlert` blocks a detected multi-sig account, and
+ * `pending` keeps the confirm button loading until the check resolves so the
+ * withdrawal cannot be submitted before the result is known.
  */
-export function usePerpsWithdrawMultiSigAlert(): Alert[] {
-  const t = useI18nContext();
+export function usePerpsWithdrawMultiSigCheck(): {
+  pending: boolean;
+  isMultiSigAccount: boolean;
+} {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
@@ -31,13 +38,26 @@ export function usePerpsWithdrawMultiSigAlert(): Alert[] {
 
   // This hook runs for every confirmation type, so only query HyperLiquid
   // when the confirmation actually is a perps withdrawal.
-  const { value: isMultiSigAccount } = useAsyncResult(async () => {
+  const { pending, value } = useAsyncResult(async () => {
     if (!isPerpsWithdraw || !from) {
       return false;
     }
 
     return await isHyperliquidMultiSigUser(from);
   }, [isPerpsWithdraw, from]);
+
+  return {
+    pending: isPerpsWithdraw && Boolean(from) && pending,
+    isMultiSigAccount: value === true,
+  };
+}
+
+/**
+ * Blocking alert when the account is a HyperLiquid multi-sig user.
+ */
+export function usePerpsWithdrawMultiSigAlert(): Alert[] {
+  const t = useI18nContext();
+  const { isMultiSigAccount } = usePerpsWithdrawMultiSigCheck();
 
   return useMemo(() => {
     if (!isMultiSigAccount) {
@@ -57,7 +77,19 @@ export function usePerpsWithdrawMultiSigAlert(): Alert[] {
   }, [isMultiSigAccount, t]);
 }
 
-async function isHyperliquidMultiSigUser(address: Hex): Promise<boolean> {
+function isHyperliquidMultiSigUser(address: Hex): Promise<boolean> {
+  const cacheKey = address.toLowerCase();
+  let status = multiSigStatusByAddress.get(cacheKey);
+
+  if (!status) {
+    status = fetchIsMultiSigUser(address);
+    multiSigStatusByAddress.set(cacheKey, status);
+  }
+
+  return status;
+}
+
+async function fetchIsMultiSigUser(address: Hex): Promise<boolean> {
   try {
     const response = await fetch(HYPERLIQUID_INFO_API_URL, {
       method: 'POST',

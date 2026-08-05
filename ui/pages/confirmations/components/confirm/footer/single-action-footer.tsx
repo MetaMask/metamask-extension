@@ -11,6 +11,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
+import { usePerpsWithdrawMultiSigCheck } from '../../../hooks/alerts/transactions/usePerpsWithdrawMultiSigAlert';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
 type ButtonState = {
@@ -35,6 +36,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const { pending: isMultiSigCheckPending } = usePerpsWithdrawMultiSigCheck();
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -66,12 +68,16 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
       isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
 
     const isLoading =
-      isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
+      isAwaitingRequiredToken ||
+      isGaslessLoading ||
+      isPayLoading ||
+      isMultiSigCheckPending;
 
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
     isGaslessLoading,
+    isMultiSigCheckPending,
     isPayLoading,
     primaryRequiredToken,
     transactionType,
