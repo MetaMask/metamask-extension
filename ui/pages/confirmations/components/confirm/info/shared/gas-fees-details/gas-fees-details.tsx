@@ -85,7 +85,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
       {
         properties: {
           enforced_simulation_added_network_fee_usd: showAddedProtectionFee
-            ? addedProtectionFeeUsd
+            ? (addedProtectionFeeUsd ?? 0)
             : 0,
         },
       },

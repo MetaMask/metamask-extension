@@ -47,6 +47,7 @@ function getStore({
   userFeeLevel,
   chainId,
   isEnforcedSimulations,
+  usdConversionRate = 556.12,
 }: {
   isAdvanced?: boolean;
   selectedGasFeeToken?: Hex;
@@ -54,6 +55,7 @@ function getStore({
   userFeeLevel?: UserFeeLevel;
   chainId?: Hex;
   isEnforcedSimulations?: boolean;
+  usdConversionRate?: number;
 } = {}) {
   const confirmation = genUnapprovedContractInteractionConfirmation({
     chainId,
@@ -78,11 +80,11 @@ function getStore({
         currencyRates: {
           ETH: {
             conversionRate: 556.12,
-            usdConversionRate: 556.12,
+            usdConversionRate,
           },
           SepoliaETH: {
             conversionRate: 556.12,
-            usdConversionRate: 556.12,
+            usdConversionRate,
           },
         },
         preferences: {
@@ -157,7 +159,12 @@ describe('<GasFeesDetails />', () => {
   it('does not render max fee if advanced and selected gas fee token', async () => {
     const { queryByTestId } = renderWithConfirmContextProvider(
       <GasFeesDetails />,
-      getStore({ isAdvanced: true, selectedGasFeeToken: '0x123' }),
+      getStore({
+        isAdvanced: true,
+        isEnforcedSimulations: true,
+        selectedGasFeeToken: '0x123',
+        usdConversionRate: 0,
+      }),
     );
 
     await act(async () => {
@@ -165,6 +172,14 @@ describe('<GasFeesDetails />', () => {
     });
 
     expect(queryByTestId('gas-fee-details-max-fee')).toBeNull();
+    expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: 0,
+        },
+      },
+      expect.any(String),
+    );
   });
 
   it('does not render gas timing if selected gas fee token', async () => {
