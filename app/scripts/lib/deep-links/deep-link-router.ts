@@ -42,7 +42,7 @@ export type Options = {
  * to listen for navigation events and errors.
  */
 export class DeepLinkRouter extends EventEmitter<{
-  navigate: [{ url: URL; parsed: ParsedDeepLink }];
+  navigate: [{ tabId: number; url: URL; parsed: ParsedDeepLink }];
   error: [unknown];
 }> {
   /**
@@ -186,7 +186,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
       const parsed = await parse(url);
       if (parsed) {
-        this.emit('navigate', { url, parsed });
+        this.emit('navigate', { tabId, url, parsed });
 
         if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
           if ('redirectTo' in parsed.destination) {

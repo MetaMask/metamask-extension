@@ -26,9 +26,11 @@ export type Destination =
   | {
       path: string;
       query: URLSearchParams;
+      trackContinuity?: boolean;
     }
   | {
       redirectTo: URL;
+      trackContinuity?: boolean;
     };
 
 export type HandlerSearchParams = 'canonical' | 'original';

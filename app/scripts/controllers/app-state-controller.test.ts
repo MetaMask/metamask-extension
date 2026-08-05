@@ -38,6 +38,7 @@ jest.mock('../../../shared/lib/mv3.utils', () => ({
   },
 }));
 
+const tabsOnRemovedAddListenerMock = jest.fn();
 const extensionMock = {
   alarms: {
     getAll: jest.fn(() => Promise.resolve([])),
@@ -47,7 +48,16 @@ const extensionMock = {
       addListener: jest.fn(),
     },
   },
+    tabs: {
+      onRemoved: {
+        addListener: tabsOnRemovedAddListenerMock,
+      },
+    },
 } as unknown as jest.Mocked<Browser>;
+
+beforeEach(() => {
+  tabsOnRemovedAddListenerMock.mockClear();
+});
 
 describe('AppStateController', () => {
   describe('updateNftDropDownState', () => {
@@ -1075,6 +1085,7 @@ describe('AppStateController', () => {
               "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
+              "continuityIdsByTabId": {},
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "dappSwapComparisonData": {},
@@ -1164,6 +1175,46 @@ describe('AppStateController', () => {
         controller.removeDeferredDeepLink();
 
         expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
+    });
+  });
+
+  describe('pending deep-link context', () => {
+    it('stores and removes a pending context by tab id', async () => {
+      await withController(async ({ controller }) => {
+        const continuityId = controller.setContinuityIdForTab(123);
+
+        expect(controller.state.continuityIdsByTabId).toStrictEqual({
+          '123': continuityId,
+        });
+
+        controller.removeContinuityIdForTab(123);
+        expect(controller.state.continuityIdsByTabId).toStrictEqual({});
+      });
+    });
+
+    it('clears the continuity context when the tab is removed', async () => {
+      await withController(async ({ controller }) => {
+        const continuityId = controller.setContinuityIdForTab(123);
+
+        expect(controller.state.continuityIdsByTabId).toStrictEqual({
+          '123': continuityId,
+        });
+
+        const [onRemovedListener] = tabsOnRemovedAddListenerMock.mock.calls[0];
+        onRemovedListener(123);
+
+        expect(controller.state.continuityIdsByTabId).toStrictEqual({});
+      });
+    });
+
+    it('does nothing when removing a tab id that has no continuity id', async () => {
+      await withController(async ({ controller }) => {
+        const before = controller.state.continuityIdsByTabId;
+
+        controller.removeContinuityIdForTab(123);
+
+        expect(controller.state.continuityIdsByTabId).toBe(before);
       });
     });
   });

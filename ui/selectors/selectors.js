@@ -4082,6 +4082,17 @@ export function getDeferredDeepLink(state) {
 }
 
 /**
+ * Retrieves a continuity ID for a specific browser tab.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @param {number} tabId - The browser tab ID.
+ * @returns {string | undefined} The continuity ID for the tab if available.
+ */
+export function getContinuityIdForTab(state, tabId) {
+  return state.metamask?.continuityIdsByTabId?.[String(tabId)];
+}
+
+/**
  * Retrieves the deferred deep link parameters from the MetaMask state.
  *
  * @param {MetaMaskReduxState} state - The Redux state object.

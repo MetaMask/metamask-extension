@@ -85,7 +85,11 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
+import {
+  canSubmitAnalytics,
+  createEventBuilder,
+  trackEvent,
+} from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -903,10 +907,17 @@ async function initialize(backup) {
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
   })
-    .on('navigate', async ({ url, parsed }) => {
+    .on('navigate', async ({ tabId, url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        if (canSubmitAnalytics()) {
+          const event = { signature: parsed.signature, url };
+          if (Boolean(parsed.destination?.trackContinuity)) {
+            event.continuityId =
+              controller.appStateController.setContinuityIdForTab(tabId);
+          }
+          trackEvent(createEvent(event));
+        }
       }
     })
     .on('error', (error) => sentry?.captureException(error))
