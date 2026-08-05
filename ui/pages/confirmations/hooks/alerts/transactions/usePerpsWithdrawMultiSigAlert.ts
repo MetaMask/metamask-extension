@@ -112,12 +112,10 @@ function isHyperliquidMultiSigUser(address: Hex): Promise<boolean> {
   let status = multiSigStatusByAddress.get(cacheKey);
 
   if (!status) {
-    status = fetchIsMultiSigUser(address).catch(() => {
-      // Fail open (never block withdrawals on a failed pre-flight check) and
-      // drop the cache entry so the next confirmation retries.
-      multiSigStatusByAddress.delete(cacheKey);
-      return false;
-    });
+    // Fail open on any failure, including the fetch timeout: never block
+    // withdrawals on a failed pre-flight check. The result is cached for the
+    // session, so every consumer sees one stable answer per address.
+    status = fetchIsMultiSigUser(address).catch(() => false);
     multiSigStatusByAddress.set(cacheKey, status);
   }
 
