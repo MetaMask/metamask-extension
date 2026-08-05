@@ -23,8 +23,12 @@ const maxEmptyFilteredPagesToSkip = 1;
 type TransactionQueryOptions = ReturnType<
   typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
 >;
+type QueryOptions = Extract<
+  TransactionQueryOptions,
+  { getNextPageParam: unknown }
+>;
 type TransactionQueryFunction = Extract<
-  NonNullable<TransactionQueryOptions['queryFn']>,
+  NonNullable<QueryOptions['queryFn']>,
   (...args: never[]) => unknown
 >;
 
@@ -41,7 +45,7 @@ function isKnownApiResponseError(error: unknown) {
   );
 }
 
-function withKnownApiResponse(queryFn: TransactionQueryOptions['queryFn']) {
+function withKnownApiResponse(queryFn: QueryOptions['queryFn']) {
   if (typeof queryFn !== 'function') {
     return queryFn;
   }
@@ -90,20 +94,16 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
       networks: evmNetworks,
       includeTxMetadata: true,
       lang: locale.split('-')[0],
-    });
+    }) as QueryOptions;
 
   const enabled =
     Boolean(useExternalServices) &&
     evmNetworks.length > 0 &&
     accountAddresses.length > 0;
 
-  // Wrapped queryFn + select widen the options union enough that TS loses
-  // getNextPageParam from FetchInfiniteQueryOptions.
-  // @ts-expect-error Infinite query options from apiClient + local wrappers
   const query = useInfiniteQuery({
     ...queryOptions,
     queryFn: withKnownApiResponse(queryOptions.queryFn),
-    initialPageParam: queryOptions.initialPageParam,
     select: selectFn,
     enabled,
     retry: false,
@@ -184,7 +184,7 @@ export function usePrefetchTransactions() {
         networks: evmNetworks,
         includeTxMetadata: true,
         lang: locale.split('-')[0],
-      }),
+      }) as QueryOptions,
     [accountAddresses, evmNetworks, locale],
   );
 
@@ -205,7 +205,6 @@ export function usePrefetchTransactions() {
     queryClient
       .prefetchInfiniteQuery({
         ...queryOptions,
-        // @ts-expect-error Infinite query options from apiClient + local wrappers
         queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
