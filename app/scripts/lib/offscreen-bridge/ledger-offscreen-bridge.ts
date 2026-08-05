@@ -19,7 +19,7 @@ import {
   HardwareWalletType,
   toHardwareWalletError,
 } from '../../../../shared/lib/hardware-wallets';
-import { SerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
+import { SerializedLedgerError, isSerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
 
 export const MESSAGE_TIMEOUT_MS = 4000;
 
@@ -229,10 +229,9 @@ export class LedgerOffscreenBridge implements Omit<
           }
 
           // Generic `TAction` prevents overload resolution from picking a
-          // specific ledger response shape, so narrow explicitly here.
-          const response = rawResponse as
-            | LedgerOffscreenResponse<ResponsePayload>
-            | undefined;
+          // specific ledger response shape, so declare it explicitly here.
+          const response: LedgerOffscreenResponse<ResponsePayload> | undefined =
+            rawResponse;
 
           if (response?.success) {
             resolve((response.payload ?? response.success) as ResponsePayload);
@@ -248,7 +247,8 @@ export class LedgerOffscreenBridge implements Omit<
   #toLedgerBridgeError(
     response: LedgerOffscreenResponse<unknown> | undefined,
   ): Error {
-    const error = this.#extractSerializedError(response);
+    const rawError = this.#extractError(response);
+    const error = isSerializedLedgerError(rawError) ? rawError : undefined;
 
     if (error?.name === 'HardwareWalletError') {
       return toHardwareWalletError(error, HardwareWalletType.Ledger);
@@ -266,20 +266,18 @@ export class LedgerOffscreenBridge implements Omit<
       return new Error(error.message, { cause: error });
     }
 
-    return new Error('Unknown Ledger error occurred');
+    return new Error('Unknown Ledger error occurred', { cause: rawError });
   }
 
-  #extractSerializedError(
+  #extractError(
     response: LedgerOffscreenResponse<unknown> | undefined,
-  ): SerializedLedgerError | undefined {
+  ): unknown {
     if (
       response?.payload &&
       typeof response.payload === 'object' &&
       'error' in response.payload
     ) {
-      // `ResponsePayload` is `unknown` here, so `payload` collapses to
-      // `unknown` and `.error` is not typed — narrow explicitly.
-      return (response.payload as { error?: SerializedLedgerError }).error;
+      return (response.payload).error;
     }
     return response?.error;
   }
