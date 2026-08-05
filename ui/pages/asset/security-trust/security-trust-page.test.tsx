@@ -9,6 +9,7 @@ import { SecurityTrustAnalyticsProperty } from '../components/security-trust/sec
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../../shared/lib/assets/security-trust-feature-flags';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import SecurityTrustPage from './security-trust-page';
 
 const mockNavigate = jest.fn();
@@ -346,7 +347,7 @@ describe('SecurityTrustPage', () => {
         name: MetaMetricsEventName.SecurityPageDismissed,
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('renders verified summary and feature tags', () => {
@@ -445,7 +446,7 @@ describe('SecurityTrustPage', () => {
     renderPage();
 
     fireEvent.click(screen.getByTestId('security-trust-back-button'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('renders prefetched security data without loading state', () => {
