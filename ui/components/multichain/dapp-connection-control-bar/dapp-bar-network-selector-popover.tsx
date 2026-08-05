@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import {
   AvatarNetworkSize,
   Popover,
@@ -45,7 +46,6 @@ import {
   setNextNonce,
   setShowTestNetworks,
   setTokenNetworkFilter,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -89,6 +89,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { showPermittedNetworkToast } = usePermittedNetworkToast();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
@@ -177,7 +178,10 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            dispatch(showPermittedNetworkToast());
+            showPermittedNetworkToast({
+              origin: selectedTabOrigin,
+              network,
+            });
           }
 
           await setNetworkClientIdForDomain(
@@ -232,6 +236,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       tokenNetworkFilter,
       trackEvent,
       createEventBuilder,
+      showPermittedNetworkToast,
       onClose,
     ],
   );

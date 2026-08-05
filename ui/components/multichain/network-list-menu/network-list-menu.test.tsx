@@ -31,6 +31,18 @@ const mockAddPermittedChain = jest.fn();
 const mockShowPermittedNetworkToast = jest.fn();
 const mockSetEnabledNetworks = jest.fn();
 
+jest.mock(
+  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      showPermittedNetworkToast: (...args: unknown[]) => {
+        mockShowPermittedNetworkToast(...args);
+      },
+      dismissPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
+
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
     mockSetShowTestNetworks();
@@ -67,10 +79,6 @@ jest.mock('../../../store/actions.ts', () => ({
   addPermittedChain: (...args: unknown[]) => {
     mockAddPermittedChain(...args);
     return { type: 'MOCK_ADD_PERMITTED_CHAIN' };
-  },
-  showPermittedNetworkToast: () => {
-    mockShowPermittedNetworkToast();
-    return { type: 'MOCK_SHOW_PERMITTED_NETWORK_TOAST' };
   },
   setEnabledNetworks: () => {
     mockSetEnabledNetworks();
