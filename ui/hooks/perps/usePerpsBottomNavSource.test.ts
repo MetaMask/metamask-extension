@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import {
   DEFAULT_ROUTE,
