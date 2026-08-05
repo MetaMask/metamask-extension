@@ -23,6 +23,7 @@ if (process.env.ENABLE_SENTRY === 'true') {
   // integration cannot disguise its wrappers as the original functions. It
   // disables itself safely; the only known difference is what wrapped functions
   // return when application code explicitly calls `.toString()` on them.
+  // commented out to test LM fix
   // for (const globalName of [
   //   'fetch',
   //   'requestAnimationFrame',
