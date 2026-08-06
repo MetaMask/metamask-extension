@@ -170,6 +170,14 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
+  // Unowned Discover/deep-link tokens often have no TokenRatesController price.
+  // Fall back to the latest historical point so the header price still renders.
+  const displayPrice =
+    currentPrice ??
+    (!isPlaceholderData && prices.length > 0
+      ? prices[prices.length - 1]?.y
+      : undefined);
+
   const prevIsPlaceholderData = usePrevious(isPlaceholderData);
   const wasPlaceholderData = prevIsPlaceholderData && !isPlaceholderData;
 
@@ -224,10 +232,10 @@ const AssetChart = ({
   // Init the price ref with the current price
   useEffect(() => {
     priceRef?.current?.setPrice({
-      price: currentPrice,
+      price: displayPrice,
       date: Date.now(),
     });
-  }, [currentPrice]);
+  }, [displayPrice]);
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
@@ -235,7 +243,7 @@ const AssetChart = ({
         ref={priceRef}
         loading={loading || isPlaceholderData}
         currency={currency}
-        price={currentPrice}
+        price={displayPrice}
         date={Date.now()}
         comparePrice={
           isPlaceholderData || shouldShowChartEmptyState
@@ -270,7 +278,7 @@ const AssetChart = ({
               className="flex"
               flexDirection={BoxFlexDirection.Column}
               justifyContent={
-                currentPrice ? BoxJustifyContent.End : BoxJustifyContent.Start
+                displayPrice ? BoxJustifyContent.End : BoxJustifyContent.Start
               }
             >
               <Line
@@ -307,7 +315,7 @@ const AssetChart = ({
                 // Revert to current price when not hovering
                 onMouseOut={() => {
                   priceRef?.current?.setPrice({
-                    price: currentPrice,
+                    price: displayPrice,
                     date: Date.now(),
                   });
                 }}

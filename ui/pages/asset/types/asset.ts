@@ -27,6 +27,11 @@ export type Asset = (
   name?: string;
   /** A URL to the asset's image */
   image: string;
+  /**
+   * Optional spot price (e.g. from Discover Search location state) used when
+   * TokenRatesController has no market data for this asset.
+   */
+  price?: number;
   /** True if the asset implements ERC721 */
   isERC721?: boolean;
   /** RWA metadata used for stock token UI */

@@ -20,6 +20,8 @@ export type LocationStateToken = {
   image?: string;
   isNative?: boolean;
   decimals: number;
+  /** Spot price from Discover Search / deep-link state when wallet market data is missing */
+  price?: number;
 };
 
 type UseRouteAssetTokenParams = {

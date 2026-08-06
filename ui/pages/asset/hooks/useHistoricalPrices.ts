@@ -82,13 +82,26 @@ const deriveMetadata = (prices: Point[]): HistoricalPrices['metadata'] => {
     }
   }
 
+  // Near-stable assets (e.g. yield-bearing USD tokens) can have sub-cent
+  // ranges that autoscaling turns into a noisy zigzag. Pad the Y domain to
+  // at least ~2% of mid-price so the chart stays readable.
+  const midPrice = (minPricePoint.y + maxPricePoint.y) / 2;
+  const priceRange = maxPricePoint.y - minPricePoint.y;
+  const minReadableRange = Math.abs(midPrice) * 0.02;
+  const shouldPadYDomain =
+    Number.isFinite(midPrice) &&
+    midPrice !== 0 &&
+    minReadableRange > 0 &&
+    priceRange < minReadableRange;
+  const yPadding = shouldPadYDomain ? (minReadableRange - priceRange) / 2 : 0;
+
   return {
     minPricePoint,
     maxPricePoint,
     xMin,
     xMax,
-    yMin: minPricePoint.y,
-    yMax: maxPricePoint.y,
+    yMin: minPricePoint.y - yPadding,
+    yMax: maxPricePoint.y + yPadding,
   };
 };
 

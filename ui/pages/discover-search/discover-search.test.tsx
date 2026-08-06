@@ -265,7 +265,7 @@ describe('DiscoverSearchPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('navigates to the CAIP asset route when an asset result is clicked', () => {
+  it('navigates to the CAIP asset route with token state when an asset result is clicked', () => {
     renderPage();
 
     fireEvent.click(
@@ -274,6 +274,71 @@ describe('DiscoverSearchPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       '/asset/eip155:1/eip155%3A1%2Fslip44%3A60',
+      {
+        state: {
+          token: {
+            address: '',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            chainId: '0x1',
+            image: expect.any(String),
+            isNative: true,
+            decimals: 18,
+            price: 2500,
+          },
+        },
+      },
+    );
+  });
+
+  it('navigates to the CAIP ERC-20 route with token state for unowned search results', () => {
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        id: 'crypto' as const,
+        items: [
+          {
+            assetId:
+              'eip155:8453/erc20:0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            name: 'Coinbase Wrapped BTC',
+            symbol: 'CBBTC',
+            decimals: 8,
+            price: '65000',
+            marketCap: 1_000_000_000,
+            aggregatedUsdVolume: 50_000_000,
+            priceChangePct: { h24: '1.2' },
+          },
+        ],
+        isLoading: false,
+        error: null,
+        totalCount: 1,
+      },
+    });
+
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId(
+        'discover-crypto-preview-eip155:8453/erc20:0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+      ),
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/asset/eip155:8453/eip155%3A8453%2Ferc20%3A0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+      {
+        state: {
+          token: {
+            address: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            symbol: 'CBBTC',
+            name: 'Coinbase Wrapped BTC',
+            chainId: '0x2105',
+            image: expect.any(String),
+            isNative: false,
+            decimals: 8,
+            price: 65000,
+          },
+        },
+      },
     );
   });
 

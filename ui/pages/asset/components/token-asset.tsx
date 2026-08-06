@@ -32,7 +32,15 @@ const TokenAsset = ({
   token: TokenWithAssetId;
   chainId: Hex;
 }) => {
-  const { address: hexOrCaipAddress, assetId, symbol, isERC721, image } = token;
+  const {
+    address: hexOrCaipAddress,
+    assetId,
+    symbol,
+    name: tokenName,
+    isERC721,
+    image,
+    price,
+  } = token as TokenWithAssetId & { price?: number };
   const address = assetId || hexOrCaipAddress;
 
   const tokenList = useSelector(getTokenList);
@@ -69,7 +77,10 @@ const TokenAsset = ({
   const tokenDataFromChain =
     erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
-  const name = tokenData?.name || tokenDataFromChain?.name || symbol;
+  // Prefer remote token-list metadata, then the route/location-state name
+  // (Discover Search / deep links), then symbol.
+  const name =
+    tokenData?.name || tokenDataFromChain?.name || tokenName || symbol;
   const iconUrl =
     tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
 
@@ -98,6 +109,7 @@ const TokenAsset = ({
         image: iconUrl,
         aggregators,
         isERC721,
+        price,
       }}
       optionsButton={
         <AssetOptions

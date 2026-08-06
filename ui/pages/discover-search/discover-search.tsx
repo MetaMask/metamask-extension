@@ -18,8 +18,6 @@ import {
   TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
-import { isCaipAssetType } from '@metamask/utils';
-
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import {
@@ -37,6 +35,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { buildDiscoverAssetNavigation } from './build-discover-asset-navigation';
 import { DiscoverAssetRow } from './discover-asset-row';
 import { DiscoverNoResultsState } from './discover-no-results-state';
 import { DiscoverSearchSectionHeader } from './discover-search-section-header';
@@ -212,9 +211,12 @@ export const DiscoverSearchPage = () => {
 
   const handleAssetPress = useCallback(
     (asset: TrendingAsset) => {
-      if (isCaipAssetType(asset.assetId)) {
-        navigate(buildAssetRoutePath(asset.assetId));
+      const navigation = buildDiscoverAssetNavigation(asset);
+      if (!navigation) {
+        return;
       }
+
+      navigate(navigation.path, { state: navigation.state });
     },
     [navigate],
   );
