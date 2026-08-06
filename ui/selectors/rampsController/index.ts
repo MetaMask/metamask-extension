@@ -11,6 +11,11 @@ import {
   type RampsControllerState,
 } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
+
+export type RampsActivityItem = NonNullable<
+  ReturnType<typeof mapRampsOrderSafely>
+>;
 
 /**
  * RampsController state is flattened into state.metamask by
@@ -100,30 +105,44 @@ export const selectRampsOrdersForSelectedAccount = createSelector(
 );
 
 /**
- * Settlement hashes for the selected account's ramp orders.
+ * Activity items for the selected account's ramp orders.
+ *
+ * Orders the shared mapper filters out (hidden statuses, `excludeFromPurchases`,
+ * unresolvable chain data) are dropped, so this is exactly the set of ramp rows
+ * Activity can render.
+ *
+ * @param state - Extension UI state with flattened RampsController fields.
+ * @returns The mapped ramp activity items.
+ */
+export const selectRampsActivityItems = createSelector(
+  [selectRampsOrdersForSelectedAccount],
+  (orders): RampsActivityItem[] =>
+    orders
+      .map((order) => mapRampsOrderSafely(order))
+      .filter((item) => item !== undefined),
+);
+
+/**
+ * Settlement hashes for the selected account's ramp Activity rows.
  *
  * Used to hide the generic local/API Activity row that shares a ramp order's
- * on-chain settlement hash. Empty / placeholder provider hashes are ignored.
+ * on-chain settlement hash. Derived from the mapped items so an order that
+ * never surfaces as a ramp row cannot hide its generic transaction, and so
+ * placeholder provider hashes are excluded by the shared mapper.
  *
  * @param state - Extension UI state with flattened RampsController fields.
  * @returns Lowercased settlement hashes.
  */
 export const selectRampsSettlementHashes = createSelector(
-  [selectRampsOrdersForSelectedAccount],
-  (orders): Set<string> => {
+  [selectRampsActivityItems],
+  (items): Set<string> => {
     const hashes = new Set<string>();
 
-    for (const order of orders) {
-      if (typeof order.txHash !== 'string') {
-        continue;
+    for (const item of items) {
+      const hash = item.hash?.trim().toLowerCase();
+      if (hash) {
+        hashes.add(hash);
       }
-
-      const normalized = order.txHash.trim().toLowerCase();
-      if (normalized === '' || /^0x0*$/u.test(normalized)) {
-        continue;
-      }
-
-      hashes.add(normalized);
     }
 
     return hashes.size > 0 ? hashes : EMPTY_SETTLEMENT_HASHES;
