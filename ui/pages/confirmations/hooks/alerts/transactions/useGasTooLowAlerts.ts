@@ -1,4 +1,3 @@
-
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { MIN_GAS_LIMIT_DEC } from '../../../send-utils/send.constants';

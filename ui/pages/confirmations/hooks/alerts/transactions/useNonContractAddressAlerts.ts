@@ -1,4 +1,3 @@
-
 import {
   TransactionMeta,
   TransactionType,

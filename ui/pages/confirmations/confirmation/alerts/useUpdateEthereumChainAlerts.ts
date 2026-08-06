@@ -1,4 +1,3 @@
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';

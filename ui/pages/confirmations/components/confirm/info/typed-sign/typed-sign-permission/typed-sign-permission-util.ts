@@ -1,4 +1,3 @@
-
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {

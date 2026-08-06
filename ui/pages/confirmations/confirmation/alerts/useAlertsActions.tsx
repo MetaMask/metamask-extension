@@ -1,4 +1,3 @@
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';

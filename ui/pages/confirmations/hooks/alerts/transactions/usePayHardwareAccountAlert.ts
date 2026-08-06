@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
