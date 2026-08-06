@@ -7782,33 +7782,6 @@ function applyPatches(
   return immer.applyPatches(oldState, patches);
 }
 
-export async function sendMultichainTransaction(
-  snapId: string,
-  {
-    account,
-    scope,
-    assetType,
-  }: {
-    account: string;
-    scope: string;
-    assetType?: CaipAssetType;
-  },
-) {
-  await handleSnapRequest({
-    snapId,
-    origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      method: 'startSendTransactionFlow',
-      params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
-    },
-  });
-}
-
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [
     address,
