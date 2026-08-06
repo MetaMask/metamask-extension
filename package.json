@@ -330,7 +330,12 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
-    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
+    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
+    "@metamask/transaction-controller@npm:^69.5.0": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch",
+    "@metamask/transaction-controller@npm:^69.4.0": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch",
+    "@metamask/transaction-controller@npm:^69.0.0": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch",
+    "@metamask/transaction-controller@npm:^69.2.1": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch",
+    "@metamask/transaction-controller@npm:^69.3.0": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -476,7 +481,7 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
-    "@metamask/transaction-controller": "^69.1.0",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A69.5.0#~/.yarn/patches/@metamask-transaction-controller-npm-69.5.0-3c404e1bd2.patch",
     "@metamask/transaction-pay-controller": "^26.0.0",
     "@metamask/tron-wallet-snap": "^1.33.1",
     "@metamask/user-operation-controller": "^41.2.5",

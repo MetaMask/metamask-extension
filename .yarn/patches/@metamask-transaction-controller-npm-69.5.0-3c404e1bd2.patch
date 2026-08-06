@@ -1,0 +1,83 @@
+diff --git a/dist/utils/gas.cjs b/dist/utils/gas.cjs
+index dd5270324ffc6d96845a3ea244bfa28e88454475..ec93e4799dd907e55c95d38f3da4dc7b23905236 100644
+--- a/dist/utils/gas.cjs
++++ b/dist/utils/gas.cjs
+@@ -76,7 +76,7 @@ async function estimateGas({ ignoreDelegationSignatures, isSimulationEnabled, ge
+         : uncappedFallback;
+     (0, exports.log)('Estimation fallback values', fallback);
+     request.data = data ? (0, utils_1.add0x)(data) : data;
+-    request.value = value ?? '0x0';
++    request.value = normalizeValue(value);
+     request.authorizationList = normalizeAuthorizationList(request.authorizationList, chainId);
+     delete request.gasPrice;
+     delete request.maxFeePerGas;
+@@ -499,6 +499,24 @@ function normalizeAuthorizationList(authorizationList, chainId) {
+         yParity: authorization.yParity ?? '0x1',
+     }));
+ }
++/**
++ * Normalize the value to a canonical hex quantity with no leading zero digits.
++ * Some RPC nodes (e.g. Go's `hexutil`) reject quantities such as `0x00` or
++ * `0x0de0b6b3a7640000`, failing gas estimation entirely.
++ *
++ * @param value - The transaction value to normalize.
++ * @returns The normalized transaction value.
++ */
++function normalizeValue(value) {
++    if (value === undefined) {
++        return '0x0';
++    }
++    if (!(0, utils_1.isStrictHexString)(value)) {
++        return value;
++    }
++    const stripped = (0, utils_1.remove0x)(value).replace(/^0+/u, '');
++    return stripped.length === 0 ? '0x0' : (0, utils_1.add0x)(stripped);
++}
+ /**
+  * Estimate the gas for a transaction using the `eth_estimateGas` method.
+  *
+diff --git a/dist/utils/gas.mjs b/dist/utils/gas.mjs
+index e0d2c6982ec3b6d40ff1269400ff510bf368dfc8..b9ad7b1f2fc5ee39f7acb5746f1c42818bc6e51f 100644
+--- a/dist/utils/gas.mjs
++++ b/dist/utils/gas.mjs
+@@ -1,5 +1,5 @@
+ import { BNToHex, fractionBN, hexToBN, toHex } from "@metamask/controller-utils";
+-import { add0x, createModuleLogger, remove0x } from "@metamask/utils";
++import { add0x, createModuleLogger, isStrictHexString, remove0x } from "@metamask/utils";
+ import { BigNumber } from "bignumber.js";
+ import { simulateTransactions } from "../api/simulation-api.mjs";
+ import { projectLogger } from "../logger.mjs";
+@@ -72,7 +72,7 @@ export async function estimateGas({ ignoreDelegationSignatures, isSimulationEnab
+         : uncappedFallback;
+     log('Estimation fallback values', fallback);
+     request.data = data ? add0x(data) : data;
+-    request.value = value ?? '0x0';
++    request.value = normalizeValue(value);
+     request.authorizationList = normalizeAuthorizationList(request.authorizationList, chainId);
+     delete request.gasPrice;
+     delete request.maxFeePerGas;
+@@ -490,6 +490,24 @@ function normalizeAuthorizationList(authorizationList, chainId) {
+         yParity: authorization.yParity ?? '0x1',
+     }));
+ }
++/**
++ * Normalize the value to a canonical hex quantity with no leading zero digits.
++ * Some RPC nodes (e.g. Go's `hexutil`) reject quantities such as `0x00` or
++ * `0x0de0b6b3a7640000`, failing gas estimation entirely.
++ *
++ * @param value - The transaction value to normalize.
++ * @returns The normalized transaction value.
++ */
++function normalizeValue(value) {
++    if (value === undefined) {
++        return '0x0';
++    }
++    if (!isStrictHexString(value)) {
++        return value;
++    }
++    const stripped = remove0x(value).replace(/^0+/u, '');
++    return stripped.length === 0 ? '0x0' : add0x(stripped);
++}
+ /**
+  * Estimate the gas for a transaction using the `eth_estimateGas` method.
+  *
