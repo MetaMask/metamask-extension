@@ -7,6 +7,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { ResultType } from '../../../../../shared/lib/trust-signals';
 
 type EventPayload = {
@@ -211,8 +212,8 @@ function getSignatureEventProperty(
  * @param signatureType
  */
 function getSettledAddressAlertResponse(signatureType: string): string {
-  return signatureType === 'eth_signTypedData_v3' ||
-    signatureType === 'eth_signTypedData_v4'
+  return signatureType === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 ||
+    signatureType === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
     ? ResultType.ErrorResult
     : ResultType.Loading;
 }
