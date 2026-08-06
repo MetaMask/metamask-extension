@@ -6,11 +6,6 @@ import {
 } from '@metamask/assets-controllers';
 
 import {
-  browseTokens,
-  type TokenSearchResponse,
-  type TokenSearchResult,
-} from '../../../shared/lib/token-search/token-search-api';
-import {
   DISCOVER_SEARCH_CHAIN_IDS,
   DISCOVER_SEARCH_GC_TIME_MS,
   DISCOVER_SEARCH_PAGE_SIZE,
@@ -44,17 +39,6 @@ type CryptoSearchPage = {
     nextCursor?: string | null;
   };
 };
-
-type TokenBrowseMarketResult = TokenSearchResult &
-  Pick<
-    TokenSearchMarketResult,
-    | 'price'
-    | 'marketCap'
-    | 'aggregatedUsdVolume'
-    | 'pricePercentChange1d'
-    | 'rwaData'
-    | 'securityData'
-  >;
 
 const mapSearchResultToTrendingAsset = (
   item: TokenSearchMarketResult,
@@ -178,35 +162,6 @@ export const useDiscoverCryptoSearch = ({
     cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
-  const browseQuery = useInfiniteQuery<TokenSearchResponse, Error>({
-    queryKey: [
-      ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
-      'crypto',
-      'browse',
-      DISCOVER_SEARCH_CHAIN_IDS,
-    ] as const,
-    queryFn: async ({
-      pageParam,
-      signal,
-    }: {
-      pageParam?: string;
-      signal?: AbortSignal;
-    }): Promise<TokenSearchResponse> =>
-      browseTokens({
-        networks: DISCOVER_SEARCH_CHAIN_IDS,
-        first: DISCOVER_SEARCH_PAGE_SIZE,
-        after: pageParam,
-        signal,
-      }),
-    getNextPageParam: (lastPage) =>
-      lastPage.pageInfo.hasNextPage
-        ? lastPage.pageInfo.endCursor || undefined
-        : undefined,
-    enabled: false,
-    staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
-  });
-
   if (isSearch) {
     const pages = searchQuery.data?.pages ?? [];
     const [firstPage, ...remainingPages] = pages;
@@ -244,26 +199,12 @@ export const useDiscoverCryptoSearch = ({
     };
   }
 
-  const browseData = (browseQuery.data?.pages ?? [])
-    .flatMap((page) => page.data as TokenBrowseMarketResult[])
-    .filter((item) => !item.rwaData)
-    .map(mapSearchResultToTrendingAsset);
-  const hasFetchedBrowsePage = browseQuery.data !== undefined;
-  const lastBrowsePage = browseQuery.data?.pages.at(-1);
-
   return {
-    data: dedupeByAssetId([...(trendingQuery.data ?? []), ...browseData]),
-    totalCount: lastBrowsePage?.totalCount,
+    data: trendingQuery.data ?? [],
     isLoading: trendingQuery.isLoading || trendingQuery.isFetching,
-    hasNextPage:
-      enabled &&
-      (hasFetchedBrowsePage ? (browseQuery.hasNextPage ?? false) : true),
-    isFetchingNextPage:
-      browseQuery.isFetchingNextPage ||
-      (!hasFetchedBrowsePage && browseQuery.isFetching),
-    fetchNextPage: hasFetchedBrowsePage
-      ? browseQuery.fetchNextPage
-      : browseQuery.refetch,
-    error: trendingQuery.error ?? browseQuery.error ?? null,
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: async () => undefined,
+    error: trendingQuery.error ?? null,
   };
 };

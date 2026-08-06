@@ -200,7 +200,7 @@ describe('DiscoverSearchPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('loads the next Crypto page once when scrolled near the bottom', () => {
+  it('loads the next Crypto search page once when scrolled near the bottom', () => {
     const fetchNextPage = jest.fn(() => new Promise(() => undefined));
     mockUseDiscoverSearch.mockReturnValue({
       ...getDefaultDiscoverSearchResult(),
@@ -211,8 +211,7 @@ describe('DiscoverSearchPage', () => {
       },
     });
 
-    renderPage();
-    fireEvent.click(screen.getByTestId('discover-tab-crypto'));
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=crypto` });
 
     const tabContent = screen
       .getByTestId('discover-search-page')
@@ -379,8 +378,6 @@ describe('DiscoverSearchPage', () => {
       screen.getByText(messages.discoverSearchPopularAssets.message),
     ).toBeInTheDocument();
   });
-
-
 
   it('shows matching sections when the selected Perps tab has no hits', () => {
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);

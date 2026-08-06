@@ -1,9 +1,8 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getTrendingTokens, searchTokens } from '@metamask/assets-controllers';
 
-import { browseTokens } from '../../../shared/lib/token-search/token-search-api';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
 
 jest.mock('@metamask/assets-controllers', () => ({
@@ -11,13 +10,8 @@ jest.mock('@metamask/assets-controllers', () => ({
   searchTokens: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/token-search/token-search-api', () => ({
-  browseTokens: jest.fn(),
-}));
-
 const mockGetTrendingTokens = jest.mocked(getTrendingTokens);
 const mockSearchTokens = jest.mocked(searchTokens);
-const mockBrowseTokens = jest.mocked(browseTokens);
 
 describe('useDiscoverCryptoSearch', () => {
   const createWrapper = () => {
@@ -74,127 +68,6 @@ describe('useDiscoverCryptoSearch', () => {
     expect(result.current.data[0].symbol).toBe('ETH');
   });
 
-  it('appends paginated browse results to trending assets on demand', async () => {
-    mockGetTrendingTokens.mockResolvedValue([
-      {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-        price: '2500',
-        marketCap: 1,
-        aggregatedUsdVolume: 1,
-      },
-      {
-        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        name: 'Solana',
-        symbol: 'SOL',
-        decimals: 9,
-        price: '150',
-        marketCap: 2,
-        aggregatedUsdVolume: 2,
-      },
-    ]);
-    mockBrowseTokens
-      .mockResolvedValueOnce({
-        count: 3,
-        totalCount: 4,
-        data: [
-          {
-            assetId: 'eip155:1/slip44:60',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          },
-          {
-            assetId: 'eip155:1/erc20:0xstock',
-            name: 'Stock',
-            symbol: 'STK',
-            decimals: 18,
-            rwaData: { type: 'stock' },
-          },
-          {
-            assetId: 'eip155:1/erc20:0xalpha',
-            name: 'Alpha',
-            symbol: 'ALPHA',
-            decimals: 18,
-          },
-        ],
-        pageInfo: { hasNextPage: true, endCursor: 'next-page' },
-      } as never)
-      .mockResolvedValueOnce({
-        count: 2,
-        totalCount: 4,
-        data: [
-          {
-            assetId: 'eip155:1/erc20:0xalpha',
-            name: 'Alpha',
-            symbol: 'ALPHA',
-            decimals: 18,
-          },
-          {
-            assetId: 'eip155:1/erc20:0xbeta',
-            name: 'Beta',
-            symbol: 'BETA',
-            decimals: 18,
-          },
-        ],
-        pageInfo: { hasNextPage: false, endCursor: '' },
-      } as never);
-
-    const { result } = renderHook(
-      () => useDiscoverCryptoSearch({ query: '' }),
-      { wrapper: createWrapper() },
-    );
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    expect(mockBrowseTokens).not.toHaveBeenCalled();
-    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-      'ETH',
-      'SOL',
-    ]);
-    expect(result.current.hasNextPage).toBe(true);
-
-    await act(async () => {
-      await result.current.fetchNextPage();
-    });
-
-    await waitFor(() => {
-      expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-        'ETH',
-        'SOL',
-        'ALPHA',
-      ]);
-    });
-    expect(mockBrowseTokens).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        first: 20,
-        after: undefined,
-      }),
-    );
-    expect(result.current.data.at(-1)?.price).toBe('0');
-    expect(result.current.hasNextPage).toBe(true);
-
-    await act(async () => {
-      await result.current.fetchNextPage();
-    });
-
-    await waitFor(() => expect(result.current.hasNextPage).toBe(false));
-
-    expect(mockBrowseTokens).toHaveBeenLastCalledWith(
-      expect.objectContaining({ after: 'next-page' }),
-    );
-    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-      'ETH',
-      'SOL',
-      'ALPHA',
-      'BETA',
-    ]);
-  });
-
   it('searches tokens when query is present', async () => {
     mockSearchTokens.mockResolvedValue({
       count: 2,
@@ -240,7 +113,6 @@ describe('useDiscoverCryptoSearch', () => {
     );
     expect(result.current.data[0].priceChangePct?.h24).toBe('1.2');
     expect(result.current.totalCount).toBe(2);
-    expect(mockBrowseTokens).not.toHaveBeenCalled();
   });
 
   it('merges, deduplicates, and sorts local trending matches into the first search page', async () => {

@@ -19,6 +19,7 @@ export const DISCOVER_SEARCH_CHAIN_IDS: CaipChainId[] = [
   toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
   toEvmCaipChainId(CHAIN_IDS.SEI),
   toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA),
+  toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN),
   TrxScope.Mainnet,
 ];
 
