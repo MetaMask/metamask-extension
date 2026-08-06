@@ -199,6 +199,10 @@ export async function mockTronFeatureFlags(
         // resolves to the bridge controller's built-in default, which is what
         // these tests already ran against when the flag was absent entirely.
         { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
+        { corePlatformRpcFailoverMode: 'disabled' },
       ],
     }));
 }

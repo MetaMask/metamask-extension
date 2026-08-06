@@ -80,6 +80,7 @@ describe('EnforceSimulationHook', () => {
     const updateTransactionMock = jest.fn();
 
     applyTransactionContainersMock.mockResolvedValue({
+      enforcedSimulationsSlippage: 2.5,
       updateTransaction: updateTransactionMock,
     });
 
