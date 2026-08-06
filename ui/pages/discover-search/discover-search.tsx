@@ -106,6 +106,13 @@ type ExploreSearchTabName = 'all' | 'tokens' | 'perps' | 'stocks';
 
 type ExploreSearchSectionName = Exclude<ExploreSearchTabName, 'all'>;
 
+type PendingTabSwitch = {
+  tab: DiscoverSearchTab;
+  previousTab: DiscoverSearchTab;
+  searchQuery: string;
+  comesFromViewAllTap: boolean;
+};
+
 const getExploreSearchTabName = (
   tab: DiscoverSearchTab,
 ): ExploreSearchTabName => (tab === 'crypto' ? 'tokens' : tab);
@@ -169,7 +176,8 @@ export const DiscoverSearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const trackedSearchQuery = useRef<string | null>(null);
+  const trackedSearchKey = useRef<string | null>(null);
+  const pendingTabSwitch = useRef<PendingTabSwitch | null>(null);
   const hasTrackedScroll = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState(
@@ -256,6 +264,7 @@ export const DiscoverSearchPage = () => {
 
   const updateSearchQuery = useCallback(
     (nextQuery: string) => {
+      pendingTabSwitch.current = null;
       setSearchQuery(nextQuery);
       updateRouteSearchParams({ query: nextQuery });
     },
@@ -278,30 +287,16 @@ export const DiscoverSearchPage = () => {
       if (tab === activeTab) {
         return;
       }
-      trackExploreSearchEvent({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        interaction_type: 'tab_switched',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        search_query: searchQuery,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        tab_name: getExploreSearchTabName(tab),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        previous_tab: getExploreSearchTabName(activeTab),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        comes_from_view_all_tap: comesFromViewAllTap || undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_count: getResultCount(tab),
-      });
+      pendingTabSwitch.current = {
+        tab,
+        previousTab: activeTab,
+        searchQuery,
+        comesFromViewAllTap,
+      };
       setActiveTab(tab);
       updateRouteSearchParams({ tab });
     },
-    [
-      activeTab,
-      getResultCount,
-      searchQuery,
-      trackExploreSearchEvent,
-      updateRouteSearchParams,
-    ],
+    [activeTab, searchQuery, updateRouteSearchParams],
   );
 
   const handleAssetPress = useCallback(
@@ -442,14 +437,52 @@ export const DiscoverSearchPage = () => {
   }
 
   useEffect(() => {
-    if (!trimmedSearchQuery) {
-      trackedSearchQuery.current = null;
+    const pendingSwitch = pendingTabSwitch.current;
+    if (
+      !pendingSwitch ||
+      pendingSwitch.tab !== activeTab ||
+      pendingSwitch.searchQuery !== searchQuery ||
+      isDebouncing ||
+      activeTabIsLoading
+    ) {
       return;
     }
+
+    trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      interaction_type: 'tab_switched',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      search_query: pendingSwitch.searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      tab_name: getExploreSearchTabName(pendingSwitch.tab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      previous_tab: getExploreSearchTabName(pendingSwitch.previousTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      comes_from_view_all_tap:
+        pendingSwitch.comesFromViewAllTap || undefined,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_count: getResultCount(pendingSwitch.tab),
+    });
+    pendingTabSwitch.current = null;
+  }, [
+    activeTab,
+    activeTabIsLoading,
+    getResultCount,
+    isDebouncing,
+    searchQuery,
+    trackExploreSearchEvent,
+  ]);
+
+  useEffect(() => {
+    if (!trimmedSearchQuery) {
+      trackedSearchKey.current = null;
+      return;
+    }
+    const searchKey = `${activeTab}:${trimmedSearchQuery}`;
     if (
       isDebouncing ||
       activeTabIsLoading ||
-      trackedSearchQuery.current === trimmedSearchQuery
+      trackedSearchKey.current === searchKey
     ) {
       return;
     }
@@ -463,7 +496,7 @@ export const DiscoverSearchPage = () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(activeTab),
     });
-    trackedSearchQuery.current = trimmedSearchQuery;
+    trackedSearchKey.current = searchKey;
   }, [
     activeTab,
     activeTabIsLoading,
