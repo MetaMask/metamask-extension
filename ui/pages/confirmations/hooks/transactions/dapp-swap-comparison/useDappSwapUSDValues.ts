@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { isBridgeNativeAddress } from '../../../../../helpers/utils/token-insights';
+import { isNativeAddress as isBridgeNativeAddress } from '../../../../../helpers/utils/token-insights';
 import {
   fetchAllTokenDetails,
   getTokenValueFromRecord,

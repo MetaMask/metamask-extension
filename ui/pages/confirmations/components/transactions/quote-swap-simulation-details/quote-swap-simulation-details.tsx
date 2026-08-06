@@ -10,7 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
-  isBridgeNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
