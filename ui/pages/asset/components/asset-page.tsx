@@ -104,8 +104,10 @@ import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
+import { useOhlcvChartData } from '../hooks/useOhlcvChartData';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
+import AdvancedAssetChart from './chart/advanced-asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -120,6 +122,11 @@ import {
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
 } from './security-trust';
+
+// Minimum OHLCV bars required to prefer the Advanced Chart over the legacy
+// line chart. Mirrors mobile's `CHART_DATA_THRESHOLD` (5). Below this (or on
+// empty/error/loading) we fall back to the existing `<AssetChart />`.
+const OHLCV_MIN_BARS = 5;
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -249,6 +256,16 @@ const AssetPage = ({
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
+
+  // Fetch OHLCV once (single REST call, no realtime) to decide, mobile-style,
+  // whether to render the Advanced Chart or fall back to the legacy line chart.
+  const {
+    data: ohlcvBars,
+    isLoading: isOhlcvLoading,
+    error: ohlcvError,
+  } = useOhlcvChartData({ chainId, address });
+  const showAdvancedChart =
+    !isOhlcvLoading && !ohlcvError && ohlcvBars.length >= OHLCV_MIN_BARS;
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -464,13 +481,17 @@ const AssetPage = ({
           )}
         </Box>
         <AssetPageSecurityTrustBanner />
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={currentPrice}
-          currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
-        />
+        {showAdvancedChart ? (
+          <AdvancedAssetChart bars={ohlcvBars} symbol={symbol} />
+        ) : (
+          <AssetChart
+            chainId={chainId}
+            address={address}
+            currentPrice={currentPrice}
+            currency={currency}
+            asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
+          />
+        )}
         <Box marginTop={4} paddingLeft={4} paddingRight={4}>
           {isUpdatedAssetNative ? (
             <CoinButtons

@@ -53,6 +53,7 @@
     "dist:mv2": "yarn webpack:lavamoat:build:mv2 --zip",
     "build": "yarn webpack:lavamoat:build",
     "build:dev": "yarn webpack",
+    "advanced-chart:fetch-lib": "node ./development/advanced-chart/fetch-library.mjs",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",
     "start:test": "yarn env:e2e webpack --watch --test",

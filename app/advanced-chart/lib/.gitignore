@@ -1,0 +1,8 @@
+# The proprietary TradingView `charting_library` (Advanced Charts) bundle is
+# vendored into this directory at build time by `yarn advanced-chart:fetch-lib`
+# (see ../../../development/advanced-chart/fetch-library.mjs). It is large and
+# license-restricted and must NEVER be committed. Ignore everything here except
+# this file and the README documenting the blocker.
+*
+!.gitignore
+!README.md
