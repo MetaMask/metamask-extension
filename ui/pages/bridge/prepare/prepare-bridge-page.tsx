@@ -63,8 +63,8 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
@@ -106,6 +106,7 @@ const PrepareBridgePage = ({
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+  const { formatCurrency } = useFormatters();
 
   const fromChain = useSelector(getFromChain);
 
@@ -185,7 +186,11 @@ const PrepareBridgePage = ({
     );
   } else if (fromTokenConversionRate) {
     sourceSecondaryDisplay = fromAmountInCurrency.valueInCurrency.isZero()
-      ? formatCurrency('0', currency, 0)
+      ? formatCurrency('0', currency, {
+          currencyDisplay: 'narrowSymbol',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })
       : formatCurrencyAmount(
           fromAmountInCurrency.valueInCurrency.toString(),
           currency,

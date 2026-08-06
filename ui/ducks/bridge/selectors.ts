@@ -497,9 +497,11 @@ export const getInputPrimaryDenomination = (
 ): InputPrimaryDenomination =>
   state.metamask.inputPrimaryDenomination ?? 'token_amount';
 
-export const getIsFiatToggleEnabled = (state: BridgeAppState): boolean =>
-  (getRemoteFeatureFlags(state) as unknown as Record<string, unknown>)
-    .enableFiatToggle === true;
+export const getIsFiatToggleEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags): boolean =>
+    (flags as { enableFiatToggle?: boolean }).enableFiatToggle === true,
+);
 
 export const getAccountGroupNameByInternalAccount = createSelector(
   [getAllAccountGroups, (_, account: InternalAccount | null) => account],
