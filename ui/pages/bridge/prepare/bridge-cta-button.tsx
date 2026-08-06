@@ -23,6 +23,7 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
   HardwareWalletType,
+  isInE2eTest,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -77,6 +78,7 @@ export const BridgeCTAButton = ({
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
 
   const hardwareWalletName = useMemo(
     () => (walletType ? t(walletType) : undefined),
@@ -84,7 +86,7 @@ export const BridgeCTAButton = ({
   );
 
   const isHardwareWalletReady = useMemo(() => {
-    if (!isHardwareWalletAccount) {
+    if (inE2e || !isHardwareWalletAccount) {
       return true;
     }
     // QR wallets don't need a physical device connection before showing the
@@ -101,7 +103,7 @@ export const BridgeCTAButton = ({
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
       connectionState.status,
     );
-  }, [connectionState.status, isHardwareWalletAccount, walletType]);
+  }, [connectionState.status, inE2e, isHardwareWalletAccount, walletType]);
 
   /**
    * Defines the behavior of the CTA button based on the current state

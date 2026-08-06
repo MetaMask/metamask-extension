@@ -4,6 +4,7 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   ConnectionStatus,
   getHardwareWalletErrorCode,
+  isInE2eTest,
   isUserRejectedHardwareWalletError,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
@@ -44,10 +45,18 @@ export function useHwSwapConnectionMonitoring({
   dispatchSignatureEvent,
 }: UseHardwareWalletConnectionMonitoringOptions) {
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const handledConnectionErrorRef = useRef<unknown>(null);
   const isDeviceDisconnectedRef = useRef(false);
 
   useEffect(() => {
+    // E2E has no physical device, so the connection always looks disconnected.
+    // Treating that as a signing failure would strand the signing page in a
+    // terminal state instead of following the transaction to Submitted.
+    if (inE2e) {
+      return;
+    }
+
     if (
       signatureState.status !==
         HardwareWalletSignatureStatus.AwaitingFirstSignature &&
@@ -98,7 +107,7 @@ export function useHwSwapConnectionMonitoring({
         ? HardwareWalletSignatureEvent.TransactionRejected
         : HardwareWalletSignatureEvent.TransactionFailed,
     });
-  }, [connectionState, signatureState.status, dispatchSignatureEvent]);
+  }, [connectionState, inE2e, signatureState.status, dispatchSignatureEvent]);
 
   const resetConnectionError = useCallback((preserveError?: unknown) => {
     handledConnectionErrorRef.current = preserveError ?? null;
