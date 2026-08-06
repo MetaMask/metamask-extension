@@ -1,5 +1,6 @@
 import type { CaipChainId } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { TrxScope } from '@metamask/keyring-api';
 
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -14,6 +15,11 @@ export const DISCOVER_SEARCH_CHAIN_IDS: CaipChainId[] = [
   toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
   toEvmCaipChainId(CHAIN_IDS.POLYGON),
   toEvmCaipChainId(CHAIN_IDS.AVALANCHE),
+  toEvmCaipChainId(CHAIN_IDS.MONAD),
+  toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
+  toEvmCaipChainId(CHAIN_IDS.SEI),
+  toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA),
+  TrxScope.Mainnet,
 ];
 
 /** RWA / tokenized stocks default chains. */

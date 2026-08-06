@@ -1,10 +1,21 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import Fuse from 'fuse.js';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 
 import { filterMarketsByQuery } from '../../components/app/perps/utils';
 import { usePerpsLiveMarketListData } from '../perps/stream/usePerpsLiveMarketListData';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+
+const PERPS_FUSE_OPTIONS = {
+  shouldSort: true,
+  threshold: 0.2,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: ['symbol', 'name'],
+} as const;
 
 export type UseDiscoverPerpsSearchOptions = {
   query: string;
@@ -13,6 +24,7 @@ export type UseDiscoverPerpsSearchOptions = {
 
 export type UseDiscoverPerpsSearchResult = {
   data: PerpsMarketData[];
+  totalCount: number;
   isLoading: boolean;
   error: Error | null;
 };
@@ -38,11 +50,22 @@ export const useDiscoverPerpsSearch = ({
       return [];
     }
 
-    return filterMarketsByQuery(markets, query);
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
+      return [...markets].sort(
+        (left, right) =>
+          (Number.parseFloat(right.change24hPercent) || 0) -
+          (Number.parseFloat(left.change24hPercent) || 0),
+      );
+    }
+
+    const queryFiltered = filterMarketsByQuery(markets, trimmedQuery);
+    return new Fuse(queryFiltered, PERPS_FUSE_OPTIONS).search(trimmedQuery);
   }, [isPerpsSearchEnabled, markets, query]);
 
   return {
     data,
+    totalCount: data.length,
     isLoading: Boolean(isPerpsSearchEnabled && isInitialLoading),
     error: isPerpsSearchEnabled && error ? new Error(String(error)) : null,
   };
