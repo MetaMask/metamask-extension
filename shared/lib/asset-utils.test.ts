@@ -17,6 +17,7 @@ import {
   getAssetImageUrl,
   fetchAssetMetadata,
   toAssetId,
+  toActivityAssetId,
   fetchAssetMetadataForAssetIds,
   getNativeAssetId,
   isEvmChainId,
@@ -197,6 +198,73 @@ describe('asset-utils', () => {
       );
       expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
         `${chainId}/sep41:${contractId}`,
+      );
+    });
+  });
+
+  describe('toActivityAssetId', () => {
+    it('trusts an already-CAIP-formatted slip44 asset id directly', () => {
+      // Injective: not in @metamask/bridge-controller's swap-support table,
+      // so toAssetId alone would misrepresent this as an erc20 contract.
+      const caipAssetId = 'eip155:1776/slip44:22000119' as CaipAssetType;
+      expect(toActivityAssetId(caipAssetId, '0x6f0' as Hex)).toBe(caipAssetId);
+    });
+
+    it('falls back to toAssetId for a CAIP asset id in a non-slip44 namespace', () => {
+      const caipAssetId = CaipAssetTypeStruct.create('eip155:1/erc20:0x123');
+      expect(toActivityAssetId(caipAssetId, 'eip155:1')).toBe(caipAssetId);
+    });
+
+    it('resolves a raw native address to its slip44 id via the Price API table (Injective)', () => {
+      expect(
+        toActivityAssetId(
+          '0x0000000000000000000000000000000000000000',
+          '0x6f0' as Hex,
+        ),
+      ).toBe('eip155:1776/slip44:22000119');
+    });
+
+    it('resolves a raw native address to its erc20 id via the Price API table (Chiliz)', () => {
+      expect(
+        toActivityAssetId(
+          '0x0000000000000000000000000000000000000000',
+          '0x15b38' as Hex,
+        ),
+      ).toBe('eip155:88888/erc20:0x0000000000000000000000000000000000000000');
+    });
+
+    it('resolves a non-zero-address native (Mantle) that a plain zero-address check would miss', () => {
+      expect(
+        toActivityAssetId(
+          '0x0000000000000000000000000000000000000000',
+          '0x1388' as Hex,
+        ),
+      ).toBe('eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000');
+    });
+
+    it('resolves a regular erc20 token address via the Price API table', () => {
+      expect(
+        toActivityAssetId(
+          '0xdeadbeef00000000000000000000000000dead',
+          '0x1' as Hex,
+        ),
+      ).toBe('eip155:1/erc20:0xdeadbeef00000000000000000000000000dead');
+    });
+
+    it('falls back to toAssetId for a native address on a chain unknown to the Price API table', () => {
+      const chainId = '0xfffff1' as Hex;
+      expect(
+        toActivityAssetId(
+          '0x0000000000000000000000000000000000000000',
+          chainId,
+        ),
+      ).toBe(toAssetId('0x0000000000000000000000000000000000000000', chainId));
+    });
+
+    it('falls back to toAssetId for a non-EVM chain id', () => {
+      const ref = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+      expect(toActivityAssetId(ref, MultichainNetworks.SOLANA)).toBe(
+        toAssetId(ref, MultichainNetworks.SOLANA),
       );
     });
   });

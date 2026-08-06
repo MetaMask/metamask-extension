@@ -8,7 +8,7 @@ import {
 } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
-import { toAssetId } from '../../asset-utils';
+import { toActivityAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import type { ActivityFee, TokenAmount } from '../types';
@@ -86,7 +86,7 @@ function getKnownTokenMetadata(
     return undefined;
   }
 
-  const assetId = toAssetId(contractAddress, chainId);
+  const assetId = toActivityAssetId(contractAddress, chainId);
   const tokenMetadata =
     (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
       ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
