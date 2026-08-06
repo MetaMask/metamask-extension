@@ -164,16 +164,20 @@ export const MultichainAccountsConnectPage = ({
   const isSolanaWalletStandardRequest =
     requestedScopes.length === 1 &&
     requestedScopes[0] === MultichainNetworks.SOLANA &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.SolanaAccountChangedNotifications
-    ];
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.SolanaAccountChangedNotifications
+      ],
+    );
 
   const isTronWalletAdapterRequest =
     requestedScopes.length === 1 &&
     requestedScopes[0] === MultichainNetworks.TRON &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.TronAccountChangedNotifications
-    ];
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.TronAccountChangedNotifications
+      ],
+    );
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>

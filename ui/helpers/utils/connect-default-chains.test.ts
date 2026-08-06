@@ -7,37 +7,37 @@ const ethMainnet = {
   caipChainId: 'eip155:1',
   chainId: 'eip155:1',
   name: 'Ethereum Mainnet',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 const polygon = {
   caipChainId: 'eip155:137',
   chainId: 'eip155:137',
   name: 'Polygon Mainnet',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 const sepolia = {
   caipChainId: 'eip155:11155111',
   chainId: 'eip155:11155111',
   name: 'Sepolia Testnet',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 const solana = {
   caipChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana Mainnet',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 const tron = {
   caipChainId: MultichainNetworks.TRON,
   chainId: MultichainNetworks.TRON,
   name: 'Tron Mainnet',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 const bsc = {
   caipChainId: 'eip155:56',
   chainId: 'eip155:56',
   name: 'BNB Smart Chain',
-} as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
+} as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId;
 
 describe('getDefaultConnectChainIds', () => {
   const baseParams = {
