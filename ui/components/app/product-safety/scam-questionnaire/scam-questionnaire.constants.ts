@@ -1,5 +1,13 @@
 export const TOTAL_QUESTIONS = 3;
 
+export const SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY =
+  'productSafetyScamQuestionnaireDomainList';
+
+export enum ScamQuestionnaireLocation {
+  SendFlow = 'send_flow',
+  ConfirmationsFlow = 'confirmations_flow',
+}
+
 // Bump when the questions, answer options, or red-flag verdicts change.
 export const QUESTIONNAIRE_VERSION = '1';
 

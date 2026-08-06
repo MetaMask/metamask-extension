@@ -13,6 +13,7 @@ import {
   Q3_OPTIONS,
   QuestionId,
   QuestionOption,
+  type ScamQuestionnaireLocation,
   type Step,
   TOTAL_QUESTIONS,
   getRedFlagCount,
@@ -32,7 +33,7 @@ export type ScamQuestionnaireProps = {
   /** User dismissed without finishing (back / close). */
   onDismiss: () => void;
   /** Which flow rendered the questionnaire. Included on all metric events. */
-  location: string;
+  location: ScamQuestionnaireLocation;
 };
 
 const WARNING_STEP = TOTAL_QUESTIONS;

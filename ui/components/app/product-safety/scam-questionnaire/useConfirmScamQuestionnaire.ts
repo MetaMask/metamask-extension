@@ -6,9 +6,11 @@ import { MetaMetricsEventLocation } from '../../../../../shared/constants/metame
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import type { ScamQuestionnaireProps } from './scam-questionnaire';
+import {
+  ScamQuestionnaireLocation,
+  SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY,
+} from './scam-questionnaire.constants';
 
-const SCAM_QUESTIONNAIRE_CONFIRM_FLAG_KEY =
-  'productSafetyScamQuestionnaireDomainList';
 
 type OnCancelHandler = (args: {
   location: MetaMetricsEventLocation;
@@ -41,7 +43,7 @@ export function useConfirmScamQuestionnaire({
 
   const remoteFlags = useSelector(getRemoteFeatureFlags);
   const scamDomains =
-    (remoteFlags[SCAM_QUESTIONNAIRE_CONFIRM_FLAG_KEY] as
+    (remoteFlags[SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY] as
       | string[]
       | undefined) ?? [];
 
@@ -82,7 +84,7 @@ export function useConfirmScamQuestionnaire({
       onBypass: onScamComplete,
       onReject: onScamReject,
       onDismiss: hideScamQuestionnaire,
-      location: 'confirmations_flow',
+      location: ScamQuestionnaireLocation.ConfirmationsFlow,
     },
   };
 }

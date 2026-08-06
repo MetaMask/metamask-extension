@@ -13,6 +13,7 @@ import {
   SCAM_QUESTIONNAIRE_FLAG_KEY,
   SCAM_QUESTIONNAIRE_VARIANTS,
 } from '../../../../../shared/lib/ab-testing/configs/scam-questionnaire';
+import { ScamQuestionnaireLocation } from './scam-questionnaire.constants';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useABTest } from '../../../../hooks/useABTest';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
@@ -128,7 +129,7 @@ export function useSendScamQuestionnaire({
       onBypass: onScamComplete,
       onReject: onScamReject,
       onDismiss: hideScamQuestionnaire,
-      location: 'send_flow',
+      location: ScamQuestionnaireLocation.SendFlow,
     },
   };
 }
