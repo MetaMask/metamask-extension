@@ -5476,10 +5476,6 @@
   "musdEducationNotNow": {
     "message": "Όχι τώρα"
   },
-  "musdGetBonusPercentage": {
-    "message": "Κερδίστε $1% μπόνους σε mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Αποκτήστε mUSD"
   },

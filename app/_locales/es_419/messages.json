@@ -5480,10 +5480,6 @@
   "musdEducationNotNow": {
     "message": "Ahora no"
   },
-  "musdGetBonusPercentage": {
-    "message": "Obtén un bono del $1 % en mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Obtener USDC"
   },

@@ -5480,10 +5480,6 @@
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
   },
-  "musdGetBonusPercentage": {
-    "message": "Dapatkan bonus $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Dapatkan mUSD"
   },

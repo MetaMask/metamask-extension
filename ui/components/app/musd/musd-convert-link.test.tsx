@@ -9,9 +9,9 @@ import { MusdConvertLink } from './musd-convert-link';
 
 // Mock useI18nContext
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) => {
-    if (key === 'musdGetBonusPercentage') {
-      return `Get ${values?.[0] || '3'}% bonus`;
+  useI18nContext: () => (key: string) => {
+    if (key === 'musdGetMusd') {
+      return 'Get mUSD';
     }
     return key;
   },
@@ -84,7 +84,7 @@ describe('MusdConvertLink', () => {
       mockStore,
     );
 
-    expect(screen.getByText('Get 3% bonus')).toBeInTheDocument();
+    expect(screen.getByText('Get mUSD')).toBeInTheDocument();
   });
 
   it('calls startConversionFlow on click', async () => {

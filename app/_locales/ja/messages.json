@@ -5480,10 +5480,6 @@
   "musdEducationNotNow": {
     "message": "後で"
   },
-  "musdGetBonusPercentage": {
-    "message": "$1%のmUSDボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "mUSDを入手"
   },

@@ -5480,10 +5480,6 @@
   "musdEducationNotNow": {
     "message": "Không phải bây giờ"
   },
-  "musdGetBonusPercentage": {
-    "message": "Nhận thưởng $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Nhận mUSD"
   },

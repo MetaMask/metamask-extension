@@ -5476,10 +5476,6 @@
   "musdEducationNotNow": {
     "message": "अभी नहीं"
   },
-  "musdGetBonusPercentage": {
-    "message": "$1% mUSD बोनस पाएं",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "mUSD प्राप्त करें"
   },

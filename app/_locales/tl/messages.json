@@ -5476,10 +5476,6 @@
   "musdEducationNotNow": {
     "message": "Hindi sa ngayon"
   },
-  "musdGetBonusPercentage": {
-    "message": "Makakuha ng $1% mUSD bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"
   },

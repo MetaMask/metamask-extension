@@ -5476,10 +5476,6 @@
   "musdEducationNotNow": {
     "message": "Не сейчас"
   },
-  "musdGetBonusPercentage": {
-    "message": "Получите бонус в размере $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "Получить mUSD"
   },

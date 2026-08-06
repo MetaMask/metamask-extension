@@ -5476,10 +5476,6 @@
   "musdEducationNotNow": {
     "message": "暂时不"
   },
-  "musdGetBonusPercentage": {
-    "message": "获取 $1% mUSD 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdGetMusd": {
     "message": "获取 mUSD"
   },
