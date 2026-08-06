@@ -70,7 +70,7 @@ export const MusdConvertLink = ({
 }: MusdConvertLinkProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { startConversionFlow } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -101,7 +101,6 @@ export const MusdConvertLink = ({
 
       const redirectsTo = resolveMusdConversionCtaRedirectsTo({
         intent: 'conversion',
-        educationSeen,
       });
       const eventLocation =
         musdConversionFlowEntryPointToCtaEventLocation(entryPoint);
@@ -146,7 +145,6 @@ export const MusdConvertLink = ({
       tokenSymbol,
       displayText,
       entryPoint,
-      educationSeen,
       networkName,
       createEventBuilder,
       trackEvent,

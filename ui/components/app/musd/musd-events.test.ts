@@ -13,22 +13,10 @@ describe('resolveMusdConversionCtaRedirectsTo', () => {
     );
   });
 
-  it('returns conversion_education_screen when conversion and education not seen', () => {
+  it('returns custom_amount_screen for conversion intent', () => {
     expect(
       resolveMusdConversionCtaRedirectsTo({
         intent: 'conversion',
-        educationSeen: false,
-      }),
-    ).toBe(
-      MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN,
-    );
-  });
-
-  it('returns custom_amount_screen when conversion and education seen', () => {
-    expect(
-      resolveMusdConversionCtaRedirectsTo({
-        intent: 'conversion',
-        educationSeen: true,
       }),
     ).toBe(MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN);
   });

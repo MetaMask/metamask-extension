@@ -56,7 +56,7 @@ export function ConvertAgainButton({
     }
     setLoading();
     try {
-      await startConversionFlow({ preferredToken, skipEducation: true });
+      await startConversionFlow({ preferredToken });
     } finally {
       setNotLoading();
     }

@@ -43,7 +43,6 @@ const mockDefaultPaymentToken = { address: '0xUsdc', chainId: '0x1' };
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
-    educationSeen: false,
   }),
   useMusdConversionTokens: () => ({
     defaultPaymentToken: mockDefaultPaymentToken,
@@ -199,7 +198,7 @@ describe('MusdBuyGetCta', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             network_chain_id: '0x1',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            redirects_to: 'conversion_education_screen',
+            redirects_to: 'custom_amount_screen',
           }),
         }),
       );
