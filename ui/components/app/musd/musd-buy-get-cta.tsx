@@ -48,7 +48,6 @@ import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRamps
 import { ASSET_CELL_HEIGHT } from '../assets/constants';
 import {
   getMusdAssetIdForChain,
-  MUSD_CONVERSION_APY,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
 } from './constants';
@@ -249,7 +248,7 @@ export const MusdBuyGetCta = ({
           {ctaText}
         </Text>
         <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
-          {t('musdEarnBonusPercentage', [String(MUSD_CONVERSION_APY)])}
+          {t('musdAssetConvertTitle')}
         </Text>
       </Box>
 

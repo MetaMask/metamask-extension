@@ -5335,10 +5335,6 @@
     "message": "Không có thưởng tích lũy",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "Thưởng $1%",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "Thưởng của bạn",
     "description": "Section title on the mUSD asset details page"
@@ -5403,10 +5399,6 @@
     "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "Nhận $1% trên số lượng đồng ổn định của bạn",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
@@ -5462,14 +5454,6 @@
   "musdConvert": {
     "message": "Chuyển đổi"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Chuyển đổi và nhận $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "Nhận thưởng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
@@ -5479,10 +5463,6 @@
   },
   "musdEducationNotNow": {
     "message": "Không phải bây giờ"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Nhận thưởng $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Nhận mUSD"

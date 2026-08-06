@@ -5331,10 +5331,6 @@
     "message": "Sem bônus acumulado",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1% de bônus",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "Seu bônus",
     "description": "Section title on the mUSD asset details page"
@@ -5399,10 +5395,6 @@
     "message": "Converta suas stablecoins em mUSD e ganhe um bônus anualizado de $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "Obtenha $1% sobre suas stablecoins",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "Comprar mUSD"
   },
@@ -5458,14 +5450,6 @@
   "musdConvert": {
     "message": "Converter"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Converta e ganhe $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
@@ -5475,10 +5459,6 @@
   },
   "musdEducationNotNow": {
     "message": "Agora não"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Receba $1% de bônus em mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Obter mUSD"

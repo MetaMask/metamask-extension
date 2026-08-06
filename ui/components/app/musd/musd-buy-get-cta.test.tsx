@@ -6,8 +6,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
-import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
-import { MUSD_CONVERSION_APY } from './constants';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MusdBuyGetCta } from './musd-buy-get-cta';
 
 // Mock useI18nContext
@@ -17,7 +16,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
       musdBuyMusd: 'Buy mUSD',
       musdGetMusd: 'Get mUSD',
       musdMetaMaskUsd: 'MetaMask USD',
-      musdEarnBonusPercentage: `Earn a ${values?.[0] || '3'}% bonus`,
+      musdAssetConvertTitle: 'Convert your stablecoins',
     };
     return translations[key] || key;
   },
@@ -379,9 +378,7 @@ describe('MusdBuyGetCta', () => {
         screen.getByText(messages.musdMetaMaskUsd.message),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(
-          tEn('musdEarnBonusPercentage', [String(MUSD_CONVERSION_APY)]),
-        ),
+        screen.getByText(messages.musdAssetConvertTitle.message),
       ).toBeInTheDocument();
     });
   });

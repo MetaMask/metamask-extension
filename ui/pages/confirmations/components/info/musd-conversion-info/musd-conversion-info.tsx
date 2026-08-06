@@ -63,7 +63,7 @@ const MusdBottomContent = () => {
  * Displays the amount input interface for conversion with custom override content
  * that shows the expected mUSD output amount.
  *
- * The heading with "Convert and get 3%" and info tooltip is rendered
+ * The heading with "Get mUSD" and info tooltip is rendered
  * by the MusdConversionHeader in the confirmation header area.
  *
  * Token filtering is handled by the PayWithModal component which detects

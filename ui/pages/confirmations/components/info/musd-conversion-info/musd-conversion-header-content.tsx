@@ -31,7 +31,7 @@ export function useMusdConversionHeaderContent(): HeaderContent {
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   return {
-    title: t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)]),
+    title: t('musdGetMusd'),
     endAccessory: (
       <InfoPopoverTooltip
         data-testid="musd-conversion-header-tooltip"

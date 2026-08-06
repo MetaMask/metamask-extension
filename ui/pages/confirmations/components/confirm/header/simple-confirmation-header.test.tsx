@@ -65,11 +65,11 @@ describe('<SimpleConfirmationHeader />', () => {
   });
 
   describe('musdConversion type', () => {
-    it('renders the "Convert and get 3%" title', () => {
+    it('renders the "Get mUSD" title', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
       expect(getByTestId('simple-confirmation-header-title')).toHaveTextContent(
-        'Convert and get 3%',
+        'Get mUSD',
       );
     });
 

@@ -5331,10 +5331,6 @@
     "message": "Walang naipon na bonus",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1% bonus",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "Iyong bonus",
     "description": "Section title on the mUSD asset details page"
@@ -5399,10 +5395,6 @@
     "message": "I-convert ang mga stablecoin mo sa mUSD at makakuha ng $1% taunang bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "Makakuha ng $1% sa mga stablecoin mo",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
   },
@@ -5458,14 +5450,6 @@
   "musdConvert": {
     "message": "I-convert"
   },
-  "musdConvertAndGetBonus": {
-    "message": "I-convert at makakuha ng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "Kumita ng $1% bonus",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Magsimula"
   },
@@ -5475,10 +5459,6 @@
   },
   "musdEducationNotNow": {
     "message": "Hindi sa ngayon"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Makakuha ng $1% mUSD bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"

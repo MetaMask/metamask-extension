@@ -5335,10 +5335,6 @@
     "message": "獲得しているボーナスはありません",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1%のボーナス",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "ボーナス",
     "description": "Section title on the mUSD asset details page"
@@ -5403,10 +5399,6 @@
     "message": "お持ちのステーブルコインをmUSDに換えて、年換算$1%のボーナスを獲得しましょう。",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "ステーブルコインで$1%をゲット",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
@@ -5462,14 +5454,6 @@
   "musdConvert": {
     "message": "変換"
   },
-  "musdConvertAndGetBonus": {
-    "message": "換金して$1%獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "$1%のボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "利用を開始する"
   },
@@ -5479,10 +5463,6 @@
   },
   "musdEducationNotNow": {
     "message": "後で"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1%のmUSDボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSDを入手"

@@ -115,7 +115,7 @@ export const MusdAssetCta = ({
    * Handle convert button click
    */
   const handleConvert = useCallback(async () => {
-    const ctaDisplayText = t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]);
+    const ctaDisplayText = t('musdGetMusd');
     const redirectsTo = resolveMusdConversionCtaRedirectsTo({
       intent: 'conversion',
       educationSeen,
@@ -184,7 +184,7 @@ export const MusdAssetCta = ({
           fontWeight={FontWeight.Medium}
           color={TextColor.PrimaryDefault}
         >
-          {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
+          {t('musdGetMusd')}
         </Text>
       </Box>
     );
@@ -228,7 +228,7 @@ export const MusdAssetCta = ({
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
         >
-          {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
+          {t('musdGetMusd')}
         </Text>
         <Text
           variant={TextVariant.BodySm}

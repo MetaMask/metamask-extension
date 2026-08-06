@@ -5331,10 +5331,6 @@
     "message": "अगला कोई बोनस अर्जित नहीं किया जा रहा है",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1% बोनस",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "आपका बोनस",
     "description": "Section title on the mUSD asset details page"
@@ -5399,10 +5395,6 @@
     "message": "अपने स्टेबलकॉइन्स को mUSD में बदलें और $1% वार्षिक बोनस प्राप्त करें।",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "अपने स्टेबलकॉइन्स पर $1% पाएं",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
@@ -5458,14 +5450,6 @@
   "musdConvert": {
     "message": "कन्वर्ट करें"
   },
-  "musdConvertAndGetBonus": {
-    "message": "कन्वर्ट करें और $1% पाएं",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "$1% बोनस कमाएं",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "शुरू करें"
   },
@@ -5475,10 +5459,6 @@
   },
   "musdEducationNotNow": {
     "message": "अभी नहीं"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1% mUSD बोनस पाएं",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD प्राप्त करें"

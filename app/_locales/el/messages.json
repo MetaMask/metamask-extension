@@ -5331,10 +5331,6 @@
     "message": "Δεν έχετε συγκεντρώσει κάποιο μπόνους",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1% μπόνους",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "Το μπόνους σας",
     "description": "Section title on the mUSD asset details page"
@@ -5399,10 +5395,6 @@
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και λάβετε $1% μπόνους ετησίως.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "Λάβετε $1% στα stablecoins σας",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "Αγοράστε mUSD"
   },
@@ -5458,14 +5450,6 @@
   "musdConvert": {
     "message": "Μετατροπή"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Μετατρέψτε και κερδίστε $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "Κερδίστε $1% σε μπόνους",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Ξεκινήστε"
   },
@@ -5475,10 +5459,6 @@
   },
   "musdEducationNotNow": {
     "message": "Όχι τώρα"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Κερδίστε $1% μπόνους σε mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Αποκτήστε mUSD"

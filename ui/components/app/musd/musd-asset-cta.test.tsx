@@ -11,7 +11,7 @@ import { MusdAssetCta } from './musd-asset-cta';
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, values?: string[]) => {
     const translations: Record<string, string> = {
-      musdBoostTitle: `Get ${values?.[0] || '3'}% on your stablecoins`,
+      musdGetMusd: 'Get mUSD',
       musdBoostDescription: `Convert your stablecoins to mUSD and get a ${values?.[0] || '3'}% annualized bonus.`,
       musdConvert: 'Convert',
       dismiss: 'Dismiss',
@@ -104,9 +104,7 @@ describe('MusdAssetCta', () => {
         store,
       );
 
-      expect(
-        screen.getByText('Get 3% on your stablecoins'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Get mUSD')).toBeInTheDocument();
       expect(
         screen.getByText(
           'Convert your stablecoins to mUSD and get a 3% annualized bonus.',
@@ -271,9 +269,7 @@ describe('MusdAssetCta', () => {
         store,
       );
 
-      expect(
-        screen.getByText('Get 3% on your stablecoins'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Get mUSD')).toBeInTheDocument();
     });
   });
 

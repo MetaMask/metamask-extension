@@ -5331,10 +5331,6 @@
     "message": "无累积中的奖励",
     "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
   },
-  "musdAssetBonusRate": {
-    "message": "$1% 奖励",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
   "musdAssetBonusTitle": {
     "message": "您的奖励",
     "description": "Section title on the mUSD asset details page"
@@ -5399,10 +5395,6 @@
     "message": "将您的稳定币兑换为 mUSD，即可获得 $1% 的年化奖励。",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "获得稳定币的 $1% 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
@@ -5458,14 +5450,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdConvertAndGetBonus": {
-    "message": "兑换并获得 $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEarnBonusPercentage": {
-    "message": "获得 $1% 的奖励",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "开始使用"
   },
@@ -5475,10 +5459,6 @@
   },
   "musdEducationNotNow": {
     "message": "暂时不"
-  },
-  "musdGetBonusPercentage": {
-    "message": "获取 $1% mUSD 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "获取 mUSD"

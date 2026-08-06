@@ -357,7 +357,7 @@ export function MusdBonusSection({
           </InfoPopover>
         </Box>
         <Tag
-          label={t('musdAssetBonusRate', [String(MUSD_CONVERSION_APY)])}
+          label={t('musdAssetBonusRate')}
           backgroundColor={BackgroundColor.successMuted}
           labelProps={{ color: LegacyTextColor.successDefault }}
         />
