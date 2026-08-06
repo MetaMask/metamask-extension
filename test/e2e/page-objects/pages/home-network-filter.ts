@@ -8,8 +8,7 @@ class HomeNetworkFilter {
 
   protected readonly driver: Driver;
 
-  private readonly modalCloseButton =
-    '.mm-modal-header button[aria-label="Close"]';
+  private readonly modalCloseButton = 'header button[aria-label="Close"]';
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 

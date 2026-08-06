@@ -14,4 +14,4 @@ export { SecurityTrustInfoModal } from './security-trust-info-modal';
 export {
   SecurityTrustInlineBadge,
   SecurityTrustVerifiedBadge,
-} from './security-trust-inline-badge';
+} from '../../../../components/app/security-trust';
