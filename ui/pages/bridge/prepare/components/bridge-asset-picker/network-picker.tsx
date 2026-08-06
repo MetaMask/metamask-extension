@@ -25,17 +25,15 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import {
+  CHAIN_VALUE_ORDER_AB_KEY,
+  CHAIN_VALUE_ORDER_AB_TEST_EXPOSURE_METADATA,
+  CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+} from '../../../../../../shared/lib/ab-testing/configs/chain-value-order';
+import { useABTest } from '../../../../../hooks/useABTest';
+import { useChainValueOrder } from '../../../hooks/useChainValueOrder';
 
-export const NetworkPicker = ({
-  chains,
-  selectedChainId,
-  disabledChainId,
-  onNetworkChange,
-  buttonElement,
-  isOpen,
-  onClose,
-  testId,
-}: {
+type NetworkPickerProps = {
   chains: { chainId: CaipChainId; name: string }[];
   selectedChainId: CaipChainId | null;
   disabledChainId?: CaipChainId;
@@ -44,7 +42,18 @@ export const NetworkPicker = ({
   isOpen: boolean;
   onClose: () => void;
   testId: string;
-}) => {
+};
+
+const NetworkPickerContent = ({
+  chains,
+  selectedChainId,
+  disabledChainId,
+  onNetworkChange,
+  buttonElement,
+  isOpen,
+  onClose,
+  testId,
+}: NetworkPickerProps) => {
   const t = useI18nContext();
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
 
@@ -158,4 +167,25 @@ export const NetworkPicker = ({
       ))}
     </Popover>
   );
+};
+
+const NetworkValueOrderedPicker = (props: NetworkPickerProps) => {
+  const orderedChains = useChainValueOrder(props.chains);
+
+  return <NetworkPickerContent {...props} chains={orderedChains} />;
+};
+
+export const NetworkPicker = (props: NetworkPickerProps) => {
+  const { variant } = useABTest(
+    CHAIN_VALUE_ORDER_AB_KEY,
+    CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+    CHAIN_VALUE_ORDER_AB_TEST_EXPOSURE_METADATA,
+    { trackExposure: props.isOpen },
+  );
+
+  if (props.isOpen && variant.orderByValue) {
+    return <NetworkValueOrderedPicker {...props} />;
+  }
+
+  return <NetworkPickerContent {...props} />;
 };

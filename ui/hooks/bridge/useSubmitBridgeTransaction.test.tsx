@@ -29,6 +29,8 @@ import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -605,6 +607,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
+        activeAbTests: undefined,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
@@ -616,6 +619,129 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
+
+    it('forwards the chain value order assignment to regular submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'treatment',
+          },
+        },
+      });
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
+      const quoteWithCurrentMetricsShape = {
+        ...quote,
+        ...OP_0_005_ETH_TO_ARB_METADATA,
+        quote: {
+          ...quote.quote,
+          src: { asset: quote.quote.srcAsset },
+          dest: { asset: quote.quote.destAsset },
+        },
+      } as never;
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          quoteWithCurrentMetricsShape,
+        );
+      });
+
+      expect(submitTxSpy.mock.calls[0][6]).toStrictEqual([
+        createActiveABTestAssignment(
+          CHAIN_VALUE_ORDER_AB_KEY,
+          'treatment',
+        ),
+      ]);
+    });
+
+    it('forwards the chain value order assignment to intent submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'control',
+          },
+        },
+      });
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(submitIntentSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activeAbTests: [
+            createActiveABTestAssignment(
+              CHAIN_VALUE_ORDER_AB_KEY,
+              'control',
+            ),
+          ],
+        }),
+      );
+    });
+
+    // @ts-expect-error - each is a valid test function
+    it.each([undefined, { name: 'invalid' }])(
+      'forwards no assignment for a missing or malformed experiment value',
+      async (
+        experimentValue: undefined | {
+          name: string;
+        },
+      ) => {
+        const store = makeMockStore({
+          featureFlagOverrides: {
+            // @ts-expect-error - the mock store type only declares bridgeConfig
+            [CHAIN_VALUE_ORDER_AB_KEY]: experimentValue,
+          },
+        });
+        const { result } = renderHook(
+          () => useSubmitBridgeTransaction(),
+          {
+            wrapper: makeWrapper(store),
+          },
+        );
+        const quoteWithIntent = {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          quote: {
+            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+            intent: {
+              order: {},
+            } as never,
+          },
+        };
+
+        await act(async () => {
+          await result.current.submitBridgeTransaction(quoteWithIntent);
+        });
+
+        expect(submitIntentSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            activeAbTests: undefined,
+          }),
+        );
+        expect(store.getActions()).not.toContainEqual(
+          expect.objectContaining({
+            type: expect.stringContaining('Experiment'),
+          }),
+        );
+      },
+    );
 
     it('routes to default route with replace when non-HW intent submission fails', async () => {
       const store = makeMockStore();

@@ -17,6 +17,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
+import type { ChainValueOrderOverride } from '../../../shared/lib/bridge/chain-value-order';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -186,11 +187,12 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   featureFlagOverrides?: {
-    bridgeConfig: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
+    bridgeConfig?: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
     gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
+    swapsChainValueOrderOverride?: ChainValueOrderOverride;
   };
   bridgeStateOverrides?: Partial<
     Omit<BridgeControllerState, 'quoteRequest'>
