@@ -110,7 +110,7 @@ export const useDiscoverCryptoSearch = ({
 
       return {
         data,
-        totalCount: data.length,
+        totalCount: response.totalCount ?? data.length,
       };
     },
     enabled: enabled && isSearch,

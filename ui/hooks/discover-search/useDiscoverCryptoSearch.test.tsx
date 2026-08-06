@@ -112,6 +112,6 @@ describe('useDiscoverCryptoSearch', () => {
     );
     expect(mockGetTrendingTokens).not.toHaveBeenCalled();
     expect(result.current.data[0].priceChangePct?.h24).toBe('1.2');
-    expect(result.current.totalCount).toBe(1);
+    expect(result.current.totalCount).toBe(2);
   });
 });
