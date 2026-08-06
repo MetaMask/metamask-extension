@@ -1,6 +1,7 @@
 import {
   AddressScanResultType,
   PhishingController,
+  type AddressScanResult,
 } from '@metamask/phishing-controller';
 import type { Hex } from '@metamask/utils';
 import {
@@ -20,15 +21,10 @@ import {
  * without validation.
  *
  * @param result - The PhishingController address-scan result to translate
- * @param result.result_type - The controller's security assessment verdict
- * @param result.label - Additional label or description for the result
  */
-export function mapAddressScanResult(result: {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  result_type: AddressScanResultType;
-  label: string;
-}): ScanAddressResponse {
+export function mapAddressScanResult(
+  result: AddressScanResult,
+): ScanAddressResponse {
   return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type:
