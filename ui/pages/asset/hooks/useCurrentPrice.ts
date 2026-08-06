@@ -40,7 +40,7 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
     const currentPrice =
       tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
         ? tokenExchangeRate * tokenMarketPrice
-        : asset.price;
+        : undefined;
 
     return { currentPrice };
   }
@@ -61,7 +61,7 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
 
   const currentPrice = currentPriceAsString
     ? parseFloat(currentPriceAsString)
-    : asset.price;
+    : undefined;
 
   return { currentPrice };
 };

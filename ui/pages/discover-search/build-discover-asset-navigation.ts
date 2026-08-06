@@ -74,7 +74,9 @@ const getDiscoverAssetPrice = (
   }
 
   const numericPrice = Number(price);
-  return Number.isFinite(numericPrice) ? numericPrice : undefined;
+  return Number.isFinite(numericPrice) && numericPrice > 0
+    ? numericPrice
+    : undefined;
 };
 
 /**
