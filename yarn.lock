@@ -33472,7 +33472,7 @@ __metadata:
     remote-redux-devtools: "npm:^0.5.16"
     reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
-    rxjs: "npm:7.8.2"
+    rxjs: "npm:^7.8.2"
     sass-embedded: "npm:^1.100.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
