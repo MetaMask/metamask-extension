@@ -11,13 +11,19 @@ const reports = [
 ] as const;
 
 /**
- * Pages back through an artifact's history until a copy from `branch` turns up.
+ * Walks completed `workflow` runs on `branch`, newest first, and returns the first one still
+ * holding `artifactName`.
+ *
+ * Not a single `listArtifactsForRepo` call ranked by `created_at`, tempting as that is: a
+ * re-run uploads a fresh artifact under an *older* `workflow_run.id`, so the newest upload can
+ * belong to an older commit. Walking runs sidesteps that, because nothing can reorder them.
  *
  * @param options - Lookup parameters.
  * @param options.github - Authenticated GitHub client.
  * @param options.owner - Repository owner.
  * @param options.repo - Repository name.
- * @param options.branch - Branch whose artifacts we want.
+ * @param options.branch - Branch whose runs we want.
+ * @param options.workflow - Workflow file producing the artifact.
  * @param options.artifactName - Exact artifact name to look for.
  * @returns The owning run ID, or `undefined` if no usable copy exists.
  */
@@ -26,31 +32,46 @@ async function resolveLatestArtifactRunId({
   owner,
   repo,
   branch,
+  workflow,
   artifactName,
 }: {
   github: GitHub;
   owner: string;
   repo: string;
   branch: string;
+  workflow: string;
   artifactName: string;
 }): Promise<number | undefined> {
-  const pages = github.paginate.iterator(
-    github.rest.actions.listArtifactsForRepo,
-    { owner, repo, name: artifactName, per_page: 100 },
-  );
+  // Artifacts expire after 90 days, so no older run can still hold a report. Truncated to
+  // midnight UTC so the query is identical all day and independent of the machine's timezone.
+  const artifactRetentionDays = 90;
+  const oldestUsefulRun = new Date();
+  oldestUsefulRun.setUTCDate(oldestUsefulRun.getUTCDate() - artifactRetentionDays);
+  oldestUsefulRun.setUTCHours(0, 0, 0, 0);
 
-  for await (const { data: artifacts } of pages) {
-    const [latestArtifact] = artifacts
-      .filter(
-        (artifact) =>
-          !artifact.expired && artifact.workflow_run?.head_branch === branch,
-      )
-      // ISO 8601 timestamps sort lexicographically, so this is chronological.
-      // `created_at` is nullable in the API; treat a missing one as oldest rather than comparing null.
-      .sort((a, b) => (b.created_at ?? '').localeCompare(a.created_at ?? ''));
+  const workflowResponses = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
+    owner,
+    repo,
+    branch,
+    workflow_id: workflow,
+    status: 'completed',
+    created: `>=${oldestUsefulRun.toISOString()}`,
+    per_page: 100,
+  });
 
-    if (latestArtifact?.workflow_run) {
-      return latestArtifact.workflow_run.id;
+  for await (const workflowResponse of workflowResponses) {
+    for (const workflowRun of workflowResponse.data) {
+      const { data } = await github.rest.actions.listWorkflowRunArtifacts({
+        owner,
+        repo,
+        run_id: workflowRun.id,
+        name: artifactName,
+        per_page: 100,
+      });
+
+      if (data.artifacts.some((artifact) => !artifact.expired)) {
+        return workflowRun.id;
+      }
     }
   }
 
@@ -73,6 +94,7 @@ export async function resolveE2EReportRunIds({
 }: GitHubOptions): Promise<void> {
   const { owner, repo } = context.repo;
   const branch: string | undefined = context.payload.repository?.default_branch;
+  const workflow = 'main.yml';
 
   for (const { output, artifactName } of reports) {
     // Without a branch there is nothing to match, and paging the whole history would be
@@ -83,6 +105,7 @@ export async function resolveE2EReportRunIds({
           owner,
           repo,
           branch,
+          workflow,
           artifactName,
         })
       : undefined;
