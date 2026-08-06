@@ -16,6 +16,7 @@ import {
 } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { transitionForward } from '../../ui/transition';
+import { preserveDrawerOpen } from '../global-menu-drawer/global-menu-drawer';
 import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 
 const getRouteState = (state?: object) => ({
@@ -133,6 +134,7 @@ export const GlobalMenuList = ({
 
                   event.preventDefault();
                   item.onClick?.();
+                  preserveDrawerOpen();
                   transitionForward(() =>
                     navigate(item.to, {
                       state: routeState,

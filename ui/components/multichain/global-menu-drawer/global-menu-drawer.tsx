@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useRef, useState, useCallback } from 'react';
+import React, { useLayoutEffect, useRef, useCallback } from 'react';
+import classnames from 'clsx';
 import {
   Box,
   BoxBackgroundColor,
@@ -17,8 +18,29 @@ import {
 } from '../../../../shared/constants/app';
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
-const sidepanelCompactMaxWidth = 490;
+const drawerOpenVar = '--global-drawer-open' as const;
 
+export function preserveDrawerOpen(
+  root: HTMLElement = document.documentElement,
+) {
+  root.style.setProperty(drawerOpenVar, 'none');
+}
+
+function clearDrawerOpen(root: HTMLElement = document.documentElement) {
+  root.style.removeProperty(drawerOpenVar);
+}
+
+/**
+ *
+ * @param props - The component props
+ * @param props.isOpen - Whether the drawer is open
+ * @param props.onClose - Callback to close the drawer
+ * @param props.children - Content to render inside the drawer
+ * @param props.title - Optional title for the drawer (used for accessibility)
+ * @param props.showCloseButton - Whether to show the close button (default: true)
+ * @param props.width - Width of the drawer (default: '400px')
+ * @param props.'data-testid'
+ */
 export const GlobalMenuDrawer = ({
   isOpen,
   onClose,
@@ -34,35 +56,10 @@ export const GlobalMenuDrawer = ({
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const showBackdrop = isFullscreen || isSidepanel;
-  const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
-    useState(false);
   // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
-  const isLargeDrawer =
-    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
+  const isLargeDrawer = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  // Skip enter when mounted already open (e.g. back with ?drawerOpen=true)
-  const [skipEnterAnimation, setSkipEnterAnimation] = useState(isOpen);
-
-  useLayoutEffect(() => {
-    if (!isSidepanel || typeof window.matchMedia !== 'function') {
-      setIsCompactSidepanelDrawer(false);
-      return;
-    }
-
-    const mediaQuery = window.matchMedia(
-      `(max-width: ${sidepanelCompactMaxWidth}px)`,
-    );
-    const updateCompact = () => {
-      setIsCompactSidepanelDrawer(mediaQuery.matches);
-    };
-    updateCompact();
-    mediaQuery.addEventListener('change', updateCompact);
-    return () => {
-      mediaQuery.removeEventListener('change', updateCompact);
-    };
-  }, [isSidepanel]);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -79,11 +76,6 @@ export const GlobalMenuDrawer = ({
           dialog.setAttribute('open', '');
         }
       }
-      // Sidepanel/popup: drop instant after enter so exit uses full duration.
-      // Fullscreen: keep until close — it only disables enter keyframes.
-      if (skipEnterAnimation && !isFullscreen) {
-        setSkipEnterAnimation(false);
-      }
       return;
     }
 
@@ -95,9 +87,9 @@ export const GlobalMenuDrawer = ({
         dialog.dispatchEvent(new Event('close'));
       }
     }
-    // After close() so fullscreen doesn't briefly re-apply enter keyframes
-    setSkipEnterAnimation(false);
-  }, [isOpen, skipEnterAnimation, isFullscreen]);
+
+    clearDrawerOpen();
+  }, [isOpen]);
 
   const handleDialogClose = useCallback(() => {
     if (isOpen) {
@@ -119,14 +111,9 @@ export const GlobalMenuDrawer = ({
   }, []);
 
   const titleId = 'global-menu-drawer-title';
-  const className = [
-    'global-menu-drawer',
-    showBackdrop ? 'global-menu-drawer--backdrop' : '',
-    isFullscreen ? 'global-menu-drawer--fullscreen' : '',
-    skipEnterAnimation ? 'global-menu-drawer--instant' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const className = classnames('global-menu-drawer', {
+    'global-menu-drawer--fullscreen': isFullscreen,
+  });
 
   const panel = (
     <Box
@@ -177,11 +164,7 @@ export const GlobalMenuDrawer = ({
       onClose={handleDialogClose}
       style={{ '--drawer-width': width } as React.CSSProperties}
     >
-      {isFullscreen ? (
-        <div className="global-menu-drawer__frame">{panel}</div>
-      ) : (
-        panel
-      )}
+      <div className="global-menu-drawer__frame">{panel}</div>
     </dialog>
   );
 };

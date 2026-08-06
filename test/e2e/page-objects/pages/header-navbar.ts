@@ -211,15 +211,7 @@ class HeaderNavbar {
       this.drawerBackButton,
     );
     await element.click();
-    // Native <dialog> stays mounted when closed; wait until hidden (not removed).
-    await this.driver.wait(async () => {
-      try {
-        return !(await element.isDisplayed());
-      } catch {
-        // Stale element means the control was unmounted (legacy portal path).
-        return true;
-      }
-    }, 3000);
+    await element.waitForElementState('hidden', 3000);
   }
 
   /**

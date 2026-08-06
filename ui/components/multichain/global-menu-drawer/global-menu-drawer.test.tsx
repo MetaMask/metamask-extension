@@ -101,8 +101,7 @@ describe('GlobalMenuDrawer', () => {
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
   });
 
-  // Fullscreen drawer uses a portal that requires layout measurement — tested via manual QA.
-  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or wide sidepanel).
+  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or sidepanel).
 
   it('does not apply border-l in pure black mode on popup', async () => {
     const { usePureBlack } = jest.requireMock('@metamask/design-system-react');

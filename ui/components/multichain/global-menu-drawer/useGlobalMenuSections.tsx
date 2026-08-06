@@ -47,6 +47,7 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { preserveDrawerOpen } from './global-menu-drawer';
 
 import {
   MetaMetricsEventCategory,
@@ -154,6 +155,7 @@ export function useGlobalMenuSections(
         })
         .build(),
     );
+    preserveDrawerOpen();
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
       { state: { globalMenuTransition: 'forward' } },

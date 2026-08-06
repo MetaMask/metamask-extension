@@ -2,6 +2,11 @@
 // individual transform (`translate`), `display`/`overlay` + allow-discrete,
 // and `@starting-style`. See:
 // https://developer.chrome.com/blog/entry-exit-animations
+//
+// The dialog is a stationary clip stencil (aligned to the shell column). An
+// inner `.global-menu-drawer__frame` does the slide so `overflow: clip` keeps
+// the animation inside the container — not across the viewport gutter outside
+// `--width-max`.
 
 .global-menu-drawer {
   // Sit on the right edge of the centered shell column
@@ -18,55 +23,27 @@
   overflow: clip;
   background: transparent;
 
-  // Closed / exit target (sidepanel / popup — dialog itself slides)
-  translate: 100% 0;
+  // Stay put — clipping box must not move with the slide
+  translate: none;
 
-  transition-property: translate, display, overlay;
+  // Only discrete top-layer props on the dialog; slide lives on `__frame`
+  transition-property: display, overlay;
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
   transition-behavior: allow-discrete;
 
-  &[open] {
-    translate: 0 0;
-  }
-
-  // Fullscreen: dialog is a fixed clip stencil (never translates). An inner
-  // `.global-menu-drawer__frame` does the slide so overflow:clip can contain it.
+  // Fullscreen: clear the fox logo strip. Same gate as MultichainMetaFoxLogo
+  // (`display={[None, Flex]}` → visible from `$screen-sm-min` / 576px).
   &--fullscreen {
-    top: 90px;
-    height: calc(100% - 90px);
-    max-height: calc(100% - 90px);
-    // Stay put — clipping box must not move with the slide
-    translate: none;
-
-    &[open] {
-      translate: none;
-    }
-
-    // Only discrete top-layer props on the dialog; slide lives on `__frame`
-    transition-property: display, overlay;
-  }
-
-  // Sidepanel/popup: near-zero transitions for mount-already-open enter only
-  // (cleared before close so exit can slide).
-  &--instant:not(.global-menu-drawer--fullscreen) {
-    transition-duration: 0.01ms;
-
-    &::backdrop {
-      transition-duration: 0.01ms;
+    @media screen and (min-width: 576px) {
+      top: 90px;
+      height: calc(100% - 90px);
+      max-height: calc(100% - 90px);
     }
   }
 
-  // Fullscreen: only suppress the enter keyframes — leave transitions alone
-  // so slide-out still runs when --instant remains until close().
-  &--instant.global-menu-drawer--fullscreen[open] > .global-menu-drawer__frame {
-    animation: none;
-    translate: 0 0;
-  }
-
-  // Dimmed backdrop (fullscreen / sidepanel)
-  &--backdrop::backdrop {
-    background: var(--color-overlay-default);
+  // Fade UA ::backdrop (default rgba(0,0,0,0.1)); don't set background.
+  &::backdrop {
     opacity: 0;
     transition-property: opacity, display, overlay;
     transition-duration: 300ms;
@@ -74,12 +51,8 @@
     transition-behavior: allow-discrete;
   }
 
-  &--backdrop[open]::backdrop {
+  &[open]::backdrop {
     opacity: 1;
-  }
-
-  &:not(.global-menu-drawer--backdrop)::backdrop {
-    background: transparent;
   }
 }
 
@@ -93,7 +66,7 @@
   }
 }
 
-// Fullscreen slide surface — clipped by the stationary dialog
+// Slide surface — clipped by the stationary dialog
 .global-menu-drawer__frame {
   box-sizing: border-box;
   width: 100%;
@@ -107,32 +80,32 @@
   transition-timing-function: ease-in-out;
 }
 
-.global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
+.global-menu-drawer[open] > .global-menu-drawer__frame {
   translate: 0 0;
-  // Enter: keyframes + backwards beat @starting-style for nested paint-in
-  animation: global-menu-drawer-slide-in 300ms ease-in-out backwards;
+  // Enter: keyframes + backwards beat @starting-style for nested paint-in.
+  // When `:root` has `--global-drawer-open: none` (set before navigating away
+  // so it survives Home unmount), both animation and starting translate
+  // resolve to `none` — restore without replaying slide-in.
+  animation: var(
+    --global-drawer-open,
+    global-menu-drawer-slide-in 300ms ease-in-out backwards
+  );
 }
 
 // Before-open snapshots — paired with allow-discrete on display/overlay
 @starting-style {
-  .global-menu-drawer[open] {
-    translate: 100% 0;
+  .global-menu-drawer[open] > .global-menu-drawer__frame {
+    translate: var(--global-drawer-open, 100% 0);
   }
 
-  .global-menu-drawer--fullscreen[open] {
-    translate: none;
-  }
-
-  .global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
-    translate: 100% 0;
-  }
-
-  .global-menu-drawer--backdrop[open]::backdrop {
+  .global-menu-drawer[open]::backdrop {
     opacity: 0;
   }
 }
 
-// Narrow sidepanel: drawer covers the full surface
+// Narrow sidepanel: drawer covers the full surface.
+// Breakpoint matches `--width-max-sidepanel` in base-styles.scss (custom
+// properties are not reliable inside `@media`, so keep the px value in sync).
 .app--sidepanel {
   @media (max-width: 490px) {
     .global-menu-drawer {
@@ -146,11 +119,11 @@
 @media (prefers-reduced-motion: reduce) {
   .global-menu-drawer,
   .global-menu-drawer__frame,
-  .global-menu-drawer--backdrop::backdrop {
+  .global-menu-drawer::backdrop {
     transition-duration: 0.01ms;
   }
 
-  .global-menu-drawer--fullscreen[open] .global-menu-drawer__frame {
+  .global-menu-drawer[open] > .global-menu-drawer__frame {
     animation: none;
   }
 }
