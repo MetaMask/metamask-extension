@@ -3,6 +3,7 @@
 
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import isEqual from 'lodash/isEqual';
 import { getAddressSecurityAlertResponse } from '../selectors';
 import { ResultType, createCacheKey } from '../../shared/lib/trust-signals';
@@ -12,7 +13,7 @@ import { useI18nContext } from './useI18nContext';
 export type UseTrustSignalRequest = {
   value: string;
   type: NameType;
-  chainId?: string;
+  chainId?: Hex;
 };
 
 export enum TrustSignalDisplayState {
@@ -47,7 +48,7 @@ export type TrustSignalResult = {
 export function useTrustSignal(
   value: string,
   type: NameType,
-  chainId: string | undefined,
+  chainId: Hex | undefined,
 ): TrustSignalResult {
   return useTrustSignals([{ value, type, chainId }])[0];
 }

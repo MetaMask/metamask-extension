@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -69,7 +70,7 @@ export function useTrustSignalMetrics() {
       return undefined;
     }
 
-    const cacheKey = createCacheKey(chainId, addressToCheck);
+    const cacheKey = createCacheKey(chainId as Hex, addressToCheck);
     return getAddressSecurityAlertResponse(state, cacheKey);
   });
 

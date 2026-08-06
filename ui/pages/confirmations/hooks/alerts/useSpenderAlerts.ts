@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -204,7 +205,7 @@ export function useSpenderAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     spenderAddress || '',
     NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
+    currentConfirmation?.chainId as Hex | undefined,
   );
 
   return useMemo(() => {
