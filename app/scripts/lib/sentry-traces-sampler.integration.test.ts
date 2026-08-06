@@ -34,12 +34,8 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
       dsn: 'https://public@fake.ingest.sentry.io/1',
       release: 'traces-sampler-integration-test',
       transport: stubTransport,
-      // `release: '99.99.99'` is a clearly-fake version that is NOT in
-      // DEFAULT_DROPPED_RELEASES, so the whole-release kill never fires here and
-      // these cases exercise only the per-name override path.
       tracesSampler: createTracesSampler({
         defaultSampleRate: 1,
-        release: '99.99.99',
       }),
       beforeSendTransaction: (event) => {
         if (event.transaction) {
@@ -95,57 +91,5 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
     expect(sentTransactions).toContain('Parent Trace');
     expect(sentTransactions).toContain('Nested Kept Transaction');
     expect(sentTransactions).not.toContain('Throttled Transaction');
-  });
-});
-
-describe('createTracesSampler whole-release drop (integration with Sentry.init)', () => {
-  let sentTransactions: string[];
-  const originalDropEnv = process.env.SENTRY_DROP_RELEASES;
-  // DEFAULT_DROPPED_RELEASES ships empty (see sentry-traces-sampler.test.ts) —
-  // supply a dropped release via the env var so this exercises the whole-release
-  // kill mechanism regardless of whether any built-in default is currently set.
-  const droppedRelease = '13.32.0';
-
-  beforeEach(() => {
-    sentTransactions = [];
-    process.env.SENTRY_DROP_RELEASES = droppedRelease;
-    (globalThis as typeof globalThis & { nw?: object }).nw = {};
-
-    Sentry.init({
-      dsn: 'https://public@fake.ingest.sentry.io/1',
-      release: 'traces-sampler-integration-test',
-      transport: stubTransport,
-      // No per-name override needed: the whole-release kill drops everything.
-      tracesSampler: createTracesSampler({
-        defaultSampleRate: 1,
-        release: droppedRelease,
-      }),
-      beforeSendTransaction: (event) => {
-        if (event.transaction) {
-          sentTransactions.push(event.transaction);
-        }
-        return null;
-      },
-    });
-  });
-
-  afterEach(async () => {
-    await Sentry.close(2000);
-    if (originalDropEnv === undefined) {
-      delete process.env.SENTRY_DROP_RELEASES;
-    } else {
-      process.env.SENTRY_DROP_RELEASES = originalDropEnv;
-    }
-  });
-
-  it('drops every transaction when this build is a dropped release, even a normally-kept one', async () => {
-    Sentry.startSpan(
-      { name: 'Would Be Kept Transaction', forceTransaction: true },
-      () => undefined,
-    );
-    await Sentry.flush(2000);
-
-    expect(sentTransactions).not.toContain('Would Be Kept Transaction');
-    expect(sentTransactions).toHaveLength(0);
   });
 });

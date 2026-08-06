@@ -1,5 +1,4 @@
 import {
-  DEFAULT_DROPPED_RELEASES,
   DEFAULT_TRANSACTION_SAMPLE_RATES,
   createTracesSampler,
   getTransactionSampleRate,
@@ -107,108 +106,17 @@ describe('getTransactionSampleRate', () => {
       ),
     ).toBe(defaultSampleRate);
   });
-
-  describe('whole-release drop', () => {
-    const droppedReleases = new Set(['13.32.0', '13.33.0']);
-
-    it('drops a non-throttled transaction when the build release is dropped', () => {
-      expect(
-        getTransactionSampleRate(
-          { name: 'Unlisted Transaction' },
-          {
-            defaultSampleRate,
-            sampleRateOverrides,
-            release: '13.32.0',
-            droppedReleases,
-          },
-        ),
-      ).toBe(0);
-    });
-
-    it('drops even a parentSampled transaction when the build release is dropped', () => {
-      expect(
-        getTransactionSampleRate(
-          { name: 'Unlisted Transaction', parentSampled: true },
-          {
-            defaultSampleRate,
-            sampleRateOverrides,
-            release: '13.33.0',
-            droppedReleases,
-          },
-        ),
-      ).toBe(0);
-    });
-
-    it('drops a transaction with no name when the build release is dropped', () => {
-      expect(
-        getTransactionSampleRate(
-          {},
-          {
-            defaultSampleRate,
-            sampleRateOverrides,
-            release: '13.32.0',
-            droppedReleases,
-          },
-        ),
-      ).toBe(0);
-    });
-
-    it('keeps existing behavior when the build release is not dropped', () => {
-      // Non-throttled root falls back to the default rate...
-      expect(
-        getTransactionSampleRate(
-          { name: 'Unlisted Transaction' },
-          {
-            defaultSampleRate,
-            sampleRateOverrides,
-            release: '99.99.99',
-            droppedReleases,
-          },
-        ),
-      ).toBe(defaultSampleRate);
-      // ...and a throttled name is still pinned to its override.
-      expect(
-        getTransactionSampleRate(
-          { name: 'Dropped Transaction' },
-          {
-            defaultSampleRate,
-            sampleRateOverrides,
-            release: '99.99.99',
-            droppedReleases,
-          },
-        ),
-      ).toBe(0);
-    });
-
-    it('keeps existing behavior when no release is supplied', () => {
-      expect(
-        getTransactionSampleRate(
-          { name: 'Unlisted Transaction' },
-          { defaultSampleRate, sampleRateOverrides, droppedReleases },
-        ),
-      ).toBe(defaultSampleRate);
-    });
-  });
 });
 
 describe('createTracesSampler', () => {
   const defaultSampleRate = 0.0075;
   const originalEnv = process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
-  const originalDropEnv = process.env.SENTRY_DROP_RELEASES;
-  // A release deliberately not in DEFAULT_DROPPED_RELEASES, used for the
-  // "not dropped" cases.
-  const undroppedRelease = '99.99.99';
 
   afterEach(() => {
     if (originalEnv === undefined) {
       delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     } else {
       process.env.SENTRY_SAMPLE_RATE_OVERRIDES = originalEnv;
-    }
-    if (originalDropEnv === undefined) {
-      delete process.env.SENTRY_DROP_RELEASES;
-    } else {
-      process.env.SENTRY_DROP_RELEASES = originalDropEnv;
     }
   });
 
@@ -284,76 +192,5 @@ describe('createTracesSampler', () => {
     )) {
       expect(sampler({ name })).toBe(rate);
     }
-  });
-
-  describe('release-drop', () => {
-    it('has no built-in dropped releases by default', () => {
-      // DEFAULT_DROPPED_RELEASES is the emergency list for an active incident;
-      // it ships empty and is populated via SENTRY_DROP_RELEASES when needed.
-      // The whole-release-kill mechanism itself is covered above (pure
-      // getTransactionSampleRate tests) and via the env-var tests below.
-      expect(DEFAULT_DROPPED_RELEASES).toHaveLength(0);
-    });
-
-    it('leaves sampling untouched when the build release is not dropped', () => {
-      delete process.env.SENTRY_DROP_RELEASES;
-      const sampler = createTracesSampler({
-        defaultSampleRate,
-        release: undroppedRelease,
-      });
-
-      expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
-      for (const [name, rate] of Object.entries(
-        DEFAULT_TRANSACTION_SAMPLE_RATES,
-      )) {
-        expect(sampler({ name })).toBe(rate);
-      }
-    });
-
-    it('leaves sampling untouched when no build release is supplied', () => {
-      delete process.env.SENTRY_DROP_RELEASES;
-      const sampler = createTracesSampler({ defaultSampleRate });
-
-      expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
-    });
-
-    it('drops a release supplied purely via the SENTRY_DROP_RELEASES env var', () => {
-      process.env.SENTRY_DROP_RELEASES = undroppedRelease;
-      const sampler = createTracesSampler({
-        defaultSampleRate,
-        release: undroppedRelease,
-      });
-
-      expect(sampler({ name: 'Unlisted Transaction' })).toBe(0);
-    });
-
-    it('drops every release supplied via a comma-separated SENTRY_DROP_RELEASES env var', () => {
-      process.env.SENTRY_DROP_RELEASES = `${undroppedRelease}, 88.88.88 `;
-
-      // Both env-supplied releases are dropped (and surrounding whitespace
-      // tolerated) — the env var supports more than one entry, not just one.
-      expect(
-        createTracesSampler({
-          defaultSampleRate,
-          release: undroppedRelease,
-        })({ name: 'Unlisted Transaction' }),
-      ).toBe(0);
-      expect(
-        createTracesSampler({ defaultSampleRate, release: '88.88.88' })({
-          name: 'Unlisted Transaction',
-        }),
-      ).toBe(0);
-    });
-
-    it('ignores a blank SENTRY_DROP_RELEASES env var', () => {
-      process.env.SENTRY_DROP_RELEASES = '  , ,';
-      const sampler = createTracesSampler({
-        defaultSampleRate,
-        release: undroppedRelease,
-      });
-
-      // Blank entries add nothing, so the undropped release samples normally.
-      expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
-    });
   });
 });
