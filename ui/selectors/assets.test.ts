@@ -1812,14 +1812,8 @@ describe('getAssetsByAccountGroupId', () => {
     } as unknown as ReturnType<typeof selectAllAssets>);
 
     const state = createMockState('arc-stable-ref');
-    const first = getAssetsByAccountGroupId(
-      state,
-      ACCOUNT_GROUP_ID as never,
-    );
-    const second = getAssetsByAccountGroupId(
-      state,
-      ACCOUNT_GROUP_ID as never,
-    );
+    const first = getAssetsByAccountGroupId(state, ACCOUNT_GROUP_ID as never);
+    const second = getAssetsByAccountGroupId(state, ACCOUNT_GROUP_ID as never);
 
     expect(first).toBe(second);
     expect(first['0x13b2']).toHaveLength(1);
