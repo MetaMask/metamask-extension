@@ -827,10 +827,7 @@ function addDebugListeners(): void {
   log('Added debug listeners');
 }
 
-type SessionEnvelope = [
-  unknown,
-  [{ type?: string }, { status?: string }][]?,
-];
+type SessionEnvelope = [unknown, [{ type?: string }, { status?: string }][]?];
 
 function isCompletedSessionEnvelope(envelope: unknown): boolean {
   const sessionEnvelope = envelope as SessionEnvelope;
