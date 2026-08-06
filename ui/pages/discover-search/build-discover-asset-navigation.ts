@@ -11,7 +11,10 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 
-import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
+import {
+  ASSET_ROUTE,
+  buildAssetRoutePath,
+} from '../../../shared/lib/asset-route';
 import { getCaipAssetImageUrl } from '../../../shared/lib/asset-utils';
 
 /**
@@ -80,9 +83,20 @@ const getDiscoverAssetPrice = (
     : undefined;
 };
 
+const buildDiscoverAssetRoutePath = (
+  assetId: CaipAssetType,
+  parsed: ReturnType<typeof parseCaipAssetType>,
+): string => {
+  if (parsed.chain.namespace === 'eip155' && parsed.assetNamespace === 'erc20') {
+    return `${ASSET_ROUTE}/${formatChainIdToHex(parsed.chainId)}/${parsed.assetReference}`;
+  }
+
+  return buildAssetRoutePath(assetId);
+};
+
 /**
  * Builds Discover Search → Token Details navigation.
- * Uses the CAIP-19 asset route and passes token metadata in location state so
+ * Uses the legacy EVM token route where needed and passes token metadata in location state so
  * unowned search results still render without a wallet holding or metadata fetch.
  *
  * @param asset - Discover search result (or popular-asset stub).
@@ -107,7 +121,7 @@ export const buildDiscoverAssetNavigation = (
   const price = getDiscoverAssetPrice(asset.price);
 
   return {
-    path: buildAssetRoutePath(assetId),
+    path: buildDiscoverAssetRoutePath(assetId, parsed),
     state: {
       token: {
         address: getDiscoverAssetAddress({
