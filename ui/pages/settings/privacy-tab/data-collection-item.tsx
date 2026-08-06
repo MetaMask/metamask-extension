@@ -72,10 +72,8 @@ export const DataCollectionToggleItem = () => {
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
-          /* eslint-enable @typescript-eslint/naming-convention */
           location: 'Settings',
         })
         .build(),

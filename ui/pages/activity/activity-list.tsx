@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -9,15 +9,17 @@ import { useScrollContainer } from '../../contexts/scroll-container';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
+import { useEventListener } from '../../hooks/useEventListener';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsModal } from '../details/transaction-details-modal';
+import { TransactionDetails } from '../details/transaction-details';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
@@ -27,7 +29,7 @@ import {
   groupActivityListItems,
   type ActivityListFilter,
 } from './helpers';
-import { useActivityScreenOpened } from './useActivityScreenOpened';
+import { useActivityScreenViewed } from './useActivityScreenViewed';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -35,11 +37,15 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
-export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
+export function ActivityList({
+  filter,
+  entryPoint,
+}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
@@ -69,13 +75,14 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     [evmItems, groupedItems],
   );
 
-  useActivityScreenOpened({
+  useActivityScreenViewed({
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems].filter(
       (item) => item.status === 'pending',
     ).length,
+    entryPoint,
   });
 
   const itemRef = useItemInView({
@@ -84,14 +91,9 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     onVisible: fetchNextVisiblePage,
   });
 
-  useEffect(() => {
-    const onPopState = () => {
-      setSelectedItem(null);
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
+  useEventListener('popstate', () => {
+    dialogRef.current?.close?.();
+  });
 
   const handleClick = (item: ActivityListItem) => {
     if (!item.hash) {
@@ -107,7 +109,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         })
         .build(),
     );
+
     setSelectedItem(item);
+
+    if (dialogRef.current && !dialogRef.current.open) {
+      dialogRef.current.showModal?.();
+    }
 
     const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
     const alreadyOnDetails = window.location.hash.includes(
@@ -127,16 +134,22 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       return;
     }
 
+    const activityType = selectedItem.type;
+    setSelectedItem(null);
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          activity_type: selectedItem.type,
+          activity_type: activityType,
         })
         .build(),
     );
-    window.history.back();
+
+    if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
+      window.history.back();
+    }
   };
 
   return (
@@ -185,12 +198,17 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         }}
       />
 
-      <TransactionDetailsModal
-        isOpen={Boolean(selectedItem?.hash)}
-        chainId={selectedItem?.chainId}
-        txIdentifier={selectedItem?.hash}
+      <dialog
+        ref={dialogRef}
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default"
         onClose={handleClose}
-      />
+      >
+        <TransactionDetails
+          chainId={selectedItem?.chainId}
+          txIdentifier={selectedItem?.hash}
+          onBack={() => dialogRef.current?.close?.()}
+        />
+      </dialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

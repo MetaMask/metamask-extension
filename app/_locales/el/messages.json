@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Επιλογές λογαριασμού"
   },
-  "accountPermissionToast": {
-    "message": "Ενημέρωση αδειών λογαριασμού"
-  },
   "accountSelectionRequired": {
     "message": "Πρέπει να επιλέξετε έναν λογαριασμό!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Δεκαδικά Ψηφία Ακριβείας"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Τα δεκαδικά ψηφία πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "decrypt": {
     "message": "Αποκρυπτογράφηση"

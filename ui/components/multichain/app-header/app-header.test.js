@@ -7,6 +7,13 @@ import { openWindow } from '../../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeader } from '.';
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getCustomerServiceToken: jest
+    .fn()
+    .mockResolvedValue('test-customer-service-token'),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   // eslint-disable-next-line react/prop-types

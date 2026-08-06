@@ -1,0 +1,31 @@
+.dialog-modal {
+  max-width: clamp(var(--width-sm), 85vw, var(--width-max));
+  opacity: 0;
+  transform: scale(var(--page-scale-distance));
+
+  &[open] {
+    opacity: 1;
+    transform: scale(1);
+    transition:
+      opacity var(--page-transition-duration) var(--page-transition-ease-out),
+      transform var(--page-transition-duration) var(--page-transition-ease-out),
+      display var(--page-transition-duration) var(--page-transition-ease-out) allow-discrete;
+  }
+}
+
+.app--sidepanel .dialog-modal {
+  max-width: var(--width-max-sidepanel);
+}
+
+@starting-style {
+  .dialog-modal[open] {
+    opacity: 0;
+    transform: scale(var(--page-scale-distance));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-modal[open] {
+    transition-duration: 0.01ms;
+  }
+}

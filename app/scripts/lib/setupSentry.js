@@ -154,16 +154,14 @@ function getClientOptions() {
     // while every other transaction keeps the global `tracesSampleRate`.
     // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry.
     //
-    // `release` is the BARE version (e.g. '13.32.0'), matching
-    // DEFAULT_DROPPED_RELEASES / SENTRY_DROP_RELEASES — NOT the full
-    // `metamask-extension@x.y.z` RELEASE string. When this build's own version
-    // is in the dropped set, every transaction is dropped. NOTE: this only
-    // affects this build's own release; a build's SDK cannot retroactively touch
-    // already-installed builds of a dropped release — for the installed base the
-    // mitigation is a forced-update drain (see #43226).
+    // The sampler is deliberately release-agnostic. Silencing one release is a
+    // selection over the whole fleet, and a build can only ever match its own
+    // version — so that lever lives where the fleet is visible: the remote
+    // `sentry` flag scoped by `clientVersion`, or a Sentry release inbound filter
+    // at ingest (which also drops errors and sessions, so it is the blunter of
+    // the two).
     tracesSampler: createTracesSampler({
       defaultSampleRate: tracesSampleRate,
-      release: process.env.METAMASK_VERSION,
     }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,

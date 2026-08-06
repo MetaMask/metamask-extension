@@ -313,3 +313,63 @@ export function applyGatingPolicy(
       ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
   };
 }
+
+/**
+ * Number of standard deviations of the metric's own run-to-run noise within
+ * which an absolute-gate breach is treated as data quality, not a regression.
+ *
+ * The absolute gate compares a percentile (e.g. p75) against a fixed ceiling.
+ * When the breach margin (`value - threshold`) is smaller than the metric's
+ * stdDev, which side of the ceiling a run lands on is noise, not signal — a
+ * `Fail` there is a coin-flip on which samples landed.
+ */
+export const WITHIN_NOISE_STDDEV_MULTIPLIER = 1;
+
+/**
+ * Downgrades absolute-gate `Fail` violations to `Warn` when the breach margin
+ * is within {@link WITHIN_NOISE_STDDEV_MULTIPLIER} stdDev of the metric's own
+ * noise. Uses the metric's stdDev from the benchmark results; violations for
+ * metrics without a usable stdDev are unchanged. Mirrors the missing-percentile
+ * skip guard rather than hard-failing on noise. `Warn` violations and
+ * `relativeMetrics` are never modified.
+ *
+ * Returns a new comparison object — does not mutate the input.
+ *
+ * @param comparison - Comparison entry to soften.
+ * @param results - Benchmark results carrying per-metric stdDev.
+ */
+export function applyNoiseTolerance(
+  comparison: BenchmarkEntryComparison,
+  results: BenchmarkResults,
+): BenchmarkEntryComparison {
+  const downgraded = comparison.absoluteViolations.map((v) => {
+    if (v.severity !== THRESHOLD_SEVERITY.Fail) {
+      return v;
+    }
+    const stdDev = results.stdDev?.[v.metricId];
+    if (stdDev === undefined || stdDev <= 0) {
+      return v;
+    }
+    const breach = v.value - v.threshold;
+    if (breach > 0 && breach < stdDev * WITHIN_NOISE_STDDEV_MULTIPLIER) {
+      console.log(
+        `Downgrading "${comparison.benchmarkName}.${v.metricId}" (${v.percentile}) to warn: ` +
+          `breach ${breach.toFixed(0)}ms is within one stdDev (${stdDev.toFixed(0)}ms) — within noise.`,
+      );
+      return { ...v, severity: THRESHOLD_SEVERITY.Warn };
+    }
+    return v;
+  });
+
+  return {
+    ...comparison,
+    absoluteViolations: downgraded,
+    absoluteFailed: downgraded.some(
+      (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+    ),
+    hasWarning:
+      comparison.relativeMetrics.some(
+        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
+      ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
+  };
+}

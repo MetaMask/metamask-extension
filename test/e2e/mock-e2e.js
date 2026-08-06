@@ -783,6 +783,24 @@ async function setupMocking(
       };
     });
 
+  // Token API: per-chain suggested occurrence floors — mocked globally so token
+  // list / spam-filter fetches do not hit the live endpoint in E2E.
+  await server
+    .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
+    .always()
+    .thenJson(200, {
+      1: 3,
+      143: 1,
+      204: 1,
+      232: 1,
+      690: 1,
+      1329: 1,
+      4663: 1,
+      10143: 1,
+      59144: 1,
+      98866: 1,
+    });
+
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
     .forGet(`${TOKEN_API_BASE_URL}/blocklist`)

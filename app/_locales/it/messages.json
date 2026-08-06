@@ -395,9 +395,6 @@
   "decimal": {
     "message": "Precisione Decimali"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Il numero di decimali deve essere almeno 0, e non oltre 36."
-  },
   "decrypt": {
     "message": "Decifra"
   },

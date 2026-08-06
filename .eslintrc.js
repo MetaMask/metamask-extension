@@ -495,7 +495,6 @@ module.exports = {
      */
     {
       files: [
-        '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state-controller.test.ts',
         'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
@@ -533,13 +532,6 @@ module.exports = {
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
-
-        // *.snap files weren't parsed by previous versions of this eslint
-        // config section, but something got fixed somewhere, and now this rule
-        // causes failures. We need to turn it off instead of fix them because
-        // we aren't even remotely close to being in alignment. If it bothers
-        // you open a PR to fix it yourself.
-        'jest/no-large-snapshots': 'off',
         'jest/no-restricted-matchers': 'off',
 
         /**
@@ -931,6 +923,60 @@ module.exports = {
             },
           },
         ],
+      },
+    },
+    {
+      files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
+      rules: {
+        // Keep generated messenger action type formatting stable while the
+        // repository transitions from eslint-plugin-prettier to oxfmt.
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      },
+    },
+    /**
+     * Webpack
+     */
+    {
+      files: ['./development/webpack/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-shadow': [
+          'error',
+          {
+            allow: [
+              // so uh, these aren't always globals, ya know.
+              'describe',
+              'it',
+              'test',
+              'afterEach',
+              'beforeEach',
+            ],
+          },
+        ],
+        // useful for lazy `require`s (makes start up faster)
+        '@typescript-eslint/no-require-imports': 'off',
+        // useful for modifying properties of `require`d modules (something `import`ed modules don't allow)
+        '@typescript-eslint/no-var-requires': 'off',
+        // Fun fact: ESM imports _require_ extensions. So silly.
+        'import-x/extensions': 'off',
+        // sometimes its nice to do things like `something = else = null;`
+        'no-multi-assign': ['error', { ignoreNonDeclaration: true }],
+        // Why? What's next, no addition?
+        'no-bitwise': 'off',
+        // `void` is useful to ignore return values, the option `allowAsStatement: true` is broken for lambda functions, e.g., `() => void something()`.
+        'no-void': 'off',
+        // `if (condition) return;` is useful for early returns without adding noise.
+        curly: ['error', 'multi-line'],
+        // require is required to load dynamic modules (well, JSON, mostly) synchronously (with Node's require cache, too!).
+        'import-x/no-dynamic-require': 'off',
+        // uh, they're bullet points in markdown in a JSDoc comment. Stop this nonsense.
+        'jsdoc/no-multi-asterisks': ['error', { allowWhitespace: true }],
+        // Really? I was joking about "no addition" above, but its (almost) real!
+        'no-plusplus': 'off',
+        // I want to increment a variable outside my loop. This prevents that.
+        'no-loop-func': 'off',
+        // This rule is very noisy because we need to deal with extension manifest
+        // keys very often, and these keys often violate the rule
+        '@typescript-eslint/naming-convention': 'off',
       },
     },
   ],

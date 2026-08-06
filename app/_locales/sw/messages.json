@@ -175,9 +175,6 @@
   "decimal": {
     "message": "Desimali za Usahihi"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
-  },
   "delete": {
     "message": "Futa"
   },
