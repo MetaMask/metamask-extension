@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { TransactionDetails } from './transaction-details';
 
 export default function TransactionDetailsRoute() {
@@ -16,7 +16,7 @@ export default function TransactionDetailsRoute() {
       <TransactionDetails
         chainId={caipChainId}
         txIdentifier={txIdentifier}
-        onBack={() => navigate(-1)}
+        onBack={() => navigate(PREVIOUS_ROUTE)}
       />
     </div>
   );

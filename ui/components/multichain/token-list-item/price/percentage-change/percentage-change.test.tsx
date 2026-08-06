@@ -1,9 +1,24 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { PercentageChange } from './percentage-change';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn((selector) => selector()),
+}));
+
+jest.mock('../../../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = jest.mocked(getIntlLocale);
+
 describe('PercentageChange Component - Percentage Display', () => {
+  beforeEach(() => {
+    mockGetIntlLocale.mockReturnValue('en-US');
+  });
+
   describe('render', () => {
     it('renders correctly', () => {
       const { container } = render(

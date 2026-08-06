@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { useEarliestNonceByChain } from './useEarliestNonceByChain';
 
