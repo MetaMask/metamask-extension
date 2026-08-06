@@ -39,9 +39,10 @@ export type DiscoverAssetNavigation = {
 
 type DiscoverAssetNavigationInput = Pick<
   TrendingAsset,
-  'assetId' | 'symbol' | 'name' | 'decimals' | 'price'
+  'assetId' | 'symbol' | 'name' | 'decimals'
 > & {
   iconUrl?: string;
+  price?: TrendingAsset['price'];
 };
 
 const getDiscoverAssetAddress = ({
