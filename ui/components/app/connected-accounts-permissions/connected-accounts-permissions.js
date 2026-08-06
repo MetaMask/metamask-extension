@@ -8,11 +8,11 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Checkbox,
 } from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  Checkbox,
   IconName,
   Text,
 } from '../../component-library';
@@ -90,10 +90,13 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
                 className="connected-accounts-permissions__list-item"
               >
                 <Checkbox
-                  isChecked
+                  isSelected
                   isDisabled
                   id={`connected-permission-${idx}`}
                   label={label}
+                  onChange={() => {
+                    // Permissions are display-only; selection cannot be changed.
+                  }}
                 />
               </li>
             ))}
