@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   selectMinimumBalanceForRentExemptionInSOL,
   type QuoteMetadata,
   type QuoteResponseV1,
@@ -45,7 +45,7 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
   !nativeBalance ||
   !quote ||
   !fromToken ||
-  (isNativeAddress(fromToken.assetId) &&
+  (isBridgeNativeAddress(fromToken.assetId) &&
     new BigNumber(nativeBalance).sub(quote.sentAmount?.amount ?? 0).lte(0))
     ? null
     : !isNativeBalanceInsufficientForQuote(

@@ -6,7 +6,7 @@ import {
   FeatureId,
   formatChainIdToCaip,
   isValidQuoteRequest,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   isSolanaChainId,
   UnifiedSwapBridgeEventName,
   type BridgeController,
@@ -148,7 +148,8 @@ const PrepareBridgePage = ({
   const shouldShowMaxButton =
     fromToken &&
     // Always show for non-native tokens. Arc ERC20 USDC considered as native.
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
+    (isBridgeNativeAddress(fromToken.assetId) ||
+      isArcTokenUSDC(fromToken.assetId))
       ? !isSolanaChainId(fromToken.chainId) &&
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;

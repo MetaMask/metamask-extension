@@ -9,7 +9,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
-import { isNativeAddress, QuoteResponseV1 } from '@metamask/bridge-controller';
+import {
+  isBridgeNativeAddress,
+  QuoteResponseV1,
+} from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
@@ -36,7 +39,7 @@ const getSrcAssetBalanceChange = (
     chainId: toHex(srcAsset.chainId),
     address: srcAsset.address as Hex,
   } as AssetIdentifier;
-  if (isNativeAddress(srcAsset.address)) {
+  if (isBridgeNativeAddress(srcAsset.address)) {
     asset = {
       chainId: toHex(srcAsset.chainId),
       standard: TokenStandard.none,
@@ -72,7 +75,7 @@ const getDestAssetBalanceChange = (
     chainId: toHex(destAsset.chainId),
     address: destAsset.address as Hex,
   } as AssetIdentifier;
-  if (isNativeAddress(destAsset.address)) {
+  if (isBridgeNativeAddress(destAsset.address)) {
     asset = {
       chainId: toHex(destAsset.chainId),
       standard: TokenStandard.none,

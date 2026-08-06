@@ -1,14 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId as getBridgeNativeAssetForChainId } from '@metamask/bridge-controller';
 import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
+import { isBridgeNativeAddress } from '../../../../../helpers/utils/token-insights';
 import {
   fetchAllTokenDetails,
   getTokenValueFromRecord,
@@ -33,7 +33,7 @@ export function useDappSwapUSDValues({
     Record<Hex, number | undefined>
   >(async () => {
     const addresses = tokenAddresses.filter(
-      (tokenAddress) => !isNativeAddress(tokenAddress),
+      (tokenAddress) => !isBridgeNativeAddress(tokenAddress),
     );
     const exchangeRates = await fetchTokenExchangeRates(
       'usd',
@@ -42,7 +42,7 @@ export function useDappSwapUSDValues({
     );
 
     if (chainId === CHAIN_IDS.POLYGON) {
-      const nativeAddress = getNativeAssetForChainId(chainId).address;
+      const nativeAddress = getBridgeNativeAssetForChainId(chainId).address;
       exchangeRates[nativeAddress] =
         exchangeRates[POLYGON_NATIVE_TOKEN_ADDRESS];
     }
@@ -55,10 +55,10 @@ export function useDappSwapUSDValues({
   >(async () => {
     let result = await fetchAllTokenDetails(tokenAddresses as Hex[], chainId);
     tokenAddresses.forEach((tokenAddress) => {
-      if (isNativeAddress(tokenAddress)) {
+      if (isBridgeNativeAddress(tokenAddress)) {
         result = {
           ...result,
-          [tokenAddress as Hex]: getNativeAssetForChainId(chainId),
+          [tokenAddress as Hex]: getBridgeNativeAssetForChainId(chainId),
         };
       }
     });

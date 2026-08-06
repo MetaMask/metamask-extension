@@ -16,7 +16,7 @@ import {
   FeatureId,
   formatAddressToCaipReference,
   formatChainIdToHex,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -246,7 +246,7 @@ export const useBridgeNavigation = () => {
       const tokenAddress = isNonEvm
         ? asset.assetId
         : formatAddressToCaipReference(assetReference);
-      const isNative = isNativeAddress(
+      const isNative = isBridgeNativeAddress(
         isNonEvm ? assetReference : tokenAddress,
       );
 

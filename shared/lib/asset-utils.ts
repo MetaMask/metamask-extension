@@ -15,8 +15,8 @@ import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
-  getNativeAssetForChainId,
-  isNativeAddress,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
+  isNativeAddress as isBridgeNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 
@@ -52,9 +52,9 @@ export const toAssetId = (
     return undefined;
   }
 
-  if (isNativeAddress(addressToUse)) {
+  if (isBridgeNativeAddress(addressToUse)) {
     try {
-      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+      return getBridgeNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
       // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
       // This allows the send flow to work for custom networks even if they're not in the swaps map
@@ -94,7 +94,7 @@ export const toAssetId = (
 
 /**
  * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
- * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * chains unknown to the bridge asset map (`getBridgeNativeAssetForChainId` throws on
  * custom/unsupported networks).
  *
  * @param chainId - The chain id in caip or hex format.
@@ -107,7 +107,7 @@ export const getNativeAssetId = (
     return undefined;
   }
   try {
-    return getNativeAssetForChainId(chainId).assetId;
+    return getBridgeNativeAssetForChainId(chainId).assetId;
   } catch {
     return undefined;
   }

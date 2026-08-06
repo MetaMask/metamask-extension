@@ -5,7 +5,7 @@ import {
   isNonEvmChainId,
   formatChainIdToHex,
   type QuoteResponseV1,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   RequestStatus,
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
@@ -70,7 +70,7 @@ const getBalanceAmount = async ({
   if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
-  const isNative = isNativeAddress(tokenAddress);
+  const isNative = isBridgeNativeAddress(tokenAddress);
 
   return await trace(
     {

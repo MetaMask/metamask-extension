@@ -4,10 +4,10 @@ import {
   isSolanaChainId,
   isBitcoinChainId,
   isTronChainId,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   formatChainIdToCaip,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
   selectBridgeQuotes,
   selectIsQuoteExpired,
@@ -217,7 +217,7 @@ const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
 const getMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
+  if (!caipAssetId || !isBridgeNativeAddress(caipAssetId)) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
@@ -251,7 +251,7 @@ const buildInsufficientNativeReserveError = ({
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    isNativeAddress(fromToken.assetId) &&
+    isBridgeNativeAddress(fromToken.assetId) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,
@@ -399,7 +399,7 @@ export const getFromToken = createSelector(
     // If the user has not selected a token, return the native token for the selected network as default
     // If selected network is not supported by swap/bridge, return ETH (edge case)
     if (!fromChain?.chainId) {
-      return toBridgeToken(getNativeAssetForChainId(FALLBACK_CHAIN_ID));
+      return toBridgeToken(getBridgeNativeAssetForChainId(FALLBACK_CHAIN_ID));
     }
     return getDefaultFromToken(fromChain.chainId);
   },
@@ -558,7 +558,7 @@ export const getFromNativeBalance = createSelector(
     }
 
     const { chainId } = fromChain;
-    const { decimals, assetId } = getNativeAssetForChainId(chainId);
+    const { decimals, assetId } = getBridgeNativeAssetForChainId(chainId);
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {
@@ -651,7 +651,7 @@ export const getFromTokenConversionRate = createSelector(
       return nullResult;
     }
     const { chainId, assetId } = fromToken;
-    const nativeAsset = getNativeAssetForChainId(chainId);
+    const nativeAsset = getBridgeNativeAssetForChainId(chainId);
     if (!nativeAsset) {
       return nullResult;
     }
@@ -974,10 +974,10 @@ export const getQuoteRequestInsufficientBal = createSelector(
   (fromTokenBalance, validatedSrcAmount, insufficientNativeReserveError) =>
     Boolean(
       insufficientNativeReserveError ||
-      (validatedSrcAmount &&
-        fromTokenBalance &&
-        !Number.isNaN(Number(fromTokenBalance)) &&
-        new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
+        (validatedSrcAmount &&
+          fromTokenBalance &&
+          !Number.isNaN(Number(fromTokenBalance)) &&
+          new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
     ),
 );
 
@@ -999,7 +999,7 @@ export const isNativeBalanceInsufficientForQuote = (
   if (!quote.sentAmount?.amount || !quote.totalNetworkFee?.amount) {
     return false;
   }
-  return isNativeAddress(fromToken.assetId)
+  return isBridgeNativeAddress(fromToken.assetId)
     ? new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
@@ -1070,11 +1070,11 @@ export const computeQuoteValidationErrors = (
   const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
   const isNetworkFeeUnavailable = Boolean(
     quote &&
-    srcChainId &&
-    (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
-    !isGasless &&
-    (quote.totalNetworkFee?.amount === undefined ||
-      new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
+      srcChainId &&
+      (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
+      !isGasless &&
+      (quote.totalNetworkFee?.amount === undefined ||
+        new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
   );
 
   const parsedPriceImpactNumber = Number(quote?.quote?.priceData?.priceImpact);
@@ -1086,32 +1086,32 @@ export const computeQuoteValidationErrors = (
     // Shown prior to fetching quotes (native reserve error takes precedence)
     isInsufficientGasBalance: Boolean(
       nativeBalance &&
-      !quote &&
-      validatedSrcAmount &&
-      fromToken &&
-      !isGasless &&
-      (isNativeAddress(fromToken.assetId)
-        ? new BigNumber(nativeBalance)
-            .sub(minimumBalanceToKeep)
-            .lte(validatedSrcAmount)
-        : new BigNumber(nativeBalance).lte(0)),
+        !quote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isBridgeNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToKeep)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
     ),
     isInsufficientNativeReserve,
     isNetworkFeeUnavailable,
     // Shown after fetching quotes
     isInsufficientGasForQuote: Boolean(
       !isNetworkFeeUnavailable &&
-      nativeBalance &&
-      quote &&
-      fromToken &&
-      fromTokenInputValue &&
-      !isGasless &&
-      isNativeBalanceInsufficientForQuote(
-        quote,
-        nativeBalance,
-        fromToken,
-        minimumBalanceToKeep,
-      ),
+        nativeBalance &&
+        quote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        isNativeBalanceInsufficientForQuote(
+          quote,
+          nativeBalance,
+          fromToken,
+          minimumBalanceToKeep,
+        ),
     ),
     isInsufficientBalance:
       validatedSrcAmount &&
@@ -1131,8 +1131,8 @@ export const computeQuoteValidationErrors = (
         : false,
     isPriceImpactWarning: Boolean(
       priceImpactNumber &&
-      priceImpactNumber > warning &&
-      priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
     ),
     isPriceImpactError: Boolean(priceImpactNumber && priceImpactNumber > error),
   };
@@ -1193,10 +1193,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         quoteStreamCompleteData?.hasQuotes === false ||
         Boolean(
           !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
+            isValidQuoteRequest(quoteRequest) &&
+            quotesLastFetchedMs &&
+            !isLoading &&
+            quotesRefreshCount > 0,
         ),
     };
   },

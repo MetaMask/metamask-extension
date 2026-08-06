@@ -11,11 +11,11 @@ import {
   isBitcoinChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
@@ -69,7 +69,7 @@ const buildTokenData = (
       'assetId' in token ? token.assetId : toAssetId(token.address, chainId),
   };
 
-  if (isNativeAddress(token.address)) {
+  if (isBridgeNativeAddress(token.address)) {
     // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
     const image = isNonEvmChainId(chainId)
       ? MULTICHAIN_TOKEN_IMAGE_MAP[
@@ -148,7 +148,7 @@ export const useTokensWithFiltering = (
     // For Bitcoin chains, we only support native asset
     if (isBitcoinChainId(chainId)) {
       // Return native asset for Bitcoin chains
-      const nativeAsset = getNativeAssetForChainId(chainId);
+      const nativeAsset = getBridgeNativeAssetForChainId(chainId);
       if (nativeAsset) {
         const key = nativeAsset.address ?? '';
         return {
@@ -238,7 +238,7 @@ export const useTokensWithFiltering = (
            * @returns Empty string for native addresses, original address otherwise
            */
           const normalizeAddress = (addr?: string) => {
-            return addr && isNativeAddress(addr) ? '' : addr;
+            return addr && isBridgeNativeAddress(addr) ? '' : addr;
           };
 
           return (
@@ -274,7 +274,7 @@ export const useTokensWithFiltering = (
             continue;
           }
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            if (isNativeAddress(token.address) || token.isNative) {
+            if (isBridgeNativeAddress(token.address) || token.isNative) {
               const nativeAsset = getNativeAssetForChainIdSafe(token.chainId);
               let assetImageUrl: string | undefined;
               try {

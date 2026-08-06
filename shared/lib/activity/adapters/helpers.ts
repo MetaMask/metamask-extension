@@ -1,6 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId as getBridgeNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
 import {
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
@@ -23,7 +23,7 @@ function isNftStandard(value?: string) {
 
 function getNativeAssetSafe(chainId: string | number) {
   try {
-    return getNativeAssetForChainId(chainId);
+    return getBridgeNativeAssetForChainId(chainId);
   } catch {
     return undefined;
   }

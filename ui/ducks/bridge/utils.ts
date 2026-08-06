@@ -8,7 +8,7 @@ import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   BridgeClientId,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   isNonEvmChainId,
   formatChainIdToHex,
   formatAddressToCaipReference,
@@ -38,8 +38,8 @@ export const assetIdsMatch = (
   left === right ||
   Boolean(
     left?.startsWith('eip155:') &&
-    right?.startsWith('eip155:') &&
-    left.toLowerCase() === right.toLowerCase(),
+      right?.startsWith('eip155:') &&
+      left.toLowerCase() === right.toLowerCase(),
   );
 
 /**
@@ -66,7 +66,7 @@ export const getNativeAssetForChainIdSafe = (
   chainId: string | number | Hex | CaipChainId,
 ) => {
   try {
-    return getNativeAssetForChainId(chainId);
+    return getBridgeNativeAssetForChainId(chainId);
   } catch {
     // Return undefined for unsupported chains (e.g., custom networks, test chains)
     return undefined;
@@ -82,7 +82,7 @@ export const getNativeAssetForChainIdSafe = (
  */
 export const getNativeTokenName = (chainId: string): string | undefined => {
   try {
-    return getNativeAssetForChainId(chainId)?.name;
+    return getBridgeNativeAssetForChainId(chainId)?.name;
   } catch {
     // Return undefined for unsupported chains (e.g., test chains)
     return undefined;
@@ -232,7 +232,7 @@ export const getDefaultFromToken = (fromChainId: CaipChainId) => {
   }
 
   // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+  return toBridgeToken(getBridgeNativeAssetForChainId(fromChainId));
 };
 
 export const getDefaultToToken = (
@@ -266,7 +266,7 @@ export const getDefaultToToken = (
  * - CAIP strings     ("eip155:1", "solana:…", …) from ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP
  * - numeric ChainId  (1, 1151111081099710, …)     from Object.values(ChainId)
  *
- * getNativeAssetForChainId returns tokens whose chainId is a numeric ChainId enum value
+ * getBridgeNativeAssetForChainId returns tokens whose chainId is a numeric ChainId enum value
  * (e.g. ChainId.SOLANA = 1151111081099710), so we must check direct inclusion first
  * before attempting any hex conversion — otherwise the numeric value gets converted to an
  * obscure hex string that is absent from the list and the check incorrectly returns false.

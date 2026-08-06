@@ -4,7 +4,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { isNativeAddress } from '@metamask/bridge-controller';
+import { isNativeAddress as isBridgeNativeAddress } from '@metamask/bridge-controller';
 
 import { type TokenSearchResult } from './token-search-api';
 
@@ -56,7 +56,8 @@ export const convertSearchResultToImportPayload = (
   }
 
   const isNative =
-    assetNamespace === 'slip44' || (isEvm && isNativeAddress(assetReference));
+    assetNamespace === 'slip44' ||
+    (isEvm && isBridgeNativeAddress(assetReference));
 
   return {
     assetId: result.assetId as CaipAssetType,
