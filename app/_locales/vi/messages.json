@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Bạn đang gửi tài sản của mình đến địa chỉ đốt. Nếu tiếp tục, bạn sẽ mất tài sản."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Các thay đổi ước tính cho giao dịch này đã được cập nhật. Hãy xem xét kỹ trước khi tiếp tục."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Bạn đang tương tác với địa chỉ này lần đầu tiên. Hãy đảm bảo địa chỉ này chính xác trước khi tiếp tục."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Ví không được hỗ trợ"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Kết quả đã thay đổi"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Tương tác lần đầu tiên"
