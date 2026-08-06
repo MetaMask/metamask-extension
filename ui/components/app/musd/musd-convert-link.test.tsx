@@ -5,6 +5,7 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MusdConvertLink } from './musd-convert-link';
 
 // Mock useI18nContext
@@ -84,7 +85,7 @@ describe('MusdConvertLink', () => {
       mockStore,
     );
 
-    expect(screen.getByText('Get mUSD')).toBeInTheDocument();
+    expect(screen.getByText(messages.musdGetMusd.message)).toBeInTheDocument();
   });
 
   it('calls startConversionFlow on click', async () => {

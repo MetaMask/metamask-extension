@@ -5,6 +5,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MusdAssetCta } from './musd-asset-cta';
 
 // Mock useI18nContext
@@ -104,7 +105,9 @@ describe('MusdAssetCta', () => {
         store,
       );
 
-      expect(screen.getByText('Get mUSD')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.musdGetMusd.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(
           'Convert your stablecoins to mUSD and get a 3% annualized bonus.',
@@ -269,7 +272,9 @@ describe('MusdAssetCta', () => {
         store,
       );
 
-      expect(screen.getByText('Get mUSD')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.musdGetMusd.message),
+      ).toBeInTheDocument();
     });
   });
 
