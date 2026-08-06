@@ -16,6 +16,48 @@ jest.mock('../store/actions', () => ({
   }),
   tokenDetectionStopPollingByPollingToken: jest.fn(),
 }));
+
+const getBaseState = (
+  overrides: Record<string, unknown> = {},
+  enabledNetworkMap: Record<string, Record<string, boolean>> = {
+    eip155: {
+      '0x1': true,
+      '0x89': true,
+    },
+  },
+) => ({
+  metamask: {
+    isUnlocked: true,
+    completedOnboarding: true,
+    useTokenDetection: true,
+    selectedNetworkClientId: 'selectedNetworkClientId',
+    enabledNetworkMap,
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: 'eip155:1',
+    isEvmSelected: true,
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
+          },
+        ],
+      },
+      '0x89': {
+        chainId: '0x89',
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId2',
+          },
+        ],
+      },
+    },
+    ...overrides,
+  },
+});
+
 let originalPortfolioView: string | undefined;
 
 describe('useTokenDetectionPolling', () => {
@@ -35,46 +77,9 @@ describe('useTokenDetectionPolling', () => {
 
   it('should poll token detection for chain IDs when enabled and stop on dismount', async () => {
     process.env.PORTFOLIO_VIEW = 'true';
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: true,
-        useTokenDetection: true,
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        enabledNetworkMap: {
-          eip155: {
-            '0x1': true,
-            '0x89': true,
-          },
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: 'eip155:1',
-        isEvmSelected: true,
-        networkConfigurationsByChainId: {
-          '0x1': {
-            chainId: '0x1',
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
-          },
-          '0x89': {
-            chainId: '0x89',
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId2',
-              },
-            ],
-          },
-        },
-      },
-    };
-
     const { unmount } = renderHookWithProvider(
       () => useTokenDetectionPolling(),
-      state,
+      getBaseState(),
     );
 
     // Should poll each chain
@@ -91,18 +96,10 @@ describe('useTokenDetectionPolling', () => {
   });
 
   it('should not poll if onboarding is not completed', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: false,
-        useTokenDetection: true,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-        },
-      },
-    };
-
-    renderHookWithProvider(() => useTokenDetectionPolling(), state);
+    renderHookWithProvider(
+      () => useTokenDetectionPolling(),
+      getBaseState({ completedOnboarding: false }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenDetectionStartPolling).toHaveBeenCalledTimes(0);
@@ -110,18 +107,10 @@ describe('useTokenDetectionPolling', () => {
   });
 
   it('should not poll when locked', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: false,
-        completedOnboarding: true,
-        useTokenDetection: true,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-        },
-      },
-    };
-
-    renderHookWithProvider(() => useTokenDetectionPolling(), state);
+    renderHookWithProvider(
+      () => useTokenDetectionPolling(),
+      getBaseState({ isUnlocked: false }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenDetectionStartPolling).toHaveBeenCalledTimes(0);
@@ -129,18 +118,10 @@ describe('useTokenDetectionPolling', () => {
   });
 
   it('should not poll when token detection is disabled', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: true,
-        useTokenDetection: false,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-        },
-      },
-    };
-
-    renderHookWithProvider(() => useTokenDetectionPolling(), state);
+    renderHookWithProvider(
+      () => useTokenDetectionPolling(),
+      getBaseState({ useTokenDetection: false }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenDetectionStartPolling).toHaveBeenCalledTimes(0);
@@ -148,18 +129,10 @@ describe('useTokenDetectionPolling', () => {
   });
 
   it('should not poll when no chains are provided', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: true,
-        useTokenDetection: true,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-        },
-      },
-    };
-
-    renderHookWithProvider(() => useTokenDetectionPolling(), state);
+    renderHookWithProvider(
+      () => useTokenDetectionPolling(),
+      getBaseState({}, { eip155: {} }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenDetectionStartPolling).toHaveBeenCalledTimes(0);

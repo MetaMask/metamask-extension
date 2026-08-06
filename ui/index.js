@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import React, { StrictMode } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
@@ -76,19 +76,6 @@ function renderUi(element, container) {
     reactRoots.set(container, root);
   }
   root.render(element);
-}
-
-function wrapWithStrictModeIfDevelopment(element) {
-  // Dev-only StrictMode, matching `withStrictMode` in `ui/pages/index.js`.
-  // Skip when IN_TEST so E2E builds don't double-mount effects.
-  const isDevelopment =
-    process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
-
-  if (isDevelopment) {
-    return <StrictMode>{element}</StrictMode>;
-  }
-
-  return element;
 }
 
 /**
@@ -270,13 +257,10 @@ async function startApp(metamaskState, opts) {
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    renderUi(
-      wrapWithStrictModeIfDevelopment(
-        <Root store={store} uiMessenger={uiMessenger} />,
-      ),
-      opts.container,
-    ),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;

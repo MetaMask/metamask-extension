@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 
 jest.mock('react-redux', () => ({
@@ -32,147 +32,136 @@ describe('useMusdGeoBlocking', () => {
   });
 
   it('exposes expected return shape', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        isBlocked: expect.any(Boolean),
-        userCountry: expect.any(String),
-        isLoading: false,
-        error: null,
-        blockedRegions: BLOCKED_REGIONS,
-        blockedMessage: null,
-        refreshGeolocation: expect.any(Function),
-      }),
-    );
+    await waitFor(() => {
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          isBlocked: expect.any(Boolean),
+          userCountry: expect.any(String),
+          isLoading: false,
+          error: null,
+          blockedRegions: BLOCKED_REGIONS,
+          blockedMessage: null,
+          refreshGeolocation: expect.any(Function),
+        }),
+      );
+    });
   });
 
-  it('reports isBlocked as false while geolocation is still loading', () => {
+  it('reports isBlocked as false while geolocation is still loading', async () => {
     isGeoBlocked.mockReturnValue(true);
 
-    const { result } = renderHook(() => useMusdGeoBlocking());
+    const { result, unmount } = renderHook(() => useMusdGeoBlocking());
 
     expect(result.current.isLoading).toBe(true);
     expect(result.current.isBlocked).toBe(false);
+
+    // Flush the resolved geolocation request so setState is not outside act.
+    await act(async () => {
+      await Promise.resolve();
+    });
+    unmount();
   });
 
   it('calls the GeolocationController on mount', async () => {
-    const { waitForNextUpdate } = renderHook(() => useMusdGeoBlocking());
+    renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(submitRequestToBackground).toHaveBeenCalledWith('getGeolocation');
+    await waitFor(() => {
+      expect(submitRequestToBackground).toHaveBeenCalledWith('getGeolocation');
+    });
   });
 
   it('sets userCountry from the controller response', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.userCountry).toBe('US');
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.error).toBeNull();
+    await waitFor(() => {
+      expect(result.current.userCountry).toBe('US');
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
   });
 
   it('delegates blocking decision to isGeoBlocked', async () => {
     isGeoBlocked.mockReturnValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(isGeoBlocked).toHaveBeenCalledWith('US', BLOCKED_REGIONS);
-    expect(result.current.isBlocked).toBe(true);
+    await waitFor(() => {
+      expect(isGeoBlocked).toHaveBeenCalledWith('US', BLOCKED_REGIONS);
+      expect(result.current.isBlocked).toBe(true);
+    });
   });
 
   it('shows blocked message when user is geo-blocked', async () => {
     isGeoBlocked.mockReturnValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.blockedMessage).toBe(
-      'mUSD conversion is not available in your region.',
-    );
+    await waitFor(() => {
+      expect(result.current.blockedMessage).toBe(
+        'mUSD conversion is not available in your region.',
+      );
+    });
   });
 
   it('returns null blockedMessage when user is not blocked', async () => {
     isGeoBlocked.mockReturnValue(false);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.blockedMessage).toBeNull();
+    await waitFor(() => {
+      expect(result.current.blockedMessage).toBeNull();
+    });
   });
 
   it('treats an UNKNOWN response as an unknown country (userCountry=null)', async () => {
     submitRequestToBackground.mockResolvedValue('UNKNOWN');
     isGeoBlocked.mockReturnValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.userCountry).toBeNull();
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.isBlocked).toBe(true);
+    await waitFor(() => {
+      expect(result.current.userCountry).toBeNull();
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isBlocked).toBe(true);
+    });
   });
 
   it('sets error and keeps userCountry null when the background call throws', async () => {
     submitRequestToBackground.mockRejectedValue(new Error('Background error'));
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.error).toBe('Background error');
-    expect(result.current.userCountry).toBeNull();
-    expect(result.current.isLoading).toBe(false);
+    await waitFor(() => {
+      expect(result.current.error).toBe('Background error');
+      expect(result.current.userCountry).toBeNull();
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
   it('fails closed (isBlocked=true) after a background failure', async () => {
     isGeoBlocked.mockReturnValue(true);
     submitRequestToBackground.mockRejectedValue(new Error('Background error'));
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.userCountry).toBeNull();
-    expect(result.current.isBlocked).toBe(true);
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.userCountry).toBeNull();
+      expect(result.current.isBlocked).toBe(true);
+    });
   });
 
   it('allows manual refresh via refreshGeolocation', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useMusdGeoBlocking(),
-    );
+    const { result } = renderHook(() => useMusdGeoBlocking());
 
-    await waitForNextUpdate();
-    expect(submitRequestToBackground).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackground).toHaveBeenLastCalledWith(
-      'getGeolocation',
-    );
+    await waitFor(() => {
+      expect(submitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(submitRequestToBackground).toHaveBeenLastCalledWith(
+        'getGeolocation',
+      );
+    });
 
     submitRequestToBackground.mockResolvedValue('DE');
 

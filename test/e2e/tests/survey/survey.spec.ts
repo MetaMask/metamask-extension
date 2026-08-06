@@ -7,10 +7,6 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 
 async function mockSurveys(mockServer: MockttpServer) {
-  // One fetch on home mount (survey 1), one refetch after close when
-  // lastViewedUserSurvey updates (survey 2). The old `.twice()` for survey 1
-  // papered over a wallet bug (#33604) where an unused selected-account
-  // effect dep caused a duplicate mount fetch.
   await mockServer
     .forGet(
       `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_ANALYTICS_ID}/surveys`,

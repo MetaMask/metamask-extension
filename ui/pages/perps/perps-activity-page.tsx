@@ -26,6 +26,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -104,7 +105,7 @@ const PerpsActivityPage = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   // Navigate to the market detail page when an order transaction is clicked

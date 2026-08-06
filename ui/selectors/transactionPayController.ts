@@ -49,3 +49,9 @@ export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
     (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
     false,
 );
+
+export const selectTransactionPayAccountOverrideByTransactionId =
+  createSelector(
+    selectTransactionDataByTransactionId,
+    (transactionData) => transactionData?.accountOverride,
+  );
