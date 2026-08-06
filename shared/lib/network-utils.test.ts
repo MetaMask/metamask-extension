@@ -1,4 +1,3 @@
-import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../constants/network';
 import {
   getIsMetaMaskInfuraEndpointUrl,
   getIsQuicknodeEndpointUrl,
@@ -129,16 +128,20 @@ describe('getIsMetaMaskInfuraEndpointUrl', () => {
 });
 
 describe('getIsQuicknodeEndpointUrl', () => {
-  for (const getQuicknodeEndpointUrl of Object.values(
-    QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-  )) {
-    const quicknodeEndpointUrl = getQuicknodeEndpointUrl();
-    it(`returns true for known Quicknode URL "${quicknodeEndpointUrl}"`, () => {
-      // We can assume this is set.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(getIsQuicknodeEndpointUrl(quicknodeEndpointUrl!)).toBe(true);
-    });
-  }
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it('returns true for a known Quicknode URL', () => {
+    process.env.QUICKNODE_MAINNET_URL = 'https://mainnet.quiknode.pro/test';
+    expect(getIsQuicknodeEndpointUrl('https://mainnet.quiknode.pro/test')).toBe(
+      true,
+    );
+  });
 
   it('returns false for unknown URLs', () => {
     expect(getIsQuicknodeEndpointUrl('https://unknown.example.com')).toBe(

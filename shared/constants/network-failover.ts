@@ -1,9 +1,58 @@
 import { Hex } from '@metamask/utils';
-import {
-  CHAIN_IDS,
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-  getFailoverUrlsForInfuraNetwork,
-} from './network';
+import { CHAIN_IDS } from './chain-ids';
+
+/**
+ * The QuickNode failover endpoint URLs, keyed by Infura network name. Each value
+ * reads its env lazily so it resolves whenever it is called (once, when the map
+ * below is built, or when a migration resolves a historical value).
+ */
+export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
+  'ethereum-mainnet': () => process.env.QUICKNODE_MAINNET_URL,
+  'linea-mainnet': () => process.env.QUICKNODE_LINEA_MAINNET_URL,
+  'arbitrum-mainnet': () => process.env.QUICKNODE_ARBITRUM_URL,
+  'avalanche-mainnet': () => process.env.QUICKNODE_AVALANCHE_URL,
+  'optimism-mainnet': () => process.env.QUICKNODE_OPTIMISM_URL,
+  'polygon-mainnet': () => process.env.QUICKNODE_POLYGON_URL,
+  'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
+  'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
+  'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
+  'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
+  'arc-mainnet': () => process.env.QUICKNODE_ARC_URL,
+  'robinhood-mainnet': () => process.env.QUICKNODE_ROBINHOOD_URL,
+  'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
+  'zksync-mainnet': () => process.env.QUICKNODE_ZKSYNC_URL,
+  'megaeth-mainnet': () => process.env.QUICKNODE_MEGAETH_URL,
+};
+
+/**
+ * Returns the QuickNode failover URLs for an Infura network, or an empty array
+ * if its env is unset.
+ *
+ * @param infuraNetwork - The Infura network name to look up.
+ * @returns The failover URLs, empty when the QuickNode env is unset.
+ */
+export function getFailoverUrlsForInfuraNetwork(
+  infuraNetwork: keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
+) {
+  const url = QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME[infuraNetwork]();
+  if (url) {
+    return [url];
+  }
+  return [];
+}
+
+/**
+ * Returns whether the given endpoint URL is one of the known QuickNode failover
+ * URLs.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the URL is a QuickNode URL, false otherwise.
+ */
+export function getIsQuicknodeEndpointUrl(endpointUrl: string): boolean {
+  return Object.values(QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME)
+    .map((getUrl) => getUrl())
+    .includes(endpointUrl);
+}
 
 /**
  * The chains that have a QuickNode failover, each paired with the Infura
