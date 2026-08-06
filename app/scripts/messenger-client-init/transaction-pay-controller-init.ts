@@ -10,6 +10,7 @@ import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
+import { handleUnapprovedTransactionAddedForMoneyAccount } from '../lib/money/pay/account-override';
 import { getMoneyAccountAmountData } from '../lib/money/pay/amount-data-callback';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
@@ -56,6 +57,16 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
+
+  initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    (transaction) =>
+      handleUnapprovedTransactionAddedForMoneyAccount(
+        messengerClient,
+        initMessenger as MoneyPayMessenger,
+        transaction,
+      ),
+  );
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 

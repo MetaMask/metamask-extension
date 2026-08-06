@@ -18,6 +18,7 @@ import type {
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
@@ -96,7 +97,9 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerUpdateTransactionMetadataAction;
 
-type InitMessengerEvents = never;
+// The Money account-override handler seeds Pay config when an unapproved
+// money transaction is added (`app/scripts/lib/money/pay/account-override.ts`).
+type InitMessengerEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 
 export type TransactionPayControllerInitMessenger = ReturnType<
   typeof getTransactionPayControllerInitMessenger
@@ -131,7 +134,7 @@ export function getTransactionPayControllerInitMessenger(
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransactionMetadata',
     ],
-    events: [],
+    events: ['TransactionController:unapprovedTransactionAdded'],
   });
 
   return controllerInitMessenger;
