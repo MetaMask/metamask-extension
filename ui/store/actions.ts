@@ -7898,11 +7898,15 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
+  return await submitRequestToBackground<{
+    enforcedSimulationsSlippage?: number;
+  }>('applyTransactionContainersExisting', [
+    transactionId,
+    containerTypes,
+    incrementToggleCount,
+  ]);
 }
 
 export async function getLayer1GasFeeValue({
