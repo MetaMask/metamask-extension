@@ -15,6 +15,129 @@ import {
  */
 export type SignatureHolder = { value: string };
 
+export type UsdcToSolSwapAmounts = {
+  destinationTokenAmount: string;
+  feeTokenAmount: string;
+  minimumDestinationTokenAmount: string;
+  sourceTokenAmount: string;
+};
+
+type TokenBalance = {
+  accountIndex: number;
+  uiTokenAmount: {
+    amount: string;
+    decimals: number;
+    uiAmount: number;
+    uiAmountString: string;
+  };
+};
+
+type UsdcToSolTransactionResponse = {
+  result: {
+    meta: {
+      fee: number;
+      postBalances: number[];
+      postTokenBalances: TokenBalance[];
+      preBalances: number[];
+      preTokenBalances: TokenBalance[];
+    };
+    transaction: {
+      signatures: string[];
+    };
+  };
+};
+
+type UsdcToSolQuoteResponse = {
+  quote: {
+    destTokenAmount: string;
+    feeData: {
+      metabridge: {
+        amount: string;
+      };
+    };
+    minDestTokenAmount: string;
+    srcTokenAmount: string;
+    steps: {
+      destAmount: string;
+      srcAmount: string;
+    }[];
+  };
+}[];
+
+/**
+ * Updates the raw and display amounts for a token balance identified by its
+ * transaction account index.
+ *
+ * @param tokenBalances - Transaction token balances to search and update.
+ * @param accountIndex - Account index of the token balance to update.
+ * @param amount - New raw token amount, expressed in the token's smallest unit.
+ * @throws If no token balance exists for the requested account index.
+ */
+function setTokenBalanceAmount(
+  tokenBalances: TokenBalance[],
+  accountIndex: number,
+  amount: string,
+): void {
+  const tokenBalance = tokenBalances.find(
+    (balance) => balance.accountIndex === accountIndex,
+  );
+  if (!tokenBalance) {
+    throw new Error(`Missing token balance for account index ${accountIndex}`);
+  }
+
+  const { decimals } = tokenBalance.uiTokenAmount;
+  const uiAmount = Number(amount) / 10 ** decimals;
+  tokenBalance.uiTokenAmount.amount = amount;
+  tokenBalance.uiTokenAmount.uiAmount = uiAmount;
+  tokenBalance.uiTokenAmount.uiAmountString = uiAmount.toString();
+}
+
+function applyUsdcToSolSwapAmounts(
+  response: UsdcToSolTransactionResponse,
+  amounts: UsdcToSolSwapAmounts,
+): void {
+  const { meta } = response.result;
+  const sourceTokenAmount = Number(amounts.sourceTokenAmount);
+  const destinationTokenAmount = Number(amounts.destinationTokenAmount);
+  const feeTokenAmount = Number(amounts.feeTokenAmount);
+
+  meta.postBalances[0] =
+    meta.preBalances[0] - meta.fee + destinationTokenAmount;
+  meta.postBalances[12] = meta.preBalances[12] - destinationTokenAmount;
+
+  setTokenBalanceAmount(
+    meta.postTokenBalances,
+    1,
+    String(
+      Number(meta.preTokenBalances[0].uiTokenAmount.amount) -
+        sourceTokenAmount -
+        feeTokenAmount,
+    ),
+  );
+  setTokenBalanceAmount(
+    meta.postTokenBalances,
+    3,
+    String(
+      Number(meta.preTokenBalances[1].uiTokenAmount.amount) + feeTokenAmount,
+    ),
+  );
+  setTokenBalanceAmount(
+    meta.postTokenBalances,
+    12,
+    String(
+      Number(meta.preTokenBalances[2].uiTokenAmount.amount) -
+        destinationTokenAmount,
+    ),
+  );
+  setTokenBalanceAmount(
+    meta.postTokenBalances,
+    13,
+    String(
+      Number(meta.preTokenBalances[3].uiTokenAmount.amount) + sourceTokenAmount,
+    ),
+  );
+}
+
 /**
  * Extract the first signature from a base64-encoded Solana transaction.
  * The serialized format starts with a compact-u16 signature count, then
@@ -951,10 +1074,12 @@ export async function mockSendSwapSolanaTransaction(
  *
  * @param mockServer - Mockttp server.
  * @param signatureHolder - Optional; live signature from `sendTransaction` overrides the mock.
+ * @param amounts - Optional swap amounts used to tailor the transaction response.
  */
 export async function mockGetUSDCSOLTransaction(
   mockServer: Mockttp,
   signatureHolder?: SignatureHolder,
+  amounts?: UsdcToSolSwapAmounts,
 ) {
   const resp = await readResponseJsonFile('usdcSolTransaction.json');
   return await mockServer
@@ -963,9 +1088,14 @@ export async function mockGetUSDCSOLTransaction(
       method: 'getTransaction',
     })
     .thenCallback(() => {
-      const json = JSON.parse(JSON.stringify(resp));
+      const json = JSON.parse(
+        JSON.stringify(resp),
+      ) as UsdcToSolTransactionResponse;
       if (signatureHolder?.value) {
         json.result.transaction.signatures = [signatureHolder.value];
+      }
+      if (amounts) {
+        applyUsdcToSolSwapAmounts(json, amounts);
       }
       return {
         statusCode: 200,
@@ -1580,11 +1710,37 @@ export async function mockNoQuotesAvailable(
   return mockBridgeQuotes(mockServer, []);
 }
 
+/**
+ * Mocks the REST and streaming bridge quote responses for a USDC → SOL swap.
+ * Optional amounts keep the quote, fee, minimum received amount, and route
+ * steps consistent with a customized transaction fixture.
+ *
+ * @param mockServer - Mockttp server used to register the quote endpoints.
+ * @param amounts - Optional raw token amounts for a customized swap response.
+ * @returns The mocked REST and streaming bridge quote endpoints.
+ */
 export async function mockQuoteFromUSDCtoSOL(
   mockServer: Mockttp,
+  amounts?: UsdcToSolSwapAmounts,
 ): Promise<MockedEndpoint[]> {
-  const quoteUsdcToSol = await readResponseJsonFile('quoteUsdcToSol.json');
-  return mockBridgeQuotes(mockServer, quoteUsdcToSol as unknown[]);
+  const quoteUsdcToSol = (await readResponseJsonFile(
+    'quoteUsdcToSol.json',
+  )) as UsdcToSolQuoteResponse;
+
+  if (amounts) {
+    quoteUsdcToSol.forEach(({ quote }) => {
+      quote.srcTokenAmount = amounts.sourceTokenAmount;
+      quote.destTokenAmount = amounts.destinationTokenAmount;
+      quote.minDestTokenAmount = amounts.minimumDestinationTokenAmount;
+      quote.feeData.metabridge.amount = amounts.feeTokenAmount;
+      quote.steps.forEach((step) => {
+        step.srcAmount = amounts.sourceTokenAmount;
+        step.destAmount = amounts.destinationTokenAmount;
+      });
+    });
+  }
+
+  return mockBridgeQuotes(mockServer, quoteUsdcToSol);
 }
 
 export async function mockQuoteFromSoltoUSDC(
@@ -1785,11 +1941,13 @@ const USDC_TOKEN_INFO = {
  * @param mockServer - The mockttp server instance.
  * @param direction - Swap direction (default SOL → USDC).
  * @param signatureHolder - When non-empty after submit, used as `srcChain.txHash`.
+ * @param amounts - Optional USDC → SOL amounts returned by the status endpoint.
  */
 export async function mockBridgeTxStatus(
   mockServer: Mockttp,
   direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
   signatureHolder?: SignatureHolder,
+  amounts?: UsdcToSolSwapAmounts,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
@@ -1810,13 +1968,17 @@ export async function mockBridgeTxStatus(
         srcChain: {
           chainId: 1151111081099710,
           txHash: srcTxHash,
-          amount: isSolToUsdc ? '1000000000' : '991250',
+          amount: isSolToUsdc
+            ? '1000000000'
+            : (amounts?.sourceTokenAmount ?? '991250'),
           token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
         destChain: {
           chainId: 1151111081099710,
           txHash: '',
-          amount: isSolToUsdc ? '136900000' : '5836864',
+          amount: isSolToUsdc
+            ? '136900000'
+            : (amounts?.destinationTokenAmount ?? '5836864'),
           token: isSolToUsdc ? USDC_TOKEN_INFO : SOL_TOKEN_INFO,
         },
       },
