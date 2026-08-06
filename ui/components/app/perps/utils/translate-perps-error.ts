@@ -58,10 +58,35 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderFailed',
 
+  // Order validation — trigger placements and partial TP/SL. The extension
+  // places neither today, so these are unreachable from its UI and share the
+  // generic `ORDER_*` copy rather than carrying bespoke strings.
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_POSITIVE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_PRICE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TRIGGER_TPSL_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_SIZE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_CONFLICT]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_POSITION_LINKAGE_UNSUPPORTED]:
+    'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TPSL_LINKAGE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TIME_IN_FORCE_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_TRIGGER_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_ORDER_UNVERIFIABLE]: 'perpsOrderFailed',
+
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.INFO_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.SUBSCRIPTION_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
+
+  // HyperLiquid exchange rejections
+  // The wallet has no HyperLiquid account yet — HyperLiquid creates one on the
+  // first USDC credit, so the only way forward is to fund it.
+  [PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND]: 'perpsAddFundsDescription',
+  // Account needs a multi-sig wrapper for exchange writes — not actionable here.
+  [PERPS_ERROR_CODES.EXCHANGE_MULTI_SIG_REQUIRED]: 'somethingWentWrong',
+  // Stale or reused action nonce; retrying is what resolves it.
+  [PERPS_ERROR_CODES.EXCHANGE_INVALID_NONCE]: 'perpsOrderFailed',
 
   // Wallet / account
   [PERPS_ERROR_CODES.NO_ACCOUNT_SELECTED]: 'perpsWithdrawNoAccount',
