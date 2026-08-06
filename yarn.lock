@@ -7258,23 +7258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^14.0.0, @metamask/message-manager@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "@metamask/message-manager@npm:14.1.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/messenger": "npm:^1.0.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@types/uuid": "npm:^8.3.0"
-    jsonschema: "npm:^1.4.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/1e1ca365378e7ba762a150805121053d0360ae7230818ed48521702e2d7a32bc8233c3ef470c269fd4cbe16454674e328a5ebda22133ffd7b1190b04897e81d4
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^14.1.2":
+"@metamask/message-manager@npm:^14.0.0, @metamask/message-manager@npm:^14.1.1, @metamask/message-manager@npm:^14.1.2":
   version: 14.1.2
   resolution: "@metamask/message-manager@npm:14.1.2"
   dependencies:
