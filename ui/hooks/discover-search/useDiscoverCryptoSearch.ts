@@ -74,6 +74,7 @@ export const useDiscoverCryptoSearch = ({
         sort: 'h24_trending',
         minLiquidity: 200_000,
         minVolume24hUsd: 1_000_000,
+        includeTokenSecurityData: true,
       }),
     enabled: enabled && !isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
@@ -95,6 +96,7 @@ export const useDiscoverCryptoSearch = ({
         {
           limit: DISCOVER_SEARCH_PAGE_SIZE,
           includeMarketData: true,
+          includeTokenSecurityData: true,
         },
       );
 
