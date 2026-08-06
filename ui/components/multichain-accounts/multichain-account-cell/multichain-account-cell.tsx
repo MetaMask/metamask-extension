@@ -72,6 +72,11 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
   showDefaultAddress?: boolean;
+  /**
+   * When true, the cell ignores clicks and shows reduced opacity so the user
+   * sees that an account switch is in progress (React useTransition pending).
+   */
+  pending?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -88,8 +93,21 @@ export const MultichainAccountCell = ({
   connectionStatus,
   privacyMode = false,
   showDefaultAddress = false,
+  pending = false,
 }: MultichainAccountCellProps) => {
-  const handleClick = () => onClick?.(accountId);
+  const handleClick = () => {
+    if (pending) {
+      return;
+    }
+    onClick?.(accountId);
+  };
+
+  let cursor: React.CSSProperties['cursor'] = 'default';
+  if (pending) {
+    cursor = 'wait';
+  } else if (onClick) {
+    cursor = 'pointer';
+  }
 
   // Use accountNameString for aria-label, or fallback to accountName if it's a string
   const ariaLabelName =
@@ -105,15 +123,18 @@ export const MultichainAccountCell = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       style={{
-        cursor: onClick ? 'pointer' : 'default',
+        cursor,
         position: 'relative',
+        opacity: pending ? 0.6 : undefined,
+        pointerEvents: pending ? 'none' : undefined,
       }}
       padding={4}
       gap={4}
       onClick={handleClick}
-      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}`}
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}${pending ? ' is-pending' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
+      aria-busy={pending || undefined}
       backgroundColor={
         selected && !startAccessory
           ? BoxBackgroundColor.BackgroundMuted

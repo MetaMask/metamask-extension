@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useTransition,
 } from 'react';
 
 import {
@@ -113,6 +114,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
@@ -258,8 +260,11 @@ export const MultichainAccountList = ({
         ],
       });
 
-      dispatch(setSelectedMultichainAccount(accountGroupId));
-      navigate(DEFAULT_ROUTE);
+      // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
+      startTransition(() => {
+        dispatch(setSelectedMultichainAccount(accountGroupId));
+        navigate(DEFAULT_ROUTE);
+      });
     },
     [
       trackEvent,
@@ -268,16 +273,23 @@ export const MultichainAccountList = ({
       defaultHomeActiveTabName,
       dispatch,
       navigate,
+      startTransition,
     ],
   );
 
   const handleAccountClickToUse = useCallback(
     (accountGroupId: AccountGroupId) => {
+      // Only gate the default switch path; custom handlers own their own pending UX.
+      if (isPending && !handleAccountClick) {
+        return;
+      }
       const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
       handlerToUse?.(accountGroupId);
     },
-    [handleAccountClick, defaultHandleAccountClick],
+    [handleAccountClick, defaultHandleAccountClick, isPending],
   );
+
+  const isSwitchPending = isPending && !handleAccountClick;
 
   const renderAccountCell = useCallback(
     (
@@ -321,6 +333,7 @@ export const MultichainAccountList = ({
             balance={formatCurrencyWithMinThreshold(balance, currency)}
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
+            pending={isSwitchPending}
             connectionStatus={
               connectedStatus as
                 | typeof STATUS_CONNECTED
@@ -342,6 +355,7 @@ export const MultichainAccountList = ({
                     isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
+                    isDisabled={isSwitchPending}
                     onChange={() => {
                       handleAccountClickToUse(groupId as AccountGroupId);
                     }}
@@ -371,6 +385,7 @@ export const MultichainAccountList = ({
       showConnectionStatus,
       selectedAccountGroupsSet,
       handleAccountClickToUse,
+      isSwitchPending,
       privacyMode,
       showAccountCheckbox,
       wallets,

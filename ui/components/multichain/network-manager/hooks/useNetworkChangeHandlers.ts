@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
@@ -60,6 +60,7 @@ export enum ACTION_MODE {
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const [isPending, startTransition] = useTransition();
 
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -99,22 +100,23 @@ export const useNetworkChangeHandlers = () => {
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      dispatch(setEnabledNetworks(hexChainId));
-
-      // deferring execution to keep select all unblocked
-      setTimeout(() => {
+      // Defer expensive Home/Routes re-renders so the network list stays responsive.
+      startTransition(() => {
+        dispatch(setEnabledNetworks(hexChainId));
         dispatch(setActiveNetwork(finalNetworkClientId));
-      }, 0);
+      });
     },
-    [dispatch, evmNetworks],
+    [dispatch, evmNetworks, startTransition],
   );
 
   const handleNonEvmNetworkChange = useCallback(
-    async (chainId: CaipChainId) => {
-      dispatch(setActiveNetwork(chainId));
-      dispatch(setEnabledNetworks(chainId));
+    (chainId: CaipChainId) => {
+      startTransition(() => {
+        dispatch(setActiveNetwork(chainId));
+        dispatch(setEnabledNetworks(chainId));
+      });
     },
-    [dispatch],
+    [dispatch, startTransition],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(
@@ -132,14 +134,18 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
+      if (isPending) {
+        return;
+      }
+
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        await handleEvmNetworkChange(chainId);
+        handleEvmNetworkChange(chainId);
       } else {
-        await handleNonEvmNetworkChange(chainId);
+        handleNonEvmNetworkChange(chainId);
       }
 
       const chainIdToTrack = chain.isEvm
@@ -199,6 +205,7 @@ export const useNetworkChangeHandlers = () => {
       handleNonEvmNetworkChange,
       trackEvent,
       createEventBuilder,
+      isPending,
     ],
   );
 
@@ -212,5 +219,7 @@ export const useNetworkChangeHandlers = () => {
     actionMode,
     setActionMode,
     ACTION_MODE,
+    isPending,
+    startTransition,
   };
 };
