@@ -54,9 +54,6 @@ type LoginErrorModalProps = {
  * @param props.onClose - The function to call when the modal is closed
  * @param props.loginError - The type of login error that occurred
  */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginErrorModal({
   onClose,
   loginError,

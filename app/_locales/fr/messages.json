@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Options du compte"
   },
-  "accountPermissionToast": {
-    "message": "Les autorisations accordées au compte ont été mises à jour"
-  },
   "accountSelectionRequired": {
     "message": "Vous devez sélectionner un compte !"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Nombre de décimales du jeton"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
   },
   "decrypt": {
     "message": "Décrypter"

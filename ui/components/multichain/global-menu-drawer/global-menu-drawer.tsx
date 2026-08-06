@@ -10,6 +10,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useEventListener } from '../../../hooks/useEventListener';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -18,6 +19,7 @@ import {
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
 const DRAWER_TRANSITION_MS = 300;
+const SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH = 490;
 
 type DrawerPhase = 'entering' | 'open' | 'exiting';
 
@@ -56,6 +58,8 @@ export const GlobalMenuDrawer = ({
     null,
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
+  const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
+    useState(false);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
@@ -134,6 +138,7 @@ export const GlobalMenuDrawer = ({
       setDrawerStyle({});
       setBackdropStyle({});
       setContentTopOffset(0);
+      setIsCompactSidepanelDrawer(false);
       return;
     }
 
@@ -198,6 +203,10 @@ export const GlobalMenuDrawer = ({
 
       const rootLayoutRect = rootLayout.getBoundingClientRect();
       const appR = appContainer.getBoundingClientRect();
+      setIsCompactSidepanelDrawer(
+        isSidepanel &&
+          rootLayoutRect.width <= SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH,
+      );
 
       // Dialog covers root layout in both fullscreen and sidepanel
       setDrawerStyle({
@@ -244,7 +253,7 @@ export const GlobalMenuDrawer = ({
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [usePortal, isFullscreen, isOpen, anchorElement]);
+  }, [usePortal, isFullscreen, isSidepanel, isOpen, anchorElement]);
 
   // Prevent body scroll when drawer is open (only for non-fullscreen)
   useEffect(() => {
@@ -262,18 +271,14 @@ export const GlobalMenuDrawer = ({
   }, [isOpen, isFullscreen]);
 
   // Escape key closes drawer (Dialog would unmount on close and block leave transition in popup)
-  useEffect(() => {
+  useEventListener('keydown', (e: KeyboardEvent) => {
     if (!isOpen) {
       return;
     }
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  });
 
   const titleId = 'global-menu-drawer-title';
   // Popup: no portal, fixed overlay. Fullscreen/sidepanel: portal into .app and overlay root layout.
@@ -306,9 +311,10 @@ export const GlobalMenuDrawer = ({
   const drawerPanelBaseClass =
     'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
   let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
-  if (isFullscreen) {
+  if (isFullscreen || isSidepanel) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
-  } else if (isSidepanel) {
+  }
+  if (isSidepanel && isCompactSidepanelDrawer) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
   }
 
@@ -321,7 +327,7 @@ export const GlobalMenuDrawer = ({
       role="dialog"
       style={dialogPositionStyle}
     >
-      {!isSidepanel && (
+      {(isFullscreen || isSidepanel) && (
         <div
           className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
           style={{
@@ -350,11 +356,7 @@ export const GlobalMenuDrawer = ({
       >
         <div
           className="w-screen max-w-full pointer-events-auto h-full min-h-0"
-          style={
-            isSidepanel
-              ? { width: '100%', maxWidth: '100%' }
-              : { maxWidth: width }
-          }
+          style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
             className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"

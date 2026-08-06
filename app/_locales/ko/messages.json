@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "계정 옵션"
   },
-  "accountPermissionToast": {
-    "message": "계정 권한이 업데이트됨"
-  },
   "accountSelectionRequired": {
     "message": "계정을 선택해야 합니다!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "토큰 소수점"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "소수점 이하 자릿수는 0 이상, 36 이하여야 합니다."
   },
   "decrypt": {
     "message": "암호 해독"

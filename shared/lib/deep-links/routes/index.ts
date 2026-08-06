@@ -17,6 +17,7 @@ import type { Route } from './route';
 import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
+import { topTraders } from './top-traders';
 import { trending } from './trending';
 
 export type { Route } from './route';
@@ -65,4 +66,5 @@ addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
+addRoute(topTraders);
 addRoute(trending);

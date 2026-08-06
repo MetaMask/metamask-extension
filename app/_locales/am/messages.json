@@ -172,9 +172,6 @@
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
   },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
-  },
   "delete": {
     "message": "ሰርዝ"
   },

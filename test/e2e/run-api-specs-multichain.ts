@@ -27,7 +27,7 @@ import { MultichainAuthorizationConfirmationErrors } from './api-specs/Multichai
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 import { login } from './page-objects/flows/login.flow';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {
