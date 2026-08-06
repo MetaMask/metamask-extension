@@ -672,6 +672,18 @@ export { BENCHMARK_ANNOUNCE_SECTIONS };
 /**
  * User journey benchmarks use the real API on `main` and `release/*` branches; other
  * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
+ *
+ * KNOWN DISCREPANCY (pre-existing, deliberately not changed here): this labels the
+ * PR comment, and it resolves the branch differently from the harness that decides
+ * what actually ran. `shouldUseMockedRequests()` reads `GITHUB_REF_NAME`, which on a
+ * `pull_request` event is `<number>/merge`; `getCiBranchName()` prefers
+ * `BRANCH`/`GITHUB_HEAD_REF`, which is the head branch. So a PR *from* a `release/*`
+ * branch runs against mocks while this reports `real`. Whether the harness or this
+ * label is the wrong one is a product question — #39587 intended release branches to
+ * exercise real servers, which a release PR currently does not — so it is filed
+ * rather than silently resolved. Anything that must describe the population that was
+ * *measured* (baseline selection, gating) reads `GITHUB_REF_NAME` via
+ * `resolveBenchmarkMockMode`, never this function.
  */
 export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
   const branch = getCiBranchName();
@@ -1222,6 +1234,17 @@ export async function buildPerformanceBenchmarksSection(
     // Population-matched: a mocked PR run is only ever compared against a
     // mocked baseline, so the deltas reflect the commit rather than upstream
     // latency. Yields no baseline until a matching series exists.
+    //
+    // Reads `GITHUB_REF_NAME` bare, NOT `getCiBranchName()`, because this must
+    // report the population the benchmark harness actually measured, and
+    // `shouldUseMockedRequests()` in mock-config.ts reads `GITHUB_REF_NAME`.
+    // The two sources disagree on `pull_request` events, where `GITHUB_REF_NAME`
+    // is `<number>/merge` while `GITHUB_HEAD_REF` is the head branch — so a PR
+    // from a `release/*` branch runs mocked but `getCiBranchName()` reports
+    // `release/…`. Selecting a baseline off the head branch there would compare
+    // a mocked run against the live series, which is the defect this whole
+    // change exists to remove. See the note on
+    // `getUserJourneyBenchmarkApiModeFromBranch`.
     fetchHistoricalPerformanceDataFromMain(
       resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME),
     ),
