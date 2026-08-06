@@ -159,7 +159,6 @@ export default function useSubmitBridgeTransaction() {
     }
   };
 
-
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponseV1 & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
