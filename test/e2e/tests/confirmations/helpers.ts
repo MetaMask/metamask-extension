@@ -6,6 +6,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { MOCK_ANALYTICS_ID } from '../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -234,6 +235,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -611,6 +613,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -653,6 +656,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -681,6 +685,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
