@@ -30,6 +30,7 @@ const INFURA_NETWORK_NAME_BY_CHAIN_ID = [
   [CHAIN_IDS.MONAD, 'monad-mainnet'],
   [CHAIN_IDS.HYPE, 'hyperevm-mainnet'],
   [CHAIN_IDS.ARC, 'arc-mainnet'],
+  [CHAIN_IDS.ROBINHOOD_CHAIN, 'robinhood-mainnet'],
 ] as const satisfies readonly (readonly [
   Hex,
   keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,

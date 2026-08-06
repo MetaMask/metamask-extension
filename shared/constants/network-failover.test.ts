@@ -51,6 +51,7 @@ describe('getFailoverUrlsByChainId', () => {
       CHAIN_IDS.MONAD,
       CHAIN_IDS.HYPE,
       CHAIN_IDS.ARC,
+      CHAIN_IDS.ROBINHOOD_CHAIN,
     ];
     expect(Object.keys(failoverUrlsByChainId).sort()).toStrictEqual(
       [...mappedChainIds].sort(),
