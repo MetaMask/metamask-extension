@@ -2,12 +2,17 @@ import type { Quote } from '@metamask/ramps-controller';
 import {
   findSelectedQuote,
   isTokenStateSettled,
+  isWeeklyLimitQuoteError,
   parseFiatAmount,
   resolveBuildQuoteViewKind,
   resolveCanContinue,
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from './build-quote';
+
+const t = ((key: string) => key) as unknown as Parameters<
+  typeof resolveDisplayedQuoteError
+>[0]['t'];
 
 describe('build-quote utils', () => {
   describe('parseFiatAmount', () => {
@@ -144,6 +149,21 @@ describe('build-quote utils', () => {
     });
   });
 
+  describe('isWeeklyLimitQuoteError', () => {
+    it('matches snapshot for weekly limit detection', () => {
+      expect({
+        weeklyLimit: isWeeklyLimitQuoteError(
+          'You have reached your weekly limit',
+        ),
+        timeBased: isWeeklyLimitQuoteError(
+          'You have exceeded your time-based limits',
+        ),
+        maxPurchase: isWeeklyLimitQuoteError('Maximum purchase is $30,000'),
+        empty: isWeeklyLimitQuoteError(''),
+      }).toMatchSnapshot();
+    });
+  });
+
   describe('resolveDisplayedQuoteError', () => {
     it('matches snapshot for displayed quote error cases', () => {
       expect({
@@ -155,8 +175,11 @@ describe('build-quote utils', () => {
           hasQuoteFetchError: true,
           quotesResponse: null,
           selectedQuote: null,
+          limitMessage: null,
+          t,
         }),
-        providerError: resolveDisplayedQuoteError({
+        // Published limits win over the provider's own prose.
+        publishedLimit: resolveDisplayedQuoteError({
           quoteFetchErrorMessage: null,
           hasAmount: true,
           hasSettledQuoteAmount: true,
@@ -165,10 +188,47 @@ describe('build-quote utils', () => {
           quotesResponse: {
             success: [],
             error: [
-              { provider: 'transak', error: 'Minimum purchase is $5 USD' },
+              { provider: 'transak', error: 'AMOUNT_TOO_HIGH: raw string' },
             ],
           },
           selectedQuote: null,
+          limitMessage: 'Maximum purchase is $30,000',
+          t,
+        }),
+        weeklyLimit: resolveDisplayedQuoteError({
+          quoteFetchErrorMessage: null,
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          hasQuoteFetchError: false,
+          quotesResponse: {
+            success: [],
+            error: [
+              {
+                provider: 'transak',
+                error: 'You have exceeded your weekly limit',
+              },
+            ],
+          },
+          selectedQuote: null,
+          limitMessage: null,
+          t,
+        }),
+        // Unrecognized provider errors fall back to generic copy rather than
+        // leaking the raw string.
+        providerError: resolveDisplayedQuoteError({
+          quoteFetchErrorMessage: null,
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          hasQuoteFetchError: false,
+          quotesResponse: {
+            success: [],
+            error: [{ provider: 'transak', error: 'Something opaque' }],
+          },
+          selectedQuote: null,
+          limitMessage: null,
+          t,
         }),
         noError: resolveDisplayedQuoteError({
           quoteFetchErrorMessage: null,
@@ -181,6 +241,8 @@ describe('build-quote utils', () => {
             error: [],
           },
           selectedQuote: { provider: 'transak' },
+          limitMessage: null,
+          t,
         }),
       }).toMatchSnapshot();
     });

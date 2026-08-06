@@ -23,6 +23,7 @@ import {
 } from './utils/mapRampsTokensToSendAssets';
 
 function useRampsTokenSelectionData() {
+  const t = useI18nContext();
   const {
     tokens: controllerTokens,
     tokensLoading,
@@ -31,6 +32,7 @@ function useRampsTokenSelectionData() {
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
+  const disabledMessage = t('rampsTokenUnavailableInRegion');
 
   const mappedTokens = useMemo(() => {
     const topTokens = filterRampsTokensByEnabledNetworks(
@@ -45,12 +47,26 @@ function useRampsTokenSelectionData() {
     const tokensNotYetLoaded = controllerTokens === null && !tokensError;
 
     return {
-      topTokens: mapRampsTokensToSendAssets(topTokens, networksByCaipChainId),
-      allTokens: mapRampsTokensToSendAssets(allTokens, networksByCaipChainId),
+      topTokens: mapRampsTokensToSendAssets(
+        topTokens,
+        networksByCaipChainId,
+        disabledMessage,
+      ),
+      allTokens: mapRampsTokensToSendAssets(
+        allTokens,
+        networksByCaipChainId,
+        disabledMessage,
+      ),
       isLoading: tokensLoading || tokensNotYetLoaded,
       error: tokensError,
     };
-  }, [controllerTokens, tokensLoading, tokensError, networksByCaipChainId]);
+  }, [
+    controllerTokens,
+    tokensLoading,
+    tokensError,
+    networksByCaipChainId,
+    disabledMessage,
+  ]);
 
   return mappedTokens;
 }

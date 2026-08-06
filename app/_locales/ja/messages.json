@@ -8057,9 +8057,6 @@
     "message": "$1経由で購入中。",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "プロバイダーを変更します。"
-  },
   "rampsEligibilityFailedDescription": {
     "message": "もう一度お試しください。引き続き問題が発生する場合はサポートにお問い合わせください。"
   },
@@ -8123,14 +8120,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "分"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1〜$2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "最大 $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "最小 $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8138,18 +8127,11 @@
   "rampsPreviouslyUsed": {
     "message": "以前使用"
   },
-  "rampsProviders": {
-    "message": "プロバイダー"
-  },
   "rampsQuoteFetchError": {
     "message": "クォートを取得できませんでした。"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1用のクォートが表示されています。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "支払方法を選択"

@@ -196,7 +196,6 @@ export const RAMPS_ROUTE = '/ramps';
 export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
-export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -471,11 +470,6 @@ export const ROUTES = [
   {
     path: RAMPS_PAYMENT_METHOD_ROUTE,
     label: 'Ramps Payment Method Page',
-    trackInAnalytics: false,
-  },
-  {
-    path: RAMPS_PROVIDER_SELECTION_ROUTE,
-    label: 'Ramps Provider Selection Page',
     trackInAnalytics: false,
   },
   {

@@ -8050,9 +8050,6 @@
     "message": "正在通过$1购买。",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "更换提供商。"
-  },
   "rampsEligibilityFailedDescription": {
     "message": "请重试；如果问题持续出现，请联系客服。"
   },
@@ -8116,14 +8113,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "分钟"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "最高 $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "最低 $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8131,18 +8120,11 @@
   "rampsPreviouslyUsed": {
     "message": "先前使用的"
   },
-  "rampsProviders": {
-    "message": "提供商"
-  },
   "rampsQuoteFetchError": {
     "message": "获取报价失败。"
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "显示 $1 的报价。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "选择付款方式"

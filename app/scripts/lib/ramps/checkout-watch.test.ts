@@ -281,8 +281,13 @@ describe('createWatchRampsCheckoutTab', () => {
 
   it('falls back to getOrder by widget code when the callback lookup fails', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    const { platform, rampsController, watch, getOnUpdated, checkoutAnalytics } =
-      createHarness();
+    const {
+      platform,
+      rampsController,
+      watch,
+      getOnUpdated,
+      checkoutAnalytics,
+    } = createHarness();
     rampsController.getOrderFromCallback.mockRejectedValue(
       new Error('Failed to fetch'),
     );

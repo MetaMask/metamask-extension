@@ -8061,9 +8061,6 @@
     "message": "Comprando mediante $1.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "Cambiar de proveedor."
-  },
   "rampsEligibilityFailedDescription": {
     "message": "Inténtalo de nuevo o ponte en contacto con soporte si esto sigue ocurriendo."
   },
@@ -8127,14 +8124,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "min"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Máx. $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Mín. $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8142,18 +8131,11 @@
   "rampsPreviouslyUsed": {
     "message": "Usado anteriormente"
   },
-  "rampsProviders": {
-    "message": "Proveedores"
-  },
   "rampsQuoteFetchError": {
     "message": "No se pudo obtener la cotización."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Cotizaciones mostradas para $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Seleccionar método de pago"

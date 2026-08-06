@@ -873,6 +873,16 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
             value="100"
           />
         </div>
+        <div
+          class="flex-row flex flex-wrap items-center justify-center gap-1 text-center"
+        >
+          <p
+            class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            data-testid="ramps-build-quote-error"
+          >
+            quote failed
+          </p>
+        </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -909,12 +919,6 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           </div>
         </button>
       </div>
-      <p
-        class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mb-4 text-center"
-        data-testid="ramps-build-quote-error"
-      >
-        quote failed
-      </p>
       <div
         class="flex flex-col gap-3 items-center pb-4"
       >
@@ -1568,6 +1572,27 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
             value="100"
           />
         </div>
+        <div
+          class="flex-row flex flex-wrap items-center justify-center gap-1 text-center"
+        >
+          <p
+            class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            data-testid="ramps-build-quote-error"
+          >
+            Error getting quotes. Enter a lower amount or
+          </p>
+          <button
+            class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+            data-testid="ramps-build-quote-error-link"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+            >
+              change providers
+            </span>
+          </button>
+        </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -1604,12 +1629,6 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           </div>
         </button>
       </div>
-      <p
-        class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mb-4 text-center"
-        data-testid="ramps-build-quote-error"
-      >
-        Minimum purchase is $5 USD
-      </p>
       <div
         class="flex flex-col gap-3 items-center pb-4"
       >

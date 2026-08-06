@@ -8061,9 +8061,6 @@
     "message": "$1 üzerinden satın alınıyor.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "Sağlayıcı değiştirin."
-  },
   "rampsEligibilityFailedDescription": {
     "message": "Lütfen tekrar deneyin, bu durum devam ederse destek bölümüyle iletişime geçin."
   },
@@ -8127,14 +8124,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "dk."
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Maks $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8142,18 +8131,11 @@
   "rampsPreviouslyUsed": {
     "message": "Daha önce kullanılan"
   },
-  "rampsProviders": {
-    "message": "Sağlayıcılar"
-  },
   "rampsQuoteFetchError": {
     "message": "Teklif alınamadı."
   },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 için teklifler görüntüleniyor.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Ödeme yöntemi seç"

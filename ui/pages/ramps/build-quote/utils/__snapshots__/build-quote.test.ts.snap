@@ -18,6 +18,15 @@ exports[`build-quote utils isTokenStateSettled matches snapshot for settle cases
 }
 `;
 
+exports[`build-quote utils isWeeklyLimitQuoteError matches snapshot for weekly limit detection 1`] = `
+{
+  "empty": false,
+  "maxPurchase": false,
+  "timeBased": true,
+  "weeklyLimit": true,
+}
+`;
+
 exports[`build-quote utils parseFiatAmount matches snapshot for supported amount formats 1`] = `
 {
   "commaDecimal": 12.5,
@@ -54,9 +63,21 @@ exports[`build-quote utils resolveCanContinue matches snapshot for continue enab
 
 exports[`build-quote utils resolveDisplayedQuoteError matches snapshot for displayed quote error cases 1`] = `
 {
-  "fetchError": "Failed to fetch quote.",
+  "fetchError": {
+    "message": "Failed to fetch quote.",
+  },
   "noError": null,
-  "providerError": "Minimum purchase is $5 USD",
+  "providerError": {
+    "action": "changeProvider",
+    "message": "rampsQuoteErrorEnterLowerAmount",
+  },
+  "publishedLimit": {
+    "message": "Maximum purchase is $30,000",
+  },
+  "weeklyLimit": {
+    "action": "weeklyLimit",
+    "message": "rampsWeeklyLimitReached",
+  },
 }
 `;
 

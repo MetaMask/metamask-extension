@@ -8234,8 +8234,21 @@
     "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsChangeProvider": {
-    "message": "Change provider."
+  "rampsChangeProviderLink": {
+    "message": "Change provider",
+    "description": "Inline link in the payment method footer, e.g. 'Buying via Transak. Change provider'"
+  },
+  "rampsChangeProvidersLink": {
+    "message": "change providers",
+    "description": "Inline link in the buy amount error, e.g. 'Error getting quotes. Enter a lower amount or change providers'"
+  },
+  "rampsChooseProvider": {
+    "message": "Choose provider",
+    "description": "Title of the provider selection modal"
+  },
+  "rampsContactProviderSupport": {
+    "message": "Contact $1 support",
+    "description": "$1 is the ramp provider name"
   },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
@@ -8350,6 +8363,9 @@
   "rampsOtherOptions": {
     "message": "Other options"
   },
+  "rampsPayWith": {
+    "message": "Pay with"
+  },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
   },
@@ -8374,13 +8390,9 @@
   "rampsPaymentDelayMinutes": {
     "message": "mins"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Max $1",
-    "description": "$1 is the maximum fiat buy amount"
+  "rampsPaymentMethodLimit": {
+    "message": "$1 limit",
+    "description": "$1 is the maximum purchase amount for a payment method, e.g. '$500 limit'"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
@@ -8389,18 +8401,14 @@
   "rampsPreviouslyUsed": {
     "message": "Previously used"
   },
-  "rampsProviders": {
-    "message": "Providers"
+  "rampsQuoteErrorEnterLowerAmount": {
+    "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Quotes displayed for $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
@@ -8414,11 +8422,26 @@
   "rampsShowAllTokens": {
     "message": "Show all tokens"
   },
+  "rampsTokenUnavailableInRegion": {
+    "message": "This token isn’t available in your region."
+  },
   "rampsUnsupportedDescription": {
     "message": "Buying crypto isn’t supported in your region yet."
   },
   "rampsUnsupportedTitle": {
     "message": "Buying isn’t available here"
+  },
+  "rampsWeeklyLimitDescription": {
+    "message": "Sorry, you cannot place this order. This usually happens for one of the following reasons:"
+  },
+  "rampsWeeklyLimitReached": {
+    "message": "You’ve reached your weekly limit."
+  },
+  "rampsWeeklyLimitReasonLargeOrders": {
+    "message": "We don’t support large orders in your country, so please place a smaller order."
+  },
+  "rampsWeeklyLimitReasonTimeLimits": {
+    "message": "You’ve exceeded your time based limits, which you can check in the menu."
   },
   "rank": {
     "message": "Rank"
@@ -11356,6 +11379,9 @@
   },
   "tokenTransfer": {
     "message": "Token transfer"
+  },
+  "tokenUnavailable": {
+    "message": "Token unavailable"
   },
   "tokens": {
     "message": "Tokens"
