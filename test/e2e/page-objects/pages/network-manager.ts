@@ -145,7 +145,7 @@ class NetworkManager {
   }
 
   /**
-   * Deletes a network from the networks page. `openManageNetworks` must run first.
+   * Deletes a network from the networks page. `goToManageNetworksPage` must run first.
    *
    * @param chainId - The hexadecimal chain id of the network to delete.
    */
@@ -164,6 +164,16 @@ class NetworkManager {
     console.log(`Successfully deleted network: ${chainId}`);
   }
 
+  /**
+   * Navigates from the network filter to the full networks page, which is where
+   * networks can be added, edited and deleted.
+   */
+  async goToManageNetworksPage(): Promise<void> {
+    console.log('Going to the manage networks page');
+    await this.driver.clickElement(this.manageNetworksButton);
+    await this.driver.waitForSelector(this.networksPageList);
+  }
+
   async leaveNetworksPage(): Promise<void> {
     console.log('Leaving the networks page');
     await this.driver.clickElementAndWaitToDisappear(
@@ -171,20 +181,10 @@ class NetworkManager {
     );
   }
 
-  /**
-   * Navigates from the network filter to the full networks page, which is where
-   * networks can be added, edited and deleted.
-   */
-  async openManageNetworks(): Promise<void> {
-    console.log('Opening the networks page');
-    await this.driver.clickElement(this.manageNetworksButton);
-    await this.driver.waitForSelector(this.networksPageList);
-  }
-
   async openNetworkAndDeleteNetwork(networkName: string): Promise<void> {
     console.log(`Opening network manager and deleting ${networkName}`);
     await this.openNetworkManager();
-    await this.openManageNetworks();
+    await this.goToManageNetworksPage();
     await this.deleteNetworkByChainId(networkName as `0x${string}`);
     await this.leaveNetworksPage();
   }
