@@ -379,7 +379,30 @@ describe('DiscoverSearchPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows matching sections when the selected Perps tab has no hits', () => {
+  it('renders no results when the selected Perps tab is empty, regardless of other feeds loading', () => {
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getEmptyDiscoverSearchResult(),
+      crypto: {
+        ...getEmptyDiscoverSearchResult().crypto,
+        isLoading: true,
+      },
+      stocks: {
+        ...getEmptyDiscoverSearchResult().stocks,
+        isLoading: true,
+      },
+    });
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=perps` });
+
+    expect(
+      screen.getByTestId('discover-search-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('discover-search-loading'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render other category results in an empty selected Perps tab', () => {
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
     mockUseDiscoverSearch.mockReturnValue({
       ...getDefaultDiscoverSearchResult(),
@@ -396,10 +419,13 @@ describe('DiscoverSearchPage', () => {
     fireEvent.click(screen.getByTestId('discover-tab-perps'));
 
     expect(
-      screen.getByTestId('discover-crypto-preview-eip155:1/slip44:60'),
+      screen.getByTestId('discover-search-no-results'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('discover-search-no-results'),
+      screen.queryByTestId('discover-crypto-preview-eip155:1/slip44:60'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('discover-section-crypto'),
     ).not.toBeInTheDocument();
   });
 });

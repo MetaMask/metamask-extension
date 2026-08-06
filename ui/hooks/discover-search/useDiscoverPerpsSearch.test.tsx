@@ -107,4 +107,23 @@ describe('useDiscoverPerpsSearch', () => {
     expect(result.current.data).toHaveLength(2);
     expect(result.current.totalCount).toBe(2);
   });
+
+  it('finds markets by Terminal-enriched names', () => {
+    mockUsePerpsLiveMarketListData.mockReturnValue({
+      markets: [createMarket({ symbol: 'ENS', name: 'Ethereum Name Service' })],
+      cryptoMarkets: [],
+      hip3Markets: [],
+      isInitialLoading: false,
+      error: null,
+      refresh: jest.fn(),
+    });
+
+    const { result } = renderHook(() =>
+      useDiscoverPerpsSearch({ query: 'Name Service' }),
+    );
+
+    expect(
+      result.current.data.map(({ symbol, name }) => ({ symbol, name })),
+    ).toStrictEqual([{ symbol: 'ENS', name: 'Ethereum Name Service' }]);
+  });
 });

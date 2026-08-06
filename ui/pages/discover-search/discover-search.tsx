@@ -346,24 +346,6 @@ export const DiscoverSearchPage = () => {
   const showPerpsPreview =
     isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
   const showStocksPreview = previewStocks.length > 0 || stocks.isLoading;
-  const showSelectedTabFallback =
-    (activeTab === 'crypto' &&
-      !cryptoSection.isLoading &&
-      !cryptoSection.error &&
-      cryptoSection.items.length === 0 &&
-      ((isPerpsAvailable && perps.items.length > 0) ||
-        stocks.items.length > 0)) ||
-    (activeTab === 'perps' &&
-      !perps.isLoading &&
-      !perps.error &&
-      perps.items.length === 0 &&
-      (cryptoSection.items.length > 0 || stocks.items.length > 0)) ||
-    (activeTab === 'stocks' &&
-      !stocks.isLoading &&
-      !stocks.error &&
-      stocks.items.length === 0 &&
-      (cryptoSection.items.length > 0 ||
-        (isPerpsAvailable && perps.items.length > 0)));
 
   const renderAllTabSkeleton = () => (
     <Box
@@ -605,14 +587,12 @@ export const DiscoverSearchPage = () => {
           tabKey="crypto"
           data-testid="discover-tab-crypto"
         >
-          {showSelectedTabFallback
-            ? allTabContent
-            : renderAssetList(
-                cryptoSection.items,
-                cryptoSection.isLoading,
-                cryptoSection.error,
-                'discover-crypto',
-              )}
+          {renderAssetList(
+            cryptoSection.items,
+            cryptoSection.isLoading,
+            cryptoSection.error,
+            'discover-crypto',
+          )}
         </Tab>
 
         {isPerpsAvailable ? (
@@ -621,9 +601,7 @@ export const DiscoverSearchPage = () => {
             tabKey="perps"
             data-testid="discover-tab-perps"
           >
-            {showSelectedTabFallback
-              ? allTabContent
-              : renderPerpsList(perps.items, perps.isLoading, perps.error)}
+            {renderPerpsList(perps.items, perps.isLoading, perps.error)}
           </Tab>
         ) : null}
 
@@ -632,14 +610,12 @@ export const DiscoverSearchPage = () => {
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {showSelectedTabFallback
-            ? allTabContent
-            : renderAssetList(
-                stocks.items,
-                stocks.isLoading,
-                stocks.error,
-                'discover-stocks',
-              )}
+          {renderAssetList(
+            stocks.items,
+            stocks.isLoading,
+            stocks.error,
+            'discover-stocks',
+          )}
         </Tab>
       </Tabs>
     </Box>
