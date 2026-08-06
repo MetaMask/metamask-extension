@@ -214,11 +214,6 @@
       "count": 1
     }
   },
-  "ui/hooks/useAsync.test.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/hooks/useAsync.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 4
@@ -457,11 +452,6 @@
   "ui/pages/hardware-wallets/swap/hooks/useSendBundleSubmission.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
     }
   },
   "ui/pages/notification-details/notification-details.tsx": {
