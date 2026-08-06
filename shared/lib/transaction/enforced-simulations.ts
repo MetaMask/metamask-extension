@@ -2,7 +2,6 @@ import {
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
 import {
@@ -123,11 +122,7 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, origin, simulationData } = transactionMeta;
-
-  if (!origin || origin === ORIGIN_METAMASK) {
-    return false;
-  }
+  const { chainId, simulationData } = transactionMeta;
 
   if (
     !state.eip7702SupportedChains?.some(
