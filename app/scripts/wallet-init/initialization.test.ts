@@ -88,6 +88,7 @@ describe('initializeWallet', () => {
           failoverUrls: {
             '0x1': [],
             '0x10e6': [],
+            '0x1237': [],
             '0x13b2': [],
             '0x144': [],
             '0x2105': [],

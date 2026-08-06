@@ -1,41 +1,11 @@
 import { CHAIN_IDS } from './network';
 import {
-  getFailoverUrlsByChainId,
+  FAILOVER_URLS_BY_CHAIN_ID,
   getFailoverUrlsForChainId,
 } from './network-failover';
 
-describe('getFailoverUrlsForChainId', () => {
-  const OLD_ENV = process.env;
-  beforeEach(() => {
-    process.env = { ...OLD_ENV };
-  });
-  afterAll(() => {
-    process.env = OLD_ENV;
-  });
-
-  it('returns the QuickNode failover url for a mapped chain when the env is set', () => {
-    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
-    expect(getFailoverUrlsForChainId(CHAIN_IDS.BSC)).toStrictEqual([
-      'https://failover.example/bsc',
-    ]);
-  });
-
-  it('returns an empty array for a mapped chain when the env is unset', () => {
-    delete process.env.QUICKNODE_MEGAETH_URL;
-    expect(getFailoverUrlsForChainId(CHAIN_IDS.MEGAETH_MAINNET)).toStrictEqual(
-      [],
-    );
-  });
-
-  it('returns undefined for a chain that has no mapped failover', () => {
-    // Sepolia is not in the failover map
-    expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toBeUndefined();
-  });
-});
-
-describe('getFailoverUrlsByChainId', () => {
+describe('FAILOVER_URLS_BY_CHAIN_ID', () => {
   it('includes every chain that has a mapped QuickNode failover', () => {
-    const failoverUrlsByChainId = getFailoverUrlsByChainId();
     const mappedChainIds = [
       CHAIN_IDS.MAINNET,
       CHAIN_IDS.LINEA_MAINNET,
@@ -53,16 +23,36 @@ describe('getFailoverUrlsByChainId', () => {
       CHAIN_IDS.ARC,
       CHAIN_IDS.ROBINHOOD_CHAIN,
     ];
-    expect(Object.keys(failoverUrlsByChainId).sort()).toStrictEqual(
+    expect(Object.keys(FAILOVER_URLS_BY_CHAIN_ID).sort()).toStrictEqual(
       [...mappedChainIds].sort(),
     );
   });
 
-  it('resolves a mapped chain to its QuickNode failover url from env', () => {
-    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
-    expect(getFailoverUrlsByChainId()[CHAIN_IDS.BSC]).toStrictEqual([
-      'https://failover.example/bsc',
-    ]);
-    delete process.env.QUICKNODE_BSC_URL;
+  it('resolves a mapped chain to its QuickNode failover url from env at load', () => {
+    // The map is built once at module load, so set the env before re-importing.
+    jest.isolateModules(() => {
+      process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const {
+        FAILOVER_URLS_BY_CHAIN_ID: freshMap,
+      } = require('./network-failover');
+      expect(freshMap[CHAIN_IDS.BSC]).toStrictEqual([
+        'https://failover.example/bsc',
+      ]);
+      delete process.env.QUICKNODE_BSC_URL;
+    });
+  });
+});
+
+describe('getFailoverUrlsForChainId', () => {
+  it('returns an array for a mapped chain (empty when its env is unset)', () => {
+    // QuickNode env is unset in tests, so a mapped chain resolves to an empty
+    // array. The point is that a mapped chain returns an array, not undefined.
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.BSC)).toStrictEqual([]);
+  });
+
+  it('returns undefined for a chain that has no mapped failover', () => {
+    // Sepolia is not in the failover map.
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toBeUndefined();
   });
 });
