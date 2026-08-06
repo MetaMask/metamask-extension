@@ -13,13 +13,11 @@ import {
   mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
 
-const mockDebounce = jest.fn(
-  (fn: (...args: unknown[]) => unknown) => {
-    const immediate = (...args: unknown[]) => fn(...args);
-    immediate.cancel = jest.fn();
-    return immediate;
-  },
-);
+const mockDebounce = jest.fn((fn: (...args: unknown[]) => unknown) => {
+  const immediate = (...args: unknown[]) => fn(...args);
+  immediate.cancel = jest.fn();
+  return immediate;
+});
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
