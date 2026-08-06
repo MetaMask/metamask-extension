@@ -4,6 +4,7 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getCleanAppState, withFixtures, sentryRegEx } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import LoginPage from '../../page-objects/pages/login-page';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 
 /**
@@ -106,7 +107,7 @@ describe('Sentry remote sample rates', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: mockFlagsWithSentry(sentry),
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await login(driver);
         const uiState = await getCleanAppState(driver);
 
@@ -118,6 +119,17 @@ describe('Sentry remote sample rates', function (this: Suite) {
           uiState.metamask.remoteFeatureFlags.sentry,
           sentry,
           'the served sentry flag should reach RemoteFeatureFlagController state verbatim',
+        );
+
+        // Positive control for the request counter used by the
+        // basic-functionality-off arm below. Without this, a zero there is
+        // equally consistent with "the controller is disabled" and with
+        // "getSeenRequests never observes anything in this harness", and the
+        // arm would pass while measuring nothing.
+        const [flagsEndpoint] = mockedEndpoint;
+        assert.ok(
+          (await flagsEndpoint.getSeenRequests()).length > 0,
+          'the flags endpoint should record requests when the controller is enabled',
         );
       },
     );
@@ -159,7 +171,20 @@ describe('Sentry remote sample rates', function (this: Suite) {
         testSpecificMock: mockFlagsWithSentry({ tracesSampleRate: 1 }),
       },
       async ({ driver, mockedEndpoint }) => {
-        await login(driver);
+        // Deliberately NOT `login(driver)`. The login flow ends by checking the
+        // home page is loaded, which waits on the Bitcoin account icon — that
+        // never renders with external services off, so the flow times out after
+        // 20s on a selector unrelated to this claim. The unlock screen is the
+        // strongest ready signal that does not itself depend on the services
+        // this arm switches off.
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+
+        // The controller would fetch at background init, so the UI being up
+        // already means a request would have been issued. Settle anyway, so the
+        // zero below is "did not fetch" rather than "has not fetched yet" — a
+        // longer wait can only strengthen a no-request assertion.
+        await driver.delay(5000);
 
         const [flagsEndpoint] = mockedEndpoint;
         const seen = await flagsEndpoint.getSeenRequests();
@@ -182,11 +207,18 @@ describe('Sentry remote sample rates', function (this: Suite) {
       async ({ driver, mockedEndpoint }) => {
         await login(driver);
 
+        // 30s rather than 15s: the Firefox MV2 build cleared 15s on neither of
+        // two attempts while Chrome passed both, and a batched transaction
+        // envelope on the slower build is the likeliest cause. If this still
+        // times out on Firefox the cause is structural rather than budgetary,
+        // and the arm should be Chrome-gated
+        // (`process.env.SELENIUM_BROWSER === Browser.FIREFOX` → `this.skip()`)
+        // with the coverage gap stated, not given a longer timeout again.
         const [, transactionEndpoint] = mockedEndpoint;
         await driver.wait(async () => {
           const seen = await transactionEndpoint.getSeenRequests();
           return seen.length > 0;
-        }, 15000);
+        }, 30000);
 
         const seen = await transactionEndpoint.getSeenRequests();
         assert.ok(
