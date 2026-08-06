@@ -1,0 +1,177 @@
+<!doctype html>
+<!--
+  Advanced Chart sandboxed page (MV3 `sandbox` CSP).
+
+  This page runs in a unique-origin sandboxed iframe so the TradingView
+  Advanced Charts library + the shared `@metamask/advanced-chart-core` engine
+  can use inline script / eval (forbidden under the extension_pages CSP).
+
+  It is a thin BRIDGE around the engine IIFE that mobile ships verbatim
+  (`chartLogic.iife.js`). The engine was written for a React Native WebView:
+    - outbound: it calls `window.ReactNativeWebView.postMessage(jsonString)`
+    - inbound:  it listens on window/document 'message' but its onFromRN guard
+                REJECTS messages from real web origins (accepts only '', 'null',
+                or file: origins).
+  We shim both so the extension host (a normal extension page) can drive it
+  over `postMessage` WITHOUT modifying the shared engine:
+    - outbound shim: forward ReactNativeWebView.postMessage -> parent
+    - inbound shim:  re-dispatch host messages as a synthetic MessageEvent with
+                     origin '' so the engine's onFromRN guard accepts them.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MetaMask Advanced Chart</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+      }
+      #chart_surface {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      #tv_chart_container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        box-sizing: border-box;
+      }
+      .loading-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
+        font-size: 13px;
+        color: #8b8f9a;
+        z-index: 1000;
+      }
+      .loading-overlay.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-overlay" class="loading-overlay">Loading chart…</div>
+    <div id="chart_surface">
+      <div id="tv_chart_container"></div>
+    </div>
+
+    <script type="text/javascript">
+      (function () {
+        'use strict';
+
+        var HOST_CHANNEL = 'metamask-advanced-chart';
+
+        // The extension parent origin (chrome-extension://<id>). Derived from
+        // this page's own URL — resolves correctly even though a sandboxed page
+        // reports an opaque `location.origin`, because the extension host page
+        // that embeds us shares this exact origin. We only ever accept inbound
+        // messages from — and post outbound messages to — this origin, never '*'.
+        var EXPECTED_PARENT_ORIGIN = (function () {
+          try {
+            return new URL(window.location.href).origin;
+          } catch (err) {
+            return null;
+          }
+        })();
+        function parentTargetOrigin() {
+          // Fall back to same-origin only if the derivation failed (should not
+          // happen for a chrome-extension:// URL); never widen to '*'.
+          return EXPECTED_PARENT_ORIGIN || window.location.origin;
+        }
+
+        // --- Outbound shim: engine -> host ---------------------------------
+        // The engine posts JSON strings via window.ReactNativeWebView. Forward
+        // them to the host (parent) window untouched; the host parses them the
+        // same way React Native's parseWebViewMessage does.
+        window.ReactNativeWebView = {
+          postMessage: function (data) {
+            window.parent.postMessage(
+              { channel: HOST_CHANNEL, direction: 'fromEngine', data: data },
+              parentTargetOrigin(),
+            );
+          },
+        };
+
+        var engineLoaded = false;
+        function loadEngine() {
+          if (engineLoaded) {
+            return;
+          }
+          engineLoaded = true;
+          // Self-hosted engine (our own code) — same-origin ('self') script.
+          var script = document.createElement('script');
+          script.src = './chartLogic.iife.js';
+          script.onerror = function () {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                type: 'ERROR',
+                payload: { message: 'Failed to load advanced-chart engine bundle' },
+              }),
+            );
+          };
+          document.body.appendChild(script);
+        }
+
+        // --- Inbound shim: host -> engine ----------------------------------
+        window.addEventListener('message', function (event) {
+          // Only trust messages coming from our embedder (source check) AND
+          // from the extension origin (origin allowlist). The engine's own
+          // synthetic re-dispatch below uses source === null, so it is filtered
+          // by the source check and never subject to the origin check.
+          if (event.source !== window.parent) {
+            return;
+          }
+          if (EXPECTED_PARENT_ORIGIN && event.origin !== EXPECTED_PARENT_ORIGIN) {
+            return;
+          }
+          var msg = event.data;
+          if (!msg || msg.channel !== HOST_CHANNEL || msg.direction !== 'toEngine') {
+            return;
+          }
+
+          if (msg.kind === 'config') {
+            // window.CONFIG must exist BEFORE the engine IIFE evaluates
+            // (bootstrap() reads it synchronously).
+            window.CONFIG = msg.config;
+            loadEngine();
+            return;
+          }
+
+          if (msg.kind === 'engineMessage') {
+            // Re-dispatch as a synthetic MessageEvent with origin '' so the
+            // engine's onFromRN origin guard accepts it. The synthetic event
+            // has source === null, so it never re-enters this listener.
+            var payload =
+              typeof msg.payload === 'string'
+                ? msg.payload
+                : JSON.stringify(msg.payload);
+            var synthetic = new MessageEvent('message', {
+              data: payload,
+              origin: '',
+            });
+            window.dispatchEvent(synthetic);
+          }
+        });
+
+        // Tell the host we're ready to receive CONFIG.
+        window.parent.postMessage(
+          { channel: HOST_CHANNEL, direction: 'fromEngine', ready: true },
+          parentTargetOrigin(),
+        );
+      })();
+    </script>
+  </body>
+</html>

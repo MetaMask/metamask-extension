@@ -229,6 +229,15 @@ env:
   - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
 
   ###
+  # Advanced Chart (TradingView) — BUILD-TIME library source only.
+  # Used solely by `yarn advanced-chart:fetch-lib` to vendor the proprietary
+  # charting_library into app/advanced-chart/lib/. NOT read by runtime code
+  # (the sandbox loads the library from the extension's own origin). Same
+  # v30.1.0 base the mobile app pins.
+  ###
+  - ADVANCED_CHART_LIBRARY_URL: https://charting-assets.static.metamask.io/tradingview/advanced-charts/v30.1.0/
+
+  ###
   # Notifications Feature
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io

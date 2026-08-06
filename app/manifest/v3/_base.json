@@ -92,7 +92,13 @@
     "cookies"
   ],
   "sandbox": {
-    "pages": ["snaps/index.html"]
+    "pages": ["snaps/index.html", "advanced-chart/index.html"]
   },
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["advanced-chart/*"]
+    }
+  ]
 }

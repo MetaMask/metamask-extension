@@ -80,20 +80,44 @@ requirements are **mutually exclusive** on any **extension-local** page:
   `new Function`, no WebAssembly per the spike audit). The real conflict is the
   **`'unsafe-inline'` inner-frame bootstrap vs. same-origin DOM access**.
 - The only fix for the sandbox path — adding `allow-same-origin` to
-  `content_security_policy.sandbox` — makes Chrome **reject the manifest** (hard
-  load failure), so it is not an option.
+  `content_security_policy.sandbox` — makes Chrome **reject the manifest** hard
+  and verbatim (`Invalid value for 'content_security_policy.sandbox'.`, pack exit
+  22; Chromium's `ContentSecurityPolicyIsSandboxed` returns false on that token
+  because it "negates the sandboxing"), so it is not an option.
+- **Empirically reproduced (Chrome, live).** This is no longer a prediction. With
+  the library vendored and loaded, the MetaMask side ran end-to-end (OHLCV → 337
+  bars, iframe loaded, postMessage handshake complete, `SET_OHLCV_DATA` delivered),
+  then the render broke with an uncaught error **inside TradingView's own code**:
+
+```
+SecurityError: Failed to read a named property 'addEventListener' from 'Window':
+Blocked a frame with origin "null" from accessing a cross-origin frame.
+    at Be._innerWindowEvent (charting_library.js)
+    at Be._create
+    at new Be
+    at createChartWidget (chartLogic.iife.js:4803)
+```
+
+  The `"null"` origin is the manifest-`sandbox` opaque origin. A second,
+  independent block confirms the same root cause:
+
+```
+Framing 'chrome-extension://<id>/' violates the following Content Security Policy
+directive: "frame-ancestors 'none'". The request has been blocked.
+```
 
 **Conclusion (proven):** hosting the TradingView Advanced Charts build on an
 **extension-local page is infeasible on Chrome MV3.**
 
-**Option to try (untested):** host the AC page on a **MetaMask-owned remote web
-origin** (mirroring mobile, version-pinned to the same
+**Recommended path (runtime validation pending):** host the AC page on a
+**MetaMask-owned remote web origin** (mirroring mobile, version-pinned to the same
 `charting-assets.static.metamask.io/…/v30.1.0/` source) and embed it via a
-cross-origin `iframe` + `postMessage`. That origin would have its own CSP (can
-grant `'unsafe-inline'`) and a real origin (same-origin inner frame works), so it
-*should* clear both walls — **but this follows from the constraints above and has
-not been validated yet.** It is also a deliberate **remote-code** decision that
-must be **gated on security review** — a candidate direction, not a full design.
+cross-origin `iframe` + `postMessage`. That origin has its own CSP (can grant
+`'unsafe-inline'`) and a real origin (same-origin inner frame works), so it clears
+both walls. **The policy is settled** — this is the policy-sanctioned model, not a
+workaround (see §4) — but the **remote runtime render itself has not yet been
+validated end-to-end**. It is a deliberate **remote-code** decision that must be
+**gated on security review**.
 
 ---
 
@@ -176,7 +200,7 @@ even TradingView's **v31.1.0 nonce** support **can't be used** on a normal
 extension page, and the sandboxed-page route still fails on the same-origin
 requirement (`allow-same-origin` forbidden in the manifest `sandbox` CSP). **The
 extension wall from §2 stands** — remote-hosting on a MetaMask-owned origin
-remains the leading **option to try (untested)**.
+remains the **recommended path (runtime validation pending)**.
 
 ---
 

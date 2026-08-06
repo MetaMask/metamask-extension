@@ -202,6 +202,11 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Advanced Chart sandboxed page: bridge HTML + shared engine IIFE +
+      // (git-ignored) vendored TradingView library. Emitted to
+      // `dist/<browser>/advanced-chart/` so the sandbox iframe can load them
+      // from the extension's own origin. Mirrors the snaps/offscreen copies.
+      { from: join(context, 'advanced-chart'), to: 'advanced-chart' },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
