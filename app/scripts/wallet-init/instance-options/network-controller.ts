@@ -1,5 +1,5 @@
 import { WalletOptions } from '@metamask/wallet';
-import { FAILOVER_URLS_BY_CHAIN_ID } from '../../../../shared/constants/network-failover';
+import { getFailoverUrlsByChainId } from '../../../../shared/constants/network-failover';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -15,7 +15,7 @@ export function getNetworkControllerInstanceOptions(
 ): WalletOptions['instanceOptions']['networkController'] {
   return {
     infuraProjectId,
-    failoverUrls: FAILOVER_URLS_BY_CHAIN_ID,
+    failoverUrls: getFailoverUrlsByChainId(),
   };
 }
 

@@ -54,6 +54,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { SECOND } from '../../shared/constants/time';
+import * as NetworkFailoverModule from '../../shared/constants/network-failover';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -334,24 +335,6 @@ jest.mock('@metamask/core-backend', () => ({
 jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
 }));
-
-// Force a failover url for every mapped chain so the failover assertions do not
-// depend on the QuickNode env being set (the map is resolved from env at load).
-// Keys come from the real map, so the set of chains stays in sync with it.
-jest.mock('../../shared/constants/network-failover', () => {
-  const actual = jest.requireActual('../../shared/constants/network-failover');
-  const FAILOVER_URLS_BY_CHAIN_ID = Object.fromEntries(
-    Object.keys(actual.FAILOVER_URLS_BY_CHAIN_ID).map((chainId) => [
-      chainId,
-      ['https://mock_rpc'],
-    ]),
-  );
-  return {
-    ...actual,
-    FAILOVER_URLS_BY_CHAIN_ID,
-    getFailoverUrlsForChainId: (chainId) => FAILOVER_URLS_BY_CHAIN_ID[chainId],
-  };
-});
 
 jest.mock('../../shared/lib/manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
@@ -4225,6 +4208,37 @@ describe('MetaMaskController', () => {
       });
 
       it('ensures default networks contain failover RPCs', () => {
+        const networksWithFailoverUrls = [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.BASE,
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.POLYGON,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.SEI,
+          CHAIN_IDS.MONAD,
+          CHAIN_IDS.BSC,
+        ];
+        const networksWithoutFailoverUrls = [
+          CHAIN_IDS.SEPOLIA,
+          CHAIN_IDS.LINEA_SEPOLIA,
+          '0x18c7', // MegaETH Testnet
+          '0x279f', // Monad Testnet
+        ];
+
+        // Give every failover network a mock url so the assertions do not
+        // depend on the QuickNode env being set.
+        jest
+          .spyOn(NetworkFailoverModule, 'getFailoverUrlsByChainId')
+          .mockReturnValue(
+            Object.fromEntries(
+              networksWithFailoverUrls.map((chainId) => [
+                chainId,
+                ['https://mock_rpc'],
+              ]),
+            ),
+          );
+
         const initState = cloneDeep(firstTimeState);
         delete initState.NetworkController;
         metamaskController = new MetaMaskController({
@@ -4252,23 +4266,6 @@ describe('MetaMaskController', () => {
         });
 
         const networkState = metamaskController.networkController.state;
-        const networksWithFailoverUrls = [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.LINEA_MAINNET,
-          CHAIN_IDS.BASE,
-          CHAIN_IDS.ARBITRUM,
-          CHAIN_IDS.POLYGON,
-          CHAIN_IDS.OPTIMISM,
-          CHAIN_IDS.SEI,
-          CHAIN_IDS.MONAD,
-          CHAIN_IDS.BSC,
-        ];
-        const networksWithoutFailoverUrls = [
-          CHAIN_IDS.SEPOLIA,
-          CHAIN_IDS.LINEA_SEPOLIA,
-          '0x18c7', // MegaETH Testnet
-          '0x279f', // Monad Testnet
-        ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
         // NOTE - if a network enabled by default is missing a failover, double check if it needs to be inserted

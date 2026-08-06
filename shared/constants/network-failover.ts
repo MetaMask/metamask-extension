@@ -4,8 +4,10 @@ import { CHAIN_IDS } from './chain-ids';
 /**
  * The single source of truth for the QuickNode failover config: each chain that
  * has a QuickNode failover, paired with a getter that reads its URL from the
- * env lazily. `as const` keeps every row a fixed `[chainId, getUrl]` tuple so
- * the map below can be built without type assertions.
+ * env lazily. Wrapping the env reads in getters means callers resolve the URLs
+ * when they run, so tests can just set `process.env` rather than reloading the
+ * module. `as const` keeps every row a fixed `[chainId, getUrl]` tuple so the
+ * helpers below can index it without type assertions.
  */
 const QUICKNODE_FAILOVER_URL_GETTERS_BY_CHAIN_ID = [
   [CHAIN_IDS.MAINNET, () => process.env.QUICKNODE_MAINNET_URL],
@@ -26,24 +28,6 @@ const QUICKNODE_FAILOVER_URL_GETTERS_BY_CHAIN_ID = [
 ] as const satisfies readonly (readonly [Hex, () => string | undefined])[];
 
 /**
- * The chain ID keyed QuickNode failover map, the single source of truth shared
- * between the NetworkController initialization and the network form display.
- *
- * Resolved once at module load from the QuickNode env, the same way
- * FEATURED_RPCS resolves its failover URLs. A chain whose QuickNode env is unset
- * resolves to an empty array; a chain that is not in the map is absent.
- */
-export const FAILOVER_URLS_BY_CHAIN_ID: Record<Hex, string[]> =
-  QUICKNODE_FAILOVER_URL_GETTERS_BY_CHAIN_ID.reduce<Record<Hex, string[]>>(
-    (map, [chainId, getUrl]) => {
-      const url = getUrl();
-      map[chainId] = url ? [url] : [];
-      return map;
-    },
-    {},
-  );
-
-/**
  * Returns the QuickNode failover URLs for a chain. Returns an empty array for a
  * mapped chain whose env is unset, and `undefined` for a chain that has no
  * mapped failover.
@@ -52,7 +36,31 @@ export const FAILOVER_URLS_BY_CHAIN_ID: Record<Hex, string[]> =
  * @returns The failover URLs, or `undefined` if the chain has no mapped failover.
  */
 export function getFailoverUrlsForChainId(chainId: Hex): string[] | undefined {
-  return FAILOVER_URLS_BY_CHAIN_ID[chainId];
+  const entry = QUICKNODE_FAILOVER_URL_GETTERS_BY_CHAIN_ID.find(
+    ([mappedChainId]) => mappedChainId === chainId,
+  );
+  if (!entry) {
+    return undefined;
+  }
+  const url = entry[1]();
+  return url ? [url] : [];
+}
+
+/**
+ * Builds the chain ID keyed QuickNode failover map used to initialize the
+ * NetworkController. Chains whose QuickNode env is unset resolve to an empty
+ * array.
+ *
+ * @returns A map of chain ID to failover URLs.
+ */
+export function getFailoverUrlsByChainId(): Record<Hex, string[]> {
+  return QUICKNODE_FAILOVER_URL_GETTERS_BY_CHAIN_ID.reduce<
+    Record<Hex, string[]>
+  >((map, [chainId, getUrl]) => {
+    const url = getUrl();
+    map[chainId] = url ? [url] : [];
+    return map;
+  }, {});
 }
 
 /**
