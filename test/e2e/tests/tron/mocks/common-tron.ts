@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -190,7 +191,19 @@ export async function mockTronFeatureFlags(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        BIP44_STAGE_TWO,
+        // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
+        // the production bridge config turns on. An unparseable `bridgeConfig`
+        // resolves to the bridge controller's built-in default, which is what
+        // these tests already ran against when the flag was absent entirely.
+        { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 
