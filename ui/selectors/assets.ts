@@ -1569,29 +1569,37 @@ const selectAllAssetsGroupedIncludingHidden = createSelector(
  * `accountOverride` so the Pay-with list reflects that account's holdings
  * instead of the globally selected account group.
  *
+ * Memoized so `filterExcludedAssets` (which allocates a new object whenever
+ * Arc/Stable chain keys are present) does not return a fresh reference on
+ * every call — that would infinite-re-render consumers using inline
+ * `useSelector` (e.g. Add funds with a From override).
+ *
  * @param state - Redux state.
  * @param accountGroupId - Account group to resolve assets for.
  * @param options - Selector options.
  * @param options.includeHidden - When true, include hidden/ignored tokens.
  * @returns Per-chain assets for the group, or an empty map when unset.
  */
-export function getAssetsByAccountGroupId(
-  state: MetaMaskReduxState,
-  accountGroupId: AccountGroupId | undefined,
-  { includeHidden = false }: { includeHidden?: boolean } = {},
-): AccountGroupAssets {
-  if (!accountGroupId) {
-    return EMPTY_ACCOUNT_GROUP_ASSETS;
-  }
+export const getAssetsByAccountGroupId = createSelector(
+  [
+    (
+      state: MetaMaskReduxState,
+      accountGroupId: AccountGroupId | undefined,
+      options: { includeHidden?: boolean } = {},
+    ) => {
+      if (!accountGroupId) {
+        return EMPTY_ACCOUNT_GROUP_ASSETS;
+      }
 
-  const allAssets = includeHidden
-    ? selectAllAssetsGroupedIncludingHidden(state)
-    : selectAllAssetsGrouped(state);
+      const allAssets = options.includeHidden
+        ? selectAllAssetsGroupedIncludingHidden(state)
+        : selectAllAssetsGrouped(state);
 
-  return filterExcludedAssets(
-    allAssets[accountGroupId] ?? EMPTY_ACCOUNT_GROUP_ASSETS,
-  );
-}
+      return allAssets[accountGroupId] ?? EMPTY_ACCOUNT_GROUP_ASSETS;
+    },
+  ],
+  (groupAssets): AccountGroupAssets => filterExcludedAssets(groupAssets),
+);
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],

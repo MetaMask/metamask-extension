@@ -1675,6 +1675,8 @@ describe('getAssetsByAccountGroupId', () => {
   });
 
   beforeEach(() => {
+    getAssetsByAccountGroupId.clearCache();
+    getAssetsByAccountGroupId.memoizedResultFunc.clearCache();
     jest.mocked(selectAllAssets).mockReset();
     jest.mocked(selectAllAssets).mockReturnValue({});
   });
@@ -1787,6 +1789,38 @@ describe('getAssetsByAccountGroupId', () => {
 
     expect(result['0x13b2']).toStrictEqual([arcNative, otherToken]);
     expect(result['0x1']).toStrictEqual([arcUsdcErc20]);
+  });
+
+  it('returns a stable reference when Arc/Stable chains force filterExcludedAssets to allocate', () => {
+    const groupAssets = {
+      '0x13b2': [
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          isNative: true,
+        },
+        {
+          address: '0x3600000000000000000000000000000000000000',
+          isNative: false,
+        },
+      ],
+    };
+
+    jest.mocked(selectAllAssets).mockReturnValue({
+      [ACCOUNT_GROUP_ID]: groupAssets,
+    } as unknown as ReturnType<typeof selectAllAssets>);
+
+    const state = createMockState('arc-stable-ref');
+    const first = getAssetsByAccountGroupId(
+      state as never,
+      ACCOUNT_GROUP_ID as never,
+    );
+    const second = getAssetsByAccountGroupId(
+      state as never,
+      ACCOUNT_GROUP_ID as never,
+    );
+
+    expect(first).toBe(second);
+    expect(first['0x13b2']).toHaveLength(1);
   });
 });
 
