@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { toast, ToastContent as ToastContentBase } from '../../ui/toast/toast';
 import { useToastLabel } from './useToastLabel';
 
@@ -11,6 +12,8 @@ export type ToastContentOptions = {
   transactionId?: string;
   actionText?: string;
   onActionClick?: () => void;
+  toastId?: string;
+  to?: string;
 };
 
 export const ToastContent = ({
@@ -21,31 +24,52 @@ export const ToastContent = ({
   transactionId,
   actionText,
   onActionClick,
+  toastId,
+  to,
 }: { status: ToastStatus } & ToastContentOptions) => {
   const { title: derivedTitle, description: derivedDescription } =
     useToastLabel(status, transactionId);
 
+  const resolvedTitle = title ?? derivedTitle;
+
   return (
-    <ToastContentBase
-      title={title ?? derivedTitle}
-      description={description ?? derivedDescription}
-      dataTestId={dataTestId}
-      actionText={actionText}
-      onActionClick={onActionClick}
-    />
+    <>
+      <ToastContentBase
+        title={resolvedTitle}
+        description={description ?? derivedDescription}
+        dataTestId={dataTestId}
+        actionText={actionText}
+        onActionClick={onActionClick}
+      />
+
+      {to && (
+        <Link
+          to={to}
+          aria-label={resolvedTitle}
+          className="absolute inset-0 z-[1] cursor-pointer"
+          onClick={() => toast.dismiss(toastId)}
+        />
+      )}
+    </>
   );
 };
 
 export function showPendingToast(id: string, options?: ToastContentOptions) {
-  toast.loading(<ToastContent status="pending" {...options} />, { id });
+  toast.loading(<ToastContent status="pending" toastId={id} {...options} />, {
+    id,
+  });
 }
 
 export function showSuccessToast(id: string, options?: ToastContentOptions) {
-  toast.success(<ToastContent status="success" {...options} />, { id });
+  toast.success(<ToastContent status="success" toastId={id} {...options} />, {
+    id,
+  });
 }
 
 export function showFailedToast(id: string, options?: ToastContentOptions) {
-  toast.error(<ToastContent status="failed" {...options} />, { id });
+  toast.error(<ToastContent status="failed" toastId={id} {...options} />, {
+    id,
+  });
 }
 
 export function dismissToast(id: string) {

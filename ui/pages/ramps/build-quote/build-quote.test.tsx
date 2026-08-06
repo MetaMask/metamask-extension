@@ -257,6 +257,9 @@ describe('RampsBuildQuoteScreen', () => {
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: 'order-123',
+      checkoutSessionId: expect.any(String),
+      checkoutOpenedAt: expect.any(Number),
+      region: 'us-ca',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -282,6 +285,9 @@ describe('RampsBuildQuoteScreen', () => {
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: undefined,
+      checkoutSessionId: expect.any(String),
+      checkoutOpenedAt: expect.any(Number),
+      region: 'us-ca',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -307,6 +313,9 @@ describe('RampsBuildQuoteScreen', () => {
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderCode: 'c-abc123',
+      checkoutSessionId: expect.any(String),
+      checkoutOpenedAt: expect.any(Number),
+      region: 'us-ca',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });

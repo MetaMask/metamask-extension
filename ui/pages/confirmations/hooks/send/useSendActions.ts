@@ -93,7 +93,7 @@ export const useSendActions = () => {
             ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
             : t('transactionError');
           updateNonEVMSubmitError(errorMessage);
-          navigate(-1);
+          navigate(PREVIOUS_ROUTE);
           return;
         }
 
@@ -112,7 +112,7 @@ export const useSendActions = () => {
           // Actual snap/internal error - display error message to user
           updateNonEVMSubmitError(t('transactionError'));
         }
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       }
     }
   }, [

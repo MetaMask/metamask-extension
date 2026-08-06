@@ -1,19 +1,23 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { v4 as uuidV4 } from 'uuid';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
 } from '@metamask/ramps-controller';
+import { sanitizeUrlPath } from '../../../../../shared/lib/ramps/url-path';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRampsAnalytics } from '../../../../hooks/ramps/useRampsAnalytics';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -62,6 +66,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const { trackCheckoutOpened } = useRampsAnalytics();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -167,7 +172,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handlePaymentMethodPress = useCallback(() => {
@@ -204,6 +209,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
+      const checkoutSessionId = uuidV4();
+      const checkoutOpenedAt = Date.now();
+
+      trackCheckoutOpened({
+        checkoutSessionId,
+        providerName: selectedProvider?.name,
+        initialUrlPath: sanitizeUrlPath(widget.url),
+        hasCallbackFlow: !widget.orderId,
+        orderId: orderCode,
+      });
 
       // Open + watch in the background so popup-mode UI can close when the
       // provider tab opens without losing the callback listener.
@@ -212,6 +227,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         providerCode,
         walletAddress,
         orderCode,
+        checkoutSessionId,
+        checkoutOpenedAt,
+        region: userRegion?.regionCode,
       });
 
       navigate(DEFAULT_ROUTE);
@@ -232,6 +250,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedProvider,
     selectedQuote,
     t,
+    trackCheckoutOpened,
+    userRegion?.regionCode,
     walletAddress,
   ]);
 
