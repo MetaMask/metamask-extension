@@ -172,7 +172,7 @@ describe('useBridgeAlerts', () => {
         expect.objectContaining({
           id: 'off-hours',
           severity: 'warning',
-          isDismissable: true,
+          isDismissable: false,
           title: 'bridgeOffHoursTitle',
           description: 'bridgeOffHoursDescription',
           isConfirmationAlert: false,

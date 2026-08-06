@@ -121,7 +121,7 @@ export const useBridgeAlerts = () => {
     if (isInOffHoursTrading) {
       categorizeAlert({
         id: 'off-hours',
-        isDismissable: true,
+        isDismissable: false,
         severity: 'warning',
         title: t('bridgeOffHoursTitle'),
         description: t('bridgeOffHoursDescription'),
