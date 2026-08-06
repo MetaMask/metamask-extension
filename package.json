@@ -332,16 +332,6 @@
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
   },
-  "previewBuilds": {
-    "@metamask/bitcoin-wallet-snap": {
-      "type": "breaking",
-      "previewVersion": "2.0.0-preview-be6d7f2c"
-    },
-    "@metamask/tron-wallet-snap": {
-      "type": "breaking",
-      "previewVersion": "2.0.0-preview-e3b05f64"
-    }
-  },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
     "@blockaid/ppom_release": "^1.5.3",
@@ -380,7 +370,7 @@
     "@metamask/assets-controllers": "^111.0.0",
     "@metamask/authenticated-user-storage": "^3.0.0",
     "@metamask/base-controller": "^9.0.1",
-    "@metamask/bitcoin-wallet-snap": "^2.0.0",
+    "@metamask/bitcoin-wallet-snap": "^2.0.1",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
     "@metamask/bridge-controller": "^78.0.1",
     "@metamask/bridge-status-controller": "^74.6.0",
@@ -482,13 +472,13 @@
     "@metamask/snaps-rpc-methods": "^17.1.0",
     "@metamask/snaps-sdk": "^11.2.0",
     "@metamask/snaps-utils": "^12.4.0",
-    "@metamask/solana-wallet-snap": "^3.0.0",
+    "@metamask/solana-wallet-snap": "^5.0.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
     "@metamask/transaction-controller": "^69.1.0",
     "@metamask/transaction-pay-controller": "^26.0.0",
-    "@metamask/tron-wallet-snap": "^1.33.1",
+    "@metamask/tron-wallet-snap": "^3.0.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
     "@metamask/wallet": "^7.0.1",

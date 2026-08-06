@@ -5900,10 +5900,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@2.0.0-preview-be6d7f2c":
-  version: 2.0.0-preview-be6d7f2c
-  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:2.0.0-preview-be6d7f2c"
-  checksum: 10/94850d7e3877a6a5b200427a9b0617d26a304fe6e2343e3046e4f20af9a7a7c1c80c2046b06f71e58abf07ad56efe9b098fa380796c2d92c8050624a5300cee9
+"@metamask/bitcoin-wallet-snap@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@metamask/bitcoin-wallet-snap@npm:2.0.1"
+  checksum: 10/ed8c92f6959f2e9a51a3496373217cff8d6a3ca248211aad6f2fe87739d6d9f389f7f526f7e5166acac657bf81d6dd169487288d686067a9b91eed30f79222e5
   languageName: node
   linkType: hard
 
@@ -8390,10 +8390,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/solana-wallet-snap@npm:3.0.0"
-  checksum: 10/9d5233cd0792a858a19aa5a77741fe82f9cbee66fe1af8d04a0362ef81bcbb0f630cc963beff55ec2a89b2ad167396a620cb27479b56e04133472de6c2283a21
+"@metamask/solana-wallet-snap@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/solana-wallet-snap@npm:5.0.0"
+  checksum: 10/608cc0f08e741ae5234ba39fb02d59e8c1a09bfbf097292ed91f9726fbc09f68edc08865b8b817f067bc2926a1cd6ea7a0d6eebf8cad9014a81f5ff43552e7cf
   languageName: node
   linkType: hard
 
@@ -8739,10 +8739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@2.0.0-preview-e3b05f64":
-  version: 2.0.0-preview-e3b05f64
-  resolution: "@metamask-previews/tron-wallet-snap@npm:2.0.0-preview-e3b05f64"
-  checksum: 10/e452e02bad67faabbe8615cf6fdefa0beb2e2863db18905c4feeb2dce17a7e1479977a44d55207fe9e6ee6af3649f3f5dc36cab07c3a24cf56ffafd41fda3258
+"@metamask/tron-wallet-snap@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/tron-wallet-snap@npm:3.0.0"
+  checksum: 10/e7ed23ca7f7df16b47b52c4f467db4930627c0cbf24a282dbf8e17292f9ddc0a748b003fb714e8ed696a10033705cee56927430599be8bc4469d918d7369650e
   languageName: node
   linkType: hard
 
@@ -32918,7 +32918,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^2.0.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^2.0.1"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^78.0.1"
     "@metamask/bridge-status-controller": "npm:^74.6.0"
@@ -33041,7 +33041,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.2.0"
     "@metamask/snaps-utils": "npm:^12.4.0"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^3.0.0"
+    "@metamask/solana-wallet-snap": "npm:^5.0.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.2.0"
@@ -33055,7 +33055,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.1.0"
     "@metamask/transaction-pay-controller": "npm:^26.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.33.1"
+    "@metamask/tron-wallet-snap": "npm:^3.0.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^7.0.1"
