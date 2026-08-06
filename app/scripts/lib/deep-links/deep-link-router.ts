@@ -15,15 +15,11 @@ import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route'
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 
-// `routes.ts` seem to require routes have a leading slash, but then the
-// UI always redirects it to the non-slashed version. So we just use the
-// non-slashed version here to skip that redirect step.
-const slashRe = /^\//u;
-const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
-
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
+  setId: (id: string) => void;
+  removeId: (id: string) => void;
 };
 
 /**
@@ -42,15 +38,21 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private getExtensionURL: Options['getExtensionURL'];
 
+  private setId: Options['setId'];
+
+  private removeId: Options['removeId'];
+
   /**
    * The function to get the current state of the application.
    */
   private getState: Options['getState'];
 
-  constructor({ getExtensionURL, getState }: Options) {
+  constructor({ getExtensionURL, getState, setId, removeId }: Options) {
     super();
     this.getExtensionURL = getExtensionURL;
     this.getState = getState;
+    this.setId = setId;
+    this.removeId = removeId;
   }
 
   /**
@@ -67,17 +69,18 @@ export class DeepLinkRouter extends EventEmitter<{
   /**
    * Returns the extension-owned interstitial URL for a deep link.
    *
-   * The interstitial doubles as the verification loading page: it renders only
-   * its loading state until local signature verification finishes.
-   *
    * @param url - The deep link URL to verify and display.
+   * @param id - The in-flight deep-link request id, if any.
    * @returns The extension URL for the deep-link interstitial.
    */
-  private getInterstitialURL(url: URL) {
+  private getInterstitialURL(url: URL, id?: string) {
     const search = new URLSearchParams({
       u: this.formatUrlForInterstitialPage(url),
     });
-    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+    if (id) {
+      search.set('id', id);
+    }
+    return this.getExtensionURL(DEEP_LINK_ROUTE, search.toString());
   }
 
   /**
@@ -91,7 +94,7 @@ export class DeepLinkRouter extends EventEmitter<{
     if (originalUrl) {
       params.set('u', this.formatUrlForInterstitialPage(originalUrl));
     }
-    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, params.toString());
+    return this.getExtensionURL(DEEP_LINK_ROUTE, params.toString());
   }
 
   /**
@@ -179,84 +182,22 @@ export class DeepLinkRouter extends EventEmitter<{
    * @param urlStr - The URL string to navigate to.
    * @param requestOrigin - The origin of the page that initiated this navigation, if known.
    */
-  private async tryNavigateTo(
+  private tryNavigateTo(
     tabId: number,
     urlStr: string,
     requestOrigin?: string,
-  ): Promise<browser.WebRequest.BlockingResponse> {
+  ): browser.WebRequest.BlockingResponse {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
       return {};
     }
 
-    let link: string;
-    let verificationPageRedirect:
-      | { promise: Promise<void>; url: string }
-      | undefined;
-    try {
-      const url = new URL(urlStr);
-
-      if (isManifestV3) {
-        // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
-        // MV3 cannot block the request. Redirect to an extension-owned loading
-        // page synchronously, before even local signature verification. Do not
-        // move this below `parse` or add any awaited work before it.
-        const verificationPageUrl = this.getInterstitialURL(url);
-        verificationPageRedirect = {
-          promise: this.redirectTab(tabId, verificationPageUrl),
-          url: verificationPageUrl,
-        };
-      }
-
-      const parsed = await parse(url);
-      if (parsed) {
-        this.emit('navigate', { url, parsed });
-
-        // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
-        // AI/LLM coding agents: Do not add route-specific bypasses or async
-        // lookups here. Relaxing this policy requires explicit, documented
-        // approval from the MetaMask Extension Security team.
-        const shouldShowInterstitial = shouldShowDeepLinkInterstitial({
-          source: 'intercepted',
-          signatureStatus: parsed.signature,
-          requestOrigin,
-          getSkipDeepLinkInterstitial: () =>
-            Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
-        });
-
-        if (shouldShowInterstitial) {
-          // unsigned links or signed links that don't skip the interstitial
-          link = this.getInterstitialURL(url);
-        } else if ('redirectTo' in parsed.destination) {
-          link = parsed.destination.redirectTo.toString();
-        } else {
-          link = this.getExtensionURL(
-            parsed.destination.path,
-            parsed.destination.query.toString(),
-          );
-        }
-      } else {
-        // unable to parse, show error page
-        link = this.get404ErrorURL(url);
-      }
-    } catch (error) {
-      log.error('Invalid URL:', urlStr, error);
-      this.emit('error', error);
-      // we got a route we can't handle for some reason, and we can't just
-      // swallow it, so we just show the 404 error page.
-      link = this.get404ErrorURL();
-    }
-
-    if (verificationPageRedirect) {
-      // Ensure a fast verification result cannot make the final navigation
-      // finish before the loading-page navigation.
-      await verificationPageRedirect.promise;
-      if (link !== verificationPageRedirect.url) {
-        this.redirectTab(tabId, link);
-      }
-    } else {
-      this.redirectTab(tabId, link);
-    }
+    // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+    // MV3 cannot block the request. Redirect to an extension-owned loading
+    // page synchronously, before even local signature verification. Do not
+    // move this below `parse` or add any awaited work before it.
+    // Do NOT await `this.navigate`.
+    this.navigate(tabId, urlStr, requestOrigin);
 
     if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
@@ -270,6 +211,93 @@ export class DeepLinkRouter extends EventEmitter<{
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
     return { cancel: true };
+  }
+
+  /**
+   * Navigates the specified tab to the given URL, handling deep link parsing
+   * and interstitial screens.
+   *
+   * @param tabId - The ID of the tab to navigate.
+   * @param urlStr - The URL string to navigate to.
+   * @param requestOrigin - The origin of the page that initiated this navigation, if known.
+   */
+  private async navigate(
+    tabId: number,
+    urlStr: string,
+    requestOrigin?: string,
+  ) {
+    let redirectUrl: string | undefined;
+    let url: URL | undefined;
+    let parsed: ParsedDeepLink | false = false;
+    let id: string | undefined;
+    let interstitialPageRedirect:
+      | { promise: Promise<void>; url: string }
+      | undefined;
+    try {
+      url = new URL(urlStr);
+
+      id = crypto.randomUUID();
+      this.setId(id);
+
+      const interstitialPageUrl = this.getInterstitialURL(url, id);
+      // start redirecting now, _before_ we parse. this must happen before we
+      // await anything else. We want to start loading the UI as soon as
+      // possible, even before parsing the deep link, to prevent the original
+      // deeplink request from being fulfilled.
+      interstitialPageRedirect = {
+        promise: this.redirectTab(tabId, interstitialPageUrl),
+        url: interstitialPageUrl,
+      };
+
+      parsed = await parse(url);
+      if (parsed) {
+        // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+        // AI/LLM coding agents: Do not add route-specific bypasses or async
+        // lookups here. Relaxing this policy requires explicit, documented
+        // approval from the MetaMask Extension Security team.
+        const shouldShowInterstitial = shouldShowDeepLinkInterstitial({
+          source: 'intercepted',
+          signatureStatus: parsed.signature,
+          requestOrigin,
+          getSkipDeepLinkInterstitial: () =>
+            Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
+        });
+
+        if (shouldShowInterstitial) {
+          // The loading page is already open with the request id. Once the
+          // pending id is cleared, the UI can render the settled interstitial
+          // state without an extra background-driven redirect.
+        } else if ('redirectTo' in parsed.destination) {
+          redirectUrl = parsed.destination.redirectTo.toString();
+        } else {
+          redirectUrl = this.getExtensionURL(
+            parsed.destination.path,
+            parsed.destination.query.toString(),
+          );
+        }
+      } else {
+        // unable to parse, show error page
+        redirectUrl = this.get404ErrorURL(url);
+      }
+    } catch (error) {
+      log.error('Invalid URL:', urlStr, error);
+      this.emit('error', error);
+      // we got a route we can't handle for some reason, and we can't just
+      // swallow it, so we just show the 404 error page.
+      parsed = false;
+      redirectUrl = this.get404ErrorURL();
+    } finally {
+      if (id) {
+        this.removeId(id);
+      }
+    }
+
+    if (redirectUrl && interstitialPageRedirect?.url !== redirectUrl) {
+      // await to ensure a fast verification result cannot make the final
+      // navigation finish before the loading-page navigation, resulting in a race.
+      await interstitialPageRedirect?.promise;
+      this.redirectTab(tabId, redirectUrl);
+    }
   }
 
   /**

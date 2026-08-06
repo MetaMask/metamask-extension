@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
@@ -45,65 +45,146 @@ type Route = {
   signed: boolean;
 };
 
-const { getExtensionURL } = globalThis.platform;
+type ResolvedDeepLinkState = {
+  description: string | null;
+  extraDescription: string | null;
+  route: Route | null;
+  title: string | null;
+  cta: string | null;
+  pageNotFoundError: boolean;
+};
 
-/**
- * Sets the description and title state for a 404 error.
- *
- * @param setDescription - The function to call to set the description state.
- * @param setTitle - The function to call to set the title state.
- * @param t - The translation function.
- * @param setPageNotFoundError - The function to call to set the error 404 state.
- */
-function set404(
-  setDescription: React.Dispatch<React.SetStateAction<string | null>>,
-  setTitle: React.Dispatch<React.SetStateAction<string | null>>,
+type DeepLinkViewState =
+  | { kind: 'loading' }
+  | ({ kind: 'ready' } & ResolvedDeepLinkState);
+
+type PreParsedDeepLinkResult =
+  | {
+      kind: 'route';
+      href: string;
+      title: string;
+      signed: boolean;
+    }
+  | {
+      kind: 'not-found';
+      signed: boolean;
+    }
+  | {
+      kind: 'error';
+    };
+
+type PreParseTask = {
+  urlPathAndQuery: string;
+  abortController: AbortController;
+  promise: Promise<PreParsedDeepLinkResult | null>;
+};
+
+const LOADING_VIEW_STATE: DeepLinkViewState = { kind: 'loading' };
+
+const getExtensionURL = (path: string, query?: string | null) =>
+  globalThis.platform.getExtensionURL(path, query);
+
+const toReadyViewState = (
+  resolvedState: ResolvedDeepLinkState,
+): DeepLinkViewState => ({
+  kind: 'ready',
+  ...resolvedState,
+});
+
+function build404State(
   t: TranslateFunction,
-  setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-) {
-  setDescription(t('deepLink_Error404Description'));
-  setTitle(t('deepLink_Error404Title'));
-  setPageNotFoundError(true);
+  signed: boolean,
+): ResolvedDeepLinkState {
+  return {
+    description: t('deepLink_Error404Description'),
+    extraDescription: signed
+      ? t('deepLink_Error404_CTA', [
+          <ButtonLink
+            key="update-metamask-link"
+            as="a"
+            href={ZENDESK_URLS.UPDATE_VERSION}
+          >
+            {t('deepLink_Error404_CTA_LinkText')}
+          </ButtonLink>,
+        ])
+      : null,
+    route: null,
+    title: t('deepLink_Error404Title'),
+    cta: t('deepLink_GoToTheHomePageButton'),
+    pageNotFoundError: true,
+  };
 }
 
-/**
- * Updates the state based on the URL path and query. This function parses the
- * URL, retrieves the route, and sets the route and error state accordingly.
- *
- * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
- * @param setDescription - The function to call to set the description state.
- * @param setExtraDescription - The function to call to set the extra description state.
- * @param setIsLoading - The function to call to set the loading state.
- * @param setRoute - The function to call to set the route state.
- * @param setTitle - The function to call to set the title state.
- * @param setCta - The function to call to set the call-to-action state.
- * @param t - The translation function.
- * @param abortController
- * @param setPageNotFoundError - The function to call to set the error 404 state.
- */
-async function updateStateFromUrl(
-  urlPathAndQuery: string,
-  setDescription: React.Dispatch<React.SetStateAction<string | null>>,
-  setExtraDescription: React.Dispatch<React.SetStateAction<string | null>>,
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
-  setTitle: React.Dispatch<React.SetStateAction<string | null>>,
-  setCta: React.Dispatch<React.SetStateAction<string | null>>,
+function buildMissingUrlState(t: TranslateFunction): ResolvedDeepLinkState {
+  return {
+    description: null,
+    extraDescription: null,
+    route: null,
+    title: t('deepLink_ErrorMissingUrl'),
+    cta: t('deepLink_GoToTheHomePageButton'),
+    pageNotFoundError: false,
+  };
+}
+
+function buildGenericErrorState(t: TranslateFunction): ResolvedDeepLinkState {
+  return {
+    description: t('deepLink_ErrorOtherDescription'),
+    extraDescription: null,
+    route: null,
+    title: t('deepLink_ErrorOtherTitle'),
+    cta: t('deepLink_GoToTheHomePageButton'),
+    pageNotFoundError: false,
+  };
+}
+
+function buildResolvedState(
+  result: PreParsedDeepLinkResult,
   t: TranslateFunction,
-  abortController: AbortController,
-  setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-) {
+): ResolvedDeepLinkState {
+  if (result.kind === 'error') {
+    return buildGenericErrorState(t);
+  }
+
+  if (result.kind === 'not-found') {
+    return build404State(t, result.signed);
+  }
+
+  const translatedDestinationTitle = t(result.title);
+  const continueMessage = t('deepLink_ContinueDescription', [
+    translatedDestinationTitle,
+  ]);
+
+  return {
+    description: result.signed
+      ? continueMessage
+      : t('deepLink_ThirdPartyDescription', [continueMessage]),
+    extraDescription: null,
+    route: {
+      href: result.href,
+      signed: result.signed,
+    },
+    title: result.signed
+      ? t('deepLink_RedirectingToMetaMask')
+      : t('deepLink_Caution'),
+    cta: t('deepLink_Continue', [translatedDestinationTitle]),
+    pageNotFoundError: false,
+  };
+}
+
+async function preParseDeepLink(
+  urlPathAndQuery: string,
+  signal: AbortSignal,
+): Promise<PreParsedDeepLinkResult | null> {
   try {
-    const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
-    const url = new URL(fullUrlStr);
-    setIsLoading(true);
+    const url = new URL(`https://${DEEP_LINK_HOST}${urlPathAndQuery}`);
     const parsed = await parse(url);
-    if (abortController.signal.aborted) {
-      return;
+
+    if (signal.aborted) {
+      return null;
     }
+
     if (parsed) {
       const { destination } = parsed;
-
       const href =
         'redirectTo' in destination
           ? destination.redirectTo.toString()
@@ -111,176 +192,259 @@ async function updateStateFromUrl(
               destination.path,
               destination.query.toString() ?? null,
             );
-      const title = parsed.route.getTitle(url.searchParams);
 
-      const signed = parsed.signature === VALID;
-      const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
-      const description = signed
-        ? continueMessage
-        : t('deepLink_ThirdPartyDescription', [continueMessage]);
-      setDescription(description);
-      setExtraDescription(null);
-      setRoute({ href, signed });
-      setTitle(
-        signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
-      );
-      setCta(t('deepLink_Continue', [t(title)]));
-      setPageNotFoundError(false);
-    } else {
-      setRoute(null);
-      set404(setDescription, setTitle, t, setPageNotFoundError);
-      setCta(t('deepLink_GoToTheHomePageButton'));
-
-      const signature = await verify(url);
-      if (abortController.signal.aborted) {
-        return;
-      }
-      if (signature === VALID) {
-        setExtraDescription(
-          t('deepLink_Error404_CTA', [
-            <ButtonLink
-              key="update-metamask-link"
-              as="a"
-              href={ZENDESK_URLS.UPDATE_VERSION}
-            >
-              {t('deepLink_Error404_CTA_LinkText')}
-            </ButtonLink>,
-          ]),
-        );
-      }
+      return {
+        kind: 'route',
+        href,
+        title: parsed.route.getTitle(url.searchParams),
+        signed: parsed.signature === VALID,
+      };
     }
-  } catch (e) {
-    log.error('Error parsing deep link:', e);
-    setDescription(t('deepLink_ErrorOtherDescription'));
-    setExtraDescription(null);
-    setRoute(null);
-    setTitle(t('deepLink_ErrorOtherTitle'));
-    setCta(t('deepLink_GoToTheHomePageButton'));
-    setPageNotFoundError(false);
-  } finally {
-    setIsLoading(false);
+
+    const signature = await verify(url);
+
+    if (signal.aborted) {
+      return null;
+    }
+
+    return {
+      kind: 'not-found',
+      signed: signature === VALID,
+    };
+  } catch (error) {
+    if (signal.aborted) {
+      return null;
+    }
+
+    log.error('Error parsing deep link:', error);
+    return { kind: 'error' };
+  }
+}
+
+function ensurePreParseTask(
+  taskRef: React.MutableRefObject<PreParseTask | null>,
+  urlPathAndQuery: string,
+): PreParseTask {
+  const currentTask = taskRef.current;
+
+  if (
+    currentTask?.urlPathAndQuery === urlPathAndQuery &&
+    !currentTask.abortController.signal.aborted
+  ) {
+    return currentTask;
+  }
+
+  currentTask?.abortController.abort();
+
+  const abortController = new AbortController();
+  const task: PreParseTask = {
+    urlPathAndQuery,
+    abortController,
+    promise: preParseDeepLink(urlPathAndQuery, abortController.signal),
+  };
+
+  taskRef.current = task;
+  return task;
+}
+
+function getMatchingPreParseTask(
+  taskRef: React.MutableRefObject<PreParseTask | null>,
+  urlPathAndQuery: string,
+): PreParseTask | null {
+  const task = taskRef.current;
+
+  if (
+    task?.urlPathAndQuery === urlPathAndQuery &&
+    !task.abortController.signal.aborted
+  ) {
+    return task;
+  }
+
+  return null;
+}
+
+function getSignedFromPreParsedResult(
+  result: PreParsedDeepLinkResult,
+): boolean | undefined {
+  return result.kind === 'error' ? undefined : result.signed;
+}
+
+async function verifyDeepLinkSignature(
+  urlPathAndQuery: string,
+): Promise<boolean> {
+  try {
+    const url = new URL(`https://${DEEP_LINK_HOST}${urlPathAndQuery}`);
+    return (await verify(url)) === VALID;
+  } catch {
+    // A malformed URL should still render the background-provided 404 state.
+    return false;
   }
 }
 
 export const DeepLink = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
-  // it's technically not possible for a natural flow to reach this page
-  // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
-  // to this "interstitial" page, or uses their back button, we should show
-  // their previously selected preference.
+  const requestId = new URLSearchParams(location.search).get('id');
+
+  // It's technically not possible for a natural flow to reach this page when
+  // `skipDeepLinkInterstitial` is true, but if a user manually navigates to
+  // this "interstitial" page, or uses their back button, we should show their
+  // previously selected preference.
   const skipDeepLinkInterstitial = useSelector(
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
+  const isPendingDeepLinkRequest = useSelector(
+    (state: MetaMaskReduxState) =>
+      requestId && state.appState.pendingDeepLinkRequestIds.includes(requestId),
+  );
 
-  const [description, setDescription] = useState<string | null>(null);
-  const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
-  const [extraDescription, setExtraDescription] = useState<string | null>(null);
-  const [route, setRoute] = useState<null | Route>(null);
-  const [title, setTitle] = useState<null | string>(null);
-  const [cta, setCta] = useState<null | string>(null);
+  const [viewState, setViewState] =
+    useState<DeepLinkViewState>(LOADING_VIEW_STATE);
   const [skipDeepLinkInterstitialChecked, setSkipDeepLinkInterstitialChecked] =
     useState(skipDeepLinkInterstitial);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Use ref to track current abort controller
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const preParseTaskRef = useRef<PreParseTask | null>(null);
 
   useEffect(() => {
-    // Cancel any previous operation
-    abortControllerRef.current?.abort();
+    if (!requestId || isPendingDeepLinkRequest) {
+      return;
+    }
 
-    // Create new abort controller for this operation
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
+    const params = new URLSearchParams(location.search);
+    params.delete('id');
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.size > 0 ? `?${params.toString()}` : '',
+        hash: location.hash,
+      },
+      { replace: true },
+    );
+  }, [
+    isPendingDeepLinkRequest,
+    location.hash,
+    location.pathname,
+    location.search,
+    navigate,
+    requestId,
+  ]);
+
+  useEffect(() => {
+    let cancelled = false;
 
     const processDeepLink = async () => {
       const params = new URLSearchParams(location.search);
-      const urlStr = params.get('u');
+      const urlPathAndQuery = params.get('u');
       const errorCode = params.get('errorCode');
 
-      if (!urlStr || errorCode) {
-        setRoute(null);
-        setIsLoading(false);
-        if (errorCode === '404') {
-          set404(setDescription, setTitle, t, setPageNotFoundError);
-
-          if (urlStr) {
-            try {
-              const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
-              const url = new URL(fullUrlStr);
-              const signature = await verify(url);
-
-              // Check if aborted after async operation
-              if (abortController.signal.aborted) {
-                return;
-              }
-
-              if (signature === VALID) {
-                setExtraDescription(
-                  t('deepLink_Error404_CTA', [
-                    <ButtonLink
-                      key="update-metamask-link"
-                      as="a"
-                      href={ZENDESK_URLS.UPDATE_VERSION}
-                    >
-                      {t('deepLink_Error404_CTA_LinkText')}
-                    </ButtonLink>,
-                  ]),
-                );
-              } else {
-                setExtraDescription(null);
-              }
-            } catch (e) {
-              // probably a gibberish url, ignore
-              if (abortController.signal.aborted) {
-                return;
-              }
-              setExtraDescription(null);
-            }
-          } else {
-            setExtraDescription(null);
-          }
-        } else {
-          setDescription(null);
-          setExtraDescription(null);
-          setTitle(t('deepLink_ErrorMissingUrl'));
-          setPageNotFoundError(false);
+      if (isPendingDeepLinkRequest) {
+        if (urlPathAndQuery) {
+          // Creating the task starts parsing immediately. The same promise is
+          // reused after the background changes the mode. Intentionally not
+          // awaited to allow the page to render immediately.
+          ensurePreParseTask(preParseTaskRef, urlPathAndQuery).promise;
         }
-        setCta(t('deepLink_GoToTheHomePageButton'));
+
+        // Loading mode is background-authoritative: this page only shows the
+        // spinner until the background decides the final destination.
+        setViewState(LOADING_VIEW_STATE);
         return;
       }
 
-      await updateStateFromUrl(
-        urlStr,
-        setDescription,
-        setExtraDescription,
-        setIsLoading,
-        setRoute,
-        setTitle,
-        setCta,
-        t,
-        abortController,
-        setPageNotFoundError,
-      );
+      if (!urlPathAndQuery) {
+        setViewState(
+          toReadyViewState(
+            errorCode === '404'
+              ? build404State(t, false)
+              : buildMissingUrlState(t),
+          ),
+        );
+        return;
+      }
+
+      if (errorCode) {
+        if (errorCode !== '404') {
+          setViewState(toReadyViewState(buildMissingUrlState(t)));
+          return;
+        }
+
+        // Match the existing behavior by showing the 404 immediately, then
+        // adding the update link after signature verification completes.
+        setViewState(toReadyViewState(build404State(t, false)));
+
+        const existingTask = getMatchingPreParseTask(
+          preParseTaskRef,
+          urlPathAndQuery,
+        );
+
+        let signed: boolean | undefined;
+
+        if (existingTask) {
+          const result = await existingTask.promise;
+
+          if (
+            cancelled ||
+            preParseTaskRef.current !== existingTask ||
+            !result
+          ) {
+            return;
+          }
+
+          signed = getSignedFromPreParsedResult(result);
+        }
+
+        // A direct 404 does not need to run the full parser. This is also a
+        // fallback for the uncommon case where the preparse itself failed.
+        signed ??= await verifyDeepLinkSignature(urlPathAndQuery);
+
+        if (cancelled) {
+          return;
+        }
+
+        if (signed) {
+          setViewState(toReadyViewState(build404State(t, true)));
+        }
+        return;
+      }
+
+      const task = ensurePreParseTask(preParseTaskRef, urlPathAndQuery);
+      const result = await task.promise;
+
+      if (cancelled || preParseTaskRef.current !== task || !result) {
+        return;
+      }
+
+      setViewState(toReadyViewState(buildResolvedState(result, t)));
     };
 
+    // intentionally not awaited to allow the page to render immediately
     processDeepLink();
 
-    // Cleanup function
-    return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+    return () => {
+      cancelled = true;
+    };
+  }, [isPendingDeepLinkRequest, location.search, t]);
 
-  // Cleanup on unmount
-  useEffect(() => () => abortControllerRef.current?.abort(), []);
+  useEffect(
+    () => () => {
+      preParseTaskRef.current?.abortController.abort();
+      preParseTaskRef.current = null;
+    },
+    [],
+  );
 
   function onRemindMeStateChanged() {
     const newValue = !skipDeepLinkInterstitialChecked;
     setSkipDeepLinkInterstitialChecked(newValue);
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
+
+  const isLoading = viewState.kind === 'loading';
+  const pageNotFoundError =
+    viewState.kind === 'ready' && viewState.pageNotFoundError;
 
   return (
     <Container
@@ -332,9 +496,9 @@ export const DeepLink = () => {
             />
           )}
         </Box>
-        {!isLoading && (
+        {viewState.kind === 'ready' && (
           <>
-            {title && (
+            {viewState.title && (
               <Text
                 as="h1"
                 variant={TextVariant.headingLg}
@@ -342,10 +506,10 @@ export const DeepLink = () => {
                 marginTop={4}
                 marginBottom={4}
               >
-                {title}
+                {viewState.title}
               </Text>
             )}
-            {description && (
+            {viewState.description && (
               <Box
                 as="div"
                 data-testid="deep-link-description"
@@ -357,10 +521,12 @@ export const DeepLink = () => {
                   variant={TextVariant.bodyMd}
                   color={TextColor.textAlternative}
                 >
-                  {description}
+                  {viewState.description}
                 </Text>
-                {extraDescription ? (
-                  <Box key="extra-description">{extraDescription}</Box>
+                {viewState.extraDescription ? (
+                  <Box key="extra-description">
+                    {viewState.extraDescription}
+                  </Box>
                 ) : (
                   ''
                 )}
@@ -368,7 +534,7 @@ export const DeepLink = () => {
             )}
 
             <Box width={BlockSize.Full} marginTop={12}>
-              {route?.signed ? (
+              {viewState.route?.signed ? (
                 <Box
                   display={Display.Flex}
                   width={BlockSize.Full}
@@ -399,11 +565,11 @@ export const DeepLink = () => {
               <Button
                 width={BlockSize.Full}
                 variant={ButtonVariant.Primary}
-                href={route?.href ?? getExtensionURL('/')}
+                href={viewState.route?.href ?? getExtensionURL('/')}
                 size={ButtonSize.Lg}
                 data-testid="deep-link-continue-button"
               >
-                {cta}
+                {viewState.cta}
               </Button>
             </Box>
           </>

@@ -902,9 +902,14 @@ async function initialize(backup) {
   new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
+    setId: controller.appStateController.addPendingDeepLinkRequestId.bind(
+      controller.appStateController,
+    ),
+    removeId: controller.appStateController.addPendingDeepLinkRequestId.bind(
+      controller.appStateController,
+    ),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }

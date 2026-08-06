@@ -170,6 +170,7 @@ export type AppStateControllerState = {
   dappSwapComparisonData?: {
     [uniqueId: string]: DappSwapComparisonData;
   };
+  pendingDeepLinkRequestIds: string[];
   deferredDeepLink?: DeferredDeepLink;
 
   /**
@@ -328,6 +329,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  pendingDeepLinkRequestIds: [],
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
   ...getInitialStateOverrides(),
@@ -689,6 +691,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: false,
     persist: false,
     includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  pendingDeepLinkRequestIds: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   storageWriteErrorType: {
@@ -1792,6 +1800,25 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  addPendingDeepLinkRequestId(id: string): void {
+    this.update((state) => {
+      if (!state.pendingDeepLinkRequestIds.includes(id)) {
+        state.pendingDeepLinkRequestIds = [
+          ...state.pendingDeepLinkRequestIds,
+          id,
+        ];
+      }
+    });
+  }
+
+  removePendingDeepLinkRequestId(id: string): void {
+    this.update((state) => {
+      state.pendingDeepLinkRequestIds = state.pendingDeepLinkRequestIds.filter(
+        (pendingId) => pendingId !== id,
+      );
+    });
   }
 
   /**
