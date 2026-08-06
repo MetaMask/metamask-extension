@@ -2,6 +2,13 @@ import { strict as assert } from 'assert';
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * The prepare page debounces quote parameter updates by 300ms before sending
+ * them to the bridge controller, so anything longer than that is enough for a
+ * pending update to be delivered.
+ */
+const QUOTE_PARAMS_DEBOUNCE_MS = 500;
+
 export type BridgeQuote = {
   amount: string;
   tokenFrom?: string;
@@ -322,10 +329,30 @@ class BridgeQuotePage {
     }
   };
 
-  enterBridgeQuote = async (quote: BridgeQuote) => {
+  /**
+   * Fills in the swap/bridge form.
+   *
+   * @param quote - The quote inputs to enter.
+   * @param options - Options.
+   * @param options.openPickersWithDebounce - Opens the asset pickers via
+   * `openAssetPickerWithDebounce`. Set this only when the test asserts on
+   * `Input Changed` metrics events.
+   */
+  enterBridgeQuote = async (
+    quote: BridgeQuote,
+    { openPickersWithDebounce = false }: { openPickersWithDebounce?: boolean } = {},
+  ) => {
+    const openAssetPicker = async (pickerButton: string) => {
+      if (openPickersWithDebounce) {
+        await this.openAssetPickerWithDebounce(pickerButton);
+        return;
+      }
+      await this.driver.clickElement(pickerButton);
+    };
+
     // Source
     if (quote.tokenFrom || quote.fromChain) {
-      await this.driver.clickElement(this.sourceAssetPickerButton);
+      await openAssetPicker(this.sourceAssetPickerButton);
       if (quote.fromChain) {
         await this.driver.clickElement(this.networkSelector);
         await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
@@ -345,7 +372,7 @@ class BridgeQuotePage {
     // Destination
     if (quote.tokenTo || quote.toChain) {
       await this.driver.waitForSelector(this.destinationAssetPickerButton);
-      await this.driver.clickElement(this.destinationAssetPickerButton);
+      await openAssetPicker(this.destinationAssetPickerButton);
 
       // After clicking destination, we might see either:
       // 1. Network selection modal (if destination is pre-populated and different from desired network)
@@ -395,6 +422,21 @@ class BridgeQuotePage {
     const homeTab = '[data-testid="bottom-nav-home"]';
     await this.driver.waitForSelector(homeTab);
     await this.driver.clickElement(homeTab);
+  };
+
+  /**
+   * Opens an asset picker, giving the prepare page time to send its pending
+   * quote parameter update first. Only needed by tests that assert on
+   * `Input Changed` metrics events: when the network management feature flag is
+   * on, the picker is a separate route, so opening it unmounts the prepare page
+   * and cancels that debounced update, folding the input changes made before it
+   * into a later event.
+   *
+   * @param pickerButton - Selector of the asset picker button to click.
+   */
+  openAssetPickerWithDebounce = async (pickerButton: string) => {
+    await this.driver.delay(QUOTE_PARAMS_DEBOUNCE_MS);
+    await this.driver.clickElement(pickerButton);
   };
 
   rejectModal = async () => {
