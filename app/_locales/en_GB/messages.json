@@ -2145,6 +2145,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "No price information"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Market closed: Price is issuer-calculated, not live market data. It may differ when markets reopen at the next available trading session."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Off-hours trading"
+  },
   "bridgePoints": {
     "message": "Est. points",
     "description": "Label for estimated points that can be earned from a bridge or swap"
