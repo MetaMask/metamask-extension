@@ -84,6 +84,25 @@ describe('scanAddressAndAddToCache', () => {
     expect(scanAddressMock).not.toHaveBeenCalled();
   });
 
+  it('returns a cached Loading entry without scanning again, deduplicating concurrent scans', async () => {
+    const cachedLoading = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Loading,
+      label: '',
+    };
+    const addMock = jest.fn();
+    const result = await scanAddressAndAddToCache(
+      ADDRESS_MOCK,
+      jest.fn().mockReturnValue(cachedLoading),
+      addMock,
+      CHAIN_ID_MOCK,
+      phishingControllerMock,
+    );
+    expect(result).toBe(cachedLoading);
+    expect(scanAddressMock).not.toHaveBeenCalled();
+    expect(addMock).not.toHaveBeenCalled();
+  });
+
   it('writes a Loading entry keyed by chain ID while the controller scan is pending', async () => {
     const addMock = jest.fn();
     let resolveScan!: (result: {
