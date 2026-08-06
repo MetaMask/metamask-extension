@@ -52,13 +52,18 @@ describe('UIMessenger', () => {
           messenger: delegatee,
         });
 
-        const result = await delegatee.call('SnapController:installSnaps', {
-          'npm:my-snap': {},
-        });
+        const result = await delegatee.call(
+          'SnapController:installSnaps',
+          'https://example.com',
+          { 'npm:my-snap': {} },
+        );
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'messengerCall',
-          ['SnapController:installSnaps', [{ 'npm:my-snap': {} }]],
+          [
+            'SnapController:installSnaps',
+            ['https://example.com', { 'npm:my-snap': {} }],
+          ],
         );
         expect(result).toBe('result');
       });
@@ -67,12 +72,18 @@ describe('UIMessenger', () => {
         const delegatee = createDelegatee();
 
         await uiMessenger.delegate({
-          actions: ['KeyringController:addKeyring'],
+          // `KeyringController:addNewKeyring` is deliberately excluded from the
+          // UI messenger, so this exercises the runtime guard.
+          // @ts-expect-error Delegating an excluded action on purpose.
+          actions: ['KeyringController:addNewKeyring'],
           messenger: delegatee,
         });
 
-        expect(() => delegatee.call('KeyringController:addKeyring')).toThrow(
-          'The action "KeyringController:addKeyring" has not been exposed to the UI.',
+        expect(() =>
+          // @ts-expect-error Calling an excluded action on purpose.
+          delegatee.call('KeyringController:addNewKeyring'),
+        ).toThrow(
+          'The action "KeyringController:addNewKeyring" has not been exposed to the UI.',
         );
       });
 
@@ -203,7 +214,9 @@ describe('UIMessenger', () => {
         });
 
         expect(() =>
-          delegatee.call('SnapController:installSnaps', { 'npm:my-snap': {} }),
+          delegatee.call('SnapController:installSnaps', 'https://example.com', {
+            'npm:my-snap': {},
+          }),
         ).toThrow();
       });
 
