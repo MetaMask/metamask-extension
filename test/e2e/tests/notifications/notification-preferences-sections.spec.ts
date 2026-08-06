@@ -89,14 +89,13 @@ describe('Notification Preferences Sections', function () {
           expectedState === 'enabled',
         );
 
-        // Re-open Settings > Notifications from a fresh (locked then unlocked)
-        // session so the preferences are re-fetched from authenticated user
-        // storage rather than read from in-memory state.
+        // Lock and unlock so the notifications controller re-authenticates and
+        // re-fetches preferences from user storage on unlock, ensuring the final
+        // assertion reads persisted state rather than the in-memory toggle value.
         //
-        // Leave Settings through the UI instead of reloading the page: a reload
-        // restarts authentication, user storage and notification fetches, and
-        // `setLocked` then queues behind that work in the background for longer
-        // than the unlock page wait allows.
+        // Exit Settings via the UI rather than a page reload: a reload triggers
+        // the same fetches, keeping the background busy when setLocked fires and
+        // causing the unlock-page wait to time out.
         await closeSettings(driver);
         await lockAndWaitForLoginPage(driver);
         await login(driver);
