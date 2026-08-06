@@ -103,6 +103,9 @@ test/integration/config/assets
 # webpack
 development/.webpack
 
+# page object inspector index, regenerated on every build
+development/page-object-inspector/.generated
+
 # llm workflow playwright temp files
 temp-llm-workflow-*
 .mm-server

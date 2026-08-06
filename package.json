@@ -55,6 +55,8 @@
     "build:dev": "yarn webpack",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",
+    "page-objects:index": "tsx development/page-object-inspector/cli.ts index",
+    "page-objects:overlaps": "tsx development/page-object-inspector/cli.ts overlaps",
     "start:test": "yarn env:e2e webpack --watch --test",
     "start:test:flask": "yarn start:test --type flask",
     "start:test:mv2:flask": "yarn start:test --type flask --browser firefox --manifestVersion 2",
