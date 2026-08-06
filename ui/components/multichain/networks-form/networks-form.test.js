@@ -782,9 +782,9 @@ describe('NetworkForm Component', () => {
 
   it('suppresses persisted failoverUrls for a map chain when the shared config env is unset', () => {
     // The chain is in the shared failover map but its QuickNode env is unset,
-    // so the shared config resolves to an empty array. That empty array takes
-    // precedence over the persisted failoverUrls, matching what the
-    // NetworkController uses at runtime (defaultFailoverUrls ?? persisted).
+    // so the shared config resolves to an empty array and no failover is shown.
+    // The form reads the shared config only, so the persisted failoverUrls on
+    // the endpoint are ignored.
     delete process.env.QUICKNODE_BSC_URL;
 
     const existingNetwork = {
@@ -833,9 +833,10 @@ describe('NetworkForm Component', () => {
     expect(queryByText(messages.failover.message)).toBeNull();
   });
 
-  it('falls back to persisted failoverUrls for a chain not in the shared config', () => {
-    // 0x2328 (9000) is not in the shared failover map, so the form falls back
-    // to the endpoint's own persisted failoverUrls.
+  it('does not show failover for a chain not in the shared config, even with persisted failoverUrls', () => {
+    // 0x2328 (9000) is not in the shared failover map. The form reads the
+    // shared config only, so it shows no failover even though the endpoint
+    // carries persisted failoverUrls.
     const existingNetwork = {
       chainId: '0x2328',
       name: 'Some Custom Network',
@@ -853,7 +854,7 @@ describe('NetworkForm Component', () => {
       ],
     };
 
-    const { getByLabelText, getByText } = renderComponent({
+    const { queryByLabelText, queryByText } = renderComponent({
       existingNetwork,
       isRpcFailoverEnabled: true,
       networkFormState: {
@@ -878,9 +879,7 @@ describe('NetworkForm Component', () => {
       },
     });
 
-    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
-      'persisted.example',
-    );
-    expect(getByText(messages.failover.message)).toBeInTheDocument();
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
   });
 });

@@ -130,20 +130,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const defaultRpcEndpoint =
-    rpcUrls.defaultRpcEndpointIndex === undefined
-      ? undefined
-      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
-
   const networkChainIdHex = chainId ? toHex(chainId) : undefined;
   const chainFailoverUrls = networkChainIdHex
     ? getFailoverUrlsForChainId(networkChainIdHex)
     : undefined;
-
-  const getFailoverUrls = (endpoint?: { failoverUrls?: string[] }) =>
-    chainFailoverUrls ?? endpoint?.failoverUrls;
-
-  const defaultFailoverUrls = getFailoverUrls(defaultRpcEndpoint);
 
   const { safeChains } = useSafeChains();
 
@@ -567,7 +557,7 @@ export const NetworksForm = ({
           renderItem={(item, isList) =>
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem
-                rpcEndpoint={{ ...item, failoverUrls: getFailoverUrls(item) }}
+                rpcEndpoint={{ ...item, failoverUrls: chainFailoverUrls }}
               />
             ) : (
               <Text
@@ -582,7 +572,7 @@ export const NetworksForm = ({
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
                 {isRpcFailoverEnabled &&
-                (getFailoverUrls(item)?.length ?? 0) > 0 ? (
+                (chainFailoverUrls?.length ?? 0) > 0 ? (
                   <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
@@ -626,8 +616,8 @@ export const NetworksForm = ({
         )}
 
         {isRpcFailoverEnabled &&
-        defaultFailoverUrls &&
-        defaultFailoverUrls.length > 0 ? (
+        chainFailoverUrls &&
+        chainFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -640,7 +630,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultFailoverUrls[0])}
+            value={onlyKeepHost(chainFailoverUrls[0])}
             disabled={true}
           />
         ) : null}
