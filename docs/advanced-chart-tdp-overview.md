@@ -126,7 +126,7 @@ validated end-to-end**. It is a deliberate **remote-code** decision that must be
 - Extension current chart: `ui/pages/asset/components/chart/asset-chart.tsx`,
   `ui/pages/asset/hooks/useHistoricalPrices.ts`, `ui/pages/asset/util.ts`
 - Extension MV3 CSP: `app/manifest/v3/chrome.json`
-- Extension spike + full verdict: `app/advanced-chart/SPIKE_REPORT.md`
+- Extension spike + full verdict: https://github.com/MetaMask/metamask-extension/pull/45233
 - Mobile AC integration (metamask-mobile):
   `app/components/UI/Charts/AdvancedChart/AdvancedChartTemplate.ts`,
   `.../webview/chartLogicString.ts`, `.../useOHLCVChart.ts`,

@@ -13,7 +13,8 @@
  * approach, which this spike found to be INFEASIBLE: once the library is
  * vendored and loaded from `'self'`, TradingView still throws an opaque-origin
  * `SecurityError` inside the MV3 manifest-`sandbox` (opaque origin) — see
- * `app/advanced-chart/SPIKE_REPORT.md` §10 for the reproduced error and verdict.
+ * https://github.com/MetaMask/metamask-extension/pull/45233 for the reproduced
+ * error and verdict.
  *
  * Production would NOT use this. The recommended remote-origin design serves the
  * library from a MetaMask-owned web origin and loads it at RUNTIME (exactly like

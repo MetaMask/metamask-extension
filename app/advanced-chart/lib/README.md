@@ -29,10 +29,10 @@ yarn advanced-chart:fetch-lib
 > **⚠️ Testing / spike only.** This fetch script exists **only** to reproduce the
 > extension-local hosting spike (self-hosting the library from `'self'`), which
 > the spike found **infeasible** on MV3 — see the "vendoring does NOT unblock"
-> update below and `app/advanced-chart/SPIKE_REPORT.md` §10. Production would use
-> the recommended remote-origin design (library served from a MetaMask-owned web
-> origin, loaded at runtime like mobile's `MM_CHARTING_LIBRARY_URL`), which
-> vendors nothing into the extension.
+> update below and https://github.com/MetaMask/metamask-extension/pull/45233.
+> Production would use the recommended remote-origin design (library served from a
+> MetaMask-owned web origin, loaded at runtime like mobile's
+> `MM_CHARTING_LIBRARY_URL`), which vendors nothing into the extension.
 
 ## .gitignore
 
@@ -93,6 +93,6 @@ fails to load).
 > corroborated by a `frame-ancestors 'none'` framing block. The MV3
 > manifest-`sandbox` opaque origin is the real, irreducible blocker, so
 > **extension-local hosting is infeasible on MV3** regardless of vendoring — see
-> `app/advanced-chart/SPIKE_REPORT.md` §10. Self-hosting the library from `'self'`
-> is only relevant to a **remote MetaMask-owned origin** (the recommended path),
-> not to an extension-local page.
+> https://github.com/MetaMask/metamask-extension/pull/45233. Self-hosting the
+> library from `'self'` is only relevant to a **remote MetaMask-owned origin**
+> (the recommended path), not to an extension-local page.
