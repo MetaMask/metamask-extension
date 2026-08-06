@@ -1,98 +1,99 @@
-import { appendFileSync } from 'node:fs';
-import { ghApi } from './shared/gh-api.mts';
 import { fileURLToPath } from 'node:url';
-
-/**
- * Pages back through an artifact's history until a copy from `branch` turns up.
- *
- * The API returns artifacts newest-first, so the first page containing a match also holds
- * the newest match.
- *
- * @param options - Owner, repository, branch, and the exact artifact name to look for.
- * @returns The owning run ID, or `undefined` if no usable copy exists.
- */
-function resolveLatestArtifactRunId({
-  owner,
-  repo,
-  branch,
-  artifactName,
-}: {
-  owner: string;
-  repo: string;
-  branch: string;
-  artifactName: string;
-}): number | undefined {
-  for (let page = 1; ; page += 1) {
-    let response: string;
-
-    try {
-      response = ghApi(
-        `/repos/${owner}/${repo}/actions/artifacts?name=${artifactName}&per_page=100&page=${page}`,
-      );
-    } catch (error) {
-      // Give up quietly rather than failing the job over shard balance.
-      console.warn(`Could not list '${artifactName}' artifacts: ${error}`);
-      return undefined;
-    }
-
-    const artifacts: {
-      expired: boolean;
-      created_at: string;
-      workflow_run?: { id: number; head_branch: string } | null;
-    }[] = JSON.parse(response).artifacts ?? [];
-
-    // An empty page means the history is exhausted.
-    if (artifacts.length === 0) {
-      return undefined;
-    }
-
-    // The endpoint is not branch-scoped and PR runs upload reports under the same names, so
-    // filter here. Sorting locally avoids depending on the ordering within a page.
-    const [latestArtifact] = artifacts
-      .filter(
-        (artifact) =>
-          !artifact.expired && artifact.workflow_run?.head_branch === branch,
-      )
-      .sort((a, b) => b.created_at.localeCompare(a.created_at));
-
-    if (latestArtifact?.workflow_run) {
-      return latestArtifact.workflow_run.id;
-    }
-  }
-}
+import type {
+  GitHubOptions,
+  GitHub,
+} from './shared/github-options.mts';
 
 const reports = [
   { output: 'chrome-run-id', artifactName: 'test-e2e-chrome-report' },
   { output: 'firefox-run-id', artifactName: 'test-e2e-firefox-report' },
 ] as const;
 
-function main(): void {
-  const env = {
-    OWNER: process.env.OWNER || 'metamask',
-    REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
-    DEFAULT_BRANCH: process.env.DEFAULT_BRANCH || 'main',
-    GITHUB_OUTPUT: process.env.GITHUB_OUTPUT || '',
-  };
+/**
+ * Pages back through an artifact's history until a copy from `branch` turns up.
+ *
+ * @param options - Lookup parameters.
+ * @param options.github - Authenticated GitHub client.
+ * @param options.owner - Repository owner.
+ * @param options.repo - Repository name.
+ * @param options.branch - Branch whose artifacts we want.
+ * @param options.artifactName - Exact artifact name to look for.
+ * @returns The owning run ID, or `undefined` if no usable copy exists.
+ */
+async function resolveLatestArtifactRunId({
+  github,
+  owner,
+  repo,
+  branch,
+  artifactName,
+}: {
+  github: GitHub;
+  owner: string;
+  repo: string;
+  branch: string;
+  artifactName: string;
+}): Promise<number | undefined> {
+  const pages = github.paginate.iterator(
+    github.rest.actions.listArtifactsForRepo,
+    { owner, repo, name: artifactName, per_page: 100 },
+  );
 
-  const outputs = reports.map(({ output, artifactName }) => {
-    const runId = resolveLatestArtifactRunId({
-      owner: env.OWNER,
-      repo: env.REPOSITORY,
-      branch: env.DEFAULT_BRANCH,
-      artifactName,
-    });
+  for await (const { data: artifacts } of pages) {
+    const [latestArtifact] = artifacts
+      .filter(
+        (artifact) =>
+          !artifact.expired && artifact.workflow_run?.head_branch === branch,
+      )
+      // ISO 8601 timestamps sort lexicographically, so this is chronological.
+      // `created_at` is nullable in the API; treat a missing one as oldest rather than comparing null.
+      .sort((a, b) => (b.created_at ?? '').localeCompare(a.created_at ?? ''));
 
-    console.log(`${artifactName} from run: ${runId ?? 'none available'}`);
+    if (latestArtifact?.workflow_run) {
+      return latestArtifact.workflow_run.id;
+    }
+  }
 
-    return `${output}=${runId ?? ''}`;
-  });
+  return undefined;
+}
 
-  if (env.GITHUB_OUTPUT) {
-    appendFileSync(env.GITHUB_OUTPUT, `${outputs.join('\n')}\n`);
+/**
+ * Resolves the run IDs holding the latest available E2E reports, which
+ * `split-tests-by-timings.mts` uses to balance the E2E shards.
+ *
+ * @param options - The objects injected by `actions/github-script`.
+ * @param options.github - A pre-authenticated `octokit/rest.js` client with pagination plugins.
+ * @param options.context - An object containing the context of the workflow run.
+ * @param options.core - A reference to the `@actions/core` package.
+ */
+export async function resolveE2EReportRunIds({
+  github,
+  context,
+  core,
+}: GitHubOptions): Promise<void> {
+  const { owner, repo } = context.repo;
+  const branch = context.payload.repository?.default_branch;
+
+  for (const { output, artifactName } of reports) {
+    // Without a branch there is nothing to match, and paging the whole history would be
+    // pointless work — leave the output empty and let the E2E runner split naively.
+    const runId = branch
+      ? await resolveLatestArtifactRunId({
+          github,
+          owner,
+          repo,
+          branch,
+          artifactName,
+        })
+      : undefined;
+
+    core.info(`${artifactName} from run: ${runId ?? 'none available'}`);
+    core.setOutput(output, runId ? String(runId) : '');
   }
 }
 
 // If main module (i.e. this is the TS file that was run directly)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  const { createGitHubOptions } = await import('./shared/github-options.mts');
+
+  await resolveE2EReportRunIds(await createGitHubOptions());
 }
