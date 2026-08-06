@@ -869,7 +869,8 @@ export const getFormattedPriceImpactPercentage = createSelector(
 export const getFormattedPriceImpactFiat = createSelector(
   [
     (state: BridgeAppState) =>
-      getActiveQuotePriceData(state)?.priceImpact?.valueInCurrency,
+      getBridgeQuotes(state).activeQuote?.quote.priceData?.priceImpact
+        ?.valueInCurrency,
     getCurrentCurrency,
   ],
   (priceImpact, currentCurrency) =>
