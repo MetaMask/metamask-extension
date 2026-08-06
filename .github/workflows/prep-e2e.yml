@@ -38,8 +38,10 @@ jobs:
       # Resolve the run IDs holding the latest available E2E reports, used for shard balancing.
       - name: Resolve latest E2E report run IDs
         id: e2e-reports
+        continue-on-error: true
         uses: actions/github-script@v9
         with:
+          retries: 3
           script: |
             const { join } = await import('node:path');
             const { pathToFileURL } = await import('node:url');
@@ -73,6 +75,7 @@ jobs:
           run-id: ${{ steps.e2e-reports.outputs.firefox-run-id }}
 
       - name: Upload test-runs-for-splitting
+        continue-on-error: true
         uses: actions/upload-artifact@v6
         with:
           name: test-runs-for-splitting
