@@ -147,6 +147,23 @@ export function getLegacyBackgroundApiServiceMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:updateSecurityAlertResponse',
+      'UserOperationController:addUserOperationFromTransaction',
+      'UserOperationController:startPollingByNetworkClientId',
+      'PPOMController:usePPOM',
+      'KeyringController:getKeyringForAccount',
+      'SignatureController:getState',
+      'AppStateController:getAddressSecurityAlertResponse',
+      'AppStateController:addAddressSecurityAlertResponse',
+      'AppStateController:addSignatureSecurityAlertResponse',
+      'SubscriptionController:getSubscriptionByProduct',
+      'AuthenticationController:getBearerToken',
+    ],
+    events: [
+      'TransactionController:unapprovedTransactionAdded',
+      'SignatureController:stateChange',
     ],
   });
 

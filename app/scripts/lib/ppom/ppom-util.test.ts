@@ -1,18 +1,14 @@
-import { PPOMController } from '@metamask/ppom-validator';
 import {
-  TransactionController,
-  TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerState,
   TransactionEnvelopeType,
   TransactionMeta,
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import {
-  SignatureController,
   SignatureControllerState,
   SignatureRequest,
   SignatureRequestType,
-  SignatureStateChange,
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { PPOM } from '@blockaid/ppom_release';
@@ -21,6 +17,8 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
   Messenger,
+  MessengerActions,
+  MessengerEvents,
 } from '@metamask/messenger';
 import {
   BlockaidReason,
@@ -28,14 +26,13 @@ import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import { AppStateController } from '../../controllers/app-state-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
-import { RootMessenger } from '../messenger';
 import {
   generateSecurityAlertId,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
+  type PPOMMessenger,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
 import * as securityAlertAPI from './security-alerts-api';
@@ -96,20 +93,10 @@ const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   to: '0x456',
 };
 
-const MESSENGER_MOCK = {
-  subscribe: jest.fn(),
-} as unknown as RootMessenger;
-
 function createPPOMMock() {
   return {
     validateJsonRpc: jest.fn(),
   } as unknown as jest.Mocked<PPOM>;
-}
-
-function createPPOMControllerMock() {
-  return {
-    usePPOM: jest.fn(),
-  } as unknown as jest.Mocked<PPOMController>;
 }
 
 function createErrorMock() {
@@ -119,45 +106,21 @@ function createErrorMock() {
   return error;
 }
 
-function createAppStateControllerMock() {
-  return {
-    addSignatureSecurityAlertResponse: jest.fn(),
-  } as unknown as jest.Mocked<AppStateController>;
-}
+type TestMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<PPOMMessenger>,
+  MessengerEvents<PPOMMessenger>
+>;
 
-function createSignatureControllerMock(
-  signatureRequests: SignatureControllerState['signatureRequests'],
-) {
-  return {
-    state: {
-      signatureRequests,
-    },
-  } as unknown as jest.Mocked<SignatureController>;
-}
-
-function createTransactionControllerMock(
-  state: TransactionController['state'],
-) {
-  return {
-    state,
-    updateSecurityAlertResponse: jest.fn(),
-  } as unknown as jest.Mocked<TransactionController>;
-}
-
-function createMessengerMock() {
-  return new Messenger<
-    MockAnyNamespace,
-    never,
-    SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
-  >({
-    namespace: MOCK_ANY_NAMESPACE,
-  });
+function createMessenger(): TestMessenger {
+  return new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 }
 
 describe('PPOM Utils', () => {
   const updateSecurityAlertResponseMock = jest.fn();
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
-  let ppomController: jest.Mocked<PPOMController>;
+  let messenger: TestMessenger;
+  let usePPOMMock: jest.Mock;
   let ppom: jest.Mocked<PPOM>;
 
   const normalizeTransactionParamsMock = jest.mocked(
@@ -181,11 +144,10 @@ describe('PPOM Utils', () => {
       .spyOn(securityAlertAPI, 'isSecurityAlertsAPIEnabled')
       .mockReturnValue(false);
 
-    ppomController = createPPOMControllerMock();
     ppom = createPPOMMock();
-
-    // @ts-expect-error PPOM from package does not match controller type
-    ppomController.usePPOM.mockImplementation((callback) => callback(ppom));
+    usePPOMMock = jest.fn((callback) => callback(ppom));
+    messenger = createMessenger();
+    messenger.registerActionHandler('PPOMController:usePPOM', usePPOMMock);
 
     normalizeTransactionParamsMock.mockImplementation(
       (params: TransactionParams) => params,
@@ -202,7 +164,7 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
       });
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
         REQUEST_MOCK.method,
@@ -220,7 +182,7 @@ describe('PPOM Utils', () => {
     it('updates securityAlertResponse with loading state', async () => {
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
       });
 
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
@@ -235,7 +197,7 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
       });
 
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
@@ -253,11 +215,11 @@ describe('PPOM Utils', () => {
     });
 
     it('updates error response if controller throws', async () => {
-      ppomController.usePPOM.mockRejectedValue(createErrorMock());
+      usePPOMMock.mockRejectedValue(createErrorMock());
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
       });
 
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
@@ -292,7 +254,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -325,7 +287,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -359,7 +321,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -401,7 +363,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -441,7 +403,7 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
         request,
       });
 
@@ -466,7 +428,7 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
         request,
       });
 
@@ -494,7 +456,7 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
         request: request as never,
       });
 
@@ -557,7 +519,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -630,7 +592,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -700,7 +662,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -751,7 +713,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -814,7 +776,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -844,49 +806,57 @@ describe('PPOM Utils', () => {
 
   describe('updateSecurityAlertResponse', () => {
     it('adds response to app state controller if signature request already exists', async () => {
-      const appStateController = createAppStateControllerMock();
-
-      const signatureController = createSignatureControllerMock({
-        '123': {
-          securityAlertResponse: {
-            ...SECURITY_ALERT_RESPONSE_MOCK,
-            securityAlertId: SECURITY_ALERT_ID_MOCK,
-          },
-        } as unknown as SignatureRequest,
-      });
+      const addSignatureSecurityAlertResponseMock = jest.fn();
+      messenger.registerActionHandler(
+        'AppStateController:addSignatureSecurityAlertResponse',
+        addSignatureSecurityAlertResponseMock,
+      );
+      messenger.registerActionHandler(
+        'SignatureController:getState',
+        () =>
+          ({
+            signatureRequests: {
+              '123': {
+                securityAlertResponse: {
+                  ...SECURITY_ALERT_RESPONSE_MOCK,
+                  securityAlertId: SECURITY_ALERT_ID_MOCK,
+                },
+              } as unknown as SignatureRequest,
+            },
+          }) as unknown as SignatureControllerState,
+      );
 
       await updateSecurityAlertResponse({
-        appStateController,
-        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        messenger: MESSENGER_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
-        signatureController,
-        transactionController: {} as unknown as TransactionController,
-      });
-
-      expect(
-        appStateController.addSignatureSecurityAlertResponse,
-      ).toHaveBeenCalledTimes(1);
-
-      expect(
-        appStateController.addSignatureSecurityAlertResponse,
-      ).toHaveBeenCalledWith(SECURITY_ALERT_RESPONSE_MOCK);
-    });
-
-    it('adds response to app state controller after signature controller state change event', async () => {
-      const appStateController = createAppStateControllerMock();
-      const signatureController = createSignatureControllerMock({});
-      const messenger = createMessengerMock();
-
-      const updatePromise = updateSecurityAlertResponse({
-        appStateController,
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         messenger,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
-        signatureController,
-        transactionController: {} as unknown as TransactionController,
+      });
+
+      expect(addSignatureSecurityAlertResponseMock).toHaveBeenCalledTimes(1);
+
+      expect(addSignatureSecurityAlertResponseMock).toHaveBeenCalledWith(
+        SECURITY_ALERT_RESPONSE_MOCK,
+      );
+    });
+
+    it('adds response to app state controller after signature controller state change event', async () => {
+      const addSignatureSecurityAlertResponseMock = jest.fn();
+      messenger.registerActionHandler(
+        'AppStateController:addSignatureSecurityAlertResponse',
+        addSignatureSecurityAlertResponseMock,
+      );
+      messenger.registerActionHandler(
+        'SignatureController:getState',
+        () =>
+          ({ signatureRequests: {} }) as unknown as SignatureControllerState,
+      );
+
+      const updatePromise = updateSecurityAlertResponse({
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        messenger,
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
       });
 
       messenger.publish(
@@ -903,69 +873,67 @@ describe('PPOM Utils', () => {
 
       await updatePromise;
 
-      expect(
-        appStateController.addSignatureSecurityAlertResponse,
-      ).toHaveBeenCalledTimes(1);
+      expect(addSignatureSecurityAlertResponseMock).toHaveBeenCalledTimes(1);
 
-      expect(
-        appStateController.addSignatureSecurityAlertResponse,
-      ).toHaveBeenCalledWith(SECURITY_ALERT_RESPONSE_MOCK);
+      expect(addSignatureSecurityAlertResponseMock).toHaveBeenCalledWith(
+        SECURITY_ALERT_RESPONSE_MOCK,
+      );
     });
 
     it('adds response to transaction controller if transaction already exists', async () => {
-      const transactionController = createTransactionControllerMock({
-        transactions: [
-          {
-            id: TRANSACTION_ID_MOCK,
-            securityAlertResponse: {
-              securityAlertId: SECURITY_ALERT_ID_MOCK,
-            },
-          },
-        ],
-      } as unknown as TransactionController['state']);
+      const updateTransactionSecurityAlertResponseMock = jest.fn();
+      messenger.registerActionHandler(
+        'TransactionController:updateSecurityAlertResponse',
+        updateTransactionSecurityAlertResponseMock,
+      );
+      messenger.registerActionHandler(
+        'TransactionController:getState',
+        () =>
+          ({
+            transactions: [
+              {
+                id: TRANSACTION_ID_MOCK,
+                securityAlertResponse: {
+                  securityAlertId: SECURITY_ALERT_ID_MOCK,
+                },
+              },
+            ],
+          }) as unknown as TransactionControllerState,
+      );
 
       await updateSecurityAlertResponse({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        appStateController: {} as any,
-        method: 'eth_sendTransaction',
-        messenger: MESSENGER_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        signatureController: {} as any,
-        transactionController,
-      });
-
-      expect(
-        transactionController.updateSecurityAlertResponse,
-      ).toHaveBeenCalledTimes(1);
-
-      expect(
-        transactionController.updateSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
-    });
-
-    it('adds response to transaction controller after transaction added event', async () => {
-      const transactionController = createTransactionControllerMock({
-        transactions: [],
-      } as unknown as TransactionController['state']);
-
-      const messenger = createMessengerMock();
-
-      const updatePromise = updateSecurityAlertResponse({
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        appStateController: {} as any,
         method: 'eth_sendTransaction',
         messenger,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        signatureController: {} as any,
-        transactionController,
+      });
+
+      expect(updateTransactionSecurityAlertResponseMock).toHaveBeenCalledTimes(
+        1,
+      );
+
+      expect(updateTransactionSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TRANSACTION_ID_MOCK,
+        SECURITY_ALERT_RESPONSE_MOCK,
+      );
+    });
+
+    it('adds response to transaction controller after transaction added event', async () => {
+      const updateTransactionSecurityAlertResponseMock = jest.fn();
+      messenger.registerActionHandler(
+        'TransactionController:updateSecurityAlertResponse',
+        updateTransactionSecurityAlertResponseMock,
+      );
+      messenger.registerActionHandler(
+        'TransactionController:getState',
+        () => ({ transactions: [] }) as unknown as TransactionControllerState,
+      );
+
+      const updatePromise = updateSecurityAlertResponse({
+        method: 'eth_sendTransaction',
+        messenger,
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
       });
 
       messenger.publish('TransactionController:unapprovedTransactionAdded', {
@@ -976,13 +944,14 @@ describe('PPOM Utils', () => {
 
       await updatePromise;
 
-      expect(
-        transactionController.updateSecurityAlertResponse,
-      ).toHaveBeenCalledTimes(1);
+      expect(updateTransactionSecurityAlertResponseMock).toHaveBeenCalledTimes(
+        1,
+      );
 
-      expect(
-        transactionController.updateSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
+      expect(updateTransactionSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TRANSACTION_ID_MOCK,
+        SECURITY_ALERT_RESPONSE_MOCK,
+      );
     });
   });
 
@@ -1008,12 +977,12 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
         request,
         getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
 
-      expect(ppomController.usePPOM).not.toHaveBeenCalled();
+      expect(usePPOMMock).not.toHaveBeenCalled();
       expect(ppom.validateJsonRpc).not.toHaveBeenCalled();
 
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
@@ -1039,12 +1008,12 @@ describe('PPOM Utils', () => {
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
-        ppomController,
+        messenger,
         request,
         getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
 
-      expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
+      expect(usePPOMMock).toHaveBeenCalledTimes(1);
 
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(

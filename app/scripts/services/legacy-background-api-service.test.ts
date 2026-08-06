@@ -1861,6 +1861,155 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('addTransaction', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<LegacyBackgroundApiService['addTransaction']>[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    /**
+     * Registers the handlers required by the transaction-add pipeline to add an
+     * EOA transaction with security alerts disabled.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param transactions - The transactions to expose via
+     * `TransactionController:getState`.
+     */
+    function registerAddTransactionHandlers(
+      rootMessenger: RootMessenger,
+      transactions: TransactionMeta[] = [],
+    ): void {
+      rootMessenger.registerActionHandler(
+        'AccountsController:listAccounts',
+        jest.fn().mockReturnValue([]),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        jest
+          .fn()
+          .mockReturnValue(
+            createMockInternalAccount({ address: '0xfromaddress' }),
+          ),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getState',
+        jest.fn().mockReturnValue({
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [{ networkClientId: NETWORK_CLIENT_ID }],
+            },
+          },
+        }),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+      );
+      rootMessenger.registerActionHandler(
+        'TransactionController:getState',
+        jest.fn().mockReturnValue({ transactions }),
+      );
+    }
+
+    it('adds the transaction via the TransactionController and returns its metadata without waiting for publish', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+        registerAddTransactionHandlers(rootMessenger);
+        const addTransactionHandler = jest.fn().mockResolvedValue({
+          result: Promise.resolve('0xhash'),
+          transactionMeta,
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          addTransactionHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransaction',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(addTransactionHandler).toHaveBeenCalledWith(TRANSACTION_PARAMS, {
+          networkClientId: NETWORK_CLIENT_ID,
+          isInternal: true,
+        });
+        expect(result).toStrictEqual(transactionMeta);
+      });
+    });
+  });
+
+  describe('addTransactionAndWaitForPublish', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['addTransactionAndWaitForPublish']
+    >[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    it('waits for the transaction to publish and returns the final metadata', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const finalTransactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:listAccounts',
+          jest.fn().mockReturnValue([]),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest
+            .fn()
+            .mockReturnValue(
+              createMockInternalAccount({ address: '0xfromaddress' }),
+            ),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                chainId: '0x1',
+                rpcEndpoints: [{ networkClientId: NETWORK_CLIENT_ID }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [finalTransactionMeta] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          jest.fn().mockResolvedValue({
+            result: Promise.resolve('0xhash'),
+            transactionMeta: { id: 'txId' } as TransactionMeta,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(result).toStrictEqual(finalTransactionMeta);
+      });
+    });
+  });
+
   describe('resetAccount', () => {
     it('resets the account and returns the selected address', async () => {
       const selectedAddress = '0x123';
@@ -6603,6 +6752,23 @@ function getMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:updateSecurityAlertResponse',
+      'UserOperationController:addUserOperationFromTransaction',
+      'UserOperationController:startPollingByNetworkClientId',
+      'PPOMController:usePPOM',
+      'KeyringController:getKeyringForAccount',
+      'SignatureController:getState',
+      'AppStateController:getAddressSecurityAlertResponse',
+      'AppStateController:addAddressSecurityAlertResponse',
+      'AppStateController:addSignatureSecurityAlertResponse',
+      'SubscriptionController:getSubscriptionByProduct',
+      'AuthenticationController:getBearerToken',
+    ],
+    events: [
+      'TransactionController:unapprovedTransactionAdded',
+      'SignatureController:stateChange',
     ],
   });
 
