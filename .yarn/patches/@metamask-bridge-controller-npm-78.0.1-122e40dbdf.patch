@@ -1,0 +1,46 @@
+diff --git a/dist/constants/tokens.cjs b/dist/constants/tokens.cjs
+index 90ff16070a1080209599ac5bd897c4dbb3ee8dc0..20b14adf779ffd2941f81412b49c76da11d5c249 100644
+--- a/dist/constants/tokens.cjs
++++ b/dist/constants/tokens.cjs
+@@ -161,7 +161,7 @@ const ROBINHOOD_SWAPS_TOKEN_OBJECT = {
+ const ARC_SWAPS_TOKEN_OBJECT = {
+     symbol: 'USDC',
+     name: 'USDC',
+-    address: '0x0000000000000000000000000000000000000000',
++    address: exports.DEFAULT_TOKEN_ADDRESS,
+     decimals: 18,
+     iconUrl: '',
+ };
+@@ -207,7 +207,6 @@ exports.SYMBOL_TO_SLIP44_MAP = {
+     XLM: 'slip44:148',
+     MON: 'slip44:268435779',
+     HYPE: 'slip44:2457',
+-    // It won't be displayed - hidden on UI client side
+-    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'slip44:5042',
+ };
+ //# sourceMappingURL=tokens.cjs.map
+\ No newline at end of file
+diff --git a/dist/constants/tokens.mjs b/dist/constants/tokens.mjs
+index a42f87f4bd051c7f33bb22af83673966fa78e05a..e5a66e15a8a2e56bcfba6a22261a018ad009f6d2 100644
+--- a/dist/constants/tokens.mjs
++++ b/dist/constants/tokens.mjs
+@@ -158,7 +158,7 @@ const ROBINHOOD_SWAPS_TOKEN_OBJECT = {
+ const ARC_SWAPS_TOKEN_OBJECT = {
+     symbol: 'USDC',
+     name: 'USDC',
+-    address: '0x0000000000000000000000000000000000000000',
++    address: DEFAULT_TOKEN_ADDRESS,
+     decimals: 18,
+     iconUrl: '',
+ };
+@@ -204,7 +204,6 @@ export const SYMBOL_TO_SLIP44_MAP = {
+     XLM: 'slip44:148',
+     MON: 'slip44:268435779',
+     HYPE: 'slip44:2457',
+-    // It won't be displayed - hidden on UI client side
+-    USDC: 'erc20:0x0000000000000000000000000000000000000000',
++    USDC: 'slip44:5042',
+ };
+ //# sourceMappingURL=tokens.mjs.map
+\ No newline at end of file
