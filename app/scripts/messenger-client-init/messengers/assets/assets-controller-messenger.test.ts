@@ -83,9 +83,7 @@ describe('getAssetsControllerMessenger', () => {
     expect(actions).not.toContain(
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
     );
-    expect(actions).not.toContain(
-      'BackendWebSocketService:addChannelCallback',
-    );
+    expect(actions).not.toContain('BackendWebSocketService:addChannelCallback');
     expect(actions).not.toContain(
       'BackendWebSocketService:removeChannelCallback',
     );
