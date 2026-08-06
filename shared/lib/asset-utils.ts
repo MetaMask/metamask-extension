@@ -22,6 +22,7 @@ import {
 
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
+  SLIP44_ASSET_NAMESPACE,
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
@@ -42,14 +43,31 @@ export const toAssetId = (
     : chainId;
 
   // Use chainId and address from caip assetId if provided
+  let assetNamespaceFromCaipAssetId: string | undefined;
   if (isCaipAssetType(address)) {
-    const { assetReference, chainId: chainIdFromCaipAssetId } =
-      parseCaipAssetType(address);
+    const {
+      assetReference,
+      assetNamespace,
+      chainId: chainIdFromCaipAssetId,
+    } = parseCaipAssetType(address);
     addressToUse = assetReference;
     chainIdToUse = chainIdFromCaipAssetId;
+    assetNamespaceFromCaipAssetId = assetNamespace;
   }
   if (!chainIdToUse) {
     return undefined;
+  }
+
+  // The slip44 namespace is reserved for a chain's native asset (CAIP-19), so
+  // an already-CAIP-formatted asset id tells us definitively when it's
+  // native. Trust that over isBridgeNativeAddress/getBridgeNativeAssetForChainId,
+  // which rely on a hardcoded symbol table that's missing chains like
+  // Injective and would otherwise fall through to the generic erc20 branch
+  // below, misrepresenting the slip44 reference as a contract address.
+  if (assetNamespaceFromCaipAssetId === SLIP44_ASSET_NAMESPACE) {
+    return CaipAssetTypeStruct.create(
+      `${chainIdToUse}/${SLIP44_ASSET_NAMESPACE}:${addressToUse}`,
+    );
   }
 
   if (isBridgeNativeAddress(addressToUse)) {

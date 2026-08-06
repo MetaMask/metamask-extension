@@ -105,6 +105,19 @@ describe('asset-utils', () => {
       );
     });
 
+    it('preserves a slip44 native asset ID even for chains missing from the bridge-controller native asset map', () => {
+      // Injective (eip155:1776) is not in @metamask/bridge-controller's
+      // hardcoded native-asset table, so isBridgeNativeAddress/
+      // getBridgeNativeAssetForChainId can't recognize it as native.
+      const caipAssetId = CaipAssetTypeStruct.create(
+        'eip155:1776/slip44:220000119',
+      );
+      const chainId = 'eip155:1776' as CaipChainId;
+
+      const result = toAssetId(caipAssetId, chainId);
+      expect(result).toBe(caipAssetId);
+    });
+
     it('should create Solana token asset ID correctly', () => {
       const address = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
       const chainId = MultichainNetwork.Solana as CaipChainId;
