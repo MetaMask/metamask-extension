@@ -13,16 +13,17 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
 import { getUseExternalServices } from '../../../../selectors';
+import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   getResultTypeConfig,
   type ResultTypeConfig,
 } from '../../utils/security-utils';
+import { SecurityTrustVerifiedBadge } from '../../../../components/app/security-trust';
 import { SecurityBanner } from './security-banner';
 import {
   SecurityTrustEntryCard,
   type SecurityTrustEntryCardToken,
 } from './security-trust-entry-card';
-import { SecurityTrustVerifiedBadge } from './security-trust-inline-badge';
 import { SecurityTrustInfoModal } from './security-trust-info-modal';
 import type { SecurityTrustSheetParams } from './security-trust-sheet-types';
 import { getSecurityTrustInfoSheetParams } from './use-security-trust-info-sheet';
@@ -103,7 +104,9 @@ export const AssetPageSecurityTrustProvider = ({
   children,
 }: AssetPageSecurityTrustProviderProps) => {
   const t = useI18nContext();
-  const isEnabled = useSelector(getUseExternalServices);
+  const useExternalServices = useSelector(getUseExternalServices);
+  const isSecurityTrustTdpEnabled = useSelector(getIsSecurityTrustTdpEnabled);
+  const isEnabled = useExternalServices && isSecurityTrustTdpEnabled;
   const resolvedAssetId =
     isEnabled && assetId ? (assetId as CaipAssetType) : null;
   const [sheetParams, setSheetParams] =
@@ -169,9 +172,19 @@ export const AssetPageSecurityTrustProvider = ({
 
     if (params) {
       setPendingProceed(null);
-      setSheetParams(params);
+      setSheetParams({
+        ...params,
+        chainId: token.chainId,
+        tokenAddress: token.address,
+      });
     }
-  }, [securityConfig, securityData, tokenDisplaySymbol]);
+  }, [
+    securityConfig,
+    securityData,
+    token.address,
+    token.chainId,
+    tokenDisplaySymbol,
+  ]);
 
   const gateCtaAction = useCallback(
     (action: () => void, source: SecurityTrustCtaSource) => {
@@ -201,13 +214,19 @@ export const AssetPageSecurityTrustProvider = ({
       }
 
       setPendingProceed(() => action);
-      setSheetParams(params);
+      setSheetParams({
+        ...params,
+        chainId: token.chainId,
+        tokenAddress: token.address,
+      });
     },
     [
       isSecurityDataLoading,
       securityConfig,
       securityData,
       securityDataError,
+      token.address,
+      token.chainId,
       tokenDisplaySymbol,
     ],
   );

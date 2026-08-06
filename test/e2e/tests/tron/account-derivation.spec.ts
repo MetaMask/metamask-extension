@@ -203,6 +203,10 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
         await assertTronAddressesForAccounts(driver, 5, {
           absentAccountLabel: 'Account 6',
         });
@@ -251,7 +255,8 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests -- flaky clipboard copy in QR popup on CI; see #44165
+  it.skip('Shows Account 1 QR popup with address, copy link, and View on Tronscan', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],

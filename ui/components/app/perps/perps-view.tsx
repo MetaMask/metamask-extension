@@ -33,12 +33,14 @@ import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
 import { useDispatch } from '../../../store/hooks';
+import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -208,8 +210,20 @@ export const PerpsView = () => {
 
       if (successCount > 0 && failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
+        // Client-owned until the controller emits the count: 9.2.1's batch close
+        // event carries status/duration/bulk_action_id but NOT
+        // number_positions_closed.
+        //
+        // This is NOT a temporary bridge: TAT-3150 scopes bulk_action_id per
+        // event only, and the TAT-3463 audit explicitly removed the batch
+        // summary from its scope, so no controller release is scheduled to
+        // publish the count. The client is the source of record until a core
+        // ticket adds it — do not delete this on a routine dependency bump.
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          // EXECUTED, not FAILED: the controller sets `success = successCount >
+          // 0` and emits EXECUTED for a partial batch. Reporting FAILED here
+          // would contradict the controller's own event for the same action.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
         });
         replacePerpsToastByKey({
@@ -228,7 +242,8 @@ export const PerpsView = () => {
         return;
       } else {
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          // Same vocabulary as the controller's batch event.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
             successCount || positionCount,
         });
@@ -243,15 +258,29 @@ export const PerpsView = () => {
           [],
         );
         applyPositionsSnapshot(fresh ?? []);
-      } catch {
-        // Refresh failure is non-critical; positions were already closed.
+      } catch (refreshError) {
+        // Refresh failure is non-critical — the positions were already closed
+        // and the stream reconciles them; capture for visibility, don't swallow.
+        captureException(refreshError);
       }
-    } catch {
-      setBatchActionError(t('somethingWentWrong'));
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+    } catch (error) {
+      // Same reasoning as the cancel path: TradingService.closePositions
+      // rethrows but still emits its terminal PositionCloseTransaction from
+      // `finally`, so a client emit here would double-count. The count is only
+      // reported on the branches where the batch actually returned a result.
+      captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
+      setBatchActionError(t('somethingWentWrong'));
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
       });
@@ -276,29 +305,61 @@ export const PerpsView = () => {
     }
     setBatchActionError(null);
     setIsCancelAllPending(true);
+    let result: BatchCloseResult | undefined;
     try {
-      const result = await submitRequestToBackground<BatchCloseResult>(
+      result = await submitRequestToBackground<BatchCloseResult>(
         'perpsCancelOrders',
         [{ cancelAll: true }],
       );
+    } catch (error) {
+      // No client cancel TRANSACTION event here. TradingService.cancelOrders
+      // rethrows from its catch but still emits the terminal
+      // OrderCancelTransaction from its `finally`, so any failure that reached
+      // the controller is already reported — a client emit would double-count,
+      // and the UI cannot tell a controller-internal throw from a transport
+      // one. PerpsError and the error screen view are not duplicates: the
+      // controller emits neither.
+      captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
+      setBatchActionError(t('somethingWentWrong'));
+      setIsCancelAllPending(false);
+      return;
+    }
+
+    try {
       if (!result?.success) {
-        const failureCount = result?.failureCount ?? 0;
-        if (failureCount > 0 || result === undefined || result === null) {
-          setBatchActionError(t('somethingWentWrong'));
-          return;
-        }
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+        );
+        setBatchActionError(t('somethingWentWrong'));
+        return;
       }
       const fresh = await submitRequestToBackground<Order[]>(
         'perpsGetOpenOrders',
         [],
       );
       applyOrdersSnapshot(fresh ?? []);
-    } catch {
+    } catch (error) {
+      // Refresh-only failure: the cancel itself reached the controller, which
+      // owns its terminal event, so no client cancel analytics here.
+      captureException(error);
       setBatchActionError(t('somethingWentWrong'));
     } finally {
       setIsCancelAllPending(false);
     }
-  }, [isEligible, applyOrdersSnapshot, orders.length, t]);
+  }, [isEligible, applyOrdersSnapshot, orders.length, t, track]);
 
   const hasPositions = positions.length > 0;
   // Only the single-position view can mirror a card-level RoE; for zero or
