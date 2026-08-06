@@ -1599,6 +1599,13 @@ export const getAssetsByAccountGroupId = createSelector(
     },
   ],
   (groupAssets): AccountGroupAssets => filterExcludedAssets(groupAssets),
+  {
+    devModeChecks: {
+      // filterExcludedAssets returns its input when no Arc/Stable chains need
+      // stripping; that identity return is intentional for referential stability.
+      identityFunctionCheck: 'never',
+    },
+  },
 );
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
