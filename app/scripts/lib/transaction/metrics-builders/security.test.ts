@@ -9,6 +9,37 @@ jest.mock('../../../../../ui/helpers/utils/metrics', () => ({
   }),
 }));
 
+/**
+ * Builds a request whose transaction targets a fixed recipient on the given
+ * chain, with the given address security alert cache lookup mock.
+ *
+ * @param options - Options bag.
+ * @param options.chainId - The transaction's chainId.
+ * @param options.getAddressSecurityAlertResponse - Cache lookup mock.
+ */
+function buildAddressAlertRequest({
+  chainId,
+  getAddressSecurityAlertResponse,
+}: {
+  chainId: string | undefined;
+  getAddressSecurityAlertResponse: jest.Mock;
+}) {
+  return createBuilderRequest({
+    transactionMeta: {
+      ...createBuilderRequest().transactionMeta,
+      txParams: {
+        ...createBuilderRequest().transactionMeta.txParams,
+        to: '0x2222222222222222222222222222222222222222',
+      },
+      chainId,
+    } as never,
+    transactionMetricsRequest: {
+      ...createBuilderRequest().transactionMetricsRequest,
+      getAddressSecurityAlertResponse,
+    } as never,
+  });
+}
+
 describe('security builder', () => {
   it('builds security and ui customization metrics', async () => {
     const result = await getSecurityMetricsProperties(
@@ -51,19 +82,9 @@ describe('security builder', () => {
       .mockReturnValue({ result_type: 'Malicious' });
 
     const result = await getSecurityMetricsProperties(
-      createBuilderRequest({
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          txParams: {
-            ...createBuilderRequest().transactionMeta.txParams,
-            to: '0x2222222222222222222222222222222222222222',
-          },
-          chainId: '0x123456789',
-        } as never,
-        transactionMetricsRequest: {
-          ...createBuilderRequest().transactionMetricsRequest,
-          getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
-        } as never,
+      buildAddressAlertRequest({
+        chainId: '0x123456789',
+        getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
       }),
     );
 
@@ -75,19 +96,9 @@ describe('security builder', () => {
 
   it('returns Loading when no cached response exists for the chain and address', async () => {
     const result = await getSecurityMetricsProperties(
-      createBuilderRequest({
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          txParams: {
-            ...createBuilderRequest().transactionMeta.txParams,
-            to: '0x2222222222222222222222222222222222222222',
-          },
-          chainId: '0x123456789',
-        } as never,
-        transactionMetricsRequest: {
-          ...createBuilderRequest().transactionMetricsRequest,
-          getAddressSecurityAlertResponse: jest.fn().mockReturnValue(undefined),
-        } as never,
+      buildAddressAlertRequest({
+        chainId: '0x123456789',
+        getAddressSecurityAlertResponse: jest.fn().mockReturnValue(undefined),
       }),
     );
 
@@ -100,19 +111,9 @@ describe('security builder', () => {
       .mockReturnValue({ result_type: 'Malicious' });
 
     const result = await getSecurityMetricsProperties(
-      createBuilderRequest({
-        transactionMeta: {
-          ...createBuilderRequest().transactionMeta,
-          txParams: {
-            ...createBuilderRequest().transactionMeta.txParams,
-            to: '0x2222222222222222222222222222222222222222',
-          },
-          chainId: undefined,
-        } as never,
-        transactionMetricsRequest: {
-          ...createBuilderRequest().transactionMetricsRequest,
-          getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
-        } as never,
+      buildAddressAlertRequest({
+        chainId: undefined,
+        getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
       }),
     );
 
