@@ -130,10 +130,7 @@
     "countries": "object",
     "country": "string",
     "coverageResults": "object",
-    "cryptocurrencies": [
-      "btc",
-      "sol"
-    ],
+    "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
       "ETH": {
         "conversionDate": "object",

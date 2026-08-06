@@ -157,15 +157,9 @@
       "*": "string"
     },
     "accountsAssets": {
-      "<solana-account-1>": [
-        "string"
-      ],
-      "<bitcoin-account-1>": [
-        "string"
-      ],
-      "<tron-account-1>": [
-        "string"
-      ]
+      "<solana-account-1>": ["string"],
+      "<bitcoin-account-1>": ["string"],
+      "<tron-account-1>": ["string"]
     },
     "accountState": "null",
     "accountsByChainId": {
@@ -642,9 +636,7 @@
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
-      "supportedNetworks": [
-        "string"
-      ],
+      "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
     "completedOnboarding": "boolean",
@@ -689,9 +681,7 @@
       "isLoading": "boolean",
       "selected": "null"
     },
-    "cryptocurrencies": [
-      "string"
-    ],
+    "cryptocurrencies": ["string"],
     "currencyRates": {
       "*": {
         "conversionDate": "null",
@@ -875,9 +865,7 @@
     "firstTimeInfo": {},
     "forgottenPassword": "boolean",
     "fragments": {},
-    "fullScreenGasPollTokens": [
-      "string"
-    ],
+    "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
@@ -917,12 +905,8 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
-          "scopes": [
-            "string"
-          ],
+          "methods": ["string"],
+          "scopes": ["string"],
           "type": "string",
           "metadata": {
             "name": "string",
@@ -935,9 +919,7 @@
         },
         "<solana-account-1>": {
           "type": "string",
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "id": "string",
           "address": "string",
           "options": {
@@ -951,9 +933,7 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -968,9 +948,7 @@
         },
         "<bitcoin-account-1>": {
           "type": "string",
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "id": "string",
           "address": "string",
           "options": {
@@ -983,9 +961,7 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -1000,9 +976,7 @@
         },
         "<tron-account-1>": {
           "type": "string",
-          "scopes": [
-            "string"
-          ],
+          "scopes": ["string"],
           "id": "string",
           "address": "string",
           "options": {
@@ -1014,9 +988,7 @@
               "groupIndex": "number"
             }
           },
-          "methods": [
-            "string"
-          ],
+          "methods": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -1068,9 +1040,7 @@
     "isWalletResetInProgress": "boolean",
     "keyrings": [
       {
-        "accounts": [
-          "string"
-        ],
+        "accounts": ["string"],
         "metadata": {
           "id": "string",
           "name": "string"
@@ -1448,17 +1418,11 @@
       "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
         {
           "address": "string",
-          "scopes": [
-            "string"
-          ]
+          "scopes": ["string"]
         },
         {
           "address": "string",
-          "scopes": [
-            "string",
-            "string",
-            "string"
-          ]
+          "scopes": ["string", "string", "string"]
         }
       ]
     },
@@ -1584,9 +1548,7 @@
     },
     "subjects": {},
     "submitHistory": [],
-    "subscriptionAccountsSeen": [
-      "string"
-    ],
+    "subscriptionAccountsSeen": ["string"],
     "subscriptions": [],
     "termsOfUseLastAgreed": "number",
     "theme": "string",

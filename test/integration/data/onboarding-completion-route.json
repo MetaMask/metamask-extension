@@ -9,9 +9,7 @@
           "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
             "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
             "type": "multichain-account",
-            "accounts": [
-              "51737ecb-beb4-4a2b-bcab-c99d0f587a33"
-            ],
+            "accounts": ["51737ecb-beb4-4a2b-bcab-c99d0f587a33"],
             "metadata": {
               "name": "Account 1",
               "entropy": {
@@ -189,9 +187,7 @@
           "eth_signTypedData_v4"
         ],
         "type": "eip155:eoa",
-        "scopes": [
-          "eip155:0"
-        ],
+        "scopes": ["eip155:0"],
         "metadata": {
           "name": "Account 1",
           "keyring": {
@@ -213,9 +209,7 @@
   "keyrings": [
     {
       "type": "HD Key Tree",
-      "accounts": [
-        "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"
-      ],
+      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"],
       "metadata": {
         "id": "test-keyring-id"
       }
@@ -266,9 +260,7 @@
         }
       ],
       "defaultRpcEndpointIndex": 0,
-      "blockExplorerUrls": [
-        "https://sepolia.etherscan.io"
-      ],
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
       "defaultBlockExplorerUrlIndex": 0,
       "name": "Sepolia",
       "nativeCurrency": "SepoliaETH"
@@ -286,9 +278,7 @@
   "networksWithTransactionActivity": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "namespace": "eip155",
-      "activeChain": [
-        "0x5"
-      ]
+      "activeChain": ["0x5"]
     },
     "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
       "namespace": "solana",
