@@ -160,15 +160,15 @@ export const MarketRow = ({
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={market.symbol}
-        size={AvatarTokenSize.Md}
+        size={AvatarTokenSize.Lg}
         className="shrink-0"
       />
       {/* Left side: Symbol, leverage, and metric */}
       <Box
-        className="min-w-0 flex-1"
+        className="min-w-0 flex-1 overflow-hidden"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
-        gap={1}
+        gap={0}
       >
         <Box
           className="min-w-0 max-w-full"
@@ -176,7 +176,10 @@ export const MarketRow = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text fontWeight={FontWeight.Medium} className="min-w-0 truncate">
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="block max-w-full truncate"
+          >
             {displaySymbol}
           </Text>
           {market.maxLeverage && (
@@ -201,6 +204,7 @@ export const MarketRow = ({
               <Text
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
+                className="block max-w-full truncate"
                 data-testid={`market-row-ticker-${market.symbol.replace(/:/gu, '-')}`}
               >
                 {displayTicker}
@@ -213,22 +217,34 @@ export const MarketRow = ({
               </Text>
             </>
           )}
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            className="block max-w-full truncate"
+          >
             {metricValue}
           </Text>
         </Box>
       </Box>
       {/* Right side: Price and 24h change */}
       <Box
-        className="shrink-0"
+        className="w-24 shrink-0 overflow-hidden"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          className="block max-w-full truncate text-right"
+        >
           {market.price}
         </Text>
-        <Text variant={TextVariant.BodySm} color={changeColor}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={changeColor}
+          className="block max-w-full truncate text-right"
+        >
           {formatSignedChangePercent(market.change24hPercent)}
         </Text>
       </Box>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, cleanup } from '@testing-library/react-hooks';
+import { renderHook, cleanup, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {
@@ -217,7 +217,7 @@ describe('useMerklRewards', () => {
     // On-chain read returns null → fallback to API claimed value (0)
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -255,7 +255,7 @@ describe('useMerklRewards', () => {
     // On-chain read says 5.5 MUSD already claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('5500000');
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -298,7 +298,7 @@ describe('useMerklRewards', () => {
     // On-chain says all claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('1000000');
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -321,7 +321,7 @@ describe('useMerklRewards', () => {
   it('returns false when API returns no matching reward', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -358,7 +358,7 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -383,7 +383,7 @@ describe('useMerklRewards', () => {
       new Error('Network error'),
     );
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -441,7 +441,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -478,7 +478,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -542,7 +542,7 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -582,7 +582,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -621,7 +621,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -667,11 +667,10 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First mount — fetches from API
-    const {
-      result: firstResult,
-      unmount,
-      waitFor,
-    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
+    const { result: firstResult, unmount } = renderHook(
+      () => useMerklRewards(hookArgs),
+      { wrapper },
+    );
 
     await waitFor(() => {
       expect(firstResult.current.hasClaimableReward).toBe(true);
@@ -717,7 +716,7 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First render with showMerklBadge=true — populates the cache
-    const { result: firstResult, waitFor } = renderHook(
+    const { result: firstResult } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,

@@ -1,7 +1,12 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   useRive,
-  useRiveFile,
   Layout,
   Fit,
   Alignment,
@@ -30,21 +35,51 @@ const INPUT_NAMES = {
   START: 'Start',
 } as const;
 
-export default function MetamaskWordMarkAnimation({
+const WORDMARK_RIV = './images/riv_animations/metamask_wordmark.riv';
+const WORDMARK_FALLBACK_SRC = './images/logo/metamask-fox.svg';
+
+const WordmarkFallback = ({
+  isComplete = false,
+  skipTransition = false,
+}: {
+  isComplete?: boolean;
+  skipTransition?: boolean;
+}) => (
+  <Box
+    className={classnames('riv-animation__wordmark-container', {
+      'riv-animation__wordmark-container--complete':
+        isComplete && !skipTransition,
+      'riv-animation__wordmark-container--skip-transition': skipTransition,
+    })}
+    data-testid="metamask-wordmark-fallback"
+  >
+    <img
+      className="riv-animation__canvas"
+      src={WORDMARK_FALLBACK_SRC}
+      alt="MetaMask"
+    />
+  </Box>
+);
+
+/**
+ * Mount useRive only after WASM is ready and the .riv buffer exists.
+ * WordmarkFallback covers the loading gap so the container is never empty
+ * under createRoot/StrictMode remounts.
+ * @param options0
+ * @param options0.buffer
+ * @param options0.setIsAnimationComplete
+ * @param options0.isAnimationComplete
+ * @param options0.skipTransition
+ */
+const MetamaskWordMarkAnimationInner = ({
+  buffer,
   setIsAnimationComplete,
   isAnimationComplete = false,
   skipTransition = false,
-}: MetamaskWordMarkAnimationProps) {
+}: MetamaskWordMarkAnimationProps & { buffer: ArrayBuffer }) => {
   const theme = useTheme();
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/metamask_wordmark.riv');
+  const { setIsAnimationCompleted } = useRiveWasmContext();
 
-  // Refs grouped together
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const prevThemeRef = useRef(theme);
   const inputsRef = useRef<{
@@ -52,6 +87,128 @@ export default function MetamaskWordMarkAnimation({
     still?: StateMachineInput;
     start?: StateMachineInput;
   }>({});
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  const riveBuffer = useMemo(() => buffer.slice(0), [buffer]);
+
+  const { rive, RiveComponent } = useRive({
+    buffer: riveBuffer,
+    stateMachines: STATE_MACHINE_NAME,
+    autoplay: false,
+    layout: new Layout({
+      fit: Fit.Contain,
+      alignment: Alignment.Center,
+    }),
+    onStateChange: (event) => {
+      if (event.data && Array.isArray(event.data)) {
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
+        }
+
+        animationTimeoutRef.current = setTimeout(() => {
+          if (!isAnimationComplete) {
+            setIsAnimationComplete(true);
+          }
+        }, 1000);
+      }
+    },
+  });
+
+  const cacheInputs = useCallback(() => {
+    if (!rive) {
+      return false;
+    }
+    const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
+    if (!inputs) {
+      return false;
+    }
+    inputsRef.current = {
+      dark: inputs.find((input) => input.name === INPUT_NAMES.DARK),
+      still: inputs.find((input) => input.name === INPUT_NAMES.STILL),
+      start: inputs.find((input) => input.name === INPUT_NAMES.START),
+    };
+    return true;
+  }, [rive]);
+
+  useEffect(() => {
+    const shouldInitialize = rive && !isInitialized;
+
+    if (shouldInitialize && cacheInputs()) {
+      const { dark, still, start } = inputsRef.current;
+
+      if (dark) {
+        dark.value = theme === ThemeType.dark;
+      }
+
+      prevThemeRef.current = theme;
+
+      if (skipTransition) {
+        still?.fire();
+      } else {
+        start?.fire();
+      }
+
+      rive.play();
+      setIsInitialized(true);
+    }
+  }, [rive, skipTransition, isInitialized, theme, cacheInputs]);
+
+  // Mark the session animation complete only on unmount after it started
+  // (timeout was scheduled). Do not mark when `isAnimationComplete` flips on
+  // this same visit — that would set skipTransition before FoxAppear mounts
+  // and fire Wiggle instead of Start.
+  useEffect(() => {
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
+      }
+    };
+  }, [setIsAnimationCompleted]);
+
+  useEffect(() => {
+    if (!rive || !isInitialized || prevThemeRef.current === theme) {
+      return;
+    }
+
+    const { dark, still } = inputsRef.current;
+
+    if (dark) {
+      dark.value = theme === ThemeType.dark;
+      still?.fire();
+    }
+
+    prevThemeRef.current = theme;
+  }, [rive, theme, isInitialized]);
+
+  return (
+    <Box
+      className={classnames('riv-animation__wordmark-container', {
+        'riv-animation__wordmark-container--complete':
+          isAnimationComplete && !skipTransition,
+        'riv-animation__wordmark-container--skip-transition': skipTransition,
+      })}
+      data-testid="metamask-wordmark-rive"
+    >
+      <RiveComponent className="riv-animation__canvas" />
+    </Box>
+  );
+};
+
+export default function MetamaskWordMarkAnimation({
+  setIsAnimationComplete,
+  isAnimationComplete = false,
+  skipTransition = false,
+}: MetamaskWordMarkAnimationProps) {
+  const { isWasmReady, error: wasmError } = useRiveWasmContext();
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile(WORDMARK_RIV);
+
+  const hasFailed = Boolean(wasmError || bufferError);
 
   useEffect(() => {
     if (wasmError) {
@@ -70,153 +227,34 @@ export default function MetamaskWordMarkAnimation({
     }
   }, [wasmError, bufferError, setIsAnimationComplete]);
 
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready and riveFile is loaded
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'WordmarkBuildUp' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
-    onStateChange: (event) => {
-      // The event.data contains an array of state names
-      if (event.data && Array.isArray(event.data)) {
-        // Clear any existing timeout to avoid multiple triggers
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
-        }
-
-        // Set a timeout after state change to detect animation completion
-        // Adjust this timeout to match your animation's actual duration
-        animationTimeoutRef.current = setTimeout(() => {
-          if (!isAnimationComplete) {
-            setIsAnimationComplete(true);
-          }
-        }, 1000); // Adjust this based on your animation duration (in milliseconds)
-      }
-    },
-  });
-
-  // Track if animation has been initialized
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Cache and initialize state machine inputs
-  const cacheInputs = useCallback(() => {
-    if (!rive) {
-      return false;
-    }
-    const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
-    if (!inputs) {
-      return false;
-    }
-    inputsRef.current = {
-      dark: inputs.find((input) => input.name === INPUT_NAMES.DARK),
-      still: inputs.find((input) => input.name === INPUT_NAMES.STILL),
-      start: inputs.find((input) => input.name === INPUT_NAMES.START),
-    };
-    return true;
-  }, [rive]);
-
-  // Trigger the animation start when rive is loaded and WASM is ready (only once)
+  // Fail open so welcome CTAs are never stuck at opacity: 0 if Rive stalls.
   useEffect(() => {
-    const shouldInitialize =
-      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
-
-    if (shouldInitialize && cacheInputs()) {
-      const { dark, still, start } = inputsRef.current;
-
-      // Set the Dark toggle based on current theme
-      if (dark) {
-        dark.value = theme === ThemeType.dark;
-      }
-
-      prevThemeRef.current = theme;
-
-      // Fire the appropriate trigger
-      if (skipTransition) {
-        still?.fire();
-      } else {
-        start?.fire();
-      }
-
-      // Play the state machine
-      rive.play();
-      setIsInitialized(true);
+    if (isAnimationComplete || hasFailed) {
+      return undefined;
     }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-        setIsAnimationCompleted('MetamaskWordMarkAnimation', true);
-      }
-    };
-  }, [
-    rive,
-    isWasmReady,
-    skipTransition,
-    bufferLoading,
-    buffer,
-    isInitialized,
-    theme,
-    cacheInputs,
-    setIsAnimationCompleted,
-  ]);
-
-  // Handle theme changes after initialization (update dark toggle without re-triggering animation)
-  useEffect(() => {
-    if (!rive || !isInitialized || prevThemeRef.current === theme) {
-      return;
-    }
-
-    const { dark, still } = inputsRef.current;
-
-    if (dark) {
-      dark.value = theme === ThemeType.dark;
-      // Fire the Still trigger to refresh the visual state with new theme
-      still?.fire();
-    }
-
-    prevThemeRef.current = theme;
-  }, [rive, theme, isInitialized]);
-
-  const isLoading =
-    !isWasmReady || bufferLoading || !buffer || status === 'loading';
-  const hasFailed = status === 'failed';
-
-  // Trigger animation complete on failure
-  useEffect(() => {
-    if (hasFailed && !isAnimationComplete) {
+    const timeoutId = setTimeout(() => {
       setIsAnimationComplete(true);
-    }
-  }, [hasFailed, isAnimationComplete, setIsAnimationComplete]);
+    }, 3000);
+    return () => clearTimeout(timeoutId);
+  }, [isAnimationComplete, hasFailed, setIsAnimationComplete]);
 
-  // Don't render Rive component until ready or if loading/failed
-  if (isLoading || hasFailed) {
+  // Keep the fox visible until WASM + buffer are ready. Only mount useRive
+  // after both exist so createRoot remounts cannot init against a skipped load.
+  if (hasFailed || !isWasmReady || bufferLoading || !buffer) {
     return (
-      <Box
-        className={classnames('riv-animation__wordmark-container', {
-          'riv-animation__wordmark-container--complete': hasFailed,
-        })}
+      <WordmarkFallback
+        isComplete={isAnimationComplete || hasFailed}
+        skipTransition={skipTransition}
       />
     );
   }
 
   return (
-    <Box
-      className={classnames('riv-animation__wordmark-container', {
-        'riv-animation__wordmark-container--complete':
-          isAnimationComplete && !skipTransition,
-        'riv-animation__wordmark-container--skip-transition': skipTransition,
-      })}
-    >
-      <RiveComponent className="riv-animation__canvas" />
-    </Box>
+    <MetamaskWordMarkAnimationInner
+      buffer={buffer}
+      setIsAnimationComplete={setIsAnimationComplete}
+      isAnimationComplete={isAnimationComplete}
+      skipTransition={skipTransition}
+    />
   );
 }

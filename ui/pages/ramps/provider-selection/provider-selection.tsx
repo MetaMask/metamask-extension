@@ -11,6 +11,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -310,7 +311,7 @@ export function RampsProviderSelectionScreen() {
   );
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleProviderSelect = useCallback(
@@ -324,7 +325,7 @@ export function RampsProviderSelectionScreen() {
 
       try {
         await setSelectedProvider(provider);
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);

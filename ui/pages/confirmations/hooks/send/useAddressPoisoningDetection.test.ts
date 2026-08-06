@@ -1,5 +1,5 @@
 import type { SimilarAddressMatch } from '@metamask/phishing-controller';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { checkAddressPoisoning } from '../../../../store/actions';
 import { useAddressPoisoningDetection } from './useAddressPoisoningDetection';
 
@@ -38,7 +38,7 @@ describe('useAddressPoisoningDetection', () => {
     };
     mockCheckAddressPoisoning.mockResolvedValue([match]);
 
-    const { result, waitFor } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAddressPoisoningDetection(
         '0x1111ffffffffffffffffffffffffffffffffaaaa',
       ),
@@ -48,7 +48,9 @@ describe('useAddressPoisoningDetection', () => {
       '0x1111ffffffffffffffffffffffffffffffffaaaa',
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current).toEqual({
       isPoisoningSuspect: true,
@@ -92,14 +94,16 @@ describe('useAddressPoisoningDetection', () => {
       .mockResolvedValueOnce([match])
       .mockReturnValueOnce(pendingCheck);
 
-    const { result, rerender, waitFor } = renderHook(
+    const { result, rerender } = renderHook(
       ({ address }) => useAddressPoisoningDetection(address),
       {
         initialProps: { address: firstAddress },
       },
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
     expect(result.current.bestMatch).toBe(match);
 
     rerender({ address: secondAddress });
@@ -115,13 +119,15 @@ describe('useAddressPoisoningDetection', () => {
   it('returns no suspect when no similar addresses are found', async () => {
     mockCheckAddressPoisoning.mockResolvedValue([]);
 
-    const { result, waitFor } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAddressPoisoningDetection(
         '0x22223333444455556666777788889999aaaabbbb',
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current.isPoisoningSuspect).toBe(false);
     expect(result.current.bestMatch).toBeNull();
@@ -133,13 +139,15 @@ describe('useAddressPoisoningDetection', () => {
       undefined as unknown as SimilarAddressMatch[],
     );
 
-    const { result, waitFor } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAddressPoisoningDetection(
         '0x22223333444455556666777788889999aaaabbbb',
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current).toEqual({
       isPoisoningSuspect: false,
@@ -152,13 +160,15 @@ describe('useAddressPoisoningDetection', () => {
   it('fails closed when the background check rejects', async () => {
     mockCheckAddressPoisoning.mockRejectedValue(new Error('failed'));
 
-    const { result, waitFor } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAddressPoisoningDetection(
         '0x22223333444455556666777788889999aaaabbbb',
       ),
     );
 
-    await waitFor(() => result.current.pending === false);
+    await waitFor(() => {
+      expect(result.current.pending).toBe(false);
+    });
 
     expect(result.current.isPoisoningSuspect).toBe(false);
     expect(result.current.matches).toEqual([]);
