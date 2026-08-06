@@ -56,23 +56,12 @@ async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
   ];
 }
 
-// The redesigned network picker is enabled for everyone in production and the
-// page objects target it, so these fixtures have to turn it on too.
-const NETWORK_MANAGEMENT_FLAGS = {
-  manifestFlags: {
-    remoteFeatureFlags: {
-      extensionUxNetworkManagement: { enabled: true, minimumVersion: '0.0.0' },
-    },
-  },
-};
-
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -100,7 +89,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -143,7 +131,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -182,7 +169,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
@@ -222,7 +208,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -275,7 +260,6 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ...NETWORK_MANAGEMENT_FLAGS,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {

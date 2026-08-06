@@ -57,12 +57,6 @@ import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
 
-// The redesigned network picker is enabled for everyone in production and the
-// page objects target it, so these fixtures have to turn it on too.
-const NETWORK_MANAGEMENT_FLAG = {
-  extensionUxNetworkManagement: { enabled: true, minimumVersion: '0.0.0' },
-};
-
 export class BridgePage {
   driver: Driver;
 
@@ -1445,7 +1439,6 @@ export const getBridgeFixtures = ({
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1519,7 +1512,6 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1583,7 +1575,6 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1639,7 +1630,6 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -1761,7 +1751,6 @@ export const getBridgeL2Fixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_LINEA_NETWORK_CONFIG,
       },
     },
@@ -1920,7 +1909,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        ...NETWORK_MANAGEMENT_FLAG,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
     },
@@ -2062,7 +2050,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        ...NETWORK_MANAGEMENT_FLAG,
         smartTransactionsNetworks: {
           '0x1': {
             maxDeadline: 160,

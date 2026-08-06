@@ -356,12 +356,10 @@ class BridgeQuotePage {
         await this.driver.waitForSelector(this.networkSelector);
         await this.driver.clickElement(this.networkSelector);
 
-        // Now select the destination network. The network list renders over
-        // the asset picker, so match the row by its test id rather than by
-        // text, which also matches elements underneath the overlay.
-        await this.driver.clickElementAndWaitToDisappear(
-          this.networkNameSelector(quote.toChain),
-        );
+        // Now select the destination network
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.toChain,
+        });
       }
       if (quote.tokenTo) {
         await this.driver.pasteIntoField(

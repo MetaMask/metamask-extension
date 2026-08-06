@@ -11,10 +11,7 @@ import {
   enableNativeTokenAsMainBalance,
   enableTestNetworks,
 } from './settings.flow';
-import {
-  selectAllNetworksFromNetworkSelect,
-  switchToNetworkFromNetworkSelect,
-} from './network.flow';
+import { switchToNetworkFromNetworkSelect } from './network.flow';
 
 /**
  * A JSON-like object type for representing persisted wallet state.
@@ -145,7 +142,11 @@ export const generateDefaultFixtureState = async (
   await enableNativeTokenAsMainBalance(driver);
 
   // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-  await selectAllNetworksFromNetworkSelect(driver);
+  await switchToNetworkFromNetworkSelect(
+    driver,
+    'Popular',
+    'All popular networks',
+  );
 
   await enableTestNetworks(driver);
 

@@ -105,13 +105,6 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   // is on in production (registry value), so it stays registered; tests that
   // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
   perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
-  // Keep market data on the direct HyperLiquid provider. When enabled, market
-  // REST calls route through the MetaMask Terminal API
-  // (perps.api.cx.metamask.io), which has no E2E mocks — only api.hyperliquid.xyz
-  // is mocked. Enabling it also clears the markets cache, so the market list
-  // never resolves and every Perps screen stays on its loading skeleton. The
-  // flag is on in production (registry value), so it stays registered.
-  perpsTerminalBackendEnabled: { enabled: false, minimumVersion: '0.0.0' },
 };
 
 /**
@@ -291,11 +284,6 @@ async function mockEligibleFeatureFlags(
     // market submit disabled without order-book estimates.
     perpsSlippageConfig2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
-    // Mirrored for the same reason: the background refetch would otherwise
-    // restore the production default and route market data through the
-    // unmocked Terminal API.
-    perpsTerminalBackendEnabled:
-      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsTerminalBackendEnabled,
     ...overrides,
   });
   await server

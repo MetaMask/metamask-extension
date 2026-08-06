@@ -1,6 +1,4 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { type CaipChainId } from '@metamask/utils';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -14,172 +12,150 @@ export enum NetworkId {
   POLYGON = 'eip155:137',
 }
 
-/**
- * The network filter keys EVM rows by hex chain id and non-EVM rows by CAIP
- * chain id, while tests refer to networks by CAIP chain id throughout.
- *
- * @param chainId - A CAIP chain id, e.g. `eip155:1` or `solana:5eykt4...`.
- * @returns The chain id in the form used by the rendered list item.
- */
-function toListItemChainId(chainId: string): string {
-  return chainId.startsWith('eip155:')
-    ? convertCaipToHexChainId(chainId as CaipChainId)
-    : chainId;
-}
-
 class NetworkManager {
-  private readonly allNetworksItem =
-    '[data-testid="home-network-filter-all-default"]';
+  private readonly addCustomNetworkButton = {
+    text: 'Add custom network',
+    tag: 'button',
+  };
 
-  // The redesigned filter splits user-added networks from test networks into
-  // separate sections, where the old Custom tab listed both together.
-  private readonly customNetworkRow =
-    ':is([data-testid^="home-network-filter-custom-"], [data-testid^="home-network-filter-test-"])';
-
-  private readonly defaultNetworkRow =
-    '[data-testid^="home-network-filter-network-"]';
-
-  private readonly deselectedAllNetworksItem = `${this.allNetworksItem}.bg-transparent`;
+  private readonly allPopularNetworksLabel = {
+    text: 'All popular networks',
+    tag: 'p',
+  };
 
   private readonly deselectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
 
   protected readonly driver: Driver;
 
-  private readonly manageNetworksButton =
-    '[data-testid="home-network-filter-manage-networks"]';
-
-  // The redesigned filter renders the design-system `ModalHeader`, whose close
-  // button is only identifiable by its aria label.
-  private readonly modalCloseButton = 'header button[aria-label="Close"]';
+  private readonly multichainNetworkListItemByName = (networkName: string) => ({
+    css: '.multichain-network-list-item',
+    text: networkName,
+  });
 
   private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
 
   private readonly networkItemMenuButtonByChainId = (chainId: string) =>
     `[data-testid="network-list-item-options-button-${chainId}"]`;
 
-  private readonly networkListItem = (chainId: string) =>
-    `[data-testid="network-list-item-${toListItemChainId(chainId)}"]`;
+  private readonly networkListItem = (networkName: string) =>
+    `[data-testid="network-list-item-${networkName}"]`;
 
   private readonly networkListItemByName = (networkName: string) =>
     `[data-testid="${networkName}"]`;
+
+  private readonly networkManagerCloseButton =
+    '[data-testid="modal-header-close-button"]';
+
+  private readonly networkManagerSelectAllButton =
+    '[data-testid="network-manager-select-all"]';
 
   private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
   private readonly networkPopupDeleteButton =
     '[data-testid="confirm-delete-network-modal-delete-button"]';
 
-  private readonly networksPageBackButton =
-    '[data-testid="page-header-back-button"]';
-
-  private readonly networksPageList = '[data-testid="networks-page-list"]';
-
-  // "All networks" is a plain button rather than a network list item, so its
-  // selected state shows through the background utility class.
-  private readonly selectedAllNetworksItem = `${this.allNetworksItem}.bg-muted`;
-
   private readonly selectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
+
+  private readonly tabList = '.network-manager__tab-list';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkAllPopularNetworksIsDeselected(): Promise<void> {
-    console.log('Checking if "All networks" is deselected');
+    console.log('Checking if "All popular networks" is deselected');
 
     try {
-      await this.driver.waitForSelector(this.deselectedAllNetworksItem);
+      await this.driver.waitForSelector(
+        this.deselectedNetworkListItem(this.networkManagerSelectAllButton),
+      );
 
-      console.log('All networks is properly deselected');
+      console.log('All popular networks is properly deselected');
     } catch (error) {
-      throw new Error('All networks is selected');
+      throw new Error('All popular networks is selected');
     }
   }
 
   async checkAllPopularNetworksIsSelected(): Promise<void> {
-    console.log('Checking if "All networks" is selected');
+    console.log('Checking if "All popular networks" is selected');
 
     try {
-      await this.driver.waitForSelector(this.selectedAllNetworksItem);
+      await this.driver.waitForSelector(
+        this.selectedNetworkListItem(this.networkManagerSelectAllButton),
+      );
 
-      console.log('All networks is properly selected');
+      console.log('All popular networks is properly selected');
     } catch (error) {
-      throw new Error('All networks is not selected');
+      throw new Error('All popular networks is not selected');
     }
   }
 
   async checkCustomNetworkIsSelected(caipChainId: string) {
-    await this.checkNetworkIsSelected(caipChainId);
+    const selector = `[data-testid="network-list-item-${caipChainId}"].multichain-network-list-item--selected`;
+    await this.driver.waitForSelector(selector);
 
     console.log(
       `Custom network ${caipChainId} is properly selected with background indication`,
     );
   }
 
-  async checkNetworkIsDeselected(chainId: string): Promise<void> {
-    console.log(`Checking if network is deselected: ${chainId}`);
+  async checkNetworkIsDeselected(networkName: string): Promise<void> {
+    console.log(`Checking if network is deselected: ${networkName}`);
 
     try {
       await this.driver.waitForSelector(
-        this.deselectedNetworkListItem(this.networkListItem(chainId)),
+        this.deselectedNetworkListItem(this.networkListItem(networkName)),
       );
 
-      console.log(`Network ${chainId} is properly deselected`);
+      console.log(`Network ${networkName} is properly deselected`);
     } catch (error) {
-      throw new Error(`Network ${chainId} is selected`);
+      throw new Error(`Network ${networkName} is selected`);
     }
   }
 
   // Method to check if a network is currently selected/active
-  async checkNetworkIsSelected(chainId: string): Promise<void> {
-    console.log(`Checking if network is selected: ${chainId}`);
+  async checkNetworkIsSelected(networkName: string): Promise<void> {
+    console.log(`Checking if network is selected: ${networkName}`);
 
     try {
       await this.driver.waitForSelector(
-        this.selectedNetworkListItem(this.networkListItem(chainId)),
+        this.selectedNetworkListItem(this.networkListItem(networkName)),
       );
 
-      console.log(`Network ${chainId} is properly selected`);
+      console.log(`Network ${networkName} is properly selected`);
     } catch (error) {
-      throw new Error(`Network ${chainId} is not selected`);
+      throw new Error(`Network ${networkName} is not selected`);
     }
   }
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking the network manager is loaded');
-    await this.driver.waitForSelector(this.allNetworksItem);
+    await this.driver.waitForSelector(this.networkManagerCloseButton);
   }
 
-  /**
-   * The redesigned filter lists every category at once instead of behind tabs,
-   * so this asserts the matching section is rendered.
-   *
-   * @param tabName - Either `Custom` or `Popular`.
-   */
   async checkTabIsSelected(tabName: string): Promise<void> {
-    console.log(`Checking if ${tabName} networks are listed`);
-    await this.driver.waitForSelector(
-      tabName === 'Custom' ? this.customNetworkRow : this.defaultNetworkRow,
-    );
-    console.log(`${tabName} networks are listed`);
+    console.log(`Checking if ${tabName} tab is selected`);
+    // Find the active tab and verify it contains "Custom" text
+    await this.driver.waitForSelector({
+      css: `${this.tabList} button[aria-selected="true"]`,
+      text: tabName,
+    });
+    console.log(`${tabName} tab is properly selected`);
   }
 
   async closeNetworkManager(): Promise<void> {
     console.log(`Closing the network manager`);
-    await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.networkManagerCloseButton,
+    );
   }
 
-  /**
-   * Deletes a network from the networks page. The filter modal itself no longer
-   * exposes per-network options, so `openManageNetworks` must run first.
-   *
-   * @param chainId - The hexadecimal chain id of the network to delete.
-   */
   async deleteNetworkByChainId(chainId: `0x${string}`): Promise<void> {
     console.log(`Deleting network: ${chainId}`);
 
-    // The networks page keys its list items by CAIP chain id.
+    // Convert chain ID to CAIP format for the data-testid
     const caipChainId = toEvmCaipChainId(chainId);
 
     await this.driver.clickElement(
@@ -191,23 +167,6 @@ class NetworkManager {
     console.log(`Successfully deleted network: ${chainId}`);
   }
 
-  async leaveNetworksPage(): Promise<void> {
-    console.log('Leaving the networks page');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.networksPageBackButton,
-    );
-  }
-
-  /**
-   * Navigates from the network filter to the full networks page, which is where
-   * networks can be added, edited and deleted.
-   */
-  async openManageNetworks(): Promise<void> {
-    console.log('Opening the networks page');
-    await this.driver.clickElement(this.manageNetworksButton);
-    await this.driver.waitForSelector(this.networksPageList);
-  }
-
   async openNetworkAndDeleteNetwork(
     tabName: string,
     networkName: string,
@@ -216,9 +175,8 @@ class NetworkManager {
       `Opening network manager and deleting ${networkName} on ${tabName} tab`,
     );
     await this.openNetworkManager();
-    await this.openManageNetworks();
+    await this.selectTab(tabName);
     await this.deleteNetworkByChainId(networkName as `0x${string}`);
-    await this.leaveNetworksPage();
   }
 
   async openNetworkAndSelectNetwork(
@@ -246,7 +204,8 @@ class NetworkManager {
 
   async selectAllNetworks(): Promise<void> {
     console.log('Selecting all networks');
-    await this.driver.clickElementAndWaitToDisappear(this.allNetworksItem);
+    await this.driver.clickElement(this.networkManagerSelectAllButton);
+    await this.driver.delay(1000); // small delay to ensure networks are all selected
   }
 
   async selectNetworkByChainId(chainId: string): Promise<void> {
@@ -265,21 +224,21 @@ class NetworkManager {
     );
   }
 
-  /**
-   * The Popular and Custom tabs were merged into a single scrolling list, so
-   * there is nothing to switch to. Retained so callers can keep expressing
-   * which category they are about to pick from.
-   *
-   * @param tabName - Either `Custom` or `Popular`.
-   */
   async selectTab(tabName: string): Promise<void> {
     console.log(`Selecting tab: ${tabName}`);
+    await this.driver.clickElement({
+      text: tabName,
+    });
     await this.waitForCategoryContent(tabName);
   }
 
   async waitForCategoryContent(networkCategory: string): Promise<void> {
-    console.log(`Waiting for ${networkCategory} networks to load`);
-    await this.checkPageIsLoaded();
+    console.log(`Waiting for ${networkCategory} tab content to load`);
+    if (networkCategory === 'Custom') {
+      await this.driver.waitForSelector(this.addCustomNetworkButton);
+    } else if (networkCategory === 'Popular') {
+      await this.driver.waitForSelector(this.networkManagerSelectAllButton);
+    }
   }
 }
 
