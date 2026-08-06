@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -19,7 +19,9 @@ export function useAccountTypeUpgrade(): Alert[] {
       {
         field: RowAlertKey.AccountTypeUpgrade,
         key: RowAlertKey.AccountTypeUpgrade,
-        content: AccountTypeMessage(),
+        // Element form so React Compiler / Rules of Hooks treat this as a
+        // component, not a conditional hook call inside useMemo.
+        content: React.createElement(AccountTypeMessage),
         reason: t('alertAccountTypeUpgradeTitle'),
         severity: Severity.Info,
       },

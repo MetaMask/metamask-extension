@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -30,9 +30,9 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        content: PendingTransactionAlertMessage(
-          t as (key: string, ...args: unknown[]) => string,
-        ),
+        content: React.createElement(PendingTransactionAlertMessage, {
+          t: t as (key: string, ...args: unknown[]) => string,
+        }),
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },
