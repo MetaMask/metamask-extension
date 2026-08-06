@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import React from 'react';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
