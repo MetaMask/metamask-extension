@@ -39,7 +39,8 @@ name: Upload extension to Firefox AMO
 #
 # INFRA-3649 — sender verification (defense-in-depth; primary gate is IAM trust).
 # INFRA-3769 — release-team may workflow_dispatch production from release/* only.
-# Flask is orchestrator workflow_call only — workflow_dispatch + target=flask is rejected.
+# Flask is orchestrator-only: omitted from workflow_dispatch target options, and the sender check
+# rejects any human/non-Runway flask dispatch (event_name can't distinguish a workflow_call caller).
 #
 # Lambda invoke must use alias qualifier (dev | flask | production); unqualified invoke is denied.
 # AMO JWT secrets are read inside Lambda (assumes amo-submission-secrets-{env}), not by the runner.
@@ -117,12 +118,10 @@ jobs:
         run: |
           set -euo pipefail
           GITHUB_REF="${{ github.ref }}"
-          EVENT_NAME="${{ github.event_name }}"
-          # Flask is Runway/orchestrator-only. Keep workflow_dispatch for production (+ dev smoke).
-          if [[ "${EVENT_NAME}" == "workflow_dispatch" && "${TARGET}" == "flask" ]]; then
-            echo "::error::workflow_dispatch cannot target flask. Flask uploads run via the Runway orchestrator (workflow_call) only."
-            exit 1
-          fi
+          # Flask is Runway/orchestrator-only, enforced by the sender check below (human/non-Runway
+          # rejected) and by omitting flask from the workflow_dispatch target options. github.event_name
+          # cannot gate this: a workflow_call from the Runway orchestrator still reports the caller's
+          # workflow_dispatch, so an event_name check would also block the legitimate Phase 3 flask upload.
           if [[ "${TARGET}" == "dev" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
               echo "::error::Dev (amo-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
