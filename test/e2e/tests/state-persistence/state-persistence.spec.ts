@@ -1,18 +1,18 @@
 import { Mockttp } from 'mockttp';
+import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { assertAccountVisible } from '../../page-objects/flows/account-list.flow';
-import {
-  pausePersistence,
-  reloadAndUnlock,
-} from '../../page-objects/flows/login.flow';
-import { completeOnboardingAndSync } from '../../page-objects/flows/onboarding.flow';
+import { reloadAndUnlock } from '../../page-objects/flows/login.flow';
+import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import {
   BASE_MANIFEST_TESTING_FLAGS,
   expectDataStateStorage,
   expectSplitStateStorage,
+  pausePersistence,
   setLocalStorageFlags,
 } from './helpers';
 
@@ -87,7 +87,14 @@ describe('State Persistence', function () {
   describe('split state', function () {
     it('should default to the split state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
-        await completeOnboardingAndSync(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+          skipSRPBackup: true,
+        });
+        const homePage = new HomePage(driver);
+        await homePage.ensurePageIsReady();
+        await driver.delay(5000); // ensure things have settled before proceeding
         await expectSplitStateStorage(driver);
       });
     });
@@ -102,8 +109,14 @@ describe('State Persistence', function () {
           const accountListPage = new AccountListPage(driver);
 
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log('completeOnboardingAndSync');
-          await completeOnboardingAndSync(driver);
+          await completeCreateNewWalletOnboardingFlow({
+            driver,
+            password: WALLET_PASSWORD,
+            skipSRPBackup: true,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.ensurePageIsReady();
+          await driver.delay(5000); // ensure things have settled before proceeding
           console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 

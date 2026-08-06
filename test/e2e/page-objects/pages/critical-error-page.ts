@@ -1,7 +1,6 @@
 import { until } from 'selenium-webdriver';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import HomePage from './home/homepage';
 
 class CriticalErrorPage {
   protected readonly driver: Driver;
@@ -13,6 +12,8 @@ class CriticalErrorPage {
     text: 'MetaMask had trouble starting.',
     css: 'h1',
   };
+
+  private readonly loadingLogo = '.loading-logo';
 
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
@@ -173,8 +174,9 @@ class CriticalErrorPage {
       { interval: 100, timeout: timeoutMs },
     );
     if (waitForLoadingLogoToDisappear) {
-      const homePage = new HomePage(this.driver);
-      await homePage.waitForLoadingLogoToDisappear();
+      await this.driver.assertElementNotPresent(this.loadingLogo, {
+        timeout: 10000,
+      });
     }
   }
 }
