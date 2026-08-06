@@ -513,11 +513,15 @@ the builders.
   unrelated.)
 - Money-account creation/upgrade is out of scope; see the Tier 2 note on the
   delegation gate.
-- **A user whose money account has never been upgraded sees nothing** — not a
-  disabled deposit button, and not a zero balance. The entire money surface is
-  hidden. See D14 for the consequence: this pulls the delegation check forward
-  out of Tier 2, because otherwise Tier 1 ships a balance row to users who have
-  no money account.
+- ~~A user whose money account has never been upgraded sees nothing~~
+  **REVERSED (2026-08-06): visibility is controlled by the feature flag
+  alone.** An upgrade flow is now planned for the extension, so a
+  not-yet-upgraded user should see the surface that leads them there. The
+  availability gate checks the flag and the derived address only — the
+  EIP-7702 delegation check was removed from D14. Consequences accepted
+  knowingly: with the flag on, extension-first users see a $0.00 balance row,
+  and the deposit path cannot succeed for them until the upgrade flow ships —
+  flag rollout should be coordinated with it.
 - **Deposit intents are maintained** (`convert`, `addMusd`, `card`). These are
   not cosmetic — they select the Pay pipeline. See D12 for the six consumers.
   Note the extension has no Card product today, so `card` is plumbing-only until
@@ -588,7 +592,7 @@ overrides a declared range, so a bump can appear to do nothing.
    `corepack yarn webpack:tsc` once: the postinstall that would generate the
    launcher is the same one the `approvedGitRepositories` error kills.
 2. **Run one spec:** `corepack yarn test:e2e:single test/e2e/tests/<x>.spec.ts
-   --browser=chrome`.
+--browser=chrome`.
 3. **Remote flags in a spec** go through
    `withFixtures({ manifestFlags: { remoteFeatureFlags: {...} } })` — the
    harness rewrites `_flags` in the dist manifest per run (replace, not merge,
@@ -1106,6 +1110,15 @@ The largest and highest-risk deliverable. Ext's `getStrategy` currently returns
 - **Depends on:** D11, D12, D14 (shares the confirmation and Pay plumbing).
 
 ## D14 — Money account availability gate
+
+> **SUPERSEDED IN PART (2026-08-06).** The delegation check described below
+> was removed: visibility is now controlled by the feature flag (plus a
+> derivable address) alone, because an upgrade flow is planned for the
+> extension. The rest of this section — the gate as the single answer all
+> surfaces consume, the caching model, and the reasons
+> `isAtomicBatchSupported` was rejected — remains accurate history and
+> becomes relevant again when the upgrade flow needs a delegation check as a
+> _state_ input rather than a visibility input.
 
 Required by the decision that an un-upgraded user **sees nothing**. Without it,
 Tier 1 would ship a "Money $0.00" row to every user who has never onboarded on
