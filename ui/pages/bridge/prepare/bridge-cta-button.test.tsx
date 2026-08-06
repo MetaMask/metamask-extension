@@ -638,6 +638,7 @@ describe('BridgeCTAButton', () => {
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isStockMarketClosed: false,
+        isInOffHoursTrading: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isQuoteExpired: false,
@@ -709,6 +710,7 @@ describe('BridgeCTAButton', () => {
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isStockMarketClosed: true,
+        isInOffHoursTrading: false,
         isQuoteExpired: false,
       });
       const { container } = renderWithProvider(
@@ -835,6 +837,7 @@ describe('BridgeCTAButton', () => {
       isPriceImpactWarning: false,
       isPriceImpactError: false,
       isStockMarketClosed: true,
+      isInOffHoursTrading: false,
       isQuoteExpired: true,
     });
     const { getByText } = renderWithProvider(
