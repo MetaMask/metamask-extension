@@ -32,13 +32,6 @@ export type GlobalMenuDrawerProps = {
   showCloseButton?: boolean;
 
   /**
-   * Width of the drawer
-   *
-   * @default '400px'
-   */
-  width?: string;
-
-  /**
    * Optional data-testid for testing
    */
   'data-testid'?: string;

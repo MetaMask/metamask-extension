@@ -1,39 +1,27 @@
-// Native <dialog> enter/exit via the CSS entry/exit model:
-// individual transform (`translate`), `display`/`overlay` + allow-discrete,
-// and `@starting-style`. See:
-// https://developer.chrome.com/blog/entry-exit-animations
-//
-// The dialog is a stationary clip stencil (aligned to the shell column). An
-// inner `.global-menu-drawer__frame` does the slide so `overflow: clip` keeps
-// the animation inside the container — not across the viewport gutter outside
-// `--width-max`.
-
+// This serves as a clip stencil and backdrop for the drawer
 .global-menu-drawer {
-  // Sit on the right edge of the centered shell column
+  // Reset browser defaults
   box-sizing: border-box;
-  width: min(var(--drawer-width, 400px), 100%);
-  max-width: 100%;
+  border: none;
+  padding: 0;
+  background: transparent;
+
+  width: min(400px, 100%);
   height: 100%;
   max-height: 100%;
   margin-block: 0;
   margin-inline-start: auto;
   margin-inline-end: max(0px, calc((100vw - var(--width-max)) / 2));
-  padding: 0;
-  border: none;
+
+  // Clipping box
   overflow: clip;
-  background: transparent;
-
-  // Stay put — clipping box must not move with the slide
   translate: none;
-
-  // Only discrete top-layer props on the dialog; slide lives on `__frame`
   transition-property: display, overlay;
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
   transition-behavior: allow-discrete;
 
-  // Fullscreen: clear the fox logo strip. Same gate as MultichainMetaFoxLogo
-  // (`display={[None, Flex]}` → visible from `$screen-sm-min` / 576px).
+  // Fullscreen still has logo, so we offset
   &--fullscreen {
     @media screen and (min-width: 576px) {
       top: 90px;
@@ -42,11 +30,10 @@
     }
   }
 
-  // Fade UA ::backdrop (default rgba(0,0,0,0.1)); don't set background.
   &::backdrop {
     opacity: 0;
     transition-property: opacity, display, overlay;
-    transition-duration: 300ms;
+    transition-duration: var(--global-drawer-open, 300ms);
     transition-timing-function: linear;
     transition-behavior: allow-discrete;
   }
@@ -66,14 +53,11 @@
   }
 }
 
-// Slide surface — clipped by the stationary dialog
+// Drawer slide surface — clipped by the stationary dialog
 .global-menu-drawer__frame {
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
 
-  // Exit / closed (when dialog loses [open], allow-discrete keeps dialog
-  // painted so this transition can finish)
   translate: 100% 0;
   transition-property: translate;
   transition-duration: 300ms;
@@ -82,17 +66,14 @@
 
 .global-menu-drawer[open] > .global-menu-drawer__frame {
   translate: 0 0;
-  // Enter: keyframes + backwards beat @starting-style for nested paint-in.
-  // When `:root` has `--global-drawer-open: none` (set before navigating away
-  // so it survives Home unmount), both animation and starting translate
-  // resolve to `none` — restore without replaying slide-in.
+  // When `--global-drawer-open: none` both animation and starting translate
+  // resolve to `none` — restore frame without replaying animation
   animation: var(
     --global-drawer-open,
     global-menu-drawer-slide-in 300ms ease-in-out backwards
   );
 }
 
-// Before-open snapshots — paired with allow-discrete on display/overlay
 @starting-style {
   .global-menu-drawer[open] > .global-menu-drawer__frame {
     translate: var(--global-drawer-open, 100% 0);
@@ -104,10 +85,11 @@
 }
 
 // Narrow sidepanel: drawer covers the full surface.
-// Breakpoint matches `--width-max-sidepanel` in base-styles.scss (custom
-// properties are not reliable inside `@media`, so keep the px value in sync).
+// Match Settings compact layout (`SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH` in
+// settings.tsx) — sidebar gone ≤575px. Hardcoded because custom properties
+// are not reliable inside `@media`.
 .app--sidepanel {
-  @media (max-width: 490px) {
+  @media (max-width: 575px) {
     .global-menu-drawer {
       width: 100%;
       max-width: 100%;

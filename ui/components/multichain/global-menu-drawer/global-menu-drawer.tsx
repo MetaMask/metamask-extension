@@ -38,7 +38,6 @@ function clearDrawerOpen(root: HTMLElement = document.documentElement) {
  * @param props.children - Content to render inside the drawer
  * @param props.title - Optional title for the drawer (used for accessibility)
  * @param props.showCloseButton - Whether to show the close button (default: true)
- * @param props.width - Width of the drawer (default: '400px')
  * @param props.'data-testid'
  */
 export const GlobalMenuDrawer = ({
@@ -47,7 +46,6 @@ export const GlobalMenuDrawer = ({
   children,
   title,
   showCloseButton = true,
-  width = '400px',
   'data-testid': dataTestId,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
@@ -162,7 +160,6 @@ export const GlobalMenuDrawer = ({
       closedby="any"
       data-testid={dataTestId}
       onClose={handleDialogClose}
-      style={{ '--drawer-width': width } as React.CSSProperties}
     >
       <div className="global-menu-drawer__frame">{panel}</div>
     </dialog>
