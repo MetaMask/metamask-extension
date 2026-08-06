@@ -40,7 +40,7 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
-import { useConfirmScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useConfirmScamQuestionnaire';
+import { useDomainScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useDomainScamQuestionnaire';
 import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
@@ -147,20 +147,20 @@ const ConfirmButton = ({
   } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
 
   const {
-    isScamQuestionnaireRequired: isConfirmScamRequired,
-    isScamQuestionnaireVisible: isConfirmScamVisible,
-    showScamQuestionnaire: showConfirmScamQuestionnaire,
-    scamQuestionnaireProps: confirmScamProps,
-  } = useConfirmScamQuestionnaire({ onCancel });
+    isScamQuestionnaireRequired: isDomainScamRequired,
+    isScamQuestionnaireVisible: isDomainScamVisible,
+    showScamQuestionnaire: showDomainScamQuestionnaire,
+    scamQuestionnaireProps: domainScamProps,
+  } = useDomainScamQuestionnaire({ onCancel });
 
   // The two hooks are mutually exclusive (send requires origin === ORIGIN_METAMASK,
   // confirm requires origin !== ORIGIN_METAMASK), so at most one is active at a time.
-  const isScamQuestionnaireRequired = isSendScamRequired || isConfirmScamRequired;
-  const isScamQuestionnaireVisible = isSendScamVisible || isConfirmScamVisible;
+  const isScamQuestionnaireRequired = isSendScamRequired || isDomainScamRequired;
+  const isScamQuestionnaireVisible = isSendScamVisible || isDomainScamVisible;
   const showScamQuestionnaire = isSendScamRequired
     ? showSendScamQuestionnaire
-    : showConfirmScamQuestionnaire;
-  const scamQuestionnaireProps = isSendScamRequired ? sendScamProps : confirmScamProps;
+    : showDomainScamQuestionnaire;
+  const scamQuestionnaireProps = isSendScamRequired ? sendScamProps : domainScamProps;
 
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
@@ -225,7 +225,7 @@ const ConfirmButton = ({
           data-testid="confirm-footer-button"
           disabled={disabled}
           onClick={
-            isConfirmScamRequired ? showConfirmScamQuestionnaire : onSubmit
+            isDomainScamRequired ? showDomainScamQuestionnaire : onSubmit
           }
           size={ButtonSize.Lg}
         >

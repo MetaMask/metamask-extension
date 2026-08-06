@@ -16,7 +16,7 @@ type OnCancelHandler = (args: {
   location: MetaMetricsEventLocation;
 }) => void | Promise<void>;
 
-export type UseConfirmScamQuestionnaireResult = {
+export type UseDomainScamQuestionnaireResult = {
   isScamQuestionnaireRequired: boolean;
   isScamQuestionnaireVisible: boolean;
   showScamQuestionnaire: () => void;
@@ -32,11 +32,11 @@ function matchesScamDomain(origin: string, domain: string): boolean {
   }
 }
 
-export function useConfirmScamQuestionnaire({
+export function useDomainScamQuestionnaire({
   onCancel,
 }: {
   onCancel: OnCancelHandler;
-}): UseConfirmScamQuestionnaireResult {
+}): UseDomainScamQuestionnaireResult {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const [isScamQuestionnaireVisible, setVisible] = useState(false);
   const [hasPassed, setHasPassed] = useState(false);
