@@ -59,7 +59,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="mt-4"
+          class="mt-2"
         >
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"
@@ -276,7 +276,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         style="overflow: auto;"
       >
         <div
-          class="mt-4"
+          class="mt-2"
         >
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"
@@ -493,7 +493,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         style="overflow: auto;"
       >
         <div
-          class="mt-4"
+          class="mt-2"
         >
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default ml-4"

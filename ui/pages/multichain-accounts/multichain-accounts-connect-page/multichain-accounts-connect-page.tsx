@@ -548,7 +548,7 @@ export const MultichainAccountsConnectPage = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Box marginTop={4}>
+        <Box marginTop={2}>
           <TextDS
             variant={TextVariantDS.BodySm}
             color={TextColorDS.TextAlternative}
