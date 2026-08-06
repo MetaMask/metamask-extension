@@ -718,6 +718,47 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
 
+      it('also scans the decoded recipient of a token transfer', async () => {
+        // ERC-20 `transfer(0x2222..., 10)` — recipient is digit-only so its
+        // checksummed form equals its lowercase form.
+        request.transactionParams.data =
+          '0xa9059cbb0000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000000a';
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(2);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.any(Function),
+          expect.any(Function),
+          CHAIN_IDS.MAINNET,
+          phishingControllerMock,
+        );
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x2222222222222222222222222222222222222222',
+          expect.any(Function),
+          expect.any(Function),
+          CHAIN_IDS.MAINNET,
+          phishingControllerMock,
+        );
+      });
+
+      it('does not scan a decoded recipient for non-transfer calldata', async () => {
+        request.transactionParams.data = '0x12345678';
+
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+      });
+
       it('does not call scanAddressAndAddToCache when to address is not a string', async () => {
         request.transactionParams.to = undefined;
 

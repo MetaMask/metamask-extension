@@ -1,4 +1,5 @@
 import {
+  getEffectiveRecipient,
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -159,18 +160,21 @@ function isTrusted(
   //
   // Recipients that no scan path covers stay cache misses and are treated as
   // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
-  // and `wallet_sendCalls` requests (including each nested call's `to`), but
-  // nothing is scanned when the user has security alerts disabled, and the
-  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
-  // batch) is never scanned, so its cache miss never disqualifies.
+  // and `wallet_sendCalls` requests (each call's `to` plus approval spenders
+  // and token-transfer recipients decoded from calldata), but nothing is
+  // scanned when the user has security alerts disabled, and the outer batch
+  // target (`txParamsOriginal.to`, the upgraded EOA for a 7702 batch) is
+  // never scanned, so its cache miss never disqualifies.
   if (!chainId) {
     return false;
   }
 
-  // Use the original `to` address before any container wrapping,
-  // since containers may redirect to a trusted delegation manager.
-  const originalTo = txParamsOriginal?.to ?? txParams?.to;
-  const toAddresses = getToAddresses(originalTo, nestedTransactions);
+  const toAddresses = getRecipientAddresses(
+    txParams,
+    txParamsOriginal,
+    transactionMeta.type,
+    nestedTransactions,
+  );
 
   if (toAddresses.length === 0) {
     return true;
@@ -188,20 +192,51 @@ function isTrusted(
   });
 }
 
-function getToAddresses(
-  primaryTo: string | undefined,
+/**
+ * Collects the effective recipient of the transaction and of each nested
+ * transaction. For classified ERC-20/721/1155 transfers,
+ * {@link getEffectiveRecipient} returns the recipient decoded from calldata
+ * rather than `to` (the token contract), so the trust verdict evaluated here
+ * belongs to the address actually receiving the funds. Unclassified
+ * transactions fall back to `to` unchanged.
+ *
+ * @param txParams - Current transaction params.
+ * @param txParamsOriginal - Params before any container wrapping. Preferred,
+ * since containers may redirect `to` to a trusted delegation manager.
+ * @param type - Classified type of the (outer) transaction.
+ * @param nestedTransactions - Nested transactions of a batch, each carrying
+ * its own classified type.
+ * @returns Recipient addresses to evaluate trust verdicts for.
+ */
+function getRecipientAddresses(
+  txParams: TransactionMeta['txParams'],
+  txParamsOriginal: TransactionMeta['txParamsOriginal'],
+  type: TransactionMeta['type'],
   nestedTransactions: TransactionMeta['nestedTransactions'],
 ): string[] {
   const addresses: string[] = [];
 
-  if (primaryTo) {
-    addresses.push(primaryTo);
+  const primaryRecipient = getEffectiveRecipient({
+    txParams: {
+      to: txParamsOriginal?.to ?? txParams?.to,
+      data: txParamsOriginal?.data ?? txParams?.data,
+    },
+    type,
+  } as TransactionMeta);
+
+  if (primaryRecipient) {
+    addresses.push(primaryRecipient);
   }
 
   if (nestedTransactions) {
     for (const nested of nestedTransactions) {
-      if (nested.to) {
-        addresses.push(nested.to);
+      const recipient = getEffectiveRecipient({
+        txParams: { to: nested.to, data: nested.data },
+        type: nested.type,
+      } as TransactionMeta);
+
+      if (recipient) {
+        addresses.push(recipient);
       }
     }
   }

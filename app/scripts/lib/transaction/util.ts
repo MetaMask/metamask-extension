@@ -40,7 +40,10 @@ import {
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
-import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
+import {
+  getTransactionDataRecipient,
+  parseTransferTransactionData,
+} from '../../../../shared/lib/transaction.utils';
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   getTempoEvmTransactionArgs,
@@ -366,7 +369,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
   if (origin !== ORIGIN_METAMASK || !securityAlertsEnabled) {
     return;
   }
-  const { to } = transactionParams;
+  const { to, data } = transactionParams;
   if (typeof to !== 'string') {
     return;
   }
@@ -382,18 +385,31 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return addSecurityAlertResponse(cacheKey, response);
   };
 
-  scanAddressAndAddToCache(
-    to,
-    getAddressSecurityAlertResponseWithChain,
-    addAddressSecurityAlertResponseWithChain,
-    chainId,
-    phishingController,
-  ).catch((error) => {
-    console.error(
-      '[scanAddressForTrustSignals] error scanning address for trust signals:',
-      error,
-    );
-  });
+  const addresses = [to];
+
+  // For token transfers `to` is only the token contract — the funds move to
+  // the recipient encoded in calldata, so scan that address as well.
+  const transferRecipient = data
+    ? parseTransferTransactionData(data as Hex)?.recipient
+    : undefined;
+  if (transferRecipient) {
+    addresses.push(transferRecipient);
+  }
+
+  for (const address of addresses) {
+    scanAddressAndAddToCache(
+      address,
+      getAddressSecurityAlertResponseWithChain,
+      addAddressSecurityAlertResponseWithChain,
+      chainId,
+      phishingController,
+    ).catch((error) => {
+      console.error(
+        '[scanAddressForTrustSignals] error scanning address for trust signals:',
+        error,
+      );
+    });
+  }
 }
 
 async function validateSecurity(request: AddTransactionRequest) {

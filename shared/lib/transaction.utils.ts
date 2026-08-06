@@ -21,6 +21,7 @@ import { BigNumber } from 'bignumber.js';
 import { ERC20 } from '@metamask/controller-utils';
 import {
   APPROVAL_METHOD_NAMES,
+  TRANSFER_METHOD_NAMES,
   AssetType,
   TokenStandard,
 } from '../constants/transaction';
@@ -531,6 +532,41 @@ export function parseApprovalTransactionData(data: Hex):
     name,
     tokenAddress,
     spender,
+  };
+}
+
+/**
+ * Parses ERC-20/721/1155 token-transfer calldata and extracts the address
+ * actually receiving the tokens. For these methods the transaction's `to` is
+ * the token contract, not the recipient — the same distinction
+ * `getEffectiveRecipient` in `@metamask/transaction-controller` draws (that
+ * helper needs a classified `TransactionType`; this one parses raw calldata
+ * for callers, like the trust-signals middleware, that have none).
+ *
+ * @param data - The transaction calldata to parse
+ * @returns The method name and decoded recipient, or undefined when the
+ * calldata is not a recognized token transfer
+ */
+export function parseTransferTransactionData(data: Hex):
+  | {
+      name: string;
+      recipient?: Hex;
+    }
+  | undefined {
+  const transactionDescription = parseStandardTokenTransactionData(data);
+  const { args, name } = transactionDescription ?? {};
+
+  if (!TRANSFER_METHOD_NAMES.includes(name ?? '') || !name) {
+    return undefined;
+  }
+
+  const recipient =
+    args?._to ?? // ERC-20 - transfer / transferFrom
+    args?.to; // ERC-721 / ERC-1155 / Fiat Token V2
+
+  return {
+    name,
+    recipient: typeof recipient === 'string' ? (recipient as Hex) : undefined,
   };
 }
 

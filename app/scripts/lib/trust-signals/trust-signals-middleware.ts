@@ -1,4 +1,4 @@
-import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
+import { Hex, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import {
   NetworkController,
   NetworkClientId,
@@ -9,6 +9,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
+  parseTransferTransactionData,
 } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
@@ -145,24 +146,60 @@ function handleEthSendTransaction(
     );
   });
 
-  // If this is an approval transaction, also scan the spender address
+  // If this is an approval or a token transfer, also scan the addresses
+  // encoded in calldata (approval spender / transfer recipient).
   if (data && typeof data === 'string') {
-    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-    const spenderAddress = approvalData?.spender;
-    if (spenderAddress) {
-      scanAddressAndAddToCache(
-        spenderAddress,
-        appStateController.getAddressSecurityAlertResponse,
-        appStateController.addAddressSecurityAlertResponse,
-        rawChainId,
-        phishingController,
-      ).catch((error) => {
-        console.error(
-          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
-          error,
-        );
-      });
+    scanCalldataAddresses(
+      data as Hex,
+      appStateController,
+      rawChainId,
+      phishingController,
+      'transaction',
+    );
+  }
+}
+
+/**
+ * Scans addresses that are encoded in transaction calldata rather than
+ * `txParams.to`: the spender of a token approval and the recipient of an
+ * ERC-20/721/1155 token transfer (for transfers, `to` is only the token
+ * contract — the funds move to the address inside the calldata).
+ *
+ * @param data - The transaction calldata
+ * @param appStateController - AppStateController holding the verdict cache
+ * @param chainId - The chain the transaction targets
+ * @param phishingController - PhishingController performing the scan
+ * @param context - Label used in error logs (e.g. 'transaction', 'sendCalls')
+ */
+function scanCalldataAddresses(
+  data: Hex,
+  appStateController: AppStateController,
+  chainId: Hex,
+  phishingController: PhishingController,
+  context: string,
+) {
+  const spenderAddress = parseApprovalTransactionData(data)?.spender;
+  const transferRecipient = parseTransferTransactionData(data)?.recipient;
+
+  for (const [label, address] of [
+    ['spender', spenderAddress],
+    ['transfer recipient', transferRecipient],
+  ] as const) {
+    if (!address) {
+      continue;
     }
+    scanAddressAndAddToCache(
+      address,
+      appStateController.getAddressSecurityAlertResponse,
+      appStateController.addAddressSecurityAlertResponse,
+      chainId,
+      phishingController,
+    ).catch((error) => {
+      console.error(
+        `[createTrustSignalsMiddleware] error scanning ${label} address for ${context}:`,
+        error,
+      );
+    });
   }
 }
 
@@ -218,25 +255,16 @@ function handleWalletSendCalls(
       });
     }
 
-    // If a nested call is an approval, also scan the spender address —
-    // parity with the eth_sendTransaction path.
+    // If a nested call is an approval or a token transfer, also scan the
+    // addresses encoded in its calldata — parity with eth_sendTransaction.
     if (typeof data === 'string') {
-      const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-      const spenderAddress = approvalData?.spender;
-      if (spenderAddress) {
-        scanAddressAndAddToCache(
-          spenderAddress,
-          appStateController.getAddressSecurityAlertResponse,
-          appStateController.addAddressSecurityAlertResponse,
-          rawChainId,
-          phishingController,
-        ).catch((error) => {
-          console.error(
-            '[createTrustSignalsMiddleware] error scanning spender address for sendCalls approval:',
-            error,
-          );
-        });
-      }
+      scanCalldataAddresses(
+        data as Hex,
+        appStateController,
+        rawChainId,
+        phishingController,
+        'sendCalls',
+      );
     }
   }
 }
