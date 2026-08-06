@@ -288,14 +288,14 @@ async function mockFixtureTransactionHistory(
   return endpoints;
 }
 
-// Mocks the Shasta JSON-RPC endpoint used by TronWeb when initialising a
-// Shasta provider. Returns an empty successful response for any request so
-// the snap can proceed without real network access in CI.
+// Mocks the testnet JSON-RPC endpoints used by TronWeb when initialising a
+// Shasta or Nile provider. Returns an empty successful response for any
+// request so the snap can proceed without real network access in CI.
 async function mockTestnetJsonRpc(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(/^https:\/\/api\.shasta\.trongrid\.io\/jsonrpc$/u)
+    .forPost(/^https:\/\/(shasta|nile)\.api\.trongrid\.io\/jsonrpc$/u)
     .always()
     .thenJson(200, { jsonrpc: '2.0', id: 1, result: null });
 }
