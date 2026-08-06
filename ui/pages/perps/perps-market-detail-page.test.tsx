@@ -18,6 +18,7 @@ import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/uti
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
@@ -941,7 +942,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
 
       Object.defineProperty(window.history, 'length', {
         value: originalLength,

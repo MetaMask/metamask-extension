@@ -77,6 +77,7 @@ describe('Container Utils', () => {
     });
 
     enforceSimulationsMock.mockResolvedValue({
+      slippage: 10,
       updateTransaction: (tx) => {
         tx.txParams.data = NEW_DATA_MOCK;
       },

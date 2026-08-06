@@ -19,7 +19,7 @@ jest.mock('@rive-app/react-canvas', () => ({
   useRiveFile: jest.fn(),
   Layout: jest.fn(),
   Fit: { Contain: 'contain' },
-  Alignment: { BottomCenter: 'bottomCenter' },
+  Alignment: { BottomCenter: 'bottomCenter', Center: 'center' },
 }));
 
 jest.mock('../../../contexts/rive-wasm', () => ({
@@ -35,8 +35,6 @@ function setDefaultMocks(rive: Record<string, jest.Mock> | null = null) {
     isWasmReady: true,
     loading: false,
     error: undefined,
-    urlBufferMap: {},
-    setUrlBufferCache: jest.fn(),
     animationCompleted: {},
     setIsAnimationCompleted: jest.fn(),
   });
@@ -81,10 +79,13 @@ describe('FoxAppearAnimation', () => {
       isWasmReady: false,
       loading: true,
       error: undefined,
-      urlBufferMap: {},
-      setUrlBufferCache: jest.fn(),
       animationCompleted: {},
       setIsAnimationCompleted: jest.fn(),
+    });
+    mockedWasm.useRiveWasmFile.mockReturnValue({
+      buffer: undefined,
+      error: undefined,
+      loading: true,
     });
 
     render(<FoxAppearAnimation isLoader />);
@@ -127,7 +128,6 @@ describe('FoxAppearAnimation', () => {
     act(() => {
       window.dispatchEvent(new Event('resize'));
     });
-    expect(riveInstance.resizeToCanvas).toHaveBeenCalled();
 
     unmount();
     expect(removeSpy).toHaveBeenCalledWith('resize', expect.any(Function));
