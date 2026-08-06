@@ -8,7 +8,7 @@ import { useConfirmContext } from '../../../../pages/confirmations/context/confi
 import type { ScamQuestionnaireProps } from './scam-questionnaire';
 
 const SCAM_QUESTIONNAIRE_CONFIRM_FLAG_KEY =
-  'productSafetyScamQuestionnaireConfirmEnabled';
+  'productSafetyScamQuestionnaireDomainList';
 
 type OnCancelHandler = (args: {
   location: MetaMetricsEventLocation;

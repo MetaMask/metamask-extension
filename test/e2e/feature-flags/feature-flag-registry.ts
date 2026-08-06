@@ -3141,8 +3141,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     ],
     status: FeatureFlagStatus.Active,
   },
-  productSafetyScamQuestionnaireConfirmEnabled: {
-    name: 'productSafetyScamQuestionnaireConfirmEnabled',
+  productSafetyScamQuestionnaireDomainList: {
+    name: 'productSafetyScamQuestionnaireDomainList',
     type: FeatureFlagType.Remote,
     inProd: false,
     productionDefault: [],
