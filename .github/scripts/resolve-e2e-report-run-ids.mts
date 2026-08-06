@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
-import type {
-  GitHubOptions,
-  GitHub,
+import {
+  type GitHubOptions,
+  type GitHub,
+  createGitHubOptions,
 } from './shared/github-options.mts';
 
 const reports = [
@@ -93,7 +94,5 @@ export async function resolveE2EReportRunIds({
 
 // If main module (i.e. this is the TS file that was run directly)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { createGitHubOptions } = await import('./shared/github-options.mts');
-
   await resolveE2EReportRunIds(await createGitHubOptions());
 }
