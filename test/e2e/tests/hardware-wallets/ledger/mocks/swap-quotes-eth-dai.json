@@ -92,12 +92,8 @@
           "baseBpsFee": 87.5
         }
       },
-      "bridges": [
-        "okx"
-      ],
-      "protocols": [
-        "okx"
-      ],
+      "bridges": ["okx"],
+      "protocols": ["okx"],
       "steps": [],
       "slippage": 2,
       "gasSponsored": false,
