@@ -91,7 +91,7 @@ describe('Tron Snap - exportAccount', function () {
         const testDappTron = new TestDappTron(driver);
         await testDappTron.openTestDappPage();
 
-        const result: { success: boolean; error: string } =
+        const result: { success: boolean; error?: string } =
           await driver.executeAsyncScript(`
             const callback = arguments[arguments.length - 1];
             const waitForEthereum = (resolve) => {
