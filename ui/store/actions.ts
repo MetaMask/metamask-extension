@@ -14,7 +14,6 @@ import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   bytesToString,
   CaipAccountId,
-  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -58,7 +57,6 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
