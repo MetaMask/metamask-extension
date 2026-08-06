@@ -98,7 +98,7 @@ export const useDiscoverStocksSearch = ({
     },
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
-        ? lastPage.pageInfo.nextCursor ?? undefined
+        ? (lastPage.pageInfo.nextCursor ?? undefined)
         : undefined,
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,

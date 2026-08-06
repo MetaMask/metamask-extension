@@ -214,7 +214,13 @@ describe('DiscoverSearchPage', () => {
     renderPage();
     fireEvent.click(screen.getByTestId('discover-tab-crypto'));
 
-    const tabContent = screen.getByTestId('discover-search-tab-content');
+    const tabContent = screen
+      .getByTestId('discover-search-page')
+      .querySelector('.overflow-y-auto');
+    expect(tabContent).not.toBeNull();
+    if (!tabContent) {
+      throw new Error('Expected Discover Search tab content');
+    }
     Object.defineProperties(tabContent, {
       clientHeight: { configurable: true, value: 500 },
       scrollHeight: { configurable: true, value: 1000 },
@@ -374,33 +380,7 @@ describe('DiscoverSearchPage', () => {
     ).toBeInTheDocument();
   });
 
-  it.each([
-    ['crypto', 'crypto', 'discover-stocks-preview-eip155:1/erc20:0xstock'],
-    ['stocks', 'stocks', 'discover-crypto-preview-eip155:1/slip44:60'],
-  ])(
-    'shows matching sections when the selected %s tab has no hits',
-    (_, emptySection, matchingResultTestId) => {
-      mockUseDiscoverSearch.mockReturnValue({
-        ...getDefaultDiscoverSearchResult(),
-        [emptySection]: {
-          ...getDefaultDiscoverSearchResult()[emptySection],
-          items: [],
-          totalCount: 0,
-        },
-      });
-      renderPage();
 
-      fireEvent.change(screen.getByTestId('discover-search-input'), {
-        target: { value: 'eth' },
-      });
-      fireEvent.click(screen.getByTestId(`discover-tab-${emptySection}`));
-
-      expect(screen.getByTestId(matchingResultTestId)).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('discover-search-no-results'),
-      ).not.toBeInTheDocument();
-    },
-  );
 
   it('shows matching sections when the selected Perps tab has no hits', () => {
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);

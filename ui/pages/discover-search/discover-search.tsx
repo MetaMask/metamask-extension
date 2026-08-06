@@ -340,9 +340,7 @@ export const DiscoverSearchPage = () => {
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
   const hasAllError = Boolean(
-    cryptoSection.error ||
-      stocks.error ||
-      (isPerpsAvailable && perps.error),
+    cryptoSection.error || stocks.error || (isPerpsAvailable && perps.error),
   );
   const showCryptoPreview = previewCrypto.length > 0 || cryptoSection.isLoading;
   const showPerpsPreview =
@@ -595,7 +593,6 @@ export const DiscoverSearchPage = () => {
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{
           className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
-          'data-testid': 'discover-search-tab-content',
           onScroll: handleTabContentScroll,
         }}
       >
