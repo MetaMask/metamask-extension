@@ -23,19 +23,20 @@ describe('mapAddressScanResult', () => {
     ).toBe(ResultType.ErrorResult); // 'Error'
   });
 
-  it('passes Malicious/Warning/Benign through unchanged', () => {
-    for (const value of [
-      AddressScanResultType.Malicious,
-      AddressScanResultType.Warning,
-      AddressScanResultType.Benign,
-    ]) {
+  it('maps Malicious/Warning/Benign to the matching extension ResultType', () => {
+    const cases: [AddressScanResultType, ResultType][] = [
+      [AddressScanResultType.Malicious, ResultType.Malicious],
+      [AddressScanResultType.Warning, ResultType.Warning],
+      [AddressScanResultType.Benign, ResultType.Benign],
+    ];
+    for (const [controllerValue, extensionValue] of cases) {
       expect(
         mapAddressScanResult({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: value,
+          result_type: controllerValue,
           label: 'x',
         }).result_type,
-      ).toBe(value as string);
+      ).toBe(extensionValue);
     }
   });
 
