@@ -31,7 +31,9 @@ export const useAmountValidation = () => {
   const unmountedRef = useRef(false);
 
   const setAndReturnError = useCallback((errorMessage: string | undefined) => {
-    setAmountError(errorMessage);
+    if (!unmountedRef.current) {
+      setAmountError(errorMessage);
+    }
     return errorMessage;
   }, []);
 
@@ -107,7 +109,7 @@ export const useAmountValidation = () => {
   const validateAmountAsyncRef = useRef(validateAmountAsync);
   validateAmountAsyncRef.current = validateAmountAsync;
 
-  const debouncedValidateAmount = useMemo(
+  const debouncedSnapValidation = useMemo(
     () =>
       debounce(() => {
         validateAmountAsyncRef.current();
@@ -115,17 +117,28 @@ export const useAmountValidation = () => {
     [],
   );
 
+  // EVM: run immediately — no snap RPC, so amountError must never be stale.
   useEffect(() => {
-    debouncedValidateAmount();
-    return () => debouncedValidateAmount.cancel();
-  }, [debouncedValidateAmount, validateAmountAsync]);
+    if (!isNonEvmSendType) {
+      validateAmountAsync();
+    }
+  }, [isNonEvmSendType, validateAmountAsync]);
+
+  // Non-EVM: debounce to avoid a snap RPC call on every keystroke.
+  useEffect(() => {
+    if (isNonEvmSendType) {
+      debouncedSnapValidation();
+      return () => debouncedSnapValidation.cancel();
+    }
+    return undefined;
+  }, [isNonEvmSendType, debouncedSnapValidation, validateAmountAsync]);
 
   useEffect(
     () => () => {
       unmountedRef.current = true;
-      debouncedValidateAmount.cancel();
+      debouncedSnapValidation.cancel();
     },
-    [debouncedValidateAmount],
+    [debouncedSnapValidation],
   );
 
   return { amountError, validateNonEvmAmountAsync };

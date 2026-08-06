@@ -241,6 +241,10 @@ describe('mapSnapErrorCodeIntoTranslation', () => {
 });
 
 describe('useAmountValidation', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('return field for amount error', () => {
     const { result } = renderHookWithProvider(
       () => useAmountValidation(),
@@ -250,11 +254,16 @@ describe('useAmountValidation', () => {
     expect(result.current.validateNonEvmAmountAsync).toBeDefined();
   });
 
-  it('debounces validation so rapid value changes result in a single validation call', async () => {
+  it('snap validation is debounced with 300ms delay for non-EVM send flows', async () => {
     mockDebounce.mockClear();
 
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_NATIVE_ASSET,
+      asset: {
+        isNative: true,
+        rawBalance: '0xde0b6b3a7640000',
+        decimals: 18,
+      },
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       from: MOCK_ADDRESS_1,
       value: '1',
     } as unknown as SendContext.SendContextType);
