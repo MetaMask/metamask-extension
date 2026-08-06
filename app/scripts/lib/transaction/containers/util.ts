@@ -21,6 +21,7 @@ export async function applyTransactionContainers({
   transactionMeta: TransactionMeta;
   types: TransactionContainerType[];
 }): Promise<{
+  enforcedSimulationsSlippage?: number;
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
   const { txParamsOriginal } = transactionMeta;
@@ -28,18 +29,20 @@ export async function applyTransactionContainers({
     TransactionContainerType.EnforcedSimulations,
   );
   const finalMetadata = cloneDeep(transactionMeta);
+  let enforcedSimulationsSlippage: number | undefined;
 
   if (txParamsOriginal) {
     finalMetadata.txParams = cloneDeep(txParamsOriginal);
   }
 
   if (hasEnforcedSimulations) {
-    const { updateTransaction } = await enforceSimulations({
+    const { slippage, updateTransaction } = await enforceSimulations({
       messenger,
       transactionMeta: finalMetadata,
       useRealSignature: isApproved,
     });
 
+    enforcedSimulationsSlippage = slippage;
     updateTransaction(finalMetadata);
   }
 
@@ -76,6 +79,7 @@ export async function applyTransactionContainers({
     : (gas as Hex);
 
   return {
+    enforcedSimulationsSlippage,
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.containerTypes = types;
 

@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Você está enviando seus ativos para um endereço de queima. Se continuar, você perderá seus ativos."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "As mudanças estimadas para esta transação foram atualizadas. Revise com atenção antes de prosseguir."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Esta é sua primeira interação com este endereço. Certifique-se de que ele está correto antes de continuar."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Não há suporte para esta carteira"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Os resultados mudaram"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1ª interação"
@@ -1644,8 +1638,24 @@
     "message": "Ative $1 na $2 para começar.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Algo deu errado ao adicionar esta trustline. Tente novamente.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Não foi possível obter dados históricos"
+  },
+  "assetDeactivate": {
+    "message": "Remover",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Algo deu errado ao remover esta trustline. Tente novamente.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Você ainda tem $1 $2 nesta carteira. Você deve enviar ou trocar tudo antes de desativar este ativo na Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Desativar",
@@ -3418,6 +3428,18 @@
   },
   "discover": {
     "message": "Descobrir"
+  },
+  "discoverSearchNoResults": {
+    "message": "Nenhum resultado encontrado",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Confira outros ativos populares",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Descobrir Snaps",
@@ -6979,6 +7001,10 @@
   "perpsDateYesterday": {
     "message": "Ontem"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Depositar",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Falha na ponte"
   },
@@ -7008,6 +7034,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Sua conta perps recebeu um depósito"
+  },
+  "perpsDepositedVerb": {
+    "message": "Depositado",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Depósitos"
@@ -7087,7 +7117,7 @@
     "message": "Depositar novamente"
   },
   "perpsFunding": {
-    "message": "Captação"
+    "message": "Financiamento"
   },
   "perpsFundingPayments": {
     "message": "Pagamentos de funding"
@@ -7227,6 +7257,42 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
+  },
+  "perpsOrderBook": {
+    "message": "Livro de ordens"
+  },
+  "perpsOrderBookApply": {
+    "message": "Aplicar"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Conexão com o livro de ordens perdida"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Agrupar por"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listado por"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Carregando livro de ordens"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Preço"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconectar"
+  },
+  "perpsOrderBookSize": {
+    "message": "Tamanho"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Tipo de valor"
   },
   "perpsOrderDate": {
     "message": "Data"
@@ -7403,11 +7469,17 @@
   "perpsStatusCompleted": {
     "message": "Concluído"
   },
+  "perpsStatusFailed": {
+    "message": "Falhou"
+  },
   "perpsStatusFilled": {
     "message": "Executada"
   },
   "perpsStatusOpen": {
     "message": "Abrir"
+  },
+  "perpsStatusPending": {
+    "message": "Pendente"
   },
   "perpsStatusQueued": {
     "message": "Na fila"
@@ -7639,6 +7711,9 @@
   "perpsUnrealizedPnl": {
     "message": "P&L não realizados"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Este mercado utiliza um ativo de garantia não suportado e não pode ser negociado."
+  },
   "perpsWatchlist": {
     "message": "Lista de acompanhamento"
   },
@@ -7718,6 +7793,14 @@
   "perpsWithdrawTooltip": {
     "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Sacar",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Sacado",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Você recebe"
@@ -7962,6 +8045,9 @@
   "rampsBuyToken": {
     "message": "Comprar $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Não foi possível iniciar sua compra. Tente novamente."
   },
   "rampsBuyingViaProvider": {
     "message": "Comprar via $1.",
@@ -8710,6 +8796,300 @@
   },
   "securitySrpLabel": {
     "message": "FRASE DE RECUPERAÇÃO SECRETA"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Imposto sobre compra/venda"
+  },
+  "securityTrustBuyTax": {
+    "message": "Imposto sobre compra"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Continuar mesmo assim"
+  },
+  "securityTrustCreated": {
+    "message": "Criado em"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Dados de segurança não disponíveis"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Esta análise de segurança tem caráter meramente avaliativo e não constitui um endosso ou recomendação de negociação."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Airdrop (distribuição de tokens) suspeito"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Pode ser incluído na lista de bloqueio"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Pode ser incluído na lista de permissão"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Oferta concentrada"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Transferências confidenciais"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Comportamento suspeito"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Chamadas externas"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Número inflado de traders"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Volume falso"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Tempo de espera para negociação"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Atividade intensa de bots"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Proprietário oculto"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Oferta não divulgada"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Taxa de compra elevada"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Reputação estabelecida"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Taxa de venda elevada"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Alto volume de negociação"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Taxa de transferência elevada"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Risco de armadilha (honeypot)"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Impostor"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Provável impostor"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Impostor não confirmado"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Possível impostor"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Alega ser um ativo sensível"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Conteúdo impróprio"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Volume artificial"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Baixa liquidez bloqueada"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mintável"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Conhecido como malicioso"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Listado na bolsa de valores"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "O criador tem baixa reputação"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Metadados suspeitos"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Impostos ajustáveis"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Intransferível"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Proprietário pode alterar saldo"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Possível manipulação de preços"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Contrato proxy"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Risco de golpe (rug pull)"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Criador sancionado"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Assemelha-se a um contrato malicioso"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Atividade de bots no lançamento"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Texto de spam"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Código suspeito"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Backdoor de token"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Reversões de transferência ativadas"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Hook de transferência ativado"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transferências pausáveis"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Token não vendável"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Preço instável"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Contrato publicado"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Negociação simulada"
+  },
+  "securityTrustMalicious": {
+    "message": "Malicioso"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Malicioso"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 foi sinalizado como malicioso. É provável que roube fundos de qualquer pessoa que interaja com ele."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Este token foi sinalizado como malicioso. É provável que ele roube fundos de qualquer pessoa que interaja com ele."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Sinais de risco graves foram detectados em $1. Recomendamos não negociar este token."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Sinais de risco graves foram detectados neste token. Recomendamos não negociar este token."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Token malicioso"
+  },
+  "securityTrustMore": {
+    "message": "mais"
+  },
+  "securityTrustNa": {
+    "message": "N/D"
+  },
+  "securityTrustNetwork": {
+    "message": "Rede"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Nenhuma taxa oculta detectada"
+  },
+  "securityTrustNoIssues": {
+    "message": "Sem problemas"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Links oficiais"
+  },
+  "securityTrustOther": {
+    "message": "Outro"
+  },
+  "securityTrustRisky": {
+    "message": "De risco"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 foi sinalizado como suspeito. Analise os riscos antes de prosseguir."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Este token foi sinalizado como suspeito. Analise os riscos antes de prosseguir."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Token suspeito"
+  },
+  "securityTrustSellTax": {
+    "message": "Imposto sobre venda"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Nenhum sinal de risco detectado. Sempre pesquise qualquer ativo antes de negociar."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Sinais de risco graves foram detectados. Recomendamos evitar este ativo."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Nenhum sinal de risco detectado. Sempre pesquise qualquer ativo antes de negociar."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Sinais de alerta detectados. Analise cuidadosamente os problemas sinalizados antes de negociar este ativo."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Não foi possível carregar a análise de segurança para este token."
+  },
+  "securityTrustSuspicious": {
+    "message": "Suspeito"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 é um token suspeito."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Este é um token suspeito."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Segurança e confiança"
+  },
+  "securityTrustTokenAge": {
+    "message": "Idade do token"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Distribuição de token"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Informações do token"
+  },
+  "securityTrustTop10Holders": {
+    "message": "10 principais detentores"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Fornecimento total"
+  },
+  "securityTrustTransfer": {
+    "message": "Transferir"
+  },
+  "securityTrustType": {
+    "message": "Tipo"
+  },
+  "securityTrustVerified": {
+    "message": "Verificado"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 é amplamente negociado e amplamente reconhecido. A verificação não representa um endosso por parte da MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Token verificado"
+  },
+  "securityTrustWebsite": {
+    "message": "Website"
   },
   "seeAllPermissions": {
     "message": "Ver todas as permissões",
@@ -11135,6 +11515,10 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Exibir tudo",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"

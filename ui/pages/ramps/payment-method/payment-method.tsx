@@ -9,7 +9,10 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { RAMPS_PROVIDER_SELECTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  PREVIOUS_ROUTE,
+  RAMPS_PROVIDER_SELECTION_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
@@ -111,7 +114,7 @@ export function RampsPaymentMethodScreen() {
   const showError = Boolean(paymentMethodsError) && paymentMethods.length === 0;
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleChangeProvider = useCallback(() => {
@@ -131,7 +134,7 @@ export function RampsPaymentMethodScreen() {
 
       try {
         await setSelectedPaymentMethod(paymentMethod);
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       } catch {
         isSelectingRef.current = false;
         setIsSelecting(false);

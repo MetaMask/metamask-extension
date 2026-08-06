@@ -448,6 +448,7 @@ export type LegacyBackgroundApiServiceExportAccountAction = {
  *
  * @param transactionId - The ID of the transaction to update.
  * @param containerTypes - The container types to apply to the transaction.
+ * @param incrementToggleCount - Whether to increment the toggle interaction metric.
  */
 export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
   {
@@ -828,6 +829,38 @@ export type LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction = {
 };
 
 /**
+ * Runs when CAIP-25 permitted accounts are extended via the permission
+ * background API. If the origin is a referral partner and the globally
+ * selected account is EVM and included among the newly permitted accounts,
+ * it triggers the DeFi referral flow.
+ *
+ * @param details - Added accounts payload.
+ * @param details.origin - The origin whose permitted accounts were extended.
+ * @param details.newCaipAccountIds - The newly added CAIP-10 account ids.
+ */
+export type LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction =
+  {
+    type: `LegacyBackgroundApiService:handleDefiReferralOnPermittedAccountsAdded`;
+    handler: LegacyBackgroundApiService['handleDefiReferralOnPermittedAccountsAdded'];
+  };
+
+/**
+ * Handles DeFi referral approval flow for a partner.
+ * Shows approval confirmation screen if needed and manages referral URL redirection.
+ * This can be triggered by connection permission grants or existing connections.
+ *
+ * @param partner - The partner configuration.
+ * @param tabId - The browser tab ID to update.
+ * @param triggerType - The trigger type.
+ * @param options - Optional behavior.
+ * @param options.activePermittedAddressOverride - When set, use this permitted address for referral state instead of the first sorted permitted account.
+ */
+export type LegacyBackgroundApiServiceHandleDefiReferralAction = {
+  type: `LegacyBackgroundApiService:handleDefiReferral`;
+  handler: LegacyBackgroundApiService['handleDefiReferral'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -901,4 +934,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction
   | LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction
   | LegacyBackgroundApiServiceIsRelaySupportedAction
-  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction;
+  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction
+  | LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction
+  | LegacyBackgroundApiServiceHandleDefiReferralAction;
