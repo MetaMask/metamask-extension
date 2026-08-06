@@ -104,8 +104,8 @@ export const AppHeaderUnlockedContent = ({
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
         .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           interaction_type: 'opened',
-          entry_point: 'home',
         })
         .build(),
     );

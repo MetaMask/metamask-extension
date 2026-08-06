@@ -183,6 +183,7 @@ export const DiscoverSearchPage = () => {
     crypto: cryptoSection,
     perps,
     stocks,
+    isDebouncing,
   } = useDiscoverSearch({
     query: searchQuery,
     activeTab,
@@ -190,12 +191,20 @@ export const DiscoverSearchPage = () => {
 
   const getSectionResultCount = useCallback(
     (section: DiscoverSearchSectionId) => {
-      const searchSection =
-        section === 'crypto'
-          ? cryptoSection
-          : section === 'perps'
-            ? perps
-            : stocks;
+      let searchSection;
+      switch (section) {
+        case 'crypto':
+          searchSection = cryptoSection;
+          break;
+        case 'perps':
+          searchSection = perps;
+          break;
+        case 'stocks':
+          searchSection = stocks;
+          break;
+        default:
+          throw new Error('Unknown Discover Search section');
+      }
       return searchSection.totalCount ?? searchSection.items.length;
     },
     [cryptoSection, perps, stocks],
@@ -217,11 +226,11 @@ export const DiscoverSearchPage = () => {
 
   const trackExploreSearchEvent = useCallback(
     (properties: Record<string, Json | undefined>) => {
-      void trackEvent(
+      trackEvent(
         createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
           .addProperties(properties)
           .build(),
-      );
+      ).catch(() => undefined);
     },
     [createEventBuilder, trackEvent],
   );
@@ -270,11 +279,17 @@ export const DiscoverSearchPage = () => {
         return;
       }
       trackExploreSearchEvent({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         interaction_type: 'tab_switched',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         search_query: searchQuery,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         tab_name: getExploreSearchTabName(tab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         previous_tab: getExploreSearchTabName(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         comes_from_view_all_tap: comesFromViewAllTap || undefined,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_count: getResultCount(tab),
       });
       setActiveTab(tab);
@@ -296,14 +311,22 @@ export const DiscoverSearchPage = () => {
       position: number,
     ) => {
       trackExploreSearchEvent({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         interaction_type: 'result_clicked',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         search_query: searchQuery,
         ...(activeTab === 'all'
-          ? { section_name: getExploreSearchSectionName(section) }
+          ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              section_name: getExploreSearchSectionName(section),
+            }
           : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         tab_name: getExploreSearchTabName(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         item_clicked: asset.assetId,
         position,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_count: getResultCount(activeTab),
       });
       if (isCaipAssetType(asset.assetId)) {
@@ -316,12 +339,22 @@ export const DiscoverSearchPage = () => {
   const handlePerpsPress = useCallback(
     (market: PerpsMarketData, position: number) => {
       trackExploreSearchEvent({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         interaction_type: 'result_clicked',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         search_query: searchQuery,
-        ...(activeTab === 'all' ? { section_name: 'perps' } : {}),
+        ...(activeTab === 'all'
+          ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              section_name: 'perps',
+            }
+          : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         tab_name: getExploreSearchTabName(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         item_clicked: market.symbol,
         position,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_count: getResultCount(activeTab),
       });
       navigate(
@@ -390,14 +423,23 @@ export const DiscoverSearchPage = () => {
     (isPerpsAvailable && perps.isLoading) ||
     stocks.isLoading;
 
-  const activeTabIsLoading =
-    activeTab === 'all'
-      ? allLoading
-      : activeTab === 'crypto'
-        ? cryptoSection.isLoading
-        : activeTab === 'perps'
-          ? perps.isLoading
-          : stocks.isLoading;
+  let activeTabIsLoading: boolean;
+  switch (activeTab) {
+    case 'all':
+      activeTabIsLoading = allLoading;
+      break;
+    case 'crypto':
+      activeTabIsLoading = cryptoSection.isLoading;
+      break;
+    case 'perps':
+      activeTabIsLoading = perps.isLoading;
+      break;
+    case 'stocks':
+      activeTabIsLoading = stocks.isLoading;
+      break;
+    default:
+      throw new Error('Unknown Discover Search tab');
+  }
 
   useEffect(() => {
     if (!trimmedSearchQuery) {
@@ -405,15 +447,20 @@ export const DiscoverSearchPage = () => {
       return;
     }
     if (
+      isDebouncing ||
       activeTabIsLoading ||
       trackedSearchQuery.current === trimmedSearchQuery
     ) {
       return;
     }
     trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       interaction_type: 'searched',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       search_query: searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tab_name: getExploreSearchTabName(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(activeTab),
     });
     trackedSearchQuery.current = trimmedSearchQuery;
@@ -421,6 +468,7 @@ export const DiscoverSearchPage = () => {
     activeTab,
     activeTabIsLoading,
     getResultCount,
+    isDebouncing,
     searchQuery,
     trackExploreSearchEvent,
     trimmedSearchQuery,
@@ -436,9 +484,13 @@ export const DiscoverSearchPage = () => {
     }
     hasTrackedScroll.current = true;
     trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       interaction_type: 'scrolled',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       search_query: searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tab_name: getExploreSearchTabName(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(activeTab),
     });
   }, [
