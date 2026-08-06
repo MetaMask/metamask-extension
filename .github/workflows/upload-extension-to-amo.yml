@@ -30,15 +30,15 @@ name: Upload extension to Firefox AMO
 #   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/main|release/*
 #   actor / actor_id = runway-github[bot] / 73448015 only (no human AssumeRole)
 # PRD production (amo-production):
-#   ref              = refs/heads/main | refs/heads/release/*
-#   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/main|release/*
+#   ref              = refs/heads/release/* only
+#   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/release/*
 #   no actor pin — human workflow_dispatch after amo-production env approval (INFRA-3769)
 #
-# GitHub Environment deployment branches: amo-production and amo-flask → main + release/*.
+# GitHub Environment deployment branches: amo-flask → main + release/*; amo-production → release/* only.
 # amo-production keeps @MetaMask/release-team required reviewers. amo-flask has none (Runway + IAM).
 #
 # INFRA-3649 — sender verification (defense-in-depth; primary gate is IAM trust).
-# INFRA-3769 — release-team may workflow_dispatch production (main or release/*).
+# INFRA-3769 — release-team may workflow_dispatch production from release/* only.
 # Flask is orchestrator workflow_call only — workflow_dispatch + target=flask is rejected.
 #
 # Lambda invoke must use alias qualifier (dev | flask | production); unqualified invoke is denied.
@@ -128,9 +128,14 @@ jobs:
               echo "::error::Dev (amo-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
               exit 1
             fi
-          elif [[ "${TARGET}" == "production" || "${TARGET}" == "flask" ]]; then
+          elif [[ "${TARGET}" == "production" ]]; then
+            if [[ ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
+              echo "::error::Production uploads must run from refs/heads/release/* (current: ${GITHUB_REF})"
+              exit 1
+            fi
+          elif [[ "${TARGET}" == "flask" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
-              echo "::error::Production and flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+              echo "::error::Flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
               exit 1
             fi
           fi
