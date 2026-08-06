@@ -32,6 +32,7 @@ const createDefaultResourceState = <TData, TSelected = null>(
 });
 
 const EMPTY_ORDERS: RampsOrder[] = [];
+const EMPTY_SETTLEMENT_HASHES: Set<string> = new Set();
 const DEFAULT_COUNTRIES = createDefaultResourceState<Country[]>([]);
 const DEFAULT_PROVIDERS = createDefaultResourceState<
   Provider[],
@@ -95,6 +96,37 @@ export const selectRampsOrdersForSelectedAccount = createSelector(
       const walletAddress = order.walletAddress?.toLowerCase();
       return walletAddress === selectedAddress;
     });
+  },
+);
+
+/**
+ * Settlement hashes for the selected account's ramp orders.
+ *
+ * Used to hide the generic local/API Activity row that shares a ramp order's
+ * on-chain settlement hash. Empty / placeholder provider hashes are ignored.
+ *
+ * @param state - Extension UI state with flattened RampsController fields.
+ * @returns Lowercased settlement hashes.
+ */
+export const selectRampsSettlementHashes = createSelector(
+  [selectRampsOrdersForSelectedAccount],
+  (orders): Set<string> => {
+    const hashes = new Set<string>();
+
+    for (const order of orders) {
+      if (typeof order.txHash !== 'string') {
+        continue;
+      }
+
+      const normalized = order.txHash.trim().toLowerCase();
+      if (normalized === '' || /^0x0*$/u.test(normalized)) {
+        continue;
+      }
+
+      hashes.add(normalized);
+    }
+
+    return hashes.size > 0 ? hashes : EMPTY_SETTLEMENT_HASHES;
   },
 );
 

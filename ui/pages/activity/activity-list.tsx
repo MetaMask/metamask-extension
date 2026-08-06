@@ -73,9 +73,8 @@ export function ActivityList({
   );
 
   const groupedItems = useMemo(() => {
-    // Ramps first so settled orders keep the ramp classification over generic txs.
     return groupActivityListItems(
-      dedupeItems(rampsItems, localItems, evmItems, nonEvmItems),
+      dedupeItems(localItems, evmItems, nonEvmItems, rampsItems),
     );
   }, [evmItems, localItems, nonEvmItems, rampsItems]);
 

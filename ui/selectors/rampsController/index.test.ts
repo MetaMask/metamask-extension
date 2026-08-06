@@ -7,6 +7,7 @@ import {
   selectRampsControllerState,
   selectRampsOrders,
   selectRampsOrdersForSelectedAccount,
+  selectRampsSettlementHashes,
   selectTokens,
   selectUserRegion,
   type RampsState,
@@ -111,5 +112,91 @@ describe('rampsController selectors', () => {
       selectProviderAutoSelected: selectProviderAutoSelected(emptyMetamask),
       selectRampsControllerState: selectRampsControllerState(emptyMetamask),
     }).toMatchSnapshot();
+  });
+
+  describe('selectRampsSettlementHashes', () => {
+    it('includes plausible settlement hashes for the selected account', () => {
+      const state = {
+        metamask: {
+          orders: [
+            {
+              id: '1',
+              providerOrderId: 'order-1',
+              walletAddress: '0xAbC123',
+              txHash: '0xABC',
+              status: 'COMPLETED',
+              createdAt: 1,
+            },
+            {
+              id: '2',
+              providerOrderId: 'order-2',
+              walletAddress: '0xother',
+              txHash: '0xdef',
+              status: 'COMPLETED',
+              createdAt: 2,
+            },
+          ],
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                id: 'account-1',
+                address: '0xabc123',
+                metadata: { name: 'Account 1' },
+              },
+            },
+          },
+        },
+      } as unknown as RampsState & AccountsState;
+
+      expect(selectRampsSettlementHashes(state)).toStrictEqual(
+        new Set(['0xabc']),
+      );
+    });
+
+    it('ignores empty and placeholder provider hashes', () => {
+      const state = {
+        metamask: {
+          orders: [
+            {
+              id: '1',
+              providerOrderId: 'order-1',
+              walletAddress: '0xabc123',
+              txHash: '',
+              status: 'PENDING',
+              createdAt: 1,
+            },
+            {
+              id: '2',
+              providerOrderId: 'order-2',
+              walletAddress: '0xabc123',
+              txHash: '0x0',
+              status: 'PENDING',
+              createdAt: 2,
+            },
+            {
+              id: '3',
+              providerOrderId: 'order-3',
+              walletAddress: '0xabc123',
+              txHash: '0x0000',
+              status: 'PENDING',
+              createdAt: 3,
+            },
+          ],
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                id: 'account-1',
+                address: '0xabc123',
+                metadata: { name: 'Account 1' },
+              },
+            },
+          },
+        },
+      } as unknown as RampsState & AccountsState;
+
+      expect(selectRampsSettlementHashes(state)).toStrictEqual(new Set());
+    });
   });
 });
