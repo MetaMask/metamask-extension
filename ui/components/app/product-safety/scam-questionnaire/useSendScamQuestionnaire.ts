@@ -128,6 +128,7 @@ export function useSendScamQuestionnaire({
       onBypass: onScamComplete,
       onReject: onScamReject,
       onDismiss: hideScamQuestionnaire,
+      location: 'send_flow',
     },
   };
 }

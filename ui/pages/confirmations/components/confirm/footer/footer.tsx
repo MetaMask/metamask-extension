@@ -40,6 +40,7 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
+import { useConfirmScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useConfirmScamQuestionnaire';
 import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
@@ -139,11 +140,27 @@ const ConfirmButton = ({
   }, []);
 
   const {
-    isScamQuestionnaireRequired,
-    isScamQuestionnaireVisible,
-    showScamQuestionnaire,
-    scamQuestionnaireProps,
+    isScamQuestionnaireRequired: isSendScamRequired,
+    isScamQuestionnaireVisible: isSendScamVisible,
+    showScamQuestionnaire: showSendScamQuestionnaire,
+    scamQuestionnaireProps: sendScamProps,
   } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+
+  const {
+    isScamQuestionnaireRequired: isConfirmScamRequired,
+    isScamQuestionnaireVisible: isConfirmScamVisible,
+    showScamQuestionnaire: showConfirmScamQuestionnaire,
+    scamQuestionnaireProps: confirmScamProps,
+  } = useConfirmScamQuestionnaire({ onCancel });
+
+  // The two hooks are mutually exclusive (send requires origin === ORIGIN_METAMASK,
+  // confirm requires origin !== ORIGIN_METAMASK), so at most one is active at a time.
+  const isScamQuestionnaireRequired = isSendScamRequired || isConfirmScamRequired;
+  const isScamQuestionnaireVisible = isSendScamVisible || isConfirmScamVisible;
+  const showScamQuestionnaire = isSendScamRequired
+    ? showSendScamQuestionnaire
+    : showConfirmScamQuestionnaire;
+  const scamQuestionnaireProps = isSendScamRequired ? sendScamProps : confirmScamProps;
 
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
@@ -207,7 +224,9 @@ const ConfirmButton = ({
           block
           data-testid="confirm-footer-button"
           disabled={disabled}
-          onClick={onSubmit}
+          onClick={
+            isConfirmScamRequired ? showConfirmScamQuestionnaire : onSubmit
+          }
           size={ButtonSize.Lg}
         >
           {currentConfirmation?.type ===
