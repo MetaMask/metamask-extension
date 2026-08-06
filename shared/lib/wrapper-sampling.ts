@@ -1,3 +1,5 @@
+import { getRemoteWrapperSampleRate } from './sentry-remote-rates';
+
 /**
  * Sub-sample rate for wrapper-created spans (`messenger.call`, `rpc.handler`).
  *
@@ -10,6 +12,10 @@
  * confirmed effective in production. The denylist removes ~90% of the
  * originally-projected per-trace wrapper-span volume (~100 spans → ~10-20),
  * leaving ~10× headroom against the original conservative ceiling.
+ *
+ * The remote `sentry.wrapperSampleRate` feature flag overrides this constant
+ * when a valid value was read at Sentry init (see sentry-remote-rates.ts);
+ * this constant remains the fallback.
  */
 const WRAPPER_SAMPLE_RATE = 0.005;
 
@@ -27,6 +33,7 @@ export function shouldSampleWrappers(traceId: string | undefined): boolean {
   if (!traceId || traceId.length < 8) {
     return false;
   }
+  const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
   const hashBucket = parseInt(traceId.slice(0, 8), 16) % 10000;
-  return hashBucket < WRAPPER_SAMPLE_RATE * 10000;
+  return hashBucket < rate * 10000;
 }
