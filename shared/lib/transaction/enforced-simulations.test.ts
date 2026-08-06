@@ -139,12 +139,11 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    describe.each([
+    for (const { description, origin } of [
       { description: 'no origin', origin: undefined },
       { description: 'the MetaMask origin', origin: ORIGIN_METAMASK },
-    ])(
-      'with a wallet-initiated transaction using $description',
-      ({ origin }) => {
+    ]) {
+      describe(`with a wallet-initiated transaction using ${description}`, () => {
         it('returns true when all conditions are met', () => {
           expect(
             isEnforcedSimulationsEligible(
@@ -188,8 +187,8 @@ describe('enforced-simulations', () => {
             ),
           ).toBe(false);
         });
-      },
-    );
+      });
+    }
 
     it('returns false when chain is not in eip7702 supported chains', () => {
       expect(
