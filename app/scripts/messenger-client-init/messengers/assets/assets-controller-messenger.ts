@@ -53,12 +53,9 @@ export function getAssetsControllerMessenger(
       'NetworkEnablementController:getState',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      // core#9717 / 13.0.0: multicall3 address via config registry (fallback to hardcoded)
+      'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'AccountsController:getSelectedAccount',
-      'BackendWebSocketService:subscribe',
-      'BackendWebSocketService:getConnectionInfo',
-      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      'BackendWebSocketService:addChannelCallback',
-      'BackendWebSocketService:removeChannelCallback',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
@@ -83,16 +80,16 @@ export function getAssetsControllerMessenger(
       'NetworkController:networkRemoved',
       // RpcDataSource + StakedBalanceDataSource
       'NetworkController:stateChange',
-      // Snap + WS + tx + preferences
-      'BackendWebSocketService:connectionStateChanged',
+      // Snap + tx + preferences
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',
-      // Real-time post-tx balances (AccountActivityService WS path)
+      // Real-time balances + per-chain status (AccountActivityDataSource; core#9517 / 12.0.0)
       'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
       'RemoteFeatureFlagController:stateChange',
     ],
   });

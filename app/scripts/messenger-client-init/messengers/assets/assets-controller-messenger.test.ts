@@ -10,11 +10,7 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'NetworkEnablementController:getState',
   'NetworkController:getState',
   'NetworkController:getNetworkClientById',
-  'BackendWebSocketService:subscribe',
-  'BackendWebSocketService:getConnectionInfo',
-  'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-  'BackendWebSocketService:addChannelCallback',
-  'BackendWebSocketService:removeChannelCallback',
+  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
   'SnapController:handleRequest',
   'SnapController:getRunnableSnaps',
   'PermissionController:getPermissions',
@@ -34,7 +30,6 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'NetworkController:networkDidChange',
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
-  'BackendWebSocketService:connectionStateChanged',
   'AccountsController:accountBalancesUpdated',
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
@@ -42,6 +37,7 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
   'AccountActivityService:balanceUpdated',
+  'AccountActivityService:statusChanged',
   'RemoteFeatureFlagController:stateChange',
 ] as const;
 
@@ -75,6 +71,29 @@ describe('getAssetsControllerMessenger', () => {
     );
   });
 
+  it('does not delegate BackendWebSocketService (owned by AccountActivityService)', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    const [{ actions = [], events = [] }] = delegateSpy.mock.calls[0];
+    expect(actions).not.toContain('BackendWebSocketService:subscribe');
+    expect(actions).not.toContain('BackendWebSocketService:getConnectionInfo');
+    expect(actions).not.toContain(
+      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+    );
+    expect(actions).not.toContain(
+      'BackendWebSocketService:addChannelCallback',
+    );
+    expect(actions).not.toContain(
+      'BackendWebSocketService:removeChannelCallback',
+    );
+    expect(events).not.toContain(
+      'BackendWebSocketService:connectionStateChanged',
+    );
+  });
+
   it('delegates AccountsController accountBalancesUpdated event', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
@@ -90,7 +109,7 @@ describe('getAssetsControllerMessenger', () => {
     );
   });
 
-  it('delegates AccountActivityService balanceUpdated event', () => {
+  it('delegates AccountActivityService balanceUpdated and statusChanged events', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -100,6 +119,22 @@ describe('getAssetsControllerMessenger', () => {
       expect.objectContaining({
         events: expect.arrayContaining([
           'AccountActivityService:balanceUpdated',
+          'AccountActivityService:statusChanged',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates ConfigRegistryController getNetworkConfigByCaip2ChainId action', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
         ]),
       }),
     );
@@ -144,25 +179,6 @@ describe('getAssetsControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         events: expect.arrayContaining(['NetworkController:stateChange']),
-      }),
-    );
-  });
-
-  it('delegates BackendWebsocketDataSource WebSocket actions', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        actions: expect.arrayContaining([
-          'BackendWebSocketService:subscribe',
-          'BackendWebSocketService:getConnectionInfo',
-          'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-          'BackendWebSocketService:addChannelCallback',
-          'BackendWebSocketService:removeChannelCallback',
-        ]),
       }),
     );
   });
