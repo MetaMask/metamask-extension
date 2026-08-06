@@ -13,8 +13,6 @@ class CriticalErrorPage {
     css: 'h1',
   };
 
-  private readonly loadingLogo = '.loading-logo';
-
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
   protected readonly restoreAccountsLink = '#critical-error-restore-link';
@@ -174,7 +172,7 @@ class CriticalErrorPage {
       { interval: 100, timeout: timeoutMs },
     );
     if (waitForLoadingLogoToDisappear) {
-      await this.driver.assertElementNotPresent(this.loadingLogo, {
+      await this.driver.assertElementNotPresent('.loading-logo', {
         timeout: 10000,
       });
     }
