@@ -2,6 +2,7 @@ import { CHAIN_IDS } from './network';
 import {
   FAILOVER_URLS_BY_CHAIN_ID,
   getFailoverUrlsForChainId,
+  getIsQuicknodeEndpointUrl,
 } from './network-failover';
 
 describe('FAILOVER_URLS_BY_CHAIN_ID', () => {
@@ -33,12 +34,10 @@ describe('FAILOVER_URLS_BY_CHAIN_ID', () => {
     jest.isolateModules(() => {
       process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const {
-        FAILOVER_URLS_BY_CHAIN_ID: freshMap,
-      } = require('./network-failover');
-      expect(freshMap[CHAIN_IDS.BSC]).toStrictEqual([
-        'https://failover.example/bsc',
-      ]);
+      const freshModule = require('./network-failover');
+      expect(
+        freshModule.FAILOVER_URLS_BY_CHAIN_ID[CHAIN_IDS.BSC],
+      ).toStrictEqual(['https://failover.example/bsc']);
       delete process.env.QUICKNODE_BSC_URL;
     });
   });
@@ -54,5 +53,32 @@ describe('getFailoverUrlsForChainId', () => {
   it('returns undefined for a chain that has no mapped failover', () => {
     // Sepolia is not in the failover map.
     expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toBeUndefined();
+  });
+});
+
+describe('getIsQuicknodeEndpointUrl', () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it('returns true for a known Quicknode URL', () => {
+    process.env.QUICKNODE_MAINNET_URL = 'https://mainnet.quiknode.pro/test';
+    expect(getIsQuicknodeEndpointUrl('https://mainnet.quiknode.pro/test')).toBe(
+      true,
+    );
+  });
+
+  it('returns false for unknown URLs', () => {
+    expect(getIsQuicknodeEndpointUrl('https://unknown.example.com')).toBe(
+      false,
+    );
+  });
+
+  it('returns false for an empty URL', () => {
+    expect(getIsQuicknodeEndpointUrl('')).toBe(false);
   });
 });

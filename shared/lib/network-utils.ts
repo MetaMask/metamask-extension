@@ -70,11 +70,6 @@ export function getIsMetaMaskInfuraEndpointUrl(
   ).test(endpointUrl);
 }
 
-// `getIsQuicknodeEndpointUrl` lives with the rest of the QuickNode failover
-// config in `network-failover.ts`. It is re-exported here so existing importers
-// are unaffected.
-export { getIsQuicknodeEndpointUrl } from '../constants/network-failover';
-
 /**
  * The list of known unofficial endpoint URLs.
  */

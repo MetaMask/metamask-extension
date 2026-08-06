@@ -1,7 +1,4 @@
-import {
-  getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
-} from './network-utils';
+import { getIsMetaMaskInfuraEndpointUrl } from './network-utils';
 
 jest.mock('../constants/network', () => ({
   FEATURED_RPCS: [
@@ -34,10 +31,6 @@ jest.mock('../constants/network', () => ({
       ],
     },
   ],
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME: {
-    'ethereum-mainnet': () => 'https://mainnet.quiknode.pro/test',
-    'ethereum-sepolia': () => 'https://sepolia.quiknode.pro/test',
-  },
 }));
 
 jest.mock('@metamask/controller-utils', () => ({
@@ -124,32 +117,5 @@ describe('getIsMetaMaskInfuraEndpointUrl', () => {
     expect(getIsMetaMaskInfuraEndpointUrl('', 'the-infura-project-id')).toBe(
       false,
     );
-  });
-});
-
-describe('getIsQuicknodeEndpointUrl', () => {
-  const OLD_ENV = process.env;
-  beforeEach(() => {
-    process.env = { ...OLD_ENV };
-  });
-  afterAll(() => {
-    process.env = OLD_ENV;
-  });
-
-  it('returns true for a known Quicknode URL', () => {
-    process.env.QUICKNODE_MAINNET_URL = 'https://mainnet.quiknode.pro/test';
-    expect(getIsQuicknodeEndpointUrl('https://mainnet.quiknode.pro/test')).toBe(
-      true,
-    );
-  });
-
-  it('returns false for unknown URLs', () => {
-    expect(getIsQuicknodeEndpointUrl('https://unknown.example.com')).toBe(
-      false,
-    );
-  });
-
-  it('returns false for an empty URL', () => {
-    expect(getIsQuicknodeEndpointUrl('')).toBe(false);
   });
 });

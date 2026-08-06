@@ -1,9 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import {
-  CHAIN_IDS,
-  getFailoverUrlsForInfuraNetwork,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -120,7 +117,9 @@ export function getBaseNetworkConfiguration() {
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
-        failoverUrls: getFailoverUrlsForInfuraNetwork('base-mainnet'),
+        failoverUrls: process.env.QUICKNODE_BASE_URL
+          ? [process.env.QUICKNODE_BASE_URL]
+          : [],
         networkClientId: 'base-mainnet',
         type: 'infura',
         url: 'https://base-mainnet.infura.io/v3/{infuraProjectId}',

@@ -1451,14 +1451,6 @@ export const IPFS_FORBIDDEN_GATEWAYS = [
   'ipfs.infura.io',
 ];
 
-// The QuickNode failover config lives in `network-failover.ts`. These are
-// re-exported so existing importers of `shared/constants/network` are
-// unaffected.
-export {
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-  getFailoverUrlsForInfuraNetwork,
-} from './network-failover';
-
 export const FEATURED_RPCS: AddNetworkFields[] = [
   {
     chainId: CHAIN_IDS.LINEA_MAINNET,
