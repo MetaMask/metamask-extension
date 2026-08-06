@@ -6,6 +6,7 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
+import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import {
@@ -89,6 +90,7 @@ export function PerpsDetails({
             label={t('account')}
             value={<AccountName address={item.data.from} />}
           />
+          <Row label={t('network')} value={<NetworkName chainId={chainId} />} />
         </Section>
 
         {formattedTransactionFee ? (
