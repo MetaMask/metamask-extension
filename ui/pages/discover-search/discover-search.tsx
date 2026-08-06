@@ -458,8 +458,7 @@ export const DiscoverSearchPage = () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       previous_tab: getExploreSearchTabName(pendingSwitch.previousTab),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      comes_from_view_all_tap:
-        pendingSwitch.comesFromViewAllTap || undefined,
+      comes_from_view_all_tap: pendingSwitch.comesFromViewAllTap || undefined,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_count: getResultCount(pendingSwitch.tab),
     });
