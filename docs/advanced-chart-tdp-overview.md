@@ -58,30 +58,89 @@ library is self-hosted from a MetaMask CDN via `MM_CHARTING_LIBRARY_URL`
 in `builds.yml`; declared in `.js.env.example`).
 
 **Why it works on mobile:** the WebView document has its **own CSP** (a
-`<meta http-equiv="Content-Security-Policy">` that allows `script-src
-'unsafe-inline'`) and a **normal origin** (the WebView `source` sets `baseUrl` to
-the library origin). So TradingView's two hard requirements are both satisfied:
-(a) the **inline `<script>` bootstrap** in its inner chart frame, and (b)
-**same-origin DOM access** to that inner frame.
+`<meta http-equiv="Content-Security-Policy">` that opens **both** `style-src
+'unsafe-inline'` and `script-src 'unsafe-inline'`, each scoped to the
+charting-library origin) and a **normal origin** (the WebView `source` sets
+`baseUrl` to the library origin). That satisfies the requirements TradingView's
+docs actually state (detailed with citations in §3): (a) **`style-src
+'unsafe-inline'`**, which TradingView says a nonce **cannot** replace; (b) the
+library **injects `<script>`/`<style>` elements inside its own iframe** at
+runtime, so on the pinned v30.1.0 build it also needs `script-src
+'unsafe-inline'`; and (c) TradingView's default **same-origin hosting**
+expectation, which the WebView's real origin lets the inner chart frame satisfy.
 
 ### 2.3 The wall we hit in the extension (the core of the doc)
 
 A browser extension has no WebView; the only embedding primitive is an
-`<iframe>`, which inherits the extension's strict MV3 CSP. TradingView's two
-requirements are **mutually exclusive** on any **extension-local** page:
+`<iframe>`, which inherits the extension's strict MV3 CSP. To see why this is a
+wall, it is important to separate **what TradingView documents** (platform-
+agnostic) from **what we infer about Chrome MV3** (our reasoning about platform
+behavior — TradingView's docs never address MV3).
 
-| Extension-local host | Inline `<script>` bootstrap | Same-origin DOM access | Verdict |
+**Documented by TradingView:**
+
+- **`style-src 'unsafe-inline'` is required**, and TradingView states a nonce
+  **cannot** replace it — "Strict nonce-based `style-src` CSP is not currently
+  supported; library styles still require `style-src 'unsafe-inline'`."
+  ([ChartingLibraryWidgetOptions](https://www.tradingview.com/charting-library-docs/latest/api/interfaces/Charting_Library.ChartingLibraryWidgetOptions/),
+  [Release Notes](https://www.tradingview.com/charting-library-docs/latest/releases/release-notes/))
+- The library **creates `<script>`/`<style>` elements inside its own iframe** at
+  runtime, and its compatibility mode `document.write`s into that inner frame.
+  ([Troubleshooting](https://www.tradingview.com/charting-library-docs/latest/troubleshooting/))
+  Before v31.1.0 this also forces `script-src 'unsafe-inline'`; v31.1.0+ can
+  satisfy the **scripts** with a `nonce`, but the **styles** still cannot be
+  nonced.
+- **Same-origin is the default hosting expectation** — "By default, the library
+  expects its static files to be hosted on the same origin (domain) as the page
+  that contains the chart"
+  ([Hosting Library Cross-Origin](https://www.tradingview.com/charting-library-docs/latest/configuration/Hosting-Library-Cross-Origin/))
+  — and there is an `iframe_loading_same_origin` featureset "when the iframe
+  content must be served from the same origin" (v28+)
+  ([Featuresets](https://www.tradingview.com/charting-library-docs/latest/customization/Featuresets)).
+- TradingView's docs **never mention** MV3, `chrome-extension://`, sandboxed
+  extension pages, or opaque origins, and state **no `eval` / `unsafe-eval`
+  requirement** anywhere.
+
+**Our Chrome-MV3 inference (platform behavior, not TradingView):**
+
+- A normal MV3 page's `extension_pages` CSP **cannot grant `'unsafe-inline'`**, so
+  to run the library's runtime-injected inline scripts/styles we would be forced
+  onto a **sandboxed** extension page.
+- A sandboxed extension page has an **opaque `"null"` origin**.
+- That opaque origin is what **breaks TradingView's documented same-origin
+  inner-frame DOM access**, surfacing at runtime as a `SecurityError` (the throw
+  is observed originating from inside `charting_library.min.js` itself —
+  third-party corroboration in
+  [flutter/flutter#52367](https://github.com/flutter/flutter/issues/52367)). So
+  the two are **mutually exclusive** on any **extension-local** page:
+
+| Extension-local host | Inline scripts/styles allowed | Same-origin inner-frame DOM | Verdict |
 | --- | --- | --- | --- |
 | **Normal page** (`extension_pages`) | ❌ blocked — CSP forbids `'unsafe-inline'` (not relaxable) | ✅ real `chrome-extension://` origin | ❌ |
-| **Sandboxed page** (`sandbox`) | ✅ `'unsafe-inline'` allowed | ❌ opaque origin; `allow-same-origin` **forbidden** in the manifest `sandbox` CSP field | ❌ |
+| **Sandboxed page** (`sandbox`) | ✅ `'unsafe-inline'` allowed | ❌ opaque `"null"` origin; `allow-same-origin` **forbidden** in the manifest `sandbox` CSP field | ❌ |
 
-- **`'unsafe-eval'` is NOT the blocker.** The vendored `v30.1.0` build renders a
-  minimal candlestick chart under `script-src 'self'` (no `eval`, no live
-  `new Function`, no WebAssembly per the spike audit). The real conflict is the
-  **`'unsafe-inline'` inner-frame bootstrap vs. same-origin DOM access**.
+- **`'unsafe-eval'` is NOT the blocker** (nor is it a TradingView requirement).
+  The vendored `v30.1.0` build renders a minimal candlestick chart under
+  `script-src 'self'` (no `eval`, no live `new Function`, no WebAssembly per the
+  spike audit). The real conflict is **inline scripts/styles vs. same-origin
+  inner-frame DOM access**.
 - The only fix for the sandbox path — adding `allow-same-origin` to
   `content_security_policy.sandbox` — makes Chrome **reject the manifest** (hard
   load failure), so it is not an option.
+
+**Two accuracy caveats:**
+
+- **`iframe_loading_compatibility_mode` does NOT solve this.** It only swaps
+  `blob:` for `about:blank` + `document.write`, but `document.write` into the
+  inner frame is **still a same-origin operation**, so it cannot render under an
+  opaque origin. TradingView staff confirm it is aimed at strict-CSP **wallet
+  browsers that still have a real origin** (added v24.001).
+  ([charting-library-examples#338](https://github.com/tradingview/charting-library-examples/issues/338),
+  [FAQ](https://www.tradingview.com/charting-library-docs/latest/getting_started/Frequently-Asked-Questions/))
+- **Cross-origin (CORS) hosting only covers fetching the static files, not
+  DOM/iframe access** — so it does not rescue the same-origin inner-frame
+  requirement.
+  ([Hosting Library Cross-Origin](https://www.tradingview.com/charting-library-docs/latest/configuration/Hosting-Library-Cross-Origin/))
 
 **Conclusion (proven):** hosting the TradingView Advanced Charts build on an
 **extension-local page is infeasible on Chrome MV3.**
@@ -107,6 +166,24 @@ must be **gated on security review** — a candidate direction, not a full desig
   `app/components/UI/Charts/AdvancedChart/AdvancedChartTemplate.ts`,
   `.../webview/chartLogicString.ts`, `.../useOHLCVChart.ts`,
   and `docs/advanced-chart-core-migration.md`
+- TradingView / platform docs (external — support the CSP, same-origin, and
+  compatibility-mode claims above):
+  - `style-src 'unsafe-inline'` requirement (nonce not supported):
+    [ChartingLibraryWidgetOptions](https://www.tradingview.com/charting-library-docs/latest/api/interfaces/Charting_Library.ChartingLibraryWidgetOptions/),
+    [Release Notes](https://www.tradingview.com/charting-library-docs/latest/releases/release-notes/)
+  - Same-origin default hosting + CORS covers static files only:
+    [Hosting Library Cross-Origin](https://www.tradingview.com/charting-library-docs/latest/configuration/Hosting-Library-Cross-Origin/)
+  - `iframe_loading_same_origin` featureset (v28+):
+    [Featuresets](https://www.tradingview.com/charting-library-docs/latest/customization/Featuresets)
+  - Runtime-injected `<script>`/`<style>` + compatibility-mode `document.write`:
+    [Troubleshooting](https://www.tradingview.com/charting-library-docs/latest/troubleshooting/),
+    [FAQ](https://www.tradingview.com/charting-library-docs/latest/getting_started/Frequently-Asked-Questions/)
+  - `iframe_loading_compatibility_mode` is for real-origin wallet browsers
+    (staff, v24.001):
+    [charting-library-examples#338](https://github.com/tradingview/charting-library-examples/issues/338)
+  - `SecurityError`/opaque-`null`-origin throw originates in
+    `charting_library.min.js` (third-party corroboration):
+    [flutter/flutter#52367](https://github.com/flutter/flutter/issues/52367)
 
 > **Verified:** all file paths, imports, dependency versions, the two CSP strings,
 > and the spike verdict above were confirmed against both repos.
@@ -164,9 +241,14 @@ but keeps everything else tight:
   would let mobile switch `script-src` to a nonce and drop `'unsafe-inline'` for
   scripts (styles still need `'unsafe-inline'`). This is a **possible future
   tightening, not a current action**.
-- For environments where CSP can't be adjusted, TradingView points to the
-  `iframe_loading_compatibility_mode` featureset.
-  ([Troubleshooting](https://www.tradingview.com/charting-library-docs/latest/troubleshooting/))
+- For strict-CSP environments **that still have a real origin** (e.g. some wallet
+  browsers), TradingView points to the `iframe_loading_compatibility_mode`
+  featureset. Note this **does not help the extension's opaque-origin case** — it
+  swaps `blob:` for `about:blank` + `document.write`, and that `document.write`
+  is still a same-origin operation (see §2.3).
+  ([Troubleshooting](https://www.tradingview.com/charting-library-docs/latest/troubleshooting/),
+  [FAQ](https://www.tradingview.com/charting-library-docs/latest/getting_started/Frequently-Asked-Questions/),
+  [charting-library-examples#338](https://github.com/tradingview/charting-library-examples/issues/338))
 
 ### Why this does NOT rescue the extension
 
@@ -256,8 +338,9 @@ proposed remote-origin design:
 
 1. **First — verify the problem + look for a simpler workaround.** Have Security
    review/verify the core issue (the **MV3 CSP wall** — that an extension-local
-   page can't satisfy TradingView's **inline-`<script>` bootstrap** *and*
-   **same-origin DOM access** at once) and explore whether there's an
+   page can't satisfy TradingView's documented **`style-src 'unsafe-inline'`**
+   (plus its runtime-injected inline scripts/styles) *and* the **same-origin
+   inner-frame DOM access** at once) and explore whether there's an
    **easier/simpler workaround** we've missed, **before** committing to a bigger
    solution.
 2. **Then — if there's no simpler workaround, validate the suggested path.** Have
