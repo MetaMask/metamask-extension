@@ -24,8 +24,6 @@ class BridgeQuotePage {
     testId: `bridge-asset-info-icon-${assetId}`,
   });
 
-  public assetPickerModal = { testId: 'bridge-asset-picker-modal' };
-
   public assetPrickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
@@ -132,11 +130,18 @@ class BridgeQuotePage {
     }
   };
 
-  checkAssetPickerModalIsReopened = async () => {
-    await this.driver.waitForSelector(this.assetPickerModal);
-    console.log('Asset picker modal is visible');
-    await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
-    console.log('Asset picker modal closed');
+  /**
+   * Checks that the asset picker is shown again after navigating back from an
+   * asset page, then leaves it to return to the swap form.
+   */
+  checkAssetPickerIsReopened = async () => {
+    await this.driver.waitForSelector(this.assetPrickerSearchInput);
+    console.log('Asset picker is visible');
+    // The swap form has a back button with the same label as the picker's, so
+    // wait for the picker to go away instead of for the button itself.
+    await this.driver.clickElement(this.backButton);
+    await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
+    console.log('Asset picker closed');
   };
 
   checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
@@ -340,7 +345,9 @@ class BridgeQuotePage {
    */
   enterBridgeQuote = async (
     quote: BridgeQuote,
-    { openPickersWithDebounce = false }: { openPickersWithDebounce?: boolean } = {},
+    {
+      openPickersWithDebounce = false,
+    }: { openPickersWithDebounce?: boolean } = {},
   ) => {
     const openAssetPicker = async (pickerButton: string) => {
       if (openPickersWithDebounce) {

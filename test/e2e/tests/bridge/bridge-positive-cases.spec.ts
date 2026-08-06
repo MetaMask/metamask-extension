@@ -311,7 +311,7 @@ describe('Bridge tests', function (this: Suite) {
         await tokenOverviewPage.clickBack();
         console.log('Navigated back to Swap page from asset page');
 
-        await bridgePage.checkAssetPickerModalIsReopened();
+        await bridgePage.checkAssetPickerIsReopened();
         await bridgePage.checkAssetsAreSelected('mUSD', 'ETH');
       },
     );
@@ -352,7 +352,7 @@ describe('Bridge tests', function (this: Suite) {
         });
         await tokenOverviewPage.clickBack();
 
-        await bridgePage.checkAssetPickerModalIsReopened();
+        await bridgePage.checkAssetPickerIsReopened();
         await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(
@@ -441,7 +441,7 @@ describe('Bridge tests', function (this: Suite) {
         });
         await tokenOverviewPage.clickBack();
 
-        await bridgePage.checkAssetPickerModalIsReopened();
+        await bridgePage.checkAssetPickerIsReopened();
         await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(
