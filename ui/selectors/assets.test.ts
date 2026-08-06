@@ -18,6 +18,7 @@ import type {
   AccountGroupAssets,
   BalanceChangeResult,
 } from '@metamask/assets-controllers';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   AssetsRatesState,
   AssetsState,
@@ -1653,26 +1654,27 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 describe('getAssetsByAccountGroupId', () => {
   const ACCOUNT_GROUP_ID = 'entropy:wallet/1';
 
-  const createMockState = (suffix: string) => ({
-    metamask: {
-      selectedAccountGroup: `selected-${suffix}`,
-      accountTree: 'mockAccountTree',
-      internalAccounts: 'mockInternalAccounts',
-      allTokens: 'mockAllTokens',
-      allIgnoredTokens: 'mockAllIgnoredTokens',
-      tokenBalances: 'mockTokenBalances',
-      marketData: 'mockMarketData',
-      currencyRates: 'mockCurrencyRates',
-      currentCurrency: 'mockCurrentCurrency',
-      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
-      accountsByChainId: 'mockAccountsByChainId',
-      accountsAssets: 'mockAccountsAssets',
-      assetsMetadata: 'mockAssetsMetadata',
-      allIgnoredAssets: 'mockAllIgnoredAssets',
-      balances: 'mockBalances',
-      conversionRates: 'mockConversionRates',
-    },
-  });
+  const createMockState = (suffix: string): MetaMaskReduxState =>
+    ({
+      metamask: {
+        selectedAccountGroup: `selected-${suffix}`,
+        accountTree: 'mockAccountTree',
+        internalAccounts: 'mockInternalAccounts',
+        allTokens: 'mockAllTokens',
+        allIgnoredTokens: 'mockAllIgnoredTokens',
+        tokenBalances: 'mockTokenBalances',
+        marketData: 'mockMarketData',
+        currencyRates: 'mockCurrencyRates',
+        currentCurrency: 'mockCurrentCurrency',
+        networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+        accountsByChainId: 'mockAccountsByChainId',
+        accountsAssets: 'mockAccountsAssets',
+        assetsMetadata: 'mockAssetsMetadata',
+        allIgnoredAssets: 'mockAllIgnoredAssets',
+        balances: 'mockBalances',
+        conversionRates: 'mockConversionRates',
+      },
+    }) as unknown as MetaMaskReduxState;
 
   beforeEach(() => {
     getAssetsByAccountGroupId.clearCache();
@@ -1811,11 +1813,11 @@ describe('getAssetsByAccountGroupId', () => {
 
     const state = createMockState('arc-stable-ref');
     const first = getAssetsByAccountGroupId(
-      state as never,
+      state,
       ACCOUNT_GROUP_ID as never,
     );
     const second = getAssetsByAccountGroupId(
-      state as never,
+      state,
       ACCOUNT_GROUP_ID as never,
     );
 

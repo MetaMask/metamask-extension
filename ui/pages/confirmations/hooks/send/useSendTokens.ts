@@ -29,6 +29,7 @@ import {
 import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
+import type { MetaMaskReduxState } from '../../../../store/store';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
@@ -256,7 +257,7 @@ function useAccountGroupAssets(
     ])[0]?.id;
   });
 
-  const overrideAssets = useSelector((state) =>
+  const overrideAssets = useSelector((state: MetaMaskReduxState) =>
     getAssetsByAccountGroupId(state, accountGroupId, {
       includeHidden: includeHiddenTokens,
     }),
