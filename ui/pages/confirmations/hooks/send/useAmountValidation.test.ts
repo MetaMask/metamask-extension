@@ -1,5 +1,4 @@
 import { waitFor } from '@testing-library/react';
-
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
@@ -13,6 +12,20 @@ import {
   validatePositiveNumericString,
   mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
+
+const mockDebounce = jest.fn(
+  (fn: (...args: unknown[]) => unknown) => {
+    const immediate = (...args: unknown[]) => fn(...args);
+    immediate.cancel = jest.fn();
+    return immediate;
+  },
+);
+
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  debounce: (...args: unknown[]) =>
+    mockDebounce(...(args as Parameters<typeof mockDebounce>)),
+}));
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -237,6 +250,22 @@ describe('useAmountValidation', () => {
     );
     expect(result.current.amountError).toEqual(undefined);
     expect(result.current.validateNonEvmAmountAsync).toBeDefined();
+  });
+
+  it('debounces validation so rapid value changes result in a single validation call', async () => {
+    mockDebounce.mockClear();
+
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_NATIVE_ASSET,
+      from: MOCK_ADDRESS_1,
+      value: '1',
+    } as unknown as SendContext.SendContextType);
+
+    renderHookWithProvider(() => useAmountValidation(), mockState);
+
+    await waitFor(() => {
+      expect(mockDebounce).toHaveBeenCalledWith(expect.any(Function), 300);
+    });
   });
 
   it('return error for invalid amount value', async () => {
