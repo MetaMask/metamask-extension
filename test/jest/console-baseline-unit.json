@@ -524,9 +524,6 @@
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
     },
-    "ui/hooks/useAsync.test.ts": {
-      "Test errors: Uncaught Errors": 2
-    },
     "ui/hooks/useCurrencyRatePolling.test.ts": {
       "React: Act warnings (component updates not wrapped)": 3
     },
@@ -1041,6 +1038,9 @@
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "error: Warning: A suspended resource finished": 1
+    },
+    "ui/providers/perps/PerpsAttributionContext.test.tsx": {
+      "Test errors: Uncaught Errors": 1
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2

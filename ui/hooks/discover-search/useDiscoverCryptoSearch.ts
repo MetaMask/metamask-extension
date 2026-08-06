@@ -21,8 +21,14 @@ export type UseDiscoverCryptoSearchOptions = {
 
 export type UseDiscoverCryptoSearchResult = {
   data: TrendingAsset[];
+  totalCount?: number;
   isLoading: boolean;
   error: Error | null;
+};
+
+type CryptoSearchPage = {
+  data: TrendingAsset[];
+  totalCount?: number;
 };
 
 const mapSearchResultToTrendingAsset = (
@@ -74,7 +80,7 @@ export const useDiscoverCryptoSearch = ({
     cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
-  const searchQuery = useQuery<TrendingAsset[], Error>({
+  const searchQuery = useQuery<CryptoSearchPage, Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
@@ -82,7 +88,7 @@ export const useDiscoverCryptoSearch = ({
       trimmedQuery,
       DISCOVER_SEARCH_CHAIN_IDS,
     ] as const,
-    queryFn: async (): Promise<TrendingAsset[]> => {
+    queryFn: async (): Promise<CryptoSearchPage> => {
       const response = await searchTokens(
         DISCOVER_SEARCH_CHAIN_IDS,
         trimmedQuery,
@@ -96,9 +102,14 @@ export const useDiscoverCryptoSearch = ({
         throw new Error(response.error);
       }
 
-      return (response.data as TokenSearchMarketResult[])
+      const data = (response.data as TokenSearchMarketResult[])
         .filter((item) => !item.rwaData)
         .map(mapSearchResultToTrendingAsset);
+
+      return {
+        data,
+        totalCount: data.length,
+      };
     },
     enabled: enabled && isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
@@ -107,7 +118,8 @@ export const useDiscoverCryptoSearch = ({
 
   if (isSearch) {
     return {
-      data: searchQuery.data ?? [],
+      data: searchQuery.data?.data ?? [],
+      totalCount: searchQuery.data?.totalCount,
       isLoading: searchQuery.isLoading || searchQuery.isFetching,
       error: searchQuery.error ?? null,
     };

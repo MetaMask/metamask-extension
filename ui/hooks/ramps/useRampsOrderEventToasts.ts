@@ -9,7 +9,7 @@ import {
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   ACTIVITY_ROUTE,
-  RAMPS_ORDER_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
 import {
@@ -90,7 +90,7 @@ function navigateToOrder(
   const identifier = item?.hash ?? getInternalOrderCode(order);
 
   if (item?.chainId && identifier) {
-    navigate(`${RAMPS_ORDER_DETAILS_ROUTE}/${item.chainId}/${identifier}`);
+    navigate(`${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`);
     return;
   }
 

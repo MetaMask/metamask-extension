@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
 import {
   dismissToast,
@@ -171,7 +171,7 @@ describe('useRampsOrderEventToasts', () => {
 
     clickToastAction(showPendingToast as jest.Mock);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
+    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
   });
 
   it('opens the order details page using state resolved after the toast is shown', () => {
@@ -199,7 +199,7 @@ describe('useRampsOrderEventToasts', () => {
 
     clickToastAction(showPendingToast as jest.Mock);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/order/eip155:1/order-1');
+    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
   });
 
   it('falls back to activity when the order has no resolvable chain', () => {

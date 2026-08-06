@@ -192,7 +192,7 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe('MoonPay');
   });
 
-  it('falls back to the ramp description when the provider is unnamed', () => {
+  it('omits the ramp subtitle when the provider is unnamed', () => {
     const activity = {
       type: 'rampBuy',
       chainId: 'eip155:1',
@@ -209,9 +209,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(activity),
     );
 
-    expect(result.current.subtitle).toBe(
-      'activity_rampBuy_pending_description|ETH',
-    );
+    expect(result.current.subtitle).toBeUndefined();
   });
 
   it('shows a placeholder for a pending ramp order without a crypto amount', () => {

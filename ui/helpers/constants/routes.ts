@@ -197,7 +197,6 @@ export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
-export const RAMPS_ORDER_DETAILS_ROUTE = '/ramps/order';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -478,11 +477,6 @@ export const ROUTES = [
     path: RAMPS_PROVIDER_SELECTION_ROUTE,
     label: 'Ramps Provider Selection Page',
     trackInAnalytics: false,
-  },
-  {
-    path: `${RAMPS_ORDER_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
-    label: 'Ramps Order Details Page',
-    trackInAnalytics: true,
   },
   {
     path: NETWORKS_ROUTE,
