@@ -7157,6 +7157,10 @@
     "message": "Est. P&L at take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
   },
+  "perpsExchangeAccountNotFound": {
+    "message": "Add funds to start trading.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
   "perpsExploreMarkets": {
     "message": "Explore markets"
   },
