@@ -66,6 +66,27 @@ describe('MultichainAccountCell', () => {
     expect(cellElement).toHaveClass('is-selected');
   });
 
+  it('ignores clicks and shows pending styling when pending is true', () => {
+    const handleClick = jest.fn();
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        onClick={handleClick}
+        pending={true}
+      />,
+      store,
+    );
+
+    const cellElement = screen.getByTestId(
+      `multichain-account-cell-${defaultProps.accountId}`,
+    );
+
+    expect(cellElement).toHaveClass('is-pending');
+    expect(cellElement).toHaveAttribute('aria-busy', 'true');
+    fireEvent.click(cellElement);
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+
   it('handles click events and applies pointer cursor when onClick is provided', () => {
     const handleClick = jest.fn();
     renderWithProvider(

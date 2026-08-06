@@ -2255,17 +2255,13 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.setSelectedMultichainAccount(
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
         ),
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      // No fullscreen loading indication — pending UI is owned by useTransition
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 
