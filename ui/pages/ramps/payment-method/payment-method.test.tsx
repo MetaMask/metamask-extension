@@ -34,8 +34,15 @@ jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: (...args: unknown[]) => mockUseRampsQuotes(...args),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
+}));
+
 const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
+);
+const { getInternalAccountBySelectedAccountGroupAndCaip } = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
 );
 
 const createStore = () =>
@@ -443,5 +450,41 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
       state: { amount: 100 },
     });
+  });
+
+  it('uses the chain-matching account address for non-EVM assets', () => {
+    mockLocationState = { amount: 100 };
+
+    const solanaAccount = {
+      id: 'sol-account-1',
+      address: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      metadata: { name: 'Solana Account' },
+    };
+    const solanaToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      symbol: 'SOL',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    };
+
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue(solanaAccount);
+
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      selectedToken: solanaToken,
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(mockUseRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletAddress: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      }),
+    );
   });
 });

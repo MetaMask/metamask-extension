@@ -44,6 +44,10 @@ jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: jest.fn(),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
+}));
+
 jest.mock('../../../store/controller-actions/ramps-controller', () => ({
   watchRampsCheckoutTab: (...args: unknown[]) =>
     mockWatchRampsCheckoutTab(...args),
@@ -59,6 +63,9 @@ const { useRampsController } = jest.requireMock(
 );
 const { useRampsQuotes } = jest.requireMock(
   '../../../hooks/ramps/useRampsQuotes',
+);
+const { getInternalAccountBySelectedAccountGroupAndCaip } = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
 );
 
 const createStore = () =>
@@ -630,5 +637,43 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method', {
       state: { amount: expect.any(Number) },
     });
+  });
+
+  it('uses the chain-matching account address for non-EVM assets', () => {
+    const solanaAccount = {
+      id: 'sol-account-1',
+      address: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      metadata: { name: 'Solana Account' },
+    };
+    const solanaToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      name: 'Solana',
+      symbol: 'SOL',
+      decimals: 9,
+      iconUrl: 'https://example.com/sol.png',
+      tokenSupported: true,
+    };
+
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue(solanaAccount);
+
+    useRampsController.mockReturnValue(
+      mockControllerState({ selectedToken: solanaToken }),
+    );
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(useRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletAddress: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      }),
+    );
   });
 });
