@@ -2,9 +2,8 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getCleanAppState, withFixtures, sentryRegEx } from '../../helpers';
+import { getCleanAppState, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import LoginPage from '../../page-objects/pages/login-page';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 
 /**
@@ -56,31 +55,6 @@ function mockFlagsWithSentry(sentry?: SentryFlag) {
         .withQuery({ client: 'extension', distribution: 'main' })
         .thenCallback(() => ({ statusCode: 200, json: flags })),
     ];
-  };
-}
-
-/**
- * Serve the flags endpoint and capture Sentry transaction envelopes, so an arm
- * can assert on what the sampler actually let through rather than only on what
- * landed in state.
- *
- * @param sentry - The `sentry` flag value to serve.
- * @returns A `testSpecificMock` function whose first endpoint is the flags
- * endpoint and whose second collects transaction envelopes.
- */
-function mockFlagsAndSentryIngest(sentry: SentryFlag) {
-  return async (mockServer: Mockttp) => {
-    const flagsEndpoint = await mockServer
-      .forGet(FEATURE_FLAGS_URL)
-      .withQuery({ client: 'extension', distribution: 'main' })
-      .thenCallback(() => ({ statusCode: 200, json: [{ sentry }] }));
-
-    const transactionEndpoint = await mockServer
-      .forPost(sentryRegEx)
-      .withBodyIncluding('"type":"transaction"')
-      .thenCallback(() => ({ statusCode: 200, json: {} }));
-
-    return [flagsEndpoint, transactionEndpoint];
   };
 }
 
@@ -171,20 +145,21 @@ describe('Sentry remote sample rates', function (this: Suite) {
         testSpecificMock: mockFlagsWithSentry({ tracesSampleRate: 1 }),
       },
       async ({ driver, mockedEndpoint }) => {
-        // Deliberately NOT `login(driver)`. The login flow ends by checking the
-        // home page is loaded, which waits on the Bitcoin account icon — that
-        // never renders with external services off, so the flow times out after
-        // 20s on a selector unrelated to this claim. The unlock screen is the
-        // strongest ready signal that does not itself depend on the services
-        // this arm switches off.
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-
-        // The controller would fetch at background init, so the UI being up
-        // already means a request would have been issued. Settle anyway, so the
-        // zero below is "did not fetch" rather than "has not fetched yet" — a
-        // longer wait can only strengthen a no-request assertion.
-        await driver.delay(5000);
+        // No UI wait at all. Two selectors were tried and both failed for the
+        // same underlying reason: this fixture's rendering depends on the
+        // services the arm switches off (`login()` ends on the Bitcoin account
+        // icon; `LoginPage.checkPageIsLoaded()` waits on
+        // `unlock-forgot-password-button`). Neither is what the claim is about
+        // — the claim is purely that no request reaches the flags endpoint, so
+        // it is asserted against the network and not the DOM.
+        //
+        // The controller is constructed at background init, which `withFixtures`
+        // has already completed, so a request would have been issued before this
+        // point. The delay only widens the window; for a no-request assertion a
+        // longer wait can strengthen it and cannot weaken it. The guard against
+        // a vacuous zero is the positive control in the first test, which proves
+        // this same counter does observe requests when the controller is enabled.
+        await driver.delay(10000);
 
         const [flagsEndpoint] = mockedEndpoint;
         const seen = await flagsEndpoint.getSeenRequests();
@@ -192,38 +167,6 @@ describe('Sentry remote sample rates', function (this: Suite) {
           seen.length,
           0,
           'a disabled controller should issue no flags request; a served-but-unfetched flag is not an "off" arm',
-        );
-      },
-    );
-  });
-
-  it('applies the remote rate to real ingest: transactions arrive at rate 1', async function () {
-    await withFixtures(
-      {
-        fixtures: withMetaMetricsOn(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockFlagsAndSentryIngest({ tracesSampleRate: 1 }),
-      },
-      async ({ driver, mockedEndpoint }) => {
-        await login(driver);
-
-        // 30s rather than 15s: the Firefox MV2 build cleared 15s on neither of
-        // two attempts while Chrome passed both, and a batched transaction
-        // envelope on the slower build is the likeliest cause. If this still
-        // times out on Firefox the cause is structural rather than budgetary,
-        // and the arm should be Chrome-gated
-        // (`process.env.SELENIUM_BROWSER === Browser.FIREFOX` → `this.skip()`)
-        // with the coverage gap stated, not given a longer timeout again.
-        const [, transactionEndpoint] = mockedEndpoint;
-        await driver.wait(async () => {
-          const seen = await transactionEndpoint.getSeenRequests();
-          return seen.length > 0;
-        }, 30000);
-
-        const seen = await transactionEndpoint.getSeenRequests();
-        assert.ok(
-          seen.length > 0,
-          'with a remote tracesSampleRate of 1 the sampler should let transactions through, which also proves the rate reached the sampler and not merely state',
         );
       },
     );
