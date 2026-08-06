@@ -213,6 +213,12 @@ const PrepareBridgePage = ({
       toToken.symbol,
       BigNumber.ROUND_DOWN,
     );
+  } else if (destinationFiatAmount) {
+    destinationSecondaryDisplay = formatCurrencyAmount(
+      destinationFiatAmount,
+      currency,
+      2,
+    );
   }
 
   const {
@@ -601,11 +607,6 @@ const PrepareBridgePage = ({
               dispatch(setToToken(newToToken));
             }}
             networks={toChains}
-            amountInFiat={
-              sourceInputAmount.isFiatPrimary
-                ? undefined
-                : (destinationFiatAmount ?? undefined)
-            }
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               sourceInputAmount.isFiatPrimary

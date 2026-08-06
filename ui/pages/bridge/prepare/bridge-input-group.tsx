@@ -19,12 +19,7 @@ import {
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  sanitizeAmountInput,
-} from '../utils/quote';
+import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -58,7 +53,6 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networks,
   amountFieldProps,
-  amountInFiat,
   secondaryDisplay,
   amountInputPrefix,
   onAmountTypeToggle,
@@ -76,7 +70,6 @@ export const BridgeInputGroup = ({
 }: {
   isAssetPickerOpen: boolean;
   setIsAssetPickerOpen: (isOpen: boolean) => void;
-  amountInFiat?: string;
   secondaryDisplay?: string;
   amountInputPrefix?: React.ReactNode;
   onAmountTypeToggle?: () => void;
@@ -109,7 +102,6 @@ export const BridgeInputGroup = ({
     getValidationErrors,
     shallowEqual,
   );
-  const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = token?.chainId;
@@ -139,9 +131,6 @@ export const BridgeInputGroup = ({
   );
   const hasAmountInputPrefix = Boolean(amountInputPrefix);
   const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
-  const displayedSecondaryAmount =
-    secondaryDisplay ??
-    (amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2));
   const formattedTokenAmount = useMemo(() => {
     if (!balanceAmount) {
       return null;
@@ -358,7 +347,7 @@ export const BridgeInputGroup = ({
             aria-label="Toggle input denomination"
             onClick={onAmountTypeToggle}
           >
-            {displayedSecondaryAmount}
+            {secondaryDisplay}
           </ButtonLink>
         ) : (
           <Text
@@ -372,7 +361,7 @@ export const BridgeInputGroup = ({
             textAlign={TextAlign.End}
             ellipsis
           >
-            {displayedSecondaryAmount}
+            {secondaryDisplay}
           </Text>
         )}
         {!isAmountReadOnly && balanceAmount && token && (

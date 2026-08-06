@@ -57,6 +57,9 @@ export const useSourceInputAmount = ({
   onSourceAmountChange,
 }: UseSourceInputAmountParams): UseSourceInputAmountResult => {
   const dispatch = useDispatch();
+  // The controller value persists the preference, while local state updates the
+  // UI immediately. The ref marks the latest pending controller update so an
+  // older async state refresh cannot overwrite a newer toggle.
   const persistedDenomination = useSelector(getInputPrimaryDenomination);
   const selectedDenominationRef = useRef<InputPrimaryDenomination>();
   const [lastEdited, setLastEdited] =
