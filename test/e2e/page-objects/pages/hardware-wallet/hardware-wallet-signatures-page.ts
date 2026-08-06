@@ -4,10 +4,9 @@ import { Driver } from '../../../webdriver/driver';
  * Hardware wallet signatures page shown during unified Ledger/Trezor swap flows.
  */
 class HardwareWalletSignaturesPage {
-  private readonly pageRoot =
-    '[data-testid="hardware-wallet-signatures"]';
-
   private readonly driver: Driver;
+
+  private readonly pageRoot = '[data-testid="hardware-wallet-signatures"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
