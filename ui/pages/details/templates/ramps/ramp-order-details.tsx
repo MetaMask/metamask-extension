@@ -16,7 +16,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
-import { formatRampCurrencyAmount } from '../../../../hooks/ramps/utils/formatRampCurrencyAmount';
+import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
 import { Footer, Row, Section } from '../../components/shared';
 import { RampMetadataSection } from './ramp-metadata-section';
@@ -51,17 +51,15 @@ export function RampOrderDetails({
     rawOrder?.paymentMethod?.name ?? rawOrder?.paymentMethod?.shortName;
   const showStatusDescription =
     Boolean(statusDescription) && item.status !== 'success';
-  const fiatTotal = formatRampCurrencyAmount(
-    fiat?.amount,
-    fiat?.currency,
-    formatCurrencyWithMinThreshold,
-  );
+  const fiatTotal =
+    fiat?.currency && hasPositiveNumericAmount(fiat.amount)
+      ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
+      : undefined;
   const fee = item.data.fees?.[0];
-  const feeTotal = formatRampCurrencyAmount(
-    fee?.amount,
-    fee?.symbol,
-    formatCurrencyWithMinThreshold,
-  );
+  const feeTotal =
+    fee?.symbol && hasPositiveNumericAmount(fee.amount)
+      ? formatCurrencyWithMinThreshold(Number(fee.amount), fee.symbol)
+      : undefined;
   const providerFeeLabel = provider?.name
     ? t('rampsOrderDetailsProviderFee', [provider.name])
     : t('rampsOrderDetailsFees');

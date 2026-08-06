@@ -18,7 +18,6 @@ import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
-import { formatRampCurrencyAmount } from '../../../hooks/ramps/utils/formatRampCurrencyAmount';
 import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import type { ActivityRowProps } from '../types';
 import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
@@ -211,11 +210,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, fiat, provider } = activity.data;
         const symbol = token?.symbol ?? '';
         const hasCryptoAmount = hasPositiveNumericAmount(token?.amount);
-        const orderFiat = formatRampCurrencyAmount(
-          fiat?.amount,
-          fiat?.currency,
-          formatCurrencyWithMinThreshold,
-        );
+        const orderFiat =
+          fiat?.currency && hasPositiveNumericAmount(fiat.amount)
+            ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
+            : undefined;
 
         return {
           avatarTokens: [token?.assetId],
