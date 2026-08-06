@@ -27,7 +27,7 @@ import {
   selectDappClickSend,
   switchToDialogPopoverValidateDetailsRedesign,
 } from '../../page-objects/flows/test-dapp.flow';
-import { validateBalanceAndActivity } from '../../page-objects/flows/send-transaction.flow';
+import { validateBalanceAndActivity, validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -240,6 +240,7 @@ describe('Request-queue UI changes', function () {
         await driver.waitForWindowWithTitleToBePresent(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        await validateTransaction(driver, '-0');
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
@@ -260,6 +261,7 @@ describe('Request-queue UI changes', function () {
           'Localhost 8545',
         );
         await validateBalanceAndActivity(driver, '25');
+        await validateTransaction(driver, '-0');
       },
     );
   });
