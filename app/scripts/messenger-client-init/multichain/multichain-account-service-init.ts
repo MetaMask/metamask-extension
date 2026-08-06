@@ -114,21 +114,19 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
         currState?.remoteFeatureFlags?.stellarAccounts,
       );
 
-      if (prevStellarEnabled !== currStellarEnabled) {
-        // Enable/disable Stellar provider based on feature flag
+      // Only handle the case when Stellar provider is enabled.
+      // Disable after enable may result in abnormal behavior.
+      if (prevStellarEnabled !== currStellarEnabled && currStellarEnabled) {
         xlmProvider.setEnabled(currStellarEnabled);
 
         // Trigger wallet alignment when Stellar accounts are enabled
         // This will create Stellar accounts for existing wallets
-        if (currStellarEnabled) {
-          messengerClient.alignWallets().catch((error) => {
-            console.error(
-              'Failed to align wallets after enabling Stellar provider:',
-              error,
-            );
-          });
-        }
-        // Note: When disabled, no action needed as the provider won't create new accounts
+        messengerClient.alignWallets().catch((error) => {
+          console.error(
+            'Failed to align wallets after enabling Stellar provider:',
+            error,
+          );
+        });
       }
 
       return true;
