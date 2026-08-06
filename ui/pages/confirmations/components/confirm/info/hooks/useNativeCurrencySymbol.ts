@@ -10,6 +10,8 @@ const currencySymbolOverrides: {
   'eip155:4217': 'pathUSD',
   // Tempo Testnet (no native, local config 'USD' but we prefer to display 'pathUSD')
   'eip155:42431': 'pathUSD',
+  // ThaiChain V2 (no native, local config 'TCH')
+  'eip155:7': 'TCH',
 };
 
 /**

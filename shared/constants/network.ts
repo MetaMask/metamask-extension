@@ -225,6 +225,7 @@ export const CHAIN_IDS = {
   ROOTSTOCK_TESTNET: '0x1f',
   TEMPO_TESTNET: '0xa5bf',
   TEMPO_MAINNET: '0x1079',
+  THAICHAIN_V2: '0x7',
   STABLE_MAINNET: '0x3dc',
   MANTLE: '0x1388',
   KONET: '0x4341',
@@ -403,6 +404,7 @@ export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
 export const CHILIZ_DISPLAY_NAME = 'Chiliz';
 export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 export const TEMPO_MAINNET_DISPLAY_NAME = 'Tempo';
+export const THAICHAIN_V2_DISPLAY_NAME = 'ThaiChain V2';
 export const STABLE_DISPLAY_NAME = 'Stable';
 export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const KONET_DISPLAY_NAME = 'KONET Mainnet';
@@ -511,6 +513,7 @@ export const CURRENCY_SYMBOLS = {
   ROOTSTOCK_TESTNET: 'tRBTC',
   TEMPO_TESTNET: 'USD',
   TEMPO_MAINNET: 'USD',
+  THAICHAIN_V2: 'TCH',
   CHILIZ: 'CHZ',
   STABLE: 'USDT0',
   MANTLE: 'MNT',
@@ -758,6 +761,7 @@ export const STABLE_IMAGE_URL = './images/stable.svg';
 export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
 export const KONET_IMAGE_URL = './images/konet.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
+export const THAICHAIN_V2_IMAGE_URL = './images/tch-v2.svg';
 export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 
@@ -944,6 +948,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.CHZ]: CHILIZ_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_DISPLAY_NAME,
+  [CHAIN_IDS.THAICHAIN_V2]: THAICHAIN_V2_DISPLAY_NAME,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_DISPLAY_NAME,
   [CHAIN_IDS.MANTLE]: MANTLE_DISPLAY_NAME,
   [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
@@ -1118,6 +1123,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.CHZ]: CURRENCY_SYMBOLS.CHILIZ,
   [CHAIN_IDS.TEMPO_TESTNET]: CURRENCY_SYMBOLS.TEMPO_TESTNET,
   [CHAIN_IDS.TEMPO_MAINNET]: CURRENCY_SYMBOLS.TEMPO_MAINNET,
+  [CHAIN_IDS.THAICHAIN_V2]: CURRENCY_SYMBOLS.THAICHAIN_V2,
   [CHAIN_IDS.STABLE_MAINNET]: CURRENCY_SYMBOLS.STABLE,
   [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
   [CHAIN_IDS.ARC]: CURRENCY_SYMBOLS.ARC,
@@ -1312,6 +1318,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.CHZ]: CHILIZ_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.THAICHAIN_V2]: THAICHAIN_V2_IMAGE_URL,
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
@@ -1413,6 +1420,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.STABLE_MAINNET]: STABLE_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEMPO_MAINNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.THAICHAIN_V2]: THAICHAIN_V2_IMAGE_URL,
   [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
@@ -1787,6 +1795,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://explore.tempo.xyz/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.THAICHAIN_V2,
+    name: THAICHAIN_V2_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.THAICHAIN_V2,
+    rpcEndpoints: [
+      {
+        url: `https://rpc.thaichain.org/`,
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://exp.thaichain.org/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
