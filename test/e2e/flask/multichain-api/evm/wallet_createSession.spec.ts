@@ -201,7 +201,10 @@ describe('Multichain API', function () {
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes(['eip155:1337'], [ACCOUNT_1]);
+            await testDapp.initCreateSessionScopes(
+              ['eip155:1337'],
+              [ACCOUNT_1],
+            );
 
             const connectAccountConfirmation = new ConnectAccountConfirmation(
               driver,

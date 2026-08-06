@@ -53,9 +53,7 @@ export async function confirmConnectAndUpdateSiteNetworks(
   networkUpdates: NetworkSelectionUpdate[],
 ): Promise<void> {
   await approveConnect(driver);
-  await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ExtensionInFullScreenView,
-  );
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await updateConnectedSiteNetworkSelection(driver, hostname, networkUpdates);
 }
 
@@ -73,9 +71,7 @@ export async function confirmConnectAndUpdateSiteNetworksToOnly(
   selectedNetworkNames: string[],
 ): Promise<void> {
   await approveConnect(driver);
-  await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ExtensionInFullScreenView,
-  );
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await updateConnectedSiteNetworksToOnly(
     driver,
     hostname,
