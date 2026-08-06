@@ -12,7 +12,6 @@ import {
   getRpcUrl,
 } from '../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
-import * as networkFailoverModule from '../../../../shared/constants/network-failover';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   addNetwork,
@@ -682,9 +681,7 @@ describe('NetworkForm Component', () => {
   });
 
   it('shows failover from shared config for a map chain with empty persisted failoverUrls', () => {
-    jest
-      .spyOn(networkFailoverModule, 'getFailoverUrlsForChainId')
-      .mockReturnValue(['https://failover.example/bsc']);
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
 
     const existingNetwork = {
       chainId: '0x38',
@@ -734,9 +731,7 @@ describe('NetworkForm Component', () => {
   });
 
   it('shows the failover tag on the rpc list item from shared config when persisted failoverUrls is empty', () => {
-    jest
-      .spyOn(networkFailoverModule, 'getFailoverUrlsForChainId')
-      .mockReturnValue(['https://failover.example/bsc']);
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
 
     const existingNetwork = {
       chainId: '0x38',
@@ -790,9 +785,7 @@ describe('NetworkForm Component', () => {
     // so the shared config resolves to an empty array and no failover is shown.
     // The form reads the shared config only, so the persisted failoverUrls on
     // the endpoint are ignored.
-    jest
-      .spyOn(networkFailoverModule, 'getFailoverUrlsForChainId')
-      .mockReturnValue([]);
+    delete process.env.QUICKNODE_BSC_URL;
 
     const existingNetwork = {
       chainId: '0x38',
