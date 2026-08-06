@@ -5,6 +5,7 @@ import { getMockApproveConfirmState } from '../../../../../../../test/data/confi
 import configureStore from '../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../context/dapp-swap';
+import { GasFeeModalContextProvider } from '../../../../context/gas-fee-modal';
 import SetApprovalForAll from './set-approval-for-all-info';
 
 const store = configureStore(getMockApproveConfirmState());
@@ -16,7 +17,9 @@ const Story = {
     (story: () => Meta<typeof SetApprovalForAll>) => (
       <Provider store={store}>
         <ConfirmContextProvider>
-          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+          <DappSwapContextProvider>
+            <GasFeeModalContextProvider>{story()}</GasFeeModalContextProvider>
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       </Provider>
     ),
