@@ -94,7 +94,6 @@ type Octokit = {
       }>;
     };
   };
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   paginate: <TItem>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn: (params: any) => Promise<{ data: TItem[] }>,

@@ -6,7 +6,10 @@ import configureStore from '../../store/store';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import { HomeQueryParams } from '../../../shared/lib/deep-links/routes/home';
 import { toggleNetworkMenu } from '../../store/actions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  BATCH_SELL_SELECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   HomeDeepLinkActions,
   useHomeDeepLinkEffects,
@@ -18,18 +21,32 @@ jest.mock('../../store/actions', () => ({
     .mockReturnValue({ type: 'MOCK_TOGGLE_NETWORK_MENU' }),
 }));
 
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 const mockToggleNetworkMenu = jest.mocked(toggleNetworkMenu);
 
 const createWrapper = (options: {
   pathname: string;
   search: string;
   isNetworkMenuOpen: boolean;
+  batchSellEnabled?: boolean;
 }) => {
-  const { pathname, search, isNetworkMenuOpen } = options;
+  const { pathname, search, isNetworkMenuOpen, batchSellEnabled } = options;
 
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        ...(batchSellEnabled === undefined
+          ? {}
+          : { batchSell: { enabled: batchSellEnabled } }),
+      },
     },
     appState: {
       ...mockState.appState,
@@ -204,7 +221,7 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
-  it('dispatches setHomeDeepLinkQrCode for a valid batch sell deeplink URL', async () => {
+  it('shows the QR code for a valid batch sell deeplink URL when the feature is unavailable in the extension', async () => {
     const deeplinkUrl = 'https://link.metamask.io/batch-sell';
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
@@ -212,6 +229,7 @@ describe('HomeDeepLinkActions', () => {
         [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
+      batchSellEnabled: false,
     });
 
     render(<HomeDeepLinkActions />, { wrapper: Wrapper });
@@ -226,6 +244,30 @@ describe('HomeDeepLinkActions', () => {
         titleKey: 'deepLinkQrBatchSellTitle',
       });
     });
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('navigates to the batch sell select page for a valid batch sell deeplink URL when the feature is available in the extension', async () => {
+    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+      batchSellEnabled: true,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(BATCH_SELL_SELECT_ROUTE);
+    });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
   });
 
   it('dispatches setHomeDeepLinkQrCode for a valid trending deeplink URL', async () => {

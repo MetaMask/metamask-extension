@@ -112,9 +112,6 @@
   "accountOptions": {
     "message": "Roghanna cuntais"
   },
-  "accountPermissionToast": {
-    "message": "Ceadanna cuntais nuashonraithe"
-  },
   "accountSelectionRequired": {
     "message": "Ní mór duit cuntas a roghnú!"
   },
@@ -1393,9 +1390,6 @@
   },
   "decimal": {
     "message": "Deicheamhach comhartha"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Ní mór deachúlacha a bheith ar a laghad 0, agus ní mó ná 36."
   },
   "decrypt": {
     "message": "Díchriptigh"

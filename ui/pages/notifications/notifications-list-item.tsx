@@ -25,8 +25,6 @@ import {
   hasNotificationComponents,
 } from './notification-components';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsListItem({
   notification,
 }: {

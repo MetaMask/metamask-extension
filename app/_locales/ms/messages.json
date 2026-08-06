@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
-  },
   "delete": {
     "message": "Padam"
   },

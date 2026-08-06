@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions */
 import React, {
   Fragment,
   Suspense,
@@ -50,12 +49,8 @@ import {
 } from '../../selectors';
 import { getSnapName } from '../../helpers/utils/util';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -76,6 +71,7 @@ import { useSettingsI18n } from './useSettingsI18n';
 
 const FIRST_TAB_PATH = SETTINGS_TABS[0]?.path;
 const FirstTabComponent = SETTINGS_TABS[0]?.component;
+const SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH = 575;
 
 const normalizeSettingsPath = (path: string) =>
   path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -90,6 +86,32 @@ const clearReactInternalReferences = (element: Element) => {
       delete (element as unknown as Record<string, unknown>)[key];
     }
   }
+};
+
+const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
+  const [isCompact, setIsCompact] = useState(() =>
+    isSidepanel && typeof window !== 'undefined'
+      ? window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH
+      : false,
+  );
+
+  useEffect(() => {
+    if (!isSidepanel) {
+      setIsCompact(false);
+      return undefined;
+    }
+
+    const updateIsCompact = () => {
+      setIsCompact(window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH);
+    };
+
+    updateIsCompact();
+    window.addEventListener('resize', updateIsCompact);
+
+    return () => window.removeEventListener('resize', updateIsCompact);
+  }, [isSidepanel]);
+
+  return isCompact;
 };
 
 /**
@@ -107,12 +129,12 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
 
-  const isPopupOrSidepanel =
-    environmentType === ENVIRONMENT_TYPE_POPUP ||
-    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
+  const usesCompactSettingsLayout =
+    environmentType === ENVIRONMENT_TYPE_POPUP || isCompactSidepanel;
   const isOnSettingsRoot = normalizedPathname === SETTINGS_ROUTE;
-  const showRootLandingPage = isOnSettingsRoot && isPopupOrSidepanel;
+  const showRootLandingPage = isOnSettingsRoot && usesCompactSettingsLayout;
   const backRoute = isOnSettingsRoot
     ? `${DEFAULT_ROUTE}?drawerOpen=true`
     : (meta?.parentPath ?? SETTINGS_ROUTE);
@@ -188,7 +210,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
-    isPopupOrSidepanel && !isOnSettingsRoot && currentPageLabelKey
+    usesCompactSettingsLayout && !isOnSettingsRoot && currentPageLabelKey
       ? t(currentPageLabelKey)
       : t('settings');
 
@@ -213,7 +235,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     return crumbs;
   }, [normalizedPathname, meta?.parentPath]);
 
-  const showBreadcrumbs = breadcrumbs.length > 1 && !isPopupOrSidepanel;
+  const showBreadcrumbs = breadcrumbs.length > 1 && !usesCompactSettingsLayout;
 
   // --- Dynamic snap settings tabs ---
   const settingsPageSnapIds = useSelector(getSettingsPageSnapsIds);
@@ -302,24 +324,23 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         flexDirection={BoxFlexDirection.Row}
         // 64px is the header height
         className={classnames(`h-[calc(100%-64px)]`, {
-          'sm:border-t sm:border-border-muted': !isSidepanel,
+          'border-t border-border-muted': !usesCompactSettingsLayout,
         })}
       >
         <Box
           className={classnames(
-            'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
+            'w-full h-full max-w-[262px] bg-background-muted',
             {
-              flex: isOnSettingsRoot,
-              'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
-              hidden: !isOnSettingsRoot && isSidepanel,
-              'sm:max-w-full sm:bg-background-default':
-                isOnSettingsRoot && isSidepanel,
+              flex: isOnSettingsRoot || !usesCompactSettingsLayout,
+              hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
+              'max-w-full bg-background-default':
+                isOnSettingsRoot && usesCompactSettingsLayout,
             },
           )}
         >
           <TabBar
-            tabs={isPopupOrSidepanel ? itemTabs : []}
-            sections={isPopupOrSidepanel ? [] : groupedItemTabs}
+            tabs={usesCompactSettingsLayout ? itemTabs : []}
+            sections={usesCompactSettingsLayout ? [] : groupedItemTabs}
             isActive={(key) => {
               // First tab is active when at settings root
               if (
@@ -346,20 +367,19 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 normalizedPathname.startsWith(`${key}/`)
               );
             }}
-            removeFullscreenStyles={isPopupOrSidepanel}
+            removeFullscreenStyles={usesCompactSettingsLayout}
             onTabClick={handleTabClick}
           />
         </Box>
         <Box
           className={classnames('flex-auto flex-col w-full min-w-0 pt-2', {
-            flex: !isOnSettingsRoot,
-            'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
-            hidden: isOnSettingsRoot && isSidepanel,
+            flex: !isOnSettingsRoot || !usesCompactSettingsLayout,
+            hidden: isOnSettingsRoot && usesCompactSettingsLayout,
           })}
         >
           {showBreadcrumbs && (
             <Box
-              className="hidden sm:flex"
+              className="flex"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={2}
@@ -419,7 +439,9 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
             </Box>
           )}
           <Suspense fallback={null}>
-            {isOnSettingsRoot && !isPopupOrSidepanel && FirstTabComponent ? (
+            {isOnSettingsRoot &&
+            !usesCompactSettingsLayout &&
+            FirstTabComponent ? (
               <FirstTabComponent />
             ) : (
               children
@@ -445,7 +467,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       )}
       <SettingsHeader
         title={headerTitle}
-        isPopupOrSidepanel={isPopupOrSidepanel}
+        isPopupOrSidepanel={usesCompactSettingsLayout}
         isOnSettingsRoot={isOnSettingsRoot}
         onClose={handleClose}
         isSearchOpen={isSearchOpen}

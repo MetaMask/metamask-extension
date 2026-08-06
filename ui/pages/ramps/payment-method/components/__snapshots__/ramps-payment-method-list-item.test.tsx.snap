@@ -1,5 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matched quote amounts 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-debit-credit-card"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Debit card
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-debit-credit-card"
+          >
+            5 - 10 mins
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      />
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-debit-credit-card"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Debit card
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-debit-credit-card"
+          >
+            5 - 10 mins
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      >
+        <div
+          class="flex flex-col gap-1 items-end"
+          data-testid="ramps-quote-display-loading"
+        >
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 16px; width: 80px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 16px; width: 60px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
 exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] = `
 <div>
   <button
@@ -49,17 +177,21 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
           </p>
         </div>
       </div>
-      <svg
-        class="inline-block w-5 h-5 text-primary-default"
-        data-testid="ramps-payment-method-item-selected"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
       >
-        <path
-          d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
-        />
-      </svg>
+        <svg
+          class="inline-block w-5 h-5 text-primary-default"
+          data-testid="ramps-payment-method-item-selected"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+          />
+        </svg>
+      </div>
     </div>
   </button>
 </div>
@@ -106,6 +238,154 @@ exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no l
           >
             Instant
           </p>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-debit-credit-card"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-primary-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Debit card
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-debit-credit-card"
+          >
+            5 - 10 mins
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      >
+        <div
+          class="flex flex-col items-end"
+          data-testid="ramps-quote-display"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            0.10596 ETH
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          >
+            $499.97
+          </p>
+        </div>
+        <svg
+          class="inline-block w-5 h-5 text-primary-default"
+          data-testid="ramps-payment-method-item-selected"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+          />
+        </svg>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
+<div>
+  <button
+    aria-disabled="true"
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-debit-credit-card"
+    disabled=""
+    role="button"
+    tabindex="-1"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Debit card
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-debit-credit-card"
+          >
+            Minimum purchase is $25.00
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      >
+        <div
+          class="flex flex-col items-end justify-center"
+          data-testid="ramps-quote-display-warning"
+        >
+          <svg
+            class="inline-block w-4 h-4 text-warning-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+            />
+          </svg>
         </div>
       </div>
     </div>

@@ -11,8 +11,7 @@ import { decodeMerklClaimParams } from '../../../../hooks/musd/transaction-amoun
  * Whether a transaction is an mUSD Merkl claim on Linea for UI/analytics purposes.
  *
  * Matches distributor `to`, `claim(...)` selector, Linea chain, and mUSD as the
- * reward token in calldata — stricter than activity `resolveTransactionType`
- * (which only checks `to` + method id) by requiring Linea and mUSD token.
+ * reward token in calldata.
  *
  * @param tx - The transaction metadata
  * @returns True when the tx is a qualifying mUSD Merkl claim on Linea
