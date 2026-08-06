@@ -71,7 +71,7 @@ export async function resolveE2EReportRunIds({
   core,
 }: GitHubOptions): Promise<void> {
   const { owner, repo } = context.repo;
-  const branch = context.payload.repository?.default_branch;
+  const branch: string | undefined = context.payload.repository?.default_branch;
 
   for (const { output, artifactName } of reports) {
     // Without a branch there is nothing to match, and paging the whole history would be
