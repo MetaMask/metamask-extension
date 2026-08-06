@@ -19,7 +19,9 @@ import {
   hasValidTypedDataParams,
   isEthSignTypedData,
   isEthSendTransaction,
+  isWalletSendCalls,
   hasValidTransactionParams,
+  hasValidSendCallsParams,
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
@@ -57,6 +59,14 @@ export function createTrustSignalsMiddleware(
 
       if (isEthSendTransaction(req)) {
         handleEthSendTransaction(
+          req,
+          appStateController,
+          networkController,
+          phishingController,
+        );
+        scanUrl(req, phishingController);
+      } else if (isWalletSendCalls(req)) {
+        handleWalletSendCalls(
           req,
           appStateController,
           networkController,
@@ -173,6 +183,81 @@ function handleEthSendTransaction(
         appStateController,
         phishingController,
       );
+    }
+  }
+}
+
+function handleWalletSendCalls(
+  req: TrustSignalsMiddlewareRequest,
+  appStateController: AppStateController,
+  networkController: NetworkController,
+  phishingController: PhishingController,
+) {
+  if (!hasValidSendCallsParams(req)) {
+    return;
+  }
+
+  const { calls, chainId: requestChainId } = req.params[0];
+
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
+    return;
+  }
+
+  // EIP-5792 requests may declare the batch's chain. The 5792 handler
+  // (`validateDappChainId` in @metamask/eip-5792-middleware) rejects requests
+  // whose declared chainId differs from the dapp-selected network, so skip
+  // scanning rather than cache verdicts under a key no confirmation will read.
+  if (
+    typeof requestChainId === 'string' &&
+    requestChainId.toLowerCase() !== rawChainId.toLowerCase()
+  ) {
+    return;
+  }
+
+  for (const call of calls) {
+    const { to, data } = call;
+
+    // Calls without a recipient (contract deployments) have nothing to scan.
+    if (typeof to === 'string') {
+      scanAddressAndAddToCache(
+        to,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        rawChainId,
+        phishingController,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning address for sendCalls:',
+          error,
+        );
+      });
+    }
+
+    // If a nested call is an approval, also scan the spender address —
+    // parity with the eth_sendTransaction path.
+    if (typeof data === 'string') {
+      const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+      const spenderAddress = approvalData?.spender;
+      if (spenderAddress) {
+        scanAddressAndAddToCache(
+          spenderAddress,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          rawChainId,
+          phishingController,
+        ).catch((error) => {
+          console.error(
+            '[createTrustSignalsMiddleware] error scanning spender address for sendCalls approval:',
+            error,
+          );
+        });
+      }
     }
   }
 }
