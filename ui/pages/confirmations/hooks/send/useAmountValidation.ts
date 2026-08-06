@@ -133,13 +133,13 @@ export const useAmountValidation = () => {
     return undefined;
   }, [isNonEvmSendType, debouncedSnapValidation, validateAmountAsync]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    unmountedRef.current = false;
+    return () => {
       unmountedRef.current = true;
       debouncedSnapValidation.cancel();
-    },
-    [debouncedSnapValidation],
-  );
+    };
+  }, [debouncedSnapValidation]);
 
   return { amountError, validateNonEvmAmountAsync };
 };
