@@ -7,6 +7,9 @@
  *
  * Do not register this file in `jest.config.js` setupFilesAfterEnv — enabling
  * StrictMode globally breaks many existing unit tests that assume a single mount.
+ *
+ * NOTE: The `@testing-library/react-hooks` mock remains until remaining direct
+ * imports are removed (see MetaMask-planning#6923 / PR #45062).
  */
 jest.mock('@testing-library/react', () => {
   // eslint-disable-next-line n/global-require -- required inside jest.mock factory
@@ -42,9 +45,18 @@ jest.mock('@testing-library/react', () => {
         wrapper: mockCreateStrictModeWrapper(userWrapper),
       });
     },
+    renderHook(callback, options = {}) {
+      const { wrapper: userWrapper, ...rest } = options;
+
+      return actual.renderHook(callback, {
+        ...rest,
+        wrapper: mockCreateStrictModeWrapper(userWrapper),
+      });
+    },
   };
 });
 
+// Kept until remaining @testing-library/react-hooks imports are removed (#6923).
 jest.mock('@testing-library/react-hooks', () => {
   // eslint-disable-next-line n/global-require -- required inside jest.mock factory
   const React = require('react');
