@@ -1,8 +1,15 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -26,6 +33,7 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
 import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
@@ -33,6 +41,7 @@ import type {
   DiscoverSearchSectionId,
   DiscoverSearchTab,
 } from '../../hooks/discover-search/types';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
@@ -93,6 +102,18 @@ const SEARCH_QUERY_PARAM = 'q';
 const SEARCH_TAB_PARAM = 'tab';
 const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
 
+type ExploreSearchTabName = 'all' | 'tokens' | 'perps' | 'stocks';
+
+type ExploreSearchSectionName = Exclude<ExploreSearchTabName, 'all'>;
+
+const getExploreSearchTabName = (
+  tab: DiscoverSearchTab,
+): ExploreSearchTabName => (tab === 'crypto' ? 'tokens' : tab);
+
+const getExploreSearchSectionName = (
+  section: DiscoverSearchSectionId,
+): ExploreSearchSectionName => (section === 'crypto' ? 'tokens' : section);
+
 const isDiscoverSearchTab = (
   value: string | null,
 ): value is DiscoverSearchTab =>
@@ -144,9 +165,12 @@ const getNextDiscoverSearchParams = (
 export const DiscoverSearchPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { createEventBuilder, trackEvent } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const trackedSearchQuery = useRef<string | null>(null);
+  const hasTrackedScroll = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState(
     () => searchParams.get(SEARCH_QUERY_PARAM) ?? '',
@@ -163,6 +187,44 @@ export const DiscoverSearchPage = () => {
     query: searchQuery,
     activeTab,
   });
+
+  const getSectionResultCount = useCallback(
+    (section: DiscoverSearchSectionId) => {
+      const searchSection =
+        section === 'crypto'
+          ? cryptoSection
+          : section === 'perps'
+            ? perps
+            : stocks;
+      return searchSection.totalCount ?? searchSection.items.length;
+    },
+    [cryptoSection, perps, stocks],
+  );
+
+  const getResultCount = useCallback(
+    (tab: DiscoverSearchTab) => {
+      if (tab === 'all') {
+        return (
+          getSectionResultCount('crypto') +
+          (isPerpsAvailable ? getSectionResultCount('perps') : 0) +
+          getSectionResultCount('stocks')
+        );
+      }
+      return getSectionResultCount(tab);
+    },
+    [getSectionResultCount, isPerpsAvailable],
+  );
+
+  const trackExploreSearchEvent = useCallback(
+    (properties: Record<string, Json | undefined>) => {
+      void trackEvent(
+        createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+          .addProperties(properties)
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   const handleBack = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -203,34 +265,75 @@ export const DiscoverSearchPage = () => {
   );
 
   const updateActiveTab = useCallback(
-    (tab: DiscoverSearchTab) => {
+    (tab: DiscoverSearchTab, comesFromViewAllTap = false) => {
+      if (tab === activeTab) {
+        return;
+      }
+      trackExploreSearchEvent({
+        interaction_type: 'tab_switched',
+        search_query: searchQuery,
+        tab_name: getExploreSearchTabName(tab),
+        previous_tab: getExploreSearchTabName(activeTab),
+        comes_from_view_all_tap: comesFromViewAllTap || undefined,
+        result_count: getResultCount(tab),
+      });
       setActiveTab(tab);
       updateRouteSearchParams({ tab });
     },
-    [updateRouteSearchParams],
+    [
+      activeTab,
+      getResultCount,
+      searchQuery,
+      trackExploreSearchEvent,
+      updateRouteSearchParams,
+    ],
   );
 
   const handleAssetPress = useCallback(
-    (asset: TrendingAsset) => {
+    (
+      asset: TrendingAsset,
+      section: DiscoverSearchSectionId,
+      position: number,
+    ) => {
+      trackExploreSearchEvent({
+        interaction_type: 'result_clicked',
+        search_query: searchQuery,
+        ...(activeTab === 'all'
+          ? { section_name: getExploreSearchSectionName(section) }
+          : {}),
+        tab_name: getExploreSearchTabName(activeTab),
+        item_clicked: asset.assetId,
+        position,
+        result_count: getResultCount(activeTab),
+      });
       if (isCaipAssetType(asset.assetId)) {
         navigate(buildAssetRoutePath(asset.assetId));
       }
     },
-    [navigate],
+    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
   );
 
   const handlePerpsPress = useCallback(
-    (market: PerpsMarketData) => {
+    (market: PerpsMarketData, position: number) => {
+      trackExploreSearchEvent({
+        interaction_type: 'result_clicked',
+        search_query: searchQuery,
+        ...(activeTab === 'all' ? { section_name: 'perps' } : {}),
+        tab_name: getExploreSearchTabName(activeTab),
+        item_clicked: market.symbol,
+        position,
+        result_count: getResultCount(activeTab),
+      });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate],
+    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
   );
 
   const handleViewAll = useCallback(
     (tab: DiscoverSearchTab) => {
-      updateActiveTab(tab);
+      updateActiveTab(tab, true);
     },
     [updateActiveTab],
   );
@@ -287,6 +390,65 @@ export const DiscoverSearchPage = () => {
     (isPerpsAvailable && perps.isLoading) ||
     stocks.isLoading;
 
+  const activeTabIsLoading =
+    activeTab === 'all'
+      ? allLoading
+      : activeTab === 'crypto'
+        ? cryptoSection.isLoading
+        : activeTab === 'perps'
+          ? perps.isLoading
+          : stocks.isLoading;
+
+  useEffect(() => {
+    if (!trimmedSearchQuery) {
+      trackedSearchQuery.current = null;
+      return;
+    }
+    if (
+      activeTabIsLoading ||
+      trackedSearchQuery.current === trimmedSearchQuery
+    ) {
+      return;
+    }
+    trackExploreSearchEvent({
+      interaction_type: 'searched',
+      search_query: searchQuery,
+      tab_name: getExploreSearchTabName(activeTab),
+      result_count: getResultCount(activeTab),
+    });
+    trackedSearchQuery.current = trimmedSearchQuery;
+  }, [
+    activeTab,
+    activeTabIsLoading,
+    getResultCount,
+    searchQuery,
+    trackExploreSearchEvent,
+    trimmedSearchQuery,
+  ]);
+
+  useEffect(() => {
+    hasTrackedScroll.current = false;
+  }, [activeTab, trimmedSearchQuery]);
+
+  const handleResultsScroll = useCallback(() => {
+    if (!trimmedSearchQuery || hasTrackedScroll.current) {
+      return;
+    }
+    hasTrackedScroll.current = true;
+    trackExploreSearchEvent({
+      interaction_type: 'scrolled',
+      search_query: searchQuery,
+      tab_name: getExploreSearchTabName(activeTab),
+      result_count: getResultCount(activeTab),
+    });
+  }, [
+    activeTab,
+    getResultCount,
+    searchQuery,
+    trackExploreSearchEvent,
+    trimmedSearchQuery,
+  ]);
+
   const hasAnyPreview =
     previewCrypto.length > 0 ||
     (isPerpsAvailable && previewPerps.length > 0) ||
@@ -337,6 +499,7 @@ export const DiscoverSearchPage = () => {
     items: TrendingAsset[],
     isLoading: boolean,
     testIdPrefix: string,
+    section: DiscoverSearchSectionId,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
@@ -349,11 +512,11 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
-    return items.map((asset) => (
+    return items.map((asset, position) => (
       <DiscoverAssetRow
         key={asset.assetId}
         asset={asset}
-        onPress={handleAssetPress}
+        onPress={() => handleAssetPress(asset, section, position)}
         data-testid={`${testIdPrefix}-${asset.assetId}`}
       />
     ));
@@ -371,11 +534,11 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
-    return items.map((market) => (
+    return items.map((market, position) => (
       <MarketRow
         key={market.symbol}
         market={market}
-        onPress={handlePerpsPress}
+        onPress={() => handlePerpsPress(market, position)}
         displayMetric="volume"
         data-testid={`discover-perps-row-${market.symbol.replaceAll(':', '-')}`}
       />
@@ -413,6 +576,7 @@ export const DiscoverSearchPage = () => {
               previewCrypto,
               cryptoSection.isLoading,
               'discover-crypto-preview',
+              'crypto',
             )}
           </>
         ) : null}
@@ -455,6 +619,7 @@ export const DiscoverSearchPage = () => {
               previewStocks,
               stocks.isLoading,
               'discover-stocks-preview',
+              'stocks',
             )}
           </>
         ) : null}
@@ -512,6 +677,7 @@ export const DiscoverSearchPage = () => {
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{
           className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
+          onScroll: handleResultsScroll,
         }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
@@ -527,6 +693,7 @@ export const DiscoverSearchPage = () => {
             cryptoSection.items,
             cryptoSection.isLoading,
             'discover-crypto',
+            'crypto',
           )}
         </Tab>
 
@@ -545,7 +712,12 @@ export const DiscoverSearchPage = () => {
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {renderAssetList(stocks.items, stocks.isLoading, 'discover-stocks')}
+          {renderAssetList(
+            stocks.items,
+            stocks.isLoading,
+            'discover-stocks',
+            'stocks',
+          )}
         </Tab>
       </Tabs>
     </Box>

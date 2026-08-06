@@ -101,6 +101,14 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
 
   const handleOpenDiscoverSearch = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+        .addProperties({
+          interaction_type: 'opened',
+          entry_point: 'home',
+        })
+        .build(),
+    );
     transitionForward(() =>
       navigate(DISCOVER_SEARCH_ROUTE, {
         state: {
@@ -108,7 +116,7 @@ export const AppHeaderUnlockedContent = ({
         },
       }),
     );
-  }, [navigate]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
