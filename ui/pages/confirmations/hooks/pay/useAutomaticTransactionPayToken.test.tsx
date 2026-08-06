@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
@@ -8,7 +8,11 @@ import type { Hex } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
-import { useAutomaticTransactionPayToken } from './useAutomaticTransactionPayToken';
+import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
+import {
+  ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
+  useAutomaticTransactionPayToken,
+} from './useAutomaticTransactionPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -21,6 +25,10 @@ jest.mock('./useTransactionPayAvailableTokens');
 jest.mock('./useWithdrawTokenFilter');
 jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../../../../selectors', () => ({}));
+jest.mock('../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../selectors/feature-flags'),
+  selectMinimumRequiredTokenBalance: jest.fn(),
+}));
 jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
   getHardwareWalletType: jest.fn(),
@@ -123,11 +131,15 @@ describe('useAutomaticTransactionPayToken', () => {
   const useTransactionAccountOverrideMock = jest.mocked(
     useTransactionAccountOverride,
   );
+  const selectMinimumRequiredTokenBalanceMock = jest.mocked(
+    selectMinimumRequiredTokenBalance,
+  );
 
   const setPayTokenMock = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.useRealTimers();
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
@@ -143,11 +155,16 @@ describe('useAutomaticTransactionPayToken', () => {
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
     useTransactionAccountOverrideMock.mockReturnValue(undefined);
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(0);
     usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
       isFilterApplied: false,
       isTokenAllowed: () => false,
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('selects first token', () => {
@@ -487,6 +504,79 @@ describe('useAutomaticTransactionPayToken', () => {
     expect(setPayTokenMock).toHaveBeenCalledWith({
       address: TOKEN_ADDRESS_3_MOCK,
       chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('selects the first token that meets the minimum required fiat balance', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 1 },
+      },
+      {
+        address: TOKEN_ADDRESS_3_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 10 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider();
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_3_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('falls back to the required token when no funding token meets the minimum', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 1 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider();
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
+    });
+  });
+
+  it('settles with the required-token fallback after empty-account reselect timeout', () => {
+    jest.useFakeTimers();
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+    expect(setPayTokenMock).toHaveBeenCalled();
+    setPayTokenMock.mockClear();
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: setPayTokenMock,
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
     });
   });
 });

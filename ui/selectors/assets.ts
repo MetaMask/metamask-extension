@@ -97,6 +97,7 @@ import {
   filterExcludedTokenBalances,
   filterExcludedAssetList,
 } from '../components/app/assets/enablement/networks-customization';
+import type { MetaMaskReduxState } from '../store/store';
 import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -1575,8 +1576,7 @@ const selectAllAssetsGroupedIncludingHidden = createSelector(
  * @returns Per-chain assets for the group, or an empty map when unset.
  */
 export function getAssetsByAccountGroupId(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
-  state: any,
+  state: MetaMaskReduxState,
   accountGroupId: AccountGroupId | undefined,
   { includeHidden = false }: { includeHidden?: boolean } = {},
 ): AccountGroupAssets {
