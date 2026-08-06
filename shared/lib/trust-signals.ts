@@ -1,4 +1,6 @@
-export function createCacheKey(chainId: string, address: string) {
+import type { Hex } from '@metamask/utils';
+
+export function createCacheKey(chainId: Hex, address: string) {
   return `${chainId.toLowerCase()}:${address.toLowerCase()}`;
 }
 
