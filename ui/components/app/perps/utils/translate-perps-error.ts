@@ -81,8 +81,12 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // HyperLiquid exchange rejections
   // The wallet has no HyperLiquid account yet — HyperLiquid creates one on the
-  // first USDC credit, so the only way forward is to fund it.
-  [PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND]: 'perpsAddFundsDescription',
+  // first USDC credit, so the only way forward is to fund it. This has its own
+  // key rather than reusing `perpsAddFundsDescription`: that string belongs to
+  // the balance-actions empty state, and rewording it there should not silently
+  // reword an error message.
+  [PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND]:
+    'perpsExchangeAccountNotFound',
   // Account needs a multi-sig wrapper for exchange writes — not actionable here.
   [PERPS_ERROR_CODES.EXCHANGE_MULTI_SIG_REQUIRED]: 'somethingWentWrong',
   // Stale or reused action nonce; retrying is what resolves it.

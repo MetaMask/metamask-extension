@@ -171,6 +171,12 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
       ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL],
     ).toBe('perpsUnsupportedCollateral');
   });
+
+  it('maps EXCHANGE_ACCOUNT_NOT_FOUND to perpsExchangeAccountNotFound', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND],
+    ).toBe('perpsExchangeAccountNotFound');
+  });
 });
 
 describe('API_ERROR_PATTERNS', () => {
