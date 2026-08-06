@@ -1,5 +1,5 @@
 diff --git a/dist/utils/gas.cjs b/dist/utils/gas.cjs
-index dd5270324ffc6d96845a3ea244bfa28e88454475..ec93e4799dd907e55c95d38f3da4dc7b23905236 100644
+index dd5270324ffc6d96845a3ea244bfa28e88454475..d6a54ff2dde2de4d8d0c3b231cedd3fe42b60a7a 100644
 --- a/dist/utils/gas.cjs
 +++ b/dist/utils/gas.cjs
 @@ -76,7 +76,7 @@ async function estimateGas({ ignoreDelegationSignatures, isSimulationEnabled, ge
@@ -11,7 +11,7 @@ index dd5270324ffc6d96845a3ea244bfa28e88454475..ec93e4799dd907e55c95d38f3da4dc7b
      request.authorizationList = normalizeAuthorizationList(request.authorizationList, chainId);
      delete request.gasPrice;
      delete request.maxFeePerGas;
-@@ -499,6 +499,24 @@ function normalizeAuthorizationList(authorizationList, chainId) {
+@@ -499,6 +499,22 @@ function normalizeAuthorizationList(authorizationList, chainId) {
          yParity: authorization.yParity ?? '0x1',
      }));
  }
@@ -24,20 +24,18 @@ index dd5270324ffc6d96845a3ea244bfa28e88454475..ec93e4799dd907e55c95d38f3da4dc7b
 + * @returns The normalized transaction value.
 + */
 +function normalizeValue(value) {
-+    if (value === undefined) {
-+        return '0x0';
++    const valueOrDefault = value ?? '0x0';
++    if (!(0, utils_1.isStrictHexString)(valueOrDefault)) {
++        return valueOrDefault;
 +    }
-+    if (!(0, utils_1.isStrictHexString)(value)) {
-+        return value;
-+    }
-+    const stripped = (0, utils_1.remove0x)(value).replace(/^0+/u, '');
++    const stripped = (0, utils_1.remove0x)(valueOrDefault).replace(/^0+/u, '');
 +    return stripped.length === 0 ? '0x0' : (0, utils_1.add0x)(stripped);
 +}
  /**
   * Estimate the gas for a transaction using the `eth_estimateGas` method.
   *
 diff --git a/dist/utils/gas.mjs b/dist/utils/gas.mjs
-index e0d2c6982ec3b6d40ff1269400ff510bf368dfc8..b9ad7b1f2fc5ee39f7acb5746f1c42818bc6e51f 100644
+index e0d2c6982ec3b6d40ff1269400ff510bf368dfc8..5554eb112fd4f09257cff8aca90f2215606766d8 100644
 --- a/dist/utils/gas.mjs
 +++ b/dist/utils/gas.mjs
 @@ -1,5 +1,5 @@
@@ -56,7 +54,7 @@ index e0d2c6982ec3b6d40ff1269400ff510bf368dfc8..b9ad7b1f2fc5ee39f7acb5746f1c4281
      request.authorizationList = normalizeAuthorizationList(request.authorizationList, chainId);
      delete request.gasPrice;
      delete request.maxFeePerGas;
-@@ -490,6 +490,24 @@ function normalizeAuthorizationList(authorizationList, chainId) {
+@@ -490,6 +490,22 @@ function normalizeAuthorizationList(authorizationList, chainId) {
          yParity: authorization.yParity ?? '0x1',
      }));
  }
@@ -69,13 +67,11 @@ index e0d2c6982ec3b6d40ff1269400ff510bf368dfc8..b9ad7b1f2fc5ee39f7acb5746f1c4281
 + * @returns The normalized transaction value.
 + */
 +function normalizeValue(value) {
-+    if (value === undefined) {
-+        return '0x0';
++    const valueOrDefault = value ?? '0x0';
++    if (!isStrictHexString(valueOrDefault)) {
++        return valueOrDefault;
 +    }
-+    if (!isStrictHexString(value)) {
-+        return value;
-+    }
-+    const stripped = remove0x(value).replace(/^0+/u, '');
++    const stripped = remove0x(valueOrDefault).replace(/^0+/u, '');
 +    return stripped.length === 0 ? '0x0' : add0x(stripped);
 +}
  /**
