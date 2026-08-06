@@ -27,7 +27,10 @@ import {
   selectDappClickSend,
   switchToDialogPopoverValidateDetailsRedesign,
 } from '../../page-objects/flows/test-dapp.flow';
-import { validateBalanceAndActivity, validateTransaction } from '../../page-objects/flows/send-transaction.flow';
+import {
+  validateBalanceAndActivity,
+  validateTransaction,
+} from '../../page-objects/flows/send-transaction.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
