@@ -8739,10 +8739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/tron-wallet-snap@npm:3.0.0"
-  checksum: 10/e7ed23ca7f7df16b47b52c4f467db4930627c0cbf24a282dbf8e17292f9ddc0a748b003fb714e8ed696a10033705cee56927430599be8bc4469d918d7369650e
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@3.0.0-preview-563752c":
+  version: 3.0.0-preview-563752c
+  resolution: "@metamask-previews/tron-wallet-snap@npm:3.0.0-preview-563752c"
+  checksum: 10/950e22d5de6a91de259df2a6a4207cc045a2856dcb49b689a5ef096be7782aeedf06bf3618091c1f5b7b196b0d8630f8f2bd96fd8e531f9c1456389b3717bc4e
   languageName: node
   linkType: hard
 
