@@ -108,18 +108,18 @@ export type MusdCtaClickedEventProperties = {
 
 /**
  * Resolves `redirects_to` for `MusdConversionCtaClicked` so it matches where
- * the user lands: buy (ramps) vs conversion, and education vs custom amount.
+ * the user lands: buy (ramps) vs conversion custom amount.
+ *
  * @param params
+ * @param params.intent - Whether the CTA opens buy/ramps or conversion.
  */
-export function resolveMusdConversionCtaRedirectsTo(
-  params: { intent: 'buy' } | { intent: 'conversion'; educationSeen: boolean },
-): MusdCtaClickedEventProperties['redirects_to'] {
+export function resolveMusdConversionCtaRedirectsTo(params: {
+  intent: 'buy' | 'conversion';
+}): MusdCtaClickedEventProperties['redirects_to'] {
   if (params.intent === 'buy') {
     return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.BUY_SCREEN;
   }
-  return params.educationSeen
-    ? MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN
-    : MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
+  return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN;
 }
 
 /**

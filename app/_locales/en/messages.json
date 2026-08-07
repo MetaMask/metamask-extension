@@ -5520,10 +5520,6 @@
     "message": "Convert your stablecoins to mUSD and earn\nup to a $1% annualized bonus that you can\nclaim daily. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Powered by Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Convert your stablecoins to mUSD and get a $1% annualized bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5559,10 +5555,6 @@
     "message": "Claimable bonus details",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Bonus details",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5587,10 +5579,6 @@
   "musdConvert": {
     "message": "Convert"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Convert and get $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5604,10 +5592,6 @@
   },
   "musdEducationNotNow": {
     "message": "Not now"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Get $1% mUSD bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Get mUSD"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 
@@ -65,50 +65,20 @@ describe('<SimpleConfirmationHeader />', () => {
   });
 
   describe('musdConversion type', () => {
-    it('renders the "Convert and get 3%" title', () => {
+    it('renders the Convert title', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
       expect(getByTestId('simple-confirmation-header-title')).toHaveTextContent(
-        'Convert and get 3%',
+        messages.musdConvert.message,
       );
     });
 
-    it('renders the mUSD info tooltip as endAccessory', () => {
-      const { getByTestId } = render(TransactionType.musdConversion);
+    it('does not render the mUSD info tooltip', () => {
+      const { queryByTestId } = render(TransactionType.musdConversion);
 
       expect(
-        getByTestId('musd-conversion-header-tooltip-button'),
-      ).toBeInTheDocument();
-    });
-
-    it('exposes an accessible name on the mUSD bonus info control', () => {
-      const { getByRole } = render(TransactionType.musdConversion);
-
-      expect(
-        getByRole('button', {
-          name: messages.musdConversionBonusTooltipAria.message,
-        }),
-      ).toBeInTheDocument();
-    });
-
-    it('shows tooltip when info button is clicked', () => {
-      const { getByTestId } = render(TransactionType.musdConversion);
-
-      fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
-
-      expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
-    });
-
-    it('shows Powered by Relay attribution in the mUSD bonus tooltip', async () => {
-      const { getByTestId, getByText } = render(TransactionType.musdConversion);
-
-      await act(async () => {
-        fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
-      });
-
-      expect(
-        getByText(messages.musdBonusPoweredByRelay.message),
-      ).toBeInTheDocument();
+        queryByTestId('musd-conversion-header-tooltip-button'),
+      ).not.toBeInTheDocument();
     });
   });
 
