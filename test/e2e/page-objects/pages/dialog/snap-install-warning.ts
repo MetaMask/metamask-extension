@@ -4,7 +4,9 @@ class SnapInstallWarning {
   private readonly buttonConfirm =
     '[data-testid="snap-install-warning-modal-confirm"]';
 
-  private readonly checkBoxPermission = '.mm-checkbox__input';
+  private readonly checkBoxPermission = {
+    testId: 'snap-install-warning-checkbox',
+  };
 
   private driver: Driver;
 
@@ -32,7 +34,8 @@ class SnapInstallWarning {
 
   async clickCheckboxPermission() {
     console.log('Click checkbox permission');
-    await this.driver.clickElement(this.checkBoxPermission);
+    // TODO: Use clickElement once MMDS Checkbox input is Selenium-visible.
+    await this.driver.clickDesignSystemCheckbox(this.checkBoxPermission);
   }
 
   async clickConfirmButton() {

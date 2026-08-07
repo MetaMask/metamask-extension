@@ -5,6 +5,7 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
+  Checkbox,
 } from '@metamask/design-system-react';
 import {
   BlockaidReason,
@@ -12,7 +13,6 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
   BlockSize,
   Display,
   IconColor,
@@ -27,7 +27,6 @@ import { useConfirmContext } from '../../../../pages/confirmations/context/confi
 import {
   Button,
   ButtonSize,
-  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -281,12 +280,12 @@ export function AcknowledgeCheckboxBase({
       marginTop={4}
     >
       <Checkbox
+        id="alert-modal-acknowledge-checkbox"
         label={label ?? t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
-        isChecked={isConfirmed}
+        isSelected={isConfirmed}
         onChange={onCheckboxClick}
-        alignItems={AlignItems.flexStart}
-        className="alert-modal__acknowledge-checkbox"
+        className="alert-modal__acknowledge-checkbox items-start"
       />
     </Box>
   );

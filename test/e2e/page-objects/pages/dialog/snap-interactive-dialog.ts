@@ -12,7 +12,9 @@ const selectors = {
   exampleSelectorDropdown: '.snap-ui-renderer__selector',
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
-  exampleCheckbox: '.mm-checkbox__input',
+  exampleCheckbox: {
+    testId: 'snap-ui-checkbox-example-checkbox',
+  },
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
@@ -206,7 +208,8 @@ class SnapInteractiveDialog {
 
   async selectCheckbox() {
     console.log(`Selecting checkbox`);
-    await this.driver.clickElement(selectors.exampleCheckbox);
+    // TODO: Use clickElement once MMDS Checkbox input is Selenium-visible.
+    await this.driver.clickDesignSystemCheckbox(selectors.exampleCheckbox);
   }
 
   async selectDropDownOption(exampleDropName: string, option: string) {

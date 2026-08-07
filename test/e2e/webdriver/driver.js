@@ -906,6 +906,51 @@ class Driver {
   }
 
   /**
+   * Clicks a `@metamask/design-system-react` Checkbox `<input>` (typically via
+   * `inputProps['data-testid']`).
+   *
+   * MMDS renders the native input with `opacity-0`, so Selenium's visibility check in
+   * `clickElement` fails even though the control is in the DOM and interactable.
+   *
+   * TODO: Switch call sites back to `clickElement` once MMDS styles the input as visible
+   * (matching the legacy component-library Checkbox).
+   *
+   * @param {string | object} rawLocator - Locator for the checkbox input element.
+   * @param {object} [options]
+   * @param {number} [options.retries] - Retry count for transient click failures.
+   * @param {number} [options.timeout] - Locator and enabled wait timeout in ms.
+   */
+  async clickDesignSystemCheckbox(
+    rawLocator,
+    { retries = 3, timeout = this.timeout } = {},
+  ) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findElement(rawLocator, timeout);
+        await this.driver.wait(until.elementIsEnabled(element), timeout);
+        await this.scrollToElement(element);
+        await element.click();
+        return;
+      } catch (error) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying design-system checkbox click (attempt ${attempt + 1}/${retries}) due to: ${error.name}`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  /**
    * Checks if an element is moving by comparing its position at two different times.
    *
    * @param {string | object} rawLocator - Element locator.
