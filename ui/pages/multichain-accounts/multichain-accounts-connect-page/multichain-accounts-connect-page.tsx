@@ -284,7 +284,11 @@ export const MultichainAccountsConnectPage = ({
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    // If the request is an EIP-1193 request (with no specific chains requested), an EIP-1193 compatible request, a Solana wallet standard or a tronWallet library request , return the default selected network list
+    // Return the default selected network list if the request is an EIP-1193
+    // request (with no specific chains requested), an EIP-1193 compatible
+    // request (a Multichain API request carrying the `eip1193-compatible`
+    // session property, set by MetaMask Connect's `@metamask/connect-evm`), a
+    // Solana wallet standard request, or a tronWallet library request
     if (
       (requestedCaipChainIds.length === 0 && isEip1193Request) ||
       isEip1193CompatibleRequest ||
