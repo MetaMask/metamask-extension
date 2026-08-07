@@ -16,6 +16,7 @@ import {
   getPerpsStreamManager,
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
+import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -54,8 +55,13 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   // Get the selected account address from Redux
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
+  const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
   const streamManager = getPerpsStreamManager();
+  // Configure the singleton before any dependent hook reads its market cache.
+  // Discover is outside PerpsLayout, where this is otherwise configured, so
+  // this prevents a direct-provider cache from being used while Terminal is on.
+  streamManager.setUseTerminalApi(useTerminalApi);
 
   // Track whether streamManager is ready for this address.
   // Initialize synchronously in case init was already done by a previous call

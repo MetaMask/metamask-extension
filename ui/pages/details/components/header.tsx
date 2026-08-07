@@ -76,7 +76,9 @@ function getTitleConfig(item: ActivityListItem | undefined) {
     case 'deposit':
     case 'nftBuy':
     case 'nftMint':
-    case 'nftSell': {
+    case 'nftSell':
+    case 'rampBuy':
+    case 'rampSell': {
       return {
         key,
         args: getDefinedArgs(item.data.token?.symbol),

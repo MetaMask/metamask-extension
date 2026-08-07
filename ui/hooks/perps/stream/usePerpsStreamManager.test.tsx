@@ -5,6 +5,7 @@ import {
   getPerpsStreamManager,
   resetPerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
+import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
@@ -49,9 +50,12 @@ describe('usePerpsStreamManager', () => {
     resetPerpsStreamManager();
     uuidCounter = 0;
 
-    useSelectorMock.mockImplementation((selector) =>
-      (selector as (s: unknown) => unknown)({}),
-    );
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsTerminalBackendEnabled) {
+        return false;
+      }
+      return (selector as (s: unknown) => unknown)({});
+    });
   });
 
   afterEach(() => {
@@ -68,6 +72,26 @@ describe('usePerpsStreamManager', () => {
     expect(result.current.error?.message).toBe('No account selected');
     expect(result.current.isInitializing).toBe(false);
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('configures the market backend before initializing the manager', () => {
+    const manager = getPerpsStreamManager();
+    const setUseTerminalApiSpy = jest.spyOn(manager, 'setUseTerminalApi');
+    manager.markets.pushData([{ symbol: 'ENS', name: 'ENS' }] as never[]);
+    getSelectedMock.mockReturnValue(undefined as never);
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsTerminalBackendEnabled) {
+        return true;
+      }
+      return (selector as (s: unknown) => unknown)({});
+    });
+
+    renderHook(() => usePerpsStreamManager());
+
+    expect(setUseTerminalApiSpy).toHaveBeenCalledWith(true);
+    expect(manager.markets.hasCachedData()).toBe(false);
+    manager.setUseTerminalApi(false);
+    setUseTerminalApiSpy.mockRestore();
   });
 
   it('exposes streamManager after initForAddress resolves', async () => {

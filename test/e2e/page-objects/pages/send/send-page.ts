@@ -141,6 +141,25 @@ class SendPage {
   }
 
   /**
+   * Waits until the "available" balance shown on the amount screen matches the
+   * expected token amount.
+   *
+   * @param expectedAmount - The expected available balance amount.
+   */
+  async checkAvailableBalance(expectedAmount: string): Promise<void> {
+    console.log(`Waiting for available balance to be ${expectedAmount}`);
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(this.amountBalance);
+        const text = await element.getText();
+        const numeric = parseFloat(text.replace(/[^0-9.]/gu, ''));
+        return numeric === parseFloat(expectedAmount);
+      },
+      { interval: 100, timeout: 15000 },
+    );
+  }
+
+  /**
    * Waits for the continue button to reach the expected enabled/disabled state.
    *
    * @param options - Wait options.
