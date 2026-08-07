@@ -200,6 +200,8 @@ const makeWrapper = (
   );
 };
 
+const originalSubmitBridgeTx = bridgeStatusActions.submitBridgeTx;
+const originalSubmitBridgeIntent = bridgeStatusActions.submitBridgeIntent;
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
@@ -211,6 +213,8 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      submitTxSpy.mockImplementation(originalSubmitBridgeTx);
+      submitIntentSpy.mockImplementation(originalSubmitBridgeIntent);
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(true);
       captureExceptionSpy.mockReturnValue(undefined);
@@ -632,28 +636,17 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
-      const quote = DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0];
-      const quoteWithCurrentMetricsShape = {
-        ...quote,
+      const quoteWithMetadata = {
+        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
         ...OP_0_005_ETH_TO_ARB_METADATA,
-        quote: {
-          ...quote.quote,
-          src: { asset: quote.quote.srcAsset },
-          dest: { asset: quote.quote.destAsset },
-        },
-      } as never;
+      };
 
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          quoteWithCurrentMetricsShape,
-        );
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
 
       expect(submitTxSpy.mock.calls[0][6]).toStrictEqual([
-        createActiveABTestAssignment(
-          CHAIN_VALUE_ORDER_AB_KEY,
-          'treatment',
-        ),
+        createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'treatment'),
       ]);
     });
 
@@ -687,10 +680,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           activeAbTests: [
-            createActiveABTestAssignment(
-              CHAIN_VALUE_ORDER_AB_KEY,
-              'control',
-            ),
+            createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'control'),
           ],
         }),
       );
@@ -700,9 +690,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
     it.each([undefined, { name: 'invalid' }])(
       'forwards no assignment for a missing or malformed experiment value',
       async (
-        experimentValue: undefined | {
-          name: string;
-        },
+        experimentValue:
+          | undefined
+          | {
+              name: string;
+            },
       ) => {
         const store = makeMockStore({
           featureFlagOverrides: {
@@ -710,12 +702,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
             [CHAIN_VALUE_ORDER_AB_KEY]: experimentValue,
           },
         });
-        const { result } = renderHook(
-          () => useSubmitBridgeTransaction(),
-          {
-            wrapper: makeWrapper(store),
-          },
-        );
+        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+          wrapper: makeWrapper(store),
+        });
         const quoteWithIntent = {
           ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
           quote: {

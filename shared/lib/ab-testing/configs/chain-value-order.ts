@@ -2,8 +2,7 @@ import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
 import type { ABTestAnalyticsMapping } from '../ab-test-analytics';
 import { ABTestVariant, type ABTestVariantName } from '../variants';
 
-export const CHAIN_VALUE_ORDER_AB_KEY =
-  'swapsSWAPS4827AbtestChainValueOrder';
+export const CHAIN_VALUE_ORDER_AB_KEY = 'swapsSWAPS4827AbtestChainValueOrder';
 
 type ChainValueOrderVariantConfig = {
   orderByValue: boolean;
@@ -25,8 +24,7 @@ export const CHAIN_VALUE_ORDER_AB_TEST_EXPOSURE_METADATA = {
   experimentName: 'Chain Value Order',
   variationNames: {
     [ABTestVariant.Control]: 'LaunchDarkly chain ranking',
-    [ABTestVariant.Treatment]:
-      'Holdings value with remote position overrides',
+    [ABTestVariant.Treatment]: 'Holdings value with remote position overrides',
   },
 } as const;
 

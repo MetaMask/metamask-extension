@@ -12,8 +12,7 @@ jest.mock('../../../../../hooks/useABTest', () => ({
 }));
 
 jest.mock('../../../hooks/useChainValueOrder', () => ({
-  useChainValueOrder: (...args: unknown[]) =>
-    mockUseChainValueOrder(...args),
+  useChainValueOrder: (...args: unknown[]) => mockUseChainValueOrder(...args),
 }));
 
 const chains = [

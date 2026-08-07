@@ -273,10 +273,7 @@ describe('BridgeInputGroup', () => {
     [true, 'destination'],
   ] as const)(
     'tracks opening the %s asset picker',
-    async (
-      isDestination: boolean,
-      assetLocation: 'source' | 'destination',
-    ) => {
+    async (isDestination: boolean, assetLocation: 'source' | 'destination') => {
       renderBridgeInputGroup(
         {
           featureFlagOverrides: {
@@ -291,9 +288,7 @@ describe('BridgeInputGroup', () => {
       );
 
       await act(async () => {
-        await userEvent.click(
-          screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID),
-        );
+        await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
       });
       await flushPromises();
 

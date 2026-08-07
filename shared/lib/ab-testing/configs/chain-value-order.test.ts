@@ -64,9 +64,7 @@ describe('chain-value-order config', () => {
   });
 
   it('enriches mapped events with the canonical assignment', () => {
-    registerABTestAnalyticsMapping(
-      CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING,
-    );
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
 
     const result = enrichWithABTests(
       createEvent(UnifiedSwapBridgeEventName.Submitted),
@@ -81,9 +79,7 @@ describe('chain-value-order config', () => {
   });
 
   it('does not enrich unrelated events', () => {
-    registerABTestAnalyticsMapping(
-      CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING,
-    );
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
 
     const result = enrichWithABTests(createEvent('Unrelated Event'), {
       [CHAIN_VALUE_ORDER_AB_KEY]: { name: 'treatment' },

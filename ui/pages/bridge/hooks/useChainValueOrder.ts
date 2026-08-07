@@ -30,8 +30,7 @@ export function useChainValueOrder(
   const promotedChains = useSelector(getChainValueOrderOverride);
 
   return useMemo(
-    () =>
-      getChainValueOrder(chainRanking, holdingsByChain, promotedChains),
+    () => getChainValueOrder(chainRanking, holdingsByChain, promotedChains),
     [chainRanking, holdingsByChain, promotedChains],
   );
 }

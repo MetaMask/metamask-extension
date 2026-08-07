@@ -7,8 +7,7 @@ import {
 } from '@metamask/utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../constants/bridge';
 
-export const CHAIN_VALUE_ORDER_OVERRIDE_KEY =
-  'swapsChainValueOrderOverride';
+export const CHAIN_VALUE_ORDER_OVERRIDE_KEY = 'swapsChainValueOrderOverride';
 
 export type ChainRankingEntry = {
   chainId: CaipChainId;
@@ -72,9 +71,7 @@ export function parsePositionOverrides(
     });
   }
 
-  return promotedChains.length > 0
-    ? promotedChains
-    : EMPTY_POSITION_OVERRIDES;
+  return promotedChains.length > 0 ? promotedChains : EMPTY_POSITION_OVERRIDES;
 }
 
 function getHoldingsValue(
@@ -114,10 +111,7 @@ export function getChainValueOrder(
     );
 
   const rankedChainsById = new Map(
-    rankedChains.map((rankedChain) => [
-      rankedChain.chain.chainId,
-      rankedChain,
-    ]),
+    rankedChains.map((rankedChain) => [rankedChain.chain.chainId, rankedChain]),
   );
   const promotedChainIds = new Set<CaipChainId>();
   const promotedPrefix = promotedChains.flatMap(({ chainId }) => {
@@ -133,8 +127,6 @@ export function getChainValueOrder(
 
   return [
     ...promotedPrefix,
-    ...rankedChains.filter(
-      ({ chain }) => !promotedChainIds.has(chain.chainId),
-    ),
+    ...rankedChains.filter(({ chain }) => !promotedChainIds.has(chain.chainId)),
   ].map(({ chain }) => chain);
 }

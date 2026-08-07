@@ -401,9 +401,7 @@ export class MetaMetricsController extends BaseController<
 
     // Register A/B test analytics mappings so that matching events are
     // enriched with their `active_ab_tests` assignment.
-    registerABTestAnalyticsMapping(
-      CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING,
-    );
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
     registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
     this.messenger.registerMethodActionHandlers(
