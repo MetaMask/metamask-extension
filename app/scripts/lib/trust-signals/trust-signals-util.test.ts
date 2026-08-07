@@ -14,6 +14,7 @@ import {
   getChainId,
   isConnected,
   connectScreenHasBeenPrompted,
+  extractEip712AddressValues,
 } from './trust-signals-util';
 
 jest.mock('../../../../shared/lib/selectors/networks');
@@ -666,5 +667,162 @@ describe('trust-signals-util', () => {
         });
       });
     });
+  });
+});
+
+describe('extractEip712AddressValues', () => {
+  const ADDRESS_A = '0x1111111111111111111111111111111111111111';
+  const ADDRESS_B = '0x2222222222222222222222222222222222222222';
+  const ADDRESS_C = '0x3333333333333333333333333333333333333333';
+
+  it('returns [] when types map is empty', () => {
+    expect(
+      extractEip712AddressValues({}, 'Permit', { spender: ADDRESS_A }),
+    ).toEqual([]);
+  });
+
+  it('returns [] when primaryType is not found in types map', () => {
+    const types = {
+      Permit: [{ name: 'spender', type: 'address' }],
+    };
+    expect(
+      extractEip712AddressValues(types, 'Unknown', { spender: ADDRESS_A }),
+    ).toEqual([]);
+  });
+
+  it('collects scalar address field values', () => {
+    const types = {
+      Permit: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+      ],
+    };
+    const message = { owner: ADDRESS_A, spender: ADDRESS_B };
+    expect(extractEip712AddressValues(types, 'Permit', message)).toEqual([
+      ADDRESS_A,
+      ADDRESS_B,
+    ]);
+  });
+
+  it('skips non-address primitive fields (uint256, bytes32)', () => {
+    const types = {
+      Permit: [
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'salt', type: 'bytes32' },
+      ],
+    };
+    const message = {
+      spender: ADDRESS_A,
+      value: '1000',
+      nonce: '0',
+      salt: '0xabc',
+    };
+    expect(extractEip712AddressValues(types, 'Permit', message)).toEqual([
+      ADDRESS_A,
+    ]);
+  });
+
+  it('skips address fields whose value is not a non-empty string', () => {
+    const types = {
+      Permit: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+      ],
+    };
+    // spender is missing (undefined), owner is present
+    const message: Record<string, unknown> = { owner: ADDRESS_A };
+    expect(extractEip712AddressValues(types, 'Permit', message)).toEqual([
+      ADDRESS_A,
+    ]);
+  });
+
+  it('recurses into a single nested struct and returns its address fields', () => {
+    const types = {
+      Order: [
+        { name: 'maker', type: 'address' },
+        { name: 'details', type: 'OrderDetails' },
+      ],
+      OrderDetails: [
+        { name: 'taker', type: 'address' },
+        { name: 'amount', type: 'uint256' },
+      ],
+    };
+    const message = {
+      maker: ADDRESS_A,
+      details: { taker: ADDRESS_B, amount: '500' },
+    };
+    expect(extractEip712AddressValues(types, 'Order', message)).toEqual([
+      ADDRESS_A,
+      ADDRESS_B,
+    ]);
+  });
+
+  it('collects addresses from address[] array fields', () => {
+    const types = {
+      Batch: [{ name: 'recipients', type: 'address[]' }],
+    };
+    const message = { recipients: [ADDRESS_A, ADDRESS_B, ADDRESS_C] };
+    expect(extractEip712AddressValues(types, 'Batch', message)).toEqual([
+      ADDRESS_A,
+      ADDRESS_B,
+      ADDRESS_C,
+    ]);
+  });
+
+  it('recurses into struct[] array fields and collects address fields from each item', () => {
+    const types = {
+      Delegation: [
+        { name: 'delegate', type: 'address' },
+        { name: 'caveats', type: 'Caveat[]' },
+      ],
+      Caveat: [
+        { name: 'enforcer', type: 'address' },
+        { name: 'terms', type: 'bytes' },
+      ],
+    };
+    const message = {
+      delegate: ADDRESS_A,
+      caveats: [
+        { enforcer: ADDRESS_B, terms: '0x01' },
+        { enforcer: ADDRESS_C, terms: '0x02' },
+      ],
+    };
+    expect(extractEip712AddressValues(types, 'Delegation', message)).toEqual([
+      ADDRESS_A,
+      ADDRESS_B,
+      ADDRESS_C,
+    ]);
+  });
+
+  it('returns [] for struct[] field when the array is empty', () => {
+    const types = {
+      Delegation: [
+        { name: 'delegate', type: 'address' },
+        { name: 'caveats', type: 'Caveat[]' },
+      ],
+      Caveat: [{ name: 'enforcer', type: 'address' }],
+    };
+    const message = { delegate: ADDRESS_A, caveats: [] };
+    expect(extractEip712AddressValues(types, 'Delegation', message)).toEqual([
+      ADDRESS_A,
+    ]);
+  });
+
+  it('prevents infinite recursion on circular type references', () => {
+    const types = {
+      Node: [
+        { name: 'value', type: 'address' },
+        { name: 'next', type: 'Node' },
+      ],
+    };
+    const message = {
+      value: ADDRESS_A,
+      next: { value: ADDRESS_B, next: null },
+    };
+    // Should not throw and should collect what it finds before the cycle guard fires
+    const result = extractEip712AddressValues(types, 'Node', message);
+    expect(result).toContain(ADDRESS_A);
   });
 });
