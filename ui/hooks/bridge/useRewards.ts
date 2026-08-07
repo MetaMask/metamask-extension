@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
@@ -131,7 +129,6 @@ export const useRewardsWithQuote = ({
   const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
     useState<number | null>(null);
   const debouncedEstimatePoints = useCallback(
-    // eslint-disable-next-line react-hooks/use-memo
     debounce(
       async (
         _estimationQuoteArg:
