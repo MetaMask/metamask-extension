@@ -1,6 +1,3 @@
-'use no memo';
-// TODO: Fix - Calling `useTrustSignals` from `useTrustSignal`, which is not a component, violates the rules of hooks.
-
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import isEqual from 'lodash/isEqual';
