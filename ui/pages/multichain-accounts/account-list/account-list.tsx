@@ -145,6 +145,7 @@ export const AccountList = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="account-list-page-back-button"
           />
         }
       >
