@@ -117,7 +117,7 @@ export function getBestQuote(
     );
     const quoteValue = destTokenAmountInQuote.minus(totalGasInQuote);
     const quoteMinGreaterThanAmountMin = new BigNumber(
-      quote.minDestTokenAmount,
+      quote.minDestTokenAmount ?? quote.destTokenAmount,
       10,
     ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 

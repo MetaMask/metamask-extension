@@ -2301,8 +2301,9 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          controller
-            .handleDefiReferral(
+          controller.controllerMessenger
+            .call(
+              'LegacyBackgroundApiService:handleDefiReferral',
               partner,
               tabId,
               ReferralTriggerType.OnNavigateConnectedTab,

@@ -26,7 +26,7 @@ describe('Send Tron', function () {
 
         // Switch to Tron via the UI. Enabling it through fixtures causes a redirect
         // back to the default network because the snap is not yet initialized
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
