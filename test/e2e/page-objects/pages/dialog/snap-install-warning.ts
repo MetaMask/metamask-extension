@@ -4,10 +4,9 @@ class SnapInstallWarning {
   private readonly buttonConfirm =
     '[data-testid="snap-install-warning-modal-confirm"]';
 
-  private readonly checkBoxPermission = {
-    // Design-system Checkbox input is opacity-0; click the visible label instead.
-    css: 'label:has([data-testid="snap-install-warning-checkbox"])',
-  };
+  // Design-system Checkbox input is opacity-0; click the visible label instead.
+  private readonly checkBoxPermission =
+    'label:has([data-testid="snap-install-warning-checkbox"])';
 
   private readonly checkBoxPermissionInput = {
     testId: 'snap-install-warning-checkbox',

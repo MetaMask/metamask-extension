@@ -12,10 +12,9 @@ const selectors = {
   exampleSelectorDropdown: '.snap-ui-renderer__selector',
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
-  exampleCheckbox: {
-    // Design-system Checkbox input is opacity-0; click the visible label instead.
-    css: 'label:has([data-testid="snap-ui-checkbox-example-checkbox"])',
-  },
+  // Design-system Checkbox input is opacity-0; click the visible label instead.
+  exampleCheckbox:
+    'label:has([data-testid="snap-ui-checkbox-example-checkbox"])',
   exampleCheckboxInput: {
     testId: 'snap-ui-checkbox-example-checkbox',
   },
