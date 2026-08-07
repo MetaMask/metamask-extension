@@ -2451,64 +2451,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and (optionally) sets it as the active network.
-   *
-   * @param {object} networkConfiguration - The network configuration to add.
-   * @param {object} [options0] - Options for post-add behavior.
-   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
-   * @returns {Promise<object>} The added network configuration.
-   */
-  async _addNetworkAndSetActive(
-    networkConfiguration,
-    { setActive = true } = {},
-  ) {
-    if (setActive) {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      const { networkClientId } =
-        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-        {};
-      await this.networkController.setActiveNetwork(networkClientId);
-      return addedNetwork;
-    }
-    const previousEnabledNetworkMap = Object.fromEntries(
-      Object.entries(
-        this.networkEnablementController.state.enabledNetworkMap,
-      ).map(([namespace, networks]) => [namespace, { ...networks }]),
-    );
-    const restorePreviousEnabledNetworkMap = () => {
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      this.networkEnablementController.restoreEnabledNetworkMap(
-        previousEnabledNetworkMap,
-      );
-    };
-
-    this.controllerMessenger.subscribe(
-      'NetworkEnablementController:stateChange',
-      restorePreviousEnabledNetworkMap,
-    );
-
-    try {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      );
-      return addedNetwork;
-    } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      throw error;
-    }
-  }
-
-  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -2959,7 +2901,10 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -5692,7 +5637,10 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),

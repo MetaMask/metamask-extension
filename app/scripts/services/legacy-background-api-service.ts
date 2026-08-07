@@ -1,17 +1,25 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
+  UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
+  NetworkEnablementControllerActions,
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
 import {
   add0x,
@@ -352,6 +360,7 @@ export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
   'captureTestError',
@@ -434,6 +443,15 @@ const MESSENGER_EXPOSED_METHODS = [
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
+// ponytail: `@metamask/network-enablement-controller`@6.0.0 defines this action
+// type but omits it from the package's public exports, so derive it from the
+// exported actions union. Import it directly once the package re-exports
+// `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
+type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
+  NetworkEnablementControllerActions,
+  { type: 'NetworkEnablementController:restoreEnabledNetworkMap' }
+>;
+
 type AllowedActions =
   | AccountOrderControllerUpdateHiddenAccountsListAction
   | AccountTreeControllerClearStateAction
@@ -498,15 +516,18 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
   | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
@@ -560,13 +581,15 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
+type AllowedEvents = NetworkEnablementControllerStateChangeEvent;
+
 /**
  * The {@link LegacyBackgroundApiService} messenger.
  */
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -955,6 +978,75 @@ export class LegacyBackgroundApiService {
       ...request,
       provider,
     });
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    ) as NetworkEnablementControllerState['enabledNetworkMap'];
+    const restorePreviousEnabledNetworkMap = () => {
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      this.#messenger.call(
+        'NetworkEnablementController:restoreEnabledNetworkMap',
+        previousEnabledNetworkMap,
+      );
+    };
+
+    this.#messenger.subscribe(
+      'NetworkEnablementController:stateChange',
+      restorePreviousEnabledNetworkMap,
+    );
+
+    try {
+      const addedNetwork = await this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration as AddNetworkFields,
+      );
+      await this.lookupSelectedNetworks();
+      return addedNetwork;
+    } catch (error) {
+      // `addNetwork` rejected, so `networkAdded` was not published
+      this.#messenger.unsubscribe(
+        'NetworkEnablementController:stateChange',
+        restorePreviousEnabledNetworkMap,
+      );
+      throw error;
+    }
   }
 
   /**
