@@ -102,9 +102,9 @@ export class IndexedDBStore {
     const store = tx.objectStore('store');
 
     const query =
-      prefix !== undefined
-        ? IDBKeyRange.bound(prefix, `${prefix}\uffff`)
-        : undefined;
+      prefix === undefined
+        ? undefined
+        : IDBKeyRange.bound(prefix, `${prefix}\uffff`);
 
     const request = store.getAllKeys(query);
     const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
