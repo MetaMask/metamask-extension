@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useMusdMerklPosition } from './useMusdMerklPosition';
 
 const MUSD = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
