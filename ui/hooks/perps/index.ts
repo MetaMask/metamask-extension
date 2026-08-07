@@ -23,6 +23,7 @@ export type {
 } from './usePerpsTransactionHistory';
 
 export { usePerpsMarketFills } from './usePerpsMarketFills';
+export { usePerpsRecordedOrderFees } from './usePerpsRecordedOrderFees';
 
 export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 export type {

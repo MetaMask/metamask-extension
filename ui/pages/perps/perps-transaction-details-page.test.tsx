@@ -16,7 +16,7 @@ import {
   PerpsOrderTransactionStatusType,
 } from '../../components/app/perps/types';
 import type { PerpsTransaction } from '../../components/app/perps/types';
-import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
+import { usePerpsRecordedOrderFees } from '../../hooks/perps/usePerpsRecordedOrderFees';
 import PerpsTransactionDetailsPage from './perps-transaction-details-page';
 
 const mockNavigate = jest.fn();
@@ -33,11 +33,10 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
-jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: jest.fn(() => ({
-    feeResult: undefined,
+jest.mock('../../hooks/perps/usePerpsRecordedOrderFees', () => ({
+  usePerpsRecordedOrderFees: jest.fn(() => ({
+    totalFee: 0,
     isLoading: false,
-    hasError: false,
   })),
 }));
 
@@ -203,93 +202,87 @@ describe('PerpsTransactionDetailsPage', () => {
   });
 
   describe('order fee breakdown', () => {
-    it('renders MetaMask fee, Hyperliquid fee, and Total fee rows for a filled order', () => {
-      jest.mocked(usePerpsOrderFees).mockReturnValue({
-        feeRate: 0.00145,
-        undiscountedFeeRate: 0.00145,
-        metamaskFeeRateDiscountPercentage: undefined,
-        feeResult: {
-          feeRate: 0.00145,
-          protocolFeeRate: 0.00045,
-          metamaskFeeRate: 0.001,
-          feeAmount: 6.525,
-          protocolFeeAmount: 2.025,
-          metamaskFeeAmount: 4.5,
-        },
-        isLoading: false,
-        hasError: false,
+    it('shows an em-dash while fills are still loading', () => {
+      jest.mocked(usePerpsRecordedOrderFees).mockReturnValue({
+        totalFee: undefined,
+        isLoading: true,
       });
 
-      // tx-004b is a market order with order.text === 'Filled'
+      renderWithTransaction(findTransaction('tx-004b'));
+
+      expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe('—');
+    });
+
+    it('renders a single Total fee row sourced from recorded fills for a fully filled order', () => {
+      jest.mocked(usePerpsRecordedOrderFees).mockReturnValue({
+        totalFee: 6.525,
+        isLoading: false,
+      });
+
+      // tx-004b is a fully filled market order
       renderWithTransaction(findTransaction('tx-004b'));
 
       expect(
-        screen.getByText(messages.perpsOrderMetamaskFee.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsOrderHyperliquidFee.message),
-      ).toBeInTheDocument();
-      expect(
         screen.getByText(messages.perpsOrderTotalFee.message),
       ).toBeInTheDocument();
-
-      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
-        '$4.5',
-      );
-      expect(
-        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
-      ).toBe('$2.025');
       expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
         '$6.525',
       );
+
+      // MetaMask/Hyperliquid split is deferred until builderFee is available
+      expect(
+        screen.queryByText(messages.perpsOrderMetamaskFee.message),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.perpsOrderHyperliquidFee.message),
+      ).not.toBeInTheDocument();
     });
 
-    it('zeroes out the fee rows for an unfilled order', () => {
-      jest.mocked(usePerpsOrderFees).mockReturnValue({
-        feeRate: 0.00145,
-        undiscountedFeeRate: 0.00145,
-        metamaskFeeRateDiscountPercentage: undefined,
-        feeResult: {
-          feeRate: 0.00145,
-          protocolFeeRate: 0.00045,
-          metamaskFeeRate: 0.001,
-          feeAmount: 6.525,
-          protocolFeeAmount: 2.025,
-          metamaskFeeAmount: 4.5,
-        },
+    it('shows $0 for an unfilled open order (no fills have executed)', () => {
+      jest.mocked(usePerpsRecordedOrderFees).mockReturnValue({
+        totalFee: 0,
         isLoading: false,
-        hasError: false,
       });
 
       // tx-004 is an open (unfilled) limit order
       renderWithTransaction(findTransaction('tx-004'));
 
-      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
-        '$0',
-      );
-      expect(
-        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
-      ).toBe('$0');
       expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
         '$0',
       );
     });
 
-    it('shows actual fees for a triggered order (TP/SL that executed)', () => {
-      jest.mocked(usePerpsOrderFees).mockReturnValue({
-        feeRate: 0.00145,
-        undiscountedFeeRate: 0.00145,
-        metamaskFeeRateDiscountPercentage: undefined,
-        feeResult: {
-          feeRate: 0.00145,
-          protocolFeeRate: 0.00045,
-          metamaskFeeRate: 0.001,
-          feeAmount: 6.525,
-          protocolFeeAmount: 2.025,
-          metamaskFeeAmount: 4.5,
-        },
+    it('shows the recorded fee for a partially filled canceled order', () => {
+      // Only fills that actually executed contribute to the sum — the hook
+      // returns the real amount rather than an estimate based on full size.
+      jest.mocked(usePerpsRecordedOrderFees).mockReturnValue({
+        totalFee: 1.25,
         isLoading: false,
-        hasError: false,
+      });
+
+      const base = findTransaction('tx-004c'); // Canceled order
+      if (!base.order) {
+        throw new Error('tx-004c fixture is missing an order');
+      }
+      // Simulate a partial fill: some size executed before cancellation
+      const partiallyFilledCanceled: PerpsTransaction = {
+        ...base,
+        order: {
+          ...base.order,
+          filled: '45%',
+        },
+      };
+      renderWithTransaction(partiallyFilledCanceled);
+
+      expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
+        '$1.25',
+      );
+    });
+
+    it('shows actual fees for a triggered order (TP/SL that executed)', () => {
+      jest.mocked(usePerpsRecordedOrderFees).mockReturnValue({
+        totalFee: 6.525,
+        isLoading: false,
       });
 
       const base = findTransaction('tx-004b');
@@ -306,12 +299,6 @@ describe('PerpsTransactionDetailsPage', () => {
       };
       renderWithTransaction(triggeredOrder);
 
-      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
-        '$4.5',
-      );
-      expect(
-        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
-      ).toBe('$2.025');
       expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
         '$6.525',
       );

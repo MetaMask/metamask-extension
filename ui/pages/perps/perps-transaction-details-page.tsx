@@ -11,7 +11,6 @@ import {
   FontWeight,
   IconName,
   Text,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
@@ -30,10 +29,9 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
+import { usePerpsRecordedOrderFees } from '../../hooks/perps/usePerpsRecordedOrderFees';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { formatPnl } from '../../../shared/lib/perps-formatters';
-import { PerpsOrderTransactionStatusType } from '../../components/app/perps/types';
 import type { PerpsTransaction } from '../../components/app/perps/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Row } from '../details/components/shared';
@@ -75,28 +73,14 @@ const OrderDetailRows = ({
 }) => {
   const { order } = transaction;
 
-  // Hooks must run unconditionally, so fall back to safe inputs when there's
-  // no order to render (the early return below handles that case) — mirrors
-  // mobile's usePerpsOrderFees({ orderType: transaction.order.type, amount:
-  // transaction.order.size }) call in PerpsOrderTransactionView.
-  const { feeResult } = usePerpsOrderFees({
-    symbol: transaction.symbol,
-    orderType: order?.type ?? 'market',
-    amount: order?.size ?? '0',
-  });
+  const { totalFee, isLoading: isFeeLoading } = usePerpsRecordedOrderFees(
+    order?.orderId,
+    transaction.symbol,
+  );
 
   if (!order) {
     return null;
   }
-
-  // Mobile only shows non-zero fee amounts once the order has actually
-  // filled (unfilled/canceled/queued orders never incurred a fee) — zero the
-  // rows out rather than hiding them so the breakdown's shape stays constant.
-  // Triggered orders (TP/SL that executed) share statusType Filled and also
-  // incurred fees, so check statusType rather than text.
-  const isFilled = order.statusType === PerpsOrderTransactionStatusType.Filled;
-  const getFeeDisplay = (amount: number | undefined) =>
-    formatPerpsFiatUniversal(isFilled ? (amount ?? 0) : 0);
 
   return (
     <>
@@ -120,16 +104,8 @@ const OrderDetailRows = ({
       />
       <Row label={t('perpsOrderFilled')} value={order.filled} />
       <Row
-        label={t('perpsOrderMetamaskFee')}
-        value={getFeeDisplay(feeResult?.metamaskFeeAmount)}
-      />
-      <Row
-        label={t('perpsOrderHyperliquidFee')}
-        value={getFeeDisplay(feeResult?.protocolFeeAmount)}
-      />
-      <Row
         label={t('perpsOrderTotalFee')}
-        value={getFeeDisplay(feeResult?.feeAmount)}
+        value={isFeeLoading ? '—' : formatPerpsFiatUniversal(totalFee ?? 0)}
       />
     </>
   );
