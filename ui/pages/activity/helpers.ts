@@ -1,3 +1,4 @@
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -100,6 +101,27 @@ export type GroupedItem =
 
 function getItemHash(item: ActivityListItem) {
   return item.hash?.toLowerCase();
+}
+
+/**
+ * Details-route identifier: settlement hash, or internal ramps order code.
+ *
+ * @param item - The activity item, or null/undefined when nothing is selected.
+ * @returns The hash or ramp order code, if any.
+ */
+export function getActivityItemIdentifier(
+  item: ActivityListItem | null | undefined,
+): string | undefined {
+  if (!item) {
+    return undefined;
+  }
+  if (item.hash) {
+    return item.hash;
+  }
+  if (item.type === 'rampBuy' || item.type === 'rampSell') {
+    return item.data.id ? getInternalOrderCode(item.data.id) : undefined;
+  }
+  return undefined;
 }
 
 function parseDate(timestamp: number) {
@@ -234,5 +256,6 @@ export function getItemKey(row: GroupedItem, index: number) {
     return `date-header:${row.date}`;
   }
 
-  return `${row.item.chainId}:${row.item.timestamp}:${row.item.type}:${index}`;
+  const identity = getActivityItemIdentifier(row.item) ?? String(index);
+  return `${row.item.chainId ?? ''}:${row.item.timestamp}:${row.item.type}:${identity}`;
 }
