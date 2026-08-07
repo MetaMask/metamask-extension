@@ -3174,6 +3174,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     ],
     status: FeatureFlagStatus.Active,
   },
+  productSafetyScamQuestionnaireDomainList: {
+    name: 'productSafetyScamQuestionnaireDomainList',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
 };
 
 // ============================================================================

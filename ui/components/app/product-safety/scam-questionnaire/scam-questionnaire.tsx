@@ -13,6 +13,7 @@ import {
   Q3_OPTIONS,
   QuestionId,
   QuestionOption,
+  type ScamQuestionnaireLocation,
   type Step,
   TOTAL_QUESTIONS,
   getRedFlagCount,
@@ -31,6 +32,8 @@ export type ScamQuestionnaireProps = {
   onBypass: () => void;
   /** User dismissed without finishing (back / close). */
   onDismiss: () => void;
+  /** Which flow rendered the questionnaire. Included on all metric events. */
+  location: ScamQuestionnaireLocation;
 };
 
 const WARNING_STEP = TOTAL_QUESTIONS;
@@ -73,9 +76,10 @@ export const ScamQuestionnaire: React.FC<ScamQuestionnaireProps> = ({
   onReject,
   onBypass,
   onDismiss,
+  location,
 }) => {
   const t = useI18nContext();
-  const metrics = useScamQuestionnaireMetrics();
+  const metrics = useScamQuestionnaireMetrics(location);
 
   const [step, setStep] = useState<Step>(0);
   const [answers, setAnswers] = useState<Answers>({});
