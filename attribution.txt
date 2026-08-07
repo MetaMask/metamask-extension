@@ -38522,7 +38522,7 @@ SOFTWARE.
 ******************************
 
 @swc/core
-1.15.47 <https://github.com/swc-project/swc>
+1.13.2 <https://github.com/swc-project/swc>
                               Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -38728,7 +38728,7 @@ limitations under the License.
 ******************************
 
 @swc/core-linux-x64-gnu
-1.15.47 <https://github.com/swc-project/swc>
+1.13.2 <https://github.com/swc-project/swc>
                               Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
