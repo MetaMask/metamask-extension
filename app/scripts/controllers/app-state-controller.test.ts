@@ -48,11 +48,11 @@ const extensionMock = {
       addListener: jest.fn(),
     },
   },
-    tabs: {
-      onRemoved: {
-        addListener: tabsOnRemovedAddListenerMock,
-      },
+  tabs: {
+    onRemoved: {
+      addListener: tabsOnRemovedAddListenerMock,
     },
+  },
 } as unknown as jest.Mocked<Browser>;
 
 beforeEach(() => {
