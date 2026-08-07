@@ -3,6 +3,7 @@ import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
@@ -99,7 +100,6 @@ import {
   UserOperationControllerAddUserOperationFromTransactionAction,
   UserOperationControllerStartPollingByNetworkClientIdAction,
 } from '@metamask/user-operation-controller';
-import { UsePPOM } from '@metamask/ppom-validator';
 import {
   GetSignatureState,
   SignatureStateChange,
@@ -251,6 +251,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
@@ -526,6 +527,7 @@ type AllowedActions =
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
@@ -588,7 +590,7 @@ type AllowedActions =
   | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | TransactionControllerWipeTransactionsAction
-  | UsePPOM
+  | UsePPOMAction
   | UserOperationControllerAddUserOperationFromTransactionAction
   | UserOperationControllerStartPollingByNetworkClientIdAction;
 
@@ -1078,23 +1080,17 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Resolves the chain ID that owns the given network client ID from the
-   * NetworkController state, mirroring
+   * Resolves the chain ID that owns the given network client ID, mirroring the
+   * former `getAddTransactionRequest`'s
    * `NetworkController.getNetworkConfigurationByNetworkClientId(...).chainId`.
    *
    * @param networkClientId - The network client ID to resolve.
    * @returns The chain ID.
    */
   #getChainIdByNetworkClientId(networkClientId?: string): Hex {
-    const { networkConfigurationsByChainId } = this.#messenger.call(
-      'NetworkController:getState',
-    );
-
-    const chainId = Object.values(networkConfigurationsByChainId).find(
-      (networkConfiguration) =>
-        networkConfiguration.rpcEndpoints.some(
-          (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-        ),
+    const chainId = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
     )?.chainId;
 
     if (!chainId) {

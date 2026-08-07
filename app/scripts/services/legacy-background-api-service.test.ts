@@ -1893,15 +1893,8 @@ describe('LegacyBackgroundApiService', () => {
           ),
       );
       rootMessenger.registerActionHandler(
-        'NetworkController:getState',
-        jest.fn().mockReturnValue({
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              rpcEndpoints: [{ networkClientId: NETWORK_CLIENT_ID }],
-            },
-          },
-        }),
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId: '0x1' }),
       );
       rootMessenger.registerActionHandler(
         'PreferencesController:getState',
@@ -1973,15 +1966,8 @@ describe('LegacyBackgroundApiService', () => {
             ),
         );
         rootMessenger.registerActionHandler(
-          'NetworkController:getState',
-          jest.fn().mockReturnValue({
-            networkConfigurationsByChainId: {
-              '0x1': {
-                chainId: '0x1',
-                rpcEndpoints: [{ networkClientId: NETWORK_CLIENT_ID }],
-              },
-            },
-          }),
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          jest.fn().mockReturnValue({ chainId: '0x1' }),
         );
         rootMessenger.registerActionHandler(
           'PreferencesController:getState',
@@ -6636,6 +6622,7 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',
