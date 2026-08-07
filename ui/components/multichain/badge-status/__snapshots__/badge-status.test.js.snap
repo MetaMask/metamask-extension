@@ -3,7 +3,7 @@
 exports[`Badge Status should not render the badge if showConnectedStatus is false 1`] = `
 <div>
   <button
-    class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+    class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
     data-testid="multichain-badge-status"
   >
     <div
@@ -63,7 +63,7 @@ exports[`Badge Status should not render the badge if showConnectedStatus is fals
 exports[`Badge Status should render correctly 1`] = `
 <div>
   <button
-    class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+    class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
     data-testid="multichain-badge-status"
   >
     <div>

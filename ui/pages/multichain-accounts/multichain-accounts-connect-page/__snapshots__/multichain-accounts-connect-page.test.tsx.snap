@@ -97,7 +97,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="bg-default rounded-xl"
               >
                 <div
-                  class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
+                  class="flex flex-row gap-4 items-center justify-between px-4 py-3 multichain-account-cell"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default; position: relative;"
                 >
@@ -106,11 +106,11 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      class="flex flex-row items-center justify-center w-9 h-9 flex-shrink-0 rounded-[10px]"
                       data-testid="account-cell-avatar"
                     >
                       <button
-                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
                         data-testid="multichain-badge-status"
                       >
                         <div
@@ -166,23 +166,27 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       </button>
                     </div>
                     <div
-                      class="ml-3"
+                      class="ml-2"
                       style="overflow: hidden;"
                     >
-                      <p
-                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
-                        data-testid="multichain-account-cell-name-Test Account Group 1"
+                      <div
+                        class="flex flex-row gap-1 items-center min-w-0"
                       >
-                        Test Account Group 1
-                      </p>
+                        <p
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name pl-2"
+                          data-testid="multichain-account-cell-name-Test Account Group 1"
+                        >
+                          Test Account Group 1
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div
-                    class="flex flex-row items-center justify-center"
+                    class="flex flex-row gap-1 items-center justify-center"
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
@@ -343,7 +347,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="bg-default rounded-xl"
               >
                 <div
-                  class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
+                  class="flex flex-row gap-4 items-center justify-between px-4 py-3 multichain-account-cell"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default; position: relative;"
                 >
@@ -352,11 +356,11 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      class="flex flex-row items-center justify-center w-9 h-9 flex-shrink-0 rounded-[10px]"
                       data-testid="account-cell-avatar"
                     >
                       <button
-                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
                         data-testid="multichain-badge-status"
                       >
                         <div
@@ -412,23 +416,27 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       </button>
                     </div>
                     <div
-                      class="ml-3"
+                      class="ml-2"
                       style="overflow: hidden;"
                     >
-                      <p
-                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
-                        data-testid="multichain-account-cell-name-Test Account Group 1"
+                      <div
+                        class="flex flex-row gap-1 items-center min-w-0"
                       >
-                        Test Account Group 1
-                      </p>
+                        <p
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name pl-2"
+                          data-testid="multichain-account-cell-name-Test Account Group 1"
+                        >
+                          Test Account Group 1
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div
-                    class="flex flex-row items-center justify-center"
+                    class="flex flex-row gap-1 items-center justify-center"
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
@@ -589,7 +597,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="bg-default rounded-xl"
               >
                 <div
-                  class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
+                  class="flex flex-row gap-4 items-center justify-between px-4 py-3 multichain-account-cell"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default; position: relative;"
                 >
@@ -598,11 +606,11 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     style="min-width: 0; flex: 1;"
                   >
                     <div
-                      class="flex flex-row items-center justify-center border-2 border-transparent w-10 h-10 flex-shrink-0"
+                      class="flex flex-row items-center justify-center w-9 h-9 flex-shrink-0 rounded-[10px]"
                       data-testid="account-cell-avatar"
                     >
                       <button
-                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
                         data-testid="multichain-badge-status"
                       >
                         <div
@@ -658,23 +666,27 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       </button>
                     </div>
                     <div
-                      class="ml-3"
+                      class="ml-2"
                       style="overflow: hidden;"
                     >
-                      <p
-                        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name"
-                        data-testid="multichain-account-cell-name-Test Account Group 1"
+                      <div
+                        class="flex flex-row gap-1 items-center min-w-0"
                       >
-                        Test Account Group 1
-                      </p>
+                        <p
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-cell__account-name pl-2"
+                          data-testid="multichain-account-cell-name-Test Account Group 1"
+                        >
+                          Test Account Group 1
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div
-                    class="flex flex-row items-center justify-center"
+                    class="flex flex-row gap-1 items-center justify-center"
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
