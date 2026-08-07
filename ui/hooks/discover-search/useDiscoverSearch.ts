@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
+import { useDebouncedValue } from '../useDebouncedValue';
 import { DISCOVER_SEARCH_DEBOUNCE_MS } from './constants';
 import type { DiscoverSearchResult, DiscoverSearchTab } from './types';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
@@ -21,16 +22,7 @@ export const useDiscoverSearch = ({
   query,
   activeTab,
 }: UseDiscoverSearchOptions): DiscoverSearchResult => {
-  const [debouncedQuery, setDebouncedQuery] = useState(query);
-
-  useEffect(() => {
-    const timer = setTimeout(
-      () => setDebouncedQuery(query),
-      DISCOVER_SEARCH_DEBOUNCE_MS,
-    );
-    return () => clearTimeout(timer);
-  }, [query]);
-
+  const debouncedQuery = useDebouncedValue(query, DISCOVER_SEARCH_DEBOUNCE_MS);
   const isDebouncing = query !== debouncedQuery;
   const isPerpsSearchActive = activeTab === 'all' || activeTab === 'perps';
 
