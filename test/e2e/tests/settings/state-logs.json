@@ -1278,6 +1278,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
+      "showWebWidgetOnX": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",

@@ -22,6 +22,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       language: 'Language',
       localCurrency: 'Local currency',
       autoDetectTokens: 'Auto-detect tokens',
+      showWebWidgetOnX: 'Show web widget on X',
     };
 
     if (substitutions?.length) {
@@ -84,6 +85,7 @@ jest.mock('./search-config', () => ({
         { id: 'theme', titleKey: 'theme' },
         { id: 'language', titleKey: 'language' },
         { id: 'local-currency', titleKey: 'localCurrency' },
+        { id: 'show-x-widget', titleKey: 'showWebWidgetOnX' },
       ],
     },
     {
@@ -207,6 +209,24 @@ describe('useSettingsSearch', () => {
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].titleKey).toBe('autoDetectTokens');
+  });
+
+  it('hides the web widget on X setting from search when the cashtagInjection flag is off', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: false }),
+    });
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('shows the web widget on X setting in search when the cashtagInjection flag is on', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: true }),
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].settingId).toBe('show-x-widget');
+    expect(result.current[0].titleKey).toBe('showWebWidgetOnX');
   });
 
   it('returns notification sub-pages when the query matches the parent tab label', () => {

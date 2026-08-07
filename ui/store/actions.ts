@@ -4250,6 +4250,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setShowWebWidgetOnX(value: boolean) {
+  return setPreference('showWebWidgetOnX', value);
+}
+
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

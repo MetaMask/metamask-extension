@@ -1086,6 +1086,7 @@
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
+        "showWebWidgetOnX": true,
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,

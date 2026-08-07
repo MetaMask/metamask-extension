@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
+import { getIsWebWidgetOnXFeatureEnabled } from '../../selectors';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG, type TabSearchConfig } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
@@ -49,9 +50,21 @@ const HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY: ReadonlySet<stri
 
 function getSearchConfig(
   isBasicFunctionalityToggleEnabled: boolean,
+  featureFlaggedItems: Record<string, ReadonlySet<string>>,
 ): TabSearchConfig[] {
+  const filterFeatureFlagged = (config: TabSearchConfig): TabSearchConfig => {
+    const hidden = featureFlaggedItems[config.tabId];
+    if (!hidden || hidden.size === 0) {
+      return config;
+    }
+    return {
+      ...config,
+      items: config.items.filter((item) => !hidden.has(item.id)),
+    };
+  };
+
   if (!isBasicFunctionalityToggleEnabled) {
-    return SETTINGS_SEARCH_CONFIG;
+    return SETTINGS_SEARCH_CONFIG.map(filterFeatureFlagged);
   }
 
   return SETTINGS_SEARCH_CONFIG.map((config) => {
@@ -71,7 +84,7 @@ function getSearchConfig(
             ),
           }));
 
-    return { ...config, items, subPages };
+    return filterFeatureFlagged({ ...config, items, subPages });
   });
 }
 
@@ -80,13 +93,18 @@ function getSearchConfig(
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
  *
  * @param isBasicFunctionalityToggleEnabled - Whether consolidated Basic Functionality settings should hide granular items.
+ * @param featureFlaggedItems - Items to hide from search because their feature flag is off, keyed by tabId.
  */
 function buildSearchableItems(
   isBasicFunctionalityToggleEnabled: boolean,
+  featureFlaggedItems: Record<string, ReadonlySet<string>>,
 ): SettingsSearchResult[] {
   const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
-  return getSearchConfig(isBasicFunctionalityToggleEnabled).flatMap((cfg) => {
+  return getSearchConfig(
+    isBasicFunctionalityToggleEnabled,
+    featureFlaggedItems,
+  ).flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);
     if (!tab) {
       return [];
@@ -131,10 +149,19 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
+  const isWebWidgetOnXFeatureEnabled = useSelector(
+    getIsWebWidgetOnXFeatureEnabled,
+  );
 
   const fuse = useMemo(() => {
+    const featureFlaggedItems: Record<string, ReadonlySet<string>> = {
+      'preferences-and-display': new Set(
+        isWebWidgetOnXFeatureEnabled ? [] : ['show-x-widget'],
+      ),
+    };
     const items = buildSearchableItems(
       isBasicFunctionalityConsolidationEnabled,
+      featureFlaggedItems,
     );
     return new Fuse(items, {
       shouldSort: true,
@@ -149,7 +176,11 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
         return typeof labelKey === 'string' ? t(labelKey) : '';
       },
     });
-  }, [isBasicFunctionalityConsolidationEnabled, t]);
+  }, [
+    isBasicFunctionalityConsolidationEnabled,
+    isWebWidgetOnXFeatureEnabled,
+    t,
+  ]);
 
   return useMemo(() => {
     const query = searchValue.trim();

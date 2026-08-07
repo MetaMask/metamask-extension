@@ -1580,6 +1580,23 @@ export function getShowExtensionInFullSizeView(state) {
   return Boolean(showExtensionInFullSizeView);
 }
 
+export function getShowWebWidgetOnX(state) {
+  const { showWebWidgetOnX = true } = getPreferences(state);
+  return Boolean(showWebWidgetOnX);
+}
+
+/**
+ * Whether the X.com widget feature (and its Preferences setting) is enabled
+ * via the `cashtagInjection` remote feature flag.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsWebWidgetOnXFeatureEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
