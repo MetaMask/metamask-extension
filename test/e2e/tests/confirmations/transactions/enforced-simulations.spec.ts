@@ -11,6 +11,7 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
@@ -74,6 +75,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -193,6 +195,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -309,6 +312,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'failed',
+          true,
         );
 
         assert.strictEqual(
@@ -367,8 +371,16 @@ async function confirmAndGetTransaction(
   confirmation: TransactionConfirmation,
   anvil: Anvil,
   expectedStatus: 'confirmed' | 'failed',
+  acknowledgeDangerAlert = false,
 ) {
   await confirmation.clickFooterConfirmButton();
+
+  if (acknowledgeDangerAlert) {
+    const alertModal = new ConfirmAlertModal(driver);
+    await alertModal.acknowledgeAlert();
+    await alertModal.confirmFromAlertModal();
+    await confirmation.clickFooterConfirmButton();
+  }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
