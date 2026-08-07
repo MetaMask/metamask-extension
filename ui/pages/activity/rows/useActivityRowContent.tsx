@@ -17,6 +17,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
+import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import type { ActivityRowProps } from '../types';
 import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
@@ -203,6 +205,30 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
+      case 'rampBuy':
+      case 'rampSell': {
+        const { token, fiat, provider } = activity.data;
+        const symbol = token?.symbol ?? '';
+        const hasCryptoAmount = hasPositiveNumericAmount(token?.amount);
+        const orderFiat =
+          fiat?.currency && hasPositiveNumericAmount(fiat.amount)
+            ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
+            : undefined;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [symbol]),
+          // No provider name means no subtitle: the ramp description repeats
+          // the row title verbatim.
+          subtitle: provider?.name || undefined,
+          primaryAmount:
+            activity.status === 'pending' && token && !hasCryptoAmount
+              ? formatPendingRampTokenLabel(symbol)
+              : formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: orderFiat ?? formatAsFiat(token),
+        };
+      }
       case 'perpsAddFunds':
       case 'perpsWithdraw': {
         const { fiat, token } = activity.data;
@@ -328,6 +354,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const content = getContent();
   const { primaryAmount, primaryDirection, secondaryAmount, avatarTokens } =
     content;
+  const hasPrimaryAmount =
+    primaryAmount !== undefined &&
+    primaryAmount !== null &&
+    primaryAmount !== '';
 
   return {
     avatar: (
@@ -346,11 +376,11 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       </span>
     ),
     subtitle: content.subtitle,
-    primaryAmount: (
+    primaryAmount: hasPrimaryAmount ? (
       <span className={cn(primaryDirection === 'in' && 'text-success-default')}>
         {primaryAmount}
       </span>
-    ),
+    ) : undefined,
     secondaryAmount,
   };
 }
