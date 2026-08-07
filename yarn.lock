@@ -8411,6 +8411,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-b2b824b":
+  version: 0.0.1-preview-b2b824b
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-b2b824b"
+  checksum: 10/ab9292f038fd3355ccdac0071521257a4c3d6840c2a7c672c2f3c1aea39329ac4857d094d2c8e39924f65079dd2847383fc998fbdbd46a6775511e8f64c5952e
+  languageName: node
+  linkType: hard
+
 "@metamask/storage-service@npm:^1.0.0, @metamask/storage-service@npm:^1.0.2":
   version: 1.0.2
   resolution: "@metamask/storage-service@npm:1.0.2"
@@ -32976,7 +32983,7 @@ __metadata:
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.3.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
-    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/keyring-api": "npm:^23.7.0"
     "@metamask/keyring-controller": "npm:^27.0.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-sdk": "npm:^2.2.0"
@@ -33043,6 +33050,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^2.10.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-b2b824b"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.2.0"
     "@metamask/superstruct": "npm:^3.2.1"

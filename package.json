@@ -330,7 +330,8 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
-    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
+    "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-b2b824b"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -415,7 +416,7 @@
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
     "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
-    "@metamask/keyring-api": "^23.5.0",
+    "@metamask/keyring-api": "^23.7.0",
     "@metamask/keyring-controller": "^27.0.0",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/keyring-sdk": "^2.2.0",
@@ -474,6 +475,7 @@
     "@metamask/snaps-utils": "^12.4.0",
     "@metamask/solana-wallet-snap": "^2.10.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-b2b824b",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
     "@metamask/transaction-controller": "^69.1.0",
