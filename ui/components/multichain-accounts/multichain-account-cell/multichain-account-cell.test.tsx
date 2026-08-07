@@ -64,6 +64,31 @@ describe('MultichainAccountCell', () => {
       `multichain-account-cell-${defaultProps.accountId}`,
     );
     expect(cellElement).toHaveClass('is-selected');
+    expect(cellElement).not.toHaveClass('bg-muted');
+    expect(
+      screen.getByTestId('multichain-account-cell-selected-check'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('account-cell-avatar')).toHaveClass(
+      'outline-primary-default',
+    );
+    expect(
+      screen.getByTestId('multichain-account-cell-name-Test Account'),
+    ).toHaveClass('text-primary-default');
+  });
+
+  it('does not show selected check when startAccessory is provided', () => {
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        selected={true}
+        startAccessory={<span data-testid="start-accessory">Start</span>}
+      />,
+      store,
+    );
+
+    expect(
+      screen.queryByTestId('multichain-account-cell-selected-check'),
+    ).not.toBeInTheDocument();
   });
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {

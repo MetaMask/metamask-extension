@@ -4,11 +4,13 @@ import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
-  BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -25,6 +27,7 @@ import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-
 
 type AccountCellAvatarProps = {
   seedAddress: string;
+  selected?: boolean;
   connectionStatus?:
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
@@ -33,17 +36,18 @@ type AccountCellAvatarProps = {
 
 const AccountCellAvatar = ({
   seedAddress,
+  selected = false,
   connectionStatus,
   hideTooltip = false,
 }: AccountCellAvatarProps) => {
   return (
     <Box
-      className="w-10 h-10 flex-shrink-0"
+      className={`w-9 h-9 flex-shrink-0 rounded-[10px]${
+        selected ? ' outline outline-[1.5px] outline-primary-default' : ''
+      }`}
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Center}
       alignItems={BoxAlignItems.Center}
-      borderColor={BoxBorderColor.Transparent}
-      borderWidth={2}
       data-testid="account-cell-avatar"
     >
       <ConnectedStatus
@@ -108,17 +112,13 @@ export const MultichainAccountCell = ({
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
       }}
-      padding={4}
+      paddingVertical={3}
+      paddingHorizontal={4}
       gap={4}
       onClick={handleClick}
       className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
-      backgroundColor={
-        selected && !startAccessory
-          ? BoxBackgroundColor.BackgroundMuted
-          : BoxBackgroundColor.Transparent
-      }
     >
       {startAccessory}
       <Box
@@ -129,19 +129,37 @@ export const MultichainAccountCell = ({
       >
         <AccountCellAvatar
           seedAddress={seedAddressIcon}
+          selected={selected}
           connectionStatus={connectionStatus}
         />
-        <Box marginLeft={3} style={{ overflow: 'hidden' }}>
+        <Box marginLeft={2} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <Text
-            className="multichain-account-cell__account-name"
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            ellipsis
-            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            className="min-w-0"
           >
-            {accountName}
-          </Text>
+            <Text
+              className={`multichain-account-cell__account-name pl-2${selected ? ' multichain-account-cell__account-name--selected' : ''}`}
+              color={selected ? TextColor.PrimaryDefault : undefined}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              ellipsis
+              data-testid={`multichain-account-cell-name-${ariaLabelName}`}
+            >
+              {accountName}
+            </Text>
+            {selected && !startAccessory && (
+              <Icon
+                className="flex-shrink-0"
+                name={IconName.Check}
+                size={IconSize.Md}
+                color={IconColor.PrimaryDefault}
+                data-testid="multichain-account-cell-selected-check"
+              />
+            )}
+          </Box>
           {walletName && (
             <Text
               className="multichain-account-cell__account-name"
@@ -168,13 +186,13 @@ export const MultichainAccountCell = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
+        gap={1}
         style={{ flexShrink: 0 }}
       >
         <SensitiveText
           className="multichain-account-cell__account-balance"
           data-testid="balance-display"
           variant={TextVariantDeprecated.bodyMdMedium}
-          marginRight={2}
           isHidden={privacyMode}
           ellipsis
         >
