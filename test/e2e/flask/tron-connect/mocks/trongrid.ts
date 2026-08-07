@@ -5,6 +5,8 @@ import { TRANSACTION_HASH_MOCK } from '../common-tron';
 const TRONGRID_API_URL = 'https://api.trongrid.io';
 const TRON_API_URL =
   /(?:https:\/\/api\.trongrid\.io|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+)/u;
+const TRON_TESTNET_ACCOUNT_RE =
+  /^(?:https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/[A-Za-z0-9]{20,}(\/transactions(\/trc20)?)?(\?.*)?$/u;
 const TRON_WALLET_API_URL =
   /(?:https:\/\/api\.trongrid\.io\/wallet|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet)/u;
 const DEFAULT_TRX_BALANCE_IN_SUN = 45811016;
@@ -461,3 +463,16 @@ export const mockAccountResourcesRequest = (
       ...accountResourcesResponse,
       ...options,
     });
+
+export const mockTestnetAccountApis = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(TRON_TESTNET_ACCOUNT_RE)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [],
+        success: true,
+        meta: { at: Date.now(), page_size: 0 },
+      },
+    }));

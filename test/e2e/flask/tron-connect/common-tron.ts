@@ -1,4 +1,4 @@
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -30,6 +30,7 @@ import {
   mockGetNextMaintenanceTime,
   mockGetContract,
   mockGetNowBlockInfura,
+  mockTestnetAccountApis,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -45,6 +46,8 @@ export const withTronAccountSnap = async (
     dappOptions,
     tronBalance,
     tronAccountResources,
+    additionalMocks,
+    fixtureCustomizer,
   }: {
     title?: string;
     numberOfAccounts?: number;
@@ -54,24 +57,30 @@ export const withTronAccountSnap = async (
     };
     tronBalance?: number;
     tronAccountResources?: AccountResourcesRequestOptions;
+    additionalMocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>;
+    fixtureCustomizer?: (builder: FixtureBuilderV2) => FixtureBuilderV2;
   },
   test: (driver: Driver) => Promise<void>,
 ) => {
+  let builder = new FixtureBuilderV2().withEnabledNetworks({
+    tron: {
+      [MultichainNetworks.TRON]: true,
+      [MultichainNetworks.TRON_NILE]: true,
+      [MultichainNetworks.TRON_SHASTA]: true,
+    },
+    eip155: {
+      '0x539': true,
+    },
+  });
+
+  if (fixtureCustomizer) {
+    builder = fixtureCustomizer(builder);
+  }
+
   await withFixtures(
     {
       forceBip44Version: false,
-      fixtures: new FixtureBuilderV2()
-        .withEnabledNetworks({
-          tron: {
-            [MultichainNetworks.TRON]: true,
-            [MultichainNetworks.TRON_NILE]: true,
-            [MultichainNetworks.TRON_SHASTA]: true,
-          },
-          eip155: {
-            '0x539': true,
-          },
-        })
-        .build(),
+      fixtures: builder.build(),
       title,
       dapp: true,
       dappOptions: dappOptions ?? {
@@ -100,6 +109,8 @@ export const withTronAccountSnap = async (
         await mockGetChainParameters(mockServer),
         await mockGetNextMaintenanceTime(mockServer),
         await mockGetContract(mockServer),
+        await mockTestnetAccountApis(mockServer),
+        ...(additionalMocks ? await additionalMocks(mockServer) : []),
       ],
     },
     async ({ driver }: { driver: Driver }) => {
