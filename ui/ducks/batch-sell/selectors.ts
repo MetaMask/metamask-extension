@@ -8,7 +8,7 @@ import {
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   selectBatchSellQuotes,
   selectBatchSellTrades,
   selectMinimumBalanceForRentExemptionInSOL,
@@ -164,7 +164,7 @@ const resolveTokenFiatPriceAndChange = (
   if (isEvmChainId(chainId as Hex | CaipChainId)) {
     const hexChainId = formatChainIdToHex(chainId);
     const isNative =
-      getNativeAssetForChainId(chainId)?.assetId.toLowerCase() ===
+      getBridgeNativeAssetForChainId(chainId)?.assetId.toLowerCase() ===
       asset.assetId.toLowerCase();
     // EVM native price lives under the zero-address key.
     const evmTokenAddress = (
@@ -240,7 +240,7 @@ export const getNativeAssetForChain = createSelector(
     if (!chainId) {
       return undefined;
     }
-    const nativeAssetId = getNativeAssetForChainId(chainId)?.assetId;
+    const nativeAssetId = getBridgeNativeAssetForChainId(chainId)?.assetId;
     if (!nativeAssetId) {
       return undefined;
     }

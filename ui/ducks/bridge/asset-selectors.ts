@@ -1,7 +1,7 @@
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { type AccountGroupId } from '@metamask/account-api';
 import { createSelector as untypedCreateSelector } from 'reselect';
@@ -189,7 +189,7 @@ const getNativeAssetsWithBalance = createSelector(
           return;
         }
 
-        const token = getNativeAssetForChainId(chainId);
+        const token = getBridgeNativeAssetForChainId(chainId);
         const account =
           accounts[normalizedAddress] ?? accounts[lowercasedAddress];
 
@@ -253,7 +253,8 @@ const getEvmExchangeRates = createSelector(
       if (!isStrictHexString(address)) {
         return;
       }
-      const { assetId: nativeAssetId } = getNativeAssetForChainId(chainId);
+      const { assetId: nativeAssetId } =
+        getBridgeNativeAssetForChainId(chainId);
 
       const nativeToCurrencyRate = exchangeRatesByAssetId[nativeAssetId] ?? 0;
       const hexChainId = formatChainIdToHex(chainId);

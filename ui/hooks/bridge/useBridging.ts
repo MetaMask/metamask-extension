@@ -4,7 +4,7 @@ import {
   FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
@@ -142,7 +142,8 @@ const useBridging = () => {
         )[0];
         // Otherwise, use the native assetId
         const defaultAssetId =
-          bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
+          bip44AssetId ??
+          getBridgeNativeAssetForChainId(fallbackChainId)?.assetId;
         search.set(BridgeQueryParams.From, defaultAssetId);
       }
 

@@ -1,4 +1,4 @@
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId as getBridgeNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   type CaipAssetType,
   type CaipChainId,
@@ -33,7 +33,7 @@ export const buildTokenFromCaipAssetId = async (
 
     if (assetNamespace === 'slip44') {
       try {
-        const native = getNativeAssetForChainId(caipChainId);
+        const native = getBridgeNativeAssetForChainId(caipChainId);
         const hexChainId = decimalToPrefixedHex(parsed.chain.reference) as Hex;
 
         return {

@@ -1,6 +1,6 @@
 import {
   isCrossChain,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { useEffect, useMemo, useState } from 'react';
@@ -71,7 +71,7 @@ export const useGasIncludedSupport = () => {
   // If native EVM and simulationIncludeFees are supported, gasless request params pretty much get ignored
   // This means the backend can always return a gasIncluded quote
   const nativeGasIncluded = useMemo(() => {
-    return fromToken?.assetId && isNativeAddress(fromToken.assetId)
+    return fromToken?.assetId && isBridgeNativeAddress(fromToken.assetId)
       ? networkFlags?.simulationIncludeFees
       : undefined;
   }, [networkFlags?.simulationIncludeFees, fromToken?.assetId]);

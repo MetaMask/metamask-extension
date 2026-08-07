@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
   UnifiedSwapBridgeEventName,
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { Skeleton } from '@metamask/design-system-react';
 import {
@@ -116,8 +116,8 @@ export const MultichainBridgeQuoteCard = ({
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isCrossChainBridge = Boolean(
     fromToken?.chainId &&
-    toToken?.chainId &&
-    fromToken.chainId !== toToken.chainId,
+      toToken?.chainId &&
+      fromToken.chainId !== toToken.chainId,
   );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -166,7 +166,7 @@ export const MultichainBridgeQuoteCard = ({
   ]);
 
   const nativeTokenSymbol = fromChain
-    ? getNativeAssetForChainId(fromChain.chainId).symbol
+    ? getBridgeNativeAssetForChainId(fromChain.chainId).symbol
     : '';
 
   const secondsUntilNextRefresh = useCountdownTimer();
@@ -256,7 +256,8 @@ export const MultichainBridgeQuoteCard = ({
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source:
                           fromToken?.symbol ??
-                          getNativeAssetForChainId(fromChain.chainId).symbol,
+                          getBridgeNativeAssetForChainId(fromChain.chainId)
+                            .symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_destination: toToken?.symbol ?? null,

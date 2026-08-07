@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import {
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   QuoteResponseV1,
   TxData,
 } from '@metamask/bridge-controller';
@@ -152,7 +152,7 @@ export function getBalanceChangeFromSimulationData(
 
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
   let balanceDifference = '0x0';
-  if (isNativeAddress(tokenAddress)) {
+  if (isBridgeNativeAddress(tokenAddress)) {
     balanceDifference = nativeBalanceChange?.difference ?? '0x0';
   } else {
     balanceDifference =

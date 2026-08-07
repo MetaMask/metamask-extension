@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
-  getNativeAssetForChainId,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
   QuoteResponseV1,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -65,8 +65,10 @@ const mockFeatureFlags = {
   },
 };
 const mockBridgeSlice = {
-  fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-  toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET)),
+  fromToken: toBridgeToken(getBridgeNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+  toToken: toBridgeToken(
+    getBridgeNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+  ),
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {

@@ -15,13 +15,18 @@ import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
-  getNativeAssetForChainId,
-  isNativeAddress,
+  getNativeAssetForChainId as getBridgeNativeAssetForChainId,
+  isNativeAddress as isBridgeNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import {
+  getAssetId as getPriceApiAssetId,
+  getNativeTokenAddress as getPriceApiNativeTokenAddress,
+} from '@metamask/assets-controllers';
 
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
+  SLIP44_ASSET_NAMESPACE,
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
@@ -52,9 +57,9 @@ export const toAssetId = (
     return undefined;
   }
 
-  if (isNativeAddress(addressToUse)) {
+  if (isBridgeNativeAddress(addressToUse)) {
     try {
-      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+      return getBridgeNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
       // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
       // This allows the send flow to work for custom networks even if they're not in the swaps map
@@ -93,8 +98,64 @@ export const toAssetId = (
 };
 
 /**
+ * Activity-specific asset id resolution, used only by the Activity feed's
+ * native-asset lookup (shared/lib/activity/adapters/helpers.ts) — kept
+ * separate from {@link toAssetId} so this doesn't change behavior for its
+ * ~25 other (mostly bridge/swap) call sites.
+ *
+ * @metamask/bridge-controller's isNativeAddress/getNativeAssetForChainId
+ * (aliased above) only resolve native assets for chains in its swap-support
+ * table. On any other chain, {@link toAssetId} falls through to its generic
+ * erc20 branch, which is harmless when that chain's native asset is
+ * address-based (e.g. the zero address) but wrong when it's slip44-based
+ * (e.g. Injective) — the erc20 branch then misrepresents the slip44
+ * reference as a contract address, breaking the Activity Tab token icon.
+ *
+ * This resolves native assets two ways instead: an already-CAIP-formatted
+ * slip44 input is trusted directly (per CAIP-19 the slip44 namespace is
+ * reserved for a chain's native asset), and raw address input is resolved
+ * via the Price API's per-chain native asset table
+ * (`getAssetId`/`getNativeTokenAddress`), which is chain-agnostic (no throw
+ * on unsupported chains) and already encodes both conventions correctly
+ * (e.g. Injective's slip44, Mantle/Polygon's non-zero native addresses).
+ * `isBridgeNativeAddress` is still used to decide whether a raw address is
+ * native at all, since it also catches the empty-string/falsy cases that
+ * the Price API table's own zero-address check would miss.
+ *
+ * @param address - The raw or CAIP-formatted asset address.
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The CAIP-19 asset id, or `undefined` when it can't be resolved.
+ */
+export const toActivityAssetId = (
+  address: Hex | CaipAssetType | string,
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (isCaipAssetType(address)) {
+    const { assetNamespace } = parseCaipAssetType(address);
+    if (assetNamespace === SLIP44_ASSET_NAMESPACE) {
+      return address;
+    }
+    return toAssetId(address, chainId);
+  }
+
+  if (isStrictHexString(chainId)) {
+    const priceApiAssetId = getPriceApiAssetId({
+      chainId,
+      tokenAddress: isBridgeNativeAddress(address)
+        ? getPriceApiNativeTokenAddress(chainId)
+        : address,
+    });
+    if (priceApiAssetId) {
+      return priceApiAssetId;
+    }
+  }
+
+  return toAssetId(address, chainId);
+};
+
+/**
  * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
- * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * chains unknown to the bridge asset map (`getBridgeNativeAssetForChainId` throws on
  * custom/unsupported networks).
  *
  * @param chainId - The chain id in caip or hex format.
@@ -107,7 +168,7 @@ export const getNativeAssetId = (
     return undefined;
   }
   try {
-    return getNativeAssetForChainId(chainId).assetId;
+    return getBridgeNativeAssetForChainId(chainId).assetId;
   } catch {
     return undefined;
   }

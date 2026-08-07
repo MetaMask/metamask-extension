@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
-  isNativeAddress,
+  isNativeAddress as isBridgeNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
@@ -351,7 +351,7 @@ export const BridgeInputGroup = ({
         {isAmountReadOnly &&
           token &&
           selectedChainId &&
-          !isNativeAddress(assetReference) && (
+          !isBridgeNativeAddress(assetReference) && (
             <Text
               display={Display.Flex}
               gap={1}

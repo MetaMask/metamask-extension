@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { isNativeAddress } from '@metamask/bridge-controller';
+import { isNativeAddress as isBridgeNativeAddress } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
@@ -57,7 +57,7 @@ export function usePostQuoteWithdrawTokenFilter(): WithdrawTokenFilterResult {
 
     return Object.entries(allowlist).flatMap(([chainId, addresses]) =>
       addresses
-        .filter((address) => !isNativeAddress(address.toLowerCase()))
+        .filter((address) => !isBridgeNativeAddress(address.toLowerCase()))
         .map((address) => ({
           chainId: chainId as Hex,
           address,
@@ -113,7 +113,7 @@ function buildAllowlistLookup(
       const lowerAddress = address.toLowerCase();
       addressSet.add(lowerAddress);
 
-      if (isNativeAddress(lowerAddress)) {
+      if (isBridgeNativeAddress(lowerAddress)) {
         const nativeAddress = getNativeTokenAddress(lowerChainId as Hex);
         addressSet.add(nativeAddress.toLowerCase());
       }
