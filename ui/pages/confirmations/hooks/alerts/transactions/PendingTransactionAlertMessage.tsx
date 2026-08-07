@@ -1,5 +1,3 @@
-'use no memo';
-
 import React from 'react';
 import { ButtonLink, Text } from '../../../../../components/component-library';
 import {
@@ -8,9 +6,11 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
-export const PendingTransactionAlertMessage = (
-  t: (key: string, ...args: unknown[]) => string,
-) => {
+export const PendingTransactionAlertMessage = ({
+  t,
+}: {
+  t: (key: string, ...args: unknown[]) => string;
+}) => {
   return (
     <Text
       variant={TextVariant.bodyMd}

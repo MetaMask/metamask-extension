@@ -1,10 +1,8 @@
-'use no memo';
-
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 
@@ -56,7 +54,9 @@ export function useNonContractAddressAlerts(): Alert[] {
         isBlocking: false,
         key: 'hexDataWhileInteractingWithNonContractAddress',
         reason: t('nonContractAddressAlertTitle'),
-        content: NonContractAddressAlertMessage(networkConfigurations),
+        content: React.createElement(NonContractAddressAlertMessage, {
+          networkConfigurations,
+        }),
         severity: Severity.Warning,
       },
     ];
