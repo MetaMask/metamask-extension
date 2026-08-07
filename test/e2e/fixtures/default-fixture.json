@@ -172,14 +172,14 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
-      "consentDecisionMade": true
+      "consentDecisionMade": true,
+      "optedIn": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 221,
+      "currentMigrationVersion": 222,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -1145,7 +1145,6 @@
       }
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -1154,7 +1153,8 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
@@ -1315,6 +1315,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 221
+    "version": 222
   }
 }
