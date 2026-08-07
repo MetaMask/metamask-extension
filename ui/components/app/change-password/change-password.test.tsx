@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
-import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -957,7 +957,7 @@ describe('ChangePassword', () => {
         data: {
           cause: {
             name: 'PasskeyControllerError',
-            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
           },
         },
       });

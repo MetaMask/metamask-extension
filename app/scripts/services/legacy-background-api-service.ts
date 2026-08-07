@@ -205,6 +205,11 @@ import {
   GasFeeControllerEnableNonRPCGasFeeApisAction,
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerUnlockWithPasskeyAction,
+} from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
@@ -351,6 +356,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'attemptLedgerTransportCreation',
   'captureTestError',
   'changePassword',
+  'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
@@ -415,6 +421,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'syncSeedPhrases',
   'throwTestError',
   'toggleExternalServices',
+  'unlockWithPasskey',
   'unMarkPasswordForgotten',
   'unlockAndGetSeedPhrase',
   'unlockHardwareWalletAccount',
@@ -502,6 +509,8 @@ type AllowedActions =
   | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
   | PermissionControllerRejectPermissionsRequestAction
@@ -1652,6 +1661,72 @@ export class LegacyBackgroundApiService {
       }
     }
 
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Changes the wallet password using a verified passkey assertion.
+   *
+   * Delegates the actual password change and vault-key renewal to
+   * `PasskeyController:changePasswordWithPasskeyVerification`, but wraps the call
+   * in the shared `seedlessOperationMutex` so it stays serialized against the
+   * other keyring/seedless operations (password change, SRP backups, keyring
+   * encryption key sync) that mutate the same keyring encryption key and vault.
+   * The PasskeyController has its own internal mutex, which only serializes
+   * passkey operations against each other, so the extension-level lock is still
+   * required to avoid interleaving with those flows.
+   *
+   * @param params - Passkey password-change parameters.
+   * @param params.newPassword - The new wallet password.
+   * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+   * @param params.options - Optional flow controls.
+   * @param params.options.renewVaultKeyProtection - Re-wrap the vault key after the password change.
+   */
+  async changePasswordWithPasskeyVerification(params: {
+    newPassword: string;
+    authenticationResponse: PasskeyAuthenticationResponse;
+    options?: { renewVaultKeyProtection?: boolean };
+  }): Promise<void> {
+    await this.#seedlessOperationMutex.runExclusive(() =>
+      this.#messenger.call(
+        'PasskeyController:changePasswordWithPasskeyVerification',
+        params,
+      ),
+    );
+  }
+
+  /**
+   * Unlocks the vault with a passkey, then runs the post-unlock account
+   * initialization sequence.
+   *
+   * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+   * verifies the authentication assertion and submits the decrypted vault key to
+   * the KeyringController), then performs the awaited post-unlock account init
+   * (accounts / multichain / account-tree) that the controller's keyring-only
+   * unlock does not run.
+   *
+   * @param authenticationResponse - Result of `navigator.credentials.get()`.
+   */
+  async unlockWithPasskey(
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ): Promise<void> {
+    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    await this.#offscreenPromise;
+
+    await this.#messenger.call(
+      'PasskeyController:unlockWithPasskey',
+      authenticationResponse,
+    );
+
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Runs the awaited post-unlock account initialization sequence: refreshes
+   * internal accounts, initializes multichain accounts, refreshes the account
+   * tree, and (asynchronously) resyncs and aligns accounts.
+   */
+  async #initAccountsAfterUnlock(): Promise<void> {
     await this.#messenger.call('AccountsController:updateAccounts');
 
     // Init multichain accounts after creating internal accounts.

@@ -10,7 +10,6 @@ export {
   isWebAuthnSupported,
 } from './passkey-capabilities';
 export {
-  ExtensionPasskeyErrorCode,
   translatePasskeyError,
   getPasskeyErrorCode,
   type TranslateFn,

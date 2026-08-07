@@ -4,11 +4,16 @@ import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { DefaultActions, DefaultEvents } from '@metamask/wallet';
 import type { Json } from '@metamask/utils';
+import { Browser } from 'webextension-polyfill';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
-import type { OnboardingControllerStateChangeEvent } from '../controllers/onboarding';
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../controllers/onboarding';
 import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
 import type { RootMessenger } from '../lib/messenger';
 import type { MessengerClientFlatState } from '../messenger-client-init/controller-list';
+import type { SeedlessOnboardingControllerInitMessengerActions } from './messengers/seedless-onboarding-controller-messenger';
 import type {
   TransactionControllerInitMessengerActions,
   TransactionControllerInitMessengerEvents,
@@ -25,6 +30,8 @@ import type {
 export type WalletInitMessenger = RootMessenger<
   | AnalyticsControllerGetStateAction
   | DefaultActions
+  | OnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerInitMessengerActions
   | TransactionControllerInitMessengerActions,
   | DefaultEvents
   | OnboardingControllerStateChangeEvent
@@ -42,4 +49,5 @@ export type InitializeWalletRequest = {
   messenger: WalletInitMessenger;
   showApprovalRequest?: ShowApprovalRequest;
   state: Record<string, Record<string, Json>>;
+  platform: Browser;
 };

@@ -1282,9 +1282,11 @@ export function protectVaultKeyWithPasskey(
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
+    {
+      registrationResponse,
+      authenticationResponse,
+      password,
+    },
   ]);
 }
 
@@ -1331,9 +1333,11 @@ export function changePasswordWithPasskeyVerification(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
+      {
+        newPassword,
+        authenticationResponse,
+        options,
+      },
     ]);
   };
 }
