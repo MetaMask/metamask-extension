@@ -22,6 +22,8 @@ module.exports = {
     // override with their own jest.mock() call.
     '^@metamask/perps-controller$':
       '<rootDir>/test/mocks/metamask-perps-controller.js',
+    // Mock static asset imports (SVG, PNG, etc.)
+    '\\.(svg|png|gif|jpg)$': '<rootDir>/test/mocks/svgMock.js',
   },
   // This mirrors Jest's default module extensions with `mts` added. Importing
   // `jest-config` defaults would avoid this list, but lint rejects that package

@@ -146,7 +146,7 @@ describe('DeepLinkRouter', () => {
         expect(response).toEqual({});
         expect(browser.tabs.update).toHaveBeenCalledTimes(1);
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy&id=test-request-id',
+          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
         });
 
         verification.resolve({
@@ -190,7 +190,7 @@ describe('DeepLinkRouter', () => {
       await Promise.resolve();
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenNthCalledWith(1, 1, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy&id=test-request-id',
+        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
       });
 
       loadingPageRedirect.resolve({} as browser.Tabs.Tab);
@@ -222,7 +222,7 @@ describe('DeepLinkRouter', () => {
       await expect(responsePromise).resolves.toEqual({ cancel: true });
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy',
       });
     });
 
@@ -263,7 +263,7 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
+          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
         });
       },
     );
@@ -290,7 +290,7 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams(
+          url: `chrome-extension://extension-id/home.html#/link?${new URLSearchParams(
             { u: route },
           ).toString()}`,
         });
@@ -371,7 +371,7 @@ describe('DeepLinkRouter', () => {
           requestDetails: arrangeRequestDetails({
             initiator: 'https://evil.com',
           }),
-          expectedUrl: `${EXTENSION_HOME}#link?u=%2Ftest-route&id=test-request-id`,
+          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Ftest-route&id=test-request-id`,
         },
       ];
 
@@ -428,7 +428,7 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
+          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
         });
       });
     });
@@ -454,7 +454,7 @@ describe('DeepLinkRouter', () => {
             },
             route: { pathname: '/asset' },
           } as ParsedDeepLink,
-          expectedUrl: `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
         };
       };
 
@@ -527,7 +527,7 @@ describe('DeepLinkRouter', () => {
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404',
       });
       expect(mockError).toHaveBeenCalledTimes(1);
       expect(mockError.mock.calls[0][0].message).toBe('Invalid URL');
@@ -598,7 +598,7 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy&id=test-request-id',
+        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
       });
     });
 
@@ -643,7 +643,7 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404&u=%2Fnonexistent-route',
       });
     });
   });

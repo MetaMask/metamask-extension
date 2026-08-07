@@ -122,7 +122,7 @@ type AppState = {
     descriptionKey: string;
     titleKey: string;
   } | null;
-  pendingDeepLinkRequestIds: string[]
+  pendingDeepLinkRequestIds: string[];
 };
 
 export type AppSliceState = {
