@@ -592,8 +592,15 @@ const RESERVED_EXAMPLE_DOMAINS = ['example.com', 'example.net', 'example.org'];
 export function isSpecialUseDomain(hostname: string): boolean {
   const lowerHostname = hostname.toLowerCase();
 
-  // Check special-use TLDs
-  if (SPECIAL_USE_TLDS.some((tld) => lowerHostname.endsWith(tld))) {
+  // Check special-use TLDs. Match both the bare name used as a hostname
+  // (e.g. "localhost") and any subdomain of it (e.g. "rpc.localhost"). Without
+  // the bare-name check, a hostname like "localhost" (from "http://localhost:8545")
+  // slips through because it does not end with the ".localhost" TLD form.
+  if (
+    SPECIAL_USE_TLDS.some(
+      (tld) => lowerHostname === tld.slice(1) || lowerHostname.endsWith(tld),
+    )
+  ) {
     return true;
   }
 
