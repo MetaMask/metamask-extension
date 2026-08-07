@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { renderHook, act } from '@testing-library/react';
 import {
   type QuoteMetadata,
+  QuoteMetadataMigrationPhase,
   type QuoteResponse,
   mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
@@ -614,6 +615,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
+        migrationPhase: QuoteMetadataMigrationPhase.V2WithV1Fallback,
         activeAbTests: undefined,
         inputPrimaryDenomination: 'fiat_value',
       });
