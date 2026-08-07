@@ -108,18 +108,19 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(built.properties).toMatchObject({
       provider_name: 'MoonPay',
       initial_url_path: '/checkout',
-      has_callback_flow: false,
+      // A precreated order still redirects through the callback URL.
+      has_callback_flow: true,
       order_id: 'c-order',
     });
   });
 
-  it('tracks checkout opened with has_callback_flow true for redirect-only orders', async () => {
+  it('reports has_callback_flow false when the callback cannot be attributed', async () => {
     const { watch, checkoutAnalytics } = createHarness();
 
     await watch({
       url: 'https://provider.example/checkout',
-      providerCode: 'moonpay',
-      walletAddress: '0xabc',
+      providerCode: '',
+      walletAddress: '',
       providerName: 'MoonPay',
       ...checkoutAnalytics,
     });
@@ -127,7 +128,7 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(trackEvent).toHaveBeenCalledTimes(1);
     const built = jest.mocked(trackEvent).mock.calls[0][0];
     expect(built.properties).toMatchObject({
-      has_callback_flow: true,
+      has_callback_flow: false,
     });
   });
 

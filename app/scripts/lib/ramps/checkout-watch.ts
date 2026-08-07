@@ -223,7 +223,11 @@ export function createWatchRampsCheckoutTab(
       orderCode,
       providerName,
       checkoutUrl: url,
-      hasCallbackFlow: !orderCode,
+      // Per the schema: "whether the checkout was opened with a callback
+      // redirection flow (provider code + wallet address available)" — not
+      // whether the provider precreated an order. Precreated checkouts
+      // redirect through the callback URL too.
+      hasCallbackFlow: Boolean(providerCode && walletAddress),
     });
 
     startWatching({
