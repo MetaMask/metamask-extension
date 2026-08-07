@@ -64,7 +64,7 @@ describe('BTC Account - Assets', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
@@ -87,7 +87,7 @@ describe('BTC Account - Assets', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);

@@ -12,23 +12,18 @@ const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
 const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 
 /**
- * Opens the network filter from the asset list and enables every network in the
- * given category, widening the asset list to all of them.
+ * Opens the network filter from the asset list and enables every network,
+ * widening the asset list to all of them.
  *
  * @param driver - The webdriver instance.
- * @param networkCategory - The tab to select all networks from.
  */
-export const selectAllNetworksFromNetworkSelect = async (
-  driver: Driver,
-  networkCategory: string = 'Popular',
-) => {
-  console.log(`Selecting all networks in category: ${networkCategory}`);
+export const selectAllNetworksFromNetworkSelect = async (driver: Driver) => {
+  console.log('Selecting all networks');
   const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
 
   await tokensTab.openNetworksFilter();
   await networkManager.checkPageIsLoaded();
-  await networkManager.selectTab(networkCategory);
   await networkManager.selectAllNetworks();
 };
 
@@ -37,17 +32,13 @@ export const selectAllNetworksFromNetworkSelect = async (
  * network, scoping the asset list to it.
  *
  * @param driver - The webdriver instance.
- * @param networkCategory - The tab the network is listed under.
  * @param networkName - The display name of the network to switch to.
  */
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
-  networkCategory: string,
   networkName: string,
 ) => {
-  console.log(
-    `Switching to network: ${networkName} in category: ${networkCategory}`,
-  );
+  console.log(`Switching to network: ${networkName}`);
   const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
 
@@ -57,7 +48,6 @@ export const switchToNetworkFromNetworkSelect = async (
 
   await tokensTab.openNetworksFilter();
   await networkManager.checkPageIsLoaded();
-  await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
 
