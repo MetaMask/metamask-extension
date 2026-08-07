@@ -47,6 +47,7 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
+import { toast } from '../../ui/toast/toast';
 import {
   Box,
   ButtonLink,
@@ -272,6 +273,23 @@ export const NetworksForm = ({
       rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
 
     if (rpcUrl) {
+      const chainIdHex = chainId ? toHex(chainId) : undefined;
+      const conflictingNetwork = Object.values(networkConfigurations).find(
+        (config) =>
+          config.chainId !== chainIdHex &&
+          config.rpcEndpoints.some((ep) => ep.url === rpcUrl),
+      );
+      if (conflictingNetwork) {
+        setErrors((state) => ({
+          ...state,
+          rpcUrl: {
+            key: 'rpcUrlInUseByAnotherNetwork',
+            msg: t('rpcUrlAlreadyInUse'),
+          },
+        }));
+        return;
+      }
+
       jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
         .then((response) => {
           setFetchedChainId(response as string);
@@ -314,7 +332,11 @@ export const NetworksForm = ({
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
-          await dispatch(updateNetwork(networkPayload, options));
+          const result = await dispatch(updateNetwork(networkPayload, options));
+          if (!result) {
+            toast.error(t('networkUpdateFailed'));
+            return;
+          }
           if (
             toggleNetworkMenuAfterSubmit &&
             Object.keys(tokenNetworkFilter).length === 1
