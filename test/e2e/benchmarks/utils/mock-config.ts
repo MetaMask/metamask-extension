@@ -1,8 +1,26 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import {
+  BENCHMARK_MOCK_MODE,
+  resolveBenchmarkMockMode,
+  type BenchmarkMockMode,
+} from '../../../../shared/constants/benchmarks';
+import {
   mockBenchmarkEndpoints,
   userStorageHostMock,
 } from '../mocks/performance-mocks';
+
+/**
+ * Network population this run measures, derived from GITHUB_REF_NAME.
+ *
+ * Downstream consumers (the quality gate, the historical baseline) key off
+ * the same value so a `live` run's numbers are never gated against ceilings
+ * calibrated on `mocked` runs, nor used as their baseline.
+ *
+ * @returns The mock mode for the current branch.
+ */
+export function getBenchmarkMockMode(): BenchmarkMockMode {
+  return resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME);
+}
 
 /**
  * Check if mocked requests should be used for performance benchmarks.
@@ -14,10 +32,7 @@ import {
  * @returns true if mocks should be used, false for real server requests
  */
 export function shouldUseMockedRequests(): boolean {
-  const branch = process.env.GITHUB_REF_NAME || '';
-  const isMainOrRelease = branch === 'main' || branch.startsWith('release/');
-  // Use real server (no mocks) only for main/release/* branches
-  return !isMainOrRelease;
+  return getBenchmarkMockMode() === BENCHMARK_MOCK_MODE.MOCKED;
 }
 
 /**
