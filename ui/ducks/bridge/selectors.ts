@@ -112,6 +112,7 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
+import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-order';
 import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
@@ -207,6 +208,14 @@ export const getBridgeFeatureFlags = createDeepEqualSelector(
     });
     return validatedFlags;
   },
+);
+
+export const getChainValueOrderOverride = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getRemoteFeatureFlags(state).swapsChainValueOrderOverride,
+  ],
+  parsePositionOverrides,
 );
 
 const getChainRanking = (state: BridgeAppState) =>
