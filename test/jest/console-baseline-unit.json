@@ -562,7 +562,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1501,
+      "React: Act warnings (component updates not wrapped)": 581,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },
