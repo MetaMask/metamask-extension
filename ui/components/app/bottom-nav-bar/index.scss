@@ -1,0 +1,57 @@
+.bottom-nav-bar {
+  &__icon {
+    transform-origin: center;
+    will-change: transform;
+
+    &--animate-rotate {
+      animation: bottom-nav-bar-icon-rotate 320ms cubic-bezier(0.2, 0, 0.2, 1);
+    }
+
+    &--animate-bounce {
+      animation: bottom-nav-bar-icon-bounce 320ms cubic-bezier(0.2, 0, 0.2, 1);
+    }
+  }
+}
+
+@keyframes bottom-nav-bar-icon-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  40% {
+    transform: rotate(180deg) scale(0.92);
+  }
+
+  70% {
+    transform: rotate(300deg) scale(1.04);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes bottom-nav-bar-icon-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  35% {
+    transform: translateY(-4px) scale(1.12);
+  }
+
+  65% {
+    transform: translateY(1px) scale(0.96);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-bar__icon--animate-rotate,
+  .bottom-nav-bar__icon--animate-bounce {
+    animation: none;
+  }
+}

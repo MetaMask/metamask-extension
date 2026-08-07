@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import classnames from 'clsx';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -32,6 +33,7 @@ import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 type NavTabProps = {
   isActive: boolean;
   icon: IconName;
+  animation?: 'bounce' | 'rotate';
   label: string;
   onClick: () => void;
   'data-testid'?: string;
@@ -40,24 +42,42 @@ type NavTabProps = {
 const NavTab = ({
   isActive,
   icon,
+  animation = 'rotate',
   label,
   onClick,
   'data-testid': testId,
 }: NavTabProps) => {
+  const [isIconAnimating, setIsIconAnimating] = useState(false);
+
+  const handleClick = () => {
+    setIsIconAnimating(true);
+    onClick();
+  };
+
   return (
     <button
       data-testid={testId}
-      onClick={onClick}
+      onClick={handleClick}
       className="group/tab flex flex-1 flex-col gap-1 items-center justify-center"
       aria-current={isActive ? 'page' : undefined}
       aria-label={label}
     >
-      <Icon
-        name={icon}
-        size={IconSize.Lg}
-        color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
-        className="transition-colors duration-200 group-hover/tab:text-icon-default-hover"
-      />
+      <span
+        className={classnames(
+          'bottom-nav-bar__icon inline-flex transform-gpu',
+          {
+            [`bottom-nav-bar__icon--animate-${animation}`]: isIconAnimating,
+          },
+        )}
+        onAnimationEnd={() => setIsIconAnimating(false)}
+      >
+        <Icon
+          name={icon}
+          size={IconSize.Lg}
+          color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
+          className="transition-colors duration-200 group-hover/tab:text-icon-default-hover"
+        />
+      </span>
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
@@ -143,6 +163,7 @@ export function BottomNavBar() {
       <NavTab
         isActive={isHome}
         icon={isHome ? IconName.HomeFilled : IconName.Home}
+        animation="bounce"
         label={t('home')}
         onClick={handleHomeClick}
         data-testid="bottom-nav-home"
