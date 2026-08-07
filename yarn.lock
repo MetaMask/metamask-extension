@@ -5029,6 +5029,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/core@https://github.com/LavaMoat/LavaMoat.git#naugtur/write-policy-fix":
+  version: 0.0.0
+  resolution: "@lavamoat/core@https://github.com/LavaMoat/LavaMoat.git#commit=68646ca6b1de546b66ba219158d8ae28beb5a098"
+  checksum: 10/491b33c8e83e3352be44e9730097bc5732f57d6b32c5ecd0ffa7ba3a0c543228c9f2c18965d7bec7a62e498c9c2ff964f6f315e80ea8058f03a0ecb277a9a97a
+  languageName: node
+  linkType: hard
+
 "@lavamoat/lavadome-core@npm:0.0.20, @lavamoat/lavadome-core@npm:^0.0.20":
   version: 0.0.20
   resolution: "@lavamoat/lavadome-core@npm:0.0.20"
@@ -33215,6 +33222,7 @@ __metadata:
     "@jest/globals": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.22.1"
     "@lavamoat/allow-scripts": "npm:^5.0.1"
+    "@lavamoat/core": "https://github.com/LavaMoat/LavaMoat.git#naugtur/write-policy-fix"
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.22"
