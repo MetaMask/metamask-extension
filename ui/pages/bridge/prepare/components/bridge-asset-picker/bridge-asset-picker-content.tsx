@@ -25,6 +25,7 @@ import { getIsNetworkManagementEnabled } from '../../../../../selectors/multicha
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
+import { getBridgeBalancesByChainId } from '../../../../../ducks/bridge/asset-selectors';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
 import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
@@ -76,6 +77,11 @@ export const BridgeAssetPickerContent = forwardRef<
   ) => {
     const [accountGroup] = useSelector((state: BridgeAppState) =>
       getAccountGroupsByAddress(state, [accountAddress]),
+    );
+    const balanceByChainId = useSelector((state: BridgeAppState) =>
+      accountGroup?.id
+        ? getBridgeBalancesByChainId(state, accountGroup.id)
+        : {},
     );
 
     const t = useI18nContext();
@@ -212,6 +218,7 @@ export const BridgeAssetPickerContent = forwardRef<
             }
             isOpen={isNetworkPickerOpen}
             chains={chains}
+            balanceByChainId={balanceByChainId}
             selectedChainId={selectedChainId}
             disabledChainId={disabledChainId}
             onNetworkChange={(chainId) => {
