@@ -100,18 +100,19 @@ export class IndexedDBStore {
     }
     const tx = this.#db.transaction('store', 'readonly');
     const store = tx.objectStore('store');
-    const request = store.getAllKeys();
+
+    const query =
+      prefix !== undefined
+        ? IDBKeyRange.bound(prefix, `${prefix}\uffff`)
+        : undefined;
+
+    const request = store.getAllKeys(query);
     const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
     await transactionPromise(tx);
-    const stringKeys = keys.filter((key): key is string => {
-      return typeof key === 'string';
-    });
-    return prefix
-      ? stringKeys.filter((key) => key.startsWith(prefix))
-      : stringKeys;
+    return keys.filter((key): key is string => typeof key === 'string');
   }
 
   async remove(keys: string[]): Promise<void> {
