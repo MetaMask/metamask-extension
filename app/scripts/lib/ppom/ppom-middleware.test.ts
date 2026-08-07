@@ -7,6 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -16,6 +17,7 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('../trust-signals/scan-unvalidated-signature');
 jest.mock('@metamask/controller-utils', () => ({
   ...jest.requireActual('@metamask/controller-utils'),
   detectSIWE: jest.fn(),
@@ -296,5 +298,72 @@ describe('PPOMMiddleware', () => {
     );
 
     expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('layered real-time address scan for signatures', () => {
+    const scanMock = jest.mocked(scanUnvalidatedSignatureAddresses);
+    const validateMock = jest.mocked(validateRequestWithPPOM);
+
+    const runSignature = async (resultType: BlockaidResultType) => {
+      validateMock.mockResolvedValue({
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: resultType,
+      } as SecurityAlertResponse);
+
+      const { middlewareFunction } = createMiddleware();
+
+      await middlewareFunction(
+        {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          securityAlertResponse: undefined,
+        },
+        { ...JsonRpcResponseStruct.TYPE },
+        () => undefined,
+      );
+
+      await flushPromises();
+    };
+
+    it('runs the fallback scan when PPOM returns Benign', async () => {
+      await runSignature(BlockaidResultType.Benign);
+      expect(scanMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('runs the fallback scan when PPOM errors (no verdict)', async () => {
+      await runSignature(BlockaidResultType.Errored);
+      expect(scanMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does NOT run the fallback scan when PPOM flags Malicious', async () => {
+      await runSignature(BlockaidResultType.Malicious);
+      expect(scanMock).not.toHaveBeenCalled();
+    });
+
+    it('does NOT run the fallback scan when PPOM flags Warning', async () => {
+      await runSignature(BlockaidResultType.Warning);
+      expect(scanMock).not.toHaveBeenCalled();
+    });
+
+    it('does NOT run the fallback scan for transactions', async () => {
+      validateMock.mockResolvedValue({
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: BlockaidResultType.Benign,
+      } as SecurityAlertResponse);
+
+      const { middlewareFunction } = createMiddleware();
+
+      await middlewareFunction(
+        { ...REQUEST_MOCK, method: 'eth_sendTransaction' },
+        { ...JsonRpcResponseStruct.TYPE },
+        () => undefined,
+      );
+
+      await flushPromises();
+
+      expect(scanMock).not.toHaveBeenCalled();
+    });
   });
 });
