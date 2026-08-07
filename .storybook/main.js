@@ -130,8 +130,16 @@ module.exports = {
           options: {
             sourceMap: true,
             implementation: require('sass-embedded'),
+            api: 'modern-compiler',
+            webpackImporter: false,
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/'],
+              quietDeps: true,
+              // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+              silenceDeprecations: ['import'],
+              loadPaths: [
+                path.resolve(__dirname, '../ui/css'),
+                path.resolve(__dirname, '../node_modules'),
+              ],
             },
           },
         },
