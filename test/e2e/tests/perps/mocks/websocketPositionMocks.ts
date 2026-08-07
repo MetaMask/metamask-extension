@@ -21,6 +21,42 @@ import {
 } from './websocketDefaultMocks';
 
 /**
+ * Fills recorded by `pushUserFillsClosePositionSnapshot` and replayed by
+ * `USER_FILLS_POST_MOCK`. A pushed frame is flagged `isSnapshot: true`, meaning
+ * it is the complete set of fills, so each push replaces the previous one.
+ */
+let pushedUserFills: unknown[] = [];
+
+/**
+ * Discards recorded fills. Wired to the perps service `onCleanup` so fills from
+ * one test are never served to the next.
+ */
+export function resetPushedUserFills(): void {
+  pushedUserFills = [];
+}
+
+/**
+ * Answers `userFills` info POSTs with whatever was last pushed, the way the real
+ * server folds a streamed fill into later queries. Without it these POSTs fall
+ * through to the generic catch-all, which answers `{}`, so a fill only ever
+ * reaches the UI if a Perps view happens to be subscribed when it is streamed.
+ *
+ * The closing quote in `"type":"userFills"` keeps this from also matching
+ * `userFillsByTime`, which is a separate query with its own consumers.
+ */
+const USER_FILLS_POST_MOCK: WebSocketMessageMock = {
+  messageIncludes: ['"method":"post"', '"type":"userFills"'],
+  dynamicResponse: (message: string) => {
+    const req = parseWsPost(message);
+    return req
+      ? buildWsPostResponse(req.id, req.type, [...pushedUserFills])
+      : null;
+  },
+  delay: 50,
+  logMessage: 'Perps userFills POST replaying pushed snapshot',
+};
+
+/**
  * Funded clearing-house state with 10 000 USDC, no open positions.
  * Use for tests that need to place a new order (open long/short) without
  * pre-existing positions.
@@ -175,6 +211,7 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
     logMessage:
       'Perps ETH long mock: clearinghouseState POST with ETH position',
   },
+  USER_FILLS_POST_MOCK,
 ];
 
 /**
@@ -300,6 +337,7 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
     logMessage:
       'Perps BTC short mock: clearinghouseState POST with BTC position',
   },
+  USER_FILLS_POST_MOCK,
 ];
 
 /**
@@ -385,6 +423,7 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
     logMessage:
       'Perps funded account mock: clearinghouseState POST with 10000 USDC',
   },
+  USER_FILLS_POST_MOCK,
 ];
 
 /**
@@ -581,6 +620,9 @@ export type PushUserFillsClosePositionSnapshotOpts = {
  *
  * Shape matches `@nktkas/hyperliquid` `UserFillsEvent` (user + fills + isSnapshot).
  *
+ * The fill is also recorded so `userFills` info POSTs replay it, which keeps the
+ * UI from depending on being subscribed at the instant the frame is streamed.
+ *
  * @param server - The LocalWebSocketServer for the perps service
  * @param server.sendMessage
  * @param opts - Wire fill fields for one close (or partial-close) fill
@@ -611,6 +653,8 @@ export function pushUserFillsClosePositionSnapshot(
     feeToken: 'USDC',
     twapId: null,
   };
+
+  pushedUserFills = [fill];
 
   server.sendMessage(
     JSON.stringify({

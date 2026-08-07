@@ -63,6 +63,19 @@ export class PerpsActivityPage {
   }
 
   /**
+   * Non-blocking check for a trade row, for polling loops that need to retry an
+   * action (e.g. re-pushing a `userFills` frame) between attempts.
+   *
+   * @param timeout - How long to look before reporting absence, in ms.
+   */
+  async isAnyTransactionCardPresent(timeout: number = 1000): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.anyTransactionCard,
+      timeout,
+    );
+  }
+
+  /**
    * Selects a filter option from the open dropdown.
    * Call `clickFilterButton()` first to open the dropdown.
    *

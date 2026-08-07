@@ -166,6 +166,20 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
+   * Non-blocking check for the Recent Activity "See All" link, for polling
+   * loops that need to retry an action (e.g. re-pushing a `userFills` frame)
+   * between attempts.
+   *
+   * @param timeout - How long to look before reporting absence, in ms.
+   */
+  async isRecentActivitySeeAllPresent(timeout: number = 1000): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.perpsRecentActivitySeeAll,
+      timeout,
+    );
+  }
+
+  /**
    * Navigates to Perps Home by clicking the Perps tab on the account overview.
    * Requires the account overview to be visible (e.g. after login or driver.navigate()).
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.

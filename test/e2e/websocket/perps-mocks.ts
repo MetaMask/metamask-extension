@@ -4,6 +4,7 @@ import {
   DEFAULT_HYPERLIQUID_WS_MOCKS,
   getResponsePayload,
 } from '../tests/perps/mocks/websocketDefaultMocks';
+import { resetPushedUserFills } from '../tests/perps/mocks/websocketPositionMocks';
 import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
@@ -96,4 +97,5 @@ export const perpsWebSocketConfig: WebSocketServiceConfig = {
   name: WEBSOCKET_SERVICES.perps,
   port: PERPS_WS_PORT,
   setup: setupPerpsWebsocketMocks,
+  onCleanup: resetPushedUserFills,
 };
