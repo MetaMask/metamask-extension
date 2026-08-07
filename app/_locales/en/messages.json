@@ -7101,6 +7101,9 @@
   "perpsClosePosition": {
     "message": "Close position"
   },
+  "perpsClosePrice": {
+    "message": "Close price"
+  },
   "perpsClosePriceUnavailable": {
     "message": "Current price is unavailable. Try again in a moment."
   },
@@ -7477,6 +7480,15 @@
   "perpsOrderFailed": {
     "message": "Order could not be placed. Try again."
   },
+  "perpsOrderFilled": {
+    "message": "Filled"
+  },
+  "perpsOrderHyperliquidFee": {
+    "message": "Hyperliquid fee"
+  },
+  "perpsOrderMetamaskFee": {
+    "message": "MetaMask fee"
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
@@ -7485,6 +7497,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Total fee"
+  },
+  "perpsOrderType": {
+    "message": "Order type"
   },
   "perpsOrderValue": {
     "message": "Order value"
