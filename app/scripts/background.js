@@ -912,7 +912,7 @@ async function initialize(backup) {
       if (!('redirectTo' in parsed)) {
         if (canSubmitAnalytics()) {
           const event = { signature: parsed.signature, url };
-          if (Boolean(parsed.destination?.trackContinuity)) {
+          if (parsed.destination?.trackContinuity) {
             event.continuityId =
               controller.appStateController.setContinuityIdForTab(tabId);
           }

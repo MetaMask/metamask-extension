@@ -214,11 +214,6 @@
       "count": 1
     }
   },
-  "ui/hooks/useAsync.test.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/hooks/useAsync.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 4
