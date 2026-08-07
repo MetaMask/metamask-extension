@@ -13,10 +13,6 @@ const selectors = {
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: {
-    // Design-system Checkbox input is opacity-0; click the visible label instead.
-    css: 'label:has([data-testid="snap-ui-checkbox-example-checkbox"])',
-  },
-  exampleCheckboxInput: {
     testId: 'snap-ui-checkbox-example-checkbox',
   },
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
@@ -212,7 +208,8 @@ class SnapInteractiveDialog {
 
   async selectCheckbox() {
     console.log(`Selecting checkbox`);
-    await this.driver.clickElement(selectors.exampleCheckbox);
+    // TODO: Use clickElement once MMDS Checkbox input is Selenium-visible.
+    await this.driver.clickDesignSystemCheckbox(selectors.exampleCheckbox);
   }
 
   async selectDropDownOption(exampleDropName: string, option: string) {

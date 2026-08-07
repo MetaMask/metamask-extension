@@ -77,7 +77,9 @@ describe('Interactive UI Snap', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await interactiveUI.checkElementIsDisabled('exampleInput');
         await interactiveUI.checkElementIsDisabled('exampleDropdown');
-        await interactiveUI.checkElementIsDisabled('exampleCheckboxInput');
+        // MMDS Checkbox: disabled state lives on the opacity-0 input (inputProps test id).
+        // TODO: No special handling needed once MMDS input is Selenium-visible.
+        await interactiveUI.checkElementIsDisabled('exampleCheckbox');
         await interactiveUI.checkElementIsDisabled('exampleSelectorDropdown');
         await interactiveUI.clickCancelButton();
       },
