@@ -35,7 +35,7 @@ function buildPillContents(data: AssetData) {
 
 export async function injectPills(assetsByTicker: Map<string, AssetData>) {
   await injectPageStyles(
-    'scripts/cashtag/pill/styles.css',
+    'scripts/cashtag/pill/page.css',
     'data-mm-cashtag-pill-css',
   );
 

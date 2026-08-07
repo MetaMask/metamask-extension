@@ -161,9 +161,11 @@ export async function fetchAssetData(): Promise<AssetData[]> {
       caipAssetId: hit.assetId,
       chainId,
       isNative: hit.assetId.includes('/slip44:'),
+      verified: true,
       price: num(quote?.price),
       change24hPercent: num(quote?.pricePercentChange1d),
       marketCap: num(quote?.marketCap),
+      liquidity: null,
       volume24h: num(quote?.totalVolume),
       sparkline: null,
     };

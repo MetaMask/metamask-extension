@@ -9,6 +9,8 @@ module.exports = {
   ],
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
+    // Cashtag content-script widget (Tailwind utilities bundled into shadow CSS)
+    './app/scripts/cashtag/**/*.{js,jsx,ts,tsx}',
     // Ensures tailwind classnames are generated for design system components
     './node_modules/@metamask/design-system-react/**/*.{mjs,cjs}',
     // Required from @metamask/design-system-react@0.17.0+ (shared typography types)

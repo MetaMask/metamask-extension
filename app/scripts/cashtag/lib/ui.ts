@@ -9,6 +9,26 @@ export async function loadCss(pathFromExtensionRoot: string) {
   }
 }
 
+export function scopeDesignTokensForShadow(css: string) {
+  if (!css) {
+    return '';
+  }
+  return css
+    .replaceAll(
+      '.dark [data-pure-black=true],.dark[data-pure-black=true],[data-pure-black=true] .dark,[data-theme=dark] [data-pure-black=true],[data-theme=dark] [data-pure-black=true] .dark,[data-theme=dark][data-pure-black=true]',
+      ':host([data-theme=dark][data-pure-black=true]),:host(.dark[data-pure-black=true])',
+    )
+    .replaceAll(
+      '.light,:root,[data-theme=light]',
+      ':host(.light),:host([data-theme=light])',
+    )
+    .replaceAll(
+      '.dark,[data-theme=dark]',
+      ':host(.dark),:host([data-theme=dark])',
+    )
+    .replaceAll(':root', ':host');
+}
+
 export async function injectPageStyles(cssPath: string, markerAttr: string) {
   if (document.querySelector(`style[${markerAttr}]`)) {
     return;

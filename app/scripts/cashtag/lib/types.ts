@@ -6,9 +6,11 @@ export type AssetData = {
   caipAssetId: string | null;
   chainId: string | null;
   isNative: boolean;
+  verified: boolean;
   price: number | null;
   change24hPercent: number | null;
   marketCap: number | null;
+  liquidity: number | null;
   volume24h: number | null;
   sparkline: number[] | null;
 };
@@ -16,7 +18,9 @@ export type AssetData = {
 export type WidgetModel = {
   data: AssetData;
   onSwap: () => void;
+  onViewDetails: () => void;
   onDisable: () => void;
+  onFlag: () => void;
 };
 
 export type InterestAnchor = HTMLAnchorElement & {

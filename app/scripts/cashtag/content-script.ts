@@ -1,8 +1,7 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { supportedHosts } from './lib/constants';
 import type { AssetData } from './lib/types';
-import { injectPills } from './pill/inject';
+// import { injectPills } from './pill/inject';
 import { bindWidgetTriggers, injectWidget } from './widget/inject';
 
 async function getAssetData() {
@@ -34,26 +33,21 @@ async function main() {
     return;
   }
 
-  const host = window.location.hostname.toLowerCase();
-  if (!supportedHosts.has(host)) {
-    return;
-  }
-
   const assets = await getAssetData();
   const assetsByTicker = new Map(assets.map((asset) => [asset.ticker, asset]));
   if (assetsByTicker.size === 0) {
     return;
   }
 
-  // Inject the widget first: its page.css defines the shared palette tokens on
-  // <html>, which the pills also consume, so they must exist before pills paint.
+  // Widget first (page positioning CSS + shadow tokens); pills are independent.
   const widget = await injectWidget();
-  const pills = await injectPills(assetsByTicker);
+  // Temporary: focus on widget styling — re-enable pill decoration later.
+  // const pills = await injectPills(assetsByTicker);
   const triggers = bindWidgetTriggers(widget, assetsByTicker);
 
   const teardown = () => {
     triggers.stop();
-    pills.stop();
+    // pills.stop();
     widget.stop();
   };
 

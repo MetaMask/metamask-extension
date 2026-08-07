@@ -50,8 +50,13 @@
       "all_frames": true
     },
     {
-      "matches": ["https://*/*"],
-      "js": ["scripts/cashtag/content.ts"],
+      "matches": [
+        "*://x.com/*",
+        "*://www.x.com/*",
+        "*://twitter.com/*",
+        "*://www.twitter.com/*"
+      ],
+      "js": ["scripts/cashtag/content-script.ts"],
       "run_at": "document_idle"
     },
     {

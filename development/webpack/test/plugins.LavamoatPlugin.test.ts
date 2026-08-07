@@ -146,8 +146,8 @@ describe('LavamoatPlugin', () => {
       for (const name of [
         'scripts/inpage.js',
         'bootstrap',
-        'scripts/cashtag/content.ts',
-        'scripts/cashtag/content.js',
+        'scripts/cashtag/content-script.ts',
+        'scripts/cashtag/content-script.js',
       ]) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(

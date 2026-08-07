@@ -16,6 +16,7 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import postcss from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
@@ -68,7 +69,7 @@ const webAccessibleResources = [
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : []),
   // Fetched by cashtag content script via runtime.getURL + fetch
-  'scripts/cashtag/pill/styles.css',
+  'scripts/cashtag/pill/page.css',
   'scripts/cashtag/widget/widget.css',
   'scripts/cashtag/widget/page.css',
   // Brand mark only — asset icons use static.cx CDN URLs from the page
@@ -153,6 +154,25 @@ const manifestPlugin = new ManifestPlugin({
     : false,
 });
 
+async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
+  // Inline design-tokens (package exports break postcss-import resolution).
+  const tokens = readFileSync(
+    join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
+    'utf8',
+  );
+  const source = content
+    .toString()
+    .replace(
+      /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
+      '',
+    );
+  const result = await postcss([
+    tailwindcss(),
+    autoprefixer({ overrideBrowserslist: browsersListQuery }),
+  ]).process(source, { from });
+  return `${tokens}\n${result.css}`;
+}
+
 const plugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
@@ -209,18 +229,21 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
-      // Cashtag content-script CSS (fetched at runtime into page / shadow)
+      // Cashtag CSS (fetched at runtime into page / shadow).
+      // Do not import widget.css from JS — HtmlBundler empties those modules.
       {
-        from: join(context, 'scripts/cashtag/pill/styles.css'),
-        to: 'scripts/cashtag/pill/styles.css',
-      },
-      {
-        from: join(context, 'scripts/cashtag/widget/widget.css'),
-        to: 'scripts/cashtag/widget/widget.css',
+        from: join(context, 'scripts/cashtag/pill/page.css'),
+        to: 'scripts/cashtag/pill/page.css',
       },
       {
         from: join(context, 'scripts/cashtag/widget/page.css'),
         to: 'scripts/cashtag/widget/page.css',
+      },
+      {
+        from: join(context, 'scripts/cashtag/widget/widget.css'),
+        to: 'scripts/cashtag/widget/widget.css',
+        transform: async (content, absoluteFrom) =>
+          buildCashtagWidgetCss(content, absoluteFrom),
       },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
@@ -344,8 +367,8 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
-  // All entries are added dynamically by ManifestPlugin
-  // an empty entry object prevents webpack's default entry.
+  // All entries are added dynamically by ManifestPlugin.
+  // An empty entry object prevents webpack's default entry.
   entry: {},
   cache,
   plugins,

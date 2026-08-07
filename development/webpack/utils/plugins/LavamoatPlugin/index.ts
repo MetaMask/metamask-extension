@@ -17,8 +17,8 @@ export const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
   // POC: cashtag content script (React/DOM). Manifest key is `.ts`; asset is `.js`.
-  'scripts/cashtag/content.ts',
-  'scripts/cashtag/content.js',
+  'scripts/cashtag/content-script.ts',
+  'scripts/cashtag/content-script.js',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [

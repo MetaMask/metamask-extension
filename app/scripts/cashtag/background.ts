@@ -4,7 +4,11 @@ import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { fetchAssetData } from './lib/assets';
-import { swapRoute, swapRouteSearchForDest } from './lib/constants';
+import {
+  assetRoutePath,
+  swapRoute,
+  swapRouteSearchForDest,
+} from './lib/constants';
 import type { Controller } from './lib/types';
 
 let registered = false;
@@ -14,7 +18,69 @@ function bodyString(message: { body?: Record<string, unknown> }, key: string) {
   return typeof value === 'string' ? value : null;
 }
 
-export function registerBackgroundBridge({
+function openSidePanelRoute({
+  controller,
+  sender,
+  messageType,
+  path,
+  search,
+  caipAssetId,
+}: {
+  controller: Controller | undefined;
+  sender: { tab?: { windowId?: number; id?: number } };
+  messageType: string;
+  path: string;
+  search?: `?${string}`;
+  caipAssetId: string | null;
+}) {
+  const windowId = sender?.tab?.windowId;
+  const tabId = sender?.tab?.id;
+  const sidePanelApi = globalThis.chrome?.sidePanel;
+
+  if (!sidePanelApi?.open) {
+    return Promise.resolve({
+      type: messageType,
+      body: { ok: false, reason: 'sidepanel-unavailable' },
+    });
+  }
+
+  let openOptions: { windowId: number } | { tabId: number } | null = null;
+  if (typeof windowId === 'number') {
+    openOptions = { windowId };
+  } else if (typeof tabId === 'number') {
+    openOptions = { tabId };
+  }
+
+  if (!openOptions) {
+    return Promise.resolve({
+      type: messageType,
+      body: { ok: false, reason: 'sidepanel-unavailable' },
+    });
+  }
+
+  controller?.appStateController?.setPendingRedirectRoute?.({
+    path,
+    ...(search ? { search } : {}),
+    environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+  });
+
+  return Promise.resolve(sidePanelApi.open(openOptions)).then(
+    () => ({
+      type: messageType,
+      body: { ok: true, caipAssetId },
+    }),
+    (error: unknown) => ({
+      type: messageType,
+      body: {
+        ok: false,
+        reason: 'sidepanel-open-failed',
+        error: error instanceof Error ? error.message : String(error),
+      },
+    }),
+  );
+}
+
+export function registerCashtagBackgroundBridge({
   getController,
 }: {
   getController: () => Controller | undefined;
@@ -82,53 +148,41 @@ export function registerBackgroundBridge({
     }
 
     if (message?.type === EXTENSION_MESSAGES.OPEN_SWAP_PAGE) {
-      const controller = getController();
-      const windowId = sender?.tab?.windowId;
-      const tabId = sender?.tab?.id;
-      const sidePanelApi = globalThis.chrome?.sidePanel;
       const caipAssetId = bodyString(message, 'caipAssetId');
-
-      if (!sidePanelApi?.open) {
-        return Promise.resolve({
-          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-          body: { ok: false, reason: 'sidepanel-unavailable' },
-        });
-      }
-
-      let openOptions: { windowId: number } | { tabId: number } | null = null;
-      if (typeof windowId === 'number') {
-        openOptions = { windowId };
-      } else if (typeof tabId === 'number') {
-        openOptions = { tabId };
-      }
-
-      if (!openOptions) {
-        return Promise.resolve({
-          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-          body: { ok: false, reason: 'sidepanel-unavailable' },
-        });
-      }
-
-      controller?.appStateController?.setPendingRedirectRoute?.({
+      return openSidePanelRoute({
+        controller: getController(),
+        sender,
+        messageType: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
         path: swapRoute,
-        ...(caipAssetId ? { search: swapRouteSearchForDest(caipAssetId) } : {}),
-        environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+        ...(caipAssetId
+          ? { search: swapRouteSearchForDest(caipAssetId) }
+          : {}),
+        caipAssetId,
       });
+    }
 
-      return Promise.resolve(sidePanelApi.open(openOptions)).then(
-        () => ({
-          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-          body: { ok: true, caipAssetId },
-        }),
-        (error: unknown) => ({
-          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-          body: {
-            ok: false,
-            reason: 'sidepanel-open-failed',
-            error: error instanceof Error ? error.message : String(error),
-          },
-        }),
-      );
+    if (message?.type === EXTENSION_MESSAGES.OPEN_ASSET_PAGE) {
+      const caipAssetId = bodyString(message, 'caipAssetId');
+      if (!caipAssetId) {
+        return Promise.resolve({
+          type: EXTENSION_MESSAGES.OPEN_ASSET_PAGE,
+          body: { ok: false, reason: 'missing-caip-asset-id' },
+        });
+      }
+      try {
+        return openSidePanelRoute({
+          controller: getController(),
+          sender,
+          messageType: EXTENSION_MESSAGES.OPEN_ASSET_PAGE,
+          path: assetRoutePath(caipAssetId),
+          caipAssetId,
+        });
+      } catch {
+        return Promise.resolve({
+          type: EXTENSION_MESSAGES.OPEN_ASSET_PAGE,
+          body: { ok: false, reason: 'invalid-caip-asset-id' },
+        });
+      }
     }
 
     return undefined;

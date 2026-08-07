@@ -269,7 +269,7 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
       'scripts/inpage.js.map',
       'scripts/contentscript.js.map',
-      'scripts/cashtag/pill/styles.css',
+      'scripts/cashtag/pill/page.css',
       'scripts/cashtag/widget/widget.css',
       'scripts/cashtag/widget/page.css',
       'images/logo/metamask-fox.svg',
@@ -450,7 +450,7 @@ ${Object.entries(env)
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as WebpackPluginInstance & ManifestPlugin<true>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
-      'scripts/cashtag/pill/styles.css',
+      'scripts/cashtag/pill/page.css',
       'scripts/cashtag/widget/widget.css',
       'scripts/cashtag/widget/page.css',
       'images/logo/metamask-fox.svg',

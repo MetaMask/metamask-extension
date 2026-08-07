@@ -18,6 +18,7 @@ import Alerts from '../../components/app/alerts';
 import {
   ASSET_DETAILS_ROUTE,
   ASSET_IMAGE_ROUTE,
+  ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -685,10 +686,16 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
 
-  // If cashtag set a pending swap redirect, go there (Home may not be mounted).
+  // Cashtag sidepanel redirects (swap / asset details). Home may not be mounted.
   const pendingRedirectRoute = useAppSelector(getPendingRedirectRoute);
   useEffect(() => {
-    if (!isUnlocked || pendingRedirectRoute?.path !== SWAP_PATH) {
+    if (!isUnlocked || !pendingRedirectRoute?.path) {
+      return;
+    }
+    const { path, search } = pendingRedirectRoute;
+    const isCashtagRedirect =
+      path === SWAP_PATH || path.startsWith(`${ASSET_ROUTE}/`);
+    if (!isCashtagRedirect) {
       return;
     }
     if (
@@ -697,7 +704,6 @@ export default function Routes() {
     ) {
       return;
     }
-    const { path, search } = pendingRedirectRoute;
     dispatch(setPendingRedirectRoute(null));
     navigate(search ? `${path}${search}` : path);
   }, [isUnlocked, pendingRedirectRoute, navigate, dispatch]);
