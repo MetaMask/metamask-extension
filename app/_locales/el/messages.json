@@ -5391,10 +5391,6 @@
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και κερδίστε \nέως και $1% μπόνους ετησίως, το οποίο μπορείτε \nνα εξαργυρώσετε καθημερινά. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Υποστηρίζεται από το Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και λάβετε $1% μπόνους ετησίως.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5430,10 +5426,6 @@
     "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Πληροφορίες για το μπόνους",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Τα τέλη μετατροπής σε mUSD περιλαμβάνουν τα έξοδα δικτύου και ενδέχεται να περιλαμβάνουν τα τέλη παρόχου. Δεν υπάρχει χρέωση στο MetaMask όταν μετατρέπετε σε mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5457,10 +5449,6 @@
   },
   "musdConvert": {
     "message": "Μετατροπή"
-  },
-  "musdConvertAndGetBonus": {
-    "message": "Μετατρέψτε και κερδίστε $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Κερδίστε $1% σε μπόνους",

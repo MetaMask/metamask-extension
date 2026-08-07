@@ -5391,10 +5391,6 @@
     "message": "I-convert ang mga stablecoin mo sa mUSD at kumita\nng hanggang $1% taunang bonus na puwede mong\nma-claim araw-araw. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Pinapagana ng Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "I-convert ang mga stablecoin mo sa mUSD at makakuha ng $1% taunang bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5430,10 +5426,6 @@
     "message": "Mga detalye ng bonus na pwedeng i-claim",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Mga detalye ng bonus",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Kasama sa mga bayarin sa pag-convert ng mUSD ang mga bayad sa network at posible ring kasama ang mga bayarin sa provider. Walang hihinging bayad sa MetaMask kapag nag-convert ka sa mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5457,10 +5449,6 @@
   },
   "musdConvert": {
     "message": "I-convert"
-  },
-  "musdConvertAndGetBonus": {
-    "message": "I-convert at makakuha ng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Kumita ng $1% bonus",
