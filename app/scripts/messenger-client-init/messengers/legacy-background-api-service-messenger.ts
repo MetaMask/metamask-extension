@@ -29,6 +29,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',

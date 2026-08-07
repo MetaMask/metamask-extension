@@ -9,7 +9,6 @@ import {
 import { Hex, JsonRpcRequest, createProjectLogger } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
-import { UsePPOM } from '@metamask/ppom-validator';
 import {
   GetSignatureState,
   SignatureControllerState,
@@ -53,7 +52,7 @@ const { sentry } = global;
  * onto the pending transaction or signature request.
  */
 export type PPOMMessenger = RootMessenger<
-  | UsePPOM
+  | UsePPOMAction
   | TransactionControllerGetStateAction
   | TransactionControllerUpdateSecurityAlertResponseAction
   | GetSignatureState
@@ -62,15 +61,17 @@ export type PPOMMessenger = RootMessenger<
 >;
 
 /**
- * The real runtime signature of the `PPOMController:usePPOM` action, which
- * accepts an optional `chainId`. The published action type omits it, so we
- * narrow `messenger.call` to this shape when forwarding the chain id.
+ * The `PPOMController:usePPOM` action. The published `UsePPOM` type omits the
+ * controller method's optional `chainId` argument, so it is redeclared here
+ * with the real runtime signature to forward the confirmation's chain id.
  */
-type UsePPOMCall = (
-  action: 'PPOMController:usePPOM',
-  callback: (ppom: PPOM) => Promise<unknown>,
-  chainId: string,
-) => Promise<unknown>;
+export type UsePPOMAction = {
+  type: 'PPOMController:usePPOM';
+  handler: (
+    callback: (ppom: PPOM) => Promise<unknown>,
+    chainId?: string,
+  ) => Promise<unknown>;
+};
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -337,11 +338,7 @@ async function validateWithController(
   chainId: string,
 ): Promise<SecurityAlertResponse> {
   try {
-    // The published `PPOMController:usePPOM` action type omits the optional
-    // `chainId` argument that the runtime handler accepts and that we must
-    // forward to validate against the confirmation's chain.
-    // ponytail: cast works around the upstream type omission; drop when fixed.
-    const response = (await (messenger.call as unknown as UsePPOMCall)(
+    const response = (await messenger.call(
       'PPOMController:usePPOM',
       (ppom: PPOM) => ppom.validateJsonRpc(request),
       chainId,
