@@ -5,10 +5,14 @@ import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
 /**
- * After a simulated position change in E2E, navigates back to Perps home, pushes
- * a `userFills` snapshot via `pushUserFills`, then opens Perps Activity and
+ * After a simulated position change in E2E, pushes a `userFills` snapshot via
+ * `pushUserFills`, navigates back to Perps home, then opens Perps Activity and
  * asserts a trade row appears with the expected title fragment (same navigation
  * pattern as other lifecycle tests).
+ *
+ * `pushUserFills` is invoked more than once on purpose; see the comments below.
+ * It must therefore be safe to repeat, which holds because the snapshot it
+ * sends carries `isSnapshot: true` and so replaces any previous one.
  *
  * @param options
  * @param options.driver
@@ -25,6 +29,12 @@ export async function assertPerpsActivityShowsCloseFill({
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
 }): Promise<void> {
+  // Push while the market detail page is still mounted. This is the last point
+  // where a Perps view is definitely active, and PerpsStreamBridge drops every
+  // emit while `perpsViewActive` is false. Pushing here also warms the
+  // controller's fills cache, which is what `perpsGetOrderFills` reads.
+  pushUserFills();
+
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
   try {
@@ -37,14 +47,22 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
 
-  // Push only once a Perps view is mounted and settled. PerpsStreamBridge drops
-  // every emit while `perpsViewActive` is false, and the boundary that owns that
-  // flag is torn down and re-created while navigating off the market detail page.
-  // A frame that lands in that window is discarded for good: the snapshot is
-  // sent once and the REST mocks never replay it, so Recent Activity would stay
-  // empty for the rest of the test.
-  pushUserFills();
-  await perpsTab.waitForRecentActivitySection();
+  // Re-push until Perps home actually lists the fill, because the two ways it
+  // can learn about one are both raceable here. The live path is closed
+  // whenever no Perps view is mounted, and the frame is sent once — the mock
+  // never folds it into the `userFills` POST response the way the real server
+  // would. The fetch path is coalesced for 10s, so a mount that lands inside
+  // that window replays the empty response an earlier mount cached and never
+  // refetches. Re-emitting with Perps home mounted feeds PerpsStreamManager
+  // directly, which is merged ahead of the coalesced response.
+  await driver.waitUntil(
+    async () => {
+      pushUserFills();
+      return await perpsTab.isRecentActivityPopulated();
+    },
+    { timeout: 10000, interval: 200 },
+  );
+
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);
