@@ -69,6 +69,7 @@ export function createWatchRampsCheckoutTab(
     activeByTabId.get(tabId)?.cleanup();
 
     let stepIndex = 0;
+    let lastNavigationUrl: string | undefined;
 
     const cleanup = () => {
       platform.removeTabUpdatedListener(onUpdated);
@@ -146,7 +147,6 @@ export function createWatchRampsCheckoutTab(
     function onUpdated(
       updatedTabId: number,
       changeInfo: { url?: string; pendingUrl?: string },
-      tab?: { url?: string },
     ): void {
       if (updatedTabId !== tabId) {
         return;
@@ -160,16 +160,23 @@ export function createWatchRampsCheckoutTab(
         return;
       }
 
+      // A single navigation can surface twice: once as `pendingUrl` when it is
+      // committed and again as `url` once it loads. Count distinct URLs so
+      // `step_index` stays comparable to mobile's, which dedupes the same way.
+      if (navigationUrl === lastNavigationUrl) {
+        return;
+      }
+      lastNavigationUrl = navigationUrl;
+
       stepIndex += 1;
 
-      const candidateUrl = navigationUrl ?? tab?.url;
-      if (!candidateUrl.startsWith(getRampCallbackBaseUrl())) {
+      if (!navigationUrl.startsWith(getRampCallbackBaseUrl())) {
         return;
       }
 
       trackRampsCheckoutCallbackDetected(
         analyticsContext,
-        candidateUrl,
+        navigationUrl,
         stepIndex,
       );
       trackRampsCheckoutClosed(analyticsContext, {
@@ -177,7 +184,7 @@ export function createWatchRampsCheckoutTab(
         callbackReached: true,
         stepIndex,
       });
-      finish(candidateUrl);
+      finish(navigationUrl);
     }
 
     function onRemoved(removedTabId: number): void {

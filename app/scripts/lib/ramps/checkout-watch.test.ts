@@ -342,8 +342,10 @@ describe('createWatchRampsCheckoutTab', () => {
     });
 
     const providerUrl = 'https://provider.example/checkout/kyc';
-    // One provider page load: the URL arrives with `status: 'loading'`, then
-    // further updates (complete, title, favicon) carry no URL of their own.
+    // One provider page load: the URL is committed as `pendingUrl`, arrives
+    // again as `url` once it loads, then further updates (complete, title,
+    // favicon) carry no URL of their own.
+    getOnUpdated()?.(9, { pendingUrl: providerUrl }, { url: providerUrl });
     getOnUpdated()?.(9, { url: providerUrl }, { url: providerUrl });
     getOnUpdated()?.(9, {}, { url: providerUrl });
     getOnUpdated()?.(9, {}, { url: providerUrl });
