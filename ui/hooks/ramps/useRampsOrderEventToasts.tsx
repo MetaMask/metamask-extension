@@ -1,5 +1,5 @@
-import { createElement, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   getInternalOrderCode,
@@ -72,25 +72,49 @@ function getToastCopy(
 }
 
 /**
- * Navigates to order details, or Activity when chain/id is unknown.
+ * Resolves the order details path, or Activity when chain/id is unknown.
  *
- * @param navigate - Router navigate function.
  * @param order - The order the toast belongs to.
  */
-function navigateToOrder(
-  navigate: ReturnType<typeof useNavigate>,
-  order: RampsOrder,
-) {
+function getOrderDetailsPath(order: RampsOrder): string {
   const item = mapRampsOrderSafely(order);
   const identifier = item?.hash ?? getInternalOrderCode(order);
 
   if (item?.chainId && identifier) {
-    navigate(`${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`);
-    return;
+    return `${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
   }
 
-  navigate(ACTIVITY_ROUTE);
+  return ACTIVITY_ROUTE;
 }
+
+type RampsToastContentProps = {
+  toastId: string;
+  title: string;
+  description: string;
+  to: string;
+};
+
+const RampsToastContent = ({
+  toastId,
+  title,
+  description,
+  to,
+}: RampsToastContentProps) => {
+  return (
+    <>
+      <ToastContent title={title} description={description} />
+
+      {to && (
+        <Link
+          to={to}
+          aria-label={title}
+          className="absolute inset-0 z-[1] cursor-pointer"
+          onClick={() => toast.dismiss(toastId)}
+        />
+      )}
+    </>
+  );
+};
 
 /**
  * Toasts pending / success / failed on ramps order status transitions.
@@ -101,14 +125,10 @@ export function useRampsOrderEventToasts(): void {
   const selectedAccountAddress = selectedAccount?.address?.toLowerCase() ?? '';
   const previousStatusById = useRef<Map<string, RampsOrderStatus>>(new Map());
   const trackedAccountAddress = useRef(selectedAccountAddress);
-  const ordersRef = useRef(orders);
-  const navigate = useNavigate();
   const t = useI18nContext();
   const initialized = useRef(false);
 
   useEffect(() => {
-    ordersRef.current = orders;
-
     if (trackedAccountAddress.current !== selectedAccountAddress) {
       for (const orderCode of previousStatusById.current.keys()) {
         clearToastPhase(orderCode);
@@ -139,13 +159,7 @@ export function useRampsOrderEventToasts(): void {
         order,
         orderCode,
         previousStatus,
-        navigate,
         t,
-        // Resolve the navigation target at click time.
-        getLatestOrder: (code: string) =>
-          ordersRef.current.find(
-            (candidate) => getInternalOrderCode(candidate) === code,
-          ),
       });
     }
 
@@ -158,23 +172,19 @@ export function useRampsOrderEventToasts(): void {
 
     previousStatusById.current = next;
     initialized.current = true;
-  }, [navigate, orders, selectedAccountAddress, t]);
+  }, [orders, selectedAccountAddress, t]);
 }
 
 function handleOrderStatusChange({
   order,
   orderCode,
   previousStatus,
-  navigate,
   t,
-  getLatestOrder,
 }: {
   order: RampsOrder;
   orderCode: string;
   previousStatus: RampsOrderStatus | undefined;
-  navigate: ReturnType<typeof useNavigate>;
   t: ReturnType<typeof useI18nContext>;
-  getLatestOrder: (orderCode: string) => RampsOrder | undefined;
 }) {
   if (previousStatus === order.status) {
     return;
@@ -182,16 +192,15 @@ function handleOrderStatusChange({
 
   const toastId = generateToastId(orderCode);
   const copy = getToastCopy(order, t);
-  const onActionClick = () =>
-    navigateToOrder(navigate, getLatestOrder(orderCode) ?? order);
-  const actionText = t('view');
-  const getToastContent = (title: string, description: string) =>
-    createElement(ToastContent, {
-      actionText,
-      description,
-      onActionClick,
-      title,
-    });
+  const to = getOrderDetailsPath(order);
+  const getToastContent = (title: string, description: string) => (
+    <RampsToastContent
+      toastId={toastId}
+      title={title}
+      description={description}
+      to={to}
+    />
+  );
 
   const becameInProgress =
     IN_PROGRESS.has(order.status) &&

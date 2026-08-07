@@ -1,14 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook, act } from '@testing-library/react';
-import type { ReactElement } from 'react';
+import React, { type ReactElement } from 'react';
+import { renderHook, act, render, screen } from '@testing-library/react';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
 import { toast } from '../../components/ui/toast/toast';
 import { clearToastPhase } from '../../components/app/toast-listener/toast-lifecycle';
 import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
 
-const mockNavigate = jest.fn();
 const mockSelectRampsOrdersForSelectedAccount = jest.fn();
 const mockGetSelectedInternalAccount = jest.fn();
 
@@ -28,26 +27,34 @@ const buyOrder = {
   network: { name: 'Ethereum', chainId: 'eip155:1' },
 };
 
-type ToastContentProps = {
+type RampsToastContentProps = {
+  toastId: string;
   title: string;
-  description?: string;
-  actionText?: string;
-  onActionClick?: () => void;
+  description: string;
+  to: string;
 };
 
-function getToastContentProps(toastMock: jest.Mock): ToastContentProps {
+function getToastContentProps(toastMock: jest.Mock): RampsToastContentProps {
   const [content] = toastMock.mock.calls[0] as [
-    ReactElement<ToastContentProps>,
+    ReactElement<RampsToastContentProps>,
   ];
   return content.props;
 }
 
-function clickToastAction(toastMock: jest.Mock) {
-  getToastContentProps(toastMock).onActionClick?.();
-}
-
 jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
+  Link: ({
+    to,
+    'aria-label': ariaLabel,
+    onClick,
+  }: {
+    to: string;
+    'aria-label'?: string;
+    onClick?: () => void;
+  }) => (
+    <a href={to} aria-label={ariaLabel} onClick={onClick}>
+      link
+    </a>
+  ),
 }));
 
 jest.mock('react-redux', () => ({
@@ -74,7 +81,18 @@ jest.mock('../../components/ui/toast/toast', () => ({
     error: jest.fn(),
     dismiss: jest.fn(),
   },
-  ToastContent: () => null,
+  ToastContent: ({
+    title,
+    description,
+  }: {
+    title: string;
+    description?: string;
+  }) => (
+    <div>
+      <p>{title}</p>
+      {description ? <p>{description}</p> : null}
+    </div>
+  ),
 }));
 
 describe('useRampsOrderEventToasts', () => {
@@ -131,8 +149,7 @@ describe('useRampsOrderEventToasts', () => {
     expect(getToastContentProps(toast.loading as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastPendingTitle',
-        actionText: 'view',
-        onActionClick: expect.any(Function),
+        to: '/activity',
       }),
     );
   });
@@ -169,7 +186,7 @@ describe('useRampsOrderEventToasts', () => {
     );
   });
 
-  it('opens the order details page when the toast action is clicked', () => {
+  it('links the toast to the order details page', () => {
     mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
       { ...buyOrder, status: RampsOrderStatus.Precreated },
     ]);
@@ -185,37 +202,21 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToastAction(toast.loading as jest.Mock);
+    expect(getToastContentProps(toast.loading as jest.Mock)).toEqual(
+      expect.objectContaining({
+        to: '/tx/eip155:1/order-1',
+      }),
+    );
 
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
-  });
+    render((toast.loading as jest.Mock).mock.calls[0][0]);
 
-  it('opens the order details page using state resolved after the toast is shown', () => {
-    mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
-      { ...buyOrder, network: undefined, status: RampsOrderStatus.Precreated },
-    ]);
-    const { rerender } = renderHook(() => useRampsOrderEventToasts());
-    act(() => {
-      rerender();
+    const link = screen.getByRole('link', {
+      name: 'rampsOrderToastPendingTitle',
     });
+    expect(link).toHaveAttribute('href', '/tx/eip155:1/order-1');
 
-    act(() => {
-      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
-        { ...buyOrder, network: undefined, status: RampsOrderStatus.Pending },
-      ]);
-      rerender();
-    });
-
-    act(() => {
-      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
-        { ...buyOrder, status: RampsOrderStatus.Pending },
-      ]);
-      rerender();
-    });
-
-    clickToastAction(toast.loading as jest.Mock);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
+    link.click();
+    expect(toast.dismiss).toHaveBeenCalledWith('ramp-order-1');
   });
 
   it('falls back to activity when the order has no resolvable chain', () => {
@@ -239,9 +240,11 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToastAction(toast.loading as jest.Mock);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/activity');
+    expect(getToastContentProps(toast.loading as jest.Mock)).toEqual(
+      expect.objectContaining({
+        to: '/activity',
+      }),
+    );
   });
 
   it('shows a failed toast on FAILED', () => {
