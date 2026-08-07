@@ -59,29 +59,30 @@ describe('ledger-mode-offscreen-bridge', () => {
     it('does nothing on MV2', () => {
       mockIsManifestV3 = false;
 
-      const getLedgerMode = jest.fn();
+      const call = jest.fn();
       const subscribe = jest.fn();
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
+        controllerMessenger: { call, subscribe },
       });
 
-      expect(getLedgerMode).not.toHaveBeenCalled();
+      expect(call).not.toHaveBeenCalled();
       expect(subscribe).not.toHaveBeenCalled();
       expect(sendMessageMock).not.toHaveBeenCalled();
     });
 
     it('pushes the initial ledger mode and subscribes to flag changes', () => {
-      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.Legacy);
+      const call = jest.fn().mockReturnValue(LedgerHandlerMode.Legacy);
       const subscribe = jest.fn();
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
+        controllerMessenger: { call, subscribe },
       });
 
-      expect(getLedgerMode).toHaveBeenCalledTimes(1);
+      expect(call).toHaveBeenCalledTimes(1);
+      expect(call).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:getLedgerMode',
+      );
       expect(sendMessageMock).toHaveBeenCalledWith({
         target: OffscreenCommunicationTarget.extension,
         event: OffscreenCommunicationEvents.switchLedgerMode,
@@ -96,7 +97,7 @@ describe('ledger-mode-offscreen-bridge', () => {
     });
 
     it('sends DMK mode when the subscribed selector reports enabled', () => {
-      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.Legacy);
+      const call = jest.fn().mockReturnValue(LedgerHandlerMode.Legacy);
       let handler: ((isDmkEnabled: boolean) => void) | undefined;
       const subscribe = jest.fn(
         (
@@ -111,8 +112,7 @@ describe('ledger-mode-offscreen-bridge', () => {
       );
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
+        controllerMessenger: { call, subscribe },
       });
 
       sendMessageMock.mockClear();
@@ -126,7 +126,7 @@ describe('ledger-mode-offscreen-bridge', () => {
     });
 
     it('sends Legacy mode when the subscribed selector reports disabled', () => {
-      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
+      const call = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
       let handler: ((isDmkEnabled: boolean) => void) | undefined;
       const subscribe = jest.fn(
         (
@@ -141,8 +141,7 @@ describe('ledger-mode-offscreen-bridge', () => {
       );
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
+        controllerMessenger: { call, subscribe },
       });
 
       sendMessageMock.mockClear();
@@ -172,8 +171,10 @@ describe('ledger-mode-offscreen-bridge', () => {
       );
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
-        controllerMessenger: { subscribe },
+        controllerMessenger: {
+          call: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          subscribe,
+        },
       });
 
       expect(
@@ -202,8 +203,10 @@ describe('ledger-mode-offscreen-bridge', () => {
       );
 
       setupLedgerModeOffscreenBridge({
-        getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
-        controllerMessenger: { subscribe },
+        controllerMessenger: {
+          call: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          subscribe,
+        },
       });
 
       expect(selector?.({ remoteFeatureFlags: {} })).toBe(false);

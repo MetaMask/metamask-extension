@@ -13,7 +13,9 @@ import {
   getDeferredDeepLinkRoute,
   buildInterstitialRoute,
 } from '../../../../shared/lib/deep-links/utils';
+import { createEvent } from '../../../../shared/lib/deep-links/metrics';
 import {
+  DeferredDeepLink,
   DeferredDeepLinkRoute,
   DeferredDeepLinkRouteType,
 } from '../../../../shared/lib/deep-links/types';
@@ -80,13 +82,22 @@ export function useOnboardingCompletion() {
   const isFinishingOnboardingRef = useRef(false);
 
   const handleOnDoneNavigation = useCallback(
-    (
+    async (
       deferredDeepLinkResult: DeferredDeepLinkRoute | null,
-      hasDeferredDeepLink: boolean,
+      deferredDeepLinkToUse: DeferredDeepLink | null,
       completedWithSidePanelFlow: boolean,
     ) => {
-      if (hasDeferredDeepLink) {
+      if (deferredDeepLinkToUse) {
         dispatch(removeDeferredDeepLink());
+      }
+
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        await trackEvent(
+          createEvent({
+            signature: deferredDeepLinkResult.signature,
+            url: new URL(deferredDeepLinkToUse.referringLink),
+          }),
+        );
       }
 
       if (deferredDeepLinkResult) {
@@ -118,7 +129,7 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -167,9 +178,9 @@ export function useOnboardingCompletion() {
         // Auto-complete passes `completedWithSidePanelFlow: false` so navigation
         // uses popup rules (home redirect, `_blank` external redirects) even
         // though the panel did not open in this popup context.
-        handleOnDoneNavigation(
+        await handleOnDoneNavigation(
           deferredDeepLinkResult,
-          Boolean(deferredDeepLink),
+          deferredDeepLink,
           !autoCompleteWithoutUserGesture,
         );
 
@@ -187,9 +198,9 @@ export function useOnboardingCompletion() {
     async (deferredDeepLinkResult: DeferredDeepLinkRoute | null) => {
       await dispatch(setCompletedOnboarding());
 
-      handleOnDoneNavigation(
+      await handleOnDoneNavigation(
         deferredDeepLinkResult,
-        Boolean(deferredDeepLink),
+        deferredDeepLink,
         false,
       );
     },

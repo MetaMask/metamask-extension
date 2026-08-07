@@ -1,5 +1,5 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import * as useBridgingModule from '../../../hooks/bridge/useBridging';
 import { buildBatchSellAsset } from '../../../../test/data/batch-sell';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';

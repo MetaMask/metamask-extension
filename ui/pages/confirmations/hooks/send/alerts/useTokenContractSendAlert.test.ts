@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../useSendType';
@@ -65,29 +65,31 @@ describe('useTokenContractSendAlert', () => {
   it('returns alert when address is a token contract', async () => {
     mockGetTokenStandard.mockResolvedValue({ standard: 'ERC20' } as never);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useTokenContractSendAlert(),
-    );
+    const { result } = renderHook(() => useTokenContractSendAlert());
 
-    await waitForNextUpdate();
-
-    expect(result.current).toStrictEqual({
-      key: 'tokenContract',
-      title: 'smartContractAddress',
-      message: 'smartContractAddressWarning',
+    await waitFor(() => {
+      expect(result.current).toStrictEqual({
+        key: 'tokenContract',
+        title: 'smartContractAddress',
+        message: 'smartContractAddressWarning',
+      });
     });
   });
 
   it('returns null when address is not a token contract', async () => {
     mockGetTokenStandard.mockResolvedValue({} as never);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useTokenContractSendAlert(),
-    );
+    const { result } = renderHook(() => useTokenContractSendAlert());
 
     // Wait for the async check to settle
     try {
-      await waitForNextUpdate({ timeout: 100 });
+      const prevUpdate0 = result.current;
+      await waitFor(
+        () => {
+          expect(result.current).not.toBe(prevUpdate0);
+        },
+        { timeout: 100 },
+      );
     } catch {
       // No update expected - that's fine
     }
@@ -113,12 +115,11 @@ describe('useTokenContractSendAlert', () => {
   it('resets when recipient changes', async () => {
     mockGetTokenStandard.mockResolvedValue({ standard: 'ERC20' } as never);
 
-    const { result, waitForNextUpdate, rerender } = renderHook(() =>
-      useTokenContractSendAlert(),
-    );
+    const { result, rerender } = renderHook(() => useTokenContractSendAlert());
 
-    await waitForNextUpdate();
-    expect(result.current).not.toBeNull();
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
 
     mockGetTokenStandard.mockResolvedValue({} as never);
     mockUseSendContext.mockReturnValue({
@@ -130,7 +131,13 @@ describe('useTokenContractSendAlert', () => {
     rerender();
 
     try {
-      await waitForNextUpdate({ timeout: 100 });
+      const prevUpdate1 = result.current;
+      await waitFor(
+        () => {
+          expect(result.current).not.toBe(prevUpdate1);
+        },
+        { timeout: 100 },
+      );
     } catch {
       // No update expected - that's fine
     }
