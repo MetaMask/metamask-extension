@@ -163,7 +163,7 @@ function handleEthSendTransaction(
  * Scans addresses that are encoded in transaction calldata rather than
  * `txParams.to`: the spender of a token approval and the recipient of an
  * ERC-20/721/1155 token transfer (for transfers, `to` is only the token
- * contract — the funds move to the address inside the calldata).
+ * contract; the funds move to the address inside the calldata).
  *
  * @param data - The transaction calldata
  * @param appStateController - AppStateController holding the verdict cache
@@ -256,7 +256,7 @@ function handleWalletSendCalls(
     }
 
     // If a nested call is an approval or a token transfer, also scan the
-    // addresses encoded in its calldata — parity with eth_sendTransaction.
+    // addresses encoded in its calldata, matching eth_sendTransaction.
     if (typeof data === 'string') {
       scanCalldataAddresses(
         data as Hex,

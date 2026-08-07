@@ -387,7 +387,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
 
   const addresses = [to];
 
-  // For token transfers `to` is only the token contract — the funds move to
+  // For token transfers `to` is only the token contract; the funds move to
   // the recipient encoded in calldata, so scan that address as well.
   const transferRecipient = data
     ? parseTransferTransactionData(data as Hex)?.recipient

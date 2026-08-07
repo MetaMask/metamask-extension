@@ -719,7 +719,7 @@ describe('Transaction Utils', () => {
       });
 
       it('also scans the decoded recipient of a token transfer', async () => {
-        // ERC-20 `transfer(0x2222..., 10)` — recipient is digit-only so its
+        // ERC-20 `transfer(0x2222..., 10)`. Recipient is digit-only so its
         // checksummed form equals its lowercase form.
         request.transactionParams.data =
           '0xa9059cbb0000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000000a';

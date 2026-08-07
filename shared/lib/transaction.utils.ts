@@ -538,7 +538,7 @@ export function parseApprovalTransactionData(data: Hex):
 /**
  * Parses ERC-20/721/1155 token-transfer calldata and extracts the address
  * actually receiving the tokens. For these methods the transaction's `to` is
- * the token contract, not the recipient — the same distinction
+ * the token contract, not the recipient: the same distinction
  * `getEffectiveRecipient` in `@metamask/transaction-controller` draws (that
  * helper needs a classified `TransactionType`; this one parses raw calldata
  * for callers, like the trust-signals middleware, that have none).
