@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "कीमत की कोई जानकारी नहीं"
   },
+  "bridgeOffHoursDescription": {
+    "message": "बाज़ार बंद: कीमत जारीकर्ता द्वारा गणना की गई है, यह लाइव बाज़ार डेटा नहीं है। अगली उपलब्ध ट्रेडिंग सत्र में बाज़ार खुलने पर यह भिन्न हो सकती है।"
+  },
+  "bridgeOffHoursTitle": {
+    "message": "ऑफ-आवर्स ट्रेडिंग"
+  },
   "bridgePoints": {
     "message": "अनुमानित पॉइंट्स",
     "description": "Label for estimated points that can be earned from a bridge or swap"

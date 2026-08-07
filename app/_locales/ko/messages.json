@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "가격 정보 없음"
   },
+  "bridgeOffHoursDescription": {
+    "message": "시장 마감: 가격은 발행자가 산정한 것으로, 실시간 시장 데이터가 아닙니다. 다음 거래 세션에서 시장이 재개되면 가격이 달라질 수 있습니다."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "장외 거래"
+  },
   "bridgePoints": {
     "message": "예상 포인트",
     "description": "Label for estimated points that can be earned from a bridge or swap"

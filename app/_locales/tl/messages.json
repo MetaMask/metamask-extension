@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Walang impormasyon sa presyo"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Sarado ang merkado: Ang presyo ay kinakalkula ng nag-isyu, hindi live na datos ng merkado. Maaaring magkaiba ito kapag muling binuksan ang mga merkado sa susunod na magagamit na sesyon ng pangangalakal."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Pangangalakal sa labas ng oras"
+  },
   "bridgePoints": {
     "message": "Tinatayang mga point",
     "description": "Label for estimated points that can be earned from a bridge or swap"

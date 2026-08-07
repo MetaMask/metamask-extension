@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Không có thông tin giá"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Thị trường đóng cửa: Giá do tổ chức phát hành tính toán, không phải dữ liệu thị trường trực tiếp. Có thể khác đi khi thị trường mở cửa trở lại vào phiên giao dịch tiếp theo."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Giao dịch ngoài giờ"
+  },
   "bridgePoints": {
     "message": "Điểm ước tính",
     "description": "Label for estimated points that can be earned from a bridge or swap"

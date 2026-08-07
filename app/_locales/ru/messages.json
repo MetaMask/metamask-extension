@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Нет информации о цене"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Рынок закрыт: цена рассчитана эмитентом и не отражает актуальные рыночные данные. Она может отличаться при открытии рынков на следующей доступной торговой сессии."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Внебиржевая торговля"
+  },
   "bridgePoints": {
     "message": "Прим. баллов",
     "description": "Label for estimated points that can be earned from a bridge or swap"

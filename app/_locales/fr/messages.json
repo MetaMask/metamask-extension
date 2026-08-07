@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Aucune information sur le prix"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Marché fermé : Le prix est calculé par l'émetteur et ne reflète pas les données de marché en temps réel. Il peut différer à la réouverture des marchés lors de la prochaine séance de trading disponible."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Trading hors heures d'ouverture"
+  },
   "bridgePoints": {
     "message": "Points estimés",
     "description": "Label for estimated points that can be earned from a bridge or swap"
