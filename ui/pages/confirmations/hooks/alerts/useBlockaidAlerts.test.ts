@@ -17,7 +17,13 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import { Severity } from '../../../../helpers/constants/design-system';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SecurityAlertResponse } from '../../types/confirm';
-import useBlockaidAlert from './useBlockaidAlerts';
+import useBlockaidAlert, {
+  MAX_REPORT_URL_LENGTH,
+  REPORT_FIELD_TRUNCATION_MARKER,
+} from './useBlockaidAlerts';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const zlib = require('zlib');
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -51,6 +57,31 @@ const IGNORED_TYPES = [
   BlockaidResultType.NotApplicable,
   'NewUnexpectedTypeFromAPI',
 ];
+
+/**
+ * Generates a deterministic, poorly-compressible hex string so that gzip
+ * cannot shrink the payload below the URL length limit.
+ *
+ * @param length - The length of the generated string.
+ * @returns A pseudo-random hex string of the given length.
+ */
+function generateIncompressibleHexData(length: number): string {
+  let seed = 42;
+  let result = '';
+  while (result.length < length) {
+    // Linear congruential generator for deterministic pseudo-random output.
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    result += seed.toString(16);
+  }
+  return `0x${result.slice(0, length)}`;
+}
+
+function decodeReportUrlData(reportUrl: string): Record<string, string> {
+  const encodedData = new URL(reportUrl).searchParams.get('data') as string;
+  return JSON.parse(
+    zlib.gunzipSync(Buffer.from(encodedData, 'base64')).toString(),
+  );
+}
 
 describe('useBlockaidAlerts', () => {
   it('returns an empty array when there is no confirmation', () => {
@@ -101,6 +132,76 @@ describe('useBlockaidAlerts', () => {
     expect(result.current[0].reportUrl).toBeDefined();
     delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
+  });
+
+  it('includes the full request params in the report URL for normal payloads', () => {
+    const msgParams = {
+      from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+      data: '0x48656c6c6f',
+      origin: 'https://metamask.github.io',
+    };
+    const mockCurrentState = getMockPersonalSignConfirmStateForRequest(
+      { ...currentConfirmationMock, msgParams },
+      {
+        metamask: {
+          signatureSecurityAlertResponses: {
+            'test-id-mock': mockSecurityAlertResponse,
+          },
+        },
+      },
+    );
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useBlockaidAlert(),
+      mockCurrentState,
+    );
+
+    const reportUrl = result.current[0].reportUrl as string;
+    expect(reportUrl.length).toBeLessThanOrEqual(MAX_REPORT_URL_LENGTH);
+
+    const reportData = decodeReportUrlData(reportUrl);
+    expect(reportData.jsonRpcParams).toStrictEqual(JSON.stringify(msgParams));
+    expect(reportData.jsonRpcParams).not.toContain(
+      REPORT_FIELD_TRUNCATION_MARKER,
+    );
+  });
+
+  it('bounds the report URL length for oversized payloads while keeping key fields', () => {
+    const msgParams = {
+      from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+      data: generateIncompressibleHexData(200000),
+      origin: 'https://metamask.github.io',
+    };
+    const mockCurrentState = getMockPersonalSignConfirmStateForRequest(
+      { ...currentConfirmationMock, msgParams },
+      {
+        metamask: {
+          signatureSecurityAlertResponses: {
+            'test-id-mock': mockSecurityAlertResponse,
+          },
+        },
+      },
+    );
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useBlockaidAlert(),
+      mockCurrentState,
+    );
+
+    expect(result.current).toHaveLength(1);
+
+    const reportUrl = result.current[0].reportUrl as string;
+    expect(reportUrl.length).toBeLessThanOrEqual(MAX_REPORT_URL_LENGTH);
+
+    const reportData = decodeReportUrlData(reportUrl);
+    expect(reportData.blockaidVersion).toBeDefined();
+    expect(reportData.classification).toStrictEqual('test-reason');
+    expect(reportData.domain).toStrictEqual('https://metamask.github.io');
+    expect(reportData.jsonRpcMethod).toStrictEqual(
+      TransactionType.personalSign,
+    );
+    expect(reportData.resultType).toStrictEqual(BlockaidResultType.Malicious);
+    expect(reportData.jsonRpcParams).toContain(REPORT_FIELD_TRUNCATION_MARKER);
   });
 
   jestIt.each(IGNORED_TYPES)(
