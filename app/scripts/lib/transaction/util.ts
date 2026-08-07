@@ -14,6 +14,7 @@ import {
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
+import type { PhishingController } from '@metamask/phishing-controller';
 
 import { KeyringController } from '@metamask/keyring-controller';
 import log from 'loglevel';
@@ -35,7 +36,6 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
 import {
-  mapChainIdToSupportedEVMChain,
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
@@ -67,6 +67,7 @@ type BaseAddTransactionRequest = {
   internalAccounts: InternalAccount[];
   getSecurityAlertResponse: GetAddressSecurityAlertResponse;
   addSecurityAlertResponse: AddAddressSecurityAlertResponse;
+  phishingController: Pick<PhishingController, 'scanAddress'>;
 };
 
 export type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -359,6 +360,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     transactionOptions,
     transactionParams,
     chainId,
+    phishingController,
   } = request;
   const { origin } = transactionOptions;
   if (origin !== ORIGIN_METAMASK || !securityAlertsEnabled) {
@@ -366,11 +368,6 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
   }
   const { to } = transactionParams;
   if (typeof to !== 'string') {
-    return;
-  }
-
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-  if (!supportedEVMChain) {
     return;
   }
 
@@ -389,7 +386,8 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     to,
     getAddressSecurityAlertResponseWithChain,
     addAddressSecurityAlertResponseWithChain,
-    supportedEVMChain,
+    chainId,
+    phishingController,
   ).catch((error) => {
     console.error(
       '[scanAddressForTrustSignals] error scanning address for trust signals:',

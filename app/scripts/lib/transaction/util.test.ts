@@ -22,7 +22,6 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
 import {
-  SupportedEVMChain,
   ResultType,
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
@@ -185,6 +184,7 @@ describe('Transaction Utils', () => {
   let userOperationController: jest.Mocked<UserOperationController>;
   let getAddressSecurityAlertResponseMock: jest.Mock;
   let addAddressSecurityAlertResponseMock: jest.Mock;
+  let phishingControllerMock: { scanAddress: jest.Mock };
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
@@ -202,6 +202,7 @@ describe('Transaction Utils', () => {
     userOperationController = createUserOperationControllerMock();
     getAddressSecurityAlertResponseMock = jest.fn();
     addAddressSecurityAlertResponseMock = jest.fn();
+    phishingControllerMock = { scanAddress: jest.fn() };
 
     scanAddressAndAddToCacheMock.mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -242,6 +243,7 @@ describe('Transaction Utils', () => {
     request.updateSecurityAlertResponse = jest.fn();
     request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
     request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
+    request.phishingController = phishingControllerMock;
 
     dappRequest = {
       ...request,
@@ -689,7 +691,8 @@ describe('Transaction Utils', () => {
           '0x1234567890123456789012345678901234567890',
           expect.any(Function),
           expect.any(Function),
-          SupportedEVMChain.Ethereum,
+          CHAIN_IDS.MAINNET,
+          phishingControllerMock,
         );
       });
 
@@ -727,15 +730,23 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
 
-      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
-        // Test with a chain ID that the real function doesn't support
+      it('calls scanAddressAndAddToCache even for a chain the extension does not recognize', async () => {
+        // The PhishingController now decides chain support internally, so
+        // callers no longer pre-gate on a recognized chain ID.
         const transactionMeta = await addTransaction({
           ...request,
           securityAlertsEnabled: true,
-          chainId: '0xfake-chain-id', // This will return undefined from the real function
+          chainId: '0xfake-chain-id',
         });
 
-        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.any(Function),
+          expect.any(Function),
+          '0xfake-chain-id',
+          phishingControllerMock,
+        );
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
     });

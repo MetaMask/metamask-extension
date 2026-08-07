@@ -1049,6 +1049,7 @@ describe('MetaMaskController', () => {
           getSecurityAlertResponse: expect.any(Function),
           addSecurityAlertResponse: expect.any(Function),
           getSecurityAlertsConfig: expect.any(Function),
+          phishingController: expect.any(Object),
         });
       });
       it('passes through any additional params to the object', () => {
