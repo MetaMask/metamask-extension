@@ -74,6 +74,9 @@ const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   })),
 );
 
+const setId = jest.fn();
+const removeId = jest.fn();
+
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
   let randomUuidSpy: jest.SpyInstance<string, []>;
@@ -89,6 +92,8 @@ describe('DeepLinkRouter', () => {
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
+      setId,
+      removeId,
     });
   });
   afterEach(() => {
