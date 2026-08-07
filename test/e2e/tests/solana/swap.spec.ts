@@ -737,7 +737,6 @@ describe('Swap on Solana', function () {
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -806,7 +805,6 @@ describe('Swap on Solana', function () {
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -908,7 +906,6 @@ describe('Swap on Solana', function () {
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -952,7 +949,6 @@ describe('Swap on Solana', function () {
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
