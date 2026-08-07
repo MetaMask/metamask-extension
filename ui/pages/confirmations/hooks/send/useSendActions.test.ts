@@ -4,6 +4,7 @@ import { waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -50,7 +51,7 @@ describe('useSendQueryParams', () => {
   it('result returns method handleBack to goto previous page', () => {
     const result = renderHook();
     result.handleBack();
-    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('handleSubmit is able to submit evm send', async () => {
@@ -184,7 +185,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -213,7 +214,7 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       // Should show generic error message when valid: false but no errors array
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -240,7 +241,7 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       // Should clear error for user rejection
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -274,7 +275,7 @@ describe('useSendQueryParams', () => {
           mockUpdateNonEVMSubmitError.mock.calls.length - 1
         ];
       expect(lastCall[0]).not.toBeUndefined();
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 });
