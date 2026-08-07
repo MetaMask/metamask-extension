@@ -34,6 +34,8 @@ import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import MetaMaskFoxLogo from '../../../app/images/logo/metamask-fox.svg';
+import SpinnerGif from '../../../app/images/spinner.gif';
 
 type TranslateFunction = (
   key: string,
@@ -483,7 +485,7 @@ export const DeepLink = () => {
             <img
               className="metamask-deep-link-logo"
               alt="MetaMask logo"
-              src="./images/logo/metamask-fox.svg"
+              src={MetaMaskFoxLogo}
               style={{ width: '160px', height: '160px' }}
             />
           )}
@@ -491,7 +493,7 @@ export const DeepLink = () => {
             <img
               data-testid="loading-indicator"
               className="loading-spinner"
-              src="./images/spinner.gif"
+              src={SpinnerGif}
               alt=""
             />
           )}
