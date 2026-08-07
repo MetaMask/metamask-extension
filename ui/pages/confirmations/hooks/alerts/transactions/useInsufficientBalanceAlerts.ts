@@ -79,6 +79,10 @@ export function useInsufficientBalanceAlerts({
       isGasFeeTokensEmpty ||
       (!isGasFeeTokensEmpty && !selectedGasFeeToken));
 
+  // An unknown balance is not an insufficient balance: when the account tracker has
+  // no entry for the transaction's chain (e.g. native balance polling failed on a
+  // custom network), `hasInsufficientBalance` falls back to a zero balance. Blocking
+  // the confirmation in that case rejects perfectly valid transactions (#43352).
   const showAlert =
     hasInsufficientBalance &&
     isNativeBalanceKnown &&
