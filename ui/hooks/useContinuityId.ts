@@ -41,7 +41,7 @@ export function useContinuityId(): string | undefined {
   }, []);
 
   return useSelector((state) => {
-    if (currentTabId) {
+    if (currentTabId !== undefined) {
       return getContinuityIdForTab(state as MetaMaskReduxState, currentTabId);
     }
   });
