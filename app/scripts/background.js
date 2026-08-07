@@ -905,7 +905,7 @@ async function initialize(backup) {
     setId: controller.appStateController.addPendingDeepLinkRequestId.bind(
       controller.appStateController,
     ),
-    removeId: controller.appStateController.addPendingDeepLinkRequestId.bind(
+    removeId: controller.appStateController.removePendingDeepLinkRequestId.bind(
       controller.appStateController,
     ),
   })
