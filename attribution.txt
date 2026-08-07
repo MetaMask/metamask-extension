@@ -17649,7 +17649,7 @@ SOFTWARE.
 ******************************
 
 ip-address
-10.2.0 <https://github.com/beaugunderson/ip-address>
+10.4.0 <https://github.com/beaugunderson/ip-address>
 Copyright (C) 2011 by Beau Gunderson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
