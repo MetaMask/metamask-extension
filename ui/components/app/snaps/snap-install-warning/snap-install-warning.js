@@ -248,7 +248,10 @@ export default function SnapInstallWarning({
           >
             <Checkbox
               id="snap-install-warning-checkbox"
-              inputProps={{ required: true }}
+              inputProps={{
+                required: true,
+                'data-testid': 'snap-install-warning-checkbox',
+              }}
               onChange={() => setUserAgree((state) => !state)}
               isSelected={userAgree}
               label={

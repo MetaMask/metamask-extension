@@ -107,6 +107,7 @@ exports[`SnapUIForm will render with fields 1`] = `
                 <input
                   aria-invalid="false"
                   class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+                  data-testid="snap-ui-checkbox-checkbox"
                   id="checkbox"
                   type="checkbox"
                 />

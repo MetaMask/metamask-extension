@@ -79,6 +79,9 @@ export const SnapUICheckbox = ({
           isSelected={value}
           label={label}
           isDisabled={disabled}
+          inputProps={{
+            'data-testid': `snap-ui-checkbox-${name}`,
+          }}
           {...props}
         />
       )}
