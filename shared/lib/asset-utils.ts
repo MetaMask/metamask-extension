@@ -25,6 +25,8 @@ import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
+import { CHAIN_IDS } from '../constants/network';
+import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
@@ -52,7 +54,12 @@ export const toAssetId = (
     return undefined;
   }
 
-  if (isNativeAddress(addressToUse)) {
+  // TODO: Fix or replace `isNativeAddress` to support Polygon
+  const isPolygonNative =
+    chainIdToUse === toEvmCaipChainId(CHAIN_IDS.POLYGON) &&
+    addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
+
+  if (isNativeAddress(addressToUse) || isPolygonNative) {
     try {
       return getNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
