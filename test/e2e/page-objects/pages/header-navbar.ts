@@ -207,7 +207,16 @@ class HeaderNavbar {
   }
 
   async clickDrawerBackButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.drawerBackButton);
+    const element = await this.driver.findClickableElement(
+      this.drawerBackButton,
+    );
+    await element.click();
+    // Selenium WebElement typing omits the driver wrapper's waitForElementState.
+    await (
+      element as typeof element & {
+        waitForElementState: (state: string, timeout?: number) => Promise<void>;
+      }
+    ).waitForElementState('hidden', 3000);
   }
 
   /**

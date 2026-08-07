@@ -47,12 +47,10 @@ import {
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
 import {
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
@@ -74,6 +72,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 import { useDispatch } from '../../../store/hooks';
+import { preserveDrawerOpen } from './global-menu-drawer';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -154,6 +153,7 @@ export function useGlobalMenuSections(
         })
         .build(),
     );
+    preserveDrawerOpen();
     navigate(
       `${NOTIFICATIONS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
       { state: { globalMenuTransition: 'forward' } },
