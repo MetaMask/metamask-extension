@@ -105,11 +105,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const settingsPage = new SettingsPage(driver);
         const accountListPage = new AccountListPage(driver);
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Popular',
-          NETWORK_NAME_MAINNET,
-        );
+        await switchToNetworkFromNetworkSelect(driver, NETWORK_NAME_MAINNET);
 
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
@@ -125,11 +121,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          NETWORK_NAME_SEPOLIA,
-        );
+        await switchToNetworkFromNetworkSelect(driver, NETWORK_NAME_SEPOLIA);
 
         await headerNavbar.openSettingsPage();
         await settingsPage.goToDeveloperOptions();
