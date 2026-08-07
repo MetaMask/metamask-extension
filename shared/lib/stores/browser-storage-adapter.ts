@@ -101,8 +101,16 @@ export class BrowserStorageAdapter implements StorageAdapter {
   async getAllKeys(namespace: string): Promise<string[]> {
     try {
       const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
-      const all = await browser.storage.local.get(null);
 
+      // avoid reading ALL data from all keys in browser.storage.local by using
+      // getKeys if available (added in chrome 130 and firefox 143)
+      if (typeof browser.storage.local.getKeys === 'function') {
+        return (await browser.storage.local.getKeys())
+          .filter((k) => k.startsWith(prefix))
+          .map((k) => k.slice(prefix.length));
+      }
+
+      const all = await browser.storage.local.get(null);
       return Object.keys(all)
         .filter((k) => k.startsWith(prefix))
         .map((k) => k.slice(prefix.length));

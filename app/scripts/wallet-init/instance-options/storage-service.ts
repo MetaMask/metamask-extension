@@ -1,5 +1,5 @@
 import type { WalletOptions } from '@metamask/wallet';
-import { BrowserStorageAdapter } from '../../../../shared/lib/stores/browser-storage-adapter';
+import { IndexedDBStorageAdapter } from '../../../../shared/lib/stores/indexeddb-storage-adapter';
 
 type StorageServiceInstanceOptions =
   WalletOptions['instanceOptions']['storageService'];
@@ -12,6 +12,6 @@ type StorageServiceInstanceOptions =
  */
 export function getStorageServiceInstanceOptions(): StorageServiceInstanceOptions {
   return {
-    storage: new BrowserStorageAdapter(),
+    storage: new IndexedDBStorageAdapter(),
   };
 }
