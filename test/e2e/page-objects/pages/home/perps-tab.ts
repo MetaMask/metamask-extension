@@ -167,23 +167,6 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Resolves to whether Recent Activity currently lists history, without
-   * throwing when it is still in its empty state. Use this to poll while
-   * history is expected to arrive; use {@link waitForRecentActivitySection}
-   * when its absence should fail the test.
-   *
-   * @param timeout - How long to give the section to render, in ms.
-   */
-  async isRecentActivityPopulated(timeout = 1000): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.perpsRecentActivity, { timeout });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
    * Navigates to Perps Home by clicking the Perps tab on the account overview.
    * Requires the account overview to be visible (e.g. after login or driver.navigate()).
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.

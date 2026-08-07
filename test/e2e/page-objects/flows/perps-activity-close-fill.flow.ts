@@ -10,10 +10,6 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
  * asserts a trade row appears with the expected title fragment (same navigation
  * pattern as other lifecycle tests).
  *
- * `pushUserFills` is invoked more than once on purpose; see the comments below.
- * It must therefore be safe to repeat, which holds because the snapshot it
- * sends carries `isSnapshot: true` and so replaces any previous one.
- *
  * @param options
  * @param options.driver
  * @param options.pushUserFills
@@ -29,10 +25,11 @@ export async function assertPerpsActivityShowsCloseFill({
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
 }): Promise<void> {
-  // Push while the market detail page is still mounted. This is the last point
-  // where a Perps view is definitely active, and PerpsStreamBridge drops every
-  // emit while `perpsViewActive` is false. Pushing here also warms the
-  // controller's fills cache, which is what `perpsGetOrderFills` reads.
+  // Push while the market detail page is still mounted, so the fill can also
+  // reach the UI live: PerpsStreamBridge drops every emit made while no Perps
+  // view is active, and navigating back closes that window. The push is
+  // additionally recorded by the mock server, so Perps home still sees the fill
+  // when it queries `userFills` on mount.
   pushUserFills();
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
@@ -47,22 +44,7 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
 
-  // Re-push until Perps home actually lists the fill, because the two ways it
-  // can learn about one are both raceable here. The live path is closed
-  // whenever no Perps view is mounted, and the frame is sent once — the mock
-  // never folds it into the `userFills` POST response the way the real server
-  // would. The fetch path is coalesced for 10s, so a mount that lands inside
-  // that window replays the empty response an earlier mount cached and never
-  // refetches. Re-emitting with Perps home mounted feeds PerpsStreamManager
-  // directly, which is merged ahead of the coalesced response.
-  await driver.waitUntil(
-    async () => {
-      pushUserFills();
-      return await perpsTab.isRecentActivityPopulated();
-    },
-    { timeout: 10000, interval: 200 },
-  );
-
+  await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);
