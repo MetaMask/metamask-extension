@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
@@ -59,6 +59,16 @@ const EmptyState = ({ message }: { message: string }) => (
     </Text>
   </Box>
 );
+
+const DiscoverSearchErrorState = () => {
+  const t = useI18nContext();
+
+  return (
+    <Box data-testid="discover-search-error">
+      <EmptyState message={t('somethingWentWrong')} />
+    </Box>
+  );
+};
 
 type DiscoverSearchEmptyStateProps = {
   noResultsMessage: string;
@@ -147,6 +157,7 @@ export const DiscoverSearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isLoadingNextPageRef = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState(
     () => searchParams.get(SEARCH_QUERY_PARAM) ?? '',
@@ -235,6 +246,40 @@ export const DiscoverSearchPage = () => {
     [updateActiveTab],
   );
 
+  const handleTabContentScroll = useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      if (activeTab !== 'crypto' && activeTab !== 'stocks') {
+        return;
+      }
+
+      const section = activeTab === 'crypto' ? cryptoSection : stocks;
+      const { currentTarget } = event;
+      const distanceToBottom =
+        currentTarget.scrollHeight -
+        currentTarget.scrollTop -
+        currentTarget.clientHeight;
+
+      if (
+        distanceToBottom > 200 ||
+        !section.hasNextPage ||
+        section.isFetchingNextPage ||
+        !section.fetchNextPage ||
+        isLoadingNextPageRef.current
+      ) {
+        return;
+      }
+
+      isLoadingNextPageRef.current = true;
+      section
+        .fetchNextPage()
+        .catch(() => undefined)
+        .finally(() => {
+          isLoadingNextPageRef.current = false;
+        });
+    },
+    [activeTab, cryptoSection, stocks],
+  );
+
   const getSectionViewAllLabel = useCallback(
     (
       sectionId: DiscoverSearchSectionId,
@@ -294,6 +339,9 @@ export const DiscoverSearchPage = () => {
 
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
+  const hasAllError = Boolean(
+    cryptoSection.error || stocks.error || (isPerpsAvailable && perps.error),
+  );
   const showCryptoPreview = previewCrypto.length > 0 || cryptoSection.isLoading;
   const showPerpsPreview =
     isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
@@ -336,10 +384,14 @@ export const DiscoverSearchPage = () => {
   const renderAssetList = (
     items: TrendingAsset[],
     isLoading: boolean,
+    error: Error | null | undefined,
     testIdPrefix: string,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
+    }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
     }
     if (items.length === 0) {
       return (
@@ -359,9 +411,16 @@ export const DiscoverSearchPage = () => {
     ));
   };
 
-  const renderPerpsList = (items: PerpsMarketData[], isLoading: boolean) => {
+  const renderPerpsList = (
+    items: PerpsMarketData[],
+    isLoading: boolean,
+    error: Error | null | undefined,
+  ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
+    }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
     }
     if (items.length === 0) {
       return (
@@ -387,7 +446,9 @@ export const DiscoverSearchPage = () => {
       return renderAllTabSkeleton();
     }
     if (showAllEmpty) {
-      return (
+      return hasAllError ? (
+        <DiscoverSearchErrorState />
+      ) : (
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
@@ -412,6 +473,7 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewCrypto,
               cryptoSection.isLoading,
+              cryptoSection.error,
               'discover-crypto-preview',
             )}
           </>
@@ -426,12 +488,12 @@ export const DiscoverSearchPage = () => {
               viewAllLabel={getSectionViewAllLabel(
                 'perps',
                 perps.items.length,
-                undefined,
+                perps.totalCount,
                 perps.isLoading,
               )}
               data-testid="discover-section-perps"
             />
-            {renderPerpsList(previewPerps, perps.isLoading)}
+            {renderPerpsList(previewPerps, perps.isLoading, perps.error)}
           </>
         ) : null}
 
@@ -454,6 +516,7 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewStocks,
               stocks.isLoading,
+              stocks.error,
               'discover-stocks-preview',
             )}
           </>
@@ -512,6 +575,7 @@ export const DiscoverSearchPage = () => {
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{
           className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
+          onScroll: handleTabContentScroll,
         }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
@@ -526,6 +590,7 @@ export const DiscoverSearchPage = () => {
           {renderAssetList(
             cryptoSection.items,
             cryptoSection.isLoading,
+            cryptoSection.error,
             'discover-crypto',
           )}
         </Tab>
@@ -536,7 +601,7 @@ export const DiscoverSearchPage = () => {
             tabKey="perps"
             data-testid="discover-tab-perps"
           >
-            {renderPerpsList(perps.items, perps.isLoading)}
+            {renderPerpsList(perps.items, perps.isLoading, perps.error)}
           </Tab>
         ) : null}
 
@@ -545,7 +610,12 @@ export const DiscoverSearchPage = () => {
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {renderAssetList(stocks.items, stocks.isLoading, 'discover-stocks')}
+          {renderAssetList(
+            stocks.items,
+            stocks.isLoading,
+            stocks.error,
+            'discover-stocks',
+          )}
         </Tab>
       </Tabs>
     </Box>
