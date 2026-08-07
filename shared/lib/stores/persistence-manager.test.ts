@@ -5,7 +5,10 @@ import log from 'loglevel';
 
 import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  INACCESSIBLE_DATABASE_ERROR,
+  MISSING_VAULT_ERROR,
+} from '../../constants/errors';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -524,6 +527,19 @@ describe('PersistenceManager', () => {
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
+      );
+    });
+
+    it('does throw when validating state fails but has a backup', async () => {
+      mockStoreGet.mockRejectedValueOnce(new Error('storage failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        INACCESSIBLE_DATABASE_ERROR,
       );
     });
   });

@@ -1,5 +1,5 @@
 import { segment } from '../segment';
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -36,7 +36,7 @@ describe('trackVaultCorruptionEvent', () => {
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.InaccessibleDatabase,
+      CriticalErrorType.InaccessibleDatabase,
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -44,7 +44,7 @@ describe('trackVaultCorruptionEvent', () => {
       event: MetaMetricsEventName.VaultCorruptionDetected,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_type: VaultCorruptionType.InaccessibleDatabase,
+        error_type: CriticalErrorType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -80,7 +80,7 @@ describe('trackVaultCorruptionEvent', () => {
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.MissingVaultInDatabase,
+      CriticalErrorType.MissingVaultInDatabase,
     );
 
     expect(mockSegment.track).not.toHaveBeenCalled();

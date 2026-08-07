@@ -1,4 +1,5 @@
 import { until } from 'selenium-webdriver';
+import { METAMASK_RESTORING_PAGE_URL } from '../../../../shared/constants/critical-error-repair-session';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 
@@ -15,13 +16,53 @@ class CriticalErrorPage {
 
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
-  protected readonly restoreAccountsLink = '#critical-error-restore-link';
+  protected readonly repairButton = '#critical-error-repair-button';
+
+  // After a (re)load, the critical-error page only renders the repair button
+  // once the UI has reconnected to the background, received the state-corruption
+  // error, and resolved the async backup lookup that decides the repair action.
+  // On CI this chain can exceed the default 10s selector wait, so we allow more.
+  protected readonly repairButtonTimeoutMs = 30000;
 
   protected readonly troubleStartingDescription =
     'This error could be intermittent, so try restarting the extension.';
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async assertNoCriticalErrorRepairSession(): Promise<void> {
+    const cleared = await this.driver.executeScript(`
+      return new Promise(resolve => {
+        const b = globalThis.browser ?? globalThis.chrome;
+        b.storage.local.get('criticalErrorRepair', (data) => {
+          resolve(!data.criticalErrorRepair);
+        });
+      });
+    `);
+
+    if (!cleared) {
+      throw new Error(
+        'Expected in-place repair not to write criticalErrorRepair session',
+      );
+    }
+  }
+
+  async assertNoRestoringTab(): Promise<void> {
+    const handles = await this.driver.getAllWindowHandles();
+    const currentHandle = await this.driver.driver.getWindowHandle();
+
+    for (const handle of handles) {
+      await this.driver.driver.switchTo().window(handle);
+      const url = await this.driver.getCurrentUrl();
+      if (url.includes(METAMASK_RESTORING_PAGE_URL)) {
+        throw new Error(
+          `Expected no ${METAMASK_RESTORING_PAGE_URL} tab during in-place repair`,
+        );
+      }
+    }
+
+    await this.driver.driver.switchTo().window(currentHandle);
   }
 
   /**
@@ -46,68 +87,51 @@ class CriticalErrorPage {
   }
 
   /**
-   * Click Attempt recovery (backup exists) and handle the confirmation alert.
-   *
-   * @param options - Options for the attempt recovery action.
-   * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
+   * Check that the repair button is displayed.
    */
-  async clickAttemptRecoveryLink({
+  async checkRepairButtonIsDisplayed(): Promise<void> {
+    console.log('Check repair button is displayed');
+    await this.driver.waitForSelector(this.repairButton, {
+      timeout: this.repairButtonTimeoutMs,
+    });
+  }
+
+  /**
+   * Click the repair button and handle the confirmation alert.
+   *
+   * @param options - Options for the repair action.
+   * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
+   * @param options.expectsExtensionReload
+   */
+  async clickRepairButton({
     confirm,
+    expectsExtensionReload = true,
   }: {
     confirm: boolean;
+    expectsExtensionReload?: boolean;
   }): Promise<void> {
     console.log(
-      `Click Attempt recovery link and ${confirm ? 'confirm' : 'dismiss'} the alert`,
+      `Click repair button and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
 
-    await this.driver.waitForSelector(this.restoreAccountsLink);
-    await this.driver.clickElement(this.restoreAccountsLink);
+    await this.driver.waitForSelector(this.repairButton, {
+      timeout: this.repairButtonTimeoutMs,
+    });
+    await this.driver.clickElement(this.repairButton);
 
     await this.driver.driver.wait(until.alertIsPresent(), 20000);
     const alert = await this.driver.driver.switchTo().alert();
 
     if (confirm) {
       await alert.accept();
-
-      // runtime.reload() kills extension tabs, so the driver's current window
-      // handle is stale. Wait for the reload, then reattach to a surviving tab.
-      await this.driver.delay(3000);
-      const handles = await this.driver.driver.getAllWindowHandles();
-      await this.driver.driver.switchTo().window(handles[0]);
-
-      await this.waitForPageAfterExtensionReload({
-        timeoutMs: 30_000,
-        waitForLoadingLogoToDisappear: false,
-      });
-
-      // The service worker handoff runs asynchronously after runtime.reload():
-      // it reads the restore session from storage.local, converts the
-      // metamask.io/restoring tab to home.html, then clears the key. We must
-      // wait for that key to be cleared before closing extra tabs — otherwise
-      // we kill the restoring tab before the service worker can hand it off,
-      // causing a fallback that opens a second home.html tab.
-      await this.driver.waitUntil(
-        async () => {
-          const cleared = await this.driver.executeScript(`
-              return new Promise(resolve => {
-                const b = globalThis.browser ?? globalThis.chrome;
-                b.storage.local.get('criticalErrorRestore', (data) => {
-                  resolve(!data.criticalErrorRestore);
-                });
-              });
-            `);
-          return Boolean(cleared);
-        },
-        { interval: 300, timeout: 30_000 },
-      );
-
-      // Wait for the UI to receive state and finish launching.
-      await this.driver.delay(5000);
-      await this.driver.waitForControllersLoaded();
-      // Now safe to close extra tabs (service worker has finished handoff / fallback).
-      await this.driver.closeAllOtherTabs();
+      if (expectsExtensionReload) {
+        await this.waitForRepairReloadAndHandoff();
+      } else {
+        await this.waitForInPlaceRepairReload();
+      }
     } else {
       await alert.dismiss();
+      await this.checkRepairButtonIsDisplayed();
     }
   }
 
@@ -138,6 +162,18 @@ class CriticalErrorPage {
     await this.driver.waitForSelector({
       text: this.troubleStartingDescription,
     });
+  }
+
+  async waitForInPlaceRepairReload(): Promise<void> {
+    await this.driver.waitUntil(
+      async () => !(await this.driver.isElementPresent(this.repairButton)),
+      { interval: 300, timeout: 30_000 },
+    );
+
+    await this.assertNoCriticalErrorRepairSession();
+    await this.assertNoRestoringTab();
+
+    await this.driver.waitForControllersLoaded();
   }
 
   /**
@@ -176,6 +212,44 @@ class CriticalErrorPage {
         timeout: 10000,
       });
     }
+  }
+
+  async waitForRepairReloadAndHandoff(): Promise<void> {
+    // runtime.reload() kills extension tabs, so the driver's current window
+    // handle is stale. Wait for the reload, then reattach to a surviving tab.
+    await this.driver.delay(3000);
+    const handles = await this.driver.driver.getAllWindowHandles();
+    await this.driver.driver.switchTo().window(handles[0]);
+
+    await this.waitForPageAfterExtensionReload({
+      timeoutMs: 30_000,
+      waitForLoadingLogoToDisappear: false,
+    });
+
+    // The service worker handoff runs asynchronously after runtime.reload():
+    // it reads the repair session from storage.local, converts the
+    // metamask.io/restoring tab to home.html, then clears the key. We must
+    // wait for that key to be cleared before closing extra tabs.
+    await this.driver.waitUntil(
+      async () => {
+        const cleared = await this.driver.executeScript(`
+            return new Promise(resolve => {
+              const b = globalThis.browser ?? globalThis.chrome;
+              b.storage.local.get('criticalErrorRepair', (data) => {
+                resolve(!data.criticalErrorRepair);
+              });
+            });
+          `);
+        return Boolean(cleared);
+      },
+      { interval: 300, timeout: 30_000 },
+    );
+
+    // Wait for the UI to receive state and finish launching.
+    await this.driver.delay(5000);
+    await this.driver.waitForControllersLoaded();
+    // Now safe to close extra tabs (service worker has finished handoff / fallback).
+    await this.driver.closeAllOtherTabs();
   }
 }
 

@@ -1,15 +1,18 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import { ErrorLike } from '../../../shared/constants/errors';
+import { isObject } from '@metamask/utils';
+import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
-  METHOD_REPAIR_DATABASE_TIMEOUT,
+  isStateCorruptionErrorType,
+  METHOD_REPAIR_DATABASE,
 } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import {
@@ -18,6 +21,7 @@ import {
 } from '../../../shared/lib/stores/persistence-manager';
 
 const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+const REPAIR_BUTTON_ENABLE_DELAY_MS = 5_000;
 
 /**
  * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
@@ -106,11 +110,16 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         ? (errorObj.sentryTags as Record<string, string>)
         : {};
 
-    // Create error_details without sentryTags to avoid duplication
-    // (sentryTags are sent as top-level tags)
+    // Create error_details without sentryTags (those are top-level tags) or
+    // backup. PersistenceError keeps vault data behind getBackup() so it is
+    // not serialized into reports; strip it here for the same reason.
     let errorDetails: Record<string, unknown>;
     if (error && typeof error === 'object') {
-      const { sentryTags: _omitted, ...rest } = errorObj;
+      const {
+        sentryTags: _omittedSentryTags,
+        backup: _omittedBackup,
+        ...rest
+      } = errorObj;
       errorDetails = rest;
     } else {
       errorDetails = { message: String(error) };
@@ -208,8 +217,27 @@ export async function displayCriticalErrorMessage(
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
-  const backup = port ? await safeGetVaultBackup() : null;
-  const canTriggerRestore = port && hasVault(backup);
+  // Prefer a vault-bearing backup already serialized onto the error by
+  // getErrorLike (from PersistenceError.getBackup). Only fall back to IndexedDB
+  // when we do not already have one, so a timed-out UI re-read cannot flip
+  // Recover into Reset.
+  const backupFromError = isObject(error.backup)
+    ? (error.backup as Backup)
+    : null;
+  let backup: Backup | null = hasVault(backupFromError)
+    ? backupFromError
+    : null;
+  if (port && !hasVault(backup)) {
+    backup = await safeGetVaultBackup();
+  }
+  let repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None;
+  if (port) {
+    if (hasVault(backup)) {
+      repairAction = CriticalErrorRepairAction.Recover;
+    } else if (isStateCorruptionErrorType(criticalErrorType)) {
+      repairAction = CriticalErrorRepairAction.Reset;
+    }
+  }
 
   try {
     port?.postMessage({
@@ -217,7 +245,7 @@ export async function displayCriticalErrorMessage(
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
           backup,
-          canTriggerRestore,
+          repairAction,
           criticalErrorType,
         },
       },
@@ -232,7 +260,8 @@ export async function displayCriticalErrorMessage(
     error,
     localeContext,
     SUPPORT_LINK,
-    canTriggerRestore,
+    repairAction,
+    criticalErrorType,
   );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
@@ -252,15 +281,28 @@ export async function displayCriticalErrorMessage(
       await handleRestartAction(error, shouldReport);
     });
 
-    // Attempt recovery button: trigger vault recovery flow.
-    if (canTriggerRestore) {
-      const restoreButton =
+    // Recovery/reset button: trigger the critical error repair flow.
+    if (port && repairAction !== CriticalErrorRepairAction.None) {
+      const repairButton =
         criticalErrorContainer.querySelector<HTMLButtonElement>(
-          '#critical-error-restore-link',
+          '#critical-error-repair-button',
         );
 
-      restoreButton?.addEventListener('click', (event: Event) => {
+      if (repairButton) {
+        repairButton.disabled = true;
+        setTimeout(() => {
+          repairButton.disabled = false;
+          // Wait a while before enabling the button to try to prevent accidental
+          // or rush clicks.
+        }, REPAIR_BUTTON_ENABLE_DELAY_MS);
+      }
+
+      repairButton?.addEventListener('click', (event: Event) => {
         event.preventDefault();
+        if (repairButton.disabled) {
+          return;
+        }
+
         // eslint-disable-next-line no-alert
         const confirmed = confirm(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
@@ -268,8 +310,12 @@ export async function displayCriticalErrorMessage(
         if (confirmed) {
           port.postMessage({
             data: {
-              method: METHOD_REPAIR_DATABASE_TIMEOUT,
-              params: { criticalErrorType, backup },
+              method: METHOD_REPAIR_DATABASE,
+              params: {
+                repairAction,
+                criticalErrorType,
+                backup,
+              },
             },
           });
         }
