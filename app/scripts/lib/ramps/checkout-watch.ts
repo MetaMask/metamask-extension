@@ -216,12 +216,16 @@ export function createWatchRampsCheckoutTab(
     // checkout page, not tab-open latency.
     const checkoutOpenedAt = Date.now();
 
-    trackRampsCheckoutOpened({
+    const analyticsContext: RampsCheckoutAnalyticsContext = {
       checkoutSessionId,
       checkoutOpenedAt,
       region,
       orderCode,
       providerName,
+    };
+
+    trackRampsCheckoutOpened({
+      ...analyticsContext,
       checkoutUrl: url,
       // Per the schema: "whether the checkout was opened with a callback
       // redirection flow (provider code + wallet address available)" — not
@@ -235,12 +239,7 @@ export function createWatchRampsCheckoutTab(
       providerCode,
       walletAddress,
       orderCode,
-      analyticsContext: {
-        checkoutSessionId,
-        checkoutOpenedAt,
-        region,
-        orderCode,
-      },
+      analyticsContext,
     });
   };
 }

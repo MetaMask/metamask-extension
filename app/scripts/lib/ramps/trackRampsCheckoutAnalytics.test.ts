@@ -19,6 +19,7 @@ describe('trackRampsCheckoutAnalytics', () => {
     checkoutOpenedAt: 1_000,
     region: 'us-ca',
     orderCode: 'order-abc',
+    providerName: 'Transak',
   };
 
   beforeEach(() => {
@@ -33,7 +34,6 @@ describe('trackRampsCheckoutAnalytics', () => {
   it('tracks checkout opened with provider name and sanitized url path', () => {
     trackRampsCheckoutOpened({
       ...context,
-      providerName: 'Transak',
       checkoutUrl: 'https://provider.example/checkout?session=abc',
       hasCallbackFlow: false,
     });
@@ -84,6 +84,8 @@ describe('trackRampsCheckoutAnalytics', () => {
       step_index: 2,
       time_since_open_ms: 1_500,
       region: 'us-ca',
+      provider_name: 'Transak',
+      order_id: 'order-abc',
     });
   });
 
@@ -103,6 +105,7 @@ describe('trackRampsCheckoutAnalytics', () => {
       step_index: 3,
       time_on_screen_ms: 1_500,
       order_id: 'order-abc',
+      provider_name: 'Transak',
     });
   });
 });

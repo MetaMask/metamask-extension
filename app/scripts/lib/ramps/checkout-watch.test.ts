@@ -321,9 +321,13 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(jest.mocked(trackEvent).mock.calls[2][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutClosed,
     );
+    expect(jest.mocked(trackEvent).mock.calls[1][0].properties).toMatchObject({
+      provider_name: 'MoonPay',
+    });
     expect(jest.mocked(trackEvent).mock.calls[2][0].properties).toMatchObject({
       close_source: 'callback_success',
       callback_reached: true,
+      provider_name: 'MoonPay',
     });
   });
 

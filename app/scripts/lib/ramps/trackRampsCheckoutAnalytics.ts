@@ -21,10 +21,20 @@ export type RampsCheckoutAnalyticsContext = {
   checkoutOpenedAt: number;
   region?: string;
   orderCode?: string;
+  providerName?: string;
 };
 
+/**
+ * Emits a checkout funnel event with the context all three share — the join
+ * key, the provider and order it belongs to, and the region.
+ *
+ * @param eventName - The `metamask-ramps` event to emit.
+ * @param context - The checkout watcher's analytics context.
+ * @param properties - Event-specific properties.
+ */
 function trackCheckoutEvent(
   eventName: MetaMetricsEventName,
+  context: RampsCheckoutAnalyticsContext,
   properties: Record<string, Json | undefined>,
 ): void {
   trackEvent(
@@ -34,6 +44,12 @@ function trackCheckoutEvent(
         ramp_type: RAMPS_RAMP_TYPE,
         ramp_routing: RAMPS_RAMP_ROUTING,
         location: 'Checkout',
+        region: context.region ?? '',
+        checkout_session_id: context.checkoutSessionId,
+        ...(context.providerName
+          ? { provider_name: context.providerName }
+          : {}),
+        ...(context.orderCode ? { order_id: context.orderCode } : {}),
         ...properties,
       })
       .build(),
@@ -42,18 +58,13 @@ function trackCheckoutEvent(
 
 export function trackRampsCheckoutOpened(
   context: RampsCheckoutAnalyticsContext & {
-    providerName?: string;
     checkoutUrl: string;
     hasCallbackFlow: boolean;
   },
 ): void {
-  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutOpened, {
-    region: context.region ?? '',
-    checkout_session_id: context.checkoutSessionId,
-    provider_name: context.providerName,
+  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutOpened, context, {
     initial_url_path: sanitizeUrlPath(context.checkoutUrl),
     has_callback_flow: context.hasCallbackFlow,
-    order_id: context.orderCode,
   });
 }
 
@@ -62,13 +73,15 @@ export function trackRampsCheckoutCallbackDetected(
   callbackUrl: string,
   stepIndex: number,
 ): void {
-  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutCallbackDetected, {
-    region: context.region ?? '',
-    checkout_session_id: context.checkoutSessionId,
-    url_path: sanitizeUrlPath(callbackUrl),
-    step_index: stepIndex,
-    time_since_open_ms: Date.now() - context.checkoutOpenedAt,
-  });
+  trackCheckoutEvent(
+    MetaMetricsEventName.RampsCheckoutCallbackDetected,
+    context,
+    {
+      url_path: sanitizeUrlPath(callbackUrl),
+      step_index: stepIndex,
+      time_since_open_ms: Date.now() - context.checkoutOpenedAt,
+    },
+  );
 }
 
 export function trackRampsCheckoutClosed(
@@ -79,13 +92,10 @@ export function trackRampsCheckoutClosed(
     stepIndex: number;
   },
 ): void {
-  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutClosed, {
-    region: context.region ?? '',
-    checkout_session_id: context.checkoutSessionId,
+  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutClosed, context, {
     close_source: args.closeSource,
     callback_reached: args.callbackReached,
     step_index: args.stepIndex,
     time_on_screen_ms: Date.now() - context.checkoutOpenedAt,
-    ...(context.orderCode ? { order_id: context.orderCode } : {}),
   });
 }
