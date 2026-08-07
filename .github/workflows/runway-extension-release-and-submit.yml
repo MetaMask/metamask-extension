@@ -193,6 +193,14 @@ jobs:
         !inputs.skip_publish &&
         needs.validate.outputs.release_exists != 'true'
       }}
+    # A called workflow cannot exceed the calling job's permissions, so this must
+    # cover the whole callee (top-level plus its publish-release job).
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
+      attestations: write # Required by actions/attest-build-provenance in the callee
     uses: ./.github/workflows/publish-release-from-release-head.yml
     secrets: inherit
 
@@ -209,6 +217,10 @@ jobs:
         needs.validate.result == 'success' &&
         (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
       }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read # Required by gh attestation verify in the callee
     uses: ./.github/workflows/upload-extension-to-cws.yml
     with:
       version: ${{ needs.validate.outputs.version }}
@@ -229,6 +241,10 @@ jobs:
         needs.validate.result == 'success' &&
         (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
       }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read # Required by gh attestation verify in the callee
     uses: ./.github/workflows/upload-extension-to-cws.yml
     with:
       version: ${{ needs.validate.outputs.version }}
@@ -300,6 +316,6 @@ jobs:
             if [[ "${EXECUTE_STORE}" != "true" ]]; then
               echo "Store phases were **not requested** (\`execute_store_phases=false\`)."
               echo ""
-              echo "**Recovery:** use **Re-run failed jobs** on the same run, or re-dispatch with the same \`version\` / \`release_sha\` (completed phases auto-skip)."
+              echo "**Recovery:** use **Re-run failed jobs** on the same run, or re-dispatch from the same release branch with the same \`release_sha\` (completed phases auto-skip)."
             fi
           } >> "${GITHUB_STEP_SUMMARY}"
