@@ -3123,6 +3123,9 @@ export class LegacyBackgroundApiService {
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
+
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
       // of accounts, we should add a new flag to the account struct
@@ -3538,6 +3541,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
