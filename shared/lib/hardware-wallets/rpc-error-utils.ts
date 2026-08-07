@@ -611,6 +611,114 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
+ * Free-form text patterns that indicate the user rejected a hardware wallet
+ * action. Matched case-insensitively as substrings of error message/stack text
+ * when a serialized error has lost its structured `code` field.
+ *
+ * TODO: These patterns belong in `@metamask/hw-wallet-sdk` so all MetaMask
+ * clients classify rejection-like errors from a single source of truth. The SDK
+ * already exposes shared helpers (`resolveUserRejectionErrorCode` /
+ * `isUserRejectionLikeError`, added in v0.10.0), but its patterns do not yet
+ * cover the "rejected by the user" phrasings below. Contribute these phrasings
+ * upstream, then consume the SDK helpers and drop this local fallback.
+ */
+const USER_REJECTED_TEXT_PATTERNS: readonly string[] = [
+  'user rejected',
+  'rejected by the user',
+  'rejected by user',
+];
+
+/**
+ * Free-form text patterns that indicate the user cancelled a hardware wallet
+ * action. Matched case-insensitively as substrings of error message/stack text
+ * when a serialized error has lost its structured `code` field.
+ *
+ * TODO: Upstream these patterns to `@metamask/hw-wallet-sdk` alongside
+ * `USER_REJECTED_TEXT_PATTERNS` and consume the SDK's shared helpers. The SDK's
+ * current `\bcancelled\b`/`\bcanceled\b` matching is intentionally broader than
+ * these user-attributed phrasings, so the migration must avoid reclassifying
+ * non-user cancellations (e.g. timeouts) as user cancellations.
+ */
+const USER_CANCELLED_TEXT_PATTERNS: readonly string[] = [
+  'user cancelled',
+  'user canceled',
+  'cancelled by the user',
+  'canceled by the user',
+  'cancelled by user',
+  'canceled by user',
+];
+
+/**
+ * Infer user action error codes from free-form error text.
+ * This is a fallback for cases where serialized causes lose their code field.
+ *
+ * @param text - The error text to inspect
+ * @returns User rejection/cancellation code when detectable, null otherwise
+ */
+function inferUserActionErrorCodeFromText(text: string): ErrorCode | null {
+  const normalizedText = text.toLowerCase();
+
+  if (
+    USER_REJECTED_TEXT_PATTERNS.some((pattern) =>
+      normalizedText.includes(pattern),
+    )
+  ) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (
+    USER_CANCELLED_TEXT_PATTERNS.some((pattern) =>
+      normalizedText.includes(pattern),
+    )
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  return null;
+}
+
+/**
+ * Infer a hardware wallet error code from a serialized HardwareWalletError-like cause.
+ * Some transport paths preserve name/message/stack but drop explicit code.
+ *
+ * @param cause - The cause object to inspect
+ * @returns The inferred ErrorCode if detected, null otherwise
+ */
+function inferErrorCodeFromSerializedHardwareWalletCause(
+  cause: unknown,
+): ErrorCode | null {
+  const causeAsAny = cause as {
+    name?: unknown;
+    message?: unknown;
+    stack?: unknown;
+  };
+
+  if (causeAsAny?.name !== 'HardwareWalletError') {
+    return null;
+  }
+
+  const causeMessage =
+    typeof causeAsAny.message === 'string' ? causeAsAny.message : '';
+  const causeStack =
+    typeof causeAsAny.stack === 'string' ? causeAsAny.stack : '';
+
+  // Parse enum key in stack traces like:
+  // HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device
+  const stackEnumMatch = /\[([A-Za-z]+):\d+\]/u.exec(causeStack);
+  if (stackEnumMatch?.[1]) {
+    const parsedCode = mapStringCodeToErrorCode(stackEnumMatch[1]);
+    if (parsedCode !== ErrorCode.Unknown) {
+      return parsedCode;
+    }
+  }
+
+  return (
+    inferUserActionErrorCodeFromText(causeMessage) ??
+    inferUserActionErrorCodeFromText(causeStack)
+  );
+}
+
+/**
  * Get HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
@@ -641,7 +749,9 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
     return mapCodeToErrorCode(error.code);
   }
 
-  return null;
+  // Some transport paths preserve HardwareWalletError name/message/stack but
+  // drop the explicit code field. Recover the code from those fields.
+  return inferErrorCodeFromSerializedHardwareWalletCause(error);
 }
 
 /**
@@ -724,6 +834,70 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
     errorAsAny?.code === errorCodes.provider.userRejectedRequest ||
     errorAsAny?.data?.code === errorCodes.provider.userRejectedRequest
   );
+}
+
+/**
+ * Whether a TransactionController-persisted transaction error represents a
+ * hardware-wallet user rejection/cancellation.
+ *
+ * TransactionController's `normalizeTxError` only keeps `name` / `message` /
+ * `stack` / `code` (and optional `rpc`). It does **not** persist `error.data`,
+ * so `data.metadata.walletType` from `#handleHardwareWalletError` is unavailable
+ * when `transactionStatusUpdated` drives finished-transaction side effects.
+ *
+ * Do not treat a bare EIP-1193 `userRejectedRequest` (UI "Reject") as a hardware
+ * rejection — that path should stay silent for browser notifications.
+ *
+ * @param error - The persisted transaction error to inspect
+ * @returns True when the error looks like a hardware-wallet user rejection
+ */
+export function isPersistedHardwareWalletRejectionError(
+  error: unknown,
+): boolean {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const errorRecord = error as {
+    name?: unknown;
+    message?: unknown;
+    code?: unknown;
+    data?: { metadata?: { walletType?: unknown } };
+  };
+
+  const hwCode = getHardwareWalletErrorCode(error);
+  if (hwCode === ErrorCode.UserRejected || hwCode === ErrorCode.UserCancelled) {
+    return true;
+  }
+
+  // Structured code was lost, but the HardwareWalletError text still indicates
+  // a user rejection/cancellation on device.
+  if (
+    errorRecord.name === 'HardwareWalletError' &&
+    hasUserRejectedMessage(error)
+  ) {
+    return true;
+  }
+
+  const isUserRejectedRequestCode =
+    String(errorRecord.code) ===
+    String(errorCodes.provider.userRejectedRequest);
+
+  if (!isUserRejectedRequestCode) {
+    return false;
+  }
+
+  // TransactionController may normalize device denials to EIP-1193 4001 with
+  // this signing-path message (distinct from the UI cancel default).
+  if (
+    typeof errorRecord.message === 'string' &&
+    /denied transaction signature/iu.test(errorRecord.message)
+  ) {
+    return true;
+  }
+
+  // Forward-compat if `data.metadata.walletType` is ever persisted on tx meta.
+  return Boolean(errorRecord.data?.metadata?.walletType);
 }
 
 // Helper to extract message from error (handles plain objects from RPC boundary)
@@ -833,7 +1007,11 @@ function fromKeyringControllerError(
   const keyringErrorCode = error.code
     ? mapStringCodeToErrorCode(error.code)
     : null;
-  const errorCode = keyringErrorCode ?? ErrorCode.Unknown;
+  const errorCode =
+    keyringErrorCode ??
+    inferUserActionErrorCodeFromText(error.message) ??
+    inferUserActionErrorCodeFromText(error.stack ?? '') ??
+    ErrorCode.Unknown;
   return createHardwareWalletError(errorCode, walletType, error.message, {
     cause: error.cause,
   });

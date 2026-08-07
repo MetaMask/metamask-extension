@@ -119,6 +119,7 @@ import {
   HardwareDeviceNames,
   KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
+import { isPersistedHardwareWalletRejectionError } from '../../shared/lib/hardware-wallets';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -7172,6 +7173,18 @@ export default class MetamaskController extends EventEmitter {
    * @param transactionMeta - Metadata for the transaction.
    */
   async _onFinishedTransaction(transactionMeta) {
+    if (transactionMeta.status === TransactionStatus.rejected) {
+      // Do not rely on `error.data.metadata.walletType` here: TransactionController
+      // persists only name/message/stack/code via `normalizeTxError`, and
+      // `#handleHardwareWalletError` adds walletType on the UI RPC path after
+      // `transactionStatusUpdated` has already driven this handler.
+      if (isPersistedHardwareWalletRejectionError(transactionMeta.error)) {
+        await this._createTransactionNotifcation(transactionMeta);
+      }
+
+      return;
+    }
+
     if (
       ![TransactionStatus.confirmed, TransactionStatus.failed].includes(
         transactionMeta.status,

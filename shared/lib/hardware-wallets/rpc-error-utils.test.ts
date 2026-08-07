@@ -1,4 +1,4 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, errorCodes } from '@metamask/rpc-errors';
 import {
   HardwareWalletError,
   ErrorCode,
@@ -13,6 +13,7 @@ import {
   toHardwareWalletError,
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
+  isPersistedHardwareWalletRejectionError,
   extractTrezorCodeFromMessage,
   extractMessageFromUnknownError,
   hasUserRejectedMessage,
@@ -209,6 +210,42 @@ describe('rpc-error-utils', () => {
       const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(ErrorCode.Unknown);
+    });
+
+    it('infers UserRejected from serialized HardwareWalletError stack when code is missing', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        message: 'opaque serialized cause',
+        stack:
+          'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.UserRejected);
+    });
+
+    it('infers UserCancelled from serialized HardwareWalletError message when code is missing', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        message: 'Ledger: User canceled action on device',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(ErrorCode.UserCancelled);
+    });
+
+    it('returns null for HardwareWalletError-like object without recoverable code clues', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        message: 'Wrapped failure: Method_Interrupted while signing',
+        stack: 'opaque serialized stack',
+      };
+
+      const result = getHardwareWalletErrorCode(error);
+
+      expect(result).toBe(null);
     });
   });
 
@@ -475,7 +512,7 @@ describe('rpc-error-utils', () => {
       });
     });
 
-    it('returns Unknown for KeyringControllerError serialized cause without explicit code', () => {
+    it('reconstructs UserRejected from KeyringControllerError serialized cause', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -494,16 +531,14 @@ describe('rpc-error-utils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.Unknown);
-      expect(result.message).toBe(
-        'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
-      );
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('Ledger: User rejected action on device');
       expect(result.metadata).toStrictEqual({
         walletType: HardwareWalletType.Ledger,
       });
     });
 
-    it('returns Unknown for serialized cause stack enum when code is missing', () => {
+    it('infers UserRejected from serialized cause stack enum when code is missing', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -521,11 +556,11 @@ describe('rpc-error-utils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.Unknown);
-      expect(result.message).toBe('sign operation failed');
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('opaque serialized cause');
     });
 
-    it('returns Unknown for conflicting serialized stack and cause message without explicit code', () => {
+    it('prefers serialized stack enum over conflicting cause message when code is missing', () => {
       const error = Object.assign(
         Object.create(KeyringControllerError.prototype),
         {
@@ -543,8 +578,10 @@ describe('rpc-error-utils', () => {
       const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
-      expect(result.code).toBe(ErrorCode.Unknown);
-      expect(result.message).toBe('sign operation failed');
+      expect(result.code).toBe(ErrorCode.ConnectionClosed);
+      expect(result.message).toBe(
+        'Wrapped failure: Method_Interrupted while signing',
+      );
     });
 
     it('returns Unknown for opaque serialized stack and message without explicit code format', () => {
@@ -682,53 +719,65 @@ describe('rpc-error-utils', () => {
       expect(result.message).toBe('Canceled');
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      {
-        walletType: HardwareWalletType.Trezor,
-        message: 'Trezor sign operation failed',
-        causeMessage: 'Wrapped failure: Method_Interrupted while signing',
-      },
-      {
-        walletType: HardwareWalletType.Ledger,
-        message: 'sign operation failed',
-        causeMessage: 'Ledger: User canceled action on device',
-      },
-      {
-        walletType: HardwareWalletType.Ledger,
-        message: 'sign operation failed',
-        causeMessage: 'Ledger: User rejected action on device',
-      },
-    ])(
-      'returns Unknown for KeyringControllerError cause text without explicit code ($walletType: $causeMessage)',
-      ({
-        walletType,
-        message,
-        causeMessage,
-      }: {
-        walletType: HardwareWalletType;
-        message: string;
-        causeMessage: string;
-      }) => {
-        const error = Object.assign(
-          Object.create(KeyringControllerError.prototype),
-          {
-            name: 'KeyringControllerError',
-            message,
-            cause: {
-              name: 'HardwareWalletError',
-              message: causeMessage,
-            },
+    it('returns Unknown for serialized Trezor cause message without explicit code format', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'Trezor sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Wrapped failure: Method_Interrupted while signing',
           },
-        );
+        },
+      );
 
-        const result = toHardwareWalletError(error, walletType);
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
 
-        expect(result).toBeInstanceOf(HardwareWalletError);
-        expect(result.code).toBe(ErrorCode.Unknown);
-        expect(result.message).toBe(message);
-      },
-    );
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.Unknown);
+      expect(result.message).toBe('Trezor sign operation failed');
+    });
+
+    it('infers UserCancelled from KeyringControllerError cause text without explicit code', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Ledger: User canceled action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Ledger: User canceled action on device');
+    });
+
+    it('infers UserRejected from KeyringControllerError rejected cause text without explicit code', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Ledger: User rejected action on device',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserRejected);
+      expect(result.message).toBe('Ledger: User rejected action on device');
+    });
 
     it('uses keyring error code when cause cannot be interpreted', () => {
       const error = Object.assign(
@@ -1011,6 +1060,62 @@ describe('rpc-error-utils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('isPersistedHardwareWalletRejectionError', () => {
+    it('returns true for persisted HardwareWalletError UserRejected codes', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          code: ErrorCode.UserRejected,
+          message: 'Ledger: User rejected action on device',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true for persisted HardwareWalletError rejection text without structured code', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          message: 'Ledger: User rejected action on device',
+          stack:
+            'HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true for TxController-normalized denial message with EIP-1193 4001', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          code: errorCodes.provider.userRejectedRequest,
+          message: 'MetaMask Tx Signature: User denied transaction signature.',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false for ordinary UI userRejectedRequest errors', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          code: errorCodes.provider.userRejectedRequest,
+          message: 'User rejected the request.',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for connection errors that collide with EIP-1193 4001', () => {
+      expect(
+        isPersistedHardwareWalletRejectionError({
+          name: 'HardwareWalletError',
+          code: ErrorCode.ConnectionClosed,
+          message: 'Connection closed',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for nullish values', () => {
+      expect(isPersistedHardwareWalletRejectionError(null)).toBe(false);
+      expect(isPersistedHardwareWalletRejectionError(undefined)).toBe(false);
     });
   });
 
