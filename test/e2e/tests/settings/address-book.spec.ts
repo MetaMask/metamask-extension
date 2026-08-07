@@ -117,7 +117,6 @@ describe('Address Book', function (this: Suite) {
         // Select Linea to check the Activity list
         const networkSelector = new NetworkManager(driver);
         await networkSelector.openNetworkManager();
-        await networkSelector.selectTab('Custom');
         await networkSelector.selectNetworkByName('Localhost 8545');
 
         const homePage = new HomePage(driver);

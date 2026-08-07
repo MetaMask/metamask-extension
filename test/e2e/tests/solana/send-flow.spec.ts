@@ -63,7 +63,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
@@ -116,7 +116,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
@@ -160,7 +160,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
