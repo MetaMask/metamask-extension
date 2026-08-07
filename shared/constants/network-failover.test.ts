@@ -2,6 +2,7 @@ import { CHAIN_IDS } from './network';
 import {
   getFailoverUrlsByChainId,
   getFailoverUrlsForChainId,
+  getIsQuicknodeEndpointUrl,
 } from './network-failover';
 
 describe('getFailoverUrlsForChainId', () => {
@@ -34,6 +35,14 @@ describe('getFailoverUrlsForChainId', () => {
 });
 
 describe('getFailoverUrlsByChainId', () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
   it('includes every chain that has a mapped QuickNode failover', () => {
     const failoverUrlsByChainId = getFailoverUrlsByChainId();
     const mappedChainIds = [
@@ -63,6 +72,32 @@ describe('getFailoverUrlsByChainId', () => {
     expect(getFailoverUrlsByChainId()[CHAIN_IDS.BSC]).toStrictEqual([
       'https://failover.example/bsc',
     ]);
-    delete process.env.QUICKNODE_BSC_URL;
+  });
+});
+
+describe('getIsQuicknodeEndpointUrl', () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+  });
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it('returns true for a known Quicknode URL', () => {
+    process.env.QUICKNODE_MAINNET_URL = 'https://mainnet.quiknode.pro/test';
+    expect(getIsQuicknodeEndpointUrl('https://mainnet.quiknode.pro/test')).toBe(
+      true,
+    );
+  });
+
+  it('returns false for unknown URLs', () => {
+    expect(getIsQuicknodeEndpointUrl('https://unknown.example.com')).toBe(
+      false,
+    );
+  });
+
+  it('returns false for an empty URL', () => {
+    expect(getIsQuicknodeEndpointUrl('')).toBe(false);
   });
 });
