@@ -260,11 +260,16 @@ describe('RampsTokenSelectionScreen', () => {
       '/ramps/token-selection',
     );
 
-    expect(
-      screen.getByTestId('ramps-token-selection-loading'),
-    ).toBeInTheDocument();
+    const page = screen.getByTestId('ramps-token-selection-loading');
+
+    expect(page).toContainElement(
+      screen.getByTestId('ramps-token-selection-back'),
+    );
+    expect(page.querySelector('.spinner')).toBeInTheDocument();
+    // `loading-overlay` is the fixed-position full-screen LoadingScreen that
+    // used to cover the header, leaving no way to leave the screen.
+    expect(container.querySelector('.loading-overlay')).toBeNull();
     expect(screen.queryByTestId('send-asset-picker')).toBeNull();
-    expect(container).toMatchSnapshot();
   });
 
   it('shows loading state when tokens are unset and there is no error', () => {
