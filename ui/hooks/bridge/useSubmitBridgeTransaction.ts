@@ -30,6 +30,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
@@ -192,6 +193,7 @@ export default function useSubmitBridgeTransaction() {
 
     try {
       if (
+        !inE2e &&
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
