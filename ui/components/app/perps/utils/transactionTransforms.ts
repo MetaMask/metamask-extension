@@ -15,12 +15,20 @@ import type {
   UserHistoryItem,
 } from '@metamask/perps-controller';
 import {
+  TransactionStatus as WalletTransactionStatus,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
   FillType,
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
   type PerpsTransaction,
 } from '../types/transactionHistory';
 import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
+import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
+import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
+import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
+import { getTokenTransferData } from '../../../../pages/confirmations/utils/transaction-pay';
 import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from './orderUtils';
 
@@ -503,6 +511,54 @@ export function transformFundingToTransactions(
 }
 
 /**
+ * Maps a wallet TransactionController status to the Perps deposit/withdrawal
+ * status this transform surfaces. Every status resolves to a bucket so
+ * wallet-tracked deposits/withdrawals are visible on the Activity page from
+ * the moment they're submitted, not just once confirmed — the row's
+ * subtitle reflects the real state (Pending/Failed/Completed) via
+ * `getDepositWithdrawalStatusText` instead of always showing "Completed".
+ */
+const WALLET_TX_STATUS_TO_PERPS_STATUS: Record<
+  WalletTransactionStatus,
+  'completed' | 'failed' | 'pending'
+> = {
+  [WalletTransactionStatus.confirmed]: 'completed',
+  [WalletTransactionStatus.failed]: 'failed',
+  [WalletTransactionStatus.rejected]: 'failed',
+  [WalletTransactionStatus.dropped]: 'failed',
+  [WalletTransactionStatus.cancelled]: 'failed',
+  [WalletTransactionStatus.signed]: 'pending',
+  [WalletTransactionStatus.submitted]: 'pending',
+  [WalletTransactionStatus.approved]: 'pending',
+  [WalletTransactionStatus.unapproved]: 'pending',
+};
+
+/**
+ * Plain-English status text for deposit/withdrawal rows, keyed by
+ * `depositWithdrawal.status`. Mirrors the `PerpsOrderTransactionStatus`
+ * convention used for order rows: transforms set deterministic English text
+ * here, and the Activity page's `TransactionCard` maps that text to a
+ * translated string for display.
+ *
+ * @param status - The deposit/withdrawal status to derive display text for.
+ * @returns Plain-English status text ('Completed', 'Failed', or 'Pending').
+ */
+function getDepositWithdrawalStatusText(
+  status: 'completed' | 'failed' | 'pending' | 'bridging',
+): string {
+  switch (status) {
+    case 'completed':
+      return 'Completed';
+    case 'failed':
+      return 'Failed';
+    case 'pending':
+    case 'bridging':
+    default:
+      return 'Pending';
+  }
+}
+
+/**
  * Transform UserHistoryItem objects to PerpsTransaction format.
  * Only shows completed deposits/withdrawals (txHash not displayed in UI).
  *
@@ -523,15 +579,12 @@ export function transformUserHistoryToTransactions(
       const amountBN = new BigNumber(amount);
       const displayAmount = `${isDeposit ? '+' : '-'}$${amountBN.toFixed(2)}`;
 
-      // For completed transactions, status is always positive (green)
-      const statusText = 'Completed';
-
       return {
         id: `${type}-${id}`,
         type: isDeposit ? 'deposit' : 'withdrawal',
         category: isDeposit ? 'deposit' : 'withdrawal',
         title: `${isDeposit ? 'Deposited' : 'Withdrew'} ${amount} ${asset}`,
-        subtitle: statusText,
+        subtitle: getDepositWithdrawalStatusText(status),
         timestamp,
         symbol: asset,
         depositWithdrawal: {
@@ -545,6 +598,151 @@ export function transformUserHistoryToTransactions(
         },
       };
     });
+}
+
+/**
+ * Shared logic behind `transformWalletPerpsDepositsToTransactions` and
+ * `transformWalletPerpsWithdrawalsToTransactions`: decodes the USDC amount
+ * from the wallet transaction's ERC20-transfer calldata and maps its wallet
+ * status to a Perps deposit/withdrawal row, differing only in sign, title
+ * wording, and the deposit/withdrawal type.
+ *
+ * @param transactions - Array of TransactionMeta already scoped to the
+ * active account and the relevant deposit/withdrawal tx type(s).
+ * @param direction - Whether these are deposit or withdrawal transactions.
+ * @returns Array of PerpsTransaction objects with the given direction's type.
+ */
+function transformWalletPerpsTransactions(
+  transactions: TransactionMeta[],
+  direction: 'deposit' | 'withdrawal',
+): PerpsTransaction[] {
+  const isDeposit = direction === 'deposit';
+  const sign = isDeposit ? '+' : '-';
+  const verb = isDeposit ? 'Deposited' : 'Withdrew';
+  const emptyTitle = isDeposit ? 'Deposit' : 'Withdrawal';
+
+  return transactions.map((tx) => {
+    const tokenTransfer = getTokenTransferData(tx);
+    const decoded = tokenTransfer
+      ? parseStandardTokenTransactionData(tokenTransfer.data)
+      : undefined;
+    const rawAmount = decoded?.args?._value?.toString?.();
+    const amountBN =
+      rawAmount === undefined
+        ? new BigNumber(0)
+        : calcTokenAmount(rawAmount, ARBITRUM_USDC.decimals);
+
+    const displayAmount = `${sign}$${amountBN.toFixed(2)}`;
+    const status = WALLET_TX_STATUS_TO_PERPS_STATUS[tx.status] ?? 'pending';
+    const title = amountBN.isZero()
+      ? emptyTitle
+      : `${verb} ${amountBN.toFixed(2)} ${ARBITRUM_USDC.symbol}`;
+
+    return {
+      id: `wallet-${direction}-${tx.id}`,
+      type: direction,
+      category: direction,
+      title,
+      subtitle: getDepositWithdrawalStatusText(status),
+      timestamp: tx.time ?? 0,
+      symbol: ARBITRUM_USDC.symbol,
+      depositWithdrawal: {
+        amount: displayAmount,
+        amountNumber: isDeposit ? amountBN.toNumber() : -amountBN.toNumber(),
+        isPositive: isDeposit,
+        asset: ARBITRUM_USDC.symbol,
+        txHash: tx.hash ?? '',
+        status,
+        type: direction,
+      },
+    };
+  });
+}
+
+/**
+ * Transform wallet-tracked Perps deposit transactions (`perpsDeposit` /
+ * `perpsDepositAndOrder`) into `PerpsTransaction` rows.
+ *
+ * HyperLiquid's user-history ledger (the primary source `transformUserHistoryToTransactions`
+ * draws from) only reflects a deposit once the bridged funds have actually
+ * landed on HyperLiquid, which can lag behind the wallet's own on-chain
+ * deposit transaction confirming. Without this fallback, a just-completed
+ * deposit can be invisible under the Activity page's Deposits filter for a
+ * while even though the user's Perps balance already reflects it.
+ * `usePerpsTransactionHistory` merges this list with the user-history
+ * deposits and de-duplicates by `txHash`, so once the ledger catches up the
+ * two representations of the same deposit collapse into one.
+ *
+ * Deposits are included regardless of wallet status (pending/failed/
+ * confirmed) so a still-confirming or failed deposit is visible with an
+ * accurate status instead of only appearing once confirmed.
+ *
+ * @param transactions - Array of TransactionMeta with type `perpsDeposit` or
+ * `perpsDepositAndOrder`, already scoped to the active account.
+ * @returns Array of PerpsTransaction objects with type 'deposit'.
+ */
+export function transformWalletPerpsDepositsToTransactions(
+  transactions: TransactionMeta[],
+): PerpsTransaction[] {
+  return transformWalletPerpsTransactions(transactions, 'deposit');
+}
+
+/**
+ * Transform wallet-tracked Perps withdrawal transactions (`perpsWithdraw`)
+ * into `PerpsTransaction` rows.
+ *
+ * Mirrors `transformWalletPerpsDepositsToTransactions`: HyperLiquid's
+ * user-history ledger can lag behind the wallet's own on-chain withdrawal
+ * transaction confirming, so this fallback keeps a just-submitted
+ * withdrawal visible on the Activity page immediately, with its real
+ * pending/failed/completed status. `usePerpsTransactionHistory` merges this
+ * list with the user-history withdrawals and de-duplicates by `txHash`.
+ *
+ * @param transactions - Array of TransactionMeta with type `perpsWithdraw`,
+ * already scoped to the active account.
+ * @returns Array of PerpsTransaction objects with type 'withdrawal'.
+ */
+export function transformWalletPerpsWithdrawalsToTransactions(
+  transactions: TransactionMeta[],
+): PerpsTransaction[] {
+  return transformWalletPerpsTransactions(transactions, 'withdrawal');
+}
+
+/**
+ * Filters out wallet-sourced deposit/withdrawal transactions whose `txHash`
+ * already appears among an existing transaction of the same type
+ * (typically the user-history deposits/withdrawals already present in the
+ * merged transaction list).
+ *
+ * Used by `usePerpsTransactionHistory` to avoid showing the same deposit or
+ * withdrawal twice once HyperLiquid's user-history ledger catches up with a
+ * transaction that was initially only visible via the wallet's own
+ * transaction record.
+ *
+ * @param walletTransactions - Deposit or withdrawal transactions sourced
+ * from the wallet's TransactionController (see
+ * `transformWalletPerpsDepositsToTransactions` /
+ * `transformWalletPerpsWithdrawalsToTransactions`).
+ * @param existingTransactions - Transactions already present in the merged
+ * list (e.g. from user history) to de-duplicate against.
+ * @returns The subset of `walletTransactions` not already represented.
+ */
+export function dedupeWalletTransactionsByTxHash(
+  walletTransactions: PerpsTransaction[],
+  existingTransactions: PerpsTransaction[],
+): PerpsTransaction[] {
+  const existingTxHashes = new Set<string>();
+  for (const tx of existingTransactions) {
+    const txHash = tx.depositWithdrawal?.txHash?.toLowerCase();
+    if ((tx.type === 'deposit' || tx.type === 'withdrawal') && txHash) {
+      existingTxHashes.add(`${tx.type}:${txHash}`);
+    }
+  }
+
+  return walletTransactions.filter((tx) => {
+    const txHash = tx.depositWithdrawal?.txHash?.toLowerCase();
+    return !txHash || !existingTxHashes.has(`${tx.type}:${txHash}`);
+  });
 }
 
 /**
@@ -596,15 +794,18 @@ export function transformWithdrawalRequestsToTransactions(
 
       // Completion status is separate from amount polarity.
       // Withdrawals are outflows, so they are always negative for styling.
-      const statusText = 'Completed';
       const isPositive = false;
+
+      const title = amountBN.isZero()
+        ? 'Withdrawal'
+        : `Withdrew ${amount} ${asset}`;
 
       return {
         id: `withdrawal-${id}`,
         type: 'withdrawal' as const,
         category: 'withdrawal' as const,
-        title: `Withdrew ${amount} ${asset}`,
-        subtitle: statusText,
+        title,
+        subtitle: getDepositWithdrawalStatusText(status),
         timestamp,
         symbol: asset,
         depositWithdrawal: {
@@ -639,8 +840,6 @@ export function transformDepositRequestsToTransactions(
       const amountBN = new BigNumber(amount);
       const displayAmount = `+$${amountBN.toFixed(2)}`;
 
-      // For completed deposits, status is always positive (green)
-      const statusText = 'Completed';
       const isPositive = true;
 
       // Create title based on whether we have the actual amount
@@ -654,7 +853,7 @@ export function transformDepositRequestsToTransactions(
         type: 'deposit' as const,
         category: 'deposit' as const,
         title,
-        subtitle: statusText,
+        subtitle: getDepositWithdrawalStatusText(status),
         timestamp,
         symbol: asset,
         depositWithdrawal: {

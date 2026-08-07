@@ -20,14 +20,18 @@ import { Driver } from '../../webdriver/driver';
  * appears as a ScopeCard (not a separate wallet-standard flow).
  */
 export class TestDappMmConnect {
-  private readonly driver: Driver;
-
   // ──────────────────────────────────────────────────────────────────────────
   // Static selectors (TEST_IDS.app.*)
   // ──────────────────────────────────────────────────────────────────────────
 
   /** "Connect (Multichain)" button — present while disconnected or connecting. */
   private readonly connectButton = { testId: 'app-btn-connect' };
+
+  /**
+   * Section that is always in the DOM once the app mounts.
+   * Used together with connectButton in checkPageIsLoaded.
+   */
+  private readonly connectedSection = { testId: 'app-section-connected' };
 
   /** "Connect (Legacy EVM)" button. */
   private readonly connectLegacyButton = { testId: 'app-btn-connect-legacy' };
@@ -50,32 +54,10 @@ export class TestDappMmConnect {
   /** "Disconnect All" button — calls sdkDisconnect() on the mm-connect dapp. */
   private readonly disconnectButton = { testId: 'app-btn-disconnect' };
 
-  /**
-   * Section that is always in the DOM once the app mounts.
-   * Used together with connectButton in checkPageIsLoaded.
-   */
-  private readonly connectedSection = { testId: 'app-section-connected' };
-
-  /**
-   * Section that holds ScopeCards; only rendered when sessionScopes is
-   * non-empty (i.e., a multichain session is active).
-   */
-  private readonly scopesSection = { testId: 'app-section-scopes' };
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Legacy EVM card selectors (TEST_IDS.legacyEvm.*)
-  // ──────────────────────────────────────────────────────────────────────────
-
-  private readonly legacyCard = { testId: 'legacy-evm-card' };
-
-  private readonly legacyChainIdValue =
-    '[data-testid="legacy-evm-chain-id-value"]';
+  private readonly driver: Driver;
 
   private readonly legacyActiveAccount =
     '[data-testid="legacy-evm-active-account"]';
-
-  private readonly legacyResponseText =
-    '[data-testid="legacy-evm-response-text"]';
 
   private readonly legacyBtnPersonalSign = {
     testId: 'legacy-evm-btn-personal-sign',
@@ -90,6 +72,32 @@ export class TestDappMmConnect {
   };
 
   // ──────────────────────────────────────────────────────────────────────────
+  // Legacy EVM card selectors (TEST_IDS.legacyEvm.*)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  private readonly legacyCard = { testId: 'legacy-evm-card' };
+
+  private readonly legacyChainIdValue =
+    '[data-testid="legacy-evm-chain-id-value"]';
+
+  private readonly legacyResponseText =
+    '[data-testid="legacy-evm-response-text"]';
+
+  /**
+   * Section that holds ScopeCards; only rendered when sessionScopes is
+   * non-empty (i.e., a multichain session is active).
+   */
+  private readonly scopesSection = { testId: 'app-section-scopes' };
+
+  private readonly wagmiActiveAccount = '[data-testid="wagmi-active-account"]';
+
+  private readonly wagmiBtnSendTransaction = {
+    testId: 'wagmi-btn-send-transaction',
+  };
+
+  private readonly wagmiBtnSignMessage = { testId: 'wagmi-btn-sign-message' };
+
+  // ──────────────────────────────────────────────────────────────────────────
   // Wagmi card selectors (TEST_IDS.wagmi.*)
   // ──────────────────────────────────────────────────────────────────────────
 
@@ -97,23 +105,15 @@ export class TestDappMmConnect {
 
   private readonly wagmiChainIdValue = '[data-testid="wagmi-chain-id-value"]';
 
-  private readonly wagmiActiveAccount = '[data-testid="wagmi-active-account"]';
+  private readonly wagmiInputAmount = '[data-testid="wagmi-input-amount"]';
 
   private readonly wagmiInputMessage = '[data-testid="wagmi-input-message"]';
-
-  private readonly wagmiBtnSignMessage = { testId: 'wagmi-btn-sign-message' };
-
-  private readonly wagmiSignatureResult =
-    '[data-testid="wagmi-signature-result"]';
 
   private readonly wagmiInputToAddress =
     '[data-testid="wagmi-input-to-address"]';
 
-  private readonly wagmiInputAmount = '[data-testid="wagmi-input-amount"]';
-
-  private readonly wagmiBtnSendTransaction = {
-    testId: 'wagmi-btn-send-transaction',
-  };
+  private readonly wagmiSignatureResult =
+    '[data-testid="wagmi-signature-result"]';
 
   private readonly wagmiTxHashResult = '[data-testid="wagmi-tx-hash-result"]';
 
@@ -122,238 +122,11 @@ export class TestDappMmConnect {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Private static helpers — replicate @metamask/playground-ui test ID logic
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Replicates @metamask/playground-ui escapeTestId.
-   * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
-   * strip any non-[a-z0-9-] characters.
-   *
-   * @param value - The string to escape.
-   * @returns The escaped string.
-   */
-  private static escapeTestId(value: string): string {
-    return value
-      .toLowerCase()
-      .replace(/:/gu, '-')
-      .replace(/\s+/gu, '-')
-      .replace(/_/gu, '-')
-      .replace(/[^a-z0-9-]/gu, '');
-  }
-
-  /**
-   * Replicates @metamask/playground-ui createTestId.
-   * Joins escaped parts with a dash.
-   *
-   * @param parts - Parts to join into a test ID.
-   * @returns The composed test ID string.
-   */
-  private static createTestId(...parts: string[]): string {
-    return parts.map(TestDappMmConnect.escapeTestId).filter(Boolean).join('-');
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
   // Private selector helpers (dynamic — depend on scope / method params)
   // ──────────────────────────────────────────────────────────────────────────
 
   private checkboxSelector(chainId: string): string {
     return `[data-testid="${TestDappMmConnect.createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
-  }
-
-  private scopeCardSelector(scope: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', scope)}"]`;
-  }
-
-  private methodOptionSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
-  }
-
-  private invokeBtnSelector(scope: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'invoke-btn', scope)}"]`;
-  }
-
-  private resultCodeSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
-  }
-
-  private resultDetailsSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
-  }
-
-  private async getCheckboxState(selector: string): Promise<boolean> {
-    let isChecked = false;
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const checkbox = await this.driver.findElement(selector);
-          isChecked = await checkbox.isSelected();
-          return true;
-        } catch (error) {
-          const err = error as { name?: string };
-          if (
-            err.name === 'NoSuchElementError' ||
-            err.name === 'StaleElementReferenceError'
-          ) {
-            return false;
-          }
-          throw error;
-        }
-      },
-      { interval: 200, timeout: this.driver.timeout },
-    );
-
-    return isChecked;
-  }
-
-  private async waitForCheckboxState(
-    selector: string,
-    expectedState: boolean,
-  ): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const checkbox = await this.driver.findElement(selector);
-          return (await checkbox.isSelected()) === expectedState;
-        } catch (error) {
-          const err = error as { name?: string };
-          if (
-            err.name === 'NoSuchElementError' ||
-            err.name === 'StaleElementReferenceError'
-          ) {
-            return false;
-          }
-          throw error;
-        }
-      },
-      { interval: 200, timeout: this.driver.timeout },
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Private shared interaction helpers
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Wait until the element identified by `selector` contains `expectedAddress`
-   * (case-insensitive). Retries on stale-element errors.
-   *
-   * @param selector - CSS selector for the active-account element.
-   * @param expectedAddress - Address substring to wait for.
-   */
-  private async waitForActiveAccount(
-    selector: string,
-    expectedAddress: string,
-  ): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const el = await this.driver.findElement(selector);
-          const text = await el.getText();
-          return text.toLowerCase().includes(expectedAddress.toLowerCase());
-        } catch {
-          return false;
-        }
-      },
-      { interval: 500, timeout: this.driver.timeout },
-    );
-  }
-
-  /**
-   * Wait for the element at `selector` to show `expectedChainId`.
-   *
-   * @param selector - CSS selector for the chain-ID display element.
-   * @param expectedChainId - Chain ID string to wait for, e.g. '0x89' or '10'.
-   */
-  private async waitForChainId(
-    selector: string,
-    expectedChainId: string,
-  ): Promise<void> {
-    await this.driver.waitForSelector({ css: selector, text: expectedChainId });
-  }
-
-  /**
-   * Return the current text of the element at `selector` without waiting for
-   * a specific value.
-   *
-   * @param selector - CSS selector for the chain-ID display element.
-   * @returns The raw text content of the element.
-   */
-  private async getChainId(selector: string): Promise<string> {
-    const el = await this.driver.waitForSelector(selector);
-    return el.getText();
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Navigation
-  // ──────────────────────────────────────────────────────────────────────────
-
-  async openPage(): Promise<void> {
-    await this.driver.openNewPage(DAPP_URL);
-    await this.checkPageIsLoaded();
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.connectButton,
-      this.connectedSection,
-    ]);
-  }
-
-  async switchTo(): Promise<void> {
-    await this.driver.switchToWindowWithUrl(DAPP_URL);
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Network selection (DynamicInputs checkboxes)
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Ensure the requested networks are selected before connecting.
-   *
-   * We intentionally avoid sweeping deselections of every non-requested
-   * checkbox here. The browser-playground app can drop intermediate checkbox
-   * updates when many toggles happen back-to-back, which causes flaky
-   * multichain session scopes in CI. For these tests we only need to guarantee
-   * the requested scopes are enabled.
-   *
-   * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
-   * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
-   */
-  async selectNetworks(desiredChainIds: string[]): Promise<void> {
-    const featuredChainIds = new Set<string>(MM_CONNECT_FEATURED_CHAIN_IDS);
-
-    for (const chainId of desiredChainIds) {
-      if (!featuredChainIds.has(chainId)) {
-        continue;
-      }
-
-      const selector = this.checkboxSelector(chainId);
-      const isChecked = await this.getCheckboxState(selector);
-      if (!isChecked) {
-        await this.driver.clickElement(selector);
-        // Ensure React has committed this checkbox state before moving
-        // to the next one.
-        await this.waitForCheckboxState(selector, true);
-      }
-    }
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Connection lifecycle
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /** Click the "Connect (Multichain)" button to start a wallet_createSession. */
-  async clickConnect(): Promise<void> {
-    await this.driver.clickElement(this.connectButton);
-  }
-
-  /**
-   * Click "Disconnect All" — calls sdkDisconnect() on the mm-connect dapp,
-   * which internally issues wallet_revokeSession.
-   */
-  async clickDisconnect(): Promise<void> {
-    await this.driver.clickElement(this.disconnectButton);
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -378,42 +151,20 @@ export class TestDappMmConnect {
     }
   }
 
-  /**
-   * Assert that a ScopeCard for the given CAIP-2 scope is visible.
-   * Only applicable to scopes returned in the multichain session.
-   *
-   * @param scope - CAIP-2 chain ID, e.g. 'eip155:1'
-   */
-  async checkScopeCardVisible(scope: string): Promise<void> {
-    await this.driver.waitForSelector(this.scopeCardSelector(scope));
+  async checkLegacyCardVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.legacyCard);
   }
 
   /**
-   * Assert that a ScopeCard for the given CAIP-2 scope is NOT present.
+   * Wait for the legacy response text element to contain the expected text.
    *
-   * @param scope - CAIP-2 chain ID, e.g. 'eip155:137'
+   * @param expectedText - Text that the response element must contain.
    */
-  async checkScopeCardNotVisible(scope: string): Promise<void> {
-    await this.driver.assertElementNotPresent(this.scopeCardSelector(scope));
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // Method invocation via ScopeCard
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Select a method and click Invoke, but do NOT wait for the result.
-   * Use when the method opens an extension dialog that must be handled first.
-   *
-   * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
-   * @param method - JSON-RPC method name, e.g. 'personal_sign'
-   */
-  async triggerMethod(scope: string, method: string): Promise<void> {
-    // Click the desired <option> inside the native HTML <select>.
-    // Selenium's click on an <option> element selects it and fires the
-    // browser's change event, which React's event system picks up.
-    await this.driver.clickElement(this.methodOptionSelector(scope, method));
-    await this.driver.clickElement(this.invokeBtnSelector(scope));
+  async checkLegacyResponse(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.legacyResponseText,
+      text: expectedText,
+    });
   }
 
   /**
@@ -433,6 +184,32 @@ export class TestDappMmConnect {
       css: this.resultCodeSelector(scope, method),
       text: expectedText,
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.connectButton,
+      this.connectedSection,
+    ]);
+  }
+
+  /**
+   * Assert that a ScopeCard for the given CAIP-2 scope is NOT present.
+   *
+   * @param scope - CAIP-2 chain ID, e.g. 'eip155:137'
+   */
+  async checkScopeCardNotVisible(scope: string): Promise<void> {
+    await this.driver.assertElementNotPresent(this.scopeCardSelector(scope));
+  }
+
+  /**
+   * Assert that a ScopeCard for the given CAIP-2 scope is visible.
+   * Only applicable to scopes returned in the multichain session.
+   *
+   * @param scope - CAIP-2 chain ID, e.g. 'eip155:1'
+   */
+  async checkScopeCardVisible(scope: string): Promise<void> {
+    await this.driver.waitForSelector(this.scopeCardSelector(scope));
   }
 
   /**
@@ -501,64 +278,49 @@ export class TestDappMmConnect {
     );
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Legacy EVM card
-  // ──────────────────────────────────────────────────────────────────────────
-
-  async connectLegacy(): Promise<void> {
-    await this.driver.clickElement(this.connectLegacyButton);
+  async checkWagmiCardVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.wagmiCard);
   }
 
   /**
-   * Click the "Connect (window.ethereum)" button. Use this in scenarios where
-   * the dapp already has an active connection (e.g. an existing multichain
-   * session) — the `connectLegacyButton` is hidden in that state, but the
-   * window.ethereum entrypoint stays available.
-   */
-  async connectWindowEthereum(): Promise<void> {
-    await this.driver.clickElement(this.connectWindowEthereumButton);
-  }
-
-  async checkLegacyCardVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.legacyCard);
-  }
-
-  /**
-   * Return the hex chain ID shown in the Legacy EVM card (e.g. "0x1").
-   * Waits for a specific expected value to appear before returning.
+   * Wait for the wagmi signature result element to contain the expected text.
    *
-   * @param expectedChainId - Hex chain ID to wait for, e.g. '0x89'
+   * @param expectedText - Text that the signature result element must contain.
    */
-  async waitForLegacyChainId(expectedChainId: string): Promise<void> {
-    await this.waitForChainId(this.legacyChainIdValue, expectedChainId);
-  }
-
-  /** Return the current chain ID text without waiting for a specific value. */
-  async getLegacyChainId(): Promise<string> {
-    return this.getChainId(this.legacyChainIdValue);
-  }
-
-  /**
-   * Wait until the legacy active-account element shows the expected address.
-   * Uses case-insensitive comparison because the dapp may render
-   * checksummed addresses while tests pass lowercase.
-   *
-   * @param expectedAddress - The address to wait for
-   */
-  async waitForLegacyActiveAccount(expectedAddress: string): Promise<void> {
-    await this.waitForActiveAccount(this.legacyActiveAccount, expectedAddress);
-  }
-
-  /**
-   * Wait for the legacy response text element to contain the expected text.
-   *
-   * @param expectedText - Text that the response element must contain.
-   */
-  async checkLegacyResponse(expectedText: string): Promise<void> {
+  async checkWagmiSignatureResult(expectedText: string): Promise<void> {
     await this.driver.waitForSelector({
-      css: this.legacyResponseText,
+      css: this.wagmiSignatureResult,
       text: expectedText,
     });
+  }
+
+  /**
+   * Wait for the wagmi transaction hash element to contain the expected text.
+   *
+   * @param expectedText - Text that the tx hash element must contain.
+   */
+  async checkWagmiTxHash(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.wagmiTxHashResult,
+      text: expectedText,
+    });
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Connection lifecycle
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /** Click the "Connect (Multichain)" button to start a wallet_createSession. */
+  async clickConnect(): Promise<void> {
+    await this.driver.clickElement(this.connectButton);
+  }
+
+  /**
+   * Click "Disconnect All" — calls sdkDisconnect() on the mm-connect dapp,
+   * which internally issues wallet_revokeSession.
+   */
+  async clickDisconnect(): Promise<void> {
+    await this.driver.clickElement(this.disconnectButton);
   }
 
   async clickLegacyPersonalSign(): Promise<void> {
@@ -577,6 +339,26 @@ export class TestDappMmConnect {
     await this.driver.clickElement(this.legacyBtnSwitchToPolygon);
   }
 
+  /**
+   * Click the "Switch to <chain>" button in the Wagmi card.
+   * Triggers wallet_switchEthereumChain to the given chain.
+   *
+   * @param chainId - Numeric chain ID matching a configured wagmi chain (e.g. 10 for Optimism)
+   */
+  async clickWagmiSwitchChain(chainId: number): Promise<void> {
+    await this.driver.clickElement(
+      `[data-testid="wagmi-btn-switch-chain-${chainId}"]`,
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Legacy EVM card
+  // ──────────────────────────────────────────────────────────────────────────
+
+  async connectLegacy(): Promise<void> {
+    await this.driver.clickElement(this.connectLegacyButton);
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // Wagmi card
   // ──────────────────────────────────────────────────────────────────────────
@@ -585,18 +367,88 @@ export class TestDappMmConnect {
     await this.driver.clickElement(this.connectWagmiButton);
   }
 
-  async checkWagmiCardVisible(): Promise<void> {
-    await this.driver.waitForSelector(this.wagmiCard);
+  /**
+   * Click the "Connect (window.ethereum)" button. Use this in scenarios where
+   * the dapp already has an active connection (e.g. an existing multichain
+   * session) — the `connectLegacyButton` is hidden in that state, but the
+   * window.ethereum entrypoint stays available.
+   */
+  async connectWindowEthereum(): Promise<void> {
+    await this.driver.clickElement(this.connectWindowEthereumButton);
   }
 
   /**
-   * Wait for the wagmi chain ID display to show a specific value.
-   * The wagmi card shows chain IDs as decimal numbers (e.g. "10" for Optimism).
+   * Replicates @metamask/playground-ui createTestId.
+   * Joins escaped parts with a dash.
    *
-   * @param expectedChainId - Decimal or string chain ID to wait for, e.g. '10'
+   * @param parts - Parts to join into a test ID.
+   * @returns The composed test ID string.
    */
-  async waitForWagmiChainId(expectedChainId: string): Promise<void> {
-    await this.waitForChainId(this.wagmiChainIdValue, expectedChainId);
+  private static createTestId(...parts: string[]): string {
+    return parts.map(TestDappMmConnect.escapeTestId).filter(Boolean).join('-');
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Private static helpers — replicate @metamask/playground-ui test ID logic
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Replicates @metamask/playground-ui escapeTestId.
+   * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
+   * strip any non-[a-z0-9-] characters.
+   *
+   * @param value - The string to escape.
+   * @returns The escaped string.
+   */
+  private static escapeTestId(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/:/gu, '-')
+      .replace(/\s+/gu, '-')
+      .replace(/_/gu, '-')
+      .replace(/[^a-z0-9-]/gu, '');
+  }
+
+  /**
+   * Return the current text of the element at `selector` without waiting for
+   * a specific value.
+   *
+   * @param selector - CSS selector for the chain-ID display element.
+   * @returns The raw text content of the element.
+   */
+  private async getChainId(selector: string): Promise<string> {
+    const el = await this.driver.waitForSelector(selector);
+    return el.getText();
+  }
+
+  private async getCheckboxState(selector: string): Promise<boolean> {
+    let isChecked = false;
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkbox = await this.driver.findElement(selector);
+          isChecked = await checkbox.isSelected();
+          return true;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 200, timeout: this.driver.timeout },
+    );
+
+    return isChecked;
+  }
+
+  /** Return the current chain ID text without waiting for a specific value. */
+  async getLegacyChainId(): Promise<string> {
+    return this.getChainId(this.legacyChainIdValue);
   }
 
   /** Return the current wagmi chain ID text without waiting for a specific value. */
@@ -604,38 +456,68 @@ export class TestDappMmConnect {
     return this.getChainId(this.wagmiChainIdValue);
   }
 
-  /**
-   * Wait until the wagmi active-account element shows the expected address.
-   * Uses case-insensitive comparison because wagmi may render
-   * checksummed addresses while tests pass lowercase.
-   *
-   * @param expectedAddress - The address to wait for
-   */
-  async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
-    await this.waitForActiveAccount(this.wagmiActiveAccount, expectedAddress);
+  private invokeBtnSelector(scope: string): string {
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'invoke-btn', scope)}"]`;
   }
 
-  /**
-   * Fill the wagmi sign-message input and submit the form.
-   * Opens a personal_sign confirmation in the extension.
-   *
-   * @param message - The message to sign
-   */
-  async signWagmiMessage(message: string): Promise<void> {
-    await this.driver.fill(this.wagmiInputMessage, message);
-    await this.driver.clickElement(this.wagmiBtnSignMessage);
+  private methodOptionSelector(scope: string, method: string): string {
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Navigation
+  // ──────────────────────────────────────────────────────────────────────────
+
+  async openPage(): Promise<void> {
+    await this.driver.openNewPage(DAPP_URL);
+    await this.checkPageIsLoaded();
+  }
+
+  private resultCodeSelector(scope: string, method: string): string {
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
+  }
+
+  private resultDetailsSelector(scope: string, method: string): string {
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
+  }
+
+  private scopeCardSelector(scope: string): string {
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', scope)}"]`;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Network selection (DynamicInputs checkboxes)
+  // ──────────────────────────────────────────────────────────────────────────
+
   /**
-   * Wait for the wagmi signature result element to contain the expected text.
+   * Ensure the requested networks are selected before connecting.
    *
-   * @param expectedText - Text that the signature result element must contain.
+   * We intentionally avoid sweeping deselections of every non-requested
+   * checkbox here. The browser-playground app can drop intermediate checkbox
+   * updates when many toggles happen back-to-back, which causes flaky
+   * multichain session scopes in CI. For these tests we only need to guarantee
+   * the requested scopes are enabled.
+   *
+   * @param desiredChainIds - CAIP-2 chain IDs that should be checked.
+   * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
    */
-  async checkWagmiSignatureResult(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.wagmiSignatureResult,
-      text: expectedText,
-    });
+  async selectNetworks(desiredChainIds: string[]): Promise<void> {
+    const featuredChainIds = new Set<string>(MM_CONNECT_FEATURED_CHAIN_IDS);
+
+    for (const chainId of desiredChainIds) {
+      if (!featuredChainIds.has(chainId)) {
+        continue;
+      }
+
+      const selector = this.checkboxSelector(chainId);
+      const isChecked = await this.getCheckboxState(selector);
+      if (!isChecked) {
+        await this.driver.clickElement(selector);
+        // Ensure React has committed this checkbox state before moving
+        // to the next one.
+        await this.waitForCheckboxState(selector, true);
+      }
+    }
   }
 
   /**
@@ -652,26 +534,144 @@ export class TestDappMmConnect {
   }
 
   /**
-   * Wait for the wagmi transaction hash element to contain the expected text.
+   * Fill the wagmi sign-message input and submit the form.
+   * Opens a personal_sign confirmation in the extension.
    *
-   * @param expectedText - Text that the tx hash element must contain.
+   * @param message - The message to sign
    */
-  async checkWagmiTxHash(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.wagmiTxHashResult,
-      text: expectedText,
-    });
+  async signWagmiMessage(message: string): Promise<void> {
+    await this.driver.fill(this.wagmiInputMessage, message);
+    await this.driver.clickElement(this.wagmiBtnSignMessage);
+  }
+
+  async switchTo(): Promise<void> {
+    await this.driver.switchToWindowWithUrl(DAPP_URL);
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Method invocation via ScopeCard
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Select a method and click Invoke, but do NOT wait for the result.
+   * Use when the method opens an extension dialog that must be handled first.
+   *
+   * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
+   * @param method - JSON-RPC method name, e.g. 'personal_sign'
+   */
+  async triggerMethod(scope: string, method: string): Promise<void> {
+    // Click the desired <option> inside the native HTML <select>.
+    // Selenium's click on an <option> element selects it and fires the
+    // browser's change event, which React's event system picks up.
+    await this.driver.clickElement(this.methodOptionSelector(scope, method));
+    await this.driver.clickElement(this.invokeBtnSelector(scope));
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Private shared interaction helpers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Wait until the element identified by `selector` contains `expectedAddress`
+   * (case-insensitive). Retries on stale-element errors.
+   *
+   * @param selector - CSS selector for the active-account element.
+   * @param expectedAddress - Address substring to wait for.
+   */
+  private async waitForActiveAccount(
+    selector: string,
+    expectedAddress: string,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const el = await this.driver.findElement(selector);
+          const text = await el.getText();
+          return text.toLowerCase().includes(expectedAddress.toLowerCase());
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
   }
 
   /**
-   * Click the "Switch to <chain>" button in the Wagmi card.
-   * Triggers wallet_switchEthereumChain to the given chain.
+   * Wait for the element at `selector` to show `expectedChainId`.
    *
-   * @param chainId - Numeric chain ID matching a configured wagmi chain (e.g. 10 for Optimism)
+   * @param selector - CSS selector for the chain-ID display element.
+   * @param expectedChainId - Chain ID string to wait for, e.g. '0x89' or '10'.
    */
-  async clickWagmiSwitchChain(chainId: number): Promise<void> {
-    await this.driver.clickElement(
-      `[data-testid="wagmi-btn-switch-chain-${chainId}"]`,
+  private async waitForChainId(
+    selector: string,
+    expectedChainId: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({ css: selector, text: expectedChainId });
+  }
+
+  private async waitForCheckboxState(
+    selector: string,
+    expectedState: boolean,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const checkbox = await this.driver.findElement(selector);
+          return (await checkbox.isSelected()) === expectedState;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'NoSuchElementError' ||
+            err.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 200, timeout: this.driver.timeout },
     );
+  }
+
+  /**
+   * Wait until the legacy active-account element shows the expected address.
+   * Uses case-insensitive comparison because the dapp may render
+   * checksummed addresses while tests pass lowercase.
+   *
+   * @param expectedAddress - The address to wait for
+   */
+  async waitForLegacyActiveAccount(expectedAddress: string): Promise<void> {
+    await this.waitForActiveAccount(this.legacyActiveAccount, expectedAddress);
+  }
+
+  /**
+   * Return the hex chain ID shown in the Legacy EVM card (e.g. "0x1").
+   * Waits for a specific expected value to appear before returning.
+   *
+   * @param expectedChainId - Hex chain ID to wait for, e.g. '0x89'
+   */
+  async waitForLegacyChainId(expectedChainId: string): Promise<void> {
+    await this.waitForChainId(this.legacyChainIdValue, expectedChainId);
+  }
+
+  /**
+   * Wait until the wagmi active-account element shows the expected address.
+   * Uses case-insensitive comparison because wagmi may render
+   * checksummed addresses while tests pass lowercase.
+   *
+   * @param expectedAddress - The address to wait for
+   */
+  async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
+    await this.waitForActiveAccount(this.wagmiActiveAccount, expectedAddress);
+  }
+
+  /**
+   * Wait for the wagmi chain ID display to show a specific value.
+   * The wagmi card shows chain IDs as decimal numbers (e.g. "10" for Optimism).
+   *
+   * @param expectedChainId - Decimal or string chain ID to wait for, e.g. '10'
+   */
+  async waitForWagmiChainId(expectedChainId: string): Promise<void> {
+    await this.waitForChainId(this.wagmiChainIdValue, expectedChainId);
   }
 }

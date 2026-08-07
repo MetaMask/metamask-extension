@@ -120,6 +120,7 @@
     "consentDecisionMade": true,
     "conversionRates": "object",
     "countries": "object",
+    "country": "string",
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
@@ -253,6 +254,7 @@
     "methodData": "object",
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
+    "mode": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
@@ -322,6 +324,7 @@
     },
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
+    "proLayoutPreferences": "object",
     "productTour": "accountIcon",
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
@@ -340,9 +343,11 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "rawRemoteFeatureFlags": "object",
+    "recentlyViewedMarkets": "object",
     "recoveryPhraseReminderHasBeenShown": false,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",
+    "region": "string",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
@@ -400,6 +405,7 @@
     "theme": "os",
     "thresholdCache": "object",
     "throttledOrigins": "object",
+    "timezone": "string",
     "tokenBalances": "object",
     "tokenScanCache": "object",
     "tokenSecurityTypeDestination": null,

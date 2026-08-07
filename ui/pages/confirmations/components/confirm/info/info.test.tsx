@@ -138,6 +138,26 @@ const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
   return clone;
 };
 
+/**
+ * Asserts that a render callback throws, while suppressing React's
+ * "The above error occurred in ..." console.error noise so it does not
+ * pollute the console baseline.
+ *
+ * @param render - Render callback that is expected to throw.
+ * @param expectedError - Expected error message or matcher.
+ */
+function expectRenderToThrow(render: () => void, expectedError: string): void {
+  const consoleError = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => undefined);
+
+  try {
+    expect(render).toThrow(expectedError);
+  } finally {
+    consoleError.mockRestore();
+  }
+}
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
@@ -188,7 +208,8 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
@@ -199,7 +220,8 @@ describe('Info', () => {
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });

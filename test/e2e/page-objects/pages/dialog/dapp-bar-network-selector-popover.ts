@@ -21,22 +21,6 @@ class DappBarNetworkSelectorPopover {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.popover,
-        this.popoverList,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for dapp bar network selector popover to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Dapp bar network selector popover is loaded');
-  }
-
   /**
    * Check whether a network option is displayed inside the popover.
    *
@@ -63,6 +47,22 @@ class DappBarNetworkSelectorPopover {
         waitAtLeastGuard: 1000,
       });
     }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.popover,
+        this.popoverList,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for dapp bar network selector popover to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Dapp bar network selector popover is loaded');
   }
 
   /**

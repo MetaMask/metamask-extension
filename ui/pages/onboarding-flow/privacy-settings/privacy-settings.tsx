@@ -65,7 +65,7 @@ import {
 } from '../../../ducks/app/app';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  IPFS_FORBIDDEN_GATEWAY,
+  IPFS_FORBIDDEN_GATEWAYS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
@@ -184,7 +184,7 @@ export default function PrivacySettings() {
     setIPFSURL(url);
     try {
       const { host } = new URL(addUrlProtocolPrefix(url) as string);
-      if (!host || host === IPFS_FORBIDDEN_GATEWAY) {
+      if (!host || IPFS_FORBIDDEN_GATEWAYS.includes(host)) {
         throw new Error();
       }
       setIPFSError(null);

@@ -11,14 +11,34 @@ import NetworkManager from '../pages/network-manager';
 const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
 const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 
+/**
+ * Opens the network filter from the asset list and enables every network,
+ * widening the asset list to all of them.
+ *
+ * @param driver - The webdriver instance.
+ */
+export const selectAllNetworksFromNetworkSelect = async (driver: Driver) => {
+  console.log('Selecting all networks');
+  const tokensTab = new TokensTab(driver);
+  const networkManager = new NetworkManager(driver);
+
+  await tokensTab.openNetworksFilter();
+  await networkManager.checkPageIsLoaded();
+  await networkManager.selectAllNetworks();
+};
+
+/**
+ * Opens the network filter from the asset list and enables only the given
+ * network, scoping the asset list to it.
+ *
+ * @param driver - The webdriver instance.
+ * @param networkName - The display name of the network to switch to.
+ */
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
-  networkCategory: string,
   networkName: string,
 ) => {
-  console.log(
-    `Switching to network: ${networkName} in category: ${networkCategory}`,
-  );
+  console.log(`Switching to network: ${networkName}`);
   const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
 
@@ -27,6 +47,12 @@ export const switchToNetworkFromNetworkSelect = async (
   }
 
   await tokensTab.openNetworksFilter();
-  await networkManager.selectTab(networkCategory);
+  await networkManager.checkPageIsLoaded();
   await networkManager.selectNetworkByNameWithWait(networkName);
 };
+
+export async function waitForNetworkManagerBackdropToClear(
+  driver: Driver,
+): Promise<void> {
+  await driver.assertElementNotPresent('.modal__backdrop');
+}

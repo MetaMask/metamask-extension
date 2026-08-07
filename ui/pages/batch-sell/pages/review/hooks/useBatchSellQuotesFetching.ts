@@ -8,10 +8,9 @@ import {
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import {
-  type BridgeAppState,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   BatchSellQuotesConfig,
@@ -58,7 +57,15 @@ export const useBatchSellQuotesFetching = (
     ),
   );
 
-  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const batchSellHexChainId = useMemo(
+    () => getMaybeHexChainId(receivedAsset.chainId),
+    [receivedAsset.chainId],
+  );
+  const smartTransactionsEnabled = useSelector((state: BridgeAppState) =>
+    batchSellHexChainId
+      ? getIsSmartTransaction(state, batchSellHexChainId)
+      : false,
+  );
 
   const entries = useMemo<SendAssetEntry[]>(
     () =>

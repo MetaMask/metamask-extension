@@ -268,33 +268,6 @@ export default function SmartTransactionStatusPage() {
   const showCancelSwapLink =
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
-  const CancelSwap = () => {
-    return (
-      <Box marginBottom={0}>
-        <a
-          className="smart-transaction-status__cancel-swap-link"
-          href="#"
-          onClick={(e) => {
-            e?.preventDefault();
-            setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
-            trackEvent(
-              createEventBuilder('Cancel STX')
-                .addCategory(MetaMetricsEventCategory.Swaps)
-                .addSensitiveProperties(sensitiveProperties)
-                .addProperties({
-                  hd_entropy_index: hdEntropyIndex,
-                })
-                .build(),
-            );
-            dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
-          }}
-        >
-          {t('attemptToCancelSwapForFree')}
-        </a>
-      </Box>
-    );
-  };
-
   return (
     <div className="smart-transaction-status">
       <Box
@@ -466,7 +439,33 @@ export default function SmartTransactionStatusPage() {
       </Box>
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
-        isSmartTransactionPending && <CancelSwap />}
+        isSmartTransactionPending && (
+          <Box marginBottom={0}>
+            <a
+              className="smart-transaction-status__cancel-swap-link"
+              href="#"
+              onClick={(e) => {
+                e?.preventDefault();
+                // Hide the link after a user clicks on it.
+                setCancelSwapLinkClicked(true);
+                trackEvent(
+                  createEventBuilder('Cancel STX')
+                    .addCategory(MetaMetricsEventCategory.Swaps)
+                    .addSensitiveProperties(sensitiveProperties)
+                    .addProperties({
+                      hd_entropy_index: hdEntropyIndex,
+                    })
+                    .build(),
+                );
+                dispatch(
+                  cancelSwapsSmartTransaction(latestSmartTransactionUuid),
+                );
+              }}
+            >
+              {t('attemptToCancelSwapForFree')}
+            </a>
+          </Box>
+        )}
       {smartTransactionStatus === SmartTransactionStatus.success ? (
         <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}

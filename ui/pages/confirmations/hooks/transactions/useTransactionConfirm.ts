@@ -18,6 +18,7 @@ import {
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
+import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useDispatch } from '../../../../store/hooks';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
@@ -38,6 +39,8 @@ export function useTransactionConfirm() {
   );
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
+  const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
+    useSendBundleHwNavigation({ transactionMeta });
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -93,17 +96,20 @@ export function useTransactionConfirm() {
     // Revert the controller's `isExternalSign` flag when this account cannot
     // use an external relay — i.e. gasless is unsupported for the account/chain
     // (such as hardware wallets, which cannot sign EIP-7702 authorization
-    // lists) — or the user has opted out of gas sponsorship. The
+    // lists) — or the user has opted out of gas sponsorship. Hardware wallet
+    // sendBundle transactions are gasless but still require local signing. The
     // TransactionController sets `isExternalSign = true` whenever
     // `isGasFeeSponsored` is true during gas estimation, regardless of whether
     // an external relay is actually eligible for this account. If we leave it
     // set, the sign step is skipped (no keyring/device call) and, when no relay
     // catches the publish, an unsigned/empty payload reaches
     // `eth_sendRawTransaction` and is rejected by the node.
-    const isExternalSignSupported =
+    const shouldClearExternalSign =
       transactionMeta.isExternalSign &&
-      (!isGaslessSupported || isSponsorshipOptedOut);
-    if (isExternalSignSupported) {
+      (!isGaslessSupported ||
+        isSponsorshipOptedOut ||
+        shouldRedirectToHwSigningPage);
+    if (shouldClearExternalSign) {
       newTransactionMeta.isExternalSign = false;
     }
 
@@ -111,6 +117,11 @@ export function useTransactionConfirm() {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
       handleGasless7702();
+    }
+
+    if (shouldRedirectToHwSigningPage) {
+      redirectToHwSigningPage(newTransactionMeta);
+      return false;
     }
 
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
@@ -142,13 +153,14 @@ export function useTransactionConfirm() {
     isGaslessSupported,
     isGaslessSupportedSTX,
     isSponsorshipOptedOut,
-    transactionMeta?.isGasFeeSponsored,
-    transactionMeta?.isExternalSign,
     dispatch,
     showErrorModal,
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
+    transactionMeta,
+    shouldRedirectToHwSigningPage,
+    redirectToHwSigningPage,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,

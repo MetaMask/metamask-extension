@@ -110,7 +110,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -195,10 +195,10 @@ const MusdEducationScreen = () => {
           | undefined,
         chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
       });
-      // Flag off opens Portfolio in a new tab, so send the user home; flag on
-      // navigates in-app (build-quote, or a blocking modal on the education
-      // screen), so leave routing to goToBuy.
-      if (!isRampsEnabled) {
+      // The Portfolio paths open a new tab, so send the user home; the in-app
+      // path navigates itself (build-quote, or a blocking modal on the
+      // education screen), so leave routing to goToBuy.
+      if (opensBuyInPortfolioTab) {
         navigate(DEFAULT_ROUTE);
       }
       return;
@@ -242,7 +242,7 @@ const MusdEducationScreen = () => {
     isDeeplink,
     isGeoBlocked,
     goToBuy,
-    isRampsEnabled,
+    opensBuyInPortfolioTab,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,

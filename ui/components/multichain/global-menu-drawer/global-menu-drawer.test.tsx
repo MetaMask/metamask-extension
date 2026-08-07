@@ -8,6 +8,7 @@ import {
   NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
@@ -86,9 +87,13 @@ describe('GlobalMenuDrawer', () => {
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
   });
 
-  it('applies border in pure black mode', async () => {
+  // Fullscreen drawer uses a portal that requires layout measurement — tested via manual QA.
+  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or wide sidepanel).
+
+  it('does not apply border-l in pure black mode on popup', async () => {
     const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
     usePureBlack.mockReturnValue(true);
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
     const { container } = renderWithProvider(
       <GlobalMenuDrawer isOpen onClose={() => undefined}>
@@ -99,8 +104,9 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      const panel = container.querySelector('.border-l.border-muted');
-      expect(panel).toBeInTheDocument();
+      expect(
+        container.querySelector('.border-l.border-muted'),
+      ).not.toBeInTheDocument();
     });
   });
 

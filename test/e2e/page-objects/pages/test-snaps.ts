@@ -162,6 +162,7 @@ export const spanLocator = {
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
   snapUiRendererPanel: '.snap-ui-renderer__panel',
+  snapUiRendererText: '.snap-ui-renderer__text',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signMessageMultichainResultSpan: '#signMessageMultichainResult',
   signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
@@ -174,7 +175,7 @@ export const spanLocator = {
   wasmResultSpan: '#wasmResult',
   unencryptedStateResultSpan: '#unencryptedStateResult',
   getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
-  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  backgroundEventResultSpan: '#scheduleBackgroundEventResult',
   getBackgroundEventResultSpan: '#getBackgroundEventsResult',
 } satisfies Record<string, string>;
 
@@ -195,27 +196,6 @@ export class TestSnaps {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async openPage(url?: string) {
-    await this.driver.openNewPage(url ?? DAPP_URL);
-    await this.driver.waitForSelector(this.installedSnapsHeader);
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.installedSnapsHeader,
-        buttonLocator.connectBip32Button,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for Test Snap Dapp page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Test Snap Dapp page is loaded');
   }
 
   async checkClientStatus({
@@ -254,27 +234,12 @@ export class TestSnaps {
     );
   }
 
-  async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
-    console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
-    await this.driver.findScrollToAndClickElement(buttonLocator[buttonElement]);
-  }
-
-  async fillMessage(inputElement: keyof typeof inputLocator, message: string) {
-    console.log(`Filling message in ${inputElement}`);
-    await this.driver.fill(inputLocator[inputElement], message);
-  }
-
-  async clickButton(buttonElement: keyof typeof buttonLocator) {
-    console.log(`Clicking button ${buttonElement}`);
-    await this.driver.clickElement(buttonLocator[buttonElement]);
-  }
-
-  async scrollToButton(buttonElement: keyof typeof buttonLocator) {
-    console.log(`Scrolling button ${buttonElement}`);
-    const buttonSelector = await this.driver.findElement(
-      buttonLocator[buttonElement],
-    );
-    await this.driver.scrollToElement(buttonSelector);
+  async checkCount(expectedCount: string) {
+    console.log(`Checking the count is ${expectedCount}`);
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: expectedCount,
+    });
   }
 
   async checkInstallationComplete(
@@ -325,31 +290,20 @@ export class TestSnaps {
     );
   }
 
-  async checkCount(expectedCount: string) {
-    console.log(`Checking the count is ${expectedCount}`);
-    await this.driver.waitForSelector({
-      tag: 'p',
-      text: expectedCount,
-    });
-  }
-
-  /**
-   * Select an entropy source from the dropdown with the given name.
-   *
-   * @param dropDownName - The name of the dropdown locator to select the entropy source from.
-   * @param name - The name of the entropy source to select.
-   */
-  async selectEntropySource(
-    dropDownName: keyof typeof dropDownLocator,
-    name: string,
-  ) {
-    const locator = dropDownLocator[dropDownName];
-    console.log(`Select ${dropDownName} entropy source`);
-    await this.driver.clickElement(locator);
-    await this.driver.clickElement({
-      text: name,
-      css: `${locator} option`,
-    });
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.installedSnapsHeader,
+        buttonLocator.connectBip32Button,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Test Snap Dapp page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Test Snap Dapp page is loaded');
   }
 
   /**
@@ -387,9 +341,29 @@ export class TestSnaps {
     console.log('Preferences result span JSON is valid');
   }
 
+  async clickButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Clicking button ${buttonElement}`);
+    await this.driver.clickElement(buttonLocator[buttonElement]);
+  }
+
+  async fillMessage(inputElement: keyof typeof inputLocator, message: string) {
+    console.log(`Filling message in ${inputElement}`);
+    await this.driver.fill(inputLocator[inputElement], message);
+  }
+
   async fillNetworkInput(name: string) {
     console.log(`Filling network input with ${name}`);
     await this.driver.fill(this.networkUrlInput, name);
+  }
+
+  async openPage(url?: string) {
+    await this.driver.openNewPage(url ?? DAPP_URL);
+    await this.driver.waitForSelector(this.installedSnapsHeader);
+  }
+
+  async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
+    await this.driver.findScrollToAndClickElement(buttonLocator[buttonElement]);
   }
 
   /**
@@ -412,6 +386,48 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  async scrollToButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Scrolling button ${buttonElement}`);
+    const buttonSelector = await this.driver.findElement(
+      buttonLocator[buttonElement],
+    );
+    await this.driver.scrollToElement(buttonSelector);
+  }
+
+  /**
+   * Select an entropy source from the dropdown with the given name.
+   *
+   * @param dropDownName - The name of the dropdown locator to select the entropy source from.
+   * @param name - The name of the entropy source to select.
+   */
+  async selectEntropySource(
+    dropDownName: keyof typeof dropDownLocator,
+    name: string,
+  ) {
+    const locator = dropDownLocator[dropDownName];
+    console.log(`Select ${dropDownName} entropy source`);
+    await this.driver.clickElement(locator);
+    await this.driver.clickElement({
+      text: name,
+      css: `${locator} option`,
+    });
+  }
+
+  /**
+   * Wait until the given result span contains text, and return that text.
+   *
+   * @param spanSelectorId - The name of the result span locator to wait for.
+   * @returns The text of the result span.
+   */
+  async waitForNonEmptyResult(
+    spanSelectorId: keyof typeof spanLocator,
+  ): Promise<string> {
+    console.log(`Waiting for a result in ${spanSelectorId}`);
+    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
+    await this.driver.waitForNonEmptyElement(element);
+    return await element.getText();
   }
 
   async waitForWebSocketUpdate(state: {

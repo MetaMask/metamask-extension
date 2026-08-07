@@ -39,8 +39,10 @@ export function useSwitchAccountNotificationsChange(): {
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
         setError(errorMessage);
+        throw e;
+      } finally {
+        dispatch(hideLoadingIndication());
       }
-      dispatch(hideLoadingIndication());
     },
     [dispatch],
   );
@@ -49,6 +51,26 @@ export function useSwitchAccountNotificationsChange(): {
     onChange,
     error,
   };
+}
+
+/**
+ * `checkAccountsPresence` preserves the casing of the addresses it was called
+ * with. Wallet-activity UI lookups always use lowercase keys, so normalize
+ * here — otherwise misses fall through to (possibly stale) preferences and can
+ * incorrectly show every account as selected after a single toggle.
+ *
+ * @param data - Account presence map keyed by address
+ * @returns Presence map with lowercased address keys
+ */
+function normalizeAccountPresenceData(
+  data: UseSwitchAccountNotificationsData | null | undefined,
+): UseSwitchAccountNotificationsData {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).map(([address, enabled]) => [
+      address.toLowerCase(),
+      enabled,
+    ]),
+  );
 }
 
 function useRefetchAccountSettings() {
@@ -60,7 +82,13 @@ function useRefetchAccountSettings() {
         checkAccountsPresence(accounts),
       )) as unknown as UseSwitchAccountNotificationsData;
 
-      return result;
+      // Preserve empty/undefined results (same as pre-normalize behavior) so
+      // callers and tests don't get an extra state update from `{}`.
+      if (!result || Object.keys(result).length === 0) {
+        return result;
+      }
+
+      return normalizeAccountPresenceData(result);
     } catch {
       return {};
     }

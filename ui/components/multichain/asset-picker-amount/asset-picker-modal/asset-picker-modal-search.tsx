@@ -45,7 +45,7 @@ export const Search = ({
     >
       <TextFieldSearch
         autoFocus={autoFocus}
-        className="app-text-field-search"
+        className="w-full"
         clearButtonOnClick={() => onChange('')}
         inputProps={
           {

@@ -318,15 +318,10 @@ describe('Notifications List', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         /* eslint-disable @typescript-eslint/naming-convention */
         notification_id: unreadEthSentNotification.id,
-        notification_type: unreadEthSentNotification.type,
+        notification_type: 'wallet_activity',
+        notification_subtype: 'eth_sent',
         chain_id: unreadEthSentNotification.payload.chain_id,
-        previously_read: false,
         /* eslint-enable @typescript-eslint/naming-convention */
-      });
-      expect(metricsEvent.properties.data).toMatchObject({
-        id: unreadEthSentNotification.id,
-        type: unreadEthSentNotification.type,
-        isRead: false,
       });
     });
   });

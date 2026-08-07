@@ -255,7 +255,7 @@ export default function RevealRecoveryPhrase({
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
       gap={6}
-      className="reveal-recovery-phrase h-full"
+      className="reveal-recovery-phrase h-full bg-default"
       data-testid="reveal-recovery-phrase"
     >
       <Box className="w-full">

@@ -45,7 +45,8 @@ const Menu = ({
       />
       <div
         className={classnames('menu__container', className, {
-          'bg-alternative border border-muted': isPureBlack,
+          'bg-section border border-muted': isPureBlack,
+          'bg-default': !isPureBlack,
         })}
         data-testid={className}
         ref={setPopperElement}

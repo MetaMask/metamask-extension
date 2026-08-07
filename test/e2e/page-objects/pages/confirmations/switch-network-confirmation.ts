@@ -1,11 +1,11 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SwitchNetworkConfirmation {
-  private readonly driver: Driver;
-
   private readonly approveButton = { testId: 'confirmation-submit-button' };
 
   private readonly cancelButton = { testId: 'confirmation-cancel-button' };
+
+  private readonly driver: Driver;
 
   private readonly switchNetworkMessage = {
     text: 'Allow this site to switch the network',

@@ -67,7 +67,7 @@ import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -86,7 +86,6 @@ import {
   ARC_ERC20_USDC_BRIDGE_ASSET,
   ARC_HEX_CHAIN_ID,
 } from '../assets/enablement/arc';
-import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 /**
  * Allows to manually set the default Swap token when clicking on the Swap CTA from
@@ -255,8 +254,6 @@ const CoinButtons = ({
     throw new Error('defaultSwapsToken is required');
   }
 
-  const handleSendNonEvm = useHandleSendNonEvm();
-
   const location = useLocation();
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
@@ -347,7 +344,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -401,7 +398,7 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const opened = await goToBuy({
@@ -411,19 +408,12 @@ const CoinButtons = ({
     if (!opened) {
       return;
     }
-    // Only the flag-off path opens a Portfolio browser tab; with the ramps
-    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
-    // be misleading.
-    if (!isRampsEnabled) {
-      toast.success(
-        <ToastContent
-          title={t('buyTabOpenedToastText')}
-          description={t('buyTabOpenedToastDescription')}
-        />,
-        {
-          id: 'buy-tab-opened-toast',
-          icon: <Icon name={IconName.Export} color={IconColor.IconDefault} />,
-        },
+    // Only the Portfolio paths open a browser tab; when goToBuy navigates
+    // in-app the "tab opened" toast would be misleading.
+    if (opensBuyInPortfolioTab) {
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
       );
     }
     trackEvent(
@@ -445,7 +435,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url

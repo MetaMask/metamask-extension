@@ -39,6 +39,15 @@ jest.mock('../../compliance', () => {
   };
 });
 
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => {
+  const buildTpslTrackingData = (input: Record<string, unknown>) => input;
+  return {
+    usePerpsAttribution: () => ({
+      buildTpslTrackingData,
+    }),
+  };
+});
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -142,6 +151,25 @@ describe('UpdateTPSLModalContent', () => {
       },
       pushPositionsWithOverrides: jest.fn(),
     });
+  });
+
+  // A successful save deliberately schedules a 2.5s reconciliation that outlives
+  // the modal. Under real timers it also outlives the test and fires a stray
+  // `perpsGetPositions` inside a later one, making this suite order-dependent.
+  // `advanceTimers: true` keeps the fake clock tracking real time so existing
+  // `waitFor`/`findBy` calls behave unchanged; the drain in afterEach means no
+  // pending timer ever crosses a test boundary.
+  beforeEach(() => {
+    jest.useFakeTimers({ advanceTimers: true });
+  });
+
+  afterEach(() => {
+    // Tests that manage their own clock may already have restored real timers,
+    // in which case there is nothing left to drain.
+    if (jest.isMockFunction(setTimeout)) {
+      jest.runOnlyPendingTimers();
+    }
+    jest.useRealTimers();
   });
 
   describe('rendering', () => {
@@ -909,11 +937,17 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                positionSize: 2.5,
+                isEditingExistingPosition: true,
+              }),
+            }),
           ],
         );
       });
@@ -932,11 +966,16 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithoutTPSL.symbol,
               takeProfitPrice: undefined,
               stopLossPrice: undefined,
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+                isEditingExistingPosition: false,
+              }),
+            }),
           ],
         );
       });
@@ -1028,11 +1067,15 @@ describe('UpdateTPSLModalContent', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsUpdatePositionTPSL',
           [
-            {
+            expect.objectContaining({
               symbol: positionWithTPSL.symbol,
               takeProfitPrice: '3200.00',
               stopLossPrice: '2600.00',
-            },
+              trackingData: expect.objectContaining({
+                direction: 'long',
+                source: 'asset_detail_screen',
+              }),
+            }),
           ],
         );
       });

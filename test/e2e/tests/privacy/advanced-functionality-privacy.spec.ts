@@ -175,6 +175,7 @@ describe('MetaMask onboarding ', function () {
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
 

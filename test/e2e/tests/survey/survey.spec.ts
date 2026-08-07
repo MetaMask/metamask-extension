@@ -11,8 +11,7 @@ async function mockSurveys(mockServer: MockttpServer) {
     .forGet(
       `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_ANALYTICS_ID}/surveys`,
     )
-    // We need to mock this request twice because of a bug on the wallet side (#33604)
-    .twice()
+    .once()
     .thenCallback(() => {
       return {
         statusCode: 200,

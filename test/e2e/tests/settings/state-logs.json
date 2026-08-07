@@ -672,6 +672,7 @@
         }
       }
     },
+    "country": "string",
     "coverageResults": {},
     "countries": {
       "data": [],
@@ -1083,6 +1084,7 @@
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
+    "mode": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -1294,6 +1296,12 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
+    "proLayoutPreferences": {
+      "orderBookExpanded": "boolean",
+      "chartExpanded": "boolean",
+      "orderBookPosition": "string",
+      "orderFormPosition": "string"
+    },
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
     "providers": {
@@ -1326,6 +1334,10 @@
         "conversionRate": "number"
       }
     },
+    "recentlyViewedMarkets": {
+      "testnet": [],
+      "mainnet": []
+    },
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
@@ -1333,6 +1345,7 @@
       "gmx": {},
       "hyperliquid": {}
     },
+    "region": "string",
     "requests": {
       "*": {
         "status": "string",
@@ -1543,6 +1556,7 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
+    "timezone": "string",
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {

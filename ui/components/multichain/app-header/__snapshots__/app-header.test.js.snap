@@ -96,14 +96,14 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
       class="mm-box multichain-app-header__contents flex mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box min-w-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
+        class="flex flex-row gap-2 items-center min-w-0"
       >
         <div
-          class="mm-box"
+          class=""
           style="overflow: hidden;"
         >
           <div
-            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--color-text-default"
+            class="flex flex-col items-start min-w-0"
           >
             <div
               class="mm-box w-full mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -135,7 +135,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2"
+            class="ml-2 mt-1 w-fit"
             data-testid="networks-subtitle-test-id"
           >
             <div
@@ -231,30 +231,30 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
-        style="margin-left: auto;"
+        class="items-center justify-end ml-auto"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2"
+          class="flex flex-row gap-2 justify-end relative w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end mm-box--width-full"
-            style="position: relative;"
+            class=""
+          />
+          <button
+            aria-label="Account options"
+            class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            data-testid="account-options-menu-button"
           >
-            <div
-              class="mm-box"
-            />
-            <button
-              aria-label="Account options"
-              class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              data-testid="account-options-menu-button"
+            <svg
+              class="inline-block w-6 h-6 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/menu.svg');"
+              <path
+                d="M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z"
               />
-            </button>
-          </div>
+            </svg>
+          </button>
         </div>
       </div>
     </div>

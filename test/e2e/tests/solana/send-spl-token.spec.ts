@@ -265,7 +265,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -295,10 +294,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await activityTab.checkTxAction({ action: 'Sent USDC' });
 
         if (isUnifiedAssetsEnabled) {
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '0.1',
-          });
+          await activityTab.checkTransactionAmount('0.1');
         } else {
           await activityTab.checkTxAmountInActivity('-0.1 USDC', 1);
         }
@@ -348,7 +344,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();

@@ -78,7 +78,6 @@ export function useHwSwapConfirmationMonitoring({
     }
 
     previousTxIdRef.current = currentId;
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hardwareWalletUsed,

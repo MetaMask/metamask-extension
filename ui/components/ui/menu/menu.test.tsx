@@ -74,24 +74,26 @@ describe('Menu Component', () => {
   });
 
   describe('pure black mode', () => {
-    it('applies bg-alternative background and border-muted border when isPureBlack is true', () => {
+    it('applies bg-section background and border-muted border when isPureBlack is true', () => {
       mockUsePureBlack.mockReturnValue(true);
       render(<Menu {...defaultProps} />);
       const menuContainer = document.body.querySelector(
         '.menu__container',
       ) as HTMLElement;
-      expect(menuContainer).toHaveClass('bg-alternative');
+      expect(menuContainer).toHaveClass('bg-section');
       expect(menuContainer).toHaveClass('border');
       expect(menuContainer).toHaveClass('border-muted');
+      expect(menuContainer).not.toHaveClass('bg-default');
     });
 
-    it('does not apply pure black styles when isPureBlack is false', () => {
+    it('applies bg-default and does not apply pure black styles when isPureBlack is false', () => {
       mockUsePureBlack.mockReturnValue(false);
       render(<Menu {...defaultProps} />);
       const menuContainer = document.body.querySelector(
         '.menu__container',
       ) as HTMLElement;
-      expect(menuContainer).not.toHaveClass('bg-alternative');
+      expect(menuContainer).toHaveClass('bg-default');
+      expect(menuContainer).not.toHaveClass('bg-section');
       expect(menuContainer).not.toHaveClass('border');
       expect(menuContainer).not.toHaveClass('border-muted');
     });
