@@ -24,6 +24,11 @@ describe('getRampsEnvironment', () => {
     expect(getRampsEnvironment()).toBe(RampsEnvironment.Production);
   });
 
+  it('returns Production for METAMASK_ENVIRONMENT=release-candidate', () => {
+    process.env.METAMASK_ENVIRONMENT = 'release-candidate';
+    expect(getRampsEnvironment()).toBe(RampsEnvironment.Production);
+  });
+
   it('returns Development for METAMASK_ENVIRONMENT=development', () => {
     process.env.METAMASK_ENVIRONMENT = 'development';
     expect(getRampsEnvironment()).toBe(RampsEnvironment.Development);
