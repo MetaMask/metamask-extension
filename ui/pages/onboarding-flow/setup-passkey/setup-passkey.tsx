@@ -9,7 +9,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
 } from '../../../selectors';
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -23,9 +23,7 @@ export default function SetupPasskey() {
   const navigate = useNavigate();
   const isFirefox = useIsFirefox();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
 
   const handleNext = useCallback(() => {
     let nextRoute: string;
@@ -36,7 +34,7 @@ export default function SetupPasskey() {
       if (isFirefox) {
         nextRoute = ONBOARDING_COMPLETION_ROUTE;
       } else {
-        nextRoute = completedMetaMetricsOnboarding
+        nextRoute = consentDecisionMade
           ? ONBOARDING_COMPLETION_ROUTE
           : ONBOARDING_METAMETRICS;
       }
@@ -45,7 +43,7 @@ export default function SetupPasskey() {
     }
 
     navigate(nextRoute, { replace: true });
-  }, [firstTimeFlowType, isFirefox, navigate, completedMetaMetricsOnboarding]);
+  }, [firstTimeFlowType, isFirefox, navigate, consentDecisionMade]);
 
   return <SetupPasskeyContent onNext={handleNext} />;
 }
