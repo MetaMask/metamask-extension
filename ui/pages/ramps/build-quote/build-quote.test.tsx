@@ -399,9 +399,7 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('does not fire screen-viewed on the redirect path', () => {
-    mockLocationState = {
-      assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
-    };
+    mockLocationState = null;
     useRampsController.mockReturnValue(
       mockControllerState({
         selectedToken: null,
