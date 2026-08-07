@@ -49,10 +49,10 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed border-icon-default"
           >
             <svg
-              class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-100"
+              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-100"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +103,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
             class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
           >
             <svg
-              class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-0"
+              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-0"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -198,10 +198,10 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed border-icon-default"
           >
             <svg
-              class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-100"
+              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-100"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +252,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
             class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
           >
             <svg
-              class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-0"
+              class="inline-block w-4 h-4 text-icon-inverse pointer-events-none transition-opacity opacity-0"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
