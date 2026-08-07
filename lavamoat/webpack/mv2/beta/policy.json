@@ -3461,9 +3461,35 @@
         "process": true
       }
     },
-    "@sentry/browser>@sentry-internal/browser-utils": {
+    "@sentry/browser": {
       "globals": {
+        "Headers": true,
+        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "URL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_RELEASE__": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/browser-utils": true,
+        "@sentry/core>@sentry/conventions": true,
+        "@sentry/core": true
+      }
+    },
+    "@sentry/browser>@sentry/browser-utils": {
+      "globals": {
+        "Element": true,
         "FormData": true,
+        "HTMLElement": true,
+        "Node": true,
         "PerformanceEventTiming": true,
         "PerformanceObserver": true,
         "Request": true,
@@ -3477,30 +3503,12 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/core": true
-      }
-    },
-    "@sentry/browser": {
-      "globals": {
-        "Headers": true,
-        "PerformanceObserver.supportedEntryTypes": true,
-        "URL": true,
-        "WebAssembly": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_DEBUG__": true,
-        "__SENTRY_RELEASE__": true,
-        "addEventListener": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/core>@sentry/conventions": true,
         "@sentry/core": true
       }
     },
     "@sentry/core": {
       "globals": {
-        "CustomEvent": true,
         "DOMError": true,
         "DOMException": true,
         "EdgeRuntime": true,
@@ -3521,12 +3529,12 @@
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
-        "document": true,
         "module": true,
         "process": true,
         "setTimeout": true
       },
       "packages": {
+        "@sentry/core>@sentry/conventions": true,
         "process": true
       }
     },
