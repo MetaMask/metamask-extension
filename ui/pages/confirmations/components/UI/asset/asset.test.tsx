@@ -214,6 +214,27 @@ describe('NFTAsset', () => {
     expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
   });
 
+  it('renders NFT asset image container with consistent min dimensions when no image is available', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithNoImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: { name: 'Test Collection', imageUrl: undefined },
+    };
+    const { getByTestId, queryByRole } = render(
+      <Asset asset={assetWithNoImage} />,
+    );
+
+    // No image element should be rendered
+    expect(queryByRole('img')).not.toBeInTheDocument();
+
+    // The left-side image container (first child of nft-asset) must keep a
+    // 32px minimum height so the absolutely-positioned network badge stays
+    // anchored within its bounds and doesn't overlap adjacent rows.
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset.firstElementChild).toHaveStyle('min-height: 32px');
+  });
+
   it('renders account type label when account type is provided', () => {
     const assetWithAccountType = {
       ...mockTokenAsset,
