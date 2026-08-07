@@ -1,6 +1,6 @@
 /*
  * Maps UI-side ramps buy-flow events onto the `metamask-ramps` Segment schema.
- * Checkout callback/closed and terminal transaction KPIs fire from the
+ * The whole checkout funnel and the terminal transaction KPIs fire from the
  * background instead — see `trackRampsCheckoutAnalytics.ts` and
  * `buildRampsTransactionCompletedProperties.ts`.
  */
@@ -32,14 +32,6 @@ export type RampsProviderSelectedArgs = {
   provider: string;
   previousProvider?: string;
   location: string;
-};
-
-export type RampsCheckoutOpenedArgs = {
-  checkoutSessionId: string;
-  providerName?: string;
-  initialUrlPath: string;
-  hasCallbackFlow: boolean;
-  orderId?: string;
 };
 
 /**
@@ -123,25 +115,9 @@ export function useRampsAnalytics() {
     [track],
   );
 
-  const trackCheckoutOpened = useCallback(
-    (args: RampsCheckoutOpenedArgs) => {
-      track(MetaMetricsEventName.RampsCheckoutOpened, {
-        location: 'Checkout',
-        region: regionRef.current,
-        checkout_session_id: args.checkoutSessionId,
-        provider_name: args.providerName,
-        initial_url_path: args.initialUrlPath,
-        has_callback_flow: args.hasCallbackFlow,
-        order_id: args.orderId,
-      });
-    },
-    [track],
-  );
-
   return {
     trackScreenViewed,
     trackTokenSelected,
     trackProviderSelected,
-    trackCheckoutOpened,
   };
 }
