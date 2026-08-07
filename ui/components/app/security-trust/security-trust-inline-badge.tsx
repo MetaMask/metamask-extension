@@ -5,15 +5,64 @@ import {
   BoxFlexDirection,
   FontWeight,
   Icon,
+  IconColor,
+  IconName,
   IconSize,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { ResultTypeConfig } from '../../utils/security-utils';
 
-export type SecurityTrustInlineBadgeConfig = NonNullable<
-  ResultTypeConfig['badge']
->;
+export type SecurityTrustTranslate = (
+  key: string,
+  substitutions?: string[],
+) => string;
+
+export type SecurityTrustInlineBadgeConfig = {
+  icon: IconName;
+  iconColor: IconColor;
+  alertSeverity?: 'success' | 'warning' | 'danger';
+  label: string | null;
+  accessibleLabel?: string;
+  backgroundColor?: 'warning-muted' | 'error-muted';
+  textColor?: TextColor;
+};
+
+export const getSecurityTrustBadgeConfig = (
+  resultType: string | undefined,
+  t: SecurityTrustTranslate,
+): SecurityTrustInlineBadgeConfig | null => {
+  switch (resultType) {
+    case 'Verified':
+      return {
+        icon: IconName.VerifiedFilled,
+        iconColor: IconColor.InfoDefault,
+        label: null,
+        accessibleLabel: t('securityTrustVerified'),
+      };
+    case 'Warning':
+    case 'Spam':
+      return {
+        icon: IconName.Warning,
+        iconColor: IconColor.WarningDefault,
+        alertSeverity: 'warning',
+        label: t('securityTrustRisky'),
+        backgroundColor: 'warning-muted',
+        textColor: TextColor.WarningDefault,
+      };
+    case 'Malicious':
+      return {
+        icon: IconName.Danger,
+        iconColor: IconColor.ErrorDefault,
+        alertSeverity: 'danger',
+        label: t('securityTrustMalicious'),
+        backgroundColor: 'error-muted',
+        textColor: TextColor.ErrorDefault,
+      };
+    default:
+      return null;
+  }
+};
 
 type SecurityTrustInlineBadgeProps = {
   badge: SecurityTrustInlineBadgeConfig;
@@ -29,6 +78,7 @@ export const SecurityTrustInlineBadge = ({
   if (badge.label === null) {
     const verifiedIcon = (
       <Icon
+        aria-label={badge.accessibleLabel}
         data-testid={onClick ? undefined : testId}
         name={badge.icon}
         size={IconSize.Sm}
@@ -42,7 +92,7 @@ export const SecurityTrustInlineBadge = ({
           type="button"
           onClick={onClick}
           data-testid={testId}
-          aria-label={testId ?? 'security-badge'}
+          aria-label={badge.accessibleLabel ?? testId ?? 'security-badge'}
           className="cursor-pointer border-0 bg-transparent p-0 leading-none"
         >
           {verifiedIcon}

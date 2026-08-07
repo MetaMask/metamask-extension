@@ -23,9 +23,13 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return null;
     }
 
-    // For transactions, check the 'to' address
-    if ((currentConfirmation as TransactionMeta)?.txParams?.to) {
-      return (currentConfirmation as TransactionMeta).txParams.to;
+    // For transactions, check the original 'to' address before container
+    // wrapping replaces it with the delegation manager address.
+    const transactionMeta = currentConfirmation as TransactionMeta;
+    const transactionAddress =
+      transactionMeta?.txParamsOriginal?.to ?? transactionMeta?.txParams?.to;
+    if (transactionAddress) {
+      return transactionAddress;
     }
 
     // For signatures, check the verifying contract if available
