@@ -450,6 +450,53 @@ export const AutoCloseSection = ({
     });
   }, [enabled]);
 
+  // Preserve the user-set RoE% across leverage changes. The stored values are
+  // prices, and `priceToPercent` is leverage-weighted, so a leverage change
+  // would otherwise shift the displayed percentages. Rescale prices toward
+  // the entry so `(price - entry)/entry * leverage` stays constant.
+  const prevLeverageRef = useRef(leverage);
+  useEffect(() => {
+    const prevLeverage = prevLeverageRef.current;
+    prevLeverageRef.current = leverage;
+
+    if (
+      prevLeverage === leverage ||
+      !entryPrice ||
+      leverage <= 0 ||
+      prevLeverage <= 0
+    ) {
+      return;
+    }
+
+    const rescale = (priceStr: string): string | null => {
+      if (!priceStr) {
+        return null;
+      }
+      const price = Number.parseFloat(priceStr);
+      if (!Number.isFinite(price) || price <= 0) {
+        return null;
+      }
+      const newPrice =
+        entryPrice + (price - entryPrice) * (prevLeverage / leverage);
+      if (!Number.isFinite(newPrice) || newPrice <= 0) {
+        return null;
+      }
+      return newPrice.toString();
+    };
+
+    const rescaledTp = rescale(takeProfitPrice);
+    if (rescaledTp !== null && rescaledTp !== takeProfitPrice) {
+      onTakeProfitPriceChange(rescaledTp);
+    }
+    const rescaledSl = rescale(stopLossPrice);
+    if (rescaledSl !== null && rescaledSl !== stopLossPrice) {
+      onStopLossPriceChange(rescaledSl);
+    }
+    // takeProfitPrice / stopLossPrice intentionally read fresh in this effect
+    // but not declared as deps — we only want to react to leverage changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leverage, entryPrice]);
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
