@@ -50,6 +50,12 @@ jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
     mockShowBuyTabOpenedToast(...args),
 }));
 
+const mockUseRampsScreenViewed = jest.fn();
+jest.mock('../../../hooks/ramps/useRampsScreenViewed', () => ({
+  useRampsScreenViewed: (...args: unknown[]) =>
+    mockUseRampsScreenViewed(...args),
+}));
+
 const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
 );
@@ -388,6 +394,36 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('does not fire screen-viewed on the redirect path', () => {
+    mockLocationState = {
+      assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+    };
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        selectedToken: null,
+        tokensLoading: false,
+      }),
+    );
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(mockUseRampsScreenViewed).not.toHaveBeenCalled();
+  });
+
+  it('fires screen-viewed when the amount input is shown', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(mockUseRampsScreenViewed).toHaveBeenCalledWith('Amount Input');
   });
 
   it('matches snapshot with regional default amount', () => {
