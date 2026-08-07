@@ -3,7 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import { DeveloperButton } from '../developer-button';
 import {
-  MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
 } from '../../../constants/musd';
@@ -11,7 +11,7 @@ import { useDeveloperTransferTransaction } from '../utils';
 
 export const MoneyAccountDepositButton = () => {
   const { isLoading, handleTrigger } = useDeveloperTransferTransaction({
-    chainId: MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+    chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
     tokenAddress: MUSD_TOKEN_ADDRESS,
     decimals: MUSD_TOKEN.decimals,
     type: TransactionType.moneyAccountDeposit,

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
-  MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
 } from '../../../constants/musd';
@@ -33,7 +33,7 @@ describe('MoneyAccountDepositButton', () => {
     render(<MoneyAccountDepositButton />);
 
     expect(useDeveloperTransferTransactionMock).toHaveBeenCalledWith({
-      chainId: MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+      chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
       tokenAddress: MUSD_TOKEN_ADDRESS,
       decimals: MUSD_TOKEN.decimals,
       type: TransactionType.moneyAccountDeposit,
