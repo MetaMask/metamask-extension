@@ -4970,6 +4970,30 @@ describe('getDeferredDeepLinkParameters', () => {
   });
 });
 
+describe('getContinuityIdForTab', () => {
+  it('returns the continuity ID when tab ID exists in state', () => {
+    const state = {
+      metamask: {
+        continuityIdsByTabId: {
+          42: 'continuity-id-42',
+        },
+      },
+    };
+
+    expect(selectors.getContinuityIdForTab(state, 42)).toBe('continuity-id-42');
+  });
+
+  it('returns undefined when no continuity ID exists for tab', () => {
+    const state = {
+      metamask: {
+        continuityIdsByTabId: {},
+      },
+    };
+
+    expect(selectors.getContinuityIdForTab(state, 42)).toBeUndefined();
+  });
+});
+
 describe('getLastQrScanCompletedSuccessfully', () => {
   it('returns true when last QR scan completed successfully', () => {
     const state = {
