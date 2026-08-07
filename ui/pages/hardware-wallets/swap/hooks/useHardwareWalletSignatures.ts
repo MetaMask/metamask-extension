@@ -133,11 +133,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       : undefined,
   );
 
-  const { lockedQuote, fromToken, toToken } = useHwSwapQuoteData();
+  const { lockedQuote, fromToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
-  const fromAmount = lockedQuote?.sentAmount?.amount;
+  const fromAmount = lockedQuote?.quote.src?.normalizedAmount;
   const activeSigningRequestId =
     lockedQuote?.quote.requestId ?? sendBundleTxMeta?.id ?? '';
   const expectedSignTrackerTxIds = useMemo(() => {
