@@ -13,10 +13,6 @@ jobs:
     timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      OWNER: ${{ github.repository_owner }}
-      REPOSITORY: ${{ github.event.repository.name }}
-      WORKFLOW_ID: main.yml
-      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
     outputs:
       use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
     steps:
@@ -39,36 +35,53 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-      - name: Get last completed main workflow
-        id: get-last-completed-main-workflow
-        run: |
-          last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
-          echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
+      # Resolve the run IDs holding the latest available E2E reports, used for shard balancing.
+      - name: Resolve latest E2E report run IDs
+        id: e2e-reports
+        continue-on-error: true
+        uses: actions/github-script@v9
+        with:
+          retries: 3
+          script: |
+            const { join } = await import('node:path');
+            const { pathToFileURL } = await import('node:url');
+            const scriptPath = join(process.env.GITHUB_WORKSPACE, '.github/scripts/resolve-e2e-report-run-ids.mts');
+            const { resolveE2EReportRunIds } = await import(pathToFileURL(scriptPath).href);
+
+            await resolveE2EReportRunIds({ github, context, core });
 
       - name: Download test-e2e-chrome-report
-        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        if: ${{ steps.e2e-reports.outputs.chrome-run-id != '' }}
+        # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
+        # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
+        continue-on-error: true
         uses: actions/download-artifact@v7
         with:
           name: test-e2e-chrome-report
           path: test/test-results/
           github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+          run-id: ${{ steps.e2e-reports.outputs.chrome-run-id }}
 
       - name: Download test-e2e-firefox-report
-        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        if: ${{ steps.e2e-reports.outputs.firefox-run-id != '' }}
+        # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
+        # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
+        continue-on-error: true
         uses: actions/download-artifact@v7
         with:
           name: test-e2e-firefox-report
           path: test/test-results/
           github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+          run-id: ${{ steps.e2e-reports.outputs.firefox-run-id }}
 
       - name: Upload test-runs-for-splitting
-        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        continue-on-error: true
         uses: actions/upload-artifact@v6
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
+          # Either download may have been skipped, so tolerate no files.
+          if-no-files-found: ignore
 
       - name: Set use matrix
         id: set-use-matrix

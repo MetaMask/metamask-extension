@@ -5648,7 +5648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.2.1, @metamask/assets-controller@npm:^11.3.0":
+"@metamask/assets-controller@npm:^11.2.1":
   version: 11.3.1
   resolution: "@metamask/assets-controller@npm:11.3.1"
   dependencies:
@@ -6111,24 +6111,6 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     reselect: "npm:^5.1.1"
   checksum: 10/b2a5d5f7e89e0adcd25503f9e6f5e58596df614a3a322a320536a82165e60fa34e54b2a1bf4402142a79ab2a85821319ecc7f188e82fc79a6f79e8ca57262152
-  languageName: node
-  linkType: hard
-
-"@metamask/config-registry-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/config-registry-controller@npm:1.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
-    "@metamask/profile-sync-controller": "npm:^28.3.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-    reselect: "npm:^5.1.1"
-  checksum: 10/d02172b4b58e74e87c76c067c0197eebf20365d4bccb9d5307e6f275dc6bfb7f65f11286493da4cbc26ed513df6be73db7f02929a3d60a231ea2bc0fee877abd
   languageName: node
   linkType: hard
 
@@ -33032,7 +33014,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.3.0"
+    "@metamask/assets-controller": "npm:^13.1.1"
     "@metamask/assets-controllers": "npm:^111.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -33050,7 +33032,7 @@ __metadata:
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/client-utils": "npm:^2.0.0"
     "@metamask/compliance-controller": "npm:^2.1.0"
-    "@metamask/config-registry-controller": "npm:^1.0.0"
+    "@metamask/config-registry-controller": "npm:^2.0.1"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
