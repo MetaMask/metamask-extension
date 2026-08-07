@@ -150,8 +150,7 @@ describe('asset-utils', () => {
     });
 
     it('returns native asset ID for Polygon native token address', () => {
-      const polygonNativeAddress =
-        '0x0000000000000000000000000000000000001010';
+      const polygonNativeAddress = '0x0000000000000000000000000000000000001010';
       const chainId = 'eip155:137' as CaipChainId;
 
       const result = toAssetId(polygonNativeAddress, chainId);
