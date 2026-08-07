@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import {
-  MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
 } from '../../../../constants/musd';
 import { MoneyAccountDepositInfo } from './money-account-deposit-info';
@@ -28,7 +28,7 @@ describe('MoneyAccountDepositInfo', () => {
     render(<MoneyAccountDepositInfo />);
 
     expect(useAddTokenMock).toHaveBeenCalledWith({
-      chainId: MUSD_DEVELOPER_HARNESS_CHAIN_ID,
+      chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
       decimals: 6,
       symbol: 'mUSD',
       tokenAddress: MUSD_TOKEN_ADDRESS,

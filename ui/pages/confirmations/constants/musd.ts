@@ -22,14 +22,4 @@ export {
   isMusdOnMoneyAccountChain,
 } from '@metamask/money-account-utils';
 
-/**
- * Chain targeted by the developer-only mUSD confirmation harness.
- *
- * This is a harness choice, **not** the product's chain: the real Money
- * Account is Monad-only (see `MUSD_MONEY_ACCOUNT_CHAIN_IDS`), while the
- * developer buttons build a plain ERC-20 mUSD transfer purely to exercise the
- * confirmation layout, and mUSD conversion is a Mainnet flow. Mainnet is kept
- * so a developer's existing mUSD test balance still funds the harness. The
- * real deposit flow will take its chain from the vault config, not from here.
- */
-export const MUSD_DEVELOPER_HARNESS_CHAIN_ID = CHAIN_IDS.MAINNET;
+export const MUSD_CONVERSION_DEFAULT_CHAIN_ID = CHAIN_IDS.MAINNET;
