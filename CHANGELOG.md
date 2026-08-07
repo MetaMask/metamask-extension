@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.44.0]
+
+### Uncategorized
+
+- Fixed address-poisoning detection so lookalikes of the actual recipient of a token transfer are flagged, and lookalikes of the (#45112)
+  token contract address are no longer flagged.
+- Bump assets controller to v11.2.1 (#44903)
+
+## **Related issues**
+
+### Added
+
+- Added tags and search update (#45223)
+- Link transaction success toast (#45173)
+- Fixed Perps order cancellation so an order that was already filled or cancelled no longer shows an error, and Perps (#45067)
+  withdrawals now check the live balance before submitting
+- Updated totalCount logic to view all button and ux updates (#45194)
+- Allow opening of sidepanel from dapp transactions (#38964)
+- Added search skeleton (#45156)
+- Added hooks for search (#45037)
+- Enable swapping max native amount when simulationIncludeFees=true (#44885)
+- Bump phishing controller 17.3.0 (#44841)
+
+### Fixed
+
+- Fixed confirmation details changing or reloading when enforced simulations were toggled (#45198)
+- Removed the “Simulation has changed” alert from transaction confirmations. (#45203)
+- Duplicate confirmed toast when confirming with a hardware wallet (#45174)
+- Fixed enforced simulations failing for transactions that spent nearly the full token or native balance (#45110)
+- Send MAX native reduced amount ux glitch- #45080 (#45080)
+- Adjusts horizontal padding on private keys list (#45150)
+- Fixed address security screening to cover 15 additional networks, including Robinhood Chain and Arc (#45092)
+- Non-evm missing fiat values (#45118)
+- Updates alignment of Select Network header on network picker modal (#45137)
+- Adds autoscroll to the notifications Wallet Activity container (#45138)
+- Fall back to getAssetImageUrl for missing token icons (#45023)
+
 ## [13.43.0]
 
 ### Added
@@ -2912,7 +2949,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...HEAD
+[13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
 [13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0
 [13.41.0]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...v13.41.0
