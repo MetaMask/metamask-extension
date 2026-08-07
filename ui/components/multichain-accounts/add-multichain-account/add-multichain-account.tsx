@@ -85,7 +85,7 @@ export const AddMultichainAccount = ({
 
   return (
     <Box
-      className="add-multichain-account"
+      className={`add-multichain-account${isLoadingState ? ' add-multichain-account--loading' : ''}`}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Start}
@@ -98,7 +98,7 @@ export const AddMultichainAccount = ({
       key={`add-multichain-account-button-${walletId}`}
     >
       <Box
-        className="add-multichain-account__icon-box ml-1 mr-4 rounded-md"
+        className="add-multichain-account__icon-box ml-1 mr-4 rounded-lg"
         data-testid="add-multichain-account-icon-box"
         backgroundColor={
           isLoadingState

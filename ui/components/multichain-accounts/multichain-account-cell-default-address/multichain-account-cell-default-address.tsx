@@ -1,22 +1,18 @@
 import React from 'react';
-import classnames from 'clsx';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  Icon,
   IconName,
   IconSize,
-  IconColor,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
   ButtonIcon,
   ButtonIconSize,
-  ButtonIconVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -30,7 +26,7 @@ export type MultichainAccountCellDefaultAddressProps = {
 };
 
 /**
- * Displays a dropdown button and the default address with copy functionality.
+ * Displays the default address with copy-on-click and a dropdown button.
  * When a default address for an account is available, displays the shortened
  * default address. Click copies the default address and shows "Copied" briefly.
  *
@@ -49,48 +45,35 @@ export const MultichainAccountCellDefaultAddress = ({
     handleDefaultAddressClick,
   } = useDefaultAddress(groupId);
 
+  const handleAddressKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      event.stopPropagation();
+      handleDefaultAddressClick();
+    }
+  };
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      gap={2}
       className="min-w-0"
     >
-      <MultichainTriggeredAddressRowsList
-        groupId={groupId}
-        triggerMode="click"
-        showAccountHeaderAndBalance={false}
-        showViewAllButton={false}
-        showDefaultAddressSection={false}
-      >
-        <ButtonIcon
-          iconName={IconName.ArrowDown}
-          size={ButtonIconSize.Sm}
-          variant={ButtonIconVariant.Filled}
-          iconProps={{
-            size: IconSize.Xs,
-          }}
-          ariaLabel={t('openMultichainAccountAddressMenu')}
-          className="text-icon-alternative rounded-lg"
-          data-testid="default-address-menu-button"
-        />
-      </MultichainTriggeredAddressRowsList>
       {displayDefaultAddress && defaultAddress ? (
         <Box
           onClick={handleDefaultAddressClick}
+          onKeyDown={handleAddressKeyDown}
+          tabIndex={0}
+          role="button"
+          aria-label={t('copyAddress')}
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           backgroundColor={
-            addressCopied
-              ? BoxBackgroundColor.SuccessMuted
-              : BoxBackgroundColor.BackgroundMuted
+            addressCopied ? BoxBackgroundColor.SuccessMuted : undefined
           }
           paddingVertical={1}
           paddingHorizontal={2}
-          gap={1}
-          className={classnames('rounded-lg h-6 min-w-0', {
-            'hover:bg-muted-hover': !addressCopied,
-          })}
+          className="rounded-lg h-6 min-w-0 hover:bg-muted-hover"
           data-testid="default-address-container"
         >
           <Text
@@ -108,15 +91,6 @@ export const MultichainAccountCellDefaultAddress = ({
               ? `${t(DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE[defaultAddressScope])} ${t('addressCopied').toLowerCase()}`
               : shortenAddress(normalizeSafeAddress(defaultAddress))}
           </Text>
-          <Icon
-            name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-            size={IconSize.Xs}
-            color={
-              addressCopied
-                ? IconColor.SuccessDefault
-                : IconColor.IconAlternative
-            }
-          />
         </Box>
       ) : (
         <Text
@@ -129,6 +103,24 @@ export const MultichainAccountCellDefaultAddress = ({
           ])}
         </Text>
       )}
+      <MultichainTriggeredAddressRowsList
+        groupId={groupId}
+        triggerMode="click"
+        showAccountHeaderAndBalance={false}
+        showViewAllButton={false}
+        showDefaultAddressSection={false}
+      >
+        <ButtonIcon
+          iconName={IconName.ArrowDown}
+          size={ButtonIconSize.Sm}
+          iconProps={{
+            size: IconSize.Xs,
+          }}
+          ariaLabel={t('openMultichainAccountAddressMenu')}
+          className="-ml-1 text-icon-alternative rounded-lg"
+          data-testid="default-address-menu-button"
+        />
+      </MultichainTriggeredAddressRowsList>
     </Box>
   );
 };

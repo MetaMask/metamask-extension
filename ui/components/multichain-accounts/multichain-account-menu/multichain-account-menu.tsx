@@ -1,12 +1,9 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxJustifyContent,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
   TextColor,
 } from '@metamask/design-system-react';
@@ -29,6 +26,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -40,9 +38,10 @@ export const MultichainAccountMenu = ({
   isOpen = false,
   onToggle,
 }: MultichainAccountMenuProps) => {
+  const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLButtonElement>(null);
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -83,7 +82,7 @@ export const MultichainAccountMenu = ({
     [accountTree, accountGroupId],
   );
 
-  const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
+  const togglePopover = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onToggle?.();
   };
@@ -246,22 +245,19 @@ export const MultichainAccountMenu = ({
 
   return (
     <>
-      <Box
-        className="flex multichain-account-cell-popover-menu-button rounded-lg"
+      <ButtonIcon
+        className={`multichain-account-cell-popover-menu-button${
+          buttonBackgroundColor ? ` ${buttonBackgroundColor}` : ''
+        }`}
         ref={popoverRef}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        backgroundColor={
-          buttonBackgroundColor ?? BoxBackgroundColor.BackgroundMuted
-        }
-        padding={1}
+        iconName={IconName.MoreVertical}
+        size={ButtonIconSize.Sm}
+        ariaLabel={t('accountOptions')}
         onClick={togglePopover}
-      >
-        <Icon
-          className="multichain-account-cell-popover-menu-button-icon"
-          name={IconName.MoreVertical}
-        />
-      </Box>
+        iconProps={{
+          className: 'multichain-account-cell-popover-menu-button-icon',
+        }}
+      />
       <Popover
         className="multichain-account-cell-popover-menu"
         isOpen={isOpen}

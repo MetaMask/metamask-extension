@@ -14,7 +14,6 @@ export type MultichainAccountMenuProps = {
 
   /**
    * Optional background color for the menu button.
-   * If not provided, falls back to BoxBackgroundColor.BackgroundMuted
    */
   buttonBackgroundColor?: BoxBackgroundColor;
 

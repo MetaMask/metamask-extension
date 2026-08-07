@@ -9,6 +9,10 @@
 }
 
 .add-multichain-account {
+  &:hover:not(.add-multichain-account--loading) {
+    background: var(--color-background-default-hover);
+  }
+
   &__icon-box {
     width: 32px;
     height: 32px;

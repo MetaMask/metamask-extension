@@ -10,11 +10,13 @@
     flex-shrink: 0;
   }
 
-  &:hover:not(.multichain-account-cell--no-hover):not(.is-selected) {
+  &:hover:not(.multichain-account-cell--no-hover) {
     background: var(--color-background-default-hover);
 
-    .multichain-account-cell__account-name {
-      color: var(--color-primary-default);
+    .multichain-account-cell__account-name:not(
+      .multichain-account-cell__account-name--selected
+    ) {
+      color: var(--color-text-default);
     }
   }
 }

@@ -66,7 +66,7 @@ export const BadgeStatus = ({
 
   return (
     <Box
-      className={classNames('multichain-badge-status pr-1', className)}
+      className={classNames('multichain-badge-status', className)}
       data-testid="multichain-badge-status"
       as="button"
       display={Display.Flex}
