@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  NetworkConfiguration,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
@@ -1060,6 +1061,10 @@ export class LegacyBackgroundApiService {
     waitForSubmit: boolean,
   ): AddTransactionRequest {
     const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
 
     return {
       messenger: this.#messenger,
@@ -1069,7 +1074,7 @@ export class LegacyBackgroundApiService {
         transactionParams.from,
       ) as InternalAccount,
       networkClientId: networkClientId as string,
-      chainId: this.#getChainIdByNetworkClientId(networkClientId),
+      chainId,
       transactionParams,
       transactionOptions: { ...transactionOptions, isInternal: true },
       securityAlertsEnabled: this.#messenger.call(
@@ -1077,29 +1082,6 @@ export class LegacyBackgroundApiService {
       ).securityAlertsEnabled,
       waitForSubmit,
     };
-  }
-
-  /**
-   * Resolves the chain ID that owns the given network client ID, mirroring the
-   * former `getAddTransactionRequest`'s
-   * `NetworkController.getNetworkConfigurationByNetworkClientId(...).chainId`.
-   *
-   * @param networkClientId - The network client ID to resolve.
-   * @returns The chain ID.
-   */
-  #getChainIdByNetworkClientId(networkClientId?: string): Hex {
-    const chainId = this.#messenger.call(
-      'NetworkController:getNetworkConfigurationByNetworkClientId',
-      networkClientId as string,
-    )?.chainId;
-
-    if (!chainId) {
-      throw new Error(
-        `No chain ID found for network client ID: ${networkClientId}`,
-      );
-    }
-
-    return chainId;
   }
 
   /**
