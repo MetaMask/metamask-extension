@@ -9,6 +9,7 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
@@ -18,7 +19,6 @@ import {
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 jest.mock('@metamask/multichain-account-service');
 

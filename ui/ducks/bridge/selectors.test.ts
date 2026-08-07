@@ -672,10 +672,6 @@ describe('Bridge selectors', () => {
             "name": "Tron",
           },
           {
-            "chainId": "stellar:pubnet",
-            "name": "Stellar",
-          },
-          {
             "chainId": "eip155:8453",
             "name": "Base",
           },
