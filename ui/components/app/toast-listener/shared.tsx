@@ -9,41 +9,24 @@ type Props = {
   toastId?: string;
   transactionId?: string;
   to?: string;
-  title?: string;
-  description?: string;
-  dataTestId?: string;
-  actionText?: string;
-  onActionClick?: () => void;
 };
 
 const TransactionToastContent = ({
   toastId,
   status,
   transactionId,
-  title,
-  description,
-  dataTestId,
-  actionText,
-  onActionClick,
   to,
 }: { status: ToastStatus } & Props) => {
-  const { title: derivedTitle, description: derivedDescription } =
-    useToastLabel(status, transactionId);
+  const { title, description } = useToastLabel(status, transactionId);
 
   return (
     <>
-      <ToastContent
-        title={title ?? derivedTitle}
-        description={description ?? derivedDescription}
-        dataTestId={dataTestId}
-        actionText={actionText}
-        onActionClick={onActionClick}
-      />
+      <ToastContent title={title} description={description} />
 
       {to && (
         <Link
           to={to}
-          aria-label={title ?? derivedTitle}
+          aria-label={title}
           className="absolute inset-0 z-[1] cursor-pointer"
           onClick={() => toast.dismiss(toastId)}
         />

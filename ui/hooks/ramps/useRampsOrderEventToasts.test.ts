@@ -2,13 +2,9 @@
  * @jest-environment jsdom
  */
 import { renderHook, act } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
-import {
-  dismissToast,
-  showFailedToast,
-  showPendingToast,
-  showSuccessToast,
-} from '../../components/app/toast-listener/shared';
+import { toast } from '../../components/ui/toast/toast';
 import { clearToastPhase } from '../../components/app/toast-listener/toast-lifecycle';
 import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
 
@@ -32,9 +28,22 @@ const buyOrder = {
   network: { name: 'Ethereum', chainId: 'eip155:1' },
 };
 
-function clickToastAction(toast: jest.Mock) {
-  const [, options] = toast.mock.calls[0];
-  options.onActionClick();
+type ToastContentProps = {
+  title: string;
+  description?: string;
+  actionText?: string;
+  onActionClick?: () => void;
+};
+
+function getToastContentProps(toastMock: jest.Mock): ToastContentProps {
+  const [content] = toastMock.mock.calls[0] as [
+    ReactElement<ToastContentProps>,
+  ];
+  return content.props;
+}
+
+function clickToastAction(toastMock: jest.Mock) {
+  getToastContentProps(toastMock).onActionClick?.();
 }
 
 jest.mock('react-router-dom', () => ({
@@ -58,11 +67,14 @@ jest.mock('../useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../components/app/toast-listener/shared', () => ({
-  showPendingToast: jest.fn(),
-  showSuccessToast: jest.fn(),
-  showFailedToast: jest.fn(),
-  dismissToast: jest.fn(),
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    loading: jest.fn(),
+    success: jest.fn(),
+    error: jest.fn(),
+    dismiss: jest.fn(),
+  },
+  ToastContent: () => null,
 }));
 
 describe('useRampsOrderEventToasts', () => {
@@ -87,7 +99,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showPendingToast).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
   });
 
   it('shows a pending toast when an order leaves PRECREATED', () => {
@@ -113,8 +125,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showPendingToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.loading).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.loading as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastPendingTitle',
         actionText: 'view',
@@ -145,8 +159,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showSuccessToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.success).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.success as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastSuccessTitle',
       }),
@@ -169,7 +185,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToastAction(showPendingToast as jest.Mock);
+    clickToastAction(toast.loading as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
   });
@@ -197,7 +213,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToastAction(showPendingToast as jest.Mock);
+    clickToastAction(toast.loading as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-1');
   });
@@ -223,7 +239,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    clickToastAction(showPendingToast as jest.Mock);
+    clickToastAction(toast.loading as jest.Mock);
 
     expect(mockNavigate).toHaveBeenCalledWith('/activity');
   });
@@ -250,8 +266,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showFailedToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.error).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.error as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastFailedTitle',
       }),
@@ -280,8 +298,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showFailedToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.error).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.error as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastFailedTitle',
       }),
@@ -310,8 +330,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showSuccessToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.success).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.success as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastSuccessTitle',
       }),
@@ -335,7 +357,7 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(dismissToast).toHaveBeenCalledWith('ramp-order-1');
+    expect(toast.dismiss).toHaveBeenCalledWith('ramp-order-1');
   });
 
   it('does not toast again when the status is unchanged', () => {
@@ -361,9 +383,9 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showPendingToast).not.toHaveBeenCalled();
-    expect(showSuccessToast).not.toHaveBeenCalled();
-    expect(showFailedToast).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(toast.error).not.toHaveBeenCalled();
   });
 
   it('does not re-toast historical orders when the selected account changes', () => {
@@ -392,9 +414,9 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showPendingToast).not.toHaveBeenCalled();
-    expect(showSuccessToast).not.toHaveBeenCalled();
-    expect(showFailedToast).not.toHaveBeenCalled();
+    expect(toast.loading).not.toHaveBeenCalled();
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(toast.error).not.toHaveBeenCalled();
   });
 
   it('dismisses prior-account toasts when the selected account changes', () => {
@@ -423,8 +445,8 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(dismissToast).toHaveBeenCalledWith('ramp-order-1');
-    expect(showPendingToast).not.toHaveBeenCalled();
+    expect(toast.dismiss).toHaveBeenCalledWith('ramp-order-1');
+    expect(toast.loading).not.toHaveBeenCalled();
   });
 
   it('uses sell toast copy for sell orders', () => {
@@ -451,8 +473,10 @@ describe('useRampsOrderEventToasts', () => {
       rerender();
     });
 
-    expect(showPendingToast).toHaveBeenCalledWith(
-      'ramp-order-1',
+    expect(toast.loading).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'ramp-order-1',
+    });
+    expect(getToastContentProps(toast.loading as jest.Mock)).toEqual(
       expect.objectContaining({
         title: 'rampsOrderToastSellPendingTitle',
         description: 'rampsOrderToastSellPendingDescription',

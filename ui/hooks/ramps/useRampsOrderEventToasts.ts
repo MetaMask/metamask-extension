@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { createElement, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -12,12 +12,7 @@ import {
   TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
-import {
-  dismissToast,
-  showFailedToast,
-  showPendingToast,
-  showSuccessToast,
-} from '../../components/app/toast-listener/shared';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 import {
   clearToastPhase,
   shouldShowPendingToast,
@@ -117,7 +112,7 @@ export function useRampsOrderEventToasts(): void {
     if (trackedAccountAddress.current !== selectedAccountAddress) {
       for (const orderCode of previousStatusById.current.keys()) {
         clearToastPhase(orderCode);
-        dismissToast(generateToastId(orderCode));
+        toast.dismiss(generateToastId(orderCode));
       }
       trackedAccountAddress.current = selectedAccountAddress;
       previousStatusById.current = new Map();
@@ -157,7 +152,7 @@ export function useRampsOrderEventToasts(): void {
     for (const orderCode of previous.keys()) {
       if (!next.has(orderCode)) {
         clearToastPhase(orderCode);
-        dismissToast(generateToastId(orderCode));
+        toast.dismiss(generateToastId(orderCode));
       }
     }
 
@@ -190,6 +185,13 @@ function handleOrderStatusChange({
   const onActionClick = () =>
     navigateToOrder(navigate, getLatestOrder(orderCode) ?? order);
   const actionText = t('view');
+  const getToastContent = (title: string, description: string) =>
+    createElement(ToastContent, {
+      actionText,
+      description,
+      onActionClick,
+      title,
+    });
 
   const becameInProgress =
     IN_PROGRESS.has(order.status) &&
@@ -197,11 +199,8 @@ function handleOrderStatusChange({
       previousStatus === RampsOrderStatus.Precreated);
 
   if (becameInProgress && shouldShowPendingToast(orderCode)) {
-    showPendingToast(toastId, {
-      actionText,
-      onActionClick,
-      title: copy.pendingTitle,
-      description: copy.pendingDescription,
+    toast.loading(getToastContent(copy.pendingTitle, copy.pendingDescription), {
+      id: toastId,
     });
     return;
   }
@@ -210,12 +209,10 @@ function handleOrderStatusChange({
     // Ensure the pending phase is recorded so a terminal toast is allowed.
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
-      showSuccessToast(toastId, {
-        actionText,
-        onActionClick,
-        title: copy.successTitle,
-        description: copy.successDescription,
-      });
+      toast.success(
+        getToastContent(copy.successTitle, copy.successDescription),
+        { id: toastId },
+      );
     }
     return;
   }
@@ -223,11 +220,8 @@ function handleOrderStatusChange({
   if (TERMINAL_FAILED.has(order.status)) {
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
-      showFailedToast(toastId, {
-        actionText,
-        onActionClick,
-        title: copy.failedTitle,
-        description: copy.failedDescription,
+      toast.error(getToastContent(copy.failedTitle, copy.failedDescription), {
+        id: toastId,
       });
     }
   }
