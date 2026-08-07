@@ -344,9 +344,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Ny kontaktperson"
-  },
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
   },

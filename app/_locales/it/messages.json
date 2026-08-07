@@ -716,9 +716,6 @@
   "networks": {
     "message": "Reti"
   },
-  "newContract": {
-    "message": "Nuovo Contratto"
-  },
   "newPassword": {
     "message": "Nuova Password (minimo 8 caratteri)"
   },

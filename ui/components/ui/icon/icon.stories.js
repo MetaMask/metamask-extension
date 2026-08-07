@@ -18,13 +18,10 @@ import Interaction from './interaction-icon.component';
 import Preloader from './preloader';
 import ReceiveIcon from './receive-icon.component';
 import SendIcon from './send-icon.component';
-import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
-import Swap from './swap-icon-for-list.component';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
-import SearchIcon from './search-icon';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -110,7 +107,6 @@ export const DefaultStory = (args) => (
         }}
       >
         <IconItem Component={<IconTokenSearch {...args} />} />
-        <IconItem Component={<SearchIcon {...args} />} />
       </div>
     </Box>
     <Box marginBottom={4}>
@@ -122,8 +118,6 @@ export const DefaultStory = (args) => (
         }}
       >
         <IconItem Component={<Approve {...args} />} />
-        <IconItem Component={<Sign {...args} />} />
-        <IconItem Component={<Swap {...args} />} />
         <IconItem Component={<SendIcon {...args} />} />
         <IconItem Component={<ReceiveIcon {...args} />} />
         <IconItem Component={<Interaction {...args} />} />
@@ -181,20 +175,6 @@ ApproveStory.args = {
   color: 'var(--color-icon-default)',
 };
 ApproveStory.storyName = 'Approve';
-
-export const SignStory = (args) => <Sign {...args} />;
-SignStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-SignStory.storyName = 'Sign';
-
-export const SwapStory = (args) => <Swap {...args} />;
-SwapStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-SwapStory.storyName = 'Swap';
 
 export const SendIconStory = (args) => <SendIcon {...args} />;
 SendIconStory.args = {

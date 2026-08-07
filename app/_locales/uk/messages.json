@@ -353,9 +353,6 @@
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Новий контракт"
-  },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
   },

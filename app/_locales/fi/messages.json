@@ -353,9 +353,6 @@
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Uusi sopimus"
-  },
   "newPassword": {
     "message": "Uusi salasana (väh. 8 merkkiä)"
   },

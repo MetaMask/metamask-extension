@@ -341,9 +341,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Nou Contracte"
-  },
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
   },

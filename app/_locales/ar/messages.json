@@ -354,9 +354,6 @@
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "عقد جديد"
-  },
   "newPassword": {
     "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
   },

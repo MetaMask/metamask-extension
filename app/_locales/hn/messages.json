@@ -166,9 +166,6 @@
     "message": "नया खाता $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "नया अनुबंध"
-  },
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
   },

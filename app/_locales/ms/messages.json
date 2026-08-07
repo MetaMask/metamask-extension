@@ -340,9 +340,6 @@
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Kontrak Baru"
-  },
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
   },
