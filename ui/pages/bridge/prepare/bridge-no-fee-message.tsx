@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { sumAmounts } from '@metamask/bridge-controller';
 import { Text } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -25,7 +26,10 @@ export const BridgeNoFeeMessage = () => {
     return null;
   }
 
-  const hasNoMMFee = Number(activeQuote.quote.feeData.metabridge.amount) === 0;
+  const hasNoMMFee =
+    Number(
+      sumAmounts(activeQuote.quote.feeData.metabridge)?.normalizedAmount ?? 0,
+    ) === 0;
 
   if (!hasNoMMFee) {
     return null;

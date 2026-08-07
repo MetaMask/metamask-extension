@@ -27,7 +27,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -63,7 +63,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -94,7 +94,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -125,7 +125,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -160,7 +160,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -190,7 +190,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -227,7 +227,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
