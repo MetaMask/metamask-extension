@@ -19,7 +19,7 @@
     "app/scripts/lib/forwardRequestToSnap.test.ts": {
       "error: Error from onAfterRequest hook: Error:": 2
     },
-    "app/scripts/lib/migrator/index.test.js": {
+    "app/scripts/lib/migrator/index.test.ts": {
       "MetaMask: Migration skipped warnings": 2,
       "MetaMask: Migration state warnings": 1,
       "error: Error: Migration #157: No INFURA_PROJECT_ID": 1,
