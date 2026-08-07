@@ -236,6 +236,21 @@ export type MessengerClientInitRequest<
   getOpenMetamaskTabsIds: () => Record<string, number>;
 
   /**
+   * Returns the current URL of the given browser tab.
+   *
+   * @param tabId - The ID of the tab to read.
+   */
+  getTabUrl: (tabId: number) => Promise<string | undefined>;
+
+  /**
+   * Navigates the given browser tab to the given URL.
+   *
+   * @param tabId - The ID of the tab to update.
+   * @param url - The URL to navigate the tab to.
+   */
+  updateTabUrl: (tabId: number, url: string) => Promise<void>;
+
+  /**
    * Marks the notification popup as having been automatically closed.
    */
   markNotificationPopupAsAutomaticallyClosed: () => void;

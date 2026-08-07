@@ -13,11 +13,9 @@ import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferenc
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import {
-  ConfirmInfoAlertRow,
-  getAlertTextColors,
-} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { getAlertTextColors } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
@@ -115,7 +113,7 @@ const EmptyContent = () => {
   );
 };
 
-const HeaderWithAlert = ({
+const Header = ({
   title,
   titleTooltip,
   transactionId,
@@ -154,12 +152,11 @@ const HeaderWithAlert = ({
       width={BlockSize.Full}
       alignItems={AlignItems.center}
     >
-      <ConfirmInfoAlertRow
-        alertKey={RowAlertKey.Resimulation}
+      <ConfirmInfoRow
         label={label}
-        ownerId={transactionId}
         tooltip={tooltip}
         style={{
+          background: 'transparent',
           paddingLeft: 0,
           paddingRight: 0,
         }}
@@ -231,7 +228,7 @@ const HeaderLayout = ({
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert
+        <Header
           title={title}
           titleTooltip={titleTooltip}
           transactionId={transactionId}

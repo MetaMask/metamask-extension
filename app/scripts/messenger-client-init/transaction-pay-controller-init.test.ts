@@ -113,4 +113,37 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({ isPostQuote: true });
     });
   });
+
+  describe('api.setTransactionPayAccountOverride', () => {
+    function initApi() {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, setTransactionConfigMock };
+    }
+
+    it('writes the supplied address to config.accountOverride', () => {
+      const { api, setTransactionConfigMock } = initApi();
+      const accountOverride =
+        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+
+      api.setTransactionPayAccountOverride('tx-1', accountOverride);
+
+      expect(setTransactionConfigMock).toHaveBeenCalledWith(
+        'tx-1',
+        expect.any(Function),
+      );
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { accountOverride?: string } = {};
+      updater(config as never);
+
+      expect(config).toEqual({ accountOverride });
+    });
+  });
 });

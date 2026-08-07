@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Vous envoyez vos actifs vers une adresse de destruction. Si vous continuez, vous perdrez vos actifs."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Les changements estimés pour cette transaction ont été mis à jour. Examinez-les attentivement avant de continuer."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Vous interagissez avec cette adresse pour la première fois. Assurez-vous qu’elle est correcte avant de continuer."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Portefeuille non pris en charge"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Les résultats ont changé"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1re interaction"
@@ -1644,8 +1638,24 @@
     "message": "Activez $1 sur $2 pour commencer.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Une erreur s’est produite lors de l’ajout de cette « trustline ». Veuillez réessayer.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Nous n’avons pas pu récupérer de données historiques"
+  },
+  "assetDeactivate": {
+    "message": "Supprimer",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Une erreur s’est produite lors de la suppression de cette « trustline ». Veuillez réessayer.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Il vous reste $1 $2 dans ce portefeuille. Vous devez transférer ou échanger la totalité de ce montant avant de désactiver cet actif sur Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Inactif",
@@ -3418,6 +3428,18 @@
   },
   "discover": {
     "message": "Découvrir"
+  },
+  "discoverSearchNoResults": {
+    "message": "Aucun résultat trouvé",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Découvrez d’autres actifs populaires",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol.",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Découvrir des Snaps",
@@ -6979,6 +7001,10 @@
   "perpsDateYesterday": {
     "message": "Hier"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Déposer",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Échec de la passerelle"
   },
@@ -7008,6 +7034,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Votre compte de trading de contrats à terme perpétuels a été approvisionné"
+  },
+  "perpsDepositedVerb": {
+    "message": "Déposé",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Dépôts"
@@ -7228,6 +7258,39 @@
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
   },
+  "perpsOrderBook": {
+    "message": "Carnet d’ordres"
+  },
+  "perpsOrderBookApply": {
+    "message": "Appliquer"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Connexion au carnet d’ordres perdue"
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Regrouper par"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Trié par"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Prix"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconnecter"
+  },
+  "perpsOrderBookSize": {
+    "message": "Taille"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookValueType": {
+    "message": "Type de valeur"
+  },
   "perpsOrderDate": {
     "message": "Date"
   },
@@ -7403,11 +7466,17 @@
   "perpsStatusCompleted": {
     "message": "Terminé"
   },
+  "perpsStatusFailed": {
+    "message": "Échec"
+  },
   "perpsStatusFilled": {
     "message": "Exécuté"
   },
   "perpsStatusOpen": {
     "message": "Ouvert"
+  },
+  "perpsStatusPending": {
+    "message": "En attente"
   },
   "perpsStatusQueued": {
     "message": "En attente"
@@ -7639,6 +7708,9 @@
   "perpsUnrealizedPnl": {
     "message": "Profits et pertes non réalisés"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Ce marché utilise des garanties non prises en charge et ne peut pas être négocié."
+  },
   "perpsWatchlist": {
     "message": "Liste de surveillance"
   },
@@ -7718,6 +7790,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Retrait",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "A retiré",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Vous recevez"
@@ -7962,6 +8042,9 @@
   "rampsBuyToken": {
     "message": "Acheter des $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Impossible de lancer le processus d’achat. Veuillez réessayer."
   },
   "rampsBuyingViaProvider": {
     "message": "Achat via $1.",
@@ -8710,6 +8793,300 @@
   },
   "securitySrpLabel": {
     "message": "PHRASES SECRÈTES DE RÉCUPÉRATION"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Taxe à l’achat/à la vente"
+  },
+  "securityTrustBuyTax": {
+    "message": "Taxe à l’achat"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Continuer quand même"
+  },
+  "securityTrustCreated": {
+    "message": "Créé"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Données de sécurité non disponibles"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Cette analyse de sécurité est fournie à titre indicatif uniquement et ne constitue ni une recommandation ni une incitation à négocier ce jeton."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Airdrop suspect"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Peut blacklister"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Peut whitelister"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Offre concentrée"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Transferts confidentiels"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Comportement suspect"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Appels externes"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Nombre exagéré de traders"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Volume fictif"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Délai d’attente pour la reprise de l’activité de trading"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Activité intense des bots"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Propriétaire masqué"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Offre non divulguée"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Frais d’achat élevés"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Réputation établie"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Frais de vente élevés"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Volume de trading élevé"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Frais de transfert élevés"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Risque de honeypot"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Imposteur"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Probablement un imposteur"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Imposteur non confirmé"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Peut-être un imposteur"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Se fait passer pour un actif sensible"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Contenu inapproprié"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Volume artificiel"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Liquidité bloquée insuffisante"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mintable"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Reconnu comme malveillant"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Coté en bourse"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Ce créateur a une réputation douteuse"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Métadonnées suspectes"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Taxes modifiables"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Non transférable"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Le propriétaire peut modifier le solde"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Manipulation potentielle du prix"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Contrat proxy"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Risque de rug pull"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Créateur sanctionné"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Ressemble à un contrat malveillant"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Activité de bot au lancement"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Texte indésirable"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Code suspect"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Porte dérobée dans le jeton"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Réversibilité des transferts activée"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Hook de transfert activé"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transferts pouvant être mis en pause"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Jeton invendable"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Prix instable"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Contrat publié"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading"
+  },
+  "securityTrustMalicious": {
+    "message": "Malveillant"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Malveillant"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "Le $1 a été signalé comme malveillant. Il est susceptible de dérober les fonds de toute personne qui interagit avec lui."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Ce jeton a été signalé comme malveillant. Il est susceptible de voler les fonds de toute personne qui interagit avec lui."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Des signaux de risque sérieux ont été détectés sur $1. Nous vous recommandons de ne pas trader ce jeton."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "De sérieux signaux d’alerte ont été détectés concernant ce jeton. Nous vous recommandons de ne pas trader ce jeton."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Jeton malveillant"
+  },
+  "securityTrustMore": {
+    "message": "plus"
+  },
+  "securityTrustNa": {
+    "message": "S.O."
+  },
+  "securityTrustNetwork": {
+    "message": "Réseau :"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Aucuns frais cachés détectés"
+  },
+  "securityTrustNoIssues": {
+    "message": "Aucun problème"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Liens officiels"
+  },
+  "securityTrustOther": {
+    "message": "Autre"
+  },
+  "securityTrustRisky": {
+    "message": "À risque"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "Le $1 a été signalé comme malveillant. Prenez connaissance des risques avant de continuer."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Ce jeton a été signalé comme suspect. Prenez connaissance des risques avant de continuer."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Jeton suspect"
+  },
+  "securityTrustSellTax": {
+    "message": "Taxe à la vente"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Aucun signal d’alerte détecté. Vous devez faire preuve de diligence raisonnable avant de négocier tout actif."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "De sérieux signaux d’alerte ont été détectés. Nous vous recommandons d’éviter cet actif."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Aucun signal d’alerte détecté. Vous devez faire preuve de diligence raisonnable avant de négocier tout actif."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Signaux d’alerte détectés. Examinez attentivement les problèmes signalés avant de négocier cet actif."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "L’analyse de sécurité n’a pas pu être chargée pour ce jeton."
+  },
+  "securityTrustSuspicious": {
+    "message": "Suspect"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "Le $1 est un jeton suspect."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Il s’agit d'un jeton suspect."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Sécurité et confiance"
+  },
+  "securityTrustTokenAge": {
+    "message": "Âge du jeton"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Répartition des jetons"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Informations sur le jeton"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Les 10 principaux détenteurs"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Offre totale"
+  },
+  "securityTrustTransfer": {
+    "message": "Transférer"
+  },
+  "securityTrustType": {
+    "message": "Type"
+  },
+  "securityTrustVerified": {
+    "message": "Vérifié"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "Le $1 est activement négocié et est largement reconnu. Cette vérification ne constitue pas une recommandation de la part de MetaMask."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Jeton vérifié"
+  },
+  "securityTrustWebsite": {
+    "message": "Site web"
   },
   "seeAllPermissions": {
     "message": "Voir toutes les autorisations",
@@ -11135,6 +11512,10 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Tout afficher",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { getResultTypeConfig } from '../../utils/security-utils';
 import {
+  getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
   SecurityTrustVerifiedBadge,
   type SecurityTrustInlineBadgeConfig,
@@ -12,7 +12,7 @@ const t = (key: string) => key;
 const getTestBadgeConfig = (
   resultType: string,
 ): SecurityTrustInlineBadgeConfig => {
-  const { badge } = getResultTypeConfig(resultType, t);
+  const badge = getSecurityTrustBadgeConfig(resultType, t);
   expect(badge).toBeDefined();
   if (!badge) {
     throw new Error(`Expected badge config for result type: ${resultType}`);
@@ -23,7 +23,7 @@ const getTestBadgeConfig = (
 describe('SecurityTrustInlineBadge', () => {
   it('renders verified icon without onClick', () => {
     const badge = getTestBadgeConfig('Verified');
-    const { getByTestId } = render(
+    const { getByLabelText, getByTestId } = render(
       <SecurityTrustInlineBadge
         badge={badge}
         testId="security-badge-verified"
@@ -31,6 +31,7 @@ describe('SecurityTrustInlineBadge', () => {
     );
 
     expect(getByTestId('security-badge-verified')).toBeInTheDocument();
+    expect(getByLabelText('securityTrustVerified')).toBeInTheDocument();
   });
 
   it('wraps verified icon in a button when onClick is provided', () => {

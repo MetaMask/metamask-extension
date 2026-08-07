@@ -2,7 +2,7 @@ import type { RampsController } from '@metamask/ramps-controller';
 import {
   createWatchRampsCheckoutTab,
   type WatchRampsCheckoutTabParams,
-} from '../lib/ramps-checkout-watch';
+} from '../lib/ramps/checkout-watch';
 import type ExtensionPlatform from '../platforms/extension';
 
 /**
