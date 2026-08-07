@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "価格情報なし"
   },
+  "bridgeOffHoursDescription": {
+    "message": "市場閉鎖中：価格は発行者が算出したものであり、リアルタイムの市場データではありません。次回の取引セッションで市場が再開した際に価格が異なる場合があります。"
+  },
+  "bridgeOffHoursTitle": {
+    "message": "時間外取引"
+  },
   "bridgePoints": {
     "message": "推定ポイント数",
     "description": "Label for estimated points that can be earned from a bridge or swap"

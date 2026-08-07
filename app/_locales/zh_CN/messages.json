@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "无价格信息"
   },
+  "bridgeOffHoursDescription": {
+    "message": "市场已关闭：价格由发行方计算，并非实时市场数据。当市场在下一个可用交易时段重新开放时，价格可能有所不同。"
+  },
+  "bridgeOffHoursTitle": {
+    "message": "盘后交易"
+  },
   "bridgePoints": {
     "message": "预计积分",
     "description": "Label for estimated points that can be earned from a bridge or swap"

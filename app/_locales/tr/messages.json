@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Fiyat bilgisi yok"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Piyasa kapalı: Fiyat, ihraçcı tarafından hesaplanmış olup canlı piyasa verisi değildir. Piyasalar bir sonraki müsait işlem seansında yeniden açıldığında farklılık gösterebilir."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Saatler dışı işlem"
+  },
   "bridgePoints": {
     "message": "Tah. puanlar",
     "description": "Label for estimated points that can be earned from a bridge or swap"

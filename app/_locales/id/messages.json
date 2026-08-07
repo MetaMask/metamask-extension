@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Tidak ada informasi harga"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Pasar tutup: Harga dihitung oleh penerbit, bukan data pasar langsung. Harga mungkin berbeda saat pasar dibuka kembali pada sesi perdagangan berikutnya yang tersedia."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Perdagangan di luar jam"
+  },
   "bridgePoints": {
     "message": "Estimasi poin",
     "description": "Label for estimated points that can be earned from a bridge or swap"

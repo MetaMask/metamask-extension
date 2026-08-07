@@ -2088,6 +2088,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Δεν υπάρχουν πληροφορίες τιμών"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Αγορά κλειστή: Η τιμή υπολογίζεται από τον εκδότη και δεν αντιπροσωπεύει ζωντανά δεδομένα αγοράς. Μπορεί να διαφέρει όταν οι αγορές ανοίξουν εκ νέου στην επόμενη διαθέσιμη συνεδρία."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Διαπραγμάτευση εκτός ωραρίου"
+  },
   "bridgePoints": {
     "message": "Εκτ. πόντοι",
     "description": "Label for estimated points that can be earned from a bridge or swap"
