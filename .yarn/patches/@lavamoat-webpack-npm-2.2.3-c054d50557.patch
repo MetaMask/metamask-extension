@@ -1,0 +1,66 @@
+diff --git a/src/buildtime/types.ts b/src/buildtime/types.ts
+index f223fc70f255c2e0e3c852e16b401f0879de2abe..913712c6d631270df04df7db1d57b375966b9087 100644
+--- a/src/buildtime/types.ts
++++ b/src/buildtime/types.ts
+@@ -5,5 +5,5 @@ import type { Chunk } from 'webpack'
+ export interface LavaMoatChunkRuntimeConfiguration {
+   mode: 'safe' | 'unlocked_unsafe' | 'null_unsafe'
+   staticShims?: string[],
+-  embeddedOptions?: Partial<Pick<CompleteLavaMoatPluginOptions, 'lockdown' | 'scuttleGlobalThis'>>
++  embeddedOptions?: Partial<Pick<CompleteLavaMoatPluginOptions, 'globalAliases' | 'lockdown' | 'scuttleGlobalThis'>>
+ }
+@@ -24,6 +24,7 @@ export interface CompleteLavaMoatPluginOptions {
+   isBuiltin: (specifier: string) => boolean
+   skipRepairs?: true | string[]
+   scuttleGlobalThis?: LavaMoatScuttleOpts
++  globalAliases?: string[]
+   debugRuntime?: boolean
+   unlockedChunksUnsafe?: RegExp
+   staticShims_experimental?: string[]
+diff --git a/src/runtime/runtime.js b/src/runtime/runtime.js
+index e28eb5aecfb1501a249f386f53a8b93aefc66a75..e55bc20463c43f490990dfc6b3a25a9c377b14a1 100644
+--- a/src/runtime/runtime.js
++++ b/src/runtime/runtime.js
+@@ -165,4 +165,10 @@ const enforcePolicy = (specifier, referrerResourceId, wrappedRequire) => {
+ const theRealGlobalThis = globalThis
+ /** @type {any} */
+ let rootCompartmentGlobalThis
+-const globalAliases = ['window', 'self', 'global', 'globalThis', 'frames']
++const globalAliases = LAVAMOAT.options.globalAliases ?? [
++  'window',
++  'self',
++  'global',
++  'globalThis',
++  'frames',
++]
+diff --git a/src/runtime/runtimeBuilder.js b/src/runtime/runtimeBuilder.js
+index 212fec6b9ed8956d16782b81f983f2843394da2b..efeca97f4212bb94d92b437102a28d5f46c5767b 100644
+--- a/src/runtime/runtimeBuilder.js
++++ b/src/runtime/runtimeBuilder.js
+@@ -331,4 +331,5 @@ const LOCKDOWN_SHIMS = [];`
+           embeddedOptions: {
+             scuttleGlobalThis: options.scuttleGlobalThis,
+             lockdown: options.lockdown,
++            globalAliases: options.globalAliases,
+           },
+diff --git a/types/buildtime/types.d.ts b/types/buildtime/types.d.ts
+index 6a1ce26fde6c5d077530eef1d3489f8d0f328e1b..f932b66c3ec3f03fde10991e7472e1956247d26b 100644
+--- a/types/buildtime/types.d.ts
++++ b/types/buildtime/types.d.ts
+@@ -5,7 +5,7 @@ import type { Chunk } from 'webpack';
+ export interface LavaMoatChunkRuntimeConfiguration {
+     mode: 'safe' | 'unlocked_unsafe' | 'null_unsafe';
+     staticShims?: string[];
+-    embeddedOptions?: Partial<Pick<CompleteLavaMoatPluginOptions, 'lockdown' | 'scuttleGlobalThis'>>;
++    embeddedOptions?: Partial<Pick<CompleteLavaMoatPluginOptions, 'globalAliases' | 'lockdown' | 'scuttleGlobalThis'>>;
+ }
+ export interface CompleteLavaMoatPluginOptions {
+     generatePolicy?: boolean;
+@@ -23,6 +23,7 @@ export interface CompleteLavaMoatPluginOptions {
+     isBuiltin: (specifier: string) => boolean;
+     skipRepairs?: true | string[];
+     scuttleGlobalThis?: LavaMoatScuttleOpts;
++    globalAliases?: string[];
+     debugRuntime?: boolean;
+     unlockedChunksUnsafe?: RegExp;
+     staticShims_experimental?: string[];
