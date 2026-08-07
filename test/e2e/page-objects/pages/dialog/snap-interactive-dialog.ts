@@ -15,6 +15,9 @@ const selectors = {
   exampleCheckbox: {
     testId: 'snap-ui-checkbox-example-checkbox',
   },
+  exampleCheckboxInput: {
+    testId: 'snap-ui-checkbox-example-checkbox-input',
+  },
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
@@ -109,16 +112,6 @@ class SnapInteractiveDialog {
   async checkElementIsDisabled(elementToCheck: keyof typeof selectors) {
     console.log(`Checking if ${elementToCheck} is disabled`);
     const element = await this.driver.findElement(selectors[elementToCheck]);
-    // Design-system Checkbox puts data-testid on the visible <label>; the native
-    // <input> (opacity-0) carries the disabled attribute that Selenium checks.
-    if (elementToCheck === 'exampleCheckbox') {
-      const input = await this.driver.findNestedElement(
-        element,
-        'input[type="checkbox"]',
-      );
-      assert.equal(await input.isEnabled(), false);
-      return;
-    }
     assert.equal(await element.isEnabled(), false);
   }
 

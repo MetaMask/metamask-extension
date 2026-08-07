@@ -77,7 +77,7 @@ describe('Interactive UI Snap', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await interactiveUI.checkElementIsDisabled('exampleInput');
         await interactiveUI.checkElementIsDisabled('exampleDropdown');
-        await interactiveUI.checkElementIsDisabled('exampleCheckbox');
+        await interactiveUI.checkElementIsDisabled('exampleCheckboxInput');
         await interactiveUI.checkElementIsDisabled('exampleSelectorDropdown');
         await interactiveUI.clickCancelButton();
       },
