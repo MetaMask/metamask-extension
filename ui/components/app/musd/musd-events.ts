@@ -109,7 +109,9 @@ export type MusdCtaClickedEventProperties = {
 /**
  * Resolves `redirects_to` for `MusdConversionCtaClicked` so it matches where
  * the user lands: buy (ramps) vs conversion custom amount.
+ *
  * @param params
+ * @param params.intent - Whether the CTA opens buy/ramps or conversion.
  */
 export function resolveMusdConversionCtaRedirectsTo(params: {
   intent: 'buy' | 'conversion';
