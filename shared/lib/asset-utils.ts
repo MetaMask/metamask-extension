@@ -25,7 +25,6 @@ import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
-import { CHAIN_IDS } from '../constants/network';
 import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
@@ -33,6 +32,7 @@ import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+const polygonCaipChainId = 'eip155:137' as CaipChainId;
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
@@ -56,7 +56,7 @@ export const toAssetId = (
 
   // TODO: Fix or replace `isNativeAddress` to support Polygon
   const isPolygonNative =
-    chainIdToUse === toEvmCaipChainId(CHAIN_IDS.POLYGON) &&
+    chainIdToUse === polygonCaipChainId &&
     addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
 
   if (isNativeAddress(addressToUse) || isPolygonNative) {
