@@ -3,18 +3,45 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
-import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import {
+  HardwareWalletType,
+  toHardwareWalletError,
+} from '../../../../shared/lib/hardware-wallets';
+import {
+  SerializedLedgerError,
+  isSerializedLedgerError,
+} from '../../../offscreen/hardware-wallets/ledger-utils';
 
-const MESSAGE_TIMEOUT = 4000;
+export const MESSAGE_TIMEOUT_MS = 4000;
+
+/**
+ * Timeout for `getPublicKey` requests sent to the offscreen document.
+ *
+ * `getPublicKey` does not require user interaction on the device (the address
+ * is returned without a confirmation prompt), so a relatively short timeout is
+ * appropriate. If the offscreen/WebHID round-trip wedges, this converts the
+ * otherwise-indefinite hang into a recoverable rejection.
+ */
+export const GET_PUBLIC_KEY_TIMEOUT_MS = 30_000;
+
+/**
+ * Timeout for signing requests sent to the offscreen document.
+ *
+ * Signing requires the user to physically confirm on the Ledger device, which
+ * can take longer; allow up to 5 minutes before giving up.
+ */
+export const SIGN_TIMEOUT_MS = 300_000;
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -25,6 +52,12 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
 type IFrameMessage<TAction extends LedgerAction> = {
   action: TAction;
   params?: Readonly<Record<string, unknown>>;
+};
+
+type LedgerOffscreenResponse<ResponsePayload> = {
+  success: boolean;
+  payload?: ResponsePayload | { error?: SerializedLedgerError };
+  error?: SerializedLedgerError;
 };
 
 /**
@@ -73,7 +106,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.makeApp,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -83,7 +116,7 @@ export class LedgerOffscreenBridge implements Omit<
         action: LedgerAction.updateTransport,
         params: { transportType },
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -92,7 +125,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.getAppNameAndVersion,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -101,7 +134,7 @@ export class LedgerOffscreenBridge implements Omit<
       {
         action: LedgerAction.getAppConfiguration,
       },
-      { timeout: MESSAGE_TIMEOUT },
+      { timeout: MESSAGE_TIMEOUT_MS },
     );
   }
 
@@ -110,10 +143,13 @@ export class LedgerOffscreenBridge implements Omit<
     address: string;
     chainCode?: string;
   }> {
-    return this.#sendMessage({
-      action: LedgerAction.getPublicKey,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getPublicKey,
+        params,
+      },
+      { timeout: GET_PUBLIC_KEY_TIMEOUT_MS },
+    );
   }
 
   deviceSignTransaction(params: { hdPath: string; tx: string }): Promise<{
@@ -121,29 +157,50 @@ export class LedgerOffscreenBridge implements Omit<
     s: string;
     r: string;
   }> {
-    return this.#sendMessage({
-      action: LedgerAction.signTransaction,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signTransaction,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT_MS },
+    );
   }
 
   deviceSignMessage(params: {
     hdPath: string;
     message: string;
   }): Promise<{ v: number; s: string; r: string }> {
-    return this.#sendMessage({
-      action: LedgerAction.signPersonalMessage,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signPersonalMessage,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT_MS },
+    );
   }
 
   deviceSignTypedData(
     params: LedgerSignTypedDataParams,
   ): Promise<LedgerSignTypedDataResponse> {
-    return this.#sendMessage({
-      action: LedgerAction.signTypedData,
-      params,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signTypedData,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT_MS },
+    );
+  }
+
+  deviceSignDelegationAuthorization(
+    params: LedgerSignDelegationAuthorizationParams,
+  ): Promise<LedgerSignDelegationAuthorizationResponse> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.signDelegationAuthorization,
+        params,
+      },
+      { timeout: SIGN_TIMEOUT_MS },
+    );
   }
 
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
@@ -155,7 +212,11 @@ export class LedgerOffscreenBridge implements Omit<
 
       if (timeout) {
         responseTimeout = setTimeout(() => {
-          reject(new Error('Ledger iframe timeout'));
+          reject(
+            new Error(
+              `Ledger device did not respond to "${message.action}" within ${timeout}ms`,
+            ),
+          );
         }, timeout);
       }
 
@@ -164,50 +225,65 @@ export class LedgerOffscreenBridge implements Omit<
           ...message,
           target: OffscreenCommunicationTarget.ledgerOffscreen,
         },
-        (response) => {
+        (rawResponse) => {
           clearTimeout(responseTimeout);
 
           if (chrome.runtime.lastError) {
-            const chromeError = chrome.runtime.lastError.message;
-            reject(new Error(chromeError));
+            reject(new Error(chrome.runtime.lastError.message));
             return;
           }
 
+          // Generic `TAction` prevents overload resolution from picking a
+          // specific ledger response shape, so declare it explicitly here.
+          const response: LedgerOffscreenResponse<ResponsePayload> | undefined =
+            rawResponse;
+
           if (response?.success) {
-            resolve(response.payload || response.success);
-          } else {
-            const error = response?.payload?.error;
-            if (
-              error?.name === 'HardwareWalletError' &&
-              typeof error?.code === 'number'
-            ) {
-              reject(
-                new HardwareWalletError(error.message, {
-                  code: error.code,
-                  severity: error.severity,
-                  category: error.category,
-                  userMessage: error.userMessage,
-                }),
-              );
-            } else if (
-              error &&
-              typeof error.statusCode === 'number' &&
-              error.statusCode > 0
-            ) {
-              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
-              if (isKnownLedgerError(statusCodeHex)) {
-                reject(createLedgerError(statusCodeHex));
-              } else {
-                reject(new TransportStatusError(error.statusCode));
-              }
-            } else if (error?.message) {
-              reject(new Error(error.message, { cause: error }));
-            } else {
-              reject(new Error('Unknown Ledger error occurred'));
-            }
+            resolve((response.payload ?? response.success) as ResponsePayload);
+            return;
           }
+
+          reject(this.#toLedgerBridgeError(response));
         },
       );
     });
+  }
+
+  #toLedgerBridgeError(
+    response: LedgerOffscreenResponse<unknown> | undefined,
+  ): Error {
+    const rawError = this.#extractError(response);
+    const error = isSerializedLedgerError(rawError) ? rawError : undefined;
+
+    if (error?.name === 'HardwareWalletError') {
+      return toHardwareWalletError(error, HardwareWalletType.Ledger);
+    }
+
+    if (error && typeof error.statusCode === 'number' && error.statusCode > 0) {
+      const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+      if (isKnownLedgerError(statusCodeHex)) {
+        return createLedgerError(statusCodeHex);
+      }
+      return new TransportStatusError(error.statusCode);
+    }
+
+    if (error?.message) {
+      return new Error(error.message, { cause: error });
+    }
+
+    return new Error('Unknown Ledger error occurred', { cause: rawError });
+  }
+
+  #extractError(
+    response: LedgerOffscreenResponse<unknown> | undefined,
+  ): unknown {
+    if (
+      response?.payload &&
+      typeof response.payload === 'object' &&
+      'error' in response.payload
+    ) {
+      return response.payload.error;
+    }
+    return response?.error;
   }
 }

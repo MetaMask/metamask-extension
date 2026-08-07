@@ -47,4 +47,9 @@ export class LedgerDmkBridgeHandler {
 
     return this.legacyHandler.handleAction(action, params);
   }
+
+  /** Forwards a forced transport reset to the underlying legacy handler. */
+  forceReset(): void {
+    this.legacyHandler?.forceReset();
+  }
 }

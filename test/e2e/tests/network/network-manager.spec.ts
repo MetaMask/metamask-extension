@@ -260,39 +260,6 @@ describe('Network Manager', function (this: Suite) {
     );
   });
 
-  it('should default to custom tab when custom network is enabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Custom');
-      },
-    );
-  });
-
-  it('should default to default tab when default network is enabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({ eip155: { '0x1': true } })
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Popular');
-      },
-    );
-  });
-
   it('should filter tokens by enabled networks', async function () {
     await withFixtures(
       {
@@ -400,9 +367,6 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Should be on Popular tab since both are popular networks
-        await networkManager.checkTabIsSelected('Popular');
-
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
         await networkManager.checkNetworkIsSelected(NetworkId.AVALANCHE);
       },
@@ -493,8 +457,7 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Switch to Popular tab and verify Ethereum is deselected
-        await networkManager.selectTab('Popular');
+        // Verify Ethereum is deselected
         await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );

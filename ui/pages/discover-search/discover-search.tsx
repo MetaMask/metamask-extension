@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import {
@@ -16,7 +16,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { isCaipAssetType } from '@metamask/utils';
@@ -61,6 +60,16 @@ const EmptyState = ({ message }: { message: string }) => (
   </Box>
 );
 
+const DiscoverSearchErrorState = () => {
+  const t = useI18nContext();
+
+  return (
+    <Box data-testid="discover-search-error">
+      <EmptyState message={t('somethingWentWrong')} />
+    </Box>
+  );
+};
+
 type DiscoverSearchEmptyStateProps = {
   noResultsMessage: string;
   query: string;
@@ -90,17 +99,72 @@ const DiscoverSearchSectionDivider = () => (
   </Box>
 );
 
+const SEARCH_QUERY_PARAM = 'q';
+const SEARCH_TAB_PARAM = 'tab';
+const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
+
+const isDiscoverSearchTab = (
+  value: string | null,
+): value is DiscoverSearchTab =>
+  value === 'all' ||
+  value === 'crypto' ||
+  value === 'perps' ||
+  value === 'stocks';
+
+type DiscoverSearchRouteParamUpdates = {
+  query?: string;
+  tab?: DiscoverSearchTab;
+};
+
+const getInitialDiscoverSearchTab = (
+  searchParams: URLSearchParams,
+): DiscoverSearchTab => {
+  const tab = searchParams.get(SEARCH_TAB_PARAM);
+  return isDiscoverSearchTab(tab) ? tab : DEFAULT_DISCOVER_SEARCH_TAB;
+};
+
+const getNextDiscoverSearchParams = (
+  previousParams: URLSearchParams,
+  updates: DiscoverSearchRouteParamUpdates,
+) => {
+  const nextParams = new URLSearchParams(previousParams);
+
+  if (updates.query !== undefined) {
+    if (updates.query) {
+      nextParams.set(SEARCH_QUERY_PARAM, updates.query);
+    } else {
+      nextParams.delete(SEARCH_QUERY_PARAM);
+    }
+  }
+
+  if (updates.tab !== undefined) {
+    if (updates.tab === DEFAULT_DISCOVER_SEARCH_TAB) {
+      nextParams.delete(SEARCH_TAB_PARAM);
+    } else {
+      nextParams.set(SEARCH_TAB_PARAM, updates.tab);
+    }
+  }
+
+  return nextParams;
+};
+
 /**
  * Discover search page: search + All / Crypto / Perps / Stock tabs.
  */
 export const DiscoverSearchPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isLoadingNextPageRef = useRef(false);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<DiscoverSearchTab>('all');
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get(SEARCH_QUERY_PARAM) ?? '',
+  );
+  const [activeTab, setActiveTab] = useState<DiscoverSearchTab>(() =>
+    getInitialDiscoverSearchTab(searchParams),
+  );
 
   const {
     crypto: cryptoSection,
@@ -119,9 +183,43 @@ export const DiscoverSearchPage = () => {
     [navigate, runCloseTransition],
   );
 
+  const updateRouteSearchParams = useCallback(
+    (updates: DiscoverSearchRouteParamUpdates) => {
+      setSearchParams(
+        (previousParams) =>
+          getNextDiscoverSearchParams(previousParams, updates),
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  const updateSearchQuery = useCallback(
+    (nextQuery: string) => {
+      setSearchQuery(nextQuery);
+      updateRouteSearchParams({ query: nextQuery });
+    },
+    [updateRouteSearchParams],
+  );
+
   const handleSearchClear = useCallback(() => {
-    setSearchQuery('');
-  }, []);
+    updateSearchQuery('');
+  }, [updateSearchQuery]);
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      updateSearchQuery(event.target.value);
+    },
+    [updateSearchQuery],
+  );
+
+  const updateActiveTab = useCallback(
+    (tab: DiscoverSearchTab) => {
+      setActiveTab(tab);
+      updateRouteSearchParams({ tab });
+    },
+    [updateRouteSearchParams],
+  );
 
   const handleAssetPress = useCallback(
     (asset: TrendingAsset) => {
@@ -141,9 +239,46 @@ export const DiscoverSearchPage = () => {
     [navigate],
   );
 
-  const handleViewAll = useCallback((tab: DiscoverSearchTab) => {
-    setActiveTab(tab);
-  }, []);
+  const handleViewAll = useCallback(
+    (tab: DiscoverSearchTab) => {
+      updateActiveTab(tab);
+    },
+    [updateActiveTab],
+  );
+
+  const handleTabContentScroll = useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      if (activeTab !== 'crypto' && activeTab !== 'stocks') {
+        return;
+      }
+
+      const section = activeTab === 'crypto' ? cryptoSection : stocks;
+      const { currentTarget } = event;
+      const distanceToBottom =
+        currentTarget.scrollHeight -
+        currentTarget.scrollTop -
+        currentTarget.clientHeight;
+
+      if (
+        distanceToBottom > 200 ||
+        !section.hasNextPage ||
+        section.isFetchingNextPage ||
+        !section.fetchNextPage ||
+        isLoadingNextPageRef.current
+      ) {
+        return;
+      }
+
+      isLoadingNextPageRef.current = true;
+      section
+        .fetchNextPage()
+        .catch(() => undefined)
+        .finally(() => {
+          isLoadingNextPageRef.current = false;
+        });
+    },
+    [activeTab, cryptoSection, stocks],
+  );
 
   const getSectionViewAllLabel = useCallback(
     (
@@ -204,6 +339,9 @@ export const DiscoverSearchPage = () => {
 
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
+  const hasAllError = Boolean(
+    cryptoSection.error || stocks.error || (isPerpsAvailable && perps.error),
+  );
   const showCryptoPreview = previewCrypto.length > 0 || cryptoSection.isLoading;
   const showPerpsPreview =
     isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
@@ -246,10 +384,14 @@ export const DiscoverSearchPage = () => {
   const renderAssetList = (
     items: TrendingAsset[],
     isLoading: boolean,
+    error: Error | null | undefined,
     testIdPrefix: string,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
+    }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
     }
     if (items.length === 0) {
       return (
@@ -269,9 +411,16 @@ export const DiscoverSearchPage = () => {
     ));
   };
 
-  const renderPerpsList = (items: PerpsMarketData[], isLoading: boolean) => {
+  const renderPerpsList = (
+    items: PerpsMarketData[],
+    isLoading: boolean,
+    error: Error | null | undefined,
+  ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
+    }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
     }
     if (items.length === 0) {
       return (
@@ -297,7 +446,9 @@ export const DiscoverSearchPage = () => {
       return renderAllTabSkeleton();
     }
     if (showAllEmpty) {
-      return (
+      return hasAllError ? (
+        <DiscoverSearchErrorState />
+      ) : (
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
@@ -322,6 +473,7 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewCrypto,
               cryptoSection.isLoading,
+              cryptoSection.error,
               'discover-crypto-preview',
             )}
           </>
@@ -336,12 +488,12 @@ export const DiscoverSearchPage = () => {
               viewAllLabel={getSectionViewAllLabel(
                 'perps',
                 perps.items.length,
-                undefined,
+                perps.totalCount,
                 perps.isLoading,
               )}
               data-testid="discover-section-perps"
             />
-            {renderPerpsList(previewPerps, perps.isLoading)}
+            {renderPerpsList(previewPerps, perps.isLoading, perps.error)}
           </>
         ) : null}
 
@@ -364,6 +516,7 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewStocks,
               stocks.isLoading,
+              stocks.error,
               'discover-stocks-preview',
             )}
           </>
@@ -376,11 +529,11 @@ export const DiscoverSearchPage = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      className="w-full h-full min-h-0"
+      className="h-full min-h-0 w-full overflow-hidden"
       data-testid="discover-search-page"
     >
       <Box
-        className="shrink-0 gap-2 px-4 py-4"
+        className="shrink-0 gap-2 bg-background-default px-4 py-4"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
@@ -399,12 +552,11 @@ export const DiscoverSearchPage = () => {
         </Link>
         <TextFieldSearch
           autoFocus={true}
-          className="app-text-field-search min-w-0 flex-1"
+          className="min-w-0 flex-1"
           placeholder={t('searchTokens')}
           value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
+          onChange={handleSearchChange}
           clearButtonOnClick={handleSearchClear}
-          size={TextFieldSize.Md}
           inputProps={
             {
               'data-testid': 'discover-search-input',
@@ -415,11 +567,16 @@ export const DiscoverSearchPage = () => {
       </Box>
 
       <Tabs
+        animated
         activeTab={activeTab}
-        onTabClick={(tab) => setActiveTab(tab as DiscoverSearchTab)}
+        onTabClick={(tab) => updateActiveTab(tab as DiscoverSearchTab)}
         className="min-h-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
-        tabContentProps={{ className: 'min-h-0 overflow-y-auto' }}
+        tabContentProps={{
+          className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
+          onScroll: handleTabContentScroll,
+        }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
           {allTabContent}
@@ -433,6 +590,7 @@ export const DiscoverSearchPage = () => {
           {renderAssetList(
             cryptoSection.items,
             cryptoSection.isLoading,
+            cryptoSection.error,
             'discover-crypto',
           )}
         </Tab>
@@ -443,7 +601,7 @@ export const DiscoverSearchPage = () => {
             tabKey="perps"
             data-testid="discover-tab-perps"
           >
-            {renderPerpsList(perps.items, perps.isLoading)}
+            {renderPerpsList(perps.items, perps.isLoading, perps.error)}
           </Tab>
         ) : null}
 
@@ -452,7 +610,12 @@ export const DiscoverSearchPage = () => {
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {renderAssetList(stocks.items, stocks.isLoading, 'discover-stocks')}
+          {renderAssetList(
+            stocks.items,
+            stocks.isLoading,
+            stocks.error,
+            'discover-stocks',
+          )}
         </Tab>
       </Tabs>
     </Box>

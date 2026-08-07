@@ -51,7 +51,7 @@ describe('BTC Account - Activity', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
@@ -79,7 +79,7 @@ describe('BTC Account - Activity', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         await broadcastBitcoinSend({
@@ -121,7 +121,7 @@ describe('BTC Account - Activity', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
         await homePage.goToActivityList();
