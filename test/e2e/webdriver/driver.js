@@ -72,8 +72,9 @@ function wrapElementWithAPI(element, driver) {
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
-        // Match Playwright: not displayed OR detached (e.g. closed <dialog>)
-        return await driver.wait(until.invisibilityOf(element), timeout);
+        // Closed <dialog> stays mounted; wait until not displayed.
+        // selenium-webdriver uses elementIsNotVisible (not invisibilityOf).
+        return await driver.wait(until.elementIsNotVisible(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
       case 'disabled':

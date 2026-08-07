@@ -155,8 +155,8 @@ export const GlobalMenuDrawer = ({
       ref={dialogRef}
       aria-labelledby={title ? titleId : undefined}
       className={className}
-      // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
       // @ts-expect-error closedby missing in React types
+      // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
       closedby="any"
       data-testid={dataTestId}
       onClose={handleDialogClose}
