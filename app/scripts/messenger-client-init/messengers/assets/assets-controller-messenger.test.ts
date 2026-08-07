@@ -10,11 +10,6 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'NetworkEnablementController:getState',
   'NetworkController:getState',
   'NetworkController:getNetworkClientById',
-  'BackendWebSocketService:subscribe',
-  'BackendWebSocketService:getConnectionInfo',
-  'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-  'BackendWebSocketService:addChannelCallback',
-  'BackendWebSocketService:removeChannelCallback',
   'SnapController:handleRequest',
   'SnapController:getRunnableSnaps',
   'PermissionController:getPermissions',
@@ -34,7 +29,6 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'NetworkController:networkDidChange',
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
-  'BackendWebSocketService:connectionStateChanged',
   'AccountsController:accountBalancesUpdated',
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
@@ -42,6 +36,7 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
   'AccountActivityService:balanceUpdated',
+  'AccountActivityService:statusChanged',
   'RemoteFeatureFlagController:stateChange',
 ] as const;
 
@@ -148,7 +143,7 @@ describe('getAssetsControllerMessenger', () => {
     );
   });
 
-  it('delegates BackendWebsocketDataSource WebSocket actions', () => {
+  it('delegates AccountActivityService statusChanged event', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -156,12 +151,8 @@ describe('getAssetsControllerMessenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        actions: expect.arrayContaining([
-          'BackendWebSocketService:subscribe',
-          'BackendWebSocketService:getConnectionInfo',
-          'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-          'BackendWebSocketService:addChannelCallback',
-          'BackendWebSocketService:removeChannelCallback',
+        events: expect.arrayContaining([
+          'AccountActivityService:statusChanged',
         ]),
       }),
     );

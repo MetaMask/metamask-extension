@@ -5648,7 +5648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.2.1, @metamask/assets-controller@npm:^11.3.0":
+"@metamask/assets-controller@npm:^11.2.1":
   version: 11.3.1
   resolution: "@metamask/assets-controller@npm:11.3.1"
   dependencies:
@@ -5686,7 +5686,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^110.0.0, @metamask/assets-controllers@npm:^110.0.2":
+"@metamask/assets-controller@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/assets-controller@npm:12.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/account-tree-controller": "npm:^7.5.5"
+    "@metamask/accounts-controller": "npm:^39.0.6"
+    "@metamask/assets-controllers": "npm:^110.0.3"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/client-controller": "npm:^1.0.1"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^8.1.0"
+    "@metamask/keyring-api": "npm:^23.7.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/keyring-internal-api": "npm:^11.0.2"
+    "@metamask/keyring-snap-client": "npm:^9.2.1"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^35.0.0"
+    "@metamask/network-enablement-controller": "npm:^6.0.1"
+    "@metamask/permission-controller": "npm:^13.1.1"
+    "@metamask/phishing-controller": "npm:^17.3.0"
+    "@metamask/polling-controller": "npm:^16.0.9"
+    "@metamask/preferences-controller": "npm:^23.1.0"
+    "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/transaction-controller": "npm:^69.4.0"
+    "@metamask/utils": "npm:^11.11.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    lodash: "npm:^4.17.21"
+    p-limit: "npm:^3.1.0"
+  checksum: 10/11ec1cb1a92a5ff10646dd15960bc2aa563fe17773250ee40b977e7c01bfb81601184fd6bb9328d5a69913e3769d96282c96548b9954b8a47a9451af9e886054
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@npm:^110.0.0, @metamask/assets-controllers@npm:^110.0.2, @metamask/assets-controllers@npm:^110.0.3":
   version: 110.1.1
   resolution: "@metamask/assets-controllers@npm:110.1.1"
   dependencies:
@@ -6076,20 +6114,20 @@ __metadata:
   linkType: hard
 
 "@metamask/config-registry-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/config-registry-controller@npm:1.0.0"
+  version: 1.0.1
+  resolution: "@metamask/config-registry-controller@npm:1.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
+    "@metamask/polling-controller": "npm:^16.0.9"
     "@metamask/profile-sync-controller": "npm:^28.3.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/d02172b4b58e74e87c76c067c0197eebf20365d4bccb9d5307e6f275dc6bfb7f65f11286493da4cbc26ed513df6be73db7f02929a3d60a231ea2bc0fee877abd
+  checksum: 10/30c30069094b4075bc6f7f3e46b4f6206f91fd6c04e264244efa4171b45855d1234299b572f58a2b2f5f7edc09db3f31d7607fdf693a90e6a2ff873d48119d1d
   languageName: node
   linkType: hard
 
@@ -6199,7 +6237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:8.1.1":
+"@metamask/core-backend@npm:8.1.1, @metamask/core-backend@npm:^8.1.0":
   version: 8.1.1
   resolution: "@metamask/core-backend@npm:8.1.1"
   dependencies:
@@ -7509,7 +7547,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.2":
+"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.1, @metamask/network-enablement-controller@npm:^6.0.2":
   version: 6.0.2
   resolution: "@metamask/network-enablement-controller@npm:6.0.2"
   dependencies:
@@ -32948,7 +32986,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.3.0"
+    "@metamask/assets-controller": "npm:^12.0.0"
     "@metamask/assets-controllers": "npm:^111.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
