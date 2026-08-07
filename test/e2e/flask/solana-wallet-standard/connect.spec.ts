@@ -1,13 +1,13 @@
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import { confirmConnectAndUpdateSiteNetworksToOnly } from '../../page-objects/flows/connect.flow';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
@@ -135,27 +135,19 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const modal = await testDapp.getWalletModal();
           await modal.connectToMetaMaskWallet();
 
-          // Open the permissions modal
+          // Open the connect dialog
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
           await connectAccountConfirmation.checkPageIsLoaded();
 
-          // Deselect all networks except "Ethereum"
-          await connectAccountConfirmation.goToPermissionsTab();
-          await connectAccountConfirmation.openEditNetworksModal();
-
-          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+          // Connect with Ethereum only so Solana permissions are not granted.
+          await confirmConnectAndUpdateSiteNetworksToOnly(
             driver,
+            DAPP_HOST_ADDRESS,
+            ['Ethereum'],
           );
-          await networkPermissionSelectModal.checkPageIsLoaded();
-          await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
-          await networkPermissionSelectModal.clickConfirmEditButton();
-
-          // Click connect
-          await connectAccountConfirmation.checkPageIsLoaded();
-          await connectAccountConfirmation.confirmConnect();
 
           // Switch back to test dapp
           await testDapp.switchTo();
