@@ -1140,23 +1140,6 @@
         "lodash": true
       }
     },
-    "@metamask/message-manager>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
     "@metamask/name-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1355,13 +1338,22 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "setTimeout": true
+        "TextEncoder": true
       },
       "packages": {
         "@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "@metamask/json-rpc-engine>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1812,7 +1804,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/message-manager>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "buffer": true,
         "webpack>events": true,
@@ -1943,7 +1935,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
