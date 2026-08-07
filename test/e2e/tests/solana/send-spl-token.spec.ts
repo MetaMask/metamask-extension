@@ -265,7 +265,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -345,7 +344,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
