@@ -439,7 +439,7 @@ export default function SrpInputImport({
                 data-testid="srp-input-import__srp-note"
                 className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
-                rows={7}
+                rows={5}
                 value={firstWord}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}

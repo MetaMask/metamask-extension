@@ -113,7 +113,6 @@ import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
-import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -549,12 +548,6 @@ const AssetPage = ({
                   className="asset-page__divider"
                 />
               )}
-              <MusdConvertSection />
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (

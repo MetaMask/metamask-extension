@@ -3344,6 +3344,150 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('unlockWithPasskey', () => {
+    const authenticationResponse =
+      'authentication-response' as unknown as Parameters<
+        LegacyBackgroundApiService['unlockWithPasskey']
+      >[0];
+
+    it('unlocks via the passkey controller and runs post-unlock account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const unlockSpy = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          unlockSpy,
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(unlockSpy).toHaveBeenCalledWith(authenticationResponse);
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+        expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
+        expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
+      });
+    });
+
+    it('propagates errors from the passkey controller and skips account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('not enrolled');
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          jest.fn().mockRejectedValue(error),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+      });
+    });
+  });
+
+  describe('changePasswordWithPasskeyVerification', () => {
+    const params = {
+      newPassword: 'new-password',
+      authenticationResponse: 'authentication-response',
+      options: { renewVaultKeyProtection: true },
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['changePasswordWithPasskeyVerification']
+    >[0];
+
+    it('delegates to the passkey controller with the params', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          changePasswordHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(changePasswordHandler).toHaveBeenCalledWith(params);
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          params,
+        );
+      });
+    });
+
+    it('serializes the change through the shared seedless operation mutex', async () => {
+      const seedlessOperationMutex = new Mutex();
+      const runExclusiveSpy = jest.spyOn(
+        seedlessOperationMutex,
+        'runExclusive',
+      );
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'PasskeyController:changePasswordWithPasskeyVerification',
+            jest.fn().mockResolvedValue(undefined),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          );
+
+          expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+          // The lock is released once the delegated call resolves.
+          expect(seedlessOperationMutex.isLocked()).toBe(false);
+        },
+      );
+    });
+
+    it('releases the mutex even when the passkey controller throws', async () => {
+      const seedlessOperationMutex = new Mutex();
+      const error = new Error('verification failed');
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'PasskeyController:changePasswordWithPasskeyVerification',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+              params,
+            ),
+          ).rejects.toThrow(error);
+
+          expect(seedlessOperationMutex.isLocked()).toBe(false);
+        },
+      );
+    });
+  });
+
   describe('changePassword', () => {
     it('changes the keyring password and releases the lock for a non-social login flow', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -6541,6 +6685,8 @@ function getMessenger(
       'PreferencesController:removeReferralDeclinedAccount',
       'PreferencesController:setAccountsReferralApproved',
       'PreferencesController:setPasswordForgotten',
+      'PasskeyController:unlockWithPasskey',
+      'PasskeyController:changePasswordWithPasskeyVerification',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
