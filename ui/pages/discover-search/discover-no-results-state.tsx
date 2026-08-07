@@ -76,7 +76,7 @@ export const DiscoverNoResultsState = ({
 
   return (
     <Box
-      className="flex h-full flex-col items-center justify-center gap-4 px-4 pt-[60px] text-center"
+      className="flex h-full flex-col items-center gap-4 px-4 pt-[60px] text-center"
       data-testid="discover-search-no-results"
     >
       <Box className="flex flex-col items-center gap-[18px]">

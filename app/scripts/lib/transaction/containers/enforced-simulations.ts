@@ -83,6 +83,7 @@ export async function enforceSimulations({
   log('Data', data);
 
   return {
+    slippage,
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.txParams.data = data;
       transaction.txParams.to = to;
