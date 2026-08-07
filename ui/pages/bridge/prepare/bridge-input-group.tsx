@@ -344,7 +344,9 @@ export const BridgeInputGroup = ({
             ellipsis
             style={{ textDecoration: 'none' }}
             data-testid="bridge-input-denomination-toggle"
-            aria-label="Toggle input denomination"
+            aria-label={`Toggle input denomination${
+              secondaryDisplay ? `, ${secondaryDisplay}` : ''
+            }`}
             onClick={onAmountTypeToggle}
           >
             {secondaryDisplay}

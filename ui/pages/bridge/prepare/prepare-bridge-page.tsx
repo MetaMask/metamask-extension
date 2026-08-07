@@ -201,8 +201,10 @@ const PrepareBridgePage = ({
 
   const destinationTokenAmount = dest?.normalizedAmount;
   const destinationFiatAmount = dest?.valueInCurrency;
+  const isDestinationFiatPrimary =
+    sourceInputAmount.isFiatPrimary && Boolean(destinationFiatAmount);
   let destinationAmount = '0';
-  if (sourceInputAmount.isFiatPrimary) {
+  if (isDestinationFiatPrimary) {
     destinationAmount = destinationFiatAmount
       ? new BigNumber(destinationFiatAmount).toFixed(2)
       : '0';
@@ -211,7 +213,7 @@ const PrepareBridgePage = ({
   }
 
   let destinationSecondaryDisplay: string | undefined;
-  if (sourceInputAmount.isFiatPrimary && destinationTokenAmount) {
+  if (isDestinationFiatPrimary && destinationTokenAmount) {
     destinationSecondaryDisplay = formatTokenAmount(
       locale,
       destinationTokenAmount,
@@ -613,9 +615,7 @@ const PrepareBridgePage = ({
             networks={toChains}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
-              sourceInputAmount.isFiatPrimary
-                ? getCurrencySymbol(currency)
-                : undefined
+              isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
