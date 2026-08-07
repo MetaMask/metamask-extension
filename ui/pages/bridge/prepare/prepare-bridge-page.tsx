@@ -129,6 +129,7 @@ const PrepareBridgePage = ({
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
@@ -443,8 +444,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
-                const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                const previousDestAmount = dest?.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -536,21 +536,16 @@ const PrepareBridgePage = ({
               dispatch(setToToken(newToToken));
             }}
             networks={toChains}
-            amountInFiat={
-              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
-            }
+            amountInFiat={dest?.valueInCurrency}
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.toTokenAmount?.amount
-                ? formatTokenAmount(
-                    locale,
-                    unvalidatedQuote.toTokenAmount.amount,
-                  )
+              value: dest?.normalizedAmount
+                ? formatTokenAmount(locale, dest.normalizedAmount)
                 : '0',
               autoFocus: false,
-              className: unvalidatedQuote?.toTokenAmount?.amount
+              className: dest?.normalizedAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
