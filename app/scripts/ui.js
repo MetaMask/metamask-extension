@@ -47,6 +47,10 @@ import {
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  APP_INIT_LIVENESS_STREAM,
+  BACKGROUND_LIVENESS_STREAM,
+} from './constants/stream';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -332,8 +336,8 @@ function connectSubstreams(connectionStream) {
 
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
-  mx.ignoreStream('background-liveness');
-  mx.ignoreStream('app-init-liveness');
+  mx.ignoreStream(BACKGROUND_LIVENESS_STREAM);
+  mx.ignoreStream(APP_INIT_LIVENESS_STREAM);
 
   return {
     controller: controllerSubstream,

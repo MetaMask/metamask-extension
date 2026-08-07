@@ -66,6 +66,10 @@ jest.mock('extension-port-stream', () => ({
     on(_event: string, _fn: (data: unknown) => void) {
       // empty on purpose
     }
+
+    setMaxListeners(_n: number) {
+      // empty on purpose
+    }
   },
 }));
 
