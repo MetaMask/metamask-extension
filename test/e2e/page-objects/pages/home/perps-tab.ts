@@ -129,7 +129,8 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Shown for both the populated list header and the empty-state header.
+   * Only rendered once there is history; the empty state has a plain header, so
+   * call {@link waitForRecentActivitySection} first when history is still arriving.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
