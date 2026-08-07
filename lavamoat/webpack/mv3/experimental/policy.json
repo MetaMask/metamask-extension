@@ -3572,120 +3572,21 @@
         "@sentry/core": true
       }
     },
-    "@sentry/browser>@sentry-internal/feedback": {
-      "globals": {
-        "FormData": true,
-        "HTMLFormElement": true,
-        "__SENTRY_DEBUG__": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "document.createElement": true,
-        "document.createElementNS": true,
-        "document.createTextNode": true,
-        "getComputedStyle": true,
-        "isSecureContext": true,
-        "matchMedia": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/core": true
-      }
-    },
-    "@sentry/browser>@sentry-internal/replay-canvas": {
-      "globals": {
-        "Blob": true,
-        "HTMLCanvasElement": true,
-        "HTMLImageElement": true,
-        "ImageData": true,
-        "URL.createObjectURL": true,
-        "WeakRef": true,
-        "Worker": true,
-        "cancelAnimationFrame": true,
-        "console.debug": true,
-        "console.error": true,
-        "createImageBitmap": true,
-        "document": true,
-        "performance.now": true
-      },
-      "packages": {
-        "@sentry/core": true
-      }
-    },
-    "@sentry/browser>@sentry-internal/replay": {
-      "globals": {
-        "Blob": true,
-        "CSSConditionRule": true,
-        "CSSGroupingRule": true,
-        "CSSMediaRule": true,
-        "CSSRule": true,
-        "CSSSupportsRule": true,
-        "Document": true,
-        "DragEvent": true,
-        "Element": true,
-        "FormData": true,
-        "HTMLElement": true,
-        "HTMLFormElement": true,
-        "Headers": true,
-        "MouseEvent": true,
-        "MutationObserver": true,
-        "Node.DOCUMENT_FRAGMENT_NODE": true,
-        "Node.prototype.contains": true,
-        "PointerEvent": true,
-        "Request": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "Worker": true,
-        "Zone.__symbol__": true,
-        "__RRWEB_EXCLUDE_IFRAME__": true,
-        "__RRWEB_EXCLUDE_SHADOW_DOM__": true,
-        "__SENTRY_DEBUG__": true,
-        "__SENTRY_EXCLUDE_REPLAY_WORKER__": true,
-        "__rrMutationObserver": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.debug": true,
-        "console.error": true,
-        "console.warn": true,
-        "customElements.get": true,
-        "document": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "location.href": true,
-        "location.origin": true,
-        "parent": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry-internal/browser-utils": true,
-        "@sentry/core": true
-      }
-    },
     "@sentry/browser": {
       "globals": {
         "Headers": true,
         "PerformanceObserver.supportedEntryTypes": true,
-        "Request": true,
         "URL": true,
         "WebAssembly": true,
         "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
         "addEventListener": true,
-        "clearTimeout": true,
         "console.error": true,
-        "fetch": true,
-        "importScripts": true,
-        "indexedDB.open": true,
-        "performance.timeOrigin": true,
         "setTimeout": true
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
-        "@sentry/browser>@sentry-internal/feedback": true,
-        "@sentry/browser>@sentry-internal/replay-canvas": true,
-        "@sentry/browser>@sentry-internal/replay": true,
         "@sentry/core": true
       }
     },
