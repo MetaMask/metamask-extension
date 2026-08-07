@@ -16,6 +16,13 @@ if (process.env.ENABLE_SENTRY === 'true') {
   // global, LavaMoat cannot translate that receiver to the browser global and
   // native APIs such as fetch throw "Illegal invocation". Binding the originals
   // to the root global here lets LavaMoat translate the receiver correctly.
+  // Binding changes function identity and native-function detection. That is
+  // acceptable for the configured Sentry integrations: request tracing wraps
+  // fetch without a native-function check, and MetaMask supplies the transport.
+  // SES also freezes Function.prototype.toString, so Sentry's FunctionToString
+  // integration cannot disguise its wrappers as the original functions. It
+  // disables itself safely; the only known difference is what wrapped functions
+  // return when application code explicitly calls `.toString()` on them.
   for (const globalName of [
     'fetch',
     'requestAnimationFrame',

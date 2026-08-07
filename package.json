@@ -497,7 +497,7 @@
     "@scure/base": "^1.2.5",
     "@segment/analytics-node": "^3.0.0",
     "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch",
-    "@sentry/core": "10.38.0",
+    "@sentry/core": "patch:@sentry/core@npm%3A10.38.0#~/.yarn/patches/@sentry-core-npm-10.38.0-059d87532e.patch",
     "@sentry/types": "10.38.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",

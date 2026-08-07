@@ -13,6 +13,7 @@ const mockArgs = {
   snow: false,
   manifestVersion: 3,
   type: 'main',
+  sentry: true,
   lavamoatDebug: false,
   generatePolicy: false,
 } as unknown as Args;
@@ -47,9 +48,14 @@ describe('LavamoatPlugin', () => {
       };
 
       assert.strictEqual(result.mode, 'safe');
-      assert.strictEqual(result.staticShims.length, 1);
+      assert.strictEqual(result.staticShims.length, 2);
       assert.ok(
-        result.staticShims[0].endsWith('/app/scripts/load/init-state-hooks.ts'),
+        result.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
+      assert.ok(
+        result.staticShims[1].endsWith('/app/scripts/load/init-state-hooks.ts'),
       );
       const exceptions =
         result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
@@ -98,7 +104,12 @@ describe('LavamoatPlugin', () => {
         staticShims: string[];
       };
       assert.strictEqual(result.mode, 'safe');
-      assert.deepStrictEqual(result.staticShims, []);
+      assert.strictEqual(result.staticShims.length, 1);
+      assert.ok(
+        result.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
 
       const snowPlugin = lavamoatPlugin({
         ...mockArgs,
@@ -118,9 +129,42 @@ describe('LavamoatPlugin', () => {
         snowPlugin.options.scuttleGlobalThis.scuttlerName,
         'SCUTTLER',
       );
-      assert.strictEqual(snowResult.staticShims.length, 2);
-      assert.ok(snowResult.staticShims[0].endsWith('/snow.prod.js'));
-      assert.ok(snowResult.staticShims[1].endsWith('/app/scripts/use-snow.js'));
+      assert.strictEqual(snowResult.staticShims.length, 3);
+      assert.ok(
+        snowResult.staticShims[0].endsWith(
+          '/app/scripts/load/set-sentry-stack-trace-limit.ts',
+        ),
+      );
+      assert.ok(snowResult.staticShims[1].endsWith('/snow.prod.js'));
+      assert.ok(snowResult.staticShims[2].endsWith('/app/scripts/use-snow.js'));
+    });
+
+    it('omits the Sentry shim when Sentry is disabled', () => {
+      const disabledPlugin = lavamoatPlugin({
+        ...mockArgs,
+        sentry: false,
+      }) as unknown as {
+        options: {
+          runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
+        };
+      };
+      const disabledRuntimeConfig =
+        disabledPlugin.options.runtimeConfigurationPerChunk_experimental;
+
+      const runtimeResult = disabledRuntimeConfig(
+        mockChunk('runtime'),
+      ) as { staticShims: string[] };
+      assert.deepStrictEqual(runtimeResult.staticShims, []);
+
+      const serviceWorkerResult = disabledRuntimeConfig(
+        mockChunk('service-worker.ts'),
+      ) as { staticShims: string[] };
+      assert.strictEqual(serviceWorkerResult.staticShims.length, 1);
+      assert.ok(
+        serviceWorkerResult.staticShims[0].endsWith(
+          '/app/scripts/load/init-state-hooks.ts',
+        ),
+      );
     });
 
     it('keeps null_unsafe mode for the host-realm entries', () => {
