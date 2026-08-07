@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import Fuse from 'fuse.js';
+import Fuse, { type FuseOptions } from 'fuse.js';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 
 import { filterMarketsByQuery } from '../../components/app/perps/utils';
 import { usePerpsLiveMarketListData } from '../perps/stream/usePerpsLiveMarketListData';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 
-const PERPS_FUSE_OPTIONS = {
+const PERPS_FUSE_OPTIONS: FuseOptions<PerpsMarketData> = {
   shouldSort: true,
   threshold: 0.2,
   location: 0,
@@ -15,7 +15,7 @@ const PERPS_FUSE_OPTIONS = {
   maxPatternLength: 32,
   minMatchCharLength: 1,
   keys: ['symbol', 'name'],
-} as const;
+};
 
 export type UseDiscoverPerpsSearchOptions = {
   query: string;
@@ -60,7 +60,10 @@ export const useDiscoverPerpsSearch = ({
     }
 
     const queryFiltered = filterMarketsByQuery(markets, trimmedQuery);
-    return new Fuse(queryFiltered, PERPS_FUSE_OPTIONS).search(trimmedQuery);
+    // Fuse.js v3 returns market data directly, despite its bundled v6 types.
+    return new Fuse(queryFiltered, PERPS_FUSE_OPTIONS).search(
+      trimmedQuery,
+    ) as unknown as PerpsMarketData[];
   }, [isPerpsSearchEnabled, markets, query]);
 
   return {
