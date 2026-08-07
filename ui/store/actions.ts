@@ -4248,6 +4248,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
+}
+
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

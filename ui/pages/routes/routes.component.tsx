@@ -2,7 +2,7 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
@@ -19,6 +19,7 @@ import {
   ASSET_DETAILS_ROUTE,
   ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
+  ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -41,6 +42,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  SWAP_PATH,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
@@ -89,6 +91,7 @@ import {
   getNetworkIdentifier,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
+  getPendingRedirectRoute,
 } from '../../selectors';
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
@@ -102,6 +105,7 @@ import {
   setLastActiveTime,
   hideDeprecatedNetworkModal,
   hideKeyringRemovalResultModal,
+  setPendingRedirectRoute,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
@@ -649,6 +653,7 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -711,6 +716,28 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  // Cashtag sidepanel redirects (swap / asset details). Home may not be mounted.
+  const pendingRedirectRoute = useAppSelector(getPendingRedirectRoute);
+  useEffect(() => {
+    if (!isUnlocked || !pendingRedirectRoute?.path) {
+      return;
+    }
+    const { path, search } = pendingRedirectRoute;
+    const isCashtagRedirect =
+      path === SWAP_PATH || path.startsWith(`${ASSET_ROUTE}/`);
+    if (!isCashtagRedirect) {
+      return;
+    }
+    if (
+      pendingRedirectRoute.environmentType &&
+      pendingRedirectRoute.environmentType !== getEnvironmentType()
+    ) {
+      return;
+    }
+    dispatch(setPendingRedirectRoute(null));
+    navigate(search ? `${path}${search}` : path);
+  }, [isUnlocked, pendingRedirectRoute, navigate, dispatch]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

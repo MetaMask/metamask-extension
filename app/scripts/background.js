@@ -78,6 +78,7 @@ import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mo
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
+import { registerCashtagBackgroundBridge } from './cashtag/background';
 
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
@@ -874,6 +875,11 @@ async function initialize(backup) {
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  // Registers the bridge between the X ticker content script and background service
+  registerCashtagBackgroundBridge({
+    getController: () => controller,
+  });
 
   // Set up connectivity detection
   if (isManifestV3) {

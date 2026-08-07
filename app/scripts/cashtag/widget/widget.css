@@ -1,0 +1,43 @@
+/* Copied via webpack (PostCSS + Tailwind) → fetched into the widget shadow.
+   Design tokens are prepended by the CopyPlugin transform.
+   Do not import this file from JS — HtmlBundler empties CSS modules. */
+
+/* Base/preflight is required so DS components (e.g. Button) aren't
+   fighting UA styles like the default 3D button border. */
+@tailwind base;
+@tailwind utilities;
+
+:host {
+  color-scheme: dark;
+  font-family: var(--font-family-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mm-cashtag-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: auto;
+  position-anchor: --cashtag-menu-anchor;
+  top: anchor(bottom);
+  right: anchor(right);
+  left: auto;
+  margin-block-start: 8px;
+  position-try-fallbacks: flip-block, flip-inline;
+}
+
+@keyframes mm-cashtag-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-mm-cashtag-fade-in {
+  animation: mm-cashtag-fade-in 160ms ease-out;
+}

@@ -1,0 +1,44 @@
+/* Injected into the page: popover positioning only (no design tokens). */
+
+a[interestfor='mm-cashtag-popover'] {
+  interest-delay: 0.25s 0.6s;
+}
+
+:has(a[interestfor='mm-cashtag-popover']:interest-source)
+  a[interestfor='mm-cashtag-popover'] {
+  interest-delay-start: 0s;
+}
+
+#mm-cashtag-popover {
+  margin: unset;
+  inset: auto;
+  border: none;
+  padding: 0;
+  width: max-content;
+  height: max-content;
+  border-radius: 12px;
+  overflow: visible;
+  background: transparent;
+
+  position-anchor: --cashtag-invoker;
+  position-area: center inline-end;
+  margin-inline-start: 8px;
+  position-try:
+    flip-inline,
+    flip-block,
+    flip-inline flip-block;
+}
+
+@supports not (position-area: center inline-end) {
+  #mm-cashtag-popover {
+    position-area: right;
+    margin-inline-start: 8px;
+  }
+
+  html:dir(rtl) #mm-cashtag-popover,
+  html[dir='rtl'] #mm-cashtag-popover {
+    position-area: left;
+    margin-inline-start: 0;
+    margin-inline-end: 8px;
+  }
+}

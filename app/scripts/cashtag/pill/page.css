@@ -1,0 +1,56 @@
+/* Injected into the page. Tiny light-DOM chrome — hardcoded, no design tokens. */
+
+a[data-mm-cashtag],
+a[data-mm-cashtag]:link,
+a[data-mm-cashtag]:visited,
+a[data-mm-cashtag]:hover,
+a[data-mm-cashtag]:active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0 2px;
+  padding: 2px 10px 2px 3px;
+  border-radius: 999px;
+  border: 1px solid #ffffff14;
+  background: #ffffff0a;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.2;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: light) {
+  a[data-mm-cashtag],
+  a[data-mm-cashtag]:link,
+  a[data-mm-cashtag]:visited,
+  a[data-mm-cashtag]:hover,
+  a[data-mm-cashtag]:active {
+    border-color: #b4b4b566;
+    background: #b4b4b528;
+    color: #131416;
+  }
+}
+
+a[data-mm-cashtag] .mm-cashtag-pill-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+a[data-mm-cashtag] .mm-cashtag-pill-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+}
+
+a[data-mm-cashtag] .mm-cashtag-pill-price:empty {
+  display: none;
+}
