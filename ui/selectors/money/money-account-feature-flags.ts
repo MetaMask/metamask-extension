@@ -4,8 +4,8 @@ import {
   isValidHexAddress,
   type Hex,
 } from '@metamask/utils';
-import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 
 /**
  * The Money Account vault contracts, parsed from the
