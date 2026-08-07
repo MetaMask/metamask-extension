@@ -92,6 +92,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
   // Dist builds still persist `useSidePanelAsDefault: true` while fixtures use `false`.
   'data.PreferencesController.preferences.useSidePanelAsDefault',
+  // Dist build sets this to false despite being true when onboarding with localhost (bug #45237)
+  'data.PreferencesController.preferences.showTestNetworks',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
