@@ -4,6 +4,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   parseApprovalTransactionData,
+  parseTransferTransactionData,
   parseTypedDataMessage,
 } from '../../../../shared/lib/transaction.utils';
 import { ResultType } from '../../../../shared/lib/trust-signals';
@@ -20,6 +21,7 @@ const TEST_ADDRESSES = {
   FROM: '0xabcdef0123456789012345678901234567890123',
   SPENDER: '0x9876543210987654321098765432109876543210',
   DELEGATE: '0xfedcba9876543210fedcba9876543210fedcba98',
+  TRANSFER_RECIPIENT: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
 };
 
 const MOCK_SCAN_RESPONSES = {
@@ -135,6 +137,9 @@ describe('createTrustSignalsMiddleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
   const parseApprovalTransactionDataMock = jest.mocked(
     parseApprovalTransactionData,
+  );
+  const parseTransferTransactionDataMock = jest.mocked(
+    parseTransferTransactionData,
   );
   const parseTypedDataMessageMock = jest.mocked(parseTypedDataMessage);
   let consoleErrorSpy: jest.SpyInstance;
@@ -500,7 +505,7 @@ describe('createTrustSignalsMiddleware', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
+          '[createTrustSignalsMiddleware] error scanning spender address for transaction:',
           expect.any(Error),
         );
       });
@@ -632,6 +637,99 @@ describe('createTrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
       });
     });
+
+    describe('token transfer transactions', () => {
+      // ERC-20 `transfer(TRANSFER_RECIPIENT, 10)`
+      const transferData = `0xa9059cbb000000000000000000000000${TEST_ADDRESSES.TRANSFER_RECIPIENT.slice(
+        2,
+      )}000000000000000000000000000000000000000000000000000000000000000a`;
+
+      beforeEach(() => {
+        parseTransferTransactionDataMock.mockReturnValue({
+          name: 'transfer',
+          recipient: TEST_ADDRESSES.TRANSFER_RECIPIENT as `0x${string}`,
+        });
+      });
+
+      it('scans both the token contract and the decoded transfer recipient', async () => {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, phishingController } =
+          createMiddleware();
+
+        const req = createMockRequest('eth_sendTransaction', [
+          createTransactionParams({ data: transferData }),
+        ]);
+        const next = jest.fn();
+
+        await middleware(req, createMockResponse(), next);
+
+        expect(parseTransferTransactionDataMock).toHaveBeenCalledWith(
+          transferData,
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          CHAIN_IDS.MAINNET,
+          phishingController,
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TRANSFER_RECIPIENT,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          CHAIN_IDS.MAINNET,
+          phishingController,
+        );
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('does not scan a recipient when the calldata is not a token transfer', async () => {
+        parseTransferTransactionDataMock.mockReturnValue(undefined);
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware } = createMiddleware();
+
+        const req = createMockRequest('eth_sendTransaction', [
+          createTransactionParams({ data: '0x12345678' }),
+        ]);
+        const next = jest.fn();
+
+        await middleware(req, createMockResponse(), next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('logs an error and continues when the recipient scan fails', async () => {
+        scanAddressMockAndAddToCache
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockRejectedValueOnce(new Error('Recipient scan failed'));
+        const { middleware, phishingController } = createMiddleware();
+
+        const req = createMockRequest('eth_sendTransaction', [
+          createTransactionParams({ data: transferData }),
+        ]);
+        const next = jest.fn();
+
+        await middleware(req, createMockResponse(), next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+
+        // Wait for async error handling
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[createTrustSignalsMiddleware] error scanning transfer recipient address for transaction:',
+          expect.any(Error),
+        );
+      });
+    });
   });
 
   describe('wallet_sendCalls', () => {
@@ -704,6 +802,41 @@ describe('createTrustSignalsMiddleware', () => {
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
       expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.SPENDER,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+    });
+
+    it('scans the decoded recipient of a nested token transfer call', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      parseTransferTransactionDataMock.mockReturnValue({
+        name: 'transfer',
+        recipient: TEST_ADDRESSES.TRANSFER_RECIPIENT as `0x${string}`,
+      });
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+
+      const transferData = '0xa9059cbb';
+      const req = createMockRequest(
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        createSendCallsParams([
+          { to: TEST_ADDRESSES.TO, data: transferData, value: '0x0' },
+        ]) as Json[],
+      );
+      const next = jest.fn();
+
+      await middleware(req, createMockResponse(), next);
+
+      expect(parseTransferTransactionDataMock).toHaveBeenCalledWith(
+        transferData,
+      );
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TRANSFER_RECIPIENT,
         appStateController.getAddressSecurityAlertResponse,
         appStateController.addAddressSecurityAlertResponse,
         CHAIN_IDS.MAINNET,

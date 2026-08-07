@@ -3,6 +3,7 @@ import {
   SimulationTokenStandard,
   TransactionMeta,
   TransactionStatus,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
@@ -25,6 +26,11 @@ const NESTED_ADDRESS_A = '0xNestedAddressA';
 const NESTED_ADDRESS_B = '0xNestedAddressB';
 const UNMAPPED_CHAIN_ID: Hex = '0x1237';
 const CACHE_KEY = createCacheKey(ETHEREUM_CHAIN_ID, TO_ADDRESS);
+const TOKEN_CONTRACT = '0xTokenContract';
+const TRANSFER_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
+// ERC-20 `transfer(TRANSFER_RECIPIENT, 10)`
+const TRANSFER_DATA: Hex =
+  '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a';
 
 const BASE_TRANSACTION_META: TransactionMeta = {
   id: 'test-tx-id',
@@ -488,6 +494,74 @@ describe('enforced-simulations', () => {
             }),
           ),
         ).toBe(true);
+      });
+    });
+
+    describe('with token transfers', () => {
+      // Enforced simulations defend against red-pill contracts, so the trust
+      // gate deliberately evaluates the executed contract (`to`), never the
+      // transfer recipient decoded from calldata (CONF-1078). Recipient
+      // verdicts in the same cache serve UI trust signals only.
+      it('keys the exemption off the token contract, not the decoded transfer recipient', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              type: TransactionType.tokenMethodTransfer,
+              txParams: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: TOKEN_CONTRACT,
+                data: TRANSFER_DATA,
+              },
+            },
+            buildStateForAddresses({
+              [TOKEN_CONTRACT]: ResultType.Trusted,
+              [TRANSFER_RECIPIENT]: ResultType.Benign,
+            }),
+          ),
+        ).toBe(false);
+      });
+
+      it('enforces when the token contract is not trusted, regardless of the recipient verdict', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              type: TransactionType.tokenMethodTransfer,
+              txParams: {
+                ...BASE_TRANSACTION_META.txParams,
+                to: TOKEN_CONTRACT,
+                data: TRANSFER_DATA,
+              },
+            },
+            buildStateForAddresses({
+              [TOKEN_CONTRACT]: ResultType.Benign,
+              [TRANSFER_RECIPIENT]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(true);
+      });
+
+      it('keys nested transfer calls off each nested contract address', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                {
+                  to: TOKEN_CONTRACT as `0x${string}`,
+                  data: TRANSFER_DATA,
+                  type: TransactionType.tokenMethodTransfer,
+                },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [TOKEN_CONTRACT]: ResultType.Trusted,
+              [TRANSFER_RECIPIENT]: ResultType.Benign,
+            }),
+          ),
+        ).toBe(false);
       });
     });
 
