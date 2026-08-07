@@ -198,6 +198,9 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     undefined,
     undefined,
     null,
+    undefined,
+    undefined,
+    "1.5",
   ],
 ]
 `;
@@ -402,6 +405,9 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     undefined,
     undefined,
     null,
+    undefined,
+    undefined,
+    "1.5",
   ],
 ]
 `;
