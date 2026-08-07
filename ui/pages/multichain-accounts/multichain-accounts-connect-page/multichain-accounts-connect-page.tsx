@@ -181,6 +181,16 @@ export const MultichainAccountsConnectPage = ({
       KnownSessionProperties.TronAccountChangedNotifications
     ];
 
+  // Requests carrying the `eip1193-compatible` session property come from
+  // EIP-1193 compatibility layers (e.g. `@metamask/connect-evm`) that route
+  // legacy-style dapp connections through the Multichain API. They should get
+  // the same all-networks pre-selection as legacy EIP-1193 requests.
+  const isEip1193CompatibleRequest = Boolean(
+    requestedCaip25CaveatValue.sessionProperties?.[
+      KnownSessionProperties.Eip1193Compatible
+    ],
+  );
+
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
       existingCaip25CaveatValue
@@ -274,9 +284,14 @@ export const MultichainAccountsConnectPage = ({
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    // If the request is an EIP-1193 request (with no specific chains requested), a Solana wallet standard or a tronWallet library request , return the default selected network list
+    // Return the default selected network list if the request is an EIP-1193
+    // request (with no specific chains requested), an EIP-1193 compatible
+    // request (a Multichain API request carrying the `eip1193-compatible`
+    // session property, set by MetaMask Connect's `@metamask/connect-evm`), a
+    // Solana wallet standard request, or a tronWallet library request
     if (
       (requestedCaipChainIds.length === 0 && isEip1193Request) ||
+      isEip1193CompatibleRequest ||
       isSolanaWalletStandardRequest ||
       isTronWalletAdapterRequest
     ) {
@@ -336,6 +351,7 @@ export const MultichainAccountsConnectPage = ({
     testNetworkConfigurations,
     requestedCaipChainIds,
     isEip1193Request,
+    isEip1193CompatibleRequest,
     currentlySelectedNetwork.chainId,
     requestedNamespaces,
     requestedNamespacesWithoutWallet,

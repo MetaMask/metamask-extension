@@ -957,6 +957,95 @@ describe('MultichainConnectPage', () => {
       expect(actualChainIds).toContain(TRON_CAIP_CHAIN_ID);
     });
 
+    it('returns all default networks for requests with the eip1193-compatible session property even when specific chains are requested', () => {
+      const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+      mockGetCaip25CaveatValueFromPermissions.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {
+          'eip155:1': {
+            accounts: [],
+          },
+          'eip155:137': {
+            accounts: [],
+          },
+        },
+        sessionProperties: {
+          [KnownSessionProperties.Eip1193Compatible]: true,
+        },
+        isMultichainOrigin: true,
+      });
+
+      mockGetAllScopesFromCaip25CaveatValue.mockReturnValue([
+        'eip155:1',
+        'eip155:137',
+      ]);
+
+      mockGetAllNetworkConfigurationsByCaipChainId.mockReturnValue({
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+        'eip155:137': {
+          chainId: 'eip155:137',
+          name: 'Polygon Mainnet',
+          nativeCurrency: 'MATIC',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+        [SOLANA_CAIP_CHAIN_ID]: {
+          chainId: SOLANA_CAIP_CHAIN_ID,
+          name: 'Solana Mainnet',
+          nativeCurrency: 'SOL',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+      });
+
+      render({
+        props: {
+          request: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'restrictNetworkSwitching',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                        'eip155:137': {
+                          accounts: [],
+                        },
+                      },
+                      sessionProperties: {
+                        [KnownSessionProperties.Eip1193Compatible]: true, // EIP-1193 compatibility layer indicator (e.g. @metamask/connect-evm)
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+            metadata: {
+              id: '1',
+              origin: mockTargetSubjectMetadata.origin,
+            },
+          },
+        },
+      });
+
+      // For EIP-1193 compatible requests, should return all default networks
+      // (EVM + Solana) even though only specific EVM chains were requested,
+      // matching the pre-selection behavior of legacy EIP-1193 requests
+      const { calls } = mockUseAccountGroupsForPermissions.mock;
+      expect(calls.length).toBeGreaterThan(0);
+      const actualChainIds = calls[0]?.[2] as string[] | undefined;
+      expect(actualChainIds).toBeDefined();
+      expect(actualChainIds).toContain('eip155:1');
+      expect(actualChainIds).toContain('eip155:137');
+      expect(actualChainIds).toContain(SOLANA_CAIP_CHAIN_ID);
+    });
+
     it('returns all default networks when EIP-1193 request with no specific chain IDs requested', () => {
       mockGetCaip25CaveatValueFromPermissions.mockReturnValue({
         requiredScopes: {},
