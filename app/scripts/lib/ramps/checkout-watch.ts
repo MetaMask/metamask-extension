@@ -1,6 +1,15 @@
 import type { RampsController } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../../platforms/extension';
+import {
+  trackRampsTerminalOrder,
+  trackRampsTransactionConfirmed,
+} from './handleRampsOrderStatusChanged';
+import {
+  trackRampsCheckoutCallbackDetected,
+  trackRampsCheckoutClosed,
+  type RampsCheckoutAnalyticsContext,
+} from './trackRampsCheckoutAnalytics';
 
 export type WatchRampsCheckoutTabParams = {
   /**
@@ -15,6 +24,8 @@ export type WatchRampsCheckoutTabParams = {
    * lookup if resolving from the callback URL fails.
    */
   orderCode?: string;
+  checkoutSessionId: string;
+  region?: string;
 };
 
 type ActiveWatch = {
@@ -26,7 +37,9 @@ type ActiveWatch = {
  * callback URL.
  *
  * Opens the checkout tab in the background (so popup-mode UI can close safely),
- * then watches for navigation to the ramps callback URL.
+ * then watches for navigation to the ramps callback URL. Fires checkout
+ * analytics (callback-detected, checkout-closed, transaction-confirmed,
+ * terminal KPI) from the background so they survive popup unload.
  *
  * @param platform - Extension platform (tab listeners / closeTab).
  * @param rampsController - Controller used to resolve redirect-only orders.
@@ -43,13 +56,17 @@ export function createWatchRampsCheckoutTab(
     providerCode,
     walletAddress,
     orderCode,
+    analyticsContext,
   }: {
     tabId: number;
     providerCode: string;
     walletAddress: string;
     orderCode?: string;
+    analyticsContext: RampsCheckoutAnalyticsContext;
   }): void {
     activeByTabId.get(tabId)?.cleanup();
+
+    let stepIndex = 0;
 
     const cleanup = () => {
       platform.removeTabUpdatedListener(onUpdated);
@@ -65,6 +82,12 @@ export function createWatchRampsCheckoutTab(
           walletAddress,
         );
         rampsController.addOrder(order);
+        trackRampsTransactionConfirmed(
+          order,
+          analyticsContext.region,
+          analyticsContext.checkoutSessionId,
+        );
+        trackRampsTerminalOrder(order, analyticsContext.checkoutSessionId);
         return;
       } catch (callbackError) {
         console.error(
@@ -84,6 +107,12 @@ export function createWatchRampsCheckoutTab(
           walletAddress,
         );
         rampsController.addOrder(order);
+        trackRampsTransactionConfirmed(
+          order,
+          analyticsContext.region,
+          analyticsContext.checkoutSessionId,
+        );
+        trackRampsTerminalOrder(order, analyticsContext.checkoutSessionId);
       } catch (error) {
         console.error('Failed to resolve ramps order by code', error);
       }
@@ -121,11 +150,31 @@ export function createWatchRampsCheckoutTab(
         return;
       }
 
-      const candidateUrl = changeInfo.url ?? changeInfo.pendingUrl ?? tab?.url;
-      if (!candidateUrl?.startsWith(getRampCallbackBaseUrl())) {
+      // Only count a step when the URL is actually changing in this update
+      // event — tab-updated fires for title/favicon/status changes too, and
+      // falling back to tab?.url would count those as navigations.
+      const navigationUrl = changeInfo.url ?? changeInfo.pendingUrl;
+      if (!navigationUrl) {
         return;
       }
 
+      stepIndex += 1;
+
+      const candidateUrl = navigationUrl ?? tab?.url;
+      if (!candidateUrl.startsWith(getRampCallbackBaseUrl())) {
+        return;
+      }
+
+      trackRampsCheckoutCallbackDetected(
+        analyticsContext,
+        candidateUrl,
+        stepIndex,
+      );
+      trackRampsCheckoutClosed(analyticsContext, {
+        closeSource: 'callback_success',
+        callbackReached: true,
+        stepIndex,
+      });
       finish(candidateUrl);
     }
 
@@ -133,6 +182,11 @@ export function createWatchRampsCheckoutTab(
       if (removedTabId !== tabId) {
         return;
       }
+      trackRampsCheckoutClosed(analyticsContext, {
+        closeSource: 'user_close_button',
+        callbackReached: false,
+        stepIndex,
+      });
       cleanup();
     }
 
@@ -146,7 +200,11 @@ export function createWatchRampsCheckoutTab(
     providerCode,
     walletAddress,
     orderCode,
+    checkoutSessionId,
+    region,
   }: WatchRampsCheckoutTabParams): Promise<void> {
+    const checkoutOpenedAt = Date.now();
+
     const openedTab = await platform.openTab({ url });
     if (openedTab.id === undefined) {
       throw new Error('Failed to open ramps checkout tab');
@@ -157,6 +215,12 @@ export function createWatchRampsCheckoutTab(
       providerCode,
       walletAddress,
       orderCode,
+      analyticsContext: {
+        checkoutSessionId,
+        checkoutOpenedAt,
+        region,
+        orderCode,
+      },
     });
   };
 }

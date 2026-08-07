@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { RampsOrderStatus } from '@metamask/ramps-controller';
 import type { RampsController } from '@metamask/ramps-controller';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
-import { trackEvent } from '../controllers/analytics';
-import { createWatchRampsCheckoutTab } from './ramps-checkout-watch';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { trackEvent } from '../../controllers/analytics';
+import { createWatchRampsCheckoutTab } from './checkout-watch';
 
-jest.mock('../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../controllers/analytics')
+jest.mock('../../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../../controllers/analytics')
     .createEventBuilder,
   trackEvent: jest.fn(),
 }));
@@ -25,16 +24,7 @@ describe('createWatchRampsCheckoutTab', () => {
     jest.restoreAllMocks();
   });
 
-  function createHarness({
-    orders = [],
-  }: {
-    orders?: {
-      providerOrderId: string;
-      id?: string;
-      status: string;
-      walletAddress?: string;
-    }[];
-  } = {}) {
+  function createHarness() {
     let onUpdated:
       | ((
           tabId: number,
@@ -54,11 +44,22 @@ describe('createWatchRampsCheckoutTab', () => {
       removeTabUpdatedListener: jest.fn(),
       removeTabRemovedListener: jest.fn(),
       closeTab: jest.fn().mockResolvedValue(undefined),
+      openTab: jest.fn().mockResolvedValue({ id: 9 }),
+      getExtensionURL: jest.fn((route?: string | null) =>
+        route
+          ? `chrome-extension://mm/home.html#${route}`
+          : 'chrome-extension://mm/home.html',
+      ),
     };
 
     const rampsController = {
-      state: { orders },
+      state: { orders: [] },
       getOrderFromCallback: jest.fn().mockResolvedValue({
+        id: 'moonpay/orders/native-uuid',
+        providerOrderId: 'native-uuid',
+        status: 'PENDING',
+      }),
+      getOrder: jest.fn().mockResolvedValue({
         id: 'moonpay/orders/native-uuid',
         providerOrderId: 'native-uuid',
         status: 'PENDING',
@@ -74,9 +75,7 @@ describe('createWatchRampsCheckoutTab', () => {
 
     const checkoutAnalytics = {
       checkoutSessionId: 'session-abc',
-      checkoutOpenedAt: 4_000,
       region: 'us-ca',
-      orderCode: 'c-custom',
     };
 
     return {
@@ -89,21 +88,24 @@ describe('createWatchRampsCheckoutTab', () => {
     };
   }
 
-  it('closes the tab and resolves the order for redirect-only checkouts', async () => {
+  it('opens the checkout tab then watches for the callback URL', async () => {
     const {
       platform,
       rampsController,
       watch,
-      getOnUpdated,
       checkoutAnalytics,
+      getOnUpdated,
     } = createHarness();
 
-    watch({
-      tabId: 9,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
+    });
+
+    expect(platform.openTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
     });
 
     getOnUpdated()?.(
@@ -114,54 +116,9 @@ describe('createWatchRampsCheckoutTab', () => {
 
     await Promise.resolve();
     await Promise.resolve();
-
-    expect(platform.closeTab).toHaveBeenCalledWith(9);
-    expect(rampsController.getOrderFromCallback).toHaveBeenCalledWith(
-      'moonpay',
-      `${callbackBase}?transactionId=abc`,
-      '0xabc',
-    );
-    expect(rampsController.addOrder).toHaveBeenCalled();
-  });
-
-  it('marks the precreated stub pending immediately and resolves the real order on redirect', async () => {
-    const stub = {
-      providerOrderId: 'c-custom',
-      status: RampsOrderStatus.Precreated,
-      walletAddress: '0xabc',
-    };
-    const {
-      platform,
-      rampsController,
-      watch,
-      getOnUpdated,
-      checkoutAnalytics,
-    } = createHarness({
-      orders: [stub],
-    });
-
-    watch({
-      tabId: 3,
-      providerCode: 'moonpay',
-      walletAddress: '0xabc',
-      orderAlreadyPrecreated: true,
-      ...checkoutAnalytics,
-    });
-
-    getOnUpdated()?.(
-      3,
-      { url: `${callbackBase}?transactionId=abc` },
-      undefined,
-    );
-
     await Promise.resolve();
     await Promise.resolve();
 
-    expect(platform.closeTab).toHaveBeenCalledWith(3);
-    expect(rampsController.addOrder).toHaveBeenCalledWith({
-      ...stub,
-      status: RampsOrderStatus.Pending,
-    });
     expect(rampsController.getOrderFromCallback).toHaveBeenCalledWith(
       'moonpay',
       `${callbackBase}?transactionId=abc`,
@@ -173,109 +130,129 @@ describe('createWatchRampsCheckoutTab', () => {
         status: 'PENDING',
       }),
     );
-    expect(rampsController.removeOrder).toHaveBeenCalledWith('c-custom');
+    expect(platform.openTab).toHaveBeenCalledWith({
+      url: 'chrome-extension://mm/home.html#/activity',
+    });
+    expect(platform.closeTab).toHaveBeenCalledWith(9);
+    expect(rampsController.getOrder).not.toHaveBeenCalled();
   });
 
-  it('restores the precreated stub when the callback order cannot be resolved', async () => {
+  it('falls back to getOrder by widget code when the callback lookup fails', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    const stub = {
-      providerOrderId: 'c-custom',
-      status: RampsOrderStatus.Precreated,
-      walletAddress: '0xabc',
-    };
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
-      createHarness({
-        orders: [stub],
-      });
+    const {
+      platform,
+      rampsController,
+      watch,
+      checkoutAnalytics,
+      getOnUpdated,
+    } = createHarness();
     rampsController.getOrderFromCallback.mockRejectedValue(
-      new Error('callback lookup failed'),
+      new Error('Failed to fetch'),
     );
 
-    watch({
-      tabId: 7,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: true,
+      orderCode: 'c-custom',
       ...checkoutAnalytics,
     });
 
     getOnUpdated()?.(
-      7,
+      9,
       { url: `${callbackBase}?transactionId=abc` },
       undefined,
     );
 
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
-    expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
-    expect(rampsController.removeOrder).not.toHaveBeenCalled();
+    expect(rampsController.getOrder).toHaveBeenCalledWith(
+      'moonpay',
+      'c-custom',
+      '0xabc',
+    );
+    expect(rampsController.addOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerOrderId: 'native-uuid',
+        status: 'PENDING',
+      }),
+    );
+    expect(platform.closeTab).toHaveBeenCalledWith(9);
   });
 
-  it('does not remove the stub when the resolved order shares its code', async () => {
-    const stub = {
-      providerOrderId: 'same-code',
-      status: RampsOrderStatus.Precreated,
-      walletAddress: '0xabc',
-    };
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
-      createHarness({
-        orders: [stub],
-      });
-    rampsController.getOrderFromCallback.mockResolvedValue({
-      id: 'moonpay/orders/same-code',
-      providerOrderId: 'same-code',
-      status: 'PENDING',
-    });
+  it('does not add an order when both the callback and the lookup fail', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    const { rampsController, watch, checkoutAnalytics, getOnUpdated } =
+      createHarness();
+    rampsController.getOrderFromCallback.mockRejectedValue(
+      new Error('Failed to fetch'),
+    );
+    rampsController.getOrder.mockRejectedValue(new Error('Failed to fetch'));
 
-    watch({
-      tabId: 4,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: true,
+      orderCode: 'c-custom',
       ...checkoutAnalytics,
-      orderCode: 'same-code',
     });
 
     getOnUpdated()?.(
-      4,
-      { url: `${callbackBase}?transactionId=same-code` },
+      9,
+      { url: `${callbackBase}?transactionId=abc` },
       undefined,
     );
 
     await Promise.resolve();
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
-    expect(rampsController.removeOrder).not.toHaveBeenCalled();
+    expect(rampsController.addOrder).not.toHaveBeenCalled();
   });
 
-  it('tears down listeners when the user closes the checkout tab', () => {
-    const { platform, watch, getOnRemoved, checkoutAnalytics } =
+  it('throws when the opened checkout tab has no id', async () => {
+    const { platform, watch, checkoutAnalytics } = createHarness();
+    platform.openTab.mockResolvedValue({});
+
+    await expect(
+      watch({
+        url: 'https://provider.example/checkout',
+        providerCode: 'moonpay',
+        walletAddress: '0xabc',
+        ...checkoutAnalytics,
+      }),
+    ).rejects.toThrow('Failed to open ramps checkout tab');
+  });
+
+  it('tears down listeners when the user closes the checkout tab', async () => {
+    const { platform, watch, checkoutAnalytics, getOnRemoved } =
       createHarness();
 
-    watch({
-      tabId: 5,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
     });
 
-    getOnRemoved()?.(5);
+    getOnRemoved()?.(9);
 
     expect(platform.removeTabUpdatedListener).toHaveBeenCalled();
     expect(platform.removeTabRemovedListener).toHaveBeenCalled();
     expect(platform.closeTab).not.toHaveBeenCalled();
   });
 
-  it('tracks callback and closed analytics when the callback URL is reached', () => {
-    const { watch, getOnUpdated, checkoutAnalytics } = createHarness();
+  it('tracks callback and closed analytics when the callback URL is reached', async () => {
+    const { watch, checkoutAnalytics, getOnUpdated } = createHarness();
 
-    watch({
-      tabId: 9,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
     });
 
@@ -298,14 +275,13 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
-  it('counts one step per navigation, not per tab update event', () => {
-    const { watch, getOnUpdated, checkoutAnalytics } = createHarness();
+  it('counts one step per navigation, not per tab update event', async () => {
+    const { watch, checkoutAnalytics, getOnUpdated } = createHarness();
 
-    watch({
-      tabId: 9,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
     });
 
@@ -325,7 +301,7 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('tracks the terminal KPI for an order resolved already-completed from the callback', async () => {
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+    const { rampsController, watch, checkoutAnalytics, getOnUpdated } =
       createHarness();
     rampsController.getOrderFromCallback.mockResolvedValue({
       id: 'moonpay/orders/already-done',
@@ -336,21 +312,21 @@ describe('createWatchRampsCheckoutTab', () => {
       totalFeesFiat: 4,
     });
 
-    watch({
-      tabId: 11,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
-      orderCode: undefined,
     });
 
     getOnUpdated()?.(
-      11,
+      9,
       { url: `${callbackBase}?transactionId=already-done` },
       undefined,
     );
 
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
 
@@ -360,7 +336,7 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('tracks ramps-transaction-confirmed for a non-terminal callback order', async () => {
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+    const { rampsController, watch, checkoutAnalytics, getOnUpdated } =
       createHarness();
     rampsController.getOrderFromCallback.mockResolvedValue({
       id: 'moonpay/orders/pending-order',
@@ -371,21 +347,21 @@ describe('createWatchRampsCheckoutTab', () => {
       totalFeesFiat: 4,
     });
 
-    watch({
-      tabId: 12,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
-      orderCode: undefined,
     });
 
     getOnUpdated()?.(
-      12,
+      9,
       { url: `${callbackBase}?transactionId=pending-order` },
       undefined,
     );
 
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
 
@@ -401,7 +377,7 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('passes the checkout region to ramps-transaction-confirmed', async () => {
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+    const { rampsController, watch, checkoutAnalytics, getOnUpdated } =
       createHarness();
     rampsController.getOrderFromCallback.mockResolvedValue({
       id: 'moonpay/orders/pending-order',
@@ -412,22 +388,22 @@ describe('createWatchRampsCheckoutTab', () => {
       totalFeesFiat: 4,
     });
 
-    watch({
-      tabId: 13,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
       region: 'de',
-      orderCode: undefined,
     });
 
     getOnUpdated()?.(
-      13,
+      9,
       { url: `${callbackBase}?transactionId=pending-order` },
       undefined,
     );
 
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
 
@@ -444,7 +420,7 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('threads checkout_session_id to the terminal KPI from the watcher context', async () => {
-    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+    const { rampsController, watch, checkoutAnalytics, getOnUpdated } =
       createHarness();
     rampsController.getOrderFromCallback.mockResolvedValue({
       id: 'moonpay/orders/session-thread-test',
@@ -455,21 +431,21 @@ describe('createWatchRampsCheckoutTab', () => {
       totalFeesFiat: 4,
     });
 
-    watch({
-      tabId: 14,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
-      orderCode: undefined,
     });
 
     getOnUpdated()?.(
-      14,
+      9,
       { url: `${callbackBase}?transactionId=session-thread-test` },
       undefined,
     );
 
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
 
@@ -484,18 +460,17 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
-  it('tracks checkout closed when the user closes the tab before callback', () => {
-    const { watch, getOnRemoved, checkoutAnalytics } = createHarness();
+  it('tracks checkout closed when the user closes the tab before callback', async () => {
+    const { watch, checkoutAnalytics, getOnRemoved } = createHarness();
 
-    watch({
-      tabId: 5,
+    await watch({
+      url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
-      orderAlreadyPrecreated: false,
       ...checkoutAnalytics,
     });
 
-    getOnRemoved()?.(5);
+    getOnRemoved()?.(9);
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
