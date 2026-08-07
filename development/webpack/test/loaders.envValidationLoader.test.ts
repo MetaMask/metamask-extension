@@ -484,4 +484,47 @@ describe('envValidationLoader', () => {
       assert.strictEqual(emittedErrors.length, 0);
     });
   });
+
+  describe('TypeScript generic arrow functions', () => {
+    it('parses generic arrow functions in .ts files without treating them as JSX', async () => {
+      const source = `
+        export const useDebouncedValue = <Value>(
+          value: Value,
+          delayMs: number = 0,
+        ): Value => {
+          return process.env.NODE_ENV === 'test' ? value : value;
+        };
+      `;
+      const { context, emittedErrors, callbackPromise, callbackResult } =
+        createMockContext(['NODE_ENV'], '/test/useDebouncedValue.ts');
+
+      envValidationLoader.call(context, source);
+      await callbackPromise;
+
+      assert.strictEqual(callbackResult().source, source);
+      assert.strictEqual(emittedErrors.length, 0);
+    });
+
+    it('parses nested generic callbacks in .ts files', async () => {
+      const source = `
+        function createCallback() {
+          return <Result>(
+            req: unknown,
+            fn?: (ctx?: unknown) => Result,
+          ): Promise<Result> => {
+            return Promise.resolve(fn?.() as Result);
+          };
+        }
+        const mode = process.env.NODE_ENV;
+      `;
+      const { context, emittedErrors, callbackPromise, callbackResult } =
+        createMockContext(['NODE_ENV'], '/test/callback.ts');
+
+      envValidationLoader.call(context, source);
+      await callbackPromise;
+
+      assert.strictEqual(callbackResult().source, source);
+      assert.strictEqual(emittedErrors.length, 0);
+    });
+  });
 });
