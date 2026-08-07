@@ -58,11 +58,13 @@ describe('createWatchRampsCheckoutTab', () => {
         id: 'moonpay/orders/native-uuid',
         providerOrderId: 'native-uuid',
         status: 'PENDING',
+        orderType: 'BUY',
       }),
       getOrder: jest.fn().mockResolvedValue({
         id: 'moonpay/orders/native-uuid',
         providerOrderId: 'native-uuid',
         status: 'PENDING',
+        orderType: 'BUY',
       }),
       addOrder: jest.fn(),
       removeOrder: jest.fn(),
@@ -169,6 +171,7 @@ describe('createWatchRampsCheckoutTab', () => {
       expect.objectContaining({
         providerOrderId: 'native-uuid',
         status: 'PENDING',
+        orderType: 'BUY',
       }),
     );
     expect(platform.openTab).toHaveBeenCalledWith({
@@ -219,6 +222,7 @@ describe('createWatchRampsCheckoutTab', () => {
       expect.objectContaining({
         providerOrderId: 'native-uuid',
         status: 'PENDING',
+        orderType: 'BUY',
       }),
     );
     expect(platform.closeTab).toHaveBeenCalledWith(9);
@@ -354,6 +358,7 @@ describe('createWatchRampsCheckoutTab', () => {
       id: 'moonpay/orders/already-done',
       providerOrderId: 'already-done',
       status: 'COMPLETED',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -389,6 +394,7 @@ describe('createWatchRampsCheckoutTab', () => {
       id: 'moonpay/orders/pending-order',
       providerOrderId: 'pending-order',
       status: 'PENDING',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -430,6 +436,7 @@ describe('createWatchRampsCheckoutTab', () => {
       id: 'moonpay/orders/pending-order',
       providerOrderId: 'pending-order',
       status: 'PENDING',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -473,6 +480,7 @@ describe('createWatchRampsCheckoutTab', () => {
       id: 'moonpay/orders/session-thread-test',
       providerOrderId: 'session-thread-test',
       status: 'COMPLETED',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,

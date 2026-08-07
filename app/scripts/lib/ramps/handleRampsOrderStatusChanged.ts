@@ -60,13 +60,31 @@ const TERMINAL_ORDER_STATUSES = new Set<string>([
 ]);
 
 /**
+ * Whether an order belongs to the unified buy funnel these KPIs describe.
+ *
+ * Every event here declares `ramp_type: UNIFIED_BUY_2`, so a sell order must
+ * not be counted — mobile routes those to the separate `OFFRAMP_PURCHASE_*`
+ * events. Uses the same rule as `mapRampsOrder` in `@metamask/client-utils`:
+ * the V2 API uppercases `orderType`, locally-created stubs don't, and Transak
+ * deposits are a buy variant rather than a sell.
+ *
+ * @param order - The order to classify.
+ * @returns `true` when the order is a buy (or deposit) order.
+ */
+function isUnifiedBuyOrder(order: RampsOrder): boolean {
+  const orderType = order.orderType?.toUpperCase();
+  return orderType === 'BUY' || orderType === 'DEPOSIT';
+}
+
+/**
  * Fires the ramps buy-flow terminal-outcome KPI (completed / failed) for an
  * order that reached a terminal status, from either source: the polled
  * `orderStatusChanged` transition, or an order resolved already-terminal from
  * the checkout callback — which publishes no event and is never polled, since
  * polling skips terminal orders.
  *
- * Only COMPLETED and FAILED are emitted; canceled is deferred.
+ * Only COMPLETED and FAILED are emitted; canceled is deferred. Non-buy orders
+ * are skipped — see `isUnifiedBuyOrder`.
  *
  * @param order - The order to evaluate.
  * @param checkoutSessionId - The checkout session id from the watcher context
@@ -77,6 +95,10 @@ export function trackRampsTerminalOrder(
   order?: RampsOrder,
   checkoutSessionId?: string,
 ): void {
+  if (!order || !isUnifiedBuyOrder(order)) {
+    return;
+  }
+
   const orderKey = getOrderKey(order);
 
   // Record the session id for future polling-path lookups.
@@ -138,7 +160,11 @@ export function trackRampsTransactionConfirmed(
   region?: string,
   checkoutSessionId?: string,
 ): void {
-  if (!order || TERMINAL_ORDER_STATUSES.has(order.status)) {
+  if (
+    !order ||
+    !isUnifiedBuyOrder(order) ||
+    TERMINAL_ORDER_STATUSES.has(order.status)
+  ) {
     return;
   }
 

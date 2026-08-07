@@ -18,6 +18,7 @@ function makeEvent(status: string) {
   return {
     order: {
       status,
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -79,6 +80,7 @@ describe('handleRampsOrderStatusChanged', () => {
       id: '/providers/moonpay/orders/order-1',
       providerOrderId: 'order-1',
       status: 'COMPLETED',
+      orderType: 'BUY',
     } as unknown as RampsOrder;
 
     trackRampsTerminalOrder(order);
@@ -90,8 +92,45 @@ describe('handleRampsOrderStatusChanged', () => {
     expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 
+  it('does not track a SELL order — those are not part of the unified buy funnel', () => {
+    handleRampsOrderStatusChanged({
+      order: {
+        status: 'COMPLETED',
+        orderType: 'SELL',
+      } as unknown as RampsOrder,
+      previousStatus: 'PENDING' as unknown as RampsOrder['status'],
+    });
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('tracks a DEPOSIT order — deposits are a buy variant', () => {
+    handleRampsOrderStatusChanged({
+      order: {
+        status: 'COMPLETED',
+        orderType: 'DEPOSIT',
+      } as unknown as RampsOrder,
+      previousStatus: 'PENDING' as unknown as RampsOrder['status'],
+    });
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks a lowercase `buy` orderType from a locally-created order', () => {
+    handleRampsOrderStatusChanged({
+      order: {
+        status: 'COMPLETED',
+        orderType: 'buy',
+      } as unknown as RampsOrder,
+      previousStatus: 'PENDING' as unknown as RampsOrder['status'],
+    });
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+  });
+
   it('emits for both orders when two distinct orders share an order code', () => {
-    const shared = { status: 'COMPLETED', providerOrderId: 'same-code' };
+    const shared = {
+      status: 'COMPLETED',
+      orderType: 'BUY',
+      providerOrderId: 'same-code',
+    };
 
     trackRampsTerminalOrder({
       ...shared,
@@ -112,6 +151,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('tracks Ramps Transaction Confirmed for a non-terminal PENDING order', () => {
     trackRampsTransactionConfirmed({
       status: 'PENDING',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -125,6 +165,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('tracks Ramps Transaction Confirmed for a CREATED order', () => {
     trackRampsTransactionConfirmed({
       status: 'CREATED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
@@ -135,6 +176,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('does not track for terminal status COMPLETED', () => {
     trackRampsTransactionConfirmed({
       status: 'COMPLETED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
     expect(trackEvent).not.toHaveBeenCalled();
   });
@@ -142,6 +184,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('does not track for terminal status FAILED', () => {
     trackRampsTransactionConfirmed({
       status: 'FAILED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
     expect(trackEvent).not.toHaveBeenCalled();
   });
@@ -149,6 +192,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('does not track for terminal status CANCELLED', () => {
     trackRampsTransactionConfirmed({
       status: 'CANCELLED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
     expect(trackEvent).not.toHaveBeenCalled();
   });
@@ -156,6 +200,7 @@ describe('trackRampsTransactionConfirmed', () => {
   it('does not track for terminal status ID_EXPIRED', () => {
     trackRampsTransactionConfirmed({
       status: 'ID_EXPIRED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
     expect(trackEvent).not.toHaveBeenCalled();
   });
@@ -165,10 +210,19 @@ describe('trackRampsTransactionConfirmed', () => {
     expect(trackEvent).not.toHaveBeenCalled();
   });
 
+  it('does not track a SELL order', () => {
+    trackRampsTransactionConfirmed({
+      status: 'PENDING',
+      orderType: 'SELL',
+    } as unknown as RampsOrder);
+    expect(trackEvent).not.toHaveBeenCalled();
+  });
+
   it('passes region through to the confirmed properties', () => {
     trackRampsTransactionConfirmed(
       {
         status: 'PENDING',
+        orderType: 'BUY',
         fiatAmount: 100,
         cryptoAmount: 0.02,
         totalFeesFiat: 4,
@@ -192,6 +246,7 @@ describe('checkout_session_id threading', () => {
         id: '/providers/moonpay/orders/session-completed',
         providerOrderId: 'session-completed',
         status: 'COMPLETED',
+        orderType: 'BUY',
         fiatAmount: 100,
         cryptoAmount: 0.02,
         totalFeesFiat: 4,
@@ -210,6 +265,7 @@ describe('checkout_session_id threading', () => {
         id: '/providers/moonpay/orders/session-confirmed',
         providerOrderId: 'session-confirmed',
         status: 'PENDING',
+        orderType: 'BUY',
         fiatAmount: 100,
         cryptoAmount: 0.02,
         totalFeesFiat: 4,
@@ -229,6 +285,7 @@ describe('checkout_session_id threading', () => {
         id: '/providers/moonpay/orders/session-failed',
         providerOrderId: 'session-failed',
         status: 'FAILED',
+        orderType: 'BUY',
         fiatAmount: 100,
         cryptoAmount: 0.02,
         totalFeesFiat: 4,
@@ -247,6 +304,7 @@ describe('checkout_session_id threading', () => {
       id: '/providers/moonpay/orders/session-poll',
       providerOrderId: 'session-poll',
       status: 'PENDING',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
@@ -260,6 +318,7 @@ describe('checkout_session_id threading', () => {
     trackRampsTerminalOrder({
       ...order,
       status: 'COMPLETED',
+      orderType: 'BUY',
     } as unknown as RampsOrder);
 
     const terminalCall = jest.mocked(trackEvent).mock.calls[1][0];
@@ -276,6 +335,7 @@ describe('checkout_session_id threading', () => {
       id: '/providers/moonpay/orders/no-session-test',
       providerOrderId: 'no-session-test',
       status: 'COMPLETED',
+      orderType: 'BUY',
       fiatAmount: 100,
       cryptoAmount: 0.02,
       totalFeesFiat: 4,
