@@ -26,7 +26,10 @@ jest.mock('../../../hooks/useMultichainSelector');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
 jest.mock('./useSecurityAlerts');
 jest.mock('./useAssetSecurityData');
-jest.mock('../utils/quote');
+jest.mock('../utils/quote', () => ({
+  ...jest.requireActual('../utils/quote'),
+  isQuoteExpiredOrInvalid: jest.fn(),
+}));
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
   ...jest.requireActual('../../../ducks/bridge/selectors'),
@@ -48,11 +51,22 @@ const mockT = jest.fn((key: string, args?: string[]) =>
 );
 
 const MOCK_BRIDGE_QUOTE = {
-  quote: { srcChainId: 1, destChainId: 10 },
+  chainId: 'eip155:1',
+  quote: {
+    src: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
+    dest: {
+      asset: getNativeAssetForChainId(10),
+      amount: '1000000000000000000',
+    },
+  },
 };
 
 const MOCK_SWAP_QUOTE = {
-  quote: { srcChainId: 1, destChainId: 1 },
+  chainId: 'eip155:1',
+  quote: {
+    src: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
+    dest: { asset: getNativeAssetForChainId(1), amount: '1000000000000000000' },
+  },
 };
 
 const MOCK_TO_TOKEN = {
