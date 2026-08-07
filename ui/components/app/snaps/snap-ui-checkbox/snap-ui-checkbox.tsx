@@ -75,15 +75,13 @@ export const SnapUICheckbox = ({
       ) : (
         <Checkbox
           id={name}
-          data-testid={`snap-ui-checkbox-${name}`}
           onChange={handleChange}
           isSelected={value}
           label={label}
           isDisabled={disabled}
           {...props}
           inputProps={{
-            // Native input is opacity-0; expose it for E2E disabled/enabled checks.
-            'data-testid': `snap-ui-checkbox-${name}-input`,
+            'data-testid': `snap-ui-checkbox-${name}`,
           }}
         />
       )}

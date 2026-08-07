@@ -5,6 +5,11 @@ class SnapInstallWarning {
     '[data-testid="snap-install-warning-modal-confirm"]';
 
   private readonly checkBoxPermission = {
+    // Design-system Checkbox input is opacity-0; click the visible label instead.
+    css: 'label:has([data-testid="snap-install-warning-checkbox"])',
+  };
+
+  private readonly checkBoxPermissionInput = {
     testId: 'snap-install-warning-checkbox',
   };
 
@@ -19,7 +24,7 @@ class SnapInstallWarning {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.checkBoxPermission,
+        this.checkBoxPermissionInput,
         this.permissionConnect,
       ]);
     } catch (e) {

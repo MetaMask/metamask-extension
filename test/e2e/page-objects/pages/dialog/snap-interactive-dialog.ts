@@ -13,10 +13,11 @@ const selectors = {
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: {
-    testId: 'snap-ui-checkbox-example-checkbox',
+    // Design-system Checkbox input is opacity-0; click the visible label instead.
+    css: 'label:has([data-testid="snap-ui-checkbox-example-checkbox"])',
   },
   exampleCheckboxInput: {
-    testId: 'snap-ui-checkbox-example-checkbox-input',
+    testId: 'snap-ui-checkbox-example-checkbox',
   },
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
