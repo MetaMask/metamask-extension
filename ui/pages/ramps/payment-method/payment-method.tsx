@@ -2,12 +2,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { PaymentMethod } from '@metamask/ramps-controller';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   PREVIOUS_ROUTE,
@@ -19,10 +14,10 @@ import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import {
   RampsSelectionCenteredMessage,
+  RampsSelectionCenteredSpinner,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
@@ -159,16 +154,7 @@ export function RampsPaymentMethodScreen() {
     );
   } else if (paymentMethodsLoading) {
     testId = 'ramps-payment-method-loading';
-    body = (
-      <Box
-        className="flex-1"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-      >
-        <Spinner className="h-8 w-8" />
-      </Box>
-    );
+    body = <RampsSelectionCenteredSpinner />;
   } else if (showError) {
     testId = 'ramps-payment-method-error';
     body = (
