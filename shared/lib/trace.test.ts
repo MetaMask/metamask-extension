@@ -1,8 +1,16 @@
 import type * as Sentry from '@sentry/browser';
-import { endTrace, trace, TraceName, getSerializedTraceContext } from './trace';
+import {
+  endTrace,
+  rootTrace,
+  trace,
+  traceBackgroundPoll,
+  TraceName,
+  getSerializedTraceContext,
+} from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
+  startNewTrace: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
@@ -15,6 +23,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
+  startNewTrace,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -41,6 +50,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  const startNewTraceMock = jest.mocked(startNewTrace);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -53,12 +63,18 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      startNewTrace: startNewTraceMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
     };
 
     startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
+
+    // Pass-through: run the wrapped callback so root traces still create spans.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
       fn({} as Sentry.Span, () => {
@@ -425,6 +441,73 @@ describe('Trace', () => {
           parentSpan: null,
         }),
         expect.any(Function),
+      );
+    });
+
+    it('does not inherit from active span when rootTrace is used', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      rootTrace({ name: NAME_MOCK }, () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          forceTransaction: undefined,
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+    });
+
+    it('starts a new trace (fresh propagation context) when rootTrace is used', () => {
+      rootTrace({ name: NAME_MOCK }, () => true);
+
+      // startNewTrace resets the propagation-context trace id, so the op roots
+      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      expect(startNewTraceMock).toHaveBeenCalledTimes(1);
+      expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not start a new trace for a non-root trace', () => {
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startNewTraceMock).not.toHaveBeenCalled();
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('roots background poll traces with poll metadata', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      traceBackgroundPoll('StaticAssetsController', () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          forceTransaction: undefined,
+          name: TraceName.BackgroundPoll,
+          op: 'background.poll',
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(setTagMock).toHaveBeenCalledWith(
+        'controller',
+        'StaticAssetsController',
       );
     });
   });
