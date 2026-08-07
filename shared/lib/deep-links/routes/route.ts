@@ -55,6 +55,11 @@ export type RouteOptions = {
    * Defaults to canonical params, which removes unsigned params for signed links.
    */
   handlerSearchParams?: HandlerSearchParams;
+  /**
+   * Parameters that reach the handler only when explicitly listed in
+   * `sig_params` and covered by a valid signature.
+   */
+  signatureRequiredSearchParams?: readonly string[];
 };
 
 export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -85,10 +90,17 @@ export class Route {
    */
   public readonly handlerSearchParams: HandlerSearchParams;
 
+  /**
+   * @see {@link RouteOptions.signatureRequiredSearchParams}
+   */
+  public readonly signatureRequiredSearchParams: readonly string[];
+
   constructor(options: RouteOptions) {
     this.pathname = options.pathname.toLowerCase();
     this.getTitle = options.getTitle;
     this.handler = options.handler;
     this.handlerSearchParams = options.handlerSearchParams ?? 'canonical';
+    this.signatureRequiredSearchParams =
+      options.signatureRequiredSearchParams ?? [];
   }
 }
