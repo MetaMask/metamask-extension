@@ -1,4 +1,4 @@
-import type * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/browser';
 import { endTrace, trace, TraceName, getSerializedTraceContext } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
@@ -541,6 +541,199 @@ describe('Trace', () => {
     it('returns undefined when sentry is not initialized', () => {
       globalThis.sentry = undefined;
       expect(getSerializedTraceContext()).toBeUndefined();
+    });
+  });
+});
+
+describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
+  // startSpan() wraps every span in sentryWithIsolationScope(), which --
+  // per @sentry/browser's stack-based async-context strategy (no
+  // AsyncLocalStorage/Zone equivalent exists in a browser/service-worker
+  // realm) -- pushes onto a single, shared, mutable stack
+  // (node_modules/@sentry/core/.../asyncContext/stackStrategy.js). That
+  // stack has no concept of which logical async operation a frame belongs
+  // to; it only knows push order. When two trace() calls overlap (ordinary
+  // event-loop behavior for concurrent RPC handlers,
+  // wrapMessengerWithTracing calls, or websocket notification handling in
+  // the service worker), a later call's layer can still be on top when an
+  // earlier, still-pending call's own continuation resumes and reads "the
+  // current active span" -- misattributing it to the wrong operation.
+  //
+  // These tests exercise the real @sentry/browser SDK end-to-end (a real
+  // BrowserClient, globalThis.sentry wired to the real SDK -- the same
+  // pattern used in app/scripts/lib/sentry-traceparent-semantics.test.ts)
+  // instead of this file's default globalThis.sentry mock, because the
+  // defect lives inside the SDK's real AsyncContextStack, not in trace.ts's
+  // own logic in isolation.
+
+  function deferred<Value = void>() {
+    let resolve!: (value: Value) => void;
+    const promise = new Promise<Value>((res) => {
+      resolve = res;
+    });
+    return { promise, resolve };
+  }
+
+  function initRealSentryClient(): void {
+    const client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: () => Promise.resolve({}),
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      integrations: [],
+      tracesSampleRate: 1,
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    globalThis.sentry = { ...Sentry } as typeof globalThis.sentry;
+  }
+
+  // Steps N microtask ticks so pending `.then()` continuations settle in
+  // order. Nothing here is time-based -- it's purely promise-resolution
+  // order -- so this uses plain microtask stepping rather than fake timers.
+  async function tick(times = 1) {
+    for (let i = 0; i < times; i += 1) {
+      await Promise.resolve();
+    }
+  }
+
+  beforeEach(() => {
+    initRealSentryClient();
+  });
+
+  afterEach(() => {
+    Sentry.getCurrentScope().clear();
+    Sentry.getIsolationScope().clear();
+  });
+
+  describe('when two trace() calls run sequentially', () => {
+    it('does not parent the second span under the first', async () => {
+      await trace(
+        { name: NAME_MOCK, id: 'A-sequential' },
+        async () => undefined,
+      );
+      const spanB = await trace({ name: NAME_MOCK, id: 'B-sequential' }, () =>
+        Sentry.getActiveSpan(),
+      );
+
+      expect(spanB).toBeTruthy();
+      expect(spanB && Sentry.spanToJSON(spanB).parent_span_id).toBeUndefined();
+    });
+  });
+
+  describe('when a second, unrelated trace() call starts while the first is still pending', () => {
+    // Bug confirmed via this harness; not yet fixed -- see
+    // MetaMask-planning#7523. Skipped (rather than left red) so CI doesn't
+    // fail with no explanation. Remove `.skip` to see it fail today:
+    // `spanB`'s parent_span_id resolves to A's span id and its trace id to
+    // A's, instead of being an independent root span. Once a fix lands
+    // (candidate directions are in the ticket), remove `.skip` -- if it's
+    // still red at that point, the fix is incomplete.
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('does not parent the second span under the still-pending first one', async () => {
+      const aGate = deferred<void>();
+      let spanA: Sentry.Span | null | undefined;
+
+      // A's callback awaits an unresolved promise, so its isolation-scope
+      // and current-scope layers stay on the SDK's shared
+      // AsyncContextStack for as long as aGate is unresolved.
+      const aPromise = trace({ name: NAME_MOCK, id: 'A-pending' }, async () => {
+        spanA = Sentry.getActiveSpan();
+        await aGate.promise;
+        return spanA;
+      });
+
+      // Sanity check: confirm A really pushed a span onto the real stack
+      // before relying on it -- otherwise this test would prove nothing.
+      expect(spanA).toBeTruthy();
+
+      try {
+        // B is a logically unrelated trace() call (no parentContext) issued
+        // while A is still pending.
+        let spanB: Sentry.Span | null | undefined;
+        const bPromise = trace(
+          { name: NAME_MOCK, id: 'B-concurrent-unrelated' },
+          () => {
+            spanB = Sentry.getActiveSpan();
+            return spanB;
+          },
+        );
+        await tick(3);
+
+        expect(spanB).toBeTruthy();
+        expect(
+          spanB && Sentry.spanToJSON(spanB).parent_span_id,
+        ).toBeUndefined();
+        expect(spanB?.spanContext().traceId).not.toBe(
+          spanA?.spanContext().traceId,
+        );
+
+        await bPromise;
+      } finally {
+        aGate.resolve();
+        await aPromise;
+      }
+    });
+
+    // Same reasoning as above: skipped, not deleted or left red. Remove
+    // `.skip` to see it fail today: `spanC` resolves under B's (already
+    // corrupted) lineage instead of being independent.
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('does not let a third concurrent call inherit an already-corrupted lineage', async () => {
+      const aGate = deferred<void>();
+      const bGate = deferred<void>();
+
+      let spanA: Sentry.Span | null | undefined;
+      const aPromise = trace(
+        { name: NAME_MOCK, id: 'A-pending-2' },
+        async () => {
+          spanA = Sentry.getActiveSpan();
+          await aGate.promise;
+          return spanA;
+        },
+      );
+
+      let spanB: Sentry.Span | null | undefined;
+      const bPromise = trace(
+        { name: NAME_MOCK, id: 'B-pending-2' },
+        async () => {
+          spanB = Sentry.getActiveSpan();
+          await bGate.promise;
+          return spanB;
+        },
+      );
+
+      try {
+        let spanC: Sentry.Span | null | undefined;
+        const cPromise = trace(
+          { name: NAME_MOCK, id: 'C-concurrent-2' },
+          () => {
+            spanC = Sentry.getActiveSpan();
+            return spanC;
+          },
+        );
+        await tick(3);
+
+        expect(spanA).toBeTruthy();
+        expect(spanB).toBeTruthy();
+        expect(spanC).toBeTruthy();
+
+        expect(
+          spanC && Sentry.spanToJSON(spanC).parent_span_id,
+        ).toBeUndefined();
+        expect(spanC?.spanContext().traceId).not.toBe(
+          spanB?.spanContext().traceId,
+        );
+
+        await cPromise;
+      } finally {
+        bGate.resolve();
+        await bPromise;
+        aGate.resolve();
+        await aPromise;
+      }
     });
   });
 });
