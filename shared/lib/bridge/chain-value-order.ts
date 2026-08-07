@@ -7,8 +7,6 @@ import {
 } from '@metamask/utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../constants/bridge';
 
-export const CHAIN_VALUE_ORDER_OVERRIDE_KEY = 'swapsChainValueOrderOverride';
-
 export type ChainRankingEntry = {
   chainId: CaipChainId;
   name: string;

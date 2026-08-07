@@ -111,10 +111,7 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
-import {
-  CHAIN_VALUE_ORDER_OVERRIDE_KEY,
-  parsePositionOverrides,
-} from '../../../shared/lib/bridge/chain-value-order';
+import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-order';
 import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
@@ -215,7 +212,7 @@ export const getBridgeFeatureFlags = createDeepEqualSelector(
 export const getChainValueOrderOverride = createSelector(
   [
     (state: BridgeAppState) =>
-      getRemoteFeatureFlags(state)[CHAIN_VALUE_ORDER_OVERRIDE_KEY],
+      getRemoteFeatureFlags(state).swapsChainValueOrderOverride,
   ],
   parsePositionOverrides,
 );
