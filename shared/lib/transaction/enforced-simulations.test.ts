@@ -497,28 +497,12 @@ describe('enforced-simulations', () => {
       });
     });
 
-    describe('with token transfer recipients', () => {
-      it('evaluates the decoded transfer recipient rather than the token contract', () => {
-        expect(
-          isEnforcedSimulationsEligible(
-            {
-              ...BASE_TRANSACTION_META,
-              type: TransactionType.tokenMethodTransfer,
-              txParams: {
-                ...BASE_TRANSACTION_META.txParams,
-                to: TOKEN_CONTRACT,
-                data: TRANSFER_DATA,
-              },
-            },
-            buildStateForAddresses({
-              [TOKEN_CONTRACT]: ResultType.Benign,
-              [TRANSFER_RECIPIENT]: ResultType.Trusted,
-            }),
-          ),
-        ).toBe(false);
-      });
-
-      it('returns true when the decoded transfer recipient is not trusted', () => {
+    describe('with token transfers', () => {
+      // Enforced simulations defend against red-pill contracts, so the trust
+      // gate deliberately evaluates the executed contract (`to`), never the
+      // transfer recipient decoded from calldata (CONF-1078). Recipient
+      // verdicts in the same cache serve UI trust signals only.
+      it('keys the exemption off the token contract, not the decoded transfer recipient', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -535,59 +519,15 @@ describe('enforced-simulations', () => {
               [TRANSFER_RECIPIENT]: ResultType.Benign,
             }),
           ),
-        ).toBe(true);
-      });
-
-      it('evaluates decoded recipients of nested token transfers', () => {
-        expect(
-          isEnforcedSimulationsEligible(
-            {
-              ...BASE_TRANSACTION_META,
-              nestedTransactions: [
-                {
-                  to: TOKEN_CONTRACT as `0x${string}`,
-                  data: TRANSFER_DATA,
-                  type: TransactionType.tokenMethodTransfer,
-                },
-              ],
-            },
-            buildStateForAddresses({
-              [TO_ADDRESS]: ResultType.Trusted,
-              [TOKEN_CONTRACT]: ResultType.Benign,
-              [TRANSFER_RECIPIENT]: ResultType.Trusted,
-            }),
-          ),
         ).toBe(false);
       });
 
-      it('returns true when a nested transfer recipient is not trusted', () => {
+      it('enforces when the token contract is not trusted, regardless of the recipient verdict', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
               ...BASE_TRANSACTION_META,
-              nestedTransactions: [
-                {
-                  to: TOKEN_CONTRACT as `0x${string}`,
-                  data: TRANSFER_DATA,
-                  type: TransactionType.tokenMethodTransfer,
-                },
-              ],
-            },
-            buildStateForAddresses({
-              [TO_ADDRESS]: ResultType.Trusted,
-              [TOKEN_CONTRACT]: ResultType.Trusted,
-              [TRANSFER_RECIPIENT]: ResultType.Warning,
-            }),
-          ),
-        ).toBe(true);
-      });
-
-      it('falls back to `to` when the transaction is not a classified token transfer', () => {
-        expect(
-          isEnforcedSimulationsEligible(
-            {
-              ...BASE_TRANSACTION_META,
-              type: TransactionType.contractInteraction,
+              type: TransactionType.tokenMethodTransfer,
               txParams: {
                 ...BASE_TRANSACTION_META.txParams,
                 to: TOKEN_CONTRACT,
@@ -595,6 +535,28 @@ describe('enforced-simulations', () => {
               },
             },
             buildStateForAddresses({
+              [TOKEN_CONTRACT]: ResultType.Benign,
+              [TRANSFER_RECIPIENT]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(true);
+      });
+
+      it('keys nested transfer calls off each nested contract address', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                {
+                  to: TOKEN_CONTRACT as `0x${string}`,
+                  data: TRANSFER_DATA,
+                  type: TransactionType.tokenMethodTransfer,
+                },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
               [TOKEN_CONTRACT]: ResultType.Trusted,
               [TRANSFER_RECIPIENT]: ResultType.Benign,
             }),

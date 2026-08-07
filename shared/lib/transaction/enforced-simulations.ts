@@ -1,5 +1,4 @@
 import {
-  getEffectiveRecipient,
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -154,27 +153,36 @@ function isTrusted(
     transactionMeta;
 
   // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
-  // verdict disqualifies a recipient, and chains the Security Alerts API
+  // verdict disqualifies an address, and chains the Security Alerts API
   // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
   // and therefore enforces.
   //
-  // Recipients that no scan path covers stay cache misses and are treated as
+  // Addresses that no scan path covers stay cache misses and are treated as
   // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
   // and `wallet_sendCalls` requests (each call's `to` plus approval spenders
   // and token-transfer recipients decoded from calldata), but nothing is
   // scanned when the user has security alerts disabled, and the outer batch
   // target (`txParamsOriginal.to`, the upgraded EOA for a 7702 batch) is
   // never scanned, so its cache miss never disqualifies.
+  //
+  // This gate deliberately evaluates `to` — the contract being executed — and
+  // NOT the decoded recipient of a token transfer. Enforced simulations
+  // defend against red-pill contracts that detect simulation and change
+  // behavior on-chain; only executing code can do that, so what matters is
+  // whether the interaction target is a verified/Trusted contract
+  // (CONF-1078). A `Trusted` verdict is a contract-verification signal, so
+  // for a USDC transfer the exemption keys off USDC itself — the transfer
+  // recipient cannot alter the simulation. Recipient verdicts are still
+  // scanned into this same cache, but they power UI trust signals
+  // (e.g. flagging a malicious payee), not this enforcement gate.
   if (!chainId) {
     return false;
   }
 
-  const toAddresses = getRecipientAddresses(
-    txParams,
-    txParamsOriginal,
-    transactionMeta.type,
-    nestedTransactions,
-  );
+  // Use the original `to` address before any container wrapping,
+  // since containers may redirect to a trusted delegation manager.
+  const originalTo = txParamsOriginal?.to ?? txParams?.to;
+  const toAddresses = getToAddresses(originalTo, nestedTransactions);
 
   if (toAddresses.length === 0) {
     return true;
@@ -192,51 +200,20 @@ function isTrusted(
   });
 }
 
-/**
- * Collects the effective recipient of the transaction and of each nested
- * transaction. For classified ERC-20/721/1155 transfers,
- * {@link getEffectiveRecipient} returns the recipient decoded from calldata
- * rather than `to` (the token contract), so the trust verdict evaluated here
- * belongs to the address actually receiving the funds. Unclassified
- * transactions fall back to `to` unchanged.
- *
- * @param txParams - Current transaction params.
- * @param txParamsOriginal - Params before any container wrapping. Preferred,
- * since containers may redirect `to` to a trusted delegation manager.
- * @param type - Classified type of the (outer) transaction.
- * @param nestedTransactions - Nested transactions of a batch, each carrying
- * its own classified type.
- * @returns Recipient addresses to evaluate trust verdicts for.
- */
-function getRecipientAddresses(
-  txParams: TransactionMeta['txParams'],
-  txParamsOriginal: TransactionMeta['txParamsOriginal'],
-  type: TransactionMeta['type'],
+function getToAddresses(
+  primaryTo: string | undefined,
   nestedTransactions: TransactionMeta['nestedTransactions'],
 ): string[] {
   const addresses: string[] = [];
 
-  const primaryRecipient = getEffectiveRecipient({
-    txParams: {
-      to: txParamsOriginal?.to ?? txParams?.to,
-      data: txParamsOriginal?.data ?? txParams?.data,
-    },
-    type,
-  } as TransactionMeta);
-
-  if (primaryRecipient) {
-    addresses.push(primaryRecipient);
+  if (primaryTo) {
+    addresses.push(primaryTo);
   }
 
   if (nestedTransactions) {
     for (const nested of nestedTransactions) {
-      const recipient = getEffectiveRecipient({
-        txParams: { to: nested.to, data: nested.data },
-        type: nested.type,
-      } as TransactionMeta);
-
-      if (recipient) {
-        addresses.push(recipient);
+      if (nested.to) {
+        addresses.push(nested.to);
       }
     }
   }
