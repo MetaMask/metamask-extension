@@ -53,7 +53,10 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+} from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   createDeepEqualSelector,
@@ -768,6 +771,8 @@ export const getBridgeQuotes = createSelector(
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
+      // Determines how quote metadata is resolved
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
 
     return quotes;
@@ -833,8 +838,13 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
-export const getActiveQuotePriceData = (state: BridgeAppState) =>
-  getBridgeQuotes(state).activeQuote?.quote?.priceData;
+export const getActiveQuotePriceData = (state: BridgeAppState) => {
+  const priceData = getBridgeQuotes(state).activeQuote?.quote?.priceData;
+  if (!priceData?.priceImpact?.amount) {
+    return undefined;
+  }
+  return priceData;
+};
 
 export const getPriceImpact = (state: BridgeAppState) =>
   getPriceImpactNumber(getBridgeQuotes(state).activeQuote);
@@ -847,7 +857,7 @@ export const getFormattedPriceImpactPercentage = createSelector(
 export const getFormattedPriceImpactFiat = createSelector(
   [
     (state: BridgeAppState) =>
-      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
+      getActiveQuotePriceData(state)?.priceImpact?.valueInCurrency,
     getCurrentCurrency,
   ],
   (priceImpact, currentCurrency) =>

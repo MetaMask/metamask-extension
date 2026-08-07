@@ -47,7 +47,6 @@ const mockQuotes = [
           },
         },
       },
-      priceData: {},
       bridgeId: 'socket',
       bridges: ['across'],
       steps: [
@@ -182,7 +181,6 @@ const mockQuotes = [
           },
         },
       },
-      priceData: {},
       bridgeId: 'socket',
       bridges: ['celercircle'],
       steps: [

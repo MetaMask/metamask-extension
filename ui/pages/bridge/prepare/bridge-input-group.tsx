@@ -60,7 +60,7 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networks,
   amountFieldProps,
-  amountInFiat,
+  amountInFiat: amountInFiatString,
   onMaxButtonClick,
   onBlockExplorerClick,
   buttonProps,
@@ -97,6 +97,8 @@ export const BridgeInputGroup = ({
   | 'disabledChainId'
   | 'isDestination'
 >) => {
+  const [amountInFiat, amountInFiatString2] =
+    amountInFiatString?.split('(') ?? [];
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -339,6 +341,7 @@ export const BridgeInputGroup = ({
           ellipsis
         >
           {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
+          {amountInFiatString2 && ` (${amountInFiatString2}`}
         </Text>
         {!isAmountReadOnly && balanceAmount && token && (
           <Text
