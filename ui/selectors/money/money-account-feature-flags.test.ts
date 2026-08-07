@@ -1,5 +1,5 @@
 import type { Json } from '@metamask/utils';
-import type { RemoteFeatureFlagsState } from '../../shared/lib/selectors/remote-feature-flags';
+import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   parseMoneyAccountVaultConfig,
   selectMoneyAccountDepositQuotePipelineEnabled,
