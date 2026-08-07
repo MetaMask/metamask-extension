@@ -496,7 +496,6 @@
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
   "hasAccountTreeSyncingSyncedAtLeastOnce": true,
   "hasDismissedOpenSeaToBlockaidBanner": false,
-  "hiddenAccountList": [],
   "ignoredNfts": [],
   "ignoredTokens": [],
   "internalAccounts": {
@@ -840,7 +839,6 @@
       }
     }
   },
-  "pinnedAccountList": [],
   "preferences": {
     "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,

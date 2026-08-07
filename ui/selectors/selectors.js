@@ -2480,14 +2480,6 @@ export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
 
-export function getPinnedAccountsList(state) {
-  return state.metamask.pinnedAccountList;
-}
-
-export function getHiddenAccountsList(state) {
-  return state.metamask.hiddenAccountList;
-}
-
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -3292,14 +3284,12 @@ export const getOrderedConnectedAccountsForActiveTab = createSelector(
 );
 
 /**
- * @deprecated
+ * @deprecated Prefer AccountTreeController group metadata for pin/hide ordering.
  */
 export const getUpdatedAndSortedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
-  getPinnedAccountsList,
-  getHiddenAccountsList,
   getOrderedConnectedAccountsForActiveTab,
-  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
+  (accounts, connectedAccounts) => {
     const connectionMetadataById = new Map();
     connectedAccounts.forEach((connection) => {
       if (connection.metadata) {
@@ -3330,42 +3320,10 @@ export const getUpdatedAndSortedAccounts = createSelector(
           )
         : null;
 
-    const enrichedAccounts = accountsWithMetadata.map((account) => ({
+    return accountsWithMetadata.map((account) => ({
       ...account,
-      pinned: Boolean(pinnedAddresses.includes(account.address)),
-      hidden: Boolean(hiddenAddresses.includes(account.address)),
       active: Boolean(mostRecentAccount && account.id === mostRecentAccount.id),
     }));
-
-    const sortedPinnedAccounts = pinnedAddresses
-      ?.map((address) =>
-        enrichedAccounts.find((account) => account.address === address),
-      )
-      .filter((account) =>
-        Boolean(
-          account &&
-          pinnedAddresses.includes(account.address) &&
-          !hiddenAddresses?.includes(account.address),
-        ),
-      );
-
-    const notPinnedAccounts = enrichedAccounts.filter(
-      (account) =>
-        !pinnedAddresses.includes(account.address) &&
-        !hiddenAddresses.includes(account.address),
-    );
-
-    const filteredHiddenAccounts = enrichedAccounts.filter((account) =>
-      hiddenAddresses.includes(account.address),
-    );
-
-    const sortedSearchResults = [
-      ...sortedPinnedAccounts,
-      ...notPinnedAccounts,
-      ...filteredHiddenAccounts,
-    ];
-
-    return sortedSearchResults;
   },
 );
 

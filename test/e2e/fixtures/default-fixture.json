@@ -1,9 +1,5 @@
 {
   "data": {
-    "AccountOrderController": {
-      "hiddenAccountList": [],
-      "pinnedAccountList": []
-    },
     "AccountTracker": {
       "accountsByChainId": {
         "0x1": {
@@ -179,7 +175,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 221,
+      "currentMigrationVersion": 222,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0

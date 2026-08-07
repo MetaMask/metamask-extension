@@ -302,7 +302,6 @@ import {
   AppStateControllerSetTrezorModelAction,
 } from '../controllers/app-state-controller-method-action-types';
 import { AppStateControllerGetStateAction } from '../controllers/app-state-controller';
-import { AccountOrderControllerUpdateHiddenAccountsListAction } from '../controllers/account-order-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import {
   HardwareDeviceNames,
@@ -435,7 +434,6 @@ export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
 type AllowedActions =
-  | AccountOrderControllerUpdateHiddenAccountsListAction
   | AccountTreeControllerClearStateAction
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
@@ -3198,16 +3196,6 @@ export class LegacyBackgroundApiService {
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.#messenger.call(
-        'AccountOrderController:updateHiddenAccountsList',
-        [],
-      );
-
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
     }
 
@@ -3613,16 +3601,6 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.#messenger.call(
-        'AccountOrderController:updateHiddenAccountsList',
-        [],
-      );
 
       this.#messenger.call('TransactionController:clearUnapprovedTransactions');
 
