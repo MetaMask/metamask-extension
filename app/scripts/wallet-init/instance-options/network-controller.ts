@@ -36,6 +36,8 @@ export function getNetworkControllerInstanceOptions(
       [CHAIN_IDS.MONAD]: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
       [CHAIN_IDS.HYPE]: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
       [CHAIN_IDS.ARC]: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
+      [CHAIN_IDS.ROBINHOOD_CHAIN]:
+        getFailoverUrlsForInfuraNetwork('robinhood-mainnet'),
     },
   };
 }
