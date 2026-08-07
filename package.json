@@ -476,7 +476,7 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.2.0",
-    "@metamask/transaction-controller": "^69.1.0",
+    "@metamask/transaction-controller": "^69.5.1",
     "@metamask/transaction-pay-controller": "^26.0.0",
     "@metamask/tron-wallet-snap": "^1.33.1",
     "@metamask/user-operation-controller": "^41.2.5",
