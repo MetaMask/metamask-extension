@@ -173,7 +173,7 @@ const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 const STELLAR_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: 'XLM',
   name: 'Stellar Lumens',
-  address: DEFAULT_TOKEN_ADDRESS,
+  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.XLM,
   decimals: 7,
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
 };
