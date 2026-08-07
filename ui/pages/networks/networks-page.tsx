@@ -514,6 +514,7 @@ export const NetworksPage = () => {
             <AddRpcUrlPageForm
               onCancel={handleNewNetwork}
               onAdded={handleAddRPC}
+              expectedChainId={networkFormState.chainId}
             />
           </NetworksPageFormBody>
         </>
@@ -529,6 +530,7 @@ export const NetworksPage = () => {
             <AddRpcUrlPageForm
               onCancel={handleEditOnComplete}
               onAdded={handleAddRPC}
+              expectedChainId={networkFormState.chainId}
             />
           </NetworksPageFormBody>
         </>

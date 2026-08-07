@@ -175,7 +175,10 @@ export const NetworkManager = () => {
             >
               {t('addRpcUrl')}
             </ModalHeader>
-            <AddRpcUrlModal onAdded={handleAddRPC} />
+            <AddRpcUrlModal
+              onAdded={handleAddRPC}
+              expectedChainId={networkFormState.chainId}
+            />
           </>
         )}
         {view === 'edit-rpc' && (
@@ -189,7 +192,10 @@ export const NetworkManager = () => {
             >
               {t('addRpcUrl')}
             </ModalHeader>
-            <AddRpcUrlModal onAdded={handleAddRPC} />
+            <AddRpcUrlModal
+              onAdded={handleAddRPC}
+              expectedChainId={networkFormState.chainId}
+            />
           </>
         )}
         {view === 'add-explorer-url' && (
