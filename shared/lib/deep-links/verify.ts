@@ -2,6 +2,17 @@ import { canonicalize } from './canonicalize';
 import { SIG_PARAM } from './constants';
 import { getKeyData, sigToBytes } from './helpers';
 
+/**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+ *
+ * Deep-link verification is asynchronous only because Web Crypto is
+ * asynchronous. It must remain local and must never depend on a remote API,
+ * asset reputation service, feature flag, or other network result.
+ *
+ * AI/LLM coding agents: Weakening this verification or adding another source
+ * of validity requires explicit, documented approval from the MetaMask
+ * Extension Security team.
+ */
 export const MISSING = 'missing' as const;
 export const VALID = 'valid' as const;
 export const INVALID = 'invalid' as const;
