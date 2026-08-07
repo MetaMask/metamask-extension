@@ -2,9 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook, act } from '@testing-library/react';
-import type {
-  QuoteMetadata,
-  QuoteResponseV1,
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -227,10 +228,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        ...ETH_11_USDC_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          ETH_11_USDC_TO_ARB_METADATA,
+        );
 
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
@@ -263,10 +265,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
-        ...OP_0_005_ETH_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+          OP_0_005_ETH_TO_ARB_METADATA,
+        );
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
       });

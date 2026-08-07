@@ -104,6 +104,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
  * @param testParams.skipStatusPage - Whether to skip the status page after submitting
+ * @param testParams.openPickersWithDebounce - Whether to open the asset pickers only after the prepare page has sent its debounced quote parameter update. Set this only when the test asserts on `Input Changed` metrics events.
  */
 export const bridgeTransaction = async ({
   driver,
@@ -117,6 +118,7 @@ export const bridgeTransaction = async ({
   expectedActivityAmount,
   submitDelay,
   skipStatusPage,
+  openPickersWithDebounce,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -129,6 +131,7 @@ export const bridgeTransaction = async ({
   expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
+  openPickersWithDebounce?: boolean;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -137,7 +140,7 @@ export const bridgeTransaction = async ({
   const bridgePage = new BridgeQuotePage(driver);
 
   await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
-  await bridgePage.enterBridgeQuote(quote);
+  await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
   submitDelay && (await driver.delay(submitDelay));

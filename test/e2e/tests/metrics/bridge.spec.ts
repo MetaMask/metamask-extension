@@ -50,6 +50,7 @@ describe('Bridge tests', function (this: Suite) {
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
           expectedActivityAmount: '+0.01567',
+          openPickersWithDebounce: true,
         });
 
         const inputChangesCount1 = await checkInputChangedEvents(
@@ -70,7 +71,9 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         console.log('Entering 2nd Swap quote');
-        await bridgePage.enterBridgeQuote(quote);
+        await bridgePage.enterBridgeQuote(quote, {
+          openPickersWithDebounce: true,
+        });
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
 

@@ -31,7 +31,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         await defiTab.checkNoPositionsMessageIsDisplayed();
 
         // switch network
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
 
         await defiTab.checkNoPositionsMessageIsDisplayed();
       },

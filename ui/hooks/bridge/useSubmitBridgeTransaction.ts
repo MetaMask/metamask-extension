@@ -1,14 +1,12 @@
 import { useRef, useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
-  formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type {
   InputPrimaryDenomination,
-  QuoteMetadata,
-  QuoteResponseV1,
+  QuoteResponse,
 } from '@metamask/bridge-controller';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
@@ -44,6 +42,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
+import { getDestChainId } from '../../pages/bridge/utils/quote';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -92,7 +91,7 @@ export default function useSubmitBridgeTransaction(
   } | null>(null);
 
   const submitQuote = async (
-    quoteResponse: QuoteResponseV1 & QuoteMetadata,
+    quoteResponse: QuoteResponse,
     options?: { rpcTimeoutMs?: number },
   ) => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -170,7 +169,7 @@ export default function useSubmitBridgeTransaction(
   };
 
   const submitBridgeTransaction = async (
-    quoteResponse: QuoteResponseV1 & QuoteMetadata,
+    quoteResponse: QuoteResponse,
     options?: { rpcTimeoutMs?: number },
   ) => {
     setIsSubmitting(true);
@@ -192,15 +191,10 @@ export default function useSubmitBridgeTransaction(
         );
       }
 
-      if (
-        isCrossChain(
-          quoteResponse.quote.srcChainId,
-          quoteResponse.quote.destChainId,
-        )
-      ) {
-        enableMissingNetwork(
-          formatChainIdToCaip(quoteResponse.quote.destChainId),
-        );
+      const destChainId = getDestChainId(quoteResponse);
+
+      if (isCrossChain(quoteResponse.chainId, destChainId)) {
+        enableMissingNetwork(destChainId);
       }
     } catch {
       setIsSubmitting(false);

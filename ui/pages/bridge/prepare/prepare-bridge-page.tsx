@@ -142,6 +142,7 @@ const PrepareBridgePage = ({
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
@@ -198,9 +199,8 @@ const PrepareBridgePage = ({
         );
   }
 
-  const destinationTokenAmount = unvalidatedQuote?.toTokenAmount?.amount;
-  const destinationFiatAmount =
-    unvalidatedQuote?.toTokenAmount?.valueInCurrency;
+  const destinationTokenAmount = dest?.normalizedAmount;
+  const destinationFiatAmount = dest?.valueInCurrency;
   let destinationAmount = '0';
   if (sourceInputAmount.isFiatPrimary) {
     destinationAmount = destinationFiatAmount
@@ -519,8 +519,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
-                const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                const previousDestAmount = dest?.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;

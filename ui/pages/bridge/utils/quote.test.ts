@@ -1,15 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
+  formatProviderLabel,
   getNativeAssetForChainId,
-  type QuoteResponseV1,
+  type DeepPartial,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import {
   convertFiatToTokenAmount,
   convertTokenAmountToFiat,
-  formatTokenAmount,
   formatCurrencyAmount,
-  formatProviderLabel,
+  formatTokenAmount,
   readMmFee,
 } from './quote';
 
@@ -148,12 +149,6 @@ describe('Bridge quote utils', () => {
       expect(result).toBe('bridge1_provider1');
     });
 
-    it('should handle undefined args', () => {
-      const result = formatProviderLabel(undefined);
-
-      expect(result).toBe('undefined_undefined');
-    });
-
     it('should handle empty bridges array', () => {
       const args = {
         bridgeId: 'bridge1',
@@ -175,22 +170,25 @@ describe('Bridge quote utils', () => {
       baseBpsFee?: number;
       discountType?: string | null;
       quoteBpsFee?: number;
-    }) =>
-      ({
-        quote: {
-          feeData: {
-            metabridge: {
+    }): DeepPartial<QuoteResponse> => ({
+      quote: {
+        feeData: {
+          metabridge: [
+            {
               baseBpsFee,
               discountType,
               quoteBpsFee,
             },
-          },
+          ],
         },
-      }) as unknown as QuoteResponseV1;
+      },
+    });
 
     it('returns fee percentages and no discount when discountType is absent', () => {
       expect(
-        readMmFee(createQuote({ baseBpsFee: 87.5, quoteBpsFee: 50 })),
+        readMmFee(
+          createQuote({ baseBpsFee: 87.5, quoteBpsFee: 50 }) as QuoteResponse,
+        ),
       ).toStrictEqual({
         baseFeePercentage: '0.875',
         discountType: undefined,
@@ -203,7 +201,11 @@ describe('Bridge quote utils', () => {
       it(`returns discounted fee data for ${discountType} discountType`, () => {
         expect(
           readMmFee(
-            createQuote({ baseBpsFee: 87.5, discountType, quoteBpsFee: 50 }),
+            createQuote({
+              baseBpsFee: 87.5,
+              discountType,
+              quoteBpsFee: 50,
+            }) as QuoteResponse,
           ),
         ).toStrictEqual({
           baseFeePercentage: '0.875',
@@ -221,7 +223,7 @@ describe('Bridge quote utils', () => {
             baseBpsFee: 87.5,
             discountType: 'promo',
             quoteBpsFee: 0,
-          }),
+          }) as QuoteResponse,
         ),
       ).toStrictEqual({
         baseFeePercentage: '0.875',
