@@ -4,6 +4,7 @@ import { trackEvent } from '../../controllers/analytics';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
+  trackRampsCheckoutOpened,
 } from './trackRampsCheckoutAnalytics';
 
 jest.mock('../../controllers/analytics', () => ({
@@ -27,6 +28,44 @@ describe('trackRampsCheckoutAnalytics', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  it('tracks checkout opened with provider name and sanitized url path', () => {
+    trackRampsCheckoutOpened({
+      ...context,
+      providerName: 'Transak',
+      checkoutUrl: 'https://provider.example/checkout?session=abc',
+      hasCallbackFlow: false,
+    });
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(built.name).toBe(MetaMetricsEventName.RampsCheckoutOpened);
+    expect(built.properties).toMatchObject({
+      checkout_session_id: 'session-1',
+      provider_name: 'Transak',
+      initial_url_path: '/checkout',
+      has_callback_flow: false,
+      order_id: 'order-abc',
+      region: 'us-ca',
+    });
+  });
+
+  it('tracks checkout opened with has_callback_flow true when no order code', () => {
+    trackRampsCheckoutOpened({
+      checkoutSessionId: 'session-1',
+      checkoutOpenedAt: 1_000,
+      region: 'us-ca',
+      providerName: 'MoonPay',
+      checkoutUrl: 'https://provider.example/buy',
+      hasCallbackFlow: true,
+    });
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(built.properties).toMatchObject({
+      has_callback_flow: true,
+    });
   });
 
   it('tracks callback detected with sanitized url path', () => {

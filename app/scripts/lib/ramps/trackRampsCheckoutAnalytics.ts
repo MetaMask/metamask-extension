@@ -40,6 +40,23 @@ function trackCheckoutEvent(
   );
 }
 
+export function trackRampsCheckoutOpened(
+  context: RampsCheckoutAnalyticsContext & {
+    providerName?: string;
+    checkoutUrl: string;
+    hasCallbackFlow: boolean;
+  },
+): void {
+  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutOpened, {
+    region: context.region ?? '',
+    checkout_session_id: context.checkoutSessionId,
+    provider_name: context.providerName,
+    initial_url_path: sanitizeUrlPath(context.checkoutUrl),
+    has_callback_flow: context.hasCallbackFlow,
+    order_id: context.orderCode,
+  });
+}
+
 export function trackRampsCheckoutCallbackDetected(
   context: RampsCheckoutAnalyticsContext,
   callbackUrl: string,

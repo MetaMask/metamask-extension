@@ -6,7 +6,6 @@ import {
   getInternalOrderCode,
   normalizeProviderCode,
 } from '@metamask/ramps-controller';
-import { sanitizeUrlPath } from '../../../../../shared/lib/ramps/url-path';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -17,7 +16,6 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useRampsAnalytics } from '../../../../hooks/ramps/useRampsAnalytics';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -66,7 +64,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { trackCheckoutOpened } = useRampsAnalytics();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -211,16 +208,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         ? getInternalOrderCode(widget.orderId)
         : undefined;
 
-      trackCheckoutOpened({
-        checkoutSessionId,
-        providerName: selectedProvider?.name,
-        initialUrlPath: sanitizeUrlPath(widget.url),
-        hasCallbackFlow: !widget.orderId,
-        orderId: orderCode,
-      });
-
       // Open + watch in the background so popup-mode UI can close when the
       // provider tab opens without losing the callback listener.
+      // trackCheckoutOpened fires from the background after the tab opens,
+      // so a failed openTab does not emit a false checkout-opened event.
       await watchRampsCheckoutTab({
         url: widget.url,
         providerCode,
@@ -228,6 +219,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         orderCode,
         checkoutSessionId,
         region: userRegion?.regionCode,
+        providerName: selectedProvider?.name,
       });
 
       navigate(DEFAULT_ROUTE);
@@ -249,7 +241,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedProvider?.name,
     selectedQuote,
     t,
-    trackCheckoutOpened,
     userRegion?.regionCode,
     walletAddress,
   ]);

@@ -261,6 +261,7 @@ describe('RampsBuildQuoteScreen', () => {
         orderCode: 'order-123',
         checkoutSessionId: expect.any(String),
         region: 'us-ca',
+        providerName: 'Transak',
       }),
     );
     expect(mockNavigate).toHaveBeenCalledWith('/');
@@ -290,6 +291,7 @@ describe('RampsBuildQuoteScreen', () => {
         orderCode: undefined,
         checkoutSessionId: expect.any(String),
         region: 'us-ca',
+        providerName: 'Transak',
       }),
     );
     expect(mockNavigate).toHaveBeenCalledWith('/');

@@ -8,6 +8,7 @@ import {
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
+  trackRampsCheckoutOpened,
   type RampsCheckoutAnalyticsContext,
 } from './trackRampsCheckoutAnalytics';
 
@@ -26,6 +27,7 @@ export type WatchRampsCheckoutTabParams = {
   orderCode?: string;
   checkoutSessionId: string;
   region?: string;
+  providerName?: string;
 };
 
 type ActiveWatch = {
@@ -202,13 +204,27 @@ export function createWatchRampsCheckoutTab(
     orderCode,
     checkoutSessionId,
     region,
+    providerName,
   }: WatchRampsCheckoutTabParams): Promise<void> {
-    const checkoutOpenedAt = Date.now();
-
     const openedTab = await platform.openTab({ url });
     if (openedTab.id === undefined) {
       throw new Error('Failed to open ramps checkout tab');
     }
+
+    // Stamp checkoutOpenedAt *after* the tab opens so duration metrics
+    // (time_since_open_ms, time_on_screen_ms) measure time on the provider
+    // checkout page, not tab-open latency.
+    const checkoutOpenedAt = Date.now();
+
+    trackRampsCheckoutOpened({
+      checkoutSessionId,
+      checkoutOpenedAt,
+      region,
+      orderCode,
+      providerName,
+      checkoutUrl: url,
+      hasCallbackFlow: !orderCode,
+    });
 
     startWatching({
       tabId: openedTab.id,

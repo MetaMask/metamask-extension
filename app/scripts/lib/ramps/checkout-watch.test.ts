@@ -88,6 +88,47 @@ describe('createWatchRampsCheckoutTab', () => {
     };
   }
 
+  it('tracks checkout opened with provider name and callback flow flag', async () => {
+    const { watch, checkoutAnalytics } = createHarness();
+
+    await watch({
+      url: 'https://provider.example/checkout?session=xyz',
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      providerName: 'MoonPay',
+      orderCode: 'c-order',
+      ...checkoutAnalytics,
+    });
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(built.name).toBe(MetaMetricsEventName.RampsCheckoutOpened);
+    expect(built.properties).toMatchObject({
+      provider_name: 'MoonPay',
+      initial_url_path: '/checkout',
+      has_callback_flow: false,
+      order_id: 'c-order',
+    });
+  });
+
+  it('tracks checkout opened with has_callback_flow true for redirect-only orders', async () => {
+    const { watch, checkoutAnalytics } = createHarness();
+
+    await watch({
+      url: 'https://provider.example/checkout',
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      providerName: 'MoonPay',
+      ...checkoutAnalytics,
+    });
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(built.properties).toMatchObject({
+      has_callback_flow: true,
+    });
+  });
+
   it('opens the checkout tab then watches for the callback URL', async () => {
     const {
       platform,
@@ -214,7 +255,7 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(rampsController.addOrder).not.toHaveBeenCalled();
   });
 
-  it('throws when the opened checkout tab has no id', async () => {
+  it('throws when the opened checkout tab has no id and does not track checkout opened', async () => {
     const { platform, watch, checkoutAnalytics } = createHarness();
     platform.openTab.mockResolvedValue({});
 
@@ -226,6 +267,8 @@ describe('createWatchRampsCheckoutTab', () => {
         ...checkoutAnalytics,
       }),
     ).rejects.toThrow('Failed to open ramps checkout tab');
+
+    expect(trackEvent).not.toHaveBeenCalled();
   });
 
   it('tears down listeners when the user closes the checkout tab', async () => {
@@ -246,13 +289,14 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(platform.closeTab).not.toHaveBeenCalled();
   });
 
-  it('tracks callback and closed analytics when the callback URL is reached', async () => {
+  it('tracks checkout opened, callback, and closed analytics when the callback URL is reached', async () => {
     const { watch, checkoutAnalytics, getOnUpdated } = createHarness();
 
     await watch({
       url: 'https://provider.example/checkout',
       providerCode: 'moonpay',
       walletAddress: '0xabc',
+      providerName: 'MoonPay',
       ...checkoutAnalytics,
     });
 
@@ -262,14 +306,17 @@ describe('createWatchRampsCheckoutTab', () => {
       undefined,
     );
 
-    expect(trackEvent).toHaveBeenCalledTimes(2);
+    expect(trackEvent).toHaveBeenCalledTimes(3);
     expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
-      MetaMetricsEventName.RampsCheckoutCallbackDetected,
+      MetaMetricsEventName.RampsCheckoutOpened,
     );
     expect(jest.mocked(trackEvent).mock.calls[1][0].name).toBe(
+      MetaMetricsEventName.RampsCheckoutCallbackDetected,
+    );
+    expect(jest.mocked(trackEvent).mock.calls[2][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutClosed,
     );
-    expect(jest.mocked(trackEvent).mock.calls[1][0].properties).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[2][0].properties).toMatchObject({
       close_source: 'callback_success',
       callback_reached: true,
     });
@@ -295,7 +342,7 @@ describe('createWatchRampsCheckoutTab', () => {
     const callbackUrl = `${callbackBase}?transactionId=abc`;
     getOnUpdated()?.(9, { url: callbackUrl }, { url: callbackUrl });
 
-    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[1][0].properties).toMatchObject({
       step_index: 2,
     });
   });
@@ -460,7 +507,7 @@ describe('createWatchRampsCheckoutTab', () => {
     });
   });
 
-  it('tracks checkout closed when the user closes the tab before callback', async () => {
+  it('tracks checkout opened and closed when the user closes the tab before callback', async () => {
     const { watch, checkoutAnalytics, getOnRemoved } = createHarness();
 
     await watch({
@@ -472,11 +519,14 @@ describe('createWatchRampsCheckoutTab', () => {
 
     getOnRemoved()?.(9);
 
-    expect(trackEvent).toHaveBeenCalledTimes(1);
+    expect(trackEvent).toHaveBeenCalledTimes(2);
     expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
+      MetaMetricsEventName.RampsCheckoutOpened,
+    );
+    expect(jest.mocked(trackEvent).mock.calls[1][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutClosed,
     );
-    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[1][0].properties).toMatchObject({
       close_source: 'user_close_button',
       callback_reached: false,
     });
