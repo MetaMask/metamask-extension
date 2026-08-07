@@ -85,7 +85,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
                     data-testid="srp-input-import__srp-note"
                     id="first-word-input-text-area"
                     placeholder="Add a space between each word and make sure no one is watching."
-                    rows="7"
+                    rows="5"
                   />
                 </div>
               </div>
