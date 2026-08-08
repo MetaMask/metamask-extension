@@ -192,6 +192,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn tsx .github/scripts/check-feature-flag-registry.mts
 
+      - name: Check for deeplink cross-client reminder
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        run: yarn tsx .github/scripts/deeplink-cross-client-reminder.mts
+
       - name: Check working tree
         if: ${{ !cancelled() }}
         run: |
