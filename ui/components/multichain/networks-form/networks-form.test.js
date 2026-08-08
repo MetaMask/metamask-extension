@@ -57,7 +57,7 @@ jest.mock('../../../store/background-connection', () => ({
   }),
 }));
 
-const renderComponent = (props) => {
+const renderComponent = ({ isRpcFailoverEnabled, ...props } = {}) => {
   const store = configureMockStore([thunk])({
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -70,6 +70,9 @@ const renderComponent = (props) => {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: 'eip155:1',
       isEvmSelected: true,
+      remoteFeatureFlags: {
+        walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+      },
     },
   });
   return renderWithProvider(<NetworksForm {...props} />, store);
@@ -157,6 +160,7 @@ describe('NetworkForm Component', () => {
 
   afterEach(() => {
     nock.cleanAll();
+    delete process.env.QUICKNODE_BSC_URL;
   });
 
   it('should render add new network form correctly', async () => {
@@ -674,5 +678,208 @@ describe('NetworkForm Component', () => {
         }),
       );
     });
+  });
+
+  it('shows failover from shared config for a map chain with empty persisted failoverUrls', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByLabelText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByLabelText(messages.failoverRpcUrl.message)).toHaveValue(
+      'failover.example',
+    );
+  });
+
+  it('shows the failover tag on the rpc list item from shared config when persisted failoverUrls is empty', () => {
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          // An Infura endpoint renders through RpcListItem rather than the
+          // inline custom branch.
+          type: 'infura',
+          url: 'https://bsc-mainnet.infura.io/v3/test',
+          failoverUrls: [],
+        },
+      ],
+    };
+
+    const { getByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(getByText(messages.failover.message)).toBeInTheDocument();
+  });
+
+  it('suppresses persisted failoverUrls for a map chain when the shared config env is unset', () => {
+    // The chain is in the shared failover map but its QuickNode env is unset,
+    // so the shared config resolves to an empty array and no failover is shown.
+    // The form reads the shared config only, so the persisted failoverUrls on
+    // the endpoint are ignored.
+    delete process.env.QUICKNODE_BSC_URL;
+
+    const existingNetwork = {
+      chainId: '0x38',
+      name: 'BNB Chain',
+      nativeCurrency: 'BNB',
+      blockExplorerUrls: ['https://bscscan.com/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'bsc',
+          type: 'custom',
+          url: 'https://bsc.example/rpc',
+          failoverUrls: ['https://persisted.example'],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '56',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
+  });
+
+  it('does not show failover for a chain not in the shared config, even with persisted failoverUrls', () => {
+    // 0x2328 (9000) is not in the shared failover map. The form reads the
+    // shared config only, so it shows no failover even though the endpoint
+    // carries persisted failoverUrls.
+    const existingNetwork = {
+      chainId: '0x2328',
+      name: 'Some Custom Network',
+      nativeCurrency: 'CUSTOM',
+      blockExplorerUrls: ['https://explorer.example/'],
+      defaultBlockExplorerUrlIndex: 0,
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: 'custom',
+          type: 'custom',
+          url: 'https://custom.example/rpc',
+          failoverUrls: ['https://persisted.example'],
+        },
+      ],
+    };
+
+    const { queryByLabelText, queryByText } = renderComponent({
+      existingNetwork,
+      isRpcFailoverEnabled: true,
+      networkFormState: {
+        chainId: '9000',
+        blockExplorers: {
+          blockExplorerUrls: existingNetwork.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            existingNetwork.defaultBlockExplorerUrlIndex,
+        },
+        clear: () => ({}),
+        name: existingNetwork.name,
+        rpcUrls: {
+          defaultRpcEndpointIndex: existingNetwork.defaultRpcEndpointIndex,
+          rpcEndpoints: existingNetwork.rpcEndpoints,
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: existingNetwork.nativeCurrency,
+      },
+    });
+
+    expect(queryByLabelText(messages.failoverRpcUrl.message)).toBeNull();
+    expect(queryByText(messages.failover.message)).toBeNull();
   });
 });

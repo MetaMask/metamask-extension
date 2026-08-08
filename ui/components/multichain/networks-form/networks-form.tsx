@@ -26,6 +26,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -129,10 +130,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const defaultRpcEndpoint =
-    rpcUrls.defaultRpcEndpointIndex === undefined
-      ? undefined
-      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
 
   const { safeChains } = useSafeChains();
 
@@ -555,9 +556,12 @@ export const NetworksForm = ({
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+              <RpcListItem
+                rpcEndpoint={{ ...item, failoverUrls: chainFailoverUrls }}
+              />
             ) : (
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -567,9 +571,7 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
+                {isRpcFailoverEnabled && chainFailoverUrls.length > 0 ? (
                   <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
@@ -612,10 +614,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && chainFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -628,7 +627,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(chainFailoverUrls[0])}
             disabled={true}
           />
         ) : null}
