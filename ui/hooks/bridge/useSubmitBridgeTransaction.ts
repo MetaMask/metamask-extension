@@ -4,7 +4,10 @@ import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  InputPrimaryDenomination,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
@@ -21,6 +24,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getInputPrimaryDenomination,
   getToToken,
   getWarningLabels,
   type BridgeAppState,
@@ -49,7 +53,9 @@ import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-export default function useSubmitBridgeTransaction() {
+export default function useSubmitBridgeTransaction(
+  inputPrimaryDenominationOverride?: InputPrimaryDenomination,
+) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHardwareWalletSigningPage = Boolean(
@@ -64,6 +70,11 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const persistedInputPrimaryDenomination = useSelector(
+    getInputPrimaryDenomination,
+  );
+  const inputPrimaryDenomination =
+    inputPrimaryDenominationOverride ?? persistedInputPrimaryDenomination;
   const fromAccount = useSelector(getFromAccount);
   const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
@@ -124,6 +135,7 @@ export default function useSubmitBridgeTransaction() {
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
             activeAbTests,
+            inputPrimaryDenomination,
           }),
         );
         return;
@@ -152,6 +164,7 @@ export default function useSubmitBridgeTransaction() {
             location,
             toToken?.securityData?.type ?? null,
             activeAbTests,
+            inputPrimaryDenomination,
           ),
         );
         const tracked = { requestId, promise: rpcPromise };
