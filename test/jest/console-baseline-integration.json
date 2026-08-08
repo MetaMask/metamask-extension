@@ -109,12 +109,6 @@
       "error: Error: AggregateError": 3,
       "warn: ⚠️ React Router Future Flag": 1
     },
-    "test/integration/notifications&auth/notifications-activation.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4,
-      "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Input stability warnings": 7,
-      "warn: ⚠️ React Router Future Flag": 1
-    },
     "test/integration/notifications&auth/notifications-list.test.tsx": {
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1

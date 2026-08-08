@@ -78,7 +78,7 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
@@ -99,7 +99,7 @@ jobs:
 
       - name: Upload bundle analyzer report to S3
         if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -111,7 +111,7 @@ jobs:
         run: rm -f dist/report.html
 
       - name: Upload artifact '${{ inputs.build-name }}'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ inputs.build-name }}
           path: |
@@ -120,7 +120,7 @@ jobs:
 
       - name: Upload 'builds' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}

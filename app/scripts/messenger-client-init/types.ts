@@ -9,13 +9,14 @@ import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
 import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
-import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { MessengerClient, MessengerClientFlatState } from './controller-list';
+
+type MessageSender = chrome.runtime.MessageSender;
 
 /** The supported messenger client names. */
 export type MessengerClientName = MessengerClient['name'];
@@ -237,6 +238,16 @@ export type MessengerClientInitRequest<
    * Gets the record of open MetaMask tab IDs.
    */
   getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   */
+  markNotificationPopupAsAutomaticallyClosed: () => void;
+
+  /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  requestSafeReload: () => Promise<void>;
 
   /**
    * Sends an update to the UI.

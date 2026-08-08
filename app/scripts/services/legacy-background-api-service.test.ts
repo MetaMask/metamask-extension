@@ -27,6 +27,7 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
@@ -39,12 +40,25 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
+
+const mockToHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
+
+jest.mock('../../../shared/lib/hardware-wallets', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
+  toHardwareWalletError: (...args: unknown[]) =>
+    mockToHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
 
@@ -60,6 +74,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
@@ -421,6 +436,51 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('requestSafeReload', () => {
+    it('triggers a safe reload of the extension', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:requestSafeReload',
+          );
+
+          expect(mockRequestSafeReload).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('openUpdateTabAndReload', () => {
+    it('opens the update tab and reloads with the injected requestSafeReload', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+      jest.mocked(openUpdateTabAndReload).mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:openUpdateTabAndReload',
+          );
+
+          expect(openUpdateTabAndReload).toHaveBeenCalledWith(
+            mockRequestSafeReload,
+          );
+        },
+      );
+    });
+  });
+
   describe('getPhishingResult', () => {
     it('updates the phishing state and returns the test result for the website', async () => {
       const website = 'https://example.com';
@@ -447,6 +507,30 @@ describe('LegacyBackgroundApiService', () => {
         expect(mockTestOrigin).toHaveBeenCalledWith(website);
         expect(result).toBe(phishingResult);
       });
+    });
+  });
+
+  describe('markNotificationPopupAsAutomaticallyClosed', () => {
+    it('marks the notification popup as automatically closed', async () => {
+      const mockMarkNotificationPopupAsAutomaticallyClosed = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markNotificationPopupAsAutomaticallyClosed:
+              mockMarkNotificationPopupAsAutomaticallyClosed,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+          );
+
+          expect(
+            mockMarkNotificationPopupAsAutomaticallyClosed,
+          ).toHaveBeenCalled();
+        },
+      );
     });
   });
 
@@ -815,6 +899,164 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(globalChainId);
+      });
+    });
+  });
+
+  describe('lookupSelectedNetworks', () => {
+    it('looks up the selected network and each enabled network client', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const lookupNetwork = jest.fn().mockResolvedValue(undefined);
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+                '0xe708': false,
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+              '0xe708': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetwork,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'NetworkEnablementController:getState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('NetworkController:getState');
+        expect(lookupNetwork).toHaveBeenCalledWith();
+        expect(lookupNetwork).toHaveBeenCalledWith('mainnet');
+        expect(lookupNetwork).not.toHaveBeenCalledWith('linea-mainnet');
+      });
+    });
+  });
+
+  describe('setEnabledNetworks', () => {
+    it('enables the network then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableNetwork = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableNetwork',
+            enableNetwork,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          );
+
+          expect(enableNetwork).toHaveBeenCalledWith('0x1');
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling the network fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableNetwork',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('setEnabledAllPopularNetworks', () => {
+    it('enables all popular networks then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableAllPopularNetworks = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableAllPopularNetworks',
+            enableAllPopularNetworks,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          );
+
+          expect(enableAllPopularNetworks).toHaveBeenCalledTimes(1);
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling all popular networks fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable all failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableAllPopularNetworks',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -2879,6 +3121,56 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
+        );
+
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('rejectPendingApproval', () => {
@@ -2948,6 +3240,236 @@ describe('LegacyBackgroundApiService', () => {
             { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
           ),
         ).toThrow(error);
+      });
+    });
+  });
+
+  describe('resolvePendingApproval', () => {
+    beforeEach(() => {
+      mockToHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).resolves.not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+
+    it('normalizes null options before calling ApprovalController:acceptRequest', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          null,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          undefined,
+        );
+      });
+    });
+
+    it('passes only waitForResult to ApprovalController:acceptRequest options', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          {
+            waitForResult: true,
+            walletType: HardwareWalletType.Ledger,
+          },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          { waitForResult: true },
+        );
+      });
+    });
+
+    it('transforms hardware wallet errors to internal JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Ledger transport disconnected');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'Device disconnected',
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Please reconnect your device',
+          metadata: {
+            transport: 'usb',
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x3' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: -32603,
+          data: {
+            code: ErrorCode.DeviceDisconnected,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Please reconnect your device',
+            metadata: {
+              transport: 'usb',
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+
+        expect(mockToHardwareWalletError).toHaveBeenCalledWith(
+          error,
+          HardwareWalletType.Ledger,
+        );
+      });
+    });
+
+    it('transforms user-rejected hardware wallet errors to user-rejected JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('User rejected on device');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'User rejected',
+          code: ErrorCode.UserRejected,
+          severity: Severity.Info,
+          category: Category.UserAction,
+          userMessage: 'Request rejected',
+          metadata: {
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+        mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x4' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: 4001,
+          data: {
+            code: ErrorCode.UserRejected,
+            severity: Severity.Info,
+            category: Category.UserAction,
+            userMessage: 'Request rejected',
+            metadata: {
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+      });
+    });
+  });
+
+  describe('approveHardwareWalletTransaction', () => {
+    it('delegates to resolvePendingApproval with transaction payload and hardware wallet options', async () => {
+      await withService(async ({ service }) => {
+        const resolvePendingApprovalSpy = jest
+          .spyOn(service, 'resolvePendingApproval')
+          .mockResolvedValue();
+
+        const txMeta = {
+          id: '42',
+          txParams: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        };
+
+        await service.approveHardwareWalletTransaction({
+          txId: 42,
+          txMeta,
+          actionId: 'action-id',
+          walletType: HardwareWalletType.Ledger,
+        });
+
+        expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
+          '42',
+          { txMeta, actionId: 'action-id' },
+          { waitForResult: true, walletType: HardwareWalletType.Ledger },
+        );
       });
     });
   });
@@ -3531,6 +4053,10 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:lookupNetwork',
+      'NetworkEnablementController:getState',
+      'NetworkEnablementController:enableNetwork',
+      'NetworkEnablementController:enableAllPopularNetworks',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:getAssets',
@@ -3642,6 +4168,8 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    markNotificationPopupAsAutomaticallyClosed: jest.fn(),
+    requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     createVaultMutex: new Mutex(),

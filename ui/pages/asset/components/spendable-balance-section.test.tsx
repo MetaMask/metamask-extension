@@ -26,15 +26,16 @@ const renderWithProviders = (component: React.ReactElement) =>
   );
 
 describe('SpendableBalanceSection', () => {
-  it('renders total, spendable, and reserved balances', () => {
-    renderWithProviders(
-      <SpendableBalanceSection
-        totalBalance="250"
-        symbol="XLM"
-        baseReserve="2.5"
-        fiatValue={105}
-      />,
-    );
+  const defaultProps = {
+    minimumReserveBalance: '2.5',
+    spendableBalance: '247.5',
+    totalBalance: '250',
+    symbol: 'XLM',
+    fiatValue: 105,
+  };
+
+  it('renders total, spendable, reserved, and fiat balances', () => {
+    renderWithProviders(<SpendableBalanceSection {...defaultProps} />);
 
     expect(screen.getByTestId('spendable-balance-section')).toBeInTheDocument();
     expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
@@ -52,18 +53,30 @@ describe('SpendableBalanceSection', () => {
     ).toHaveTextContent('$105.00');
   });
 
-  it('clamps spendable balance at zero when reserve exceeds total', () => {
+  it('renders em dash when fiat value is null', () => {
     renderWithProviders(
-      <SpendableBalanceSection
-        totalBalance="1"
-        symbol="XLM"
-        baseReserve="2.5"
-        fiatValue={null}
-      />,
+      <SpendableBalanceSection {...defaultProps} fiatValue={null} />,
     );
 
     expect(
-      screen.getByTestId('spendable-balance-spendable-balance'),
-    ).toHaveTextContent('0 XLM');
+      screen.getByTestId('spendable-balance-fiat-value'),
+    ).toHaveTextContent('—');
+  });
+
+  it('renders labels for total, fiat, spendable, and reserved rows', () => {
+    renderWithProviders(<SpendableBalanceSection {...defaultProps} />);
+
+    expect(
+      screen.getByText(messages.spendableBalanceTotalBalance.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalanceFiatValue.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalance.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalanceBaseReserved.message),
+    ).toBeInTheDocument();
   });
 });

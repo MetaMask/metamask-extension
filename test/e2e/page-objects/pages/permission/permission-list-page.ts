@@ -5,39 +5,16 @@ import { Driver } from '../../../webdriver/driver';
  * This page allows users to view permissions for connected sites.
  */
 class PermissionListPage {
-  private driver: Driver;
+  private readonly backButton = '[data-testid="permissions-page-back"]';
 
   private readonly connectionListItem = '[data-testid="connection-list-item"]';
 
-  private readonly permissionsPage = '[data-testid="permissions-page"]';
+  private driver: Driver;
 
-  private readonly backButton = '[data-testid="permissions-page-back"]';
+  private readonly permissionsPage = '[data-testid="permissions-page"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.permissionsPage);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for permission list page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Permission list page is loaded');
-  }
-
-  /**
-   * Open permission page for site
-   *
-   * @param site - Site to open
-   */
-  async openPermissionPageForSite(site: string): Promise<void> {
-    console.log('Open permission page for site', site);
-    await this.driver.clickElement({ text: site, tag: 'p' });
   }
 
   /**
@@ -70,12 +47,35 @@ class PermissionListPage {
     });
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.permissionsPage);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for permission list page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Permission list page is loaded');
+  }
+
   /**
    * Click the back button on the permissions page
    */
   async clickBackButton(): Promise<void> {
     console.log('Click back button on permissions page');
     await this.driver.clickElement(this.backButton);
+  }
+
+  /**
+   * Open permission page for site
+   *
+   * @param site - Site to open
+   */
+  async openPermissionPageForSite(site: string): Promise<void> {
+    console.log('Open permission page for site', site);
+    await this.driver.clickElement({ text: site, tag: 'p' });
   }
 }
 

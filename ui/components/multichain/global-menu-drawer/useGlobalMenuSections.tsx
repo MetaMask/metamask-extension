@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -8,8 +8,9 @@ import {
   BoxJustifyContent,
   IconColor,
   IconName,
+  Tag,
+  TagSeverity,
   TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../hooks/useSegmentContext';
@@ -38,7 +39,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
 import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { Tag } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -73,6 +73,7 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
+import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -395,17 +396,12 @@ export function useGlobalMenuSections(
               {supportText}
               {showPriorityTag && (
                 <Tag
-                  label={t('priority')}
-                  textVariant={TextVariant.BodySm}
-                  className="rounded-lg border-0 bg-success-muted"
-                  labelProps={{
-                    className: 'text-success-default',
-                  }}
-                  iconName={IconName.Sparkle}
-                  startIconProps={{
-                    className: 'text-success-default',
-                  }}
-                />
+                  severity={TagSeverity.Success}
+                  className="rounded-lg border-0"
+                  startIconName={IconName.Sparkle}
+                >
+                  {t('priority')}
+                </Tag>
               )}
             </Box>
           ),

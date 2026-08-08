@@ -11,27 +11,25 @@ exports[`Bridge selectors getBatchSellQuotes returns null quotes if requestCount
     "valueInCurrency": "0.156562864428420918428",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
+      "amount": "0.00000006442841952",
       "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
+  },
+  "priceImpact": {
+    "usd": "240.899483439855629002436",
+    "valueInCurrency": "0.155562800000001398428",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.02",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -43,11 +41,6 @@ exports[`Bridge selectors getBatchSellQuotes returns null quotes if requestCount
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.0200012885683904",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -68,27 +61,25 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "valueInCurrency": "0.156562864428420918428",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
+      "amount": "0.00000006442841952",
       "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
+  },
+  "priceImpact": {
+    "usd": "240.899483439855629002436",
+    "valueInCurrency": "0.155562800000001398428",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.02",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -100,11 +91,6 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.0200012885683904",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -125,27 +111,25 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
+      "amount": "0.00000006442841952",
+      "usd": "0.00000006442841952",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
+  },
+  "priceImpact": {
+    "usd": "0.1555628",
+    "valueInCurrency": "0.1555628",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.001",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -157,11 +141,6 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.00100006442841952",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -182,27 +161,25 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
+      "amount": "0.00000006442841952",
       "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
+  },
+  "priceImpact": {
+    "usd": "266.1555628",
+    "valueInCurrency": "0.1555628",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.02",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -214,11 +191,6 @@ exports[`Bridge selectors getBatchSellQuotes returns quote list and fetch data, 
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.0200012885683904",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -239,27 +211,25 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "0.156562864428420918428",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
+      "amount": "0.00000006442841952",
       "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
+  },
+  "priceImpact": {
+    "usd": "240.899483439855629002436",
+    "valueInCurrency": "0.155562800000001398428",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.02",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -271,11 +241,6 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "amount": "13.98428",
     "usd": "39.100516560144370997564",
     "valueInCurrency": "13.844437199999998601572",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.0200012885683904",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -296,27 +261,25 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
-      "usd": "6.442841952e-8",
-      "valueInCurrency": "6.442841952e-8",
+      "amount": "0.00000006442841952",
+      "usd": "0.00000006442841952",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
+  },
+  "priceImpact": {
+    "usd": "0.1555628",
+    "valueInCurrency": "0.1555628",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.001",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -328,11 +291,6 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.00100006442841952",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",
@@ -353,27 +311,25 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
-    "effective": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
-    "max": {
-      "amount": "6.442841952e-8",
-      "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
-    },
     "total": {
-      "amount": "6.442841952e-8",
+      "amount": "0.00000006442841952",
       "usd": "0.0000012885683904",
-      "valueInCurrency": "6.442841952e-8",
+      "valueInCurrency": "0.00000006442841952",
     },
   },
-  "includedTxFees": null,
   "minToTokenAmount": {
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
+  },
+  "priceImpact": {
+    "usd": "266.1555628",
+    "valueInCurrency": "0.1555628",
+  },
+  "relayerFee": {
+    "amount": "0.001",
+    "usd": "0.02",
+    "valueInCurrency": "0.001",
   },
   "sentAmount": {
     "amount": "14",
@@ -385,11 +341,6 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "amount": "13.98428",
     "usd": "13.8444372",
     "valueInCurrency": "13.8444372",
-  },
-  "totalMaxNetworkFee": {
-    "amount": "0.00100006442841952",
-    "usd": "0.0200012885683904",
-    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
     "amount": "0.00100006442841952",

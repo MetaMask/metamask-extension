@@ -1,12 +1,12 @@
 import { Driver } from '../../webdriver/driver';
 
 class NFTDetailsPage {
-  private driver: Driver;
-
   private readonly confirmShowNftImageButton = {
     text: 'Confirm',
     tag: 'button',
   };
+
+  private driver: Driver;
 
   private readonly nftBackButton = '[data-testid="nft__back"]';
 

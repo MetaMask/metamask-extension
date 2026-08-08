@@ -51,6 +51,7 @@ jest.mock('@metamask/perps-controller', () => ({
     SWAP_FAILED: 'SWAP_FAILED',
     SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
     PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
+    UNSUPPORTED_COLLATERAL: 'UNSUPPORTED_COLLATERAL',
     BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
     BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
     INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
@@ -147,6 +148,12 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.INSUFFICIENT_MARGIN]).toBe(
       'perpsInsufficientMargin',
     );
+  });
+
+  it('maps UNSUPPORTED_COLLATERAL to perpsUnsupportedCollateral', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL],
+    ).toBe('perpsUnsupportedCollateral');
   });
 });
 

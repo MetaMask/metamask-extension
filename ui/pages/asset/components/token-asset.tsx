@@ -8,7 +8,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -25,6 +25,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useDispatch } from '../../../store/hooks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 

@@ -1,4 +1,3 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
 // TODO: https://github.com/MetaMask/MetaMask-planning/issues/6925
@@ -23,7 +22,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -456,6 +454,13 @@ function setupStateHooks(store) {
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
   }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
 /**
@@ -475,7 +480,7 @@ window.logState = async function (toClipboard) {
   try {
     const result = await window.logStateString();
     if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
+      await navigator.clipboard.writeText(result);
       console.log('State log copied');
     } else {
       console.log(result);

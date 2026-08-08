@@ -10,6 +10,7 @@ import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -51,6 +52,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatFiatAmount(chainId);
+  const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -68,7 +70,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
-            shortenAddress(address) || t('unknown'),
+            formatDisplayName(address) || t('unknown'),
           ]),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,

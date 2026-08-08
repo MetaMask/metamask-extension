@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  QuoteResponse,
+  QuoteResponseV1,
   RequestStatus,
   getNativeAssetForChainId,
   formatChainIdToCaip,
@@ -944,7 +944,7 @@ describe('BridgeCTAButton', () => {
               ...quote.quote,
               priceData: { ...quote.quote.priceData, priceImpact },
             },
-          })) as unknown as QuoteResponse[],
+          })) as unknown as QuoteResponseV1[],
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },

@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
@@ -102,23 +101,13 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         await accountListPage.addMultichainWallet();
         await accountListPage.clickImportWallet();
 
-        const firstSrpInputSelector =
-          '[data-testid="srp-input-import__srp-note"]';
-        await driver.waitForSelector(firstSrpInputSelector);
+        await accountListPage.checkImportSrpInputIsDisplayed();
 
-        const firstSrpInput = await driver.findElement(firstSrpInputSelector);
-
-        assert.strictEqual(
-          await firstSrpInput.getAttribute('type'),
-          'textarea',
-          'First SRP input type should be password initially',
-        );
-
-        await firstSrpInput.sendKeys(TEST_SRP_WORDS_FOR_UI_TEST[0]);
-        assert.strictEqual(
-          await firstSrpInput.getAttribute('value'),
+        await accountListPage.typeIntoImportSrpInput(
           TEST_SRP_WORDS_FOR_UI_TEST[0],
-          'First SRP input value should match typed word',
+        );
+        await accountListPage.checkImportSrpInputValue(
+          TEST_SRP_WORDS_FOR_UI_TEST[0],
         );
       },
     );

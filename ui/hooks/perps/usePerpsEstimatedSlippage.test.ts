@@ -25,6 +25,8 @@ describe('usePerpsEstimatedSlippage', () => {
     mockUsePerpsLiveOrderBook.mockReturnValue({
       orderBook: sampleBook,
       isInitialLoading: false,
+      connectionStatus: 'connected',
+      reconnect: jest.fn(),
     });
   });
 
@@ -75,6 +77,8 @@ describe('usePerpsEstimatedSlippage', () => {
     mockUsePerpsLiveOrderBook.mockReturnValue({
       orderBook: null,
       isInitialLoading: true,
+      connectionStatus: 'connecting',
+      reconnect: jest.fn(),
     });
     rerender({ symbol: 'ETH' });
 

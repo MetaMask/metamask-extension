@@ -1,19 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
 class GetEncryptionKeyConfirmation {
-  driver: Driver;
-
   private readonly accountBalanceValue =
     '.request-encryption-public-key__balance-value';
-
-  private readonly getEncryptionKeyConfirmationTitle = {
-    text: 'Request encryption public key',
-    css: '.request-encryption-public-key__header__text',
-  };
 
   private readonly cancelEncryptionKeyButton = {
     text: 'Cancel',
     tag: 'button',
+  };
+
+  driver: Driver;
+
+  private readonly getEncryptionKeyConfirmationTitle = {
+    text: 'Request encryption public key',
+    css: '.request-encryption-public-key__header__text',
   };
 
   private readonly provideEncryptionKeyButton = {
@@ -23,6 +23,22 @@ class GetEncryptionKeyConfirmation {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Check the account balance value in get encryption key confirmation page.
+   *
+   * @param balanceValue - The balance value to check.
+   */
+  async checkAccountBalance(balanceValue: string): Promise<void> {
+    console.log(
+      'Check account balance on get encryption key confirmation screen: ',
+      balanceValue,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountBalanceValue,
+      text: balanceValue,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -57,22 +73,6 @@ class GetEncryptionKeyConfirmation {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.provideEncryptionKeyButton,
     );
-  }
-
-  /**
-   * Check the account balance value in get encryption key confirmation page.
-   *
-   * @param balanceValue - The balance value to check.
-   */
-  async checkAccountBalance(balanceValue: string): Promise<void> {
-    console.log(
-      'Check account balance on get encryption key confirmation screen: ',
-      balanceValue,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountBalanceValue,
-      text: balanceValue,
-    });
   }
 }
 

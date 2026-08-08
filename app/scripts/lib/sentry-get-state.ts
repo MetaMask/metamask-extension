@@ -7,16 +7,13 @@ type SentryAppStateSnapshot = Record<string, unknown>;
 type AnalyticsState = {
   analyticsId?: unknown;
   optedIn?: unknown;
-};
-
-type MetaMetricsState = {
-  completedMetaMetricsOnboarding?: unknown;
+  consentDecisionMade?: unknown;
 };
 
 export type AnalyticsParticipation = {
   analyticsId?: string;
   optedIn: boolean;
-  completedMetaMetricsOnboarding: boolean;
+  consentDecisionMade: boolean;
 } | null;
 
 /**
@@ -36,7 +33,7 @@ export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
     return {
       analyticsId: undefined,
       optedIn: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
     };
   }
 
@@ -113,13 +110,13 @@ function getAnalyticsStateFromBackupState(
 function getAnalyticsStateFromUIState(
   metamaskState: unknown,
 ): Exclude<AnalyticsParticipation, null> {
-  const { analyticsId, completedMetaMetricsOnboarding, optedIn } =
-    metamaskState as AnalyticsState & MetaMetricsState;
+  const { analyticsId, consentDecisionMade, optedIn } =
+    metamaskState as AnalyticsState;
 
   return {
     analyticsId: typeof analyticsId === 'string' ? analyticsId : undefined,
     optedIn: optedIn === true,
-    completedMetaMetricsOnboarding: completedMetaMetricsOnboarding === true,
+    consentDecisionMade: consentDecisionMade === true,
   };
 }
 
@@ -130,17 +127,14 @@ function getAnalyticsStateFromControllerState(
   const analyticsController = getControllerState<AnalyticsState>(
     controllerState.AnalyticsController,
   );
-  const metaMetricsController = getControllerState<MetaMetricsState>(
-    controllerState.MetaMetricsController,
-  );
 
-  const { analyticsId, optedIn } = analyticsController ?? {};
+  const { analyticsId, optedIn, consentDecisionMade } =
+    analyticsController ?? {};
 
   return {
     analyticsId: typeof analyticsId === 'string' ? analyticsId : undefined,
     optedIn: optedIn === true,
-    completedMetaMetricsOnboarding:
-      metaMetricsController?.completedMetaMetricsOnboarding === true,
+    consentDecisionMade: consentDecisionMade === true,
   };
 }
 

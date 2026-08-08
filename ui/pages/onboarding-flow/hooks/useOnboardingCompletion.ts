@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -8,7 +8,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
@@ -46,6 +45,7 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -54,7 +54,7 @@ import type { MetaMaskReduxDispatch } from '../../../store/store';
  */
 export function useOnboardingCompletion() {
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const isSidePanelEnabled = useSidePanelEnabled();
 
@@ -132,7 +132,7 @@ export function useOnboardingCompletion() {
       autoCompleteWithoutUserGesture: boolean;
     }): Promise<boolean> => {
       try {
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return false;
         }
@@ -145,12 +145,17 @@ export function useOnboardingCompletion() {
           return false;
         }
 
+        const { windowId } = tabs[0];
+        if (windowId === undefined) {
+          return false;
+        }
+
         // `browser.sidePanel.open()` requires a user gesture. Auto-complete
         // runs from `useEffect`, so skip the call there. Navigate/Interstitial
         // deferred deep links also skip opening so the popup can route first.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
           await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
+            windowId,
           });
           setIsSidePanelOpen(true);
         }

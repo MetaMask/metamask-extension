@@ -1,15 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConfirmSolanaTxPage {
-  private driver: Driver;
-
-  private readonly toAddressInput = '#send-to';
-
-  private readonly sendButton = {
-    text: 'Send',
-    tag: 'span',
-  };
-
   private readonly cancelButton = {
     text: 'Cancel',
     tag: 'span',
@@ -19,6 +10,15 @@ class ConfirmSolanaTxPage {
     text: 'Confirm',
     tag: 'span',
   };
+
+  private driver: Driver;
+
+  private readonly sendButton = {
+    text: 'Send',
+    tag: 'span',
+  };
+
+  private readonly toAddressInput = '#send-to';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -47,19 +47,12 @@ class ConfirmSolanaTxPage {
     }
   }
 
-  async isTransactionDetailDisplayed(text: string): Promise<boolean> {
-    const detail = await this.driver.findElement(
-      {
-        text,
-        tag: 'p',
-      },
-      200,
-    );
-    return await detail.isDisplayed();
-  }
-
-  async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.pasteIntoField(this.toAddressInput, toAddress);
+  /**
+   * Clicks the confirm button on the Solana transaction confirmation page
+   */
+  async clickOnConfirm(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton);
+    await this.driver.clickElement(this.confirmButton);
   }
 
   /**
@@ -74,27 +67,6 @@ class ConfirmSolanaTxPage {
       },
       { timeout: 10000 },
     );
-  }
-
-  /**
-   * Clicks the confirm button on the Solana transaction confirmation page
-   */
-  async clickOnConfirm(): Promise<void> {
-    await this.driver.waitForSelector(this.confirmButton);
-    await this.driver.clickElement(this.confirmButton);
-  }
-
-  async isSendButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.sendButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Send button not enabled', e);
-      return false;
-    }
-    console.log('Send button is enabled');
-    return true;
   }
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
@@ -112,6 +84,34 @@ class ConfirmSolanaTxPage {
     }
     console.log('Insufficient balance message displayed');
     return true;
+  }
+
+  async isSendButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Send button not enabled', e);
+      return false;
+    }
+    console.log('Send button is enabled');
+    return true;
+  }
+
+  async isTransactionDetailDisplayed(text: string): Promise<boolean> {
+    const detail = await this.driver.findElement(
+      {
+        text,
+        tag: 'p',
+      },
+      200,
+    );
+    return await detail.isDisplayed();
+  }
+
+  async setToAddress(toAddress: string): Promise<void> {
+    await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 }
 

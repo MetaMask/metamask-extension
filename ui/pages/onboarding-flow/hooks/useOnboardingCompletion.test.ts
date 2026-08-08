@@ -46,6 +46,10 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+Object.assign(globalThis, {
+  chrome: jest.requireMock('webextension-polyfill'),
+});
+
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
 
@@ -492,6 +496,26 @@ describe('useOnboardingCompletion', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       });
       consoleErrorSpy.mockRestore();
+    });
+
+    it('falls through to popup completion when no active tabs are found', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([]);
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        mockState,
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockCompleteOnboarding).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
     });
 
     it('skips side panel opening when deferred deep link with Navigate type is present', async () => {

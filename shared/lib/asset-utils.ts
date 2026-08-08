@@ -67,6 +67,21 @@ export const toAssetId = (
   if (chainIdToUse === MultichainNetworks.TRON) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
   }
+  // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
+  // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
+    const ref = String(addressToUse);
+    if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
+      return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);
+    }
+    const sep41ContractMatch = /^(?:sep41:)?(C[A-Z2-7]{55})$/u.exec(ref);
+    if (sep41ContractMatch) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/sep41:${sep41ContractMatch[1]}`,
+      );
+    }
+    return undefined;
+  }
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
   if (isStrictHexString(checksummedAddress)) {

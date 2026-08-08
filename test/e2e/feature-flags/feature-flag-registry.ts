@@ -286,12 +286,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: '13.33.0',
           deprecatedControllers: [],
           enabled: true,
+          tracesEnabled: false,
         },
         '13.15.0': {
           deprecatedControllers: [],
           enabled: false,
           featureVersion: null,
           minimumVersion: null,
+          tracesEnabled: false,
         },
       },
     },
@@ -2308,6 +2310,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: '',
+    status: FeatureFlagStatus.Active,
+  },
+
+  perpsOrderBookEnabled: {
+    name: 'perpsOrderBookEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Dark-launched: default OFF in production until rollout.
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.30.0',
+    },
     status: FeatureFlagStatus.Active,
   },
 

@@ -1,7 +1,7 @@
 import type { CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   SortOrder,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -39,7 +39,7 @@ export type BridgeState = {
   fromNativeBalance: string | null; // User's balance for the native token of the selected fromChain(EVM)
   fromTokenBalance: string | null; // User's balance for the selected token (EVM)
   sortOrder: SortOrder;
-  selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
+  selectedQuote: (QuoteResponseV1 & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   // Includes explicit Auto (`slippage === undefined`).

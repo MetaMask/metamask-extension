@@ -9,6 +9,8 @@ class CustomTokenImportPage {
 
   private readonly driver: Driver;
 
+  private readonly networkSelector = '[data-testid="network-selector"]';
+
   private readonly pageSelector = '[data-testid="custom-token-import-page"]';
 
   private readonly submitButton =
@@ -33,9 +35,35 @@ class CustomTokenImportPage {
 
   async importToken(tokenAddress: string): Promise<void> {
     console.log(`Import custom token at address ${tokenAddress}`);
+    // Product clears the form whenever selectedNetwork changes
+    // (custom-token-import.tsx:423-428). Wait for the network picker and
+    // address input to settle, then fill once — do not retry typing.
+    await this.driver.waitForElementToStopMoving(this.networkSelector);
+    await this.waitForAddressInputStable();
     await this.driver.fill(this.addressInput, tokenAddress);
     await this.driver.waitForSelector(this.submitButtonEnabled);
     await this.driver.clickElement(this.submitButton);
+  }
+
+  /**
+   * Waits until the address input is present and remains stable so a late
+   * product clearFormData() (on selectedNetwork change) cannot wipe a fill.
+   */
+  async waitForAddressInputStable(): Promise<void> {
+    console.log('Waiting for custom token address input to be stable');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.addressInput,
+          1000,
+        );
+      },
+      {
+        timeout: this.driver.timeout,
+        interval: 100,
+        stableFor: 2000,
+      },
+    );
   }
 }
 

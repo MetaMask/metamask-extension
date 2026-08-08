@@ -3,7 +3,8 @@ import { Driver } from '../../../webdriver/driver';
 import { regularDelayMs } from '../../../helpers';
 
 class SendSolanaPage {
-  private driver: Driver;
+  private readonly amountCurrencyLabel = (tokenName: string) =>
+    By.xpath(`//label[@for="send-amount-input"]/..//p[text()="${tokenName}"]`);
 
   private readonly cancelButton = {
     tag: 'button',
@@ -17,6 +18,8 @@ class SendSolanaPage {
     testId: 'send-submit-button-snap-footer-button',
   };
 
+  private driver: Driver;
+
   private readonly sendAmountInput = '#send-amount-input';
 
   private readonly swapCurrencyButton = '#send-swap-currency';
@@ -27,9 +30,6 @@ class SendSolanaPage {
     tag: 'p',
     text: 'To address is required',
   };
-
-  private readonly amountCurrencyLabel = (tokenName: string) =>
-    By.xpath(`//label[@for="send-amount-input"]/..//p[text()="${tokenName}"]`);
 
   constructor(driver: Driver) {
     this.driver = driver;

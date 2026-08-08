@@ -1,5 +1,4 @@
 import { useCallback, type MouseEvent as ReactMouseEvent } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   TransactionStatus,
   type TransactionMeta,
@@ -8,6 +7,7 @@ import { EditGasModes } from '../../shared/constants/gas';
 import { MetaMetricsEventCategory } from '../../shared/constants/metametrics';
 import { useTransactionModalContext } from '../contexts/transaction-modal';
 import { abortTransactionSigning } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 import { useAnalytics } from './useAnalytics';
 
 type UsePendingTransactionCancelSpeedUpHandlersParams = {

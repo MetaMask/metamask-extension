@@ -173,7 +173,7 @@ describe('CustomTokenImportPage', () => {
     metamask: {
       ...mockState.metamask,
       analyticsId: 'test-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedNetworkClientId: 'mainnet',
       selectedMultichainNetworkChainId: 'eip155:1',

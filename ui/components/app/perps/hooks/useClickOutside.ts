@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 type UseOnClickOutsideOptions = {
   containerRef: RefObject<HTMLDivElement>;
@@ -11,6 +11,9 @@ export function useOnClickOutside({
   onClickOutside,
   active,
 }: UseOnClickOutsideOptions) {
+  const onClickOutsideRef = useRef(onClickOutside);
+  onClickOutsideRef.current = onClickOutside;
+
   useEffect(() => {
     if (!active) {
       return undefined;
@@ -20,10 +23,10 @@ export function useOnClickOutside({
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
       ) {
-        onClickOutside();
+        onClickOutsideRef.current();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [active]);
+  }, [active, containerRef]);
 }
