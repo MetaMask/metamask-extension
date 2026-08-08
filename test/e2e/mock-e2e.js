@@ -2122,6 +2122,14 @@ async function setupMocking(
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
       }
+      if (type === 'userToMultiSigSigners') {
+        // Real API returns null unless the account is a multi-sig user.
+        return {
+          statusCode: 200,
+          headers: { 'content-type': 'application/json' },
+          body: 'null',
+        };
+      }
       return { statusCode: 200, json: {} };
     });
 

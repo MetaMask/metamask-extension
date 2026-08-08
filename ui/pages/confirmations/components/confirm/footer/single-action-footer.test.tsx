@@ -11,9 +11,11 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
+import { usePerpsWithdrawMultiSigCheck } from '../../../hooks/alerts/transactions/usePerpsWithdrawMultiSigAlert';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/alerts/transactions/usePerpsWithdrawMultiSigAlert');
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -88,6 +90,10 @@ describe('<SingleActionFooter />', () => {
       amountUsd: '10.00',
       skipIfBalance: false,
     } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+    jest.mocked(usePerpsWithdrawMultiSigCheck).mockReturnValue({
+      pending: false,
+      isMultiSigAccount: false,
+    });
   });
 
   it('renders the button', () => {

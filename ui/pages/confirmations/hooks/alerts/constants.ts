@@ -12,6 +12,7 @@ export enum AlertsName {
   NoPayTokenQuotes = 'noPayTokenQuotes',
   PendingTransaction = 'pendingTransactions',
   PayHardwareAccount = 'payHardwareAccount',
+  PerpsWithdrawMultiSig = 'perpsWithdrawMultiSig',
   SigningOrSubmitting = 'signingOrSubmitting',
   Blockaid = 'blockaid',
 }

@@ -11,6 +11,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
+import { usePerpsWithdrawMultiSigCheck } from '../../../hooks/alerts/transactions/usePerpsWithdrawMultiSigAlert';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 
 type ButtonState = {
@@ -35,6 +36,8 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const { pending: isMultiSigCheckPending, isMultiSigAccount } =
+    usePerpsWithdrawMultiSigCheck();
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
@@ -62,16 +65,26 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         ? alertText
         : defaultButtonText;
 
+    // `isMultiSigAccount` also feeds a blocking alert, but that alert reaches
+    // this hook via a store update one render later, so disable directly too.
     const isDisabled =
-      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
+      isAwaitingRequiredToken ||
+      hasBlockingAlerts ||
+      !hasAmount ||
+      isMultiSigAccount;
 
     const isLoading =
-      isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
+      isAwaitingRequiredToken ||
+      isGaslessLoading ||
+      isPayLoading ||
+      isMultiSigCheckPending;
 
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
     isGaslessLoading,
+    isMultiSigAccount,
+    isMultiSigCheckPending,
     isPayLoading,
     primaryRequiredToken,
     transactionType,
