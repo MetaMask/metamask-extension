@@ -1,5 +1,5 @@
 diff --git a/dist/index.cjs b/dist/index.cjs
-index a78eb62001f784924eabc712b1e4234b5ee53c23..26ba68c2b558198f32c9d5e5e2c9397ea08aa704 100644
+index a78eb62001f784924eabc712b1e4234b5ee53c23..236995d84eaefb9894cf310912a029c7a9b71023 100644
 --- a/dist/index.cjs
 +++ b/dist/index.cjs
 @@ -1570,8 +1570,8 @@ function buildUrlForSupportedChainAndAddress({ supportedChain, address }) {
@@ -13,8 +13,137 @@ index a78eb62001f784924eabc712b1e4234b5ee53c23..26ba68c2b558198f32c9d5e5e2c9397e
    return urlWithRoute + apiKeyParam;
  }
  function selectDefFrom4byteABI(abiData, selector) {
+@@ -3967,7 +3967,8 @@ var { msgSizes } = ProtocolConstants;
+ var { secure: szs } = msgSizes;
+ async function connectSecureRequest({
+   url,
+-  pubkey
++  pubkey,
++  timeout
+ }) {
+   const payloadData = serializeSecureRequestConnectPayloadData({
+     pubkey
+@@ -3978,7 +3979,7 @@ async function connectSecureRequest({
+     1 /* connect */,
+     payloadData
+   );
+-  const resp = await request({ url, payload: msg });
++  const resp = await request({ url, payload: msg, timeout });
+   if (resp.length !== szs.payload.response.connect - 1) {
+     throw new Error("Wrong Lattice response message size.");
+   }
+@@ -3989,7 +3990,8 @@ async function encryptedSecureRequest({
+   requestType,
+   sharedSecret,
+   ephemeralPub,
+-  url
++  url,
++  timeout
+ }) {
+   const msgId = randomBytes(4);
+   const payloadData = serializeSecureRequestEncryptedPayloadData({
+@@ -4005,7 +4007,8 @@ async function encryptedSecureRequest({
+   );
+   const resp = await request({
+     url,
+-    payload: msg
++    payload: msg,
++    timeout
+   });
+   if (resp.length !== szs.payload.response.encrypted - 1) {
+     throw new Error("Wrong Lattice response message size.");
+@@ -4157,7 +4160,8 @@ async function addKvRecords({
+     requestType: 8 /* addKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4216,7 +4220,8 @@ async function connect({
+   const url = `${baseUrl}/${deviceId}`;
+   const respPayloadData = await connectSecureRequest({
+     url,
+-    pubkey: client.publicKey
++    pubkey: client.publicKey,
++    timeout: client.timeout
+   });
+   const { isPaired, fwVersion, activeWallets, ephemeralPub } = await decodeConnectResponse(respPayloadData, key);
+   client.mutate({
+@@ -4302,7 +4307,8 @@ async function fetchEncData({
+     requestType: 12 /* fetchEncryptedData */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4439,7 +4445,8 @@ async function fetchActiveWallet({
+     requestType: 4 /* getWallets */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   const activeWallets = decodeFetchActiveWalletResponse(decryptedData);
+   const validActiveWallets = validateActiveWallets(activeWallets);
+@@ -4504,7 +4511,8 @@ async function getAddresses({
+     requestType: 1 /* getAddresses */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4619,7 +4627,8 @@ async function getKvRecords({
+     requestType: 7 /* getKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4708,7 +4717,8 @@ async function pair({
+     requestType: 0 /* finalizePairing */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub,
+@@ -4760,7 +4770,8 @@ async function removeKvRecords({
+     requestType: 9 /* removeKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4832,7 +4843,8 @@ async function sign({
+       requestType: 3 /* sign */,
+       sharedSecret,
+       ephemeralPub,
+-      url
++      url,
++      timeout: client.timeout
+     });
+     client.mutate({
+       ephemeralPub: newEphemeralPub
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 793949dd1f22aec3542aa667b267b02c7c670cb8..5d594e1a6201d6417221351ca1cae6fa0b547e23 100644
+index 793949dd1f22aec3542aa667b267b02c7c670cb8..eb0d35b32f1d8c8d3d74abb754a21547c869c224 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
 @@ -1496,8 +1496,8 @@ function buildUrlForSupportedChainAndAddress({ supportedChain, address }) {
@@ -28,3 +157,132 @@ index 793949dd1f22aec3542aa667b267b02c7c670cb8..5d594e1a6201d6417221351ca1cae6fa
    return urlWithRoute + apiKeyParam;
  }
  function selectDefFrom4byteABI(abiData, selector) {
+@@ -3899,7 +3899,8 @@ var { msgSizes } = ProtocolConstants;
+ var { secure: szs } = msgSizes;
+ async function connectSecureRequest({
+   url,
+-  pubkey
++  pubkey,
++  timeout
+ }) {
+   const payloadData = serializeSecureRequestConnectPayloadData({
+     pubkey
+@@ -3910,7 +3911,7 @@ async function connectSecureRequest({
+     1 /* connect */,
+     payloadData
+   );
+-  const resp = await request({ url, payload: msg });
++  const resp = await request({ url, payload: msg, timeout });
+   if (resp.length !== szs.payload.response.connect - 1) {
+     throw new Error("Wrong Lattice response message size.");
+   }
+@@ -3921,7 +3922,8 @@ async function encryptedSecureRequest({
+   requestType,
+   sharedSecret,
+   ephemeralPub,
+-  url
++  url,
++  timeout
+ }) {
+   const msgId = randomBytes(4);
+   const payloadData = serializeSecureRequestEncryptedPayloadData({
+@@ -3937,7 +3939,8 @@ async function encryptedSecureRequest({
+   );
+   const resp = await request({
+     url,
+-    payload: msg
++    payload: msg,
++    timeout
+   });
+   if (resp.length !== szs.payload.response.encrypted - 1) {
+     throw new Error("Wrong Lattice response message size.");
+@@ -4089,7 +4092,8 @@ async function addKvRecords({
+     requestType: 8 /* addKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4148,7 +4152,8 @@ async function connect({
+   const url = `${baseUrl}/${deviceId}`;
+   const respPayloadData = await connectSecureRequest({
+     url,
+-    pubkey: client.publicKey
++    pubkey: client.publicKey,
++    timeout: client.timeout
+   });
+   const { isPaired, fwVersion, activeWallets, ephemeralPub } = await decodeConnectResponse(respPayloadData, key);
+   client.mutate({
+@@ -4234,7 +4239,8 @@ async function fetchEncData({
+     requestType: 12 /* fetchEncryptedData */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4371,7 +4377,8 @@ async function fetchActiveWallet({
+     requestType: 4 /* getWallets */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   const activeWallets = decodeFetchActiveWalletResponse(decryptedData);
+   const validActiveWallets = validateActiveWallets(activeWallets);
+@@ -4436,7 +4443,8 @@ async function getAddresses({
+     requestType: 1 /* getAddresses */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4551,7 +4559,8 @@ async function getKvRecords({
+     requestType: 7 /* getKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4640,7 +4649,8 @@ async function pair({
+     requestType: 0 /* finalizePairing */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub,
+@@ -4692,7 +4702,8 @@ async function removeKvRecords({
+     requestType: 9 /* removeKvRecords */,
+     sharedSecret,
+     ephemeralPub,
+-    url
++    url,
++    timeout: client.timeout
+   });
+   client.mutate({
+     ephemeralPub: newEphemeralPub
+@@ -4764,7 +4775,8 @@ async function sign({
+       requestType: 3 /* sign */,
+       sharedSecret,
+       ephemeralPub,
+-      url
++      url,
++      timeout: client.timeout
+     });
+     client.mutate({
+       ephemeralPub: newEphemeralPub
