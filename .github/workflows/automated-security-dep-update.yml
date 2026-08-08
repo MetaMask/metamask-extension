@@ -1,0 +1,334 @@
+# Automated Security Dependency Update
+# ======================================
+# Scans for vulnerable npm packages, updates them to the latest patch/minor
+# version within their current major, verifies the build, and:
+#
+#   ALL PASS  → creates a DRAFT PR against main with a full change report
+#   ANY FAIL  → opens a GitHub Issue with diagnostics for manual follow-up
+#
+# Triggers:
+#   - Scheduled: 1st and 15th of every month at 08:00 UTC
+#   - Manual:    workflow_dispatch (supports dry_run mode)
+#
+# What is skipped:
+#   - Packages with a local .yarn/patches/ patch (would break the patch)
+#   - Packages where the CVE fix requires a major version bump
+#   - Advisory IDs listed in npmAuditIgnoreAdvisories in .yarnrc.yml
+#   - E2E tests (run by CI on the resulting PR instead)
+#
+# Token note:
+#   Uses a GitHub App token so that CI workflows trigger automatically on the
+#   resulting PR.  GITHUB_TOKEN-created PRs do NOT trigger other Actions.
+#   Requires TOKEN_EXCHANGE_URL to be set at the repo/org level
+#   (same pattern as update-lavamoat-policies.yml).
+#
+# See ".github/AGENTS.md" → "Automated Security Dependency Update" for
+# operational guidance.
+
+name: Automated Security Dependency Update
+
+on:
+  schedule:
+    # Biweekly: 1st and 15th of every month at 08:00 UTC.
+    - cron: '0 8 1,15 * *'
+
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: >-
+          Dry run — scan and report vulnerabilities without updating packages,
+          pushing a branch, or opening a PR / issue.
+        type: boolean
+        required: false
+        default: false
+
+# Minimum default permissions; each job explicitly elevates what it needs.
+permissions:
+  contents: read
+
+jobs:
+  security-dep-update:
+    name: Detect and remediate vulnerable dependencies
+    runs-on: ubuntu-latest
+    # Allow up to 90 min: yarn lavamoat:auto alone can take ~20-30 min,
+    # and yarn test:unit across all shards can take another 20+ min.
+    timeout-minutes: 90
+
+    permissions:
+      contents: write      # create a branch and push commits
+      pull-requests: write # open a DRAFT PR
+      issues: write        # open a failure issue
+      id-token: write      # exchange OIDC token for a GitHub App token
+
+    steps:
+      # -----------------------------------------------------------------------
+      # Auth
+      # Obtain a GitHub App token so that CI workflows trigger automatically on
+      # the resulting PR.  GITHUB_TOKEN cannot do this — it is excluded from
+      # triggering other Actions by GitHub's security model.
+      # -----------------------------------------------------------------------
+      - name: Get GitHub App token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+            issues: write
+
+      # -----------------------------------------------------------------------
+      # Checkout + setup
+      # MetaMask/action-checkout-and-setup handles Node (from .nvmrc),
+      # Yarn 4 via Corepack, and dependency caching.
+      # skip-allow-scripts: true avoids running install scripts during setup
+      # (they are re-evaluated after dep changes by `yarn allow-scripts auto`).
+      # -----------------------------------------------------------------------
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      # -----------------------------------------------------------------------
+      # Configure git so the automated commit is attributed to the Actions bot
+      # and pushes are authenticated via the App token.
+      # -----------------------------------------------------------------------
+      - name: Configure git author and remote
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin \
+            "https://x-access-token:${{ steps.token.outputs.token }}@github.com/${{ github.repository }}.git"
+
+      # -----------------------------------------------------------------------
+      # Detect + update
+      # Runs .github/scripts/security-dep-update.mts which:
+      #   1. Parses npmAuditIgnoreAdvisories from .yarnrc.yml
+      #   2. Detects packages with patch: resolutions (skips them safely)
+      #   3. Runs `yarn npm audit` to find moderate+ production CVEs
+      #   4. For each actionable package: `yarn up "pkg@^currentMajor"`
+      #   5. Writes .tmp/pr-body.md and .tmp/failure-report.md
+      #   6. Sets GITHUB_OUTPUT: packages_updated, update_summary
+      #
+      # packages_updated = 0 → nothing to do → all later steps are skipped.
+      # -----------------------------------------------------------------------
+      - name: Detect and apply security updates
+        id: detect-update
+        run: yarn tsx .github/scripts/security-dep-update.mts
+        env:
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+
+      # -----------------------------------------------------------------------
+      # Update-phase steps
+      # These modify files (yarn.lock, policy files, attribution.txt, etc.).
+      # Any failure here causes the job to fail; the "Open failure issue" step
+      # at the end catches this via failure() in its condition.
+      # -----------------------------------------------------------------------
+
+      - name: Verify lockfile consistency
+        id: verify-install
+        if: steps.detect-update.outputs.packages_updated != '0'
+        # --immutable fails if yarn install would change the lockfile,
+        # catching any inconsistency introduced by yarn up.
+        run: yarn install --immutable
+
+      - name: Deduplicate lockfile
+        id: dedupe
+        if: steps.detect-update.outputs.packages_updated != '0'
+        run: yarn dedupe
+
+      - name: Update install-script allowlist
+        id: allow-scripts
+        if: steps.detect-update.outputs.packages_updated != '0'
+        # LavaMoat's allow-scripts plugin tracks which packages are permitted
+        # to run install scripts. Must be re-run after any dep change.
+        run: yarn allow-scripts auto
+
+      - name: Regenerate LavaMoat policies
+        id: lavamoat
+        if: steps.detect-update.outputs.packages_updated != '0'
+        # Updates lavamoat/browserify/*/policy.json and
+        # lavamoat/build-system/policy.json.  Can take up to 30 minutes.
+        timeout-minutes: 30
+        run: yarn lavamoat:auto
+
+      - name: Regenerate attribution file
+        id: attributions
+        if: steps.detect-update.outputs.packages_updated != '0'
+        run: yarn attributions:generate
+
+      - name: Auto-fix lint on changed files
+        id: lint-fix
+        if: steps.detect-update.outputs.packages_updated != '0'
+        # oxfmt + ESLint + Stylelint auto-fix on only the changed files so the
+        # committed code is clean without running the full (multi-minute) lint.
+        run: yarn lint:changed:fix
+
+      # -----------------------------------------------------------------------
+      # Validation-phase steps
+      # These are read-only checks that determine whether to open a PR or issue.
+      # continue-on-error: true ensures all three run so we can report every
+      # failure at once rather than stopping at the first one.
+      # -----------------------------------------------------------------------
+
+      - name: TypeScript type-check
+        id: lint-tsc
+        if: steps.detect-update.outputs.packages_updated != '0'
+        continue-on-error: true
+        run: yarn lint:tsc
+
+      - name: Unit tests
+        id: unit-tests
+        if: steps.detect-update.outputs.packages_updated != '0'
+        continue-on-error: true
+        run: yarn test:unit
+
+      - name: Production build
+        id: build
+        if: steps.detect-update.outputs.packages_updated != '0'
+        continue-on-error: true
+        # yarn dist uses Browserify + LavaMoat (matches production).
+        # If this passes, the extension is confirmed buildable with the new deps.
+        run: yarn dist
+
+      # -----------------------------------------------------------------------
+      # Outcome reporting
+      # Appends validation step outcomes to .tmp/failure-report.md so the issue
+      # body is complete whether the failure occurred in the update phase or the
+      # validation phase.  Runs with if: always() so it executes in both paths.
+      # -----------------------------------------------------------------------
+      - name: Write validation outcomes to failure report
+        id: write-outcomes
+        if: >-
+          ${{
+            always() &&
+            steps.detect-update.outcome == 'success' &&
+            steps.detect-update.outputs.packages_updated != '0'
+          }}
+        env:
+          VERIFY_OUTCOME: ${{ steps.verify-install.outcome }}
+          DEDUPE_OUTCOME: ${{ steps.dedupe.outcome }}
+          ALLOW_SCRIPTS_OUTCOME: ${{ steps.allow-scripts.outcome }}
+          LAVAMOAT_OUTCOME: ${{ steps.lavamoat.outcome }}
+          ATTRIBUTIONS_OUTCOME: ${{ steps.attributions.outcome }}
+          LINT_FIX_OUTCOME: ${{ steps.lint-fix.outcome }}
+          LINT_TSC_OUTCOME: ${{ steps.lint-tsc.outcome }}
+          UNIT_TESTS_OUTCOME: ${{ steps.unit-tests.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+        run: |
+          write_outcome() {
+            local label="$1" outcome="$2"
+            case "$outcome" in
+              success) icon="✅" ;;
+              failure) icon="❌" ;;
+              skipped) icon="⏭️" ;;
+              *)        icon="❓" ;;
+            esac
+            echo "- ${icon} **${label}**: \`${outcome}\`"
+          }
+
+          {
+            echo ""
+            echo "## Validation Step Results"
+            echo ""
+            write_outcome "Verify lockfile (yarn install --immutable)" "$VERIFY_OUTCOME"
+            write_outcome "Deduplicate lockfile (yarn dedupe)"         "$DEDUPE_OUTCOME"
+            write_outcome "Update allow-scripts"                        "$ALLOW_SCRIPTS_OUTCOME"
+            write_outcome "Regenerate LavaMoat policies"                "$LAVAMOAT_OUTCOME"
+            write_outcome "Regenerate attribution file"                 "$ATTRIBUTIONS_OUTCOME"
+            write_outcome "Auto-fix lint (yarn lint:changed:fix)"       "$LINT_FIX_OUTCOME"
+            write_outcome "TypeScript type-check (yarn lint:tsc)"       "$LINT_TSC_OUTCOME"
+            write_outcome "Unit tests (yarn test:unit)"                 "$UNIT_TESTS_OUTCOME"
+            write_outcome "Production build (yarn dist)"                "$BUILD_OUTCOME"
+          } >> .tmp/failure-report.md
+
+      # -----------------------------------------------------------------------
+      # SUCCESS PATH
+      # All three validation steps passed → commit all changes, push a new
+      # branch, and open a DRAFT PR against main.
+      # -----------------------------------------------------------------------
+      - name: Create branch and open DRAFT PR
+        if: >-
+          ${{
+            steps.detect-update.outputs.packages_updated != '0' &&
+            steps.lint-tsc.outcome == 'success' &&
+            steps.unit-tests.outcome == 'success' &&
+            steps.build.outcome == 'success' &&
+            inputs.dry_run != 'true'
+          }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          BRANCH="refactor/deps-security-update-${DATE}"
+
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "fix(deps): automated security dependency updates ${DATE}
+
+          Updated vulnerable npm packages to the latest patch/minor version
+          within their current major. See PR description for the full list
+          of changed packages and fixed CVEs.
+
+          Generated by the automated-security-dep-update workflow."
+
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft \
+            --title "fix(deps): automated security dependency updates ${DATE}" \
+            --body-file .tmp/pr-body.md \
+            --base main
+
+          echo "✅ Draft PR created for branch ${BRANCH}"
+
+      # -----------------------------------------------------------------------
+      # FAILURE PATH
+      # Any update-phase step failed (failure()) OR any validation step failed
+      # (outcome == 'failure') → open a GitHub Issue with the failure report.
+      # No branch is pushed; the issue points to the workflow run for details.
+      # -----------------------------------------------------------------------
+      - name: Open failure issue
+        if: >-
+          ${{
+            always() &&
+            steps.detect-update.outcome == 'success' &&
+            steps.detect-update.outputs.packages_updated != '0' &&
+            inputs.dry_run != 'true' &&
+            (
+              failure() ||
+              steps.lint-tsc.outcome    == 'failure' ||
+              steps.unit-tests.outcome  == 'failure' ||
+              steps.build.outcome       == 'failure'
+            )
+          }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+
+          # Ensure the failure report file exists even if the workflow
+          # failed before the update script could write it.
+          if [ ! -f .tmp/failure-report.md ]; then
+            mkdir -p .tmp
+            RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            cat > .tmp/failure-report.md <<EOF
+          ## Automated Security Dependency Update — Failed (${DATE})
+
+          The workflow failed before generating a detailed report.
+
+          **Workflow run (full logs):** ${RUN_URL}
+          EOF
+          fi
+
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Automated security dep update failed — ${DATE}" \
+            --body-file .tmp/failure-report.md
+
+          echo "❌ Failure issue created. No PR was opened."
