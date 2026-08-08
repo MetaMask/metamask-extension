@@ -1,0 +1,28 @@
+diff --git a/dist/ws/AccountActivityService.cjs b/dist/ws/AccountActivityService.cjs
+index 7ef741232595450cf6194a252345f745604c3801..549636101539fdccc1bedc02900ebd2134f4d819 100644
+--- a/dist/ws/AccountActivityService.cjs
++++ b/dist/ws/AccountActivityService.cjs
+@@ -396,6 +396,9 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+     }, []);
+ }, _AccountActivityService_getSupportedChainPrefixes = function _AccountActivityService_getSupportedChainPrefixes(remoteFeatureFlags = __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").call('RemoteFeatureFlagController:getState').remoteFeatureFlags) {
+     const prefixes = [...ALWAYS_SUPPORTED_CHAIN_PREFIXES];
++    prefixes.push('tron');
++    prefixes.push('stellar');
++    prefixes.push('solana');
+     for (const [prefix, flagName] of Object.entries(CHAIN_PREFIX_FEATURE_FLAGS)) {
+         const flagValue = remoteFeatureFlags[flagName];
+         if ((0, utils_1.isObject)(flagValue) &&
+diff --git a/dist/ws/AccountActivityService.mjs b/dist/ws/AccountActivityService.mjs
+index 244f7fd3ae12e6a70b53a7d65a7b7e331648ee80..7a1d8440d888c663478672b30fc98aa878fa641d 100644
+--- a/dist/ws/AccountActivityService.mjs
++++ b/dist/ws/AccountActivityService.mjs
+@@ -392,6 +392,9 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+     }, []);
+ }, _AccountActivityService_getSupportedChainPrefixes = function _AccountActivityService_getSupportedChainPrefixes(remoteFeatureFlags = __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").call('RemoteFeatureFlagController:getState').remoteFeatureFlags) {
+     const prefixes = [...ALWAYS_SUPPORTED_CHAIN_PREFIXES];
++    prefixes.push('tron');
++    prefixes.push('stellar');
++    prefixes.push('solana');
+     for (const [prefix, flagName] of Object.entries(CHAIN_PREFIX_FEATURE_FLAGS)) {
+         const flagValue = remoteFeatureFlags[flagName];
+         if (isObject(flagValue) &&
