@@ -28,9 +28,9 @@ describe('getFailoverUrlsForChainId', () => {
     );
   });
 
-  it('returns undefined for a chain that has no mapped failover', () => {
+  it('returns an empty array for a chain that has no mapped failover', () => {
     // Sepolia is not in the failover map
-    expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toBeUndefined();
+    expect(getFailoverUrlsForChainId(CHAIN_IDS.SEPOLIA)).toStrictEqual([]);
   });
 });
 

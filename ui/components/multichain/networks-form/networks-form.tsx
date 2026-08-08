@@ -130,10 +130,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const networkChainIdHex = chainId ? toHex(chainId) : undefined;
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
   const chainFailoverUrls = networkChainIdHex
     ? getFailoverUrlsForChainId(networkChainIdHex)
-    : undefined;
+    : [];
 
   const { safeChains } = useSafeChains();
 
@@ -571,8 +571,7 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                (chainFailoverUrls?.length ?? 0) > 0 ? (
+                {isRpcFailoverEnabled && chainFailoverUrls.length > 0 ? (
                   <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
@@ -615,9 +614,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        chainFailoverUrls &&
-        chainFailoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && chainFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
