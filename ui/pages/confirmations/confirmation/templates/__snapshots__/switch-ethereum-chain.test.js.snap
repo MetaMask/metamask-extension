@@ -33,7 +33,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
           />
         </div>
         <h6
-          class="mm-box mm-text origin-pill-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default origin-pill-text ms-1"
           data-testid="signature-origin-pill-text"
         >
           https://test-dapp.metamask.io
@@ -145,7 +145,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           />
         </div>
         <h6
-          class="mm-box mm-text origin-pill-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default origin-pill-text ms-1"
           data-testid="signature-origin-pill-text"
         >
           https://test-dapp.metamask.io
