@@ -12,25 +12,26 @@ import { CHAIN_IDS } from './chain-ids';
  * disable failover. Reading the env inside a getter (rather than at module load)
  * also lets tests just set `process.env`.
  */
-const QUICKNODE_URL_GETTERS_BY_CHAIN_ID = new Map<Hex, () => string | undefined>(
-  [
-    [CHAIN_IDS.MAINNET, () => process.env.QUICKNODE_MAINNET_URL],
-    [CHAIN_IDS.LINEA_MAINNET, () => process.env.QUICKNODE_LINEA_MAINNET_URL],
-    [CHAIN_IDS.ARBITRUM, () => process.env.QUICKNODE_ARBITRUM_URL],
-    [CHAIN_IDS.AVALANCHE, () => process.env.QUICKNODE_AVALANCHE_URL],
-    [CHAIN_IDS.OPTIMISM, () => process.env.QUICKNODE_OPTIMISM_URL],
-    [CHAIN_IDS.POLYGON, () => process.env.QUICKNODE_POLYGON_URL],
-    [CHAIN_IDS.BASE, () => process.env.QUICKNODE_BASE_URL],
-    [CHAIN_IDS.BSC, () => process.env.QUICKNODE_BSC_URL],
-    [CHAIN_IDS.ZKSYNC_ERA, () => process.env.QUICKNODE_ZKSYNC_URL],
-    [CHAIN_IDS.MEGAETH_MAINNET, () => process.env.QUICKNODE_MEGAETH_URL],
-    [CHAIN_IDS.SEI, () => process.env.QUICKNODE_SEI_URL],
-    [CHAIN_IDS.MONAD, () => process.env.QUICKNODE_MONAD_URL],
-    [CHAIN_IDS.HYPE, () => process.env.QUICKNODE_HYPEREVM_URL],
-    [CHAIN_IDS.ARC, () => process.env.QUICKNODE_ARC_URL],
-    [CHAIN_IDS.ROBINHOOD_CHAIN, () => process.env.QUICKNODE_ROBINHOOD_URL],
-  ],
-);
+const QUICKNODE_URL_GETTERS_BY_CHAIN_ID = new Map<
+  Hex,
+  () => string | undefined
+>([
+  [CHAIN_IDS.MAINNET, () => process.env.QUICKNODE_MAINNET_URL],
+  [CHAIN_IDS.LINEA_MAINNET, () => process.env.QUICKNODE_LINEA_MAINNET_URL],
+  [CHAIN_IDS.ARBITRUM, () => process.env.QUICKNODE_ARBITRUM_URL],
+  [CHAIN_IDS.AVALANCHE, () => process.env.QUICKNODE_AVALANCHE_URL],
+  [CHAIN_IDS.OPTIMISM, () => process.env.QUICKNODE_OPTIMISM_URL],
+  [CHAIN_IDS.POLYGON, () => process.env.QUICKNODE_POLYGON_URL],
+  [CHAIN_IDS.BASE, () => process.env.QUICKNODE_BASE_URL],
+  [CHAIN_IDS.BSC, () => process.env.QUICKNODE_BSC_URL],
+  [CHAIN_IDS.ZKSYNC_ERA, () => process.env.QUICKNODE_ZKSYNC_URL],
+  [CHAIN_IDS.MEGAETH_MAINNET, () => process.env.QUICKNODE_MEGAETH_URL],
+  [CHAIN_IDS.SEI, () => process.env.QUICKNODE_SEI_URL],
+  [CHAIN_IDS.MONAD, () => process.env.QUICKNODE_MONAD_URL],
+  [CHAIN_IDS.HYPE, () => process.env.QUICKNODE_HYPEREVM_URL],
+  [CHAIN_IDS.ARC, () => process.env.QUICKNODE_ARC_URL],
+  [CHAIN_IDS.ROBINHOOD_CHAIN, () => process.env.QUICKNODE_ROBINHOOD_URL],
+]);
 
 /**
  * Builds the chain ID keyed QuickNode failover map used to initialize the
