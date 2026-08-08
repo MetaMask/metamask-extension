@@ -534,7 +534,7 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "mockttp>@peculiar/x509>reflect-metadata": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true,
         "tslib": true,
         "mockttp>@peculiar/x509>tsyringe": true
       }
@@ -2502,7 +2502,7 @@
         "micromatch>picomatch": true
       }
     },
-    "mockttp>@peculiar/x509>reflect-metadata": {
+    "@ledgerhq/device-management-kit>reflect-metadata": {
       "globals": {
         "crypto": true,
         "msCrypto": true
@@ -2576,7 +2576,7 @@
         "process.nextTick": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "cancelAnimationFrame": true,
         "clearInterval": true,
@@ -2630,7 +2630,7 @@
         "sass-embedded>buffer-builder": true,
         "sass-embedded>colorjs.io": true,
         "sass-embedded>immutable": true,
-        "wait-on>rxjs": true,
+        "rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>sync-child-process": true,
         "sass-embedded>varint": true
@@ -2638,6 +2638,8 @@
     },
     "sass-loader": {
       "builtin": {
+        "node:path": true,
+        "node:url": true,
         "path": true,
         "url": true,
         "util": true
@@ -2648,7 +2650,6 @@
         "process.platform": true
       },
       "packages": {
-        "webpack>neo-async": true,
         "sass-embedded": true
       }
     },
