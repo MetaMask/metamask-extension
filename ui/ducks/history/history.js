@@ -19,16 +19,21 @@ const slice = createSlice({
   reducers: {
     pageChanged: (state, action) => {
       const path = action.payload;
+
+      // `redirectAfterDefaultPage` is a one-shot instruction. Stop it once we
+      // are back on the default page or have reached the target.
+      // Compare pathnames only as the target may carry a query
+      // string that gets stripped once the destination prefills from it.
+      if (
+        state.redirectAfterDefaultPage?.shouldRedirect &&
+        (path === DEFAULT_ROUTE ||
+          state.redirectAfterDefaultPage.path?.split('?')[0] === path)
+      ) {
+        state.redirectAfterDefaultPage = null;
+      }
+
       if (path === DEFAULT_ROUTE || path.startsWith(ASSET_ROUTE)) {
         state.mostRecentOverviewPage = path;
-
-        // If we're going to the default page and have a redirect pending, clear it
-        if (
-          path === DEFAULT_ROUTE &&
-          state.redirectAfterDefaultPage?.shouldRedirect
-        ) {
-          state.redirectAfterDefaultPage.shouldRedirect = false;
-        }
       }
     },
     setRedirectAfterDefaultPage: (state, action) => {

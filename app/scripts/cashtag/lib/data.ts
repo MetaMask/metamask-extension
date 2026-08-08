@@ -1,0 +1,170 @@
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import type { AssetData, ResolvedTicker } from './types';
+
+const tokenSearchUrl = 'https://token.api.cx.metamask.io/tokens/search';
+const historicalPricesUrl = 'https://price.api.cx.metamask.io/v3/historical-prices';
+const iconBase = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
+
+const searchChainIds: CaipChainId[] = [
+  toEvmCaipChainId(CHAIN_IDS.MAINNET),
+  MultichainNetworks.SOLANA,
+  MultichainNetworks.BITCOIN,
+  MultichainNetworks.TRON,
+  MultichainNetworks.STELLAR,
+  toEvmCaipChainId(CHAIN_IDS.BSC),
+  toEvmCaipChainId(CHAIN_IDS.BASE),
+  toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
+  toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
+  toEvmCaipChainId(CHAIN_IDS.POLYGON),
+  toEvmCaipChainId(CHAIN_IDS.AVALANCHE),
+];
+
+type SearchHit = {
+  assetId: CaipAssetType;
+  symbol: string;
+  name: string;
+  price?: string | number | null;
+  marketCap?: string | number | null;
+  aggregatedUsdVolume?: string | number | null;
+  pricePercentChange1d?: string | number | null;
+  liquidity?: string | number | null;
+};
+
+function num(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function chainIdFromAssetId(assetId: string): CaipChainId | null {
+  const chainId = assetId.split('/')[0];
+  return chainId ? (chainId as CaipChainId) : null;
+}
+
+function toAssetData(hit: SearchHit, ticker: string): AssetData {
+  const chainId = chainIdFromAssetId(hit.assetId);
+  return {
+    ticker,
+    name: hit.name,
+    iconUrl:
+      (chainId ? getAssetImageUrl(hit.assetId, chainId) : null) ??
+      `${iconBase}/${hit.assetId.replaceAll(':', '/')}.png`,
+    color: null,
+    caipAssetId: hit.assetId,
+    chainId,
+    isNative: hit.assetId.includes('/slip44:'),
+    verified: true,
+    price: num(hit.price),
+    change24hPercent: num(hit.pricePercentChange1d),
+    marketCap: num(hit.marketCap),
+    liquidity: num(hit.liquidity),
+    volume24h: num(hit.aggregatedUsdVolume),
+  };
+}
+
+function compareHits(left: SearchHit, right: SearchHit) {
+  const leftCap = num(left.marketCap) ?? -1;
+  const rightCap = num(right.marketCap) ?? -1;
+  if (rightCap !== leftCap) {
+    return rightCap - leftCap;
+  }
+  const leftNative = left.assetId.includes('/slip44:') ? 1 : 0;
+  const rightNative = right.assetId.includes('/slip44:') ? 1 : 0;
+  return rightNative - leftNative;
+}
+
+async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
+  const params = new URLSearchParams({
+    query: symbol,
+    networks: searchChainIds.join(','),
+    first: '25',
+    includeMarketData: 'true',
+  });
+  const response = await globalThis.fetch(`${tokenSearchUrl}?${params}`, {
+    method: 'GET',
+    headers: { 'X-Client-Id': 'extension' },
+  });
+  if (!response.ok) {
+    return [];
+  }
+  const body = (await response.json()) as { data?: SearchHit[] };
+  return (body.data ?? []).filter(
+    (hit) => hit.symbol.toUpperCase() === symbol.toUpperCase(),
+  );
+}
+
+export async function fetchPriceHistory(
+  caipAssetId: string,
+): Promise<number[] | null> {
+  const separator = caipAssetId.indexOf('/');
+  if (separator === -1) {
+    return null;
+  }
+
+  const caipChainId = caipAssetId.slice(0, separator);
+  const assetType = caipAssetId.slice(separator + 1);
+  if (!caipChainId || !assetType) {
+    return null;
+  }
+
+  const params = new URLSearchParams({
+    vsCurrency: 'usd',
+    timePeriod: '1D',
+  });
+
+  try {
+    const response = await globalThis.fetch(
+      `${historicalPricesUrl}/${caipChainId}/${assetType}?${params}`,
+      {
+        method: 'GET',
+        headers: { 'X-Client-Id': 'extension' },
+      },
+    );
+    if (!response.ok) {
+      return null;
+    }
+
+    const body = (await response.json()) as {
+      prices?: [number, number][];
+    };
+    const values = (body.prices ?? [])
+      .map((point) => point?.[1])
+      .filter(
+        (value): value is number =>
+          typeof value === 'number' && Number.isFinite(value),
+      );
+
+    return values.length >= 2 ? values : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function resolveTicker(
+  symbol: string,
+): Promise<ResolvedTicker | null> {
+  const ticker = symbol.trim().toUpperCase();
+  if (!ticker) {
+    return null;
+  }
+
+  const matches = (await searchBySymbol(ticker)).sort(compareHits);
+  if (matches.length === 0) {
+    return null;
+  }
+
+  const assets = matches.map((hit) => toAssetData(hit, ticker));
+  return {
+    primary: assets[0],
+    similar: assets.slice(1),
+  };
+}

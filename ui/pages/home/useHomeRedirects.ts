@@ -54,8 +54,9 @@ export function useRedirectAfterDefaultPage({
 /**
  * When `pendingRedirectRoute` is set, evaluates whether the route applies to the
  * current environment and, if so, schedules a redirect via
- * `setRedirectAfterDefaultPage`. Always clears the pending entry so StrictMode
- * remounts cannot replay the same redirect.
+ * `setRedirectAfterDefaultPage` and clears the pending entry so StrictMode
+ * remounts cannot replay the same redirect. Env-scoped routes that do not match
+ * are left intact for the target environment.
  * @param options0
  * @param options0.pendingRedirectRoute
  * @param options0.envType
@@ -79,10 +80,10 @@ export function usePendingRedirectRoute({
     }
 
     const { path, search, environmentType } = pendingRedirectRoute;
-    clearPendingRedirectRoute?.();
-
     const shouldRedirect = !environmentType || environmentType === envType;
+
     if (shouldRedirect) {
+      clearPendingRedirectRoute?.();
       setRedirectAfterDefaultPage?.({
         path: search ? `${path}${search}` : path,
       });
