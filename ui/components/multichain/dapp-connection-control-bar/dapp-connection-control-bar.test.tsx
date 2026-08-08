@@ -14,9 +14,7 @@ jest.mock('react-router-dom', () => ({
 const mockRemovePermissionsFor = jest.fn(
   (_subjects: Record<string, string[]>) => () => Promise.resolve(),
 );
-const mockHidePermittedNetworkToast = jest.fn(() => ({
-  type: 'SHOW_PERMITTED_NETWORK_TOAST_CLOSE',
-}));
+const mockDismissPermittedNetworkToast = jest.fn();
 const mockSetActiveNetwork = jest.fn((_networkClientId: string) => ({
   type: 'SET_ACTIVE_NETWORK',
 }));
@@ -27,11 +25,21 @@ const mockToggleNetworkMenu = jest.fn(() => ({ type: 'TOGGLE_NETWORK_MENU' }));
 const mockAddPermittedAccounts = jest.fn(
   (_origin: string, _addresses: string[]) => () => Promise.resolve(),
 );
+
+jest.mock(
+  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      dismissPermittedNetworkToast: () => mockDismissPermittedNetworkToast(),
+      showPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   removePermissionsFor: (subjects: Record<string, string[]>) =>
     mockRemovePermissionsFor(subjects),
-  hidePermittedNetworkToast: () => mockHidePermittedNetworkToast(),
   setActiveNetwork: (id: string) => mockSetActiveNetwork(id),
   setNetworkClientIdForDomain: (origin: string, id: string) =>
     mockSetNetworkClientIdForDomain(origin, id),
@@ -41,7 +49,6 @@ jest.mock('../../../store/actions', () => ({
   detectNfts: () => () => Promise.resolve(),
   setTokenNetworkFilter: () => ({ type: 'SET_TOKEN_NETWORK_FILTER' }),
   addPermittedChain: () => () => Promise.resolve(),
-  showPermittedNetworkToast: () => ({ type: 'SHOW_PERMITTED_NETWORK_TOAST' }),
   addPermittedAccounts: (origin: string, addresses: string[]) =>
     mockAddPermittedAccounts(origin, addresses),
 }));
@@ -297,7 +304,7 @@ describe('DappConnectionControlBar', () => {
         expect(mockRemovePermissionsFor).toHaveBeenCalledWith({
           [DAPP_ORIGIN]: ['endowment:caip25'],
         });
-        expect(mockHidePermittedNetworkToast).toHaveBeenCalled();
+        expect(mockDismissPermittedNetworkToast).toHaveBeenCalled();
         expect(queryByTestId('disconnect-all-modal')).not.toBeInTheDocument();
       });
     });

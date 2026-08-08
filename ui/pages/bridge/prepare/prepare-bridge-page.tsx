@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -43,7 +43,6 @@ import {
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
-  getIsGasIncluded,
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
@@ -65,8 +64,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
-import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -77,8 +74,6 @@ import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
-import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
@@ -87,7 +82,9 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { useDispatch } from '../../../store/hooks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -105,11 +102,6 @@ const PrepareBridgePage = ({
 
   const fromChain = useSelector(getFromChain);
 
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
-  const gasIncluded = useSelector((state) =>
-    getIsGasIncluded(state, isSendBundleSupportedForChain),
-  );
-
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const selectedTokenSecurityData = useSelectedTokenSecurityData(
@@ -120,8 +112,6 @@ const PrepareBridgePage = ({
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
-
-  const isSwap = fromToken.chainId === toToken.chainId;
 
   const fromAmount = useSelector(getFromAmount);
   const validatedFromValue = useSelector(getValidatedFromValue);
@@ -152,25 +142,15 @@ const PrepareBridgePage = ({
 
   const selectedAccount = useSelector(getFromAccount);
 
-  const gasIncluded7702 = useGasIncluded7702({
-    isSwap,
-    isSendBundleSupportedForChain,
-    selectedAccount,
-    fromChain,
-  });
-
-  const keyring = useSelector(getCurrentKeyring);
-  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
-
-  const effectiveGasIncluded = gasIncluded;
-  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
+  const { gasIncluded, gasIncluded7702, nativeGasIncluded } =
+    useGasIncludedSupport();
 
   const shouldShowMaxButton =
     fromToken &&
     // Always show for non-native tokens. Arc ERC20 USDC considered as native.
     (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
       ? !isSolanaChainId(fromToken.chainId) &&
-        (effectiveGasIncluded || effectiveGasIncluded7702)
+        (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
   const locale = useSelector(getIntlLocale);
 
@@ -242,8 +222,8 @@ const PrepareBridgePage = ({
       ...(slippage === undefined ? {} : { slippage }),
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
-      gasIncluded7702: effectiveGasIncluded7702,
+      gasIncluded,
+      gasIncluded7702,
     };
   }, [
     fromToken?.assetId,
@@ -255,8 +235,8 @@ const PrepareBridgePage = ({
     selectedAccount?.address,
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
-    effectiveGasIncluded,
-    effectiveGasIncluded7702,
+    gasIncluded,
+    gasIncluded7702,
     isQuoteRequestInsufficientBal,
   ]);
 

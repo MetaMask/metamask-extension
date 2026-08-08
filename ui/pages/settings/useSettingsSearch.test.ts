@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -137,7 +137,7 @@ describe('useSettingsSearch', () => {
         },
       });
 
-      return React.createElement(Provider, { store }, children);
+      return React.createElement(Provider, { store, children });
     };
 
   it('returns empty results for queries shorter than 3 characters', () => {

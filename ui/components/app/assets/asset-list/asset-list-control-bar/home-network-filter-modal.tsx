@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
@@ -19,6 +19,7 @@ import {
   FontWeight,
   IconColor as DsIconColor,
   IconName as DsIconName,
+  ModalHeader,
   Text,
   TextColor,
   TextVariant,
@@ -41,7 +42,6 @@ import {
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader,
   ModalOverlay,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -72,6 +72,7 @@ import { useNetworkManagerState } from '../../../../multichain/network-manager/h
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
 import Tooltip from '../../../../ui/tooltip';
+import { useDispatch } from '../../../../../store/hooks';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
@@ -234,6 +235,7 @@ export const NetworkSelectionModal = ({
   footerButton,
   'data-testid': dataTestId,
 }: NetworkSelectionModalProps) => {
+  const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
@@ -251,7 +253,12 @@ export const NetworkSelectionModal = ({
             className: 'flex h-full flex-col overflow-hidden',
           }}
         >
-          <ModalHeader onClose={onClose}>{title}</ModalHeader>
+          <ModalHeader
+            onClose={onClose}
+            closeButtonProps={{ ariaLabel: t('close') }}
+          >
+            {title}
+          </ModalHeader>
           <Box
             className="min-h-0 flex-1 overflow-y-auto"
             flexDirection={BoxFlexDirection.Column}

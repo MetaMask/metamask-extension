@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act } from 'react-dom/test-utils';
@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { toast } from '../toast/toast';
 import { SurveyToast } from './survey-toast';
 
 const mockTrackEvent = jest.fn();
@@ -33,6 +34,20 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../toast/toast', () => {
+  const actual =
+    jest.requireActual<typeof import('../toast/toast')>('../toast/toast');
+
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      success: jest.fn(),
+      dismiss: jest.fn(),
+    },
+  };
+});
+
 const mockFetchWithCache = fetchWithCache as jest.Mock;
 const mockStore = configureStore([thunk]);
 
@@ -51,14 +66,17 @@ const surveyData = {
   },
 };
 
-const createStore = (options = { metametricsEnabled: true }) =>
+const createStore = (
+  options: { metametricsEnabled?: boolean; isUnlocked?: boolean } = {},
+) =>
   mockStore({
     user: { basicFunctionality: true },
     metamask: {
       lastViewedUserSurvey: 2,
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
-      optedIn: options.metametricsEnabled,
+      consentDecisionMade: true,
+      optedIn: options.metametricsEnabled ?? true,
+      isUnlocked: options.isUnlocked ?? true,
       analyticsId: '0x123',
       internalAccounts: {
         selectedAccount: '0x123',
@@ -67,8 +85,9 @@ const createStore = (options = { metametricsEnabled: true }) =>
     },
   });
 
-const renderComponent = (options = { metametricsEnabled: true }) =>
-  renderWithProvider(<SurveyToast />, createStore(options));
+const renderComponent = (
+  options: { metametricsEnabled?: boolean; isUnlocked?: boolean } = {},
+) => renderWithProvider(<SurveyToast />, createStore(options));
 
 describe('SurveyToast', () => {
   beforeEach(() => {
@@ -91,25 +110,42 @@ describe('SurveyToast', () => {
   it('should match snapshot', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
-    let container;
     await act(async () => {
-      const result = renderComponent();
-      container = result.container;
+      renderComponent();
     });
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            title: surveyData.valid.description,
+            dataTestId: 'survey-toast',
+          }),
+        }),
+        expect.objectContaining({
+          id: 'survey-toast',
+          icon: expect.anything(),
+        }),
+      );
+    });
   });
 
   it('renders nothing if no survey is available', () => {
     mockFetchWithCache.mockResolvedValue({ surveys: [] });
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
+
+    return waitFor(() => {
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
+    });
   });
 
   it('renders nothing if the survey is stale', () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.stale });
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
+
+    return waitFor(() => {
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
+    });
   });
 
   it('renders the survey toast when a valid survey is available', async () => {
@@ -120,11 +156,7 @@ describe('SurveyToast', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
-      expect(
-        screen.getByText(surveyData.valid.description),
-      ).toBeInTheDocument();
-      expect(screen.getByText(surveyData.valid.cta)).toBeInTheDocument();
+      expect(jest.mocked(toast.success)).toHaveBeenCalled();
     });
   });
 
@@ -134,8 +166,11 @@ describe('SurveyToast', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
+      expect(jest.mocked(toast.success)).toHaveBeenCalledTimes(1);
     });
+
+    const toastElement = jest.mocked(toast.success).mock.calls[0][0];
+    render(toastElement as React.ReactElement);
 
     fireEvent.click(screen.getByText(surveyData.valid.cta));
 
@@ -162,7 +197,18 @@ describe('SurveyToast', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByTestId('survey-toast')).toBeNull();
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
     });
+  });
+
+  it('does not fetch surveys while the wallet is locked', async () => {
+    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
+
+    await act(async () => {
+      renderComponent({ isUnlocked: false });
+    });
+
+    expect(mockFetchWithCache).not.toHaveBeenCalled();
+    expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
   });
 });

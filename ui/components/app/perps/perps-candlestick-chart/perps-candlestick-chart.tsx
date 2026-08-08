@@ -84,6 +84,15 @@ const LOAD_MORE_COOLDOWN_MS = 2000;
 const EDGE_DETECTION_THRESHOLD = 5;
 
 /**
+ * Delay before applying pane heights. The panes only exist once the library has
+ * laid the chart out, which happens after the current task.
+ */
+const PANE_HEIGHT_APPLY_DELAY_MS = 50;
+
+/** Vertical split between the candlestick pane and the volume pane. */
+const PANE_HEIGHT_RATIO = { MAIN: 0.8, VOLUME: 0.2 } as const;
+
+/**
  * A horizontal price line to draw on the chart (e.g., TP, Entry, SL, current price).
  */
 export type ChartPriceLine = {
@@ -379,16 +388,19 @@ const PerpsCandlestickChart = forwardRef<
 
       volumeSeriesRef.current = volumeSeries;
 
-      // Set pane heights (80/20 split)
-      setTimeout(() => {
+      // Set pane heights (80/20 split).
+      // The handle is cleared in the cleanup below: this effect re-runs on theme,
+      // locale and sizing changes, and its cleanup calls chart.remove(). A timer
+      // left armed would fire against a disposed chart and keep it reachable.
+      const paneHeightTimeoutId = setTimeout(() => {
         const panes = chart.panes();
         if (panes.length >= 2) {
-          const mainHeight = Math.floor(height * 0.8);
-          const volumeHeight = Math.floor(height * 0.2);
+          const mainHeight = Math.floor(height * PANE_HEIGHT_RATIO.MAIN);
+          const volumeHeight = Math.floor(height * PANE_HEIGHT_RATIO.VOLUME);
           panes[0].setHeight(mainHeight);
           panes[1].setHeight(volumeHeight);
         }
-      }, 50);
+      }, PANE_HEIGHT_APPLY_DELAY_MS);
 
       // Edge detection: request more history when user scrolls near left edge
       chart.timeScale().subscribeVisibleLogicalRangeChange((logicalRange) => {
@@ -476,6 +488,7 @@ const PerpsCandlestickChart = forwardRef<
 
       // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
+        clearTimeout(paneHeightTimeoutId);
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
           chartRef.current.remove();

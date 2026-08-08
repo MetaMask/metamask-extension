@@ -4,11 +4,11 @@ import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
 class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
-  private setApprovalForAllTitleElement: RawLocator;
+  private revokeSetApprovalForAllTitleElement: RawLocator;
 
   private setApprovalForAllSubHeadingElement: RawLocator;
 
-  private revokeSetApprovalForAllTitleElement: RawLocator;
+  private setApprovalForAllTitleElement: RawLocator;
 
   constructor(driver: Driver) {
     super(driver);
@@ -29,16 +29,16 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
     };
   }
 
-  async checkSetApprovalForAllTitle() {
-    await this.driver.waitForSelector(this.setApprovalForAllTitleElement);
+  async checkRevokeSetApprovalForAllTitle() {
+    await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
   }
 
   async checkSetApprovalForAllSubHeading() {
     await this.driver.waitForSelector(this.setApprovalForAllSubHeadingElement);
   }
 
-  async checkRevokeSetApprovalForAllTitle() {
-    await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
+  async checkSetApprovalForAllTitle() {
+    await this.driver.waitForSelector(this.setApprovalForAllTitleElement);
   }
 }
 

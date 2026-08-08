@@ -72,6 +72,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   BillingPortalResponse,
   GetCryptoApproveTransactionRequest,
@@ -4346,12 +4347,7 @@ export function toggleDefaultView(): ThunkAction<
       }
 
       if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return;
         }
@@ -6704,14 +6700,18 @@ export function completeQrCodeScan(
   };
 }
 
-export function cancelQrCodeScan(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function cancelQrCodeScan(
+  error?: Error,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('cancelQrCodeScan');
+    // Error class instances do not survive extension-port serialization.
+    // HardwareWalletError is sent as its JSON shape so the background can
+    // reconstruct a typed error; plain Errors are reduced to their message.
+    const cancelPayload = error
+      ? [error instanceof HardwareWalletError ? error.toJSON() : error.message]
+      : [];
+
+    await submitRequestToBackground('cancelQrCodeScan', cancelPayload);
   };
 }
 
@@ -7840,6 +7840,14 @@ export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
   ]);
 }
 
+export async function getSentinelNetworkFlags(
+  chainId: Hex,
+): Promise<SentinelNetwork> {
+  return await submitRequestToBackground<boolean>('getSentinelNetworkFlags', [
+    chainId,
+  ]);
+}
+
 /**
  * Sets the preference for skipping the interstitial page when opening a deep link.
  *
@@ -7890,11 +7898,15 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
+  return await submitRequestToBackground<{
+    enforcedSimulationsSlippage?: number;
+  }>('applyTransactionContainersExisting', [
+    transactionId,
+    containerTypes,
+    incrementToggleCount,
+  ]);
 }
 
 export async function getLayer1GasFeeValue({

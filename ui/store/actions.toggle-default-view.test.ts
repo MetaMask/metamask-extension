@@ -43,6 +43,8 @@ const browserMock = browser as unknown as {
   sidePanel: { open: jest.Mock };
 };
 
+Object.assign(globalThis, { chrome: browserMock });
+
 const middleware = [thunk];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockStore = configureStore<any>(middleware);
@@ -130,8 +132,12 @@ describe('toggleDefaultView', () => {
     // panel opened, leaving both the popup and side panel open and the preference unchanged.
     it('persists the preference and closes the popup without probing side panel contexts', async () => {
       const getContextsSpy = jest.fn().mockResolvedValue([]);
-      // @ts-expect-error chrome is not typed on the test global
-      global.chrome = { runtime: { getContexts: getContextsSpy } };
+      Object.assign(globalThis, {
+        chrome: {
+          ...browserMock,
+          runtime: { getContexts: getContextsSpy },
+        },
+      });
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       const store = mockStore();
 

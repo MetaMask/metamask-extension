@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -35,11 +35,15 @@ import {
   ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 
 // ============================================================================
@@ -126,7 +130,7 @@ function findExistingPendingMusdConversion(params: {
  * @returns Object with state and actions for mUSD conversion
  */
 export function useMusdConversion(): UseMusdConversionResult {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);
@@ -321,7 +325,7 @@ export function useMusdConversion(): UseMusdConversionResult {
   );
 
   const cancelConversion = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const markEducationSeen = useCallback(() => {

@@ -9,11 +9,9 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import nock from 'nock';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
-import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
@@ -34,9 +32,6 @@ jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
   getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
 }));
-
-const mockToHardwareWalletError = jest.fn();
-const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
@@ -67,12 +62,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         },
       };
     }),
-}));
-
-jest.mock('../../ui/contexts/hardware-wallets', () => ({
-  toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
-  isUserRejectedHardwareWalletError: (...args) =>
-    mockIsUserRejectedHardwareWalletError(...args),
 }));
 
 jest.mock('webextension-polyfill', () => ({
@@ -218,7 +207,6 @@ describe('MetaMaskController', function () {
       }),
     });
     initializeMockMiddlewareLog();
-    mockToHardwareWalletError.mockReset();
     jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
 
     // Re-create the ULID generator to start over again the `mockULIDs` list.
@@ -249,9 +237,15 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result2 = metamaskController.keyringController.state;
 
       // v2 Snap keyrings are created lazily per-snap, so a fresh restore
@@ -278,9 +272,13 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
@@ -291,7 +289,9 @@ describe('MetaMaskController', function () {
     it('creates a vault and returns the seed phrase', async function () {
       const password = 'test@123';
       const encodedSeedPhrase =
-        await metamaskController.createNewVaultAndGetSeedPhrase(password);
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndGetSeedPhrase(
+          password,
+        );
       const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
       expect(seedPhrase.split(' ')).toHaveLength(12);
@@ -302,11 +302,15 @@ describe('MetaMaskController', function () {
   describe('#unlockAndGetSeedPhrase', function () {
     it('unlocks the vault and returns the seed phrase', async function () {
       const password = 'test@123';
-      await metamaskController.createNewVaultAndKeychain(password);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        password,
+      );
       await metamaskController.keyringController.setLocked();
 
       const encodedSeedPhrase =
-        await metamaskController.unlockAndGetSeedPhrase(password);
+        await metamaskController.legacyBackgroundApiService.unlockAndGetSeedPhrase(
+          password,
+        );
       const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
       expect(seedPhrase.split(' ')).toHaveLength(12);
@@ -515,122 +519,13 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#resolvePendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', async function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).resolves.not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).rejects.toThrow(error);
-    });
-
-    it('should normalize null options before calling approvalController.acceptRequest', async function () {
-      const approvalId = mockULIDs[0];
-      const approvalValue = { txMeta: { id: '0x1' } };
-      metamaskController.approvalController = {
-        acceptRequest: jest.fn().mockResolvedValue(undefined),
-      };
-
-      await metamaskController.resolvePendingApproval(
-        approvalId,
-        approvalValue,
-        null,
-      );
-
-      expect(
-        metamaskController.approvalController.acceptRequest,
-      ).toHaveBeenCalledWith(approvalId, approvalValue, undefined);
-    });
-
-    it('should pass only waitForResult to approvalController.acceptRequest options', async function () {
-      const approvalId = mockULIDs[1];
-      const approvalValue = { txMeta: { id: '0x2' } };
-      metamaskController.approvalController = {
-        acceptRequest: jest.fn().mockResolvedValue(undefined),
-      };
-
-      await metamaskController.resolvePendingApproval(
-        approvalId,
-        approvalValue,
-        {
-          waitForResult: true,
-          walletType: HardwareKeyringNames.ledger,
-        },
-      );
-
-      expect(
-        metamaskController.approvalController.acceptRequest,
-      ).toHaveBeenCalledWith(approvalId, approvalValue, {
-        waitForResult: true,
-      });
-    });
-
-    it('should transform hardware wallet errors to internal JSON-RPC errors', async function () {
-      const approvalId = mockULIDs[2];
-      const approvalValue = { txMeta: { id: '0x3' } };
-      const error = new Error('Ledger transport disconnected');
-      metamaskController.approvalController = {
-        acceptRequest: () => {
-          throw error;
-        },
-      };
-      mockToHardwareWalletError.mockReturnValue({
-        message: 'Device disconnected',
-        code: ErrorCode.DeviceDisconnected,
-        severity: Severity.Err,
-        category: Category.Connection,
-        userMessage: 'Please reconnect your device',
-        metadata: {
-          transport: 'usb',
-          walletType: HardwareKeyringNames.ledger,
-        },
-      });
-
-      await expect(
-        metamaskController.resolvePendingApproval(approvalId, approvalValue, {
-          walletType: HardwareKeyringNames.ledger,
-        }),
-      ).rejects.toMatchObject({
-        code: -32603,
-        data: {
-          code: ErrorCode.DeviceDisconnected,
-          severity: Severity.Err,
-          category: Category.Connection,
-          userMessage: 'Please reconnect your device',
-          metadata: {
-            transport: 'usb',
-            walletType: HardwareKeyringNames.ledger,
-          },
-        },
-      });
-
-      expect(mockToHardwareWalletError).toHaveBeenCalledWith(
-        error,
-        HardwareKeyringNames.ledger,
-      );
-    });
-  });
-
   describe('#approveHardwareWalletTransaction', function () {
     it('should delegate to resolvePendingApproval with transaction payload and hardware wallet options', async function () {
       const resolvePendingApprovalSpy = jest
-        .spyOn(metamaskController, 'resolvePendingApproval')
+        .spyOn(
+          metamaskController.legacyBackgroundApiService,
+          'resolvePendingApproval',
+        )
         .mockResolvedValue();
       const txMeta = {
         id: '42',
@@ -641,12 +536,14 @@ describe('MetaMaskController', function () {
       };
       const actionId = mockULIDs[3];
 
-      await metamaskController.approveHardwareWalletTransaction({
-        txId: 42,
-        txMeta,
-        actionId,
-        walletType: HardwareKeyringNames.ledger,
-      });
+      await metamaskController.legacyBackgroundApiService.approveHardwareWalletTransaction(
+        {
+          txId: 42,
+          txMeta,
+          actionId,
+          walletType: HardwareKeyringNames.ledger,
+        },
+      );
 
       expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
         '42',

@@ -615,8 +615,6 @@
   "ui/components/app/wallet-overview/wallet-overview.js",
   "ui/components/component-library/form-text-field/deprecated/form-text-field.js",
   "ui/components/component-library/form-text-field/deprecated/index.js",
-  "ui/components/component-library/text-field-search/deprecated/index.js",
-  "ui/components/component-library/text-field-search/deprecated/text-field-search.js",
   "ui/components/multichain/account-details/account-details-authenticate.js",
   "ui/components/multichain/account-details/account-details-display.js",
   "ui/components/multichain/account-details/account-details-key.js",

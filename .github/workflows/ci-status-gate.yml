@@ -6,8 +6,8 @@
 #
 # Responsibilities:
 #   1. Check that all jobs passed (from caller's needs-json)
-#   2. Retry gate: defer commit status when retry-ci label is present
-#      on merge_group failures, giving triage time to retry
+#   2. Retry gate: defer commit status while a merge_group retry budget
+#      is available, giving triage time to retry
 #   3. Post "All jobs pass" commit status (success or failure)
 #   4. Emit Sentry events (resolved-at-attempt, merge queue outcome)
 #   5. Fail the job if any checks failed
@@ -114,20 +114,23 @@ jobs:
       #
       # Timeline of a merge_group retry:
       #   1. main.yml attempt 1 fails → suite completes with failure
-      #   2. This step sees retry-ci label → skips commit status
+      #   2. This step sees default retry budget → skips commit status
       #   3. Rule 1 wants to eject, but "All jobs pass" is pending → blocked
       #   4. Triage fires (workflow_run completed) → calls gh run rerun
       #   5. main.yml attempt 2 starts → suite resets to in_progress
       #   6. If attempt 2 passes → commit status posted as success → merge
       #      If attempt 2 fails without retry-ci → commit status posted as failure → eject
+      #      If attempt 2 fails with retry-ci → skips commit status again
       #
-      # The retry-ci label is removed by triage after each retry, so
-      # the user must re-add it to authorize additional retries.
-      # A hard limit of 4 attempts applies (run_attempt < 4 below).
+      # The default budget allows attempt 2. retry-ci extends the budget
+      # through attempt 4. The retry-ci label is removed by triage after
+      # each label-funded retry, so the user must re-add it to authorize
+      # another extra retry.
       # On attempt 4+, the commit status is always posted immediately.
-      # Keep this in sync with MAX_ATTEMPTS in classify-failures.mts.
+      # retry-budget.mts is the source of truth for these limits. This mirrors
+      # them because the gate deliberately runs without a checkout.
       # ────────────────────────────────────────────────────────────────
-      - name: Check retry-ci label (merge queue only)
+      - name: Check retry budget (merge queue only)
         id: retry-gate
         if: >-
           ${{
@@ -138,6 +141,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          ATTEMPT=${{ github.run_attempt }}
+          DEFAULT_RETRY_MAX_ATTEMPT=2
+          RETRY_CI_LABEL_MAX_ATTEMPT=4
+
+          if (( ATTEMPT < DEFAULT_RETRY_MAX_ATTEMPT )); then
+            echo "Attempt $ATTEMPT is within the default retry budget — deferring commit status for triage retry"
+            echo "skip-status=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if (( ATTEMPT >= RETRY_CI_LABEL_MAX_ATTEMPT )); then
+            echo "Attempt $ATTEMPT reached the retry-ci limit — posting commit status"
+            echo "skip-status=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if [[ "$BRANCH" =~ gh-readonly-queue/[^/]+/pr-([0-9]+)- ]]; then
             PR="${BASH_REMATCH[1]}"
             if ! RAW_LABELS=$(gh pr view "$PR" --repo "${{ github.repository }}" --json labels --jq '.labels[].name' 2>&1); then

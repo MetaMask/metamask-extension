@@ -1,10 +1,6 @@
 /**
  * classify-failures.mts
  *
- * REVIEWER FOCUS: The classification logic and retry decision tree are the
- * most important things to verify. See retry-config.jsonc for the pattern
- * definitions that drive classification.
- *
  * Analyzes failed jobs in a GitHub Actions workflow run and classifies each
  * failure (jobRetryable) based on job name patterns and transient error
  * detection. Derives an overall is-retryable decision from individual results.
@@ -41,7 +37,9 @@
  * Outputs (to $GITHUB_OUTPUT):
  *   is-retryable=true|false    — whether all failures are retryable
  *   has-retry-label=true|false — whether the originating PR has retry-ci
- *   will-retry=true|false      — is-retryable AND has-retry-label AND under attempt limit
+ *   will-retry=true|false      — is-retryable AND has PR AND under active retry limit
+ *   consume-retry-label=true|false — whether this retry should remove retry-ci
+ *   retry-mode=automatic|label|none — source of the retry budget used
  *   pr-number=<N>|""           — originating PR number (empty for push)
  *
  * Also writes a markdown report to $GITHUB_STEP_SUMMARY and optionally:
@@ -57,6 +55,12 @@ import { parseArgs } from 'node:util';
 import { ghApi } from './shared/gh-api.mts';
 import { getGitHubToken } from './shared/github-token.mts';
 import { stripJsonComments } from './shared/json-tools.mts';
+import {
+  DEFAULT_RETRY_MAX_ATTEMPT,
+  getRetryBudget,
+  RETRY_CI_LABEL_MAX_ATTEMPT,
+  type RetryBudgetDecision,
+} from './shared/retry-budget.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -142,10 +146,9 @@ if (!MAIN_RUN_ID) {
   process.exit(1);
 }
 
-// Maximum number of workflow run attempts before retries are disabled.
-// Attempts are 1-indexed: after attempt MAX_ATTEMPTS, no further retries.
-// This must stay in sync with the guard in ci-status-gate.yml.
-const MAX_ATTEMPTS = 4;
+// Retry limits are 1-indexed and shared with ci-status-gate.yml's merge queue
+// deferral rules: default retries can create attempt 2, and retry-ci can create
+// attempts 3 and 4.
 
 const [owner, repo] = REPO.split('/');
 const repoApi = `/repos/${owner}/${repo}`;
@@ -520,6 +523,15 @@ function classifyJob(job: Job): JobClassification {
 
 const WORKFLOW_CONCLUSION = process.env.WORKFLOW_CONCLUSION ?? '';
 
+function writeNoRetryOutput(): void {
+  if (GITHUB_OUTPUT) {
+    appendFileSync(
+      GITHUB_OUTPUT,
+      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\nconsume-retry-label=false\nretry-mode=none\npr-number=\n',
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Cancelled-run early exit
 // ---------------------------------------------------------------------------
@@ -552,12 +564,7 @@ if (WORKFLOW_CONCLUSION === 'cancelled' && Number(ATTEMPT) > 1) {
     }
   }
 
-  if (GITHUB_OUTPUT) {
-    appendFileSync(
-      GITHUB_OUTPUT,
-      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-    );
-  }
+  writeNoRetryOutput();
 
   const Sentry = initSentry();
   if (Sentry) {
@@ -638,12 +645,7 @@ if (WORKFLOW_EVENT === 'merge_group') {
           }
         }
 
-        if (GITHUB_OUTPUT) {
-          appendFileSync(
-            GITHUB_OUTPUT,
-            'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-          );
-        }
+        writeNoRetryOutput();
         process.exit(0);
       }
     } catch (err) {
@@ -690,12 +692,7 @@ if (failedJobs.length === 0) {
     }
   }
 
-  if (GITHUB_OUTPUT) {
-    appendFileSync(
-      GITHUB_OUTPUT,
-      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-    );
-  }
+  writeNoRetryOutput();
   process.exit(0);
 }
 
@@ -821,21 +818,26 @@ function checkRetryLabel(prNum: string): boolean {
 
 const prNumber = resolvePrNumber();
 const targetBranch = resolveTargetBranch();
-const hasRetryLabel = checkRetryLabel(prNumber);
-const atMaxAttempts = Number(ATTEMPT) >= MAX_ATTEMPTS;
-const willRetry = isRetryable && hasRetryLabel && !atMaxAttempts;
 const hasPR = Boolean(prNumber);
+const hasRetryLabel = checkRetryLabel(prNumber);
+const retryBudget = getRetryBudget({
+  attempt: ATTEMPT,
+  hasPr: hasPR,
+  hasRetryLabel,
+  isRetryable,
+});
+const atMaxAttempts = retryBudget.atRetryLimit;
+const willRetry = retryBudget.willRetry;
 
-// The retry decision depends on three independent facts:
+// The retry decision depends on the classification result, whether the run
+// has an originating PR, and the active retry budget:
 //
 //   isRetryable    — did classification determine all failures are retryable?
 //   hasPR          — is there an originating PR? (false for push events)
-//   hasRetryLabel  — does that PR have the `retry-ci` label?
+//   retryBudget    — default retries through attempt 2, retry-ci through attempt 4
 //
-// A retry only happens when ALL THREE are true (will-retry). The other
-// combinations produce different reports and Sentry attributes so we can
-// distinguish "retryable but nobody asked for a retry" from "someone asked
-// but the failures aren't retryable."
+// Attempt 1 retries automatically. Attempts 2 and 3 require retry-ci and
+// consume the label after the rerun is triggered.
 //
 // Note: hasRetryLabel implies hasPR (can't have a label without a PR),
 // so the retryable=*,hasPR=false,hasLabel=true combination never occurs.
@@ -847,19 +849,34 @@ function resolveDecision(
   retryable: boolean,
   hasPr: boolean,
   hasLabel: boolean,
-  maxAttempts: boolean,
+  budget: RetryBudgetDecision,
   pr: string,
 ): { key: string; label: string } {
   if (retryable) {
-    if (hasPr && hasLabel && !maxAttempts)
+    if (hasPr && budget.willRetry && budget.retryMode === 'automatic')
       return {
         key: 'will-retry',
-        label: '♻️ Will retry (retry-ci label present)',
+        label: `♻️ Will retry automatically (default retry budget: attempt ${budget.attemptNumber} of ${DEFAULT_RETRY_MAX_ATTEMPT})`,
       };
-    if (hasPr && hasLabel && maxAttempts)
+    if (hasPr && budget.willRetry && budget.retryMode === 'label')
+      return {
+        key: 'will-retry',
+        label: `♻️ Will retry (retry-ci label present; attempt ${budget.attemptNumber} of ${RETRY_CI_LABEL_MAX_ATTEMPT})`,
+      };
+    if (hasPr && budget.atRetryLimit && budget.retryLimitSource === 'retry-ci')
       return {
         key: 'max-attempts-reached',
-        label: `🛑 Retryable with retry-ci label, but attempt ${ATTEMPT} reached the limit of ${MAX_ATTEMPTS}`,
+        label: `🛑 Retryable, but attempt ${budget.attemptNumber} reached the retry-ci limit of ${budget.retryLimit}`,
+      };
+    if (hasPr && budget.atRetryLimit)
+      return {
+        key: 'retryable-no-label',
+        label: `⏸️ Retryable, but the default retry budget ended at attempt ${budget.retryLimit}`,
+      };
+    if (hasPr && budget.usedRetryCiBudget)
+      return {
+        key: 'retryable-retry-ci-consumed',
+        label: `⏸️ Retryable, but retry-ci was consumed by an earlier retry; add it again to retry attempt ${budget.attemptNumber + 1}`,
       };
     if (hasPr)
       return {
@@ -890,18 +907,18 @@ const { key: decision, label: decisionLabel } = resolveDecision(
   isRetryable,
   hasPR,
   hasRetryLabel,
-  atMaxAttempts,
+  retryBudget,
   prNumber,
 );
 
-if (atMaxAttempts && hasRetryLabel && isRetryable) {
+if (atMaxAttempts && hasPR && isRetryable) {
   console.log(
-    `PR #${prNumber}: retry-ci label present but attempt ${ATTEMPT} >= ${MAX_ATTEMPTS} — will not retry`,
+    `PR #${prNumber}: attempt ${retryBudget.attemptNumber} reached the ${retryBudget.retryLimitSource} retry limit (${retryBudget.retryLimit}) — will not retry`,
   );
 } else {
   console.log(
     prNumber
-      ? `PR #${prNumber}: retry-ci label ${hasRetryLabel ? 'present' : 'absent'} → will-retry=${willRetry}`
+      ? `PR #${prNumber}: retry-ci label ${hasRetryLabel ? 'present' : 'absent'}, retry-mode=${retryBudget.retryMode} → will-retry=${willRetry}`
       : `No originating PR for event '${WORKFLOW_EVENT}' → will-retry=false`,
   );
 }
@@ -909,11 +926,11 @@ if (atMaxAttempts && hasRetryLabel && isRetryable) {
 // ---------------------------------------------------------------------------
 // Post deferred failure commit status (merge queue only)
 //
-// ci-status-gate.yml defers the "All jobs pass" commit status when it
-// sees retry-ci on attempts below the limit (< MAX_ATTEMPTS), giving
-// triage time to retry. If we decide NOT to retry (non-retryable
-// failures, or max attempts reached), we must post the failure status
-// here to unblock the merge queue for ejection.
+// ci-status-gate.yml defers the "All jobs pass" commit status for merge queue
+// failures while a retry budget is still available, giving triage time to
+// retry. If we decide NOT to retry (non-retryable failures, or retry limit
+// reached), we must post the failure status here to unblock the merge queue
+// for ejection.
 //
 // The merge queue requires two checks (ruleset or classic branch protection):
 //   Rule 1 — Merge queue > ALLGREEN (monitors check suites directly)
@@ -922,18 +939,19 @@ if (atMaxAttempts && hasRetryLabel && isRetryable) {
 // can't eject the PR.
 // ---------------------------------------------------------------------------
 
-// The gate defers when: merge_group + failure + retry-ci + attempt < MAX_ATTEMPTS.
-// We can't re-check hasRetryLabel here because the API call might fail (rate
-// limit, transient outage), and if it does, the deferred status would never
-// post — leaving the queue stuck. Instead, post on any merge_group where we
-// won't retry. If the gate didn't actually defer (no label), this posts a
-// redundant failure status — harmless, since ci-status-gate already posted one.
+// The gate defers when a merge_group failure is under either the default or
+// retry-ci retry budget. We can't rely on re-checking labels here because the
+// API call might fail (rate limit, transient outage), and if it does, the
+// deferred status would never post — leaving the queue stuck. Instead, post on
+// any merge_group where we won't retry. If the gate didn't actually defer, this
+// posts a redundant failure status — harmless, since ci-status-gate already
+// posted one.
 if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
   const headSha = getRunHeadSha();
   const description = atMaxAttempts
-    ? `Retry limit reached (attempt ${ATTEMPT} of ${MAX_ATTEMPTS})`
+    ? `Retry limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.retryLimit})`
     : isRetryable
-      ? 'Retryable failures, but no retry-ci label'
+      ? 'Retryable failures, but no retry budget available'
       : 'Non-retryable failures detected';
   try {
     ghApi(`${repoApi}/statuses/${headSha}`, {
@@ -961,6 +979,9 @@ if (GITHUB_OUTPUT) {
       `is-retryable=${isRetryable}`,
       `has-retry-label=${hasRetryLabel}`,
       `will-retry=${willRetry}`,
+      `consume-retry-label=${retryBudget.consumeRetryLabel}`,
+      `retry-mode=${retryBudget.retryMode}`,
+      `retry-limit=${retryBudget.retryLimit}`,
       `pr-number=${prNumber}`,
     ].join('\n') + '\n',
   );
@@ -979,6 +1000,7 @@ const reportLines = [
   `**Run:** [${MAIN_RUN_ID}](${mainRunUrl})${ATTEMPT ? ` (attempt ${ATTEMPT})` : ''}`,
   `**Classification:** ${isRetryable ? '✅ All failures retryable' : '❌ Non-retryable failures detected'}`,
   `**Retry:** ${decisionLabel}`,
+  `**Retry mode:** ${retryBudget.retryMode} (limit ${retryBudget.retryLimit}, ${retryBudget.retryLimitSource})`,
   `**Failed jobs:** ${failedJobs.length}`,
   ``,
   `| Job | Category | Job Retryable | Reason |`,
@@ -998,10 +1020,10 @@ if (unmatchedJobs.length > 0) {
   );
 }
 
-if (atMaxAttempts && isRetryable && hasRetryLabel) {
+if (atMaxAttempts && isRetryable && hasPR) {
   reportLines.push(
     ``,
-    `> 🛑 **Retry limit reached** — attempt ${ATTEMPT} of ${MAX_ATTEMPTS}. The failures look retryable, but no more automatic retries will be attempted.`,
+    `> 🛑 **Retry limit reached** — attempt ${retryBudget.attemptNumber} of ${retryBudget.retryLimit}. The failures look retryable, but no more automatic retries will be attempted for this run.`,
   );
 }
 
@@ -1102,6 +1124,10 @@ if (Sentry) {
     'ci.prNumber': prNumber || 'none',
     'ci.retry.date': new Date().toISOString().slice(0, 10),
     'ci.retry.decision': decision,
+    'ci.retry.mode': retryBudget.retryMode,
+    'ci.retry.limit': String(retryBudget.retryLimit),
+    'ci.retry.limitSource': retryBudget.retryLimitSource,
+    'ci.retry.consumeRetryLabel': String(retryBudget.consumeRetryLabel),
     'ci.retry.runId': MAIN_RUN_ID,
     'ci.retry.attempt': ATTEMPT || 'unknown',
     'ci.retry.event': WORKFLOW_EVENT || '',
@@ -1126,6 +1152,7 @@ if (Sentry) {
       'ci.retry.runId': MAIN_RUN_ID,
       'ci.retry.date': new Date().toISOString().slice(0, 10),
       'ci.retry.decision': decision,
+      'ci.retry.mode': retryBudget.retryMode,
       'ci.retry.attempt': ATTEMPT || 'unknown',
       'ci.retry.event': WORKFLOW_EVENT || '',
       'ci.retry.parentTriageLink': parentTriageLink,

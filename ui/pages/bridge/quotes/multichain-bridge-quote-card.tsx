@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
@@ -48,6 +48,7 @@ import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
+import { useDispatch } from '../../../store/hooks';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -229,10 +230,11 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
-                locale,
-                activeQuote.swapRate,
-              )} ${activeQuote.quote.destAsset.symbol}`}
+              {activeQuote.swapRate &&
+                `1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                  locale,
+                  activeQuote.swapRate,
+                )} ${activeQuote.quote.destAsset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -325,7 +327,7 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.gasFee.effective?.valueInCurrency,
+                        activeQuote.gasFee?.total?.valueInCurrency,
                         currency,
                       )}
                 </Text>
@@ -352,7 +354,7 @@ export const MultichainBridgeQuoteCard = ({
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.gasFee.effective?.valueInCurrency,
+                  activeQuote.gasFee?.total?.valueInCurrency,
                   currency,
                 )}
               </Text>
@@ -400,7 +402,7 @@ export const MultichainBridgeQuoteCard = ({
         />
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.amount && (
+        {activeQuote.minToTokenAmount?.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text

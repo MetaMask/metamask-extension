@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
   getFromToken,
@@ -9,6 +9,7 @@ import {
 } from '../../ducks/bridge/selectors';
 import { setSlippage } from '../../ducks/bridge/actions';
 import { assetIdsMatch } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
 
 export function useSmartSlippage(): void {
   const dispatch = useDispatch();

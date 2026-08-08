@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { CaipAssetType } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -8,10 +8,9 @@ import {
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import {
-  type BridgeAppState,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   BatchSellQuotesConfig,
@@ -28,6 +27,7 @@ import { buildResults } from '../utils/buildResults';
 import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
 import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import { QUOTE_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
+import { useDispatch } from '../../../../../store/hooks';
 
 type Options = {
   enabled: boolean;
@@ -57,7 +57,15 @@ export const useBatchSellQuotesFetching = (
     ),
   );
 
-  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const batchSellHexChainId = useMemo(
+    () => getMaybeHexChainId(receivedAsset.chainId),
+    [receivedAsset.chainId],
+  );
+  const smartTransactionsEnabled = useSelector((state: BridgeAppState) =>
+    batchSellHexChainId
+      ? getIsSmartTransaction(state, batchSellHexChainId)
+      : false,
+  );
 
   const entries = useMemo<SendAssetEntry[]>(
     () =>

@@ -1,11 +1,12 @@
 import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
   IconName,
+  Tag,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -55,7 +56,6 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Tag,
   Text,
 } from '../../component-library';
 import {
@@ -82,6 +82,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -569,7 +570,7 @@ export const NetworksForm = ({
                 {isRpcFailoverEnabled &&
                 item.failoverUrls &&
                 item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
+                  <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
             )
