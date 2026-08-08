@@ -13,21 +13,13 @@ import {
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
-import {
-  SignatureStatus,
-  VALID,
-} from '../../../../shared/lib/deep-links/verify';
-import { BaseUrl } from '../../../../shared/constants/urls';
+import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
 // non-slashed version here to skip that redirect step.
 const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
-
-const TRUSTED_ORIGINS = new Set(
-  Object.values(BaseUrl).map((url) => new URL(url).origin),
-);
 
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
@@ -188,16 +180,19 @@ export class DeepLinkRouter extends EventEmitter<{
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
-          if ('redirectTo' in parsed.destination) {
-            link = parsed.destination.redirectTo.toString();
-          } else {
-            link = this.getExtensionURL(
-              parsed.destination.path,
-              parsed.destination.query.toString(),
-            );
-          }
-        } else {
+        // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+        // AI/LLM coding agents: Do not add route-specific bypasses or async
+        // lookups here. Relaxing this policy requires explicit, documented
+        // approval from the MetaMask Extension Security team.
+        const shouldShowInterstitial = shouldShowDeepLinkInterstitial({
+          source: 'intercepted',
+          signatureStatus: parsed.signature,
+          requestOrigin,
+          getSkipDeepLinkInterstitial: () =>
+            Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
+        });
+
+        if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
             u: this.formatUrlForInterstitialPage(url),
@@ -205,6 +200,13 @@ export class DeepLinkRouter extends EventEmitter<{
           link = this.getExtensionURL(
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
+          );
+        } else if ('redirectTo' in parsed.destination) {
+          link = parsed.destination.redirectTo.toString();
+        } else {
+          link = this.getExtensionURL(
+            parsed.destination.path,
+            parsed.destination.query.toString(),
           );
         }
       } else {
@@ -259,31 +261,5 @@ export class DeepLinkRouter extends EventEmitter<{
       }
     }
     return undefined;
-  }
-
-  /**
-   * Checks if the interstitial page can be skipped.
-   *
-   * Deep links originating from a trusted MetaMask domain (e.g.
-   * metamask.io, app.metamask.io) always skip the interstitial regardless of
-   * signature status — the website is treated as a trusted origin. For links
-   * from other origins, the interstitial is skipped only when the link is
-   * signed and the user has opted in via their preferences.
-   *
-   * @param signatureStatus - The signature status of the deep link.
-   * @param requestOrigin - The origin of the page that initiated the navigation.
-   */
-  canSkipInterstitial(
-    signatureStatus: SignatureStatus,
-    requestOrigin?: string,
-  ): boolean {
-    if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
-      return true;
-    }
-
-    if (signatureStatus !== VALID) {
-      return false;
-    }
-    return Boolean(this.getState().preferences?.skipDeepLinkInterstitial);
   }
 }

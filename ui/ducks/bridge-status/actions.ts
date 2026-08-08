@@ -8,6 +8,7 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import type { ActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -31,6 +32,7 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param context - Metrics context captured when quotes were received.
  * @param location - Entry point from which the user initiated the swap or bridge.
  * @param tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
+ * @param activeAbTests - Active experiment assignments for transaction attribution.
  * @param inputPrimaryDenomination - The source denomination shown at submission time.
  * @returns A thunk that dispatches the `submitTx` bridge status action.
  */
@@ -41,6 +43,7 @@ export const submitBridgeTx = (
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
   location: MetaMetricsSwapsEventSource,
   tokenSecurityTypeDestination: string | null,
+  activeAbTests?: ActiveABTestAssignment[],
   inputPrimaryDenomination?: InputPrimaryDenomination,
 ) =>
   callBridgeStatusControllerMethod<
@@ -51,7 +54,7 @@ export const submitBridgeTx = (
       RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
       MetaMetricsSwapsEventSource,
       undefined,
-      undefined,
+      ActiveABTestAssignment[] | undefined,
       string | null,
       undefined,
       InputPrimaryDenomination | undefined,
@@ -63,7 +66,7 @@ export const submitBridgeTx = (
     context,
     location,
     undefined,
-    undefined,
+    activeAbTests,
     tokenSecurityTypeDestination,
     undefined,
     inputPrimaryDenomination,
@@ -77,6 +80,7 @@ export const submitBridgeTx = (
  * @param params.accountAddress - Account submitting the signed intent.
  * @param params.location - Entry point from which the user initiated the swap or bridge.
  * @param params.tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
+ * @param params.activeAbTests - Active experiment assignments for transaction attribution.
  * @param params.inputPrimaryDenomination - The source denomination shown at submission time.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
@@ -85,6 +89,7 @@ export const submitBridgeIntent = (params: {
   accountAddress: string;
   location: MetaMetricsSwapsEventSource;
   tokenSecurityTypeDestination?: string | null;
+  activeAbTests?: ActiveABTestAssignment[];
   inputPrimaryDenomination?: InputPrimaryDenomination;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
