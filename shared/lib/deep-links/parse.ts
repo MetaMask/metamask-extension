@@ -10,9 +10,9 @@
 import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
-import { verify, type SignatureStatus } from './verify';
+import { MISSING, verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
-import { SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
 
 /**
  * Represents the origin of the deep link, either external or internal.
@@ -77,8 +77,9 @@ export async function parse<
   }
 
   let destination: Destination;
+  let canonicalUrl: URL;
   try {
-    const canonicalUrl = new URL(canonicalize(url));
+    canonicalUrl = canonicalize(url);
     const canonicalSearchParams = new URLSearchParams(
       canonicalUrl.searchParams,
     );
@@ -104,6 +105,10 @@ export async function parse<
     return { destination, route } as ParsedDeepLink<Options>;
   }
 
-  const signature = await verify(url);
+  const signatureStr = url.searchParams.get(SIG_PARAM);
+  const signature = signatureStr
+    ? await verify(signatureStr, canonicalUrl)
+    : MISSING;
+
   return { destination, signature, route } as ParsedDeepLink<Options>;
 }
