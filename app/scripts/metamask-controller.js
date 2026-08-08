@@ -258,6 +258,7 @@ import {
 
 // Notification controllers
 import {
+  getSenderOriginPath,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
@@ -5837,7 +5838,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
-        this.getSecurityAlertsConfig.bind(this),
+        {
+          getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
+          originPath: getSenderOriginPath(sender?.url),
+        },
       ),
     );
 
@@ -6357,7 +6361,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
-        this.getSecurityAlertsConfig.bind(this),
+        {
+          getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
+          originPath: getSenderOriginPath(sender?.url),
+        },
       ),
     );
 
