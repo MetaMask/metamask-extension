@@ -1,10 +1,62 @@
+diff --git a/build/npm/cjs/dev/eventbuilder.js b/build/npm/cjs/dev/eventbuilder.js
+index 72f86156746522f22093ab1cc0fb7ad5a74c14a1..c1078c3b10e160feca0d599d2e2135075b2576b0 100644
+--- a/build/npm/cjs/dev/eventbuilder.js
++++ b/build/npm/cjs/dev/eventbuilder.js
+@@ -219,7 +219,7 @@ function getObjectClassName(obj) {
+   }
+ }
+ function getErrorPropertyFromObject(obj) {
+-  return Object.values(obj).find((v) => v instanceof Error);
++  return Object.values(obj).find(browser.isError);
+ }
+
+ exports.eventFromException = eventFromException;
+diff --git a/build/npm/cjs/prod/eventbuilder.js b/build/npm/cjs/prod/eventbuilder.js
+index 72f86156746522f22093ab1cc0fb7ad5a74c14a1..c1078c3b10e160feca0d599d2e2135075b2576b0 100644
+--- a/build/npm/cjs/prod/eventbuilder.js
++++ b/build/npm/cjs/prod/eventbuilder.js
+@@ -219,7 +219,7 @@ function getObjectClassName(obj) {
+   }
+ }
+ function getErrorPropertyFromObject(obj) {
+-  return Object.values(obj).find((v) => v instanceof Error);
++  return Object.values(obj).find(browser.isError);
+ }
+
+ exports.eventFromException = eventFromException;
+diff --git a/build/npm/esm/dev/eventbuilder.js b/build/npm/esm/dev/eventbuilder.js
+index 2f22847f0f72e48c0f500c38d8dbf49de73fd7d5..94d52e8a4cfba3f03814c15b2549db39369a9531 100644
+--- a/build/npm/esm/dev/eventbuilder.js
++++ b/build/npm/esm/dev/eventbuilder.js
+@@ -217,7 +217,7 @@ function getObjectClassName(obj) {
+   }
+ }
+ function getErrorPropertyFromObject(obj) {
+-  return Object.values(obj).find((v) => v instanceof Error);
++  return Object.values(obj).find(isError);
+ }
+
+ export { eventFromException, eventFromMessage, eventFromUnknownInput, exceptionFromError, extractMessage, extractType };
+diff --git a/build/npm/esm/prod/eventbuilder.js b/build/npm/esm/prod/eventbuilder.js
+index 2f22847f0f72e48c0f500c38d8dbf49de73fd7d5..94d52e8a4cfba3f03814c15b2549db39369a9531 100644
+--- a/build/npm/esm/prod/eventbuilder.js
++++ b/build/npm/esm/prod/eventbuilder.js
+@@ -217,7 +217,7 @@ function getObjectClassName(obj) {
+   }
+ }
+ function getErrorPropertyFromObject(obj) {
+-  return Object.values(obj).find((v) => v instanceof Error);
++  return Object.values(obj).find(isError);
+ }
+
+ export { eventFromException, eventFromMessage, eventFromUnknownInput, exceptionFromError, extractMessage, extractType };
 diff --git a/build/npm/cjs/dev/utils/lazyLoadIntegration.js b/build/npm/cjs/dev/utils/lazyLoadIntegration.js
 index 5f43ea4df94599788c7f203e580b2ce9b4175905..6c39882aeb3cc6e9e48db0ebcfbf81e5a263aaac 100644
 --- a/build/npm/cjs/dev/utils/lazyLoadIntegration.js
 +++ b/build/npm/cjs/dev/utils/lazyLoadIntegration.js
 @@ -1,87 +1,7 @@
  Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
- 
+
 -const browser = require('@sentry/core/browser');
 -const helpers = require('../helpers.js');
 -
@@ -88,7 +140,7 @@ index 5f43ea4df94599788c7f203e580b2ce9b4175905..6c39882aeb3cc6e9e48db0ebcfbf81e5
 -  return new URL(`/${browser.SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
 +  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
  }
- 
+
  exports.lazyLoadIntegration = lazyLoadIntegration;
 -//# sourceMappingURL=lazyLoadIntegration.js.map
 diff --git a/build/npm/cjs/dev/utils/lazyLoadIntegration.js.map b/build/npm/cjs/dev/utils/lazyLoadIntegration.js.map
@@ -105,7 +157,7 @@ index 5f43ea4df94599788c7f203e580b2ce9b4175905..6c39882aeb3cc6e9e48db0ebcfbf81e5
 +++ b/build/npm/cjs/prod/utils/lazyLoadIntegration.js
 @@ -1,87 +1,7 @@
  Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
- 
+
 -const browser = require('@sentry/core/browser');
 -const helpers = require('../helpers.js');
 -
@@ -189,7 +241,7 @@ index 5f43ea4df94599788c7f203e580b2ce9b4175905..6c39882aeb3cc6e9e48db0ebcfbf81e5
 -  return new URL(`/${browser.SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
 +  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
  }
- 
+
  exports.lazyLoadIntegration = lazyLoadIntegration;
 -//# sourceMappingURL=lazyLoadIntegration.js.map
 diff --git a/build/npm/cjs/prod/utils/lazyLoadIntegration.js.map b/build/npm/cjs/prod/utils/lazyLoadIntegration.js.map
@@ -288,7 +340,7 @@ index cd00f568cb4c0728b5c63afc151afb3b001f6a84..2fb10ee33a84272b521f64e2a67f2c6a
 -  return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
 +  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
  }
- 
+
  export { lazyLoadIntegration };
 -//# sourceMappingURL=lazyLoadIntegration.js.map
 diff --git a/build/npm/esm/dev/utils/lazyLoadIntegration.js.map b/build/npm/esm/dev/utils/lazyLoadIntegration.js.map
@@ -387,7 +439,7 @@ index cd00f568cb4c0728b5c63afc151afb3b001f6a84..2fb10ee33a84272b521f64e2a67f2c6a
 -  return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
 +  throw new Error(`Use of @sentry/browser's lazyLoadIntegration function is not supported by MetaMask Extension`);
  }
- 
+
  export { lazyLoadIntegration };
 -//# sourceMappingURL=lazyLoadIntegration.js.map
 diff --git a/build/npm/esm/prod/utils/lazyLoadIntegration.js.map b/build/npm/esm/prod/utils/lazyLoadIntegration.js.map

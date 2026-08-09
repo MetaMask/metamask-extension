@@ -12420,7 +12420,7 @@ __metadata:
 
 "@sentry/browser@patch:@sentry/browser@npm%3A10.69.0#~/.yarn/patches/@sentry-browser-npm-10.69.0-736e899d40.patch":
   version: 10.69.0
-  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A10.69.0#~/.yarn/patches/@sentry-browser-npm-10.69.0-736e899d40.patch::version=10.69.0&hash=385212"
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A10.69.0#~/.yarn/patches/@sentry-browser-npm-10.69.0-736e899d40.patch::version=10.69.0&hash=3149ce"
   dependencies:
     "@sentry/browser-utils": "npm:10.69.0"
     "@sentry/conventions": "npm:^0.16.0"
@@ -12428,7 +12428,7 @@ __metadata:
     "@sentry/feedback": "npm:10.69.0"
     "@sentry/replay": "npm:10.69.0"
     "@sentry/replay-canvas": "npm:10.69.0"
-  checksum: 10/ca769922de577e9bdf8b6c2de969965198a8859756cbb45071a5b5d9050eaf3af70958c04a75bb78939fd92a061bc86a5914b9eea438aa8549e518003d4db01b
+  checksum: 10/0a45cde8ba8c25f60739db7fe8a44a04f9399a1764206f80c773672a8321d312cb072c862a7ec46b41425729f05ade8ae883f1586e1177a95cff3a31a35d7fd4
   languageName: node
   linkType: hard
 
@@ -12542,7 +12542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:10.69.0, @sentry/core@npm:^10.69.0":
+"@sentry/core@npm:10.69.0":
   version: 10.69.0
   resolution: "@sentry/core@npm:10.69.0"
   dependencies:
@@ -12552,9 +12552,18 @@ __metadata:
   linkType: hard
 
 "@sentry/core@npm:^9.10.0":
-  version: 9.30.0
-  resolution: "@sentry/core@npm:9.30.0"
-  checksum: 10/2957927aaae6ffafe7f6fffa8bc43631e10d584192fd679ba35b2527ed4f03364f8bebbc0f9a988e3cdb16f67d9fb23f244a796c7851961476270e0ec1dfd57e
+  version: 9.47.1
+  resolution: "@sentry/core@npm:9.47.1"
+  checksum: 10/62cc2a0f45d89e3b78f083fe365007e59aed54e20b55ae5b45931cfa8e4d79d457c0c57450c6c7f92cec71fa682cd9cb3b64414fa86273f08cf3d8d06bd99c24
+  languageName: node
+  linkType: hard
+
+"@sentry/core@patch:@sentry/core@npm%3A10.69.0#~/.yarn/patches/@sentry-core-npm-10.69.0-9688b83676.patch":
+  version: 10.69.0
+  resolution: "@sentry/core@patch:@sentry/core@npm%3A10.69.0#~/.yarn/patches/@sentry-core-npm-10.69.0-9688b83676.patch::version=10.69.0&hash=b58f07"
+  dependencies:
+    "@sentry/conventions": "npm:^0.16.0"
+  checksum: 10/2344e524e75f7417571569c522d0b44a048bf492895b2fe9e36ddccecf3e6c7d069ad56897e44cc3b08f949c74997457afd8744d2b2195f3baad7f9a8ab6c673
   languageName: node
   linkType: hard
 
@@ -33327,7 +33336,7 @@ __metadata:
     "@segment/analytics-node": "npm:^3.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A10.69.0#~/.yarn/patches/@sentry-browser-npm-10.69.0-736e899d40.patch"
     "@sentry/cli": "npm:^2.56.0"
-    "@sentry/core": "npm:^10.69.0"
+    "@sentry/core": "patch:@sentry/core@npm%3A10.69.0#~/.yarn/patches/@sentry-core-npm-10.69.0-9688b83676.patch"
     "@sentry/node": "npm:10.38.0"
     "@sentry/types": "npm:^10.69.0"
     "@simplewebauthn/browser": "npm:^13.3.0"
