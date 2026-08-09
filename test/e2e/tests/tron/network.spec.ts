@@ -14,18 +14,6 @@ import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 const TRON_NILE_NAME = 'Tron Nile';
 const TRON_SHASTA_NAME = 'Tron Shasta';
 
-const NETWORK_MANAGEMENT_FLAGS = {
-  manifestFlags: {
-    remoteFeatureFlags: {
-      extensionUxNetworkManagement: {
-        enabled: true,
-        minimumVersion: '13.36.0',
-      },
-      tronTestnetsEnabled: true,
-    },
-  },
-};
-
 function buildTronNetworkFixture() {
   // Nile/Shasta appear in the home network filter testnets section when
   // showTestNetworks is enabled and tronTestnetsEnabled is on.
@@ -52,7 +40,6 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -76,7 +63,6 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -105,10 +91,7 @@ describe('Tron - Network', function (this: Suite) {
         ],
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxNetworkManagement: {
-              enabled: true,
-              minimumVersion: '13.36.0',
-            },
+            // Production does not enable the discover button for Tron yet.
             neNetworkDiscoverButton: {
               [TRON_CHAIN_ID]: true,
             },
@@ -142,7 +125,6 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -166,7 +148,6 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -190,7 +171,6 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
