@@ -978,6 +978,42 @@ class FixtureBuilderV2 {
     });
   }
 
+  // XDC is absent from the default fixture, so the network has to be injected
+  // here rather than retargeted with withNetworkRpcUrlOnLocalhost, which throws
+  // when no configuration exists for the chain. Unlike the Sei and PulseChain
+  // fixtures above, this points at the local node so tests can transact.
+  withNetworkControllerOnXdc(): this {
+    const xdcChainId = '0x32';
+    const xdcClientId = 'xdc-local';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: xdcClientId,
+      networkConfigurationsByChainId: {
+        [xdcChainId]: {
+          blockExplorerUrls: ['https://xdcscan.io'],
+          chainId: xdcChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'XDC Network',
+          nativeCurrency: 'XDC',
+          rpcEndpoints: [
+            {
+              networkClientId: xdcClientId,
+              type: RpcEndpointType.Custom,
+              url: 'http://localhost:8545',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [xdcClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    });
+  }
+
   withNetworkControllerTripleNode(): this {
     const thirdNodeChainId = '0x3e8';
     const thirdNodeClientId = THIRD_NODE_NETWORK_CLIENT_ID;
