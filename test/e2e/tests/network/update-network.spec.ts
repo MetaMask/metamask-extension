@@ -44,7 +44,7 @@ describe('Update Network:', function (this: Suite) {
         await networksPage.checkEditNetworkMessageIsDisplayed(
           inputData.networkName,
         );
-        await editNetworkPage.clickBackButton();
+        await networksPage.clickCloseButton();
 
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
@@ -158,7 +158,7 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkPage.checkRpcIsDisplayed('responsive-rpc.test', false);
         await editNetworkPage.saveEditedNetwork();
         await networksPage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await editNetworkPage.clickBackButton();
+        await networksPage.clickCloseButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await networkFilter.waitUntilLabelIs(originalFilterLabel);
@@ -254,7 +254,7 @@ describe('Update Network:', function (this: Suite) {
         // Save the network
         await editNetworkPage.saveEditedNetwork();
         await networksPage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await editNetworkPage.clickBackButton();
+        await networksPage.clickCloseButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await networkFilter.waitUntilLabelIs(originalFilterLabel);
