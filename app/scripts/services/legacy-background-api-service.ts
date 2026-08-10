@@ -3621,6 +3621,31 @@ export class LegacyBackgroundApiService {
     }
   }
 
+  /**
+   * Clears controller state that must not survive a vault recreate
+   * (wallet reset or restore from seed).
+   *
+   * Account tree state is re-initialized while accounts are empty so
+   * stale account→group mappings left by `AccountTreeController:clearState`
+   * are wiped before the keyring recreate publishes
+   * `AccountsController:selectedAccountChange`.
+   */
+  async #clearStateForVaultRecreate(): Promise<void> {
+    this.#messenger.call('PermissionController:clearState');
+    await this.#messenger.call('SnapController:clearState');
+    this.#messenger.call('AccountTreeController:clearState');
+    this.#messenger.call('AccountsController:clearState');
+    this.#messenger.call('AccountTreeController:reinit');
+
+    // Currently, the account-order-controller is not in sync with
+    // the accounts-controller. To properly persist the hidden state
+    // of accounts, we should add a new flag to the account struct
+    // to indicate if it is hidden or not.
+    // TODO: Update @metamask/accounts-controller to support this.
+    this.#messenger.call('AccountOrderController:updateHiddenAccountsList', []);
+    this.#messenger.call('TransactionController:clearUnapprovedTransactions');
+  }
+
   async #createNewVaultAndKeychainUnderLock(
     password: string,
   ): Promise<{ type: string; accounts: string[]; metadata: { id: string } }> {
@@ -3628,34 +3653,7 @@ export class LegacyBackgroundApiService {
       'AppStateController:getIsWalletResetInProgress',
     );
     if (isWalletResetInProgress) {
-      // clear permissions
-      this.#messenger.call('PermissionController:clearState');
-
-      // Clear snap state
-      await this.#messenger.call('SnapController:clearState');
-
-      // Clear account tree state
-      this.#messenger.call('AccountTreeController:clearState');
-
-      // Clear accounts state
-      this.#messenger.call('AccountsController:clearState');
-
-      // Re-init the account tree while accounts are empty so stale
-      // account→group mappings from clearState are wiped before the
-      // keyring recreate publishes selectedAccountChange.
-      this.#messenger.call('AccountTreeController:reinit');
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.#messenger.call(
-        'AccountOrderController:updateHiddenAccountsList',
-        [],
-      );
-
-      this.#messenger.call('TransactionController:clearUnapprovedTransactions');
+      await this.#clearStateForVaultRecreate();
     }
 
     await this.#messenger.call(
@@ -4052,34 +4050,7 @@ export class LegacyBackgroundApiService {
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
-      // clear permissions
-      this.#messenger.call('PermissionController:clearState');
-
-      // Clear snap state
-      await this.#messenger.call('SnapController:clearState');
-
-      // Clear account tree state
-      this.#messenger.call('AccountTreeController:clearState');
-
-      // Clear accounts state
-      this.#messenger.call('AccountsController:clearState');
-
-      // Re-init the account tree while accounts are empty so stale
-      // account→group mappings from clearState are wiped before the
-      // keyring recreate publishes selectedAccountChange.
-      this.#messenger.call('AccountTreeController:reinit');
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.#messenger.call(
-        'AccountOrderController:updateHiddenAccountsList',
-        [],
-      );
-
-      this.#messenger.call('TransactionController:clearUnapprovedTransactions');
+      await this.#clearStateForVaultRecreate();
 
       if (completedOnboarding) {
         this.#messenger.call('TokenDetectionController:enable');
