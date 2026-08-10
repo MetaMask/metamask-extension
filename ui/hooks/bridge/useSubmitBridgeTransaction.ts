@@ -89,6 +89,7 @@ export default function useSubmitBridgeTransaction(
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     variantName: chainValueOrderVariantName,
