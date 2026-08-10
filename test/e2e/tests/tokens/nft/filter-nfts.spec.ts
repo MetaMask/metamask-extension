@@ -5,9 +5,9 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
-import NetworkManager, {
+import SelectNetworkModal, {
   NetworkId,
-} from '../../../page-objects/pages/network-manager';
+} from '../../../page-objects/pages/dialog/select-network-modal';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 
@@ -98,23 +98,23 @@ describe('Filter NFTs by network', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
 
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
         // Show Ethereum NFTs
         const nftsTab = new NftsTab(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await selectNetworkModal.open();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
         await nftsTab.checkNumberOfNftsDisplayed(2);
 
         await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
         await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
 
         // Show All NFTs
-        await networkManager.openNetworkManager();
-        await networkManager.selectAllNetworks();
+        await selectNetworkModal.open();
+        await selectNetworkModal.selectAllNetworks();
 
         await nftsTab.checkNumberOfNftsDisplayed(3);
 

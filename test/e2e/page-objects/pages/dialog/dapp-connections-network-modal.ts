@@ -1,5 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
-import SelectNetwork from './select-network';
+import NetworksPage from '../networks/networks-page';
 
 class DappConnectionsNetworkModal {
   private readonly dappAddCustomNetworkButton = {
@@ -14,18 +14,18 @@ class DappConnectionsNetworkModal {
 
   private readonly driver: Driver;
 
-  private readonly selectNetwork: SelectNetwork;
+  private readonly networksPage: NetworksPage;
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.selectNetwork = new SelectNetwork(driver);
+    this.networksPage = new NetworksPage(driver);
   }
 
   async checkNetworkOptionIsDisplayed(
     networkName: string,
     shouldBeDisplayed: boolean = true,
   ): Promise<void> {
-    await this.selectNetwork.checkNetworkOptionIsDisplayed(
+    await this.networksPage.checkNetworkOptionIsDisplayed(
       networkName,
       shouldBeDisplayed,
     );
@@ -48,7 +48,7 @@ class DappConnectionsNetworkModal {
   }
 
   async toggleShowTestNetwork(): Promise<void> {
-    await this.selectNetwork.toggleShowTestNetwork();
+    await this.networksPage.toggleShowTestNetwork();
   }
 }
 

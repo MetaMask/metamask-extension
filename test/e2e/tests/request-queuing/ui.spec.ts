@@ -8,10 +8,11 @@ import {
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import NetworkManager, {
+import SelectNetworkModal, {
   NetworkId,
-} from '../../page-objects/pages/network-manager';
+} from '../../page-objects/pages/dialog/select-network-modal';
 import { login } from '../../page-objects/flows/login.flow';
+import { deleteNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -107,7 +108,7 @@ describe('Request-queue UI changes', function () {
         );
 
         // Open network manager and select custom network
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           'Localhost 8546',
         );
 
@@ -247,20 +248,20 @@ describe('Request-queue UI changes', function () {
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
-          await new NetworkManager(driver).openNetworkAndSelectNetwork(
+          await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
             'Localhost 7777',
           );
           await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           'Localhost 8546',
         );
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           'Localhost 8545',
         );
         await validateBalanceAndActivity(driver, '25');
@@ -311,17 +312,15 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           NetworkId.LINEA,
         );
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           NetworkId.ETHEREUM,
         );
 
-        // Open Network Manager and delete custom network
-        await new NetworkManager(driver).openNetworkAndDeleteNetwork(
-          CHAIN_IDS.LOCALHOST,
-        );
+        // Open the select network modal and delete the custom network
+        await deleteNetworkFromNetworkSelect(driver, CHAIN_IDS.LOCALHOST);
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum, should be used
@@ -425,7 +424,7 @@ describe('Request-queue UI changes', function () {
         );
 
         // Check if Ethereum is selected
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           NetworkId.ETHEREUM,
         );
 
@@ -504,7 +503,7 @@ describe('Request-queue UI changes', function () {
         );
 
         // Check if Ethereum is selected
-        await new NetworkManager(driver).openNetworkAndSelectNetwork(
+        await new SelectNetworkModal(driver).openNetworkAndSelectNetwork(
           NetworkId.ETHEREUM,
         );
 

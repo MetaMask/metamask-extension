@@ -1107,8 +1107,8 @@ class TokensTab extends HomePage {
 
   /**
    * Clicks the network filter in the asset list control bar, which opens the
-   * network manager modal. Await `NetworkManager.checkPageIsLoaded` to wait for
-   * that modal.
+   * select network modal. Await `SelectNetworkModal.checkPageIsLoaded` to wait
+   * for that modal.
    */
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);

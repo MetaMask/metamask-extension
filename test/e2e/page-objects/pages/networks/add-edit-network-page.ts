@@ -1,19 +1,10 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
-class AddEditNetworkModal {
+class AddEditNetworkPage {
   private readonly addExplorerUrlButton = {
     text: 'Add a block explorer URL',
     tag: 'button',
-  };
-
-  private readonly addExplorerUrlInput = {
-    testId: 'explorer-url-input',
-  };
-
-  private readonly addExplorerUrlTitle = {
-    text: 'Add a block explorer URL',
-    tag: 'p',
   };
 
   private readonly addRpcUrlButton = {
@@ -21,18 +12,14 @@ class AddEditNetworkModal {
     tag: 'button',
   };
 
-  private readonly backButton = '[data-testid="page-header-back-button"]';
+  private readonly backButton =
+    '[data-testid="networks-page-form-back-button"]';
 
   private readonly chainIdInputError =
     '[data-testid="network-form-chain-id-error"]';
 
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
-  };
-
-  private readonly confirmAddExplorerUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
   };
 
   private readonly currencySymbolInputField = '#nativeCurrency';
@@ -62,25 +49,7 @@ class AddEditNetworkModal {
   }
 
   /**
-   * Add an explorer URL to the network.
-   *
-   * @param explorerUrl - The URL of the explorer to add.
-   */
-  async addExplorerUrl(explorerUrl: string): Promise<void> {
-    console.log(`Add explorer URL ${explorerUrl}`);
-    await this.driver.findScrollToAndClickElement(
-      this.explorerUrlInputDropDownButton,
-    );
-    await this.driver.clickElement(this.addExplorerUrlButton);
-    await this.driver.waitForSelector(this.addExplorerUrlTitle);
-    await this.driver.fill(this.addExplorerUrlInput, explorerUrl);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmAddExplorerUrlButton,
-    );
-  }
-
-  /**
-   * Check if the chain id input error message is displayed in the add/edit network modal.
+   * Check if the chain id input error message is displayed on the add/edit network page.
    *
    * @param errorMessage - The error message to check.
    */
@@ -97,7 +66,7 @@ class AddEditNetworkModal {
   }
 
   /**
-   * Checks if the chain id input field is enabled on edit network modal.
+   * Checks if the chain id input field is enabled on the edit network page.
    *
    * @param shouldBeEnabled - Whether the chain id input field should be enabled. Defaults to true.
    */
@@ -134,16 +103,16 @@ class AddEditNetworkModal {
       await this.driver.waitForSelector(this.editModalSaveButton);
     } catch (e) {
       console.log(
-        'Timeout while waiting for add/edit network dialog to be loaded',
+        'Timeout while waiting for the add/edit network page to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Edit network dialog is loaded');
+    console.log('Add/edit network page is loaded');
   }
 
   /**
-   * Check if an RPC is displayed or not in the RPC list in the edit network modal.
+   * Check if an RPC is displayed or not in the RPC list on the edit network page.
    *
    * @param rpcName - The name of the RPC to check.
    * @param shouldBeDisplayed - Whether the RPC should be displayed or not, default is true.
@@ -155,7 +124,7 @@ class AddEditNetworkModal {
     console.log(
       `Check that RPC ${rpcName} is ${
         shouldBeDisplayed ? '' : 'not '
-      } displayed on edit network modal`,
+      } displayed on the edit network page`,
     );
     await this.driver.clickElement(this.editModalRpcDropDownButton);
     if (shouldBeDisplayed) {
@@ -172,7 +141,7 @@ class AddEditNetworkModal {
   }
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {
-    console.log('Check if save button is enabled on add/edit network modal');
+    console.log('Check if save button is enabled on the add/edit network page');
     try {
       await this.driver.findClickableElement(this.editModalSaveButton);
     } catch (e) {
@@ -184,12 +153,12 @@ class AddEditNetworkModal {
   }
 
   async clickBackButton(): Promise<void> {
-    console.log('Click back button in add/edit network modal');
+    console.log('Click back button on the add/edit network page');
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
 
   /**
-   * Fill the currency symbol input field in the add/edit network modal.
+   * Fill the currency symbol input field on the add/edit network page.
    *
    * @param symbol - The symbol to fill in the input field.
    */
@@ -199,7 +168,7 @@ class AddEditNetworkModal {
   }
 
   /**
-   * Fill the network chain id input field in the add/edit network modal.
+   * Fill the network chain id input field on the add/edit network page.
    *
    * @param chainId - The chain id to fill in the input field.
    */
@@ -209,7 +178,7 @@ class AddEditNetworkModal {
   }
 
   /**
-   * Fill the network name input field in the edit network modal.
+   * Fill the network name input field on the edit network page.
    *
    * @param networkName - The name of the network to fill in the input field.
    */
@@ -218,19 +187,35 @@ class AddEditNetworkModal {
     await this.driver.fill(this.networkNameInputField, networkName);
   }
 
-  async openAddRpcUrlModal(): Promise<void> {
-    console.log('Open add RPC URL modal');
+  /**
+   * Opens the block explorer URL view from the form's explorer dropdown. Await
+   * `AddEditBlockExplorerPage.checkPageIsLoaded` to wait for that view.
+   */
+  async openAddBlockExplorerView(): Promise<void> {
+    console.log('Open the add block explorer URL view');
+    await this.driver.findScrollToAndClickElement(
+      this.explorerUrlInputDropDownButton,
+    );
+    await this.driver.clickElement(this.addExplorerUrlButton);
+  }
+
+  /**
+   * Opens the RPC URL view from the form's RPC dropdown. Await
+   * `AddEditRpcUrlPage.checkPageIsLoaded` to wait for that view.
+   */
+  async openAddRpcUrlView(): Promise<void> {
+    console.log('Open the add RPC URL view');
     await this.driver.clickElement(this.editModalRpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
   }
 
   /**
-   * Removes an RPC from the dropdown in the edit network modal.
+   * Removes an RPC from the dropdown on the edit network page.
    *
    * @param rpcOrder - The order number of the RPC to remove (1-based index)
    */
   async removeRPCInEditNetworkModal(rpcOrder: number): Promise<void> {
-    console.log(`Remove RPC at position ${rpcOrder} in edit network modal`);
+    console.log(`Remove RPC at position ${rpcOrder} on the edit network page`);
     await this.driver.clickElement(this.editModalRpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="delete-item-${rpcOrder - 1}"]`,
@@ -238,7 +223,7 @@ class AddEditNetworkModal {
   }
 
   async saveEditedNetwork(timeout?: number): Promise<void> {
-    console.log('Save and close edit network modal');
+    console.log('Save and close the edit network page');
     await this.driver.clickElementAndWaitToDisappear(
       this.editModalSaveButton,
       timeout,
@@ -246,12 +231,12 @@ class AddEditNetworkModal {
   }
 
   /**
-   * Selects an RPC from the dropdown in the edit network modal.
+   * Selects an RPC from the dropdown on the edit network page, then saves.
    *
    * @param rpcName - The name of the RPC to select.
    */
   async selectRPCInEditNetworkModal(rpcName: string): Promise<void> {
-    console.log(`Select RPC ${rpcName} in edit network modal`);
+    console.log(`Select RPC ${rpcName} on the edit network page`);
     await this.driver.clickElement(this.editModalRpcDropDownButton);
     await this.driver.clickElement({
       text: rpcName,
@@ -261,4 +246,4 @@ class AddEditNetworkModal {
   }
 }
 
-export default AddEditNetworkModal;
+export default AddEditNetworkPage;

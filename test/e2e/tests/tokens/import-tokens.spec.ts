@@ -13,9 +13,9 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
-import NetworkManager, {
+import SelectNetworkModal, {
   NetworkId,
-} from '../../page-objects/pages/network-manager';
+} from '../../page-objects/pages/dialog/select-network-modal';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -698,9 +698,9 @@ describe('Import flow', function () {
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
-        const networkManagerPage = new NetworkManager(driver);
-        await networkManagerPage.openNetworkManager();
-        await networkManagerPage.selectNetworkByChainId(NetworkId.POLYGON);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        await selectNetworkModal.open();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.POLYGON);
 
         // the token symbol is prefilled because of the mock
         await tokensTab.importCustomTokenByChain(

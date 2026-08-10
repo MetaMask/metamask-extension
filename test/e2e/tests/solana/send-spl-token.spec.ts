@@ -4,7 +4,7 @@ import { merge } from 'lodash';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -263,9 +263,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        await selectNetworkModal.open();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -342,9 +342,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        await selectNetworkModal.open();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
