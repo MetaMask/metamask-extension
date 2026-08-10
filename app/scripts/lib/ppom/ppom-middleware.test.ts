@@ -52,12 +52,8 @@ const createMiddleware = (
     updateSecurityAlertResponse: () => undefined,
   },
 ) => {
-  const {
-    chainId,
-    error,
-    securityAlertsEnabled,
-    updateSecurityAlertResponse,
-  } = options;
+  const { chainId, error, securityAlertsEnabled, updateSecurityAlertResponse } =
+    options;
 
   const ppomController = {};
 
