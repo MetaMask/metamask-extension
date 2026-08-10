@@ -96,3 +96,61 @@ export async function getPermissionsPageForHost(
   await sitePermissionPage.checkPageIsLoaded(hostname);
   return sitePermissionPage;
 }
+
+export type NetworkSelectionUpdate = {
+  networkName: string;
+  shouldBeSelected: boolean;
+};
+
+async function editConnectedSiteNetworks(
+  driver: Driver,
+  hostname: string,
+  editNetworks: (modal: NetworkPermissionSelectModal) => Promise<void>,
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await editNetworks(networkPermissionSelectModal);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}
+
+/**
+ * Updates the connected site's permitted networks from the Connected sites page.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param updates - Network display names and desired selection state.
+ */
+export async function updateConnectedSiteNetworkSelection(
+  driver: Driver,
+  hostname: string,
+  updates: NetworkSelectionUpdate[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    for (const { networkName, shouldBeSelected } of updates) {
+      await modal.selectNetwork({
+        networkName,
+        shouldBeSelected,
+      });
+    }
+  });
+}
+
+/**
+ * Updates the connected site's permitted networks so only the specified
+ * networks remain selected.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param selectedNetworkNames - Network display names that should remain selected.
+ */
+export async function updateConnectedSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    await modal.updateNetworkStatus(selectedNetworkNames);
+  });
+}
