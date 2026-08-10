@@ -5,10 +5,11 @@ import type {
 } from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import { BrowserStorageAdapter } from './browser-storage-adapter';
+import {
+  STORAGE_SERVICE_INDEXED_DB_NAME,
+  STORAGE_SERVICE_INDEXED_DB_VERSION,
+} from './indexeddb-storage-constants';
 import { IndexedDBStore } from './indexeddb-store';
-
-export const STORAGE_SERVICE_INDEXED_DB_NAME = 'metamask-storage-service';
-export const STORAGE_SERVICE_INDEXED_DB_VERSION = 1;
 
 const FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR =
   'A mutation operation was attempted on a database that did not allow mutations.';
@@ -41,8 +42,10 @@ export function isIndexedDBMutationBlockedError(error: unknown): boolean {
 /**
  * Extension StorageService adapter backed by IndexedDB.
  *
- * Existing storageService data was previously written to browser.storage.local,
- * so this adapter also reads and removes from that legacy storage as a fallback.
+ * Existing StorageService data was previously written to browser.storage.local,
+ * so this adapter promotes legacy values to IndexedDB when they are read. The
+ * legacy copy is retained and new values are written to both stores during the
+ * canary rollout so disabling the feature flag or rolling back remains safe.
  */
 export class IndexedDBStorageAdapter implements StorageAdapter {
   readonly #database: Pick<
@@ -58,7 +61,20 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   #openPromise?: Promise<boolean>;
 
+  readonly #synchronizedKeys = new Set<string>();
+
   #useFallbackStorageOnly = false;
+
+  #switchToFallbackStorage(): void {
+    if (this.#useFallbackStorageOnly) {
+      return;
+    }
+
+    this.#useFallbackStorageOnly = true;
+    console.warn(
+      'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
+    );
+  }
 
   constructor({
     database = new IndexedDBStore(),
@@ -94,10 +110,7 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
         .then(() => true)
         .catch((error) => {
           if (isIndexedDBMutationBlockedError(error)) {
-            this.#useFallbackStorageOnly = true;
-            console.warn(
-              'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
-            );
+            this.#switchToFallbackStorage();
             return false;
           }
 
@@ -119,15 +132,78 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async getItem(namespace: string, key: string): Promise<StorageGetResult> {
     try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        const [value] = await this.#database.get([fullKey]);
-        if (value !== undefined) {
-          return { result: value as Json };
+      const fullKey = this.#makeKey(namespace, key);
+      const canUseIndexedDB = await this.#canUseIndexedDB();
+      let fallbackResult: StorageGetResult | undefined;
+
+      // storage.local is authoritative on the first access after each
+      // background start. It may have changed while the rollout flag was
+      // disabled, so synchronize it before trusting an older IndexedDB value.
+      if (canUseIndexedDB && !this.#synchronizedKeys.has(fullKey)) {
+        fallbackResult = await this.#fallbackStorage.getItem(namespace, key);
+
+        if (fallbackResult.error) {
+          return fallbackResult;
+        }
+
+        if (fallbackResult.result !== undefined) {
+          try {
+            await this.#database.set({ [fullKey]: fallbackResult.result });
+            this.#synchronizedKeys.add(fullKey);
+          } catch (error) {
+            if (isIndexedDBMutationBlockedError(error)) {
+              this.#switchToFallbackStorage();
+            } else {
+              console.warn(
+                `StorageService: Failed to promote legacy item to IndexedDB: ${namespace}:${key}`,
+                error,
+              );
+            }
+          }
+
+          return fallbackResult;
+        }
+
+        // If the rollout flag was disabled, the legacy adapter may have
+        // removed this key while an older IndexedDB value remained. Treat an
+        // absent legacy value as authoritative during the rollback-safe
+        // canary phase so re-enabling the flag cannot resurrect stale data.
+        try {
+          await this.#database.remove([fullKey]);
+          this.#synchronizedKeys.add(fullKey);
+        } catch (error) {
+          if (isIndexedDBMutationBlockedError(error)) {
+            this.#switchToFallbackStorage();
+          } else {
+            console.warn(
+              `StorageService: Failed to remove stale IndexedDB item: ${namespace}:${key}`,
+              error,
+            );
+          }
+        }
+
+        return fallbackResult;
+      }
+
+      if (canUseIndexedDB && !this.#useFallbackStorageOnly) {
+        try {
+          const [value] = await this.#database.get([fullKey]);
+          if (value !== undefined) {
+            return { result: value as Json };
+          }
+        } catch (error) {
+          if (!isIndexedDBMutationBlockedError(error)) {
+            throw error;
+          }
+
+          this.#switchToFallbackStorage();
         }
       }
 
-      return await this.#fallbackStorage.getItem(namespace, key);
+      return (
+        fallbackResult ??
+        (await this.#fallbackStorage.getItem(namespace, key))
+      );
     } catch (error) {
       console.error(
         `StorageService: Failed to get item: ${namespace}:${key}`,
@@ -147,13 +223,27 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async setItem(namespace: string, key: string, value: Json): Promise<void> {
     try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        await this.#database.set({ [fullKey]: value });
-        return;
-      }
+      const fullKey = this.#makeKey(namespace, key);
+      this.#synchronizedKeys.delete(fullKey);
 
+      // Keep browser.storage.local current throughout the canary rollout so
+      // disabling the flag or rolling back can safely use the legacy adapter.
+      // Write it first so an interrupted background process cannot leave the
+      // rollback store older than IndexedDB.
       await this.#fallbackStorage.setItem(namespace, key, value);
+
+      if (await this.#canUseIndexedDB()) {
+        try {
+          await this.#database.set({ [fullKey]: value });
+          this.#synchronizedKeys.add(fullKey);
+        } catch (error) {
+          if (!isIndexedDBMutationBlockedError(error)) {
+            throw error;
+          }
+
+          this.#switchToFallbackStorage();
+        }
+      }
     } catch (error) {
       console.error(
         `StorageService: Failed to set item: ${namespace}:${key}`,
@@ -171,12 +261,22 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async removeItem(namespace: string, key: string): Promise<void> {
     try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        await this.#database.remove([fullKey]);
-      }
-
+      const fullKey = this.#makeKey(namespace, key);
+      this.#synchronizedKeys.delete(fullKey);
       await this.#fallbackStorage.removeItem(namespace, key);
+
+      if (await this.#canUseIndexedDB()) {
+        try {
+          await this.#database.remove([fullKey]);
+          this.#synchronizedKeys.add(fullKey);
+        } catch (error) {
+          if (!isIndexedDBMutationBlockedError(error)) {
+            throw error;
+          }
+
+          this.#switchToFallbackStorage();
+        }
+      }
     } catch (error) {
       console.error(
         `StorageService: Failed to remove item: ${namespace}:${key}`,
@@ -195,20 +295,32 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async getAllKeys(namespace: string): Promise<string[]> {
     try {
-      const keys = new Set<string>();
       const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+      const fallbackKeys = await this.#fallbackStorage.getAllKeys(namespace);
 
       if (await this.#canUseIndexedDB()) {
         const indexedDbKeys = await this.#database.getKeys(prefix);
-        indexedDbKeys.forEach((key) => {
-          keys.add(key.slice(prefix.length));
-        });
+        const fallbackFullKeys = new Set(
+          fallbackKeys.map((key) => `${prefix}${key}`),
+        );
+        const staleIndexedDbKeys = indexedDbKeys.filter(
+          (key) => !fallbackFullKeys.has(key),
+        );
+
+        if (staleIndexedDbKeys.length > 0) {
+          try {
+            await this.#database.remove(staleIndexedDbKeys);
+          } catch (error) {
+            if (!isIndexedDBMutationBlockedError(error)) {
+              throw error;
+            }
+
+            this.#switchToFallbackStorage();
+          }
+        }
       }
 
-      const fallbackKeys = await this.#fallbackStorage.getAllKeys(namespace);
-      fallbackKeys.forEach((key) => keys.add(key));
-
-      return [...keys];
+      return fallbackKeys;
     } catch (error) {
       console.error(
         `StorageService: Failed to get keys for ${namespace}`,
@@ -226,12 +338,26 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
    */
   async clear(namespace: string): Promise<void> {
     try {
-      if (await this.#canUseIndexedDB()) {
-        const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
-        await this.#database.remove(await this.#database.getKeys(prefix));
+      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+      for (const key of this.#synchronizedKeys) {
+        if (key.startsWith(prefix)) {
+          this.#synchronizedKeys.delete(key);
+        }
       }
 
       await this.#fallbackStorage.clear(namespace);
+
+      if (await this.#canUseIndexedDB()) {
+        try {
+          await this.#database.remove(await this.#database.getKeys(prefix));
+        } catch (error) {
+          if (!isIndexedDBMutationBlockedError(error)) {
+            throw error;
+          }
+
+          this.#switchToFallbackStorage();
+        }
+      }
     } catch (error) {
       console.error(
         `StorageService: Failed to clear namespace ${namespace}`,
