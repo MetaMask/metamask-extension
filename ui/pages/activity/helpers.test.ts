@@ -1,5 +1,11 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { dedupeItems, groupActivityListItems } from './helpers';
+import {
+  dedupeItems,
+  getActivityItemIdentifier,
+  getItemKey,
+  getLastEvmItemIndex,
+  groupActivityListItems,
+} from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {
@@ -18,6 +24,61 @@ function makeItem(
     ...overrides,
   } as ActivityListItem;
 }
+
+describe('getActivityItemIdentifier', () => {
+  it('returns undefined when no item is selected', () => {
+    expect(getActivityItemIdentifier(undefined)).toBeUndefined();
+    expect(getActivityItemIdentifier(null)).toBeUndefined();
+  });
+
+  it('reduces a provider-prefixed ramp order id to its order code', () => {
+    const rampBuy = makeItem({
+      timestamp: 1,
+      status: 'pending',
+      type: 'rampBuy',
+      hash: undefined,
+      data: { id: 'moonpay/orders/native-uuid' },
+    });
+
+    expect(getActivityItemIdentifier(rampBuy)).toBe('native-uuid');
+  });
+
+  it('prefers the settlement hash once the ramp order has one', () => {
+    const rampBuy = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'rampBuy',
+      hash: '0xdef',
+      data: { id: 'moonpay/orders/native-uuid' },
+    });
+
+    expect(getActivityItemIdentifier(rampBuy)).toBe('0xdef');
+  });
+
+  it('falls through an empty hash to the ramp order code', () => {
+    const rampBuy = makeItem({
+      timestamp: 1,
+      status: 'pending',
+      type: 'rampBuy',
+      hash: '',
+      data: { id: 'moonpay/orders/native-uuid' },
+    });
+
+    expect(getActivityItemIdentifier(rampBuy)).toBe('native-uuid');
+  });
+
+  it('returns undefined for a ramp sell without an order id', () => {
+    const rampSell = makeItem({
+      timestamp: 1,
+      status: 'pending',
+      type: 'rampSell',
+      hash: undefined,
+      data: {},
+    });
+
+    expect(getActivityItemIdentifier(rampSell)).toBeUndefined();
+  });
+});
 
 describe('dedupeItems', () => {
   it('replaces contractInteraction with a more specific API item for the same hash', () => {
@@ -180,11 +241,10 @@ describe('groupActivityListItems', () => {
   it('returns only date-grouped rows when nothing is pending', () => {
     const jan2 = new Date('2025-01-02T12:00:00Z').getTime();
     const jan1 = new Date('2025-01-01T10:00:00Z').getTime();
+    const newer = makeItem({ timestamp: jan2, status: 'success' });
+    const older = makeItem({ timestamp: jan1, status: 'success' });
 
-    const grouped = groupActivityListItems([
-      makeItem({ timestamp: jan2, status: 'success' }),
-      makeItem({ timestamp: jan1, status: 'success' }),
-    ]);
+    const grouped = groupActivityListItems([newer, older]);
 
     expect(grouped.map((row) => row.type)).toStrictEqual([
       'date-header',
@@ -192,6 +252,19 @@ describe('groupActivityListItems', () => {
       'date-header',
       'item',
     ]);
+    expect(grouped[1]).toStrictEqual({ type: 'item', item: newer });
+    expect(grouped[3]).toStrictEqual({ type: 'item', item: older });
+
+    const firstHeader = grouped[0];
+    const secondHeader = grouped[2];
+    expect(firstHeader.type).toBe('date-header');
+    expect(secondHeader.type).toBe('date-header');
+    if (
+      firstHeader.type === 'date-header' &&
+      secondHeader.type === 'date-header'
+    ) {
+      expect(firstHeader.date).toBeGreaterThan(secondHeader.date);
+    }
   });
 
   it('puts pending rows under a pending header then date-groups the rest', () => {
@@ -209,5 +282,69 @@ describe('groupActivityListItems', () => {
       'date-header',
       'item',
     ]);
+  });
+});
+
+describe('getItemKey', () => {
+  it('uses a stable key for the pending header', () => {
+    expect(getItemKey({ type: 'pending-header' }, 0)).toBe('pending-header');
+  });
+
+  it('uses the ramp order code when the item has no hash', () => {
+    const key = getItemKey(
+      {
+        type: 'item',
+        item: makeItem({
+          timestamp: 42,
+          status: 'pending',
+          type: 'rampBuy',
+          chainId: 'eip155:1',
+          hash: undefined,
+          data: { id: 'moonpay/orders/native-uuid' },
+        }),
+      },
+      3,
+    );
+
+    expect(key).toBe('eip155:1:42:rampBuy:native-uuid');
+  });
+});
+
+describe('getLastEvmItemIndex', () => {
+  it('returns the index of the last grouped row that matches an EVM item hash', () => {
+    const jan2 = new Date('2025-01-02T12:00:00Z').getTime();
+    const evmItem = makeItem({
+      timestamp: jan2,
+      status: 'success',
+      hash: '0xabc',
+    });
+    const rampItem = makeItem({
+      timestamp: jan2 + 1,
+      status: 'pending',
+      type: 'rampBuy',
+      hash: undefined,
+      data: { id: 'order-1' },
+    });
+    const grouped = groupActivityListItems([rampItem, evmItem]);
+
+    expect(getLastEvmItemIndex(grouped, [evmItem])).toBe(
+      grouped.findIndex(
+        (row) => row.type === 'item' && row.item.hash === '0xabc',
+      ),
+    );
+  });
+
+  it('returns -1 when no EVM items are present', () => {
+    const grouped = groupActivityListItems([
+      makeItem({
+        timestamp: 1,
+        status: 'pending',
+        type: 'rampBuy',
+        hash: undefined,
+        data: { id: 'order-1' },
+      }),
+    ]);
+
+    expect(getLastEvmItemIndex(grouped, [])).toBe(-1);
   });
 });

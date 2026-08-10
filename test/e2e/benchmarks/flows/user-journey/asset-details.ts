@@ -77,7 +77,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await tokensTab.checkTokenListIsDisplayed();
 
         // Switch to Ethereum Mainnet network
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
 
         // Wait for token list to refresh after network switch
         await tokensTab.checkTokenListIsDisplayed();

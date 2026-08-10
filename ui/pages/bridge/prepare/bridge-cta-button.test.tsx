@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  QuoteResponseV1,
   RequestStatus,
   getNativeAssetForChainId,
   formatChainIdToCaip,
@@ -476,6 +475,7 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
+            inputPrimaryDenomination="fiat_value"
             onOpenAlertModals={
               isAlertModalProvided
                 ? mockOnOpenPriceImpactWarningModal
@@ -505,6 +505,7 @@ describe('BridgeCTAButton', () => {
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(
         expectedSubmitBridgeTransactionCalls,
       );
+      expect(useSubmitSpy).toHaveBeenCalledWith('fiat_value');
 
       useSubmitSpy.mockRestore();
     },
@@ -942,9 +943,15 @@ describe('BridgeCTAButton', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: { ...quote.quote.priceData, priceImpact },
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
+              },
             },
-          })) as unknown as QuoteResponseV1[],
+          })),
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
+import { BigNumber } from 'bignumber.js';
 import { debounce } from 'lodash';
 import {
   FeatureId,
@@ -40,6 +41,8 @@ import {
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
+  getFromTokenConversionRate,
+  getIsFiatToggleEnabled,
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
@@ -61,7 +64,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatTokenAmount } from '../utils/quote';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
 import { SECOND } from '../../../../shared/constants/time';
@@ -85,6 +89,9 @@ import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { useDispatch } from '../../../store/hooks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencySymbol } from '../../../helpers/utils/common.util';
+import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -99,6 +106,7 @@ const PrepareBridgePage = ({
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+  const { formatCurrency } = useFormatters();
 
   const fromChain = useSelector(getFromChain);
 
@@ -116,6 +124,11 @@ const PrepareBridgePage = ({
   const fromAmount = useSelector(getFromAmount);
   const validatedFromValue = useSelector(getValidatedFromValue);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const fromTokenConversionRate = useSelector(
+    getFromTokenConversionRate,
+  ).valueInCurrency;
+  const isFiatToggleEnabled = useSelector(getIsFiatToggleEnabled);
+  const currency = useSelector(getCurrentCurrency);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
@@ -129,6 +142,7 @@ const PrepareBridgePage = ({
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
@@ -153,6 +167,66 @@ const PrepareBridgePage = ({
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
   const locale = useSelector(getIntlLocale);
+
+  const sourceInputAmount = useSourceInputAmount({
+    enabled: isFiatToggleEnabled,
+    sourceAmount: fromAmount,
+    conversionRate: fromTokenConversionRate,
+    sourceToken: fromToken,
+    destinationToken: toToken,
+    onSourceAmountChange: (value) => dispatch(setFromTokenInputValue(value)),
+  });
+
+  let sourceSecondaryDisplay: string | undefined;
+  if (sourceInputAmount.isFiatPrimary && fromToken) {
+    sourceSecondaryDisplay = formatTokenAmount(
+      locale,
+      sourceInputAmount.tokenAmount || '0',
+      fromToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
+  } else if (fromTokenConversionRate) {
+    sourceSecondaryDisplay = fromAmountInCurrency.valueInCurrency.isZero()
+      ? formatCurrency('0', currency, {
+          currencyDisplay: 'narrowSymbol',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })
+      : formatCurrencyAmount(
+          fromAmountInCurrency.valueInCurrency.toString(),
+          currency,
+          2,
+        );
+  }
+
+  const destinationTokenAmount = dest?.normalizedAmount;
+  const destinationFiatAmount = dest?.valueInCurrency;
+  const isDestinationFiatPrimary =
+    sourceInputAmount.isFiatPrimary && Boolean(destinationFiatAmount);
+  let destinationAmount = '0';
+  if (isDestinationFiatPrimary) {
+    destinationAmount = destinationFiatAmount
+      ? new BigNumber(destinationFiatAmount).toFixed(2)
+      : '0';
+  } else if (destinationTokenAmount) {
+    destinationAmount = formatTokenAmount(locale, destinationTokenAmount);
+  }
+
+  let destinationSecondaryDisplay: string | undefined;
+  if (isDestinationFiatPrimary && destinationTokenAmount) {
+    destinationSecondaryDisplay = formatTokenAmount(
+      locale,
+      destinationTokenAmount,
+      toToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
+  } else if (destinationFiatAmount) {
+    destinationSecondaryDisplay = formatCurrencyAmount(
+      destinationFiatAmount,
+      currency,
+      2,
+    );
+  }
 
   const {
     selectedDestinationAccount,
@@ -360,9 +434,7 @@ const PrepareBridgePage = ({
             ]
           }
           accountAddress={selectedAccount?.address}
-          onAmountChange={(e) => {
-            dispatch(setFromTokenInputValue(e));
-          }}
+          onAmountChange={sourceInputAmount.handleAmountChange}
           onAssetChange={async (token) => {
             await ensureNetworkEnabled(token.chainId);
             dispatch(setFromToken(token));
@@ -376,15 +448,21 @@ const PrepareBridgePage = ({
               : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
-          amountInFiat={
-            fromAmountInCurrency.valueInCurrency.gt(0)
-              ? fromAmountInCurrency.valueInCurrency.toString()
+          secondaryDisplay={sourceSecondaryDisplay}
+          amountInputPrefix={
+            sourceInputAmount.isFiatPrimary
+              ? getCurrencySymbol(currency)
+              : undefined
+          }
+          onAmountTypeToggle={
+            sourceInputAmount.canToggle
+              ? sourceInputAmount.togglePrimaryDenomination
               : undefined
           }
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
-            value: fromAmount || undefined,
+            value: sourceInputAmount.amount,
           }}
           containerProps={{
             paddingInline: 4,
@@ -443,8 +521,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
-                const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                const previousDestAmount = dest?.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -536,21 +613,17 @@ const PrepareBridgePage = ({
               dispatch(setToToken(newToToken));
             }}
             networks={toChains}
-            amountInFiat={
-              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
+            secondaryDisplay={destinationSecondaryDisplay}
+            amountInputPrefix={
+              isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.toTokenAmount?.amount
-                ? formatTokenAmount(
-                    locale,
-                    unvalidatedQuote.toTokenAmount.amount,
-                  )
-                : '0',
+              value: destinationAmount,
               autoFocus: false,
-              className: unvalidatedQuote?.toTokenAmount?.amount
+              className: destinationTokenAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
@@ -641,6 +714,7 @@ const PrepareBridgePage = ({
               needsDestinationAddress={
                 isToOrFromNonEvm && !selectedDestinationAccount
               }
+              inputPrimaryDenomination={sourceInputAmount.selectedDenomination}
               onOpenRecipientModal={() =>
                 setIsDestinationAccountPickerOpen(true)
               }

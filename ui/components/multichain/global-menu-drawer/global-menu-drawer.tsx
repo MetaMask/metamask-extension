@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useLayoutEffect, useRef, useCallback } from 'react';
+import classnames from 'clsx';
 import {
   Box,
   BoxBackgroundColor,
@@ -11,7 +11,6 @@ import {
   usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useEventListener } from '../../../hooks/useEventListener';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -19,10 +18,17 @@ import {
 } from '../../../../shared/constants/app';
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
-const DRAWER_TRANSITION_MS = 300;
-const SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH = 490;
+const drawerOpenVar = '--global-drawer-open' as const;
 
-type DrawerPhase = 'entering' | 'open' | 'exiting';
+export function preserveDrawerOpen(
+  root: HTMLElement = document.documentElement,
+) {
+  root.style.setProperty(drawerOpenVar, 'none');
+}
+
+function clearDrawerOpen(root: HTMLElement = document.documentElement) {
+  root.style.removeProperty(drawerOpenVar);
+}
 
 /**
  *
@@ -32,10 +38,7 @@ type DrawerPhase = 'entering' | 'open' | 'exiting';
  * @param props.children - Content to render inside the drawer
  * @param props.title - Optional title for the drawer (used for accessibility)
  * @param props.showCloseButton - Whether to show the close button (default: true)
- * @param props.width - Width of the drawer (default: '400px')
- * @param props.onClickOutside - Whether clicking outside closes the drawer (default: true)
  * @param props.'data-testid'
- * @param props.anchorElement
  */
 export const GlobalMenuDrawer = ({
   isOpen,
@@ -43,10 +46,7 @@ export const GlobalMenuDrawer = ({
   children,
   title,
   showCloseButton = true,
-  width = '400px',
-  onClickOutside = true,
   'data-testid': dataTestId,
-  anchorElement,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
   // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
@@ -54,359 +54,114 @@ export const GlobalMenuDrawer = ({
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const usePortal = isFullscreen || isSidepanel;
-  const [drawerStyle, setDrawerStyle] = useState<React.CSSProperties>({});
-  const [backdropStyle, setBackdropStyle] = useState<React.CSSProperties>({});
-  const [containerElement, setContainerElement] = useState<HTMLElement | null>(
-    null,
-  );
-  const [contentTopOffset, setContentTopOffset] = useState(0);
-  const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
-    useState(false);
   // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
-  const isLargeDrawer =
-    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
-  const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
-    isOpen && !usePortal ? 'open' : null,
-  );
-  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const enterFrameRef = useRef<number | null>(null);
-  const wasOpenRef = useRef(false);
-  /** Tracks previous isOpen so we can run enter transition only when opening from closed (hamburger), not when mounting/restoring with open (back from page). */
-  const prevIsOpenRef = useRef<boolean | undefined>(undefined);
-  const rootLayoutRef = useRef<HTMLElement | null>(null);
-  const appContainerRef = useRef<HTMLElement | null>(null);
-  const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const isLargeDrawer = isFullscreen || isSidepanel;
 
-  const hasPosition = Object.keys(drawerStyle).length > 0;
-  const readyToShow = isOpen && (!usePortal || hasPosition);
-
-  // Open drawer: use entering transition only when going from closed to open (hamburger click). When mounting or returning from a page with drawerOpen in URL, show immediately.
-  useLayoutEffect(() => {
-    if (readyToShow) {
-      wasOpenRef.current = true;
-      if (exitTimeoutRef.current !== null) {
-        clearTimeout(exitTimeoutRef.current);
-        exitTimeoutRef.current = null;
-      }
-      const wasClosed = prevIsOpenRef.current === false;
-      if (wasClosed) {
-        setDrawerPhase('entering');
-        enterFrameRef.current = requestAnimationFrame(() => {
-          enterFrameRef.current = requestAnimationFrame(() => {
-            enterFrameRef.current = null;
-            setDrawerPhase('open');
-          });
-        });
-      } else {
-        setDrawerPhase('open');
-      }
-      prevIsOpenRef.current = true;
-    }
-    if (wasOpenRef.current && !isOpen) {
-      wasOpenRef.current = false;
-      prevIsOpenRef.current = false;
-      if (enterFrameRef.current !== null) {
-        cancelAnimationFrame(enterFrameRef.current);
-        enterFrameRef.current = null;
-      }
-      setDrawerPhase('exiting');
-      exitTimeoutRef.current = setTimeout(() => {
-        exitTimeoutRef.current = null;
-        setDrawerPhase(null);
-      }, DRAWER_TRANSITION_MS);
-      return () => {
-        if (exitTimeoutRef.current !== null) {
-          clearTimeout(exitTimeoutRef.current);
-          exitTimeoutRef.current = null;
-        }
-      };
-    }
-    if (!isOpen) {
-      prevIsOpenRef.current = false;
-    }
-    return () => {
-      if (enterFrameRef.current !== null) {
-        cancelAnimationFrame(enterFrameRef.current);
-        enterFrameRef.current = null;
-      }
-    };
-  }, [isOpen, readyToShow]);
-
-  const isDrawerMounted = drawerPhase !== null;
-  const isEntering = drawerPhase === 'entering';
-  const isExiting = drawerPhase === 'exiting';
-  const isDrawerOpen = drawerPhase === 'open';
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useLayoutEffect(() => {
-    if (!usePortal) {
-      setContainerElement(null);
-      setDrawerStyle({});
-      setBackdropStyle({});
-      setContentTopOffset(0);
-      setIsCompactSidepanelDrawer(false);
+    const dialog = dialogRef.current;
+    if (!dialog) {
       return;
     }
-
-    const appContainer =
-      appContainerRef.current ||
-      (document.querySelector('.app') as HTMLElement);
-    if (appContainer) {
-      appContainerRef.current = appContainer;
-    }
-
-    if (!appContainer) {
-      setContainerElement(null);
-      return;
-    }
-
-    // Same root layout for both: walk up from anchor or find in .app (the content container)
-    const findRootLayout = (): HTMLElement | null => {
-      if (
-        rootLayoutRef.current &&
-        document.body.contains(rootLayoutRef.current)
-      ) {
-        return rootLayoutRef.current;
-      }
-      let found: HTMLElement | null = null;
-      if (anchorElement) {
-        let current: HTMLElement | null = anchorElement;
-        while (current && current !== document.body) {
-          const parent: HTMLElement | null = current.parentElement;
-          if (
-            parent instanceof HTMLElement &&
-            parent.className.includes('max-w-[') &&
-            parent.classList.contains('flex') &&
-            parent.classList.contains('flex-col')
-          ) {
-            found = parent;
-            break;
-          }
-          current = parent;
-        }
-      }
-      if (!found) {
-        found =
-          (Array.from(appContainer.children).find(
-            (child) =>
-              child instanceof HTMLElement &&
-              child.className.includes('max-w-[') &&
-              child.classList.contains('flex') &&
-              child.classList.contains('flex-col'),
-          ) as HTMLElement) || null;
-      }
-      if (found) {
-        rootLayoutRef.current = found;
-      }
-      return found;
-    };
-
-    const updatePosition = () => {
-      const rootLayout = findRootLayout();
-      if (!rootLayout) {
-        return;
-      }
-
-      const rootLayoutRect = rootLayout.getBoundingClientRect();
-      const appR = appContainer.getBoundingClientRect();
-      setIsCompactSidepanelDrawer(
-        isSidepanel &&
-          rootLayoutRect.width <= SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH,
-      );
-
-      // Dialog covers root layout in both fullscreen and sidepanel
-      setDrawerStyle({
-        position: 'absolute',
-        top: `${rootLayoutRect.top - appR.top}px`,
-        left: `${rootLayoutRect.left - appR.left}px`,
-        width: `${rootLayoutRect.width}px`,
-        height: `${rootLayoutRect.height}px`,
-      });
-
-      // Fullscreen: offset 90px so drawer sits below logo; sidepanel: no offset
-      const fullscreenLogoOffsetPx = 90;
-      if (isFullscreen) {
-        setBackdropStyle({
-          position: 'absolute',
-          top: `${fullscreenLogoOffsetPx}px`,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        });
-        setContentTopOffset(fullscreenLogoOffsetPx);
-      } else {
-        setBackdropStyle({});
-        setContentTopOffset(0);
-      }
-
-      setContainerElement(appContainer);
-    };
 
     if (isOpen) {
-      updatePosition();
-    }
-
-    const handleResize = () => {
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
+      if (!dialog.open) {
+        if (typeof dialog.showModal === 'function') {
+          dialog.showModal();
+        } else {
+          // jsdom does not implement HTMLDialogElement.showModal
+          dialog.setAttribute('open', '');
+        }
       }
-      resizeTimeoutRef.current = setTimeout(updatePosition, 100);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
-      }
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [usePortal, isFullscreen, isSidepanel, isOpen, anchorElement]);
-
-  // Prevent body scroll when drawer is open (only for non-fullscreen)
-  useEffect(() => {
-    if (!isFullscreen) {
-      if (isOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [isOpen, isFullscreen]);
-
-  // Escape key closes drawer (Dialog would unmount on close and block leave transition in popup)
-  useEventListener('keydown', (e: KeyboardEvent) => {
-    if (!isOpen) {
       return;
     }
-    if (e.key === 'Escape') {
+
+    if (dialog.open) {
+      if (typeof dialog.close === 'function') {
+        dialog.close();
+      } else {
+        dialog.removeAttribute('open');
+        dialog.dispatchEvent(new Event('close'));
+      }
+    }
+
+    clearDrawerOpen();
+  }, [isOpen]);
+
+  const handleDialogClose = useCallback(() => {
+    if (isOpen) {
       onClose();
     }
-  });
+  }, [isOpen, onClose]);
+
+  const requestClose = useCallback(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+    if (typeof dialog.close === 'function') {
+      dialog.close();
+      return;
+    }
+    dialog.removeAttribute('open');
+    dialog.dispatchEvent(new Event('close'));
+  }, []);
 
   const titleId = 'global-menu-drawer-title';
-  // Popup: no portal, fixed overlay. Fullscreen/sidepanel: portal into .app and overlay root layout.
-  const portalTarget =
-    containerElement ||
-    (usePortal && isOpen && typeof document !== 'undefined'
-      ? (document.querySelector('.app') as HTMLElement)
-      : null);
+  const className = classnames('global-menu-drawer', {
+    'global-menu-drawer--fullscreen': isFullscreen,
+  });
 
-  const dialogPositionClass = portalTarget ? 'absolute' : 'fixed inset-0';
-  let dialogPositionStyle: React.CSSProperties | undefined;
-  if (portalTarget && hasPosition) {
-    dialogPositionStyle = drawerStyle;
-  } else if (portalTarget) {
-    dialogPositionStyle = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    };
-  } else {
-    dialogPositionStyle = undefined;
-  }
-
-  const backdropOpacity = isDrawerOpen ? 1 : 0;
-  const panelTransform =
-    isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
-
-  const drawerPanelBaseClass =
-    'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
-  let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
-  if (isFullscreen || isSidepanel) {
-    drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
-  }
-  if (isSidepanel && isCompactSidepanelDrawer) {
-    drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
-  }
-
-  const dialogContent = isDrawerMounted ? (
-    <div
-      aria-labelledby={title ? titleId : undefined}
-      aria-modal="true"
-      className={`z-[1050] overflow-hidden ${dialogPositionClass}`}
-      data-testid={dataTestId}
-      role="dialog"
-      style={dialogPositionStyle}
+  const panel = (
+    <Box
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
+      backgroundColor={
+        isPureBlack && isLargeDrawer
+          ? BoxBackgroundColor.BackgroundAlternative
+          : BoxBackgroundColor.BackgroundDefault
+      }
     >
-      {(isFullscreen || isSidepanel) && (
-        <div
-          className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
-          style={{
-            ...(isFullscreen && Object.keys(backdropStyle).length > 0
-              ? { ...backdropStyle, zIndex: 0 }
-              : { zIndex: 0 }),
-            opacity: backdropOpacity,
-            transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
-          }}
-          aria-hidden="true"
-          onClick={onClickOutside ? onClose : undefined}
-        />
+      {showCloseButton && (
+        <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Md}
+            ariaLabel={title || t('close')}
+            onClick={requestClose}
+            data-testid="drawer-close-button"
+            className="text-icon-alternative"
+            iconProps={{ color: IconColor.IconAlternative }}
+          />
+          {title && (
+            <span className="sr-only" id={titleId}>
+              {title}
+            </span>
+          )}
+        </Box>
       )}
 
-      {/* Drawer panel */}
-      <div
-        className={drawerPanelClass}
-        style={{
-          zIndex: 1,
-          ...(contentTopOffset
-            ? { top: `${contentTopOffset}px`, bottom: 0 }
-            : { top: 0, bottom: 0 }),
-          transform: panelTransform,
-          transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
-        }}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
       >
-        <div
-          className="w-screen max-w-full pointer-events-auto h-full min-h-0"
-          style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
-        >
-          <Box
-            className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
-            backgroundColor={
-              isPureBlack && isLargeDrawer
-                ? BoxBackgroundColor.BackgroundAlternative
-                : BoxBackgroundColor.BackgroundDefault
-            }
-          >
-            {showCloseButton && (
-              <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
-                <ButtonIcon
-                  iconName={IconName.ArrowLeft}
-                  size={ButtonIconSize.Md}
-                  ariaLabel={title || t('close')}
-                  onClick={onClose}
-                  data-testid="drawer-close-button"
-                  className="text-icon-alternative"
-                  iconProps={{ color: IconColor.IconAlternative }}
-                />
-                {title && (
-                  <span className="sr-only" id={titleId}>
-                    {title}
-                  </span>
-                )}
-              </Box>
-            )}
+        {children}
+      </Box>
+    </Box>
+  );
 
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
-            >
-              {children}
-            </Box>
-          </Box>
-        </div>
-      </div>
-    </div>
-  ) : null;
-
-  // Portal only in fullscreen/sidepanel (popup uses fixed positioning, no portal)
-  if (portalTarget) {
-    return ReactDOM.createPortal(dialogContent, portalTarget);
-  }
-
-  return dialogContent;
+  return (
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={title ? titleId : undefined}
+      className={className}
+      // @ts-expect-error closedby missing in React types
+      // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
+      closedby="any"
+      data-testid={dataTestId}
+      onClose={handleDialogClose}
+    >
+      <div className="global-menu-drawer__frame">{panel}</div>
+    </dialog>
+  );
 };
