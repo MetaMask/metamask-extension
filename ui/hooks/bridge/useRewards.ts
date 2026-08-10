@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -128,25 +128,32 @@ export const useRewardsWithQuote = ({
   // Track the current account's linked timestamp to trigger useEffect when it changes
   const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
     useState<number | null>(null);
-  const debouncedEstimatePoints = useCallback(
-    debounce(
-      async (
-        _estimationQuoteArg:
-          | NonNullable<
-              ReturnType<typeof selectBridgeQuotes>['activeQuote']
-            >['quote']
-          | null,
-        _caipAccountArg: CaipAccountId | null,
-      ) => {
-        setEstimatedPoints(null);
-        setShouldShowRewardsRow(false);
-        setIsLoading(false);
-        setHasError(false);
-      },
-      750,
-    ),
+  const debouncedEstimatePoints = useMemo(
+    () =>
+      debounce(
+        async (
+          _estimationQuoteArg:
+            | NonNullable<
+                ReturnType<typeof selectBridgeQuotes>['activeQuote']
+              >['quote']
+            | null,
+          _caipAccountArg: CaipAccountId | null,
+        ) => {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setIsLoading(false);
+          setHasError(false);
+        },
+        750,
+      ),
     [dispatch],
   );
+
+  useEffect(() => {
+    return () => {
+      debouncedEstimatePoints.cancel();
+    };
+  }, [debouncedEstimatePoints]);
 
   const estimatePoints = useCallback(
     async (
@@ -247,6 +254,7 @@ export const useRewardsWithQuote = ({
       dispatch,
       fromAddressAccount,
       debouncedEstimatePoints,
+      primaryWalletGroupAccounts,
     ],
   );
 
