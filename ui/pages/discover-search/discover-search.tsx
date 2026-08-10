@@ -22,6 +22,8 @@ import { isCaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
+import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -102,6 +104,7 @@ const DiscoverSearchSectionDivider = () => (
 const SEARCH_QUERY_PARAM = 'q';
 const SEARCH_TAB_PARAM = 'tab';
 const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
+const DISCOVER_SEARCH_ROW_HEIGHT = 72;
 
 const isDiscoverSearchTab = (
   value: string | null,
@@ -386,6 +389,7 @@ export const DiscoverSearchPage = () => {
     isLoading: boolean,
     error: Error | null | undefined,
     testIdPrefix: string,
+    shouldVirtualize = false,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
@@ -401,6 +405,24 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
+    if (shouldVirtualize) {
+      return (
+        <VirtualizedList
+          data={items}
+          estimatedItemSize={DISCOVER_SEARCH_ROW_HEIGHT}
+          overscan={10}
+          keyExtractor={(asset) => asset.assetId}
+          renderItem={({ item: asset }) => (
+            <DiscoverAssetRow
+              asset={asset}
+              onPress={handleAssetPress}
+              data-testid={`${testIdPrefix}-${asset.assetId}`}
+            />
+          )}
+        />
+      );
+    }
+
     return items.map((asset) => (
       <DiscoverAssetRow
         key={asset.assetId}
@@ -415,6 +437,7 @@ export const DiscoverSearchPage = () => {
     items: PerpsMarketData[],
     isLoading: boolean,
     error: Error | null | undefined,
+    shouldVirtualize = false,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
@@ -430,6 +453,25 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
+    if (shouldVirtualize) {
+      return (
+        <VirtualizedList
+          data={items}
+          estimatedItemSize={DISCOVER_SEARCH_ROW_HEIGHT}
+          overscan={10}
+          keyExtractor={(market) => market.symbol}
+          renderItem={({ item: market }) => (
+            <MarketRow
+              market={market}
+              onPress={handlePerpsPress}
+              displayMetric="volume"
+              data-testid={`discover-perps-row-${market.symbol.replaceAll(':', '-')}`}
+            />
+          )}
+        />
+      );
+    }
+
     return items.map((market) => (
       <MarketRow
         key={market.symbol}
@@ -440,6 +482,15 @@ export const DiscoverSearchPage = () => {
       />
     ));
   };
+
+  const renderScrollableTabContent = (content: React.ReactNode) => (
+    <ScrollContainer
+      className="h-full min-h-0 overflow-y-auto overscroll-contain pb-6"
+      onScroll={handleTabContentScroll}
+    >
+      {content}
+    </ScrollContainer>
+  );
 
   const allTabContent = (() => {
     if (showAllLoading) {
@@ -574,12 +625,11 @@ export const DiscoverSearchPage = () => {
         flexDirection={BoxFlexDirection.Column}
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{
-          className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
-          onScroll: handleTabContentScroll,
+          className: 'min-h-0 flex-1',
         }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
-          {allTabContent}
+          {renderScrollableTabContent(allTabContent)}
         </Tab>
 
         <Tab
@@ -587,11 +637,14 @@ export const DiscoverSearchPage = () => {
           tabKey="crypto"
           data-testid="discover-tab-crypto"
         >
-          {renderAssetList(
-            cryptoSection.items,
-            cryptoSection.isLoading,
-            cryptoSection.error,
-            'discover-crypto',
+          {renderScrollableTabContent(
+            renderAssetList(
+              cryptoSection.items,
+              cryptoSection.isLoading,
+              cryptoSection.error,
+              'discover-crypto',
+              true,
+            ),
           )}
         </Tab>
 
@@ -601,7 +654,9 @@ export const DiscoverSearchPage = () => {
             tabKey="perps"
             data-testid="discover-tab-perps"
           >
-            {renderPerpsList(perps.items, perps.isLoading, perps.error)}
+            {renderScrollableTabContent(
+              renderPerpsList(perps.items, perps.isLoading, perps.error, true),
+            )}
           </Tab>
         ) : null}
 
@@ -610,11 +665,14 @@ export const DiscoverSearchPage = () => {
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {renderAssetList(
-            stocks.items,
-            stocks.isLoading,
-            stocks.error,
-            'discover-stocks',
+          {renderScrollableTabContent(
+            renderAssetList(
+              stocks.items,
+              stocks.isLoading,
+              stocks.error,
+              'discover-stocks',
+              true,
+            ),
           )}
         </Tab>
       </Tabs>
