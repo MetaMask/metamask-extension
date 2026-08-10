@@ -26,7 +26,7 @@ export class CronjobControllerStorageManager {
   async init() {
     this.#initialStorage = (
       await browser.storage.local.get(CronjobControllerStorageKey)
-    )[CronjobControllerStorageKey];
+    )[CronjobControllerStorageKey] as Json;
     this.#initialized = true;
   }
 
