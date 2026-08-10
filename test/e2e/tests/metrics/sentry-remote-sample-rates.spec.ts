@@ -23,18 +23,30 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
  * `app/scripts/lib/sentry-traces-sampler.test.ts`; what cannot be unit-tested
  * is whether the value ever arrives. That is what these cover.
  *
- * Not covered here, and not coverable client-side: LaunchDarkly's own rule
- * evaluation. Mocking the response cannot show that LD would serve it, so
- * `clientVersion` targeting needs a dashboard check instead.
+ * Per-release behaviour is client-side, so it *is* coverable here: the service
+ * returns the whole `versions` ladder and the controller selects the rung — the
+ * `clientVersion` request parameter selects nothing server-side, confirmed by
+ * probing the live endpoint with it varied and getting identical payloads. The
+ * last arm covers the selection.
+ *
+ * What remains outside any client-side test is LaunchDarkly's own evaluation of
+ * on/off and targeting rules. Mocking the response cannot show that LD would
+ * serve it; that part is settled from the flag configuration instead.
  */
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-type SentryFlag = {
+type SentryRates = {
   tracesSampleRate?: number;
   wrapperSampleRate?: number;
   transactionSampleRates?: Record<string, number>;
 };
+
+/**
+ * The flag accepts either a flat rates object or a version ladder. The ladder is
+ * unwrapped by the controller before it reaches state, never by this codebase.
+ */
+type SentryFlag = SentryRates | { versions: Record<string, SentryRates> };
 
 /**
  * Serve the flags endpoint with (or without) a `sentry` entry.
@@ -167,6 +179,49 @@ describe('Sentry remote sample rates', function (this: Suite) {
           seen.length,
           0,
           'a disabled controller should issue no flags request; a served-but-unfetched flag is not an "off" arm',
+        );
+      },
+    );
+  });
+
+  it('unwraps a versions ladder to the rung matching the build version', async function () {
+    // The one link in the chain that source-reading cannot settle. Everything
+    // else here asserts our own code; this asserts the controller's:
+    // `isVersionFeatureFlag` recognises a `versions` map of SemVer keys and
+    // `getVersionData` selects the highest rung at or below the build's own
+    // version, writing the UNWRAPPED rates object to state. If that contract
+    // ever changes, `applySentryRemoteRates` silently receives a shape it does
+    // not understand and every rate falls back to its compile-time constant.
+    //
+    // The ladder is deliberately bracketed so the assertion discriminates. A
+    // lone rung would be satisfied by almost any selection rule, including
+    // "take the first" or "take the last"; two rungs whose values differ mean
+    // only the correct rule produces the expected answer.
+    const ladder = {
+      versions: {
+        '0.0.1': { tracesSampleRate: 0.25 },
+        '999.0.0': { tracesSampleRate: 0.75 },
+      },
+    };
+
+    await withFixtures(
+      {
+        fixtures: withMetaMetricsOn(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockFlagsWithSentry(ladder),
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const uiState = await getCleanAppState(driver);
+        const sentry = uiState.metamask.remoteFeatureFlags.sentry;
+
+        // No build is at 999.0.0, so the 0.0.1 rung wins. Asserting the whole
+        // object rather than one key also proves the `versions` wrapper is gone
+        // — if the controller passed the raw ladder through, this fails.
+        assert.deepStrictEqual(
+          sentry,
+          { tracesSampleRate: 0.25 },
+          'state should hold the unwrapped rung for the build version, not the versions wrapper',
         );
       },
     );
