@@ -8,6 +8,7 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 /** Popular networks used for crypto trending / search (aligned with mobile Explore). */
 export const DISCOVER_SEARCH_CHAIN_IDS: CaipChainId[] = [
   toEvmCaipChainId(CHAIN_IDS.MAINNET),
+  MultichainNetworks.BITCOIN,
   MultichainNetworks.SOLANA,
   toEvmCaipChainId(CHAIN_IDS.BSC),
   toEvmCaipChainId(CHAIN_IDS.BASE),
