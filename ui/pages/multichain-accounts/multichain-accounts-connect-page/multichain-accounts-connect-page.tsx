@@ -646,6 +646,8 @@ export const MultichainAccountsConnectPage = ({
     </Page>
   ) : (
     <MultichainEditAccountsPage
+      title={t('selectAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

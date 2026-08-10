@@ -1,19 +1,27 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import {
   IconName,
+  BannerBase,
   ButtonIcon,
   ButtonIconSize,
   Button,
   ButtonSize,
   ButtonVariant,
+  AvatarFavicon,
+  AvatarFaviconSize,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant as DSTextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
+  Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -27,18 +35,26 @@ import { AccountGroupWithInternalAccounts } from '../../../../selectors/multicha
 import { Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
+import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 /**
  * Represents the type of Snaps permission request:
  * - Initial: Initial account permission request (new session) - requires at least 1 account
  * - Existing: Editing existing Snap permissions - allows 0 accounts for revoke flow
- * - None: Not a Snaps permission request - allows 0 accounts for revoke flow
+ * - None: Not a Snaps permission request - requires at least 1 account
  */
 export enum SnapsPermissionsRequestType {
   Initial = 'initial',
   Existing = 'existing',
   None = 'none',
 }
+
+type SiteMetadata = {
+  origin: string;
+  name?: string;
+  iconUrl?: string;
+};
 
 type MultichainEditAccountsPageProps = {
   title?: string;
@@ -48,6 +64,8 @@ type MultichainEditAccountsPageProps = {
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
   snapsPermissionsRequestType?: SnapsPermissionsRequestType;
+  siteMetadata?: SiteMetadata;
+  onDisconnect?: () => void;
 };
 
 export const MultichainEditAccountsPage = ({
@@ -58,12 +76,15 @@ export const MultichainEditAccountsPage = ({
   onSubmit,
   onClose,
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
+  siteMetadata,
+  onDisconnect,
 }: MultichainEditAccountsPageProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
     defaultSelectedAccountGroups,
   );
+  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const accountTree = useSelector(getAccountTree);
 
   const walletsWithSupportedAccountGroups = useMemo(() => {
@@ -136,6 +157,23 @@ export const MultichainEditAccountsPage = ({
     createEventBuilder,
   ]);
 
+  const isSaveDisabled =
+    selectedAccountGroups.length === 0 &&
+    snapsPermissionsRequestType !== SnapsPermissionsRequestType.Existing;
+
+  const handleDisconnectClick = () => {
+    setShowDisconnectModal(true);
+  };
+
+  const handleDisconnectConfirm = () => {
+    setShowDisconnectModal(false);
+    onDisconnect?.();
+  };
+
+  const siteHost = siteMetadata?.origin
+    ? getURLHost(siteMetadata.origin)
+    : undefined;
+
   return (
     <Page
       data-testid="modal-page"
@@ -160,11 +198,56 @@ export const MultichainEditAccountsPage = ({
               data-testid="back-button"
             />
           }
+          endAccessory={
+            onDisconnect ? (
+              <ButtonIcon
+                data-testid="disconnect-button"
+                ariaLabel={t('disconnect')}
+                iconName={IconName.Logout}
+                size={ButtonIconSize.Md}
+                onClick={handleDisconnectClick}
+                className="text-error-default"
+              />
+            ) : undefined
+          }
         >
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <ScrollContainer className="flex-1 px-4 overflow-y-auto">
+      <ScrollContainer className="flex-1 overflow-y-auto">
+        {siteMetadata && (
+          <BannerBase
+            className="mx-4 mb-3 bg-muted"
+            data-testid="connected-site-info-banner"
+            startAccessory={
+              siteMetadata.iconUrl ? (
+                <AvatarFavicon
+                  name={siteMetadata.name ?? siteHost}
+                  size={AvatarFaviconSize.Xs}
+                  src={siteMetadata.iconUrl}
+                  className="mt-1"
+                />
+              ) : undefined
+            }
+          >
+            <Text
+              variant={DSTextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('sitePermissionsBanner', [
+                <Text
+                  key="siteHost"
+                  asChild
+                  variant={DSTextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                  fontWeight={FontWeight.Bold}
+                >
+                  <span>{siteHost}</span>
+                </Text>,
+              ])}
+            </Text>
+          </BannerBase>
+        )}
         <MultichainAccountList
           wallets={walletsWithSupportedAccountGroups}
           selectedAccountGroups={selectedAccountGroups}
@@ -172,23 +255,25 @@ export const MultichainEditAccountsPage = ({
           showAccountCheckbox={true}
         />
       </ScrollContainer>
-      <Footer className="multichain-edit-accounts-page__footer">
+      <Footer>
         <Button
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
-          variant={ButtonVariant.Secondary}
+          variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          // Allow 0 accounts selected for existing Snaps and non-Snaps revoke flows,
-          // but require at least 1 account for initial Snaps permission requests
-          isDisabled={
-            selectedAccountGroups.length === 0 &&
-            snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial
-          }
+          isDisabled={isSaveDisabled}
           isFullWidth
         >
           {confirmButtonText ?? t('connect')}
         </Button>
       </Footer>
+      {showDisconnectModal && siteMetadata && (
+        <DisconnectAllModal
+          onClick={handleDisconnectConfirm}
+          onClose={() => setShowDisconnectModal(false)}
+          origin={siteMetadata.origin}
+        />
+      )}
     </Page>
   );
 };

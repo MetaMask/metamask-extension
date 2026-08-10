@@ -374,6 +374,7 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
+              origin={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
@@ -447,12 +448,23 @@ export const MultichainReviewPermissions = () => {
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      title={t('editAccounts')}
-      confirmButtonText={t('update')}
+      title={t('manageConnectedAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainReviewPermissionsPageMode.Summary)}
+      siteMetadata={{
+        origin: activeTabOrigin,
+        name: connectedSubjectsMetadata?.name,
+        iconUrl: connectedSubjectsMetadata?.iconUrl,
+      }}
+      onDisconnect={() => {
+        trace({ name: TraceName.DisconnectAllModal });
+        disconnectAllPermissions();
+        endTrace({ name: TraceName.DisconnectAllModal });
+        setPageMode(MultichainReviewPermissionsPageMode.Summary);
+      }}
     />
   );
 };
