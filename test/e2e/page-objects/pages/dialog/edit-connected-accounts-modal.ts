@@ -24,9 +24,8 @@ class EditConnectedAccountsModal {
 
   driver: Driver;
 
-  private readonly editAccountsModalTitle = {
-    text: 'Select accounts',
-    tag: 'h4',
+  private readonly editAccountsModalHeader = {
+    testId: 'edit-accounts-modal-header',
   };
 
   constructor(driver: Driver) {
@@ -87,7 +86,7 @@ class EditConnectedAccountsModal {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.editAccountsModalTitle,
+      this.editAccountsModalHeader,
       this.connectAccountsButton,
     ]);
     console.log('Edit connected accounts modal is loaded');

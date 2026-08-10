@@ -186,6 +186,7 @@ export const MultichainEditAccountsPage = ({
     >
       {snapsPermissionsRequestType === SnapsPermissionsRequestType.None && (
         <Header
+          data-testid="edit-accounts-modal-header"
           textProps={{
             variant: TextVariant.headingSm,
           }}
