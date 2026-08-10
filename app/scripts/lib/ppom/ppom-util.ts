@@ -56,7 +56,8 @@ export function getSenderOriginPath(
   if (protocol !== 'https:' && protocol !== 'http:') {
     return undefined;
   }
-  return origin + pathname;
+  const result = origin + pathname;
+  return result.endsWith('/') ? result.slice(0, -1) : result;
 }
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
