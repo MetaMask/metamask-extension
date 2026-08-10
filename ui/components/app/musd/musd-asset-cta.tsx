@@ -98,7 +98,7 @@ export const MusdAssetCta = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { startConversionFlow } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -118,7 +118,6 @@ export const MusdAssetCta = ({
     const ctaDisplayText = t('musdBoostTitle', [String(MUSD_CONVERSION_APY)]);
     const redirectsTo = resolveMusdConversionCtaRedirectsTo({
       intent: 'conversion',
-      educationSeen,
     });
 
     trackEvent(
@@ -152,7 +151,6 @@ export const MusdAssetCta = ({
     trackEvent,
     startConversionFlow,
     t,
-    educationSeen,
     networkName,
   ]);
 

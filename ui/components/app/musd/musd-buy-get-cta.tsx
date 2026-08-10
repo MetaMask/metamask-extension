@@ -90,7 +90,7 @@ export const MusdBuyGetCta = ({
 }: MusdBuyGetCtaProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { startConversionFlow } = useMusdConversion();
   const { defaultPaymentToken } = useMusdConversionTokens();
   const { goToBuy } = useRampsNavigation();
 
@@ -140,7 +140,7 @@ export const MusdBuyGetCta = ({
     const redirectsTo = resolveMusdConversionCtaRedirectsTo(
       variant === BuyGetMusdCtaVariant.BUY
         ? { intent: 'buy' }
-        : { intent: 'conversion', educationSeen },
+        : { intent: 'conversion' },
     );
 
     const eventProperties = createMusdCtaClickedEventProperties({
@@ -193,7 +193,6 @@ export const MusdBuyGetCta = ({
     selectedChainId,
     networkName,
     ctaButtonText,
-    educationSeen,
     createEventBuilder,
     trackEvent,
     goToBuy,

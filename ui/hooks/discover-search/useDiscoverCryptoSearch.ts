@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   getTrendingTokens,
   searchTokens,
@@ -23,12 +23,21 @@ export type UseDiscoverCryptoSearchResult = {
   data: TrendingAsset[];
   totalCount?: number;
   isLoading: boolean;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => Promise<unknown>;
   error: Error | null;
 };
 
 type CryptoSearchPage = {
   data: TrendingAsset[];
   totalCount?: number;
+  hasSearchResults: boolean;
+  pageInfo?: {
+    endCursor: string | null;
+    hasNextPage: boolean;
+    nextCursor?: string | null;
+  };
 };
 
 const mapSearchResultToTrendingAsset = (
@@ -47,6 +56,27 @@ const mapSearchResultToTrendingAsset = (
   rwaData: item.rwaData,
   securityData: item.securityData,
 });
+
+const matchesSearchQuery = (asset: TrendingAsset, query: string): boolean => {
+  const normalizedQuery = query.toLowerCase();
+
+  return (
+    asset.symbol?.toLowerCase().includes(normalizedQuery) ||
+    asset.name?.toLowerCase().includes(normalizedQuery)
+  );
+};
+
+const dedupeByAssetId = (assets: TrendingAsset[]): TrendingAsset[] => {
+  const assetsById = new Map<string, TrendingAsset>();
+
+  assets.forEach((asset) => {
+    if (!assetsById.has(asset.assetId)) {
+      assetsById.set(asset.assetId, asset);
+    }
+  });
+
+  return Array.from(assetsById.values());
+};
 
 /**
  * Crypto Discover feed: trending when query is empty, market-data search otherwise.
@@ -76,12 +106,12 @@ export const useDiscoverCryptoSearch = ({
         minVolume24hUsd: 1_000_000,
         includeTokenSecurityData: true,
       }),
-    enabled: enabled && !isSearch,
+    enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
     cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
-  const searchQuery = useQuery<CryptoSearchPage, Error>({
+  const searchQuery = useInfiniteQuery<CryptoSearchPage, Error>({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
@@ -89,12 +119,17 @@ export const useDiscoverCryptoSearch = ({
       trimmedQuery,
       DISCOVER_SEARCH_CHAIN_IDS,
     ] as const,
-    queryFn: async (): Promise<CryptoSearchPage> => {
+    queryFn: async ({
+      pageParam,
+    }: {
+      pageParam?: string;
+    }): Promise<CryptoSearchPage> => {
       const response = await searchTokens(
         DISCOVER_SEARCH_CHAIN_IDS,
         trimmedQuery,
         {
           limit: DISCOVER_SEARCH_PAGE_SIZE,
+          after: pageParam,
           includeMarketData: true,
           includeTokenSecurityData: true,
         },
@@ -104,25 +139,62 @@ export const useDiscoverCryptoSearch = ({
         throw new Error(response.error);
       }
 
-      const data = (response.data as TokenSearchMarketResult[])
+      const searchResults = response.data as TokenSearchMarketResult[];
+      const data = searchResults
         .filter((item) => !item.rwaData)
         .map(mapSearchResultToTrendingAsset);
 
       return {
         data,
-        totalCount: data.length,
+        totalCount: response.totalCount ?? data.length,
+        hasSearchResults: searchResults.length > 0,
+        pageInfo: response.pageInfo,
       };
     },
+    getNextPageParam: (lastPage) =>
+      lastPage.pageInfo?.hasNextPage
+        ? (lastPage.pageInfo.endCursor ??
+          lastPage.pageInfo.nextCursor ??
+          undefined)
+        : undefined,
     enabled: enabled && isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
     cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   if (isSearch) {
+    const pages = searchQuery.data?.pages ?? [];
+    const [firstPage, ...remainingPages] = pages;
+    const firstPageData = firstPage?.data ?? [];
+    const trendingMatches = (trendingQuery.data ?? []).filter(
+      (asset) => !asset.rwaData && matchesSearchQuery(asset, trimmedQuery),
+    );
+    const sortedFirstPage = firstPage?.hasSearchResults
+      ? dedupeByAssetId([...trendingMatches, ...firstPageData]).sort(
+          (a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0),
+        )
+      : [];
+    const seenAssetIds = new Set(sortedFirstPage.map((asset) => asset.assetId));
+    const appendedData = remainingPages
+      .flatMap((page) => page.data)
+      .filter((asset) => {
+        if (seenAssetIds.has(asset.assetId)) {
+          return false;
+        }
+
+        seenAssetIds.add(asset.assetId);
+        return true;
+      });
+    const data = [...sortedFirstPage, ...appendedData];
+    const lastPage = pages.at(-1);
+
     return {
-      data: searchQuery.data?.data ?? [],
-      totalCount: searchQuery.data?.totalCount,
+      data,
+      totalCount: lastPage?.totalCount ?? data.length,
       isLoading: searchQuery.isLoading || searchQuery.isFetching,
+      hasNextPage: searchQuery.hasNextPage ?? false,
+      isFetchingNextPage: searchQuery.isFetchingNextPage,
+      fetchNextPage: searchQuery.fetchNextPage,
       error: searchQuery.error ?? null,
     };
   }
@@ -130,6 +202,9 @@ export const useDiscoverCryptoSearch = ({
   return {
     data: trendingQuery.data ?? [],
     isLoading: trendingQuery.isLoading || trendingQuery.isFetching,
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: async () => undefined,
     error: trendingQuery.error ?? null,
   };
 };

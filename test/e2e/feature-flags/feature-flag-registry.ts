@@ -3407,6 +3407,39 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  swapsChainValueOrderOverride: {
+    inProd: true,
+    name: 'swapsChainValueOrderOverride',
+    productionDefault: {
+      positionOverrides: [],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  swapsSWAPS4827AbtestChainValueOrder: {
+    inProd: true,
+    name: 'swapsSWAPS4827AbtestChainValueOrder',
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 0.5,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   tempoConfig: {
     inProd: true,
     name: 'tempoConfig',
