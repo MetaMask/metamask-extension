@@ -51,6 +51,7 @@ describe('getDefaultConnectChainIds', () => {
       KnownCaipNamespace.Eip155,
     ] as KnownCaipNamespace[],
     isEip1193Request: false,
+    isEip1193CompatibleRequest: false,
     isSolanaWalletStandardRequest: false,
     isTronWalletAdapterRequest: false,
   };
@@ -220,5 +221,19 @@ describe('getDefaultConnectChainIds', () => {
     });
 
     expect(result).toEqual([tron.caipChainId]);
+  });
+
+  it('returns all default networks for EIP-1193 compatible requests even when specific chains are requested', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedCaipChainIds: [ethMainnet.caipChainId, polygon.caipChainId],
+      isEip1193CompatibleRequest: true,
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      solana.caipChainId,
+    ]);
   });
 });
