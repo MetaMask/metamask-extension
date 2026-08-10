@@ -43,13 +43,13 @@ const mockUseTrustSignals = jest.requireMock(
 ).useTrustSignals;
 
 const MALICIOUS_ADDRESS = '0x52de2dd49a37b9926ae1e063f470ec2fd44f41ec';
+const MALICIOUS_ADDRESS_2 = '0x1234567890abcdef1234567890abcdef12345678';
+const WARNING_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+const WARNING_ADDRESS_2 = '0x9876543210fedcba9876543210fedcba98765432';
+const BENIGN_ADDRESS = '0x00000000000000000000000000000000deadbeef';
 const TOKEN_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
-type MessageFields = {
-  to?: string;
-  recipient?: string;
-  spender?: string;
-};
+type MessageFields = Record<string, string>;
 
 const buildTypedSignature = (
   primaryType: string,
@@ -102,7 +102,7 @@ const maliciousAlert = (field: string, address: string) => ({
   actions: [],
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
-  key: 'signatureAddressTrustSignalMalicious',
+  key: `signatureAddressTrustSignalMalicious_${address}`,
   message: `alertMessageSignatureAddressMalicious|${field}|${shortenAddress(
     address,
   )}`,
@@ -114,7 +114,7 @@ const warningAlert = (field: string, address: string) => ({
   actions: [],
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
-  key: 'signatureAddressTrustSignalWarning',
+  key: `signatureAddressTrustSignalWarning_${address}`,
   message: `alertMessageSignatureAddressWarning|${field}|${shortenAddress(
     address,
   )}`,
@@ -215,6 +215,74 @@ describe('useSignatureAddressAlerts', () => {
     );
 
     expect(result.current).toEqual([warningAlert('to', MALICIOUS_ADDRESS)]);
+  });
+
+  it('returns a malicious alert per address when several are flagged', () => {
+    mockTrustSignalsFor({
+      [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
+      [MALICIOUS_ADDRESS_2]: TrustSignalDisplayState.Malicious,
+    });
+
+    const signature = buildTypedSignature('GenericSignatureType', {
+      to: MALICIOUS_ADDRESS,
+      recipient: MALICIOUS_ADDRESS_2,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([
+      maliciousAlert('to', MALICIOUS_ADDRESS),
+      maliciousAlert('recipient', MALICIOUS_ADDRESS_2),
+    ]);
+  });
+
+  it('returns a warning alert per address when several are flagged', () => {
+    mockTrustSignalsFor({
+      [WARNING_ADDRESS]: TrustSignalDisplayState.Warning,
+      [WARNING_ADDRESS_2]: TrustSignalDisplayState.Warning,
+    });
+
+    const signature = buildTypedSignature('GenericSignatureType', {
+      to: WARNING_ADDRESS,
+      recipient: WARNING_ADDRESS_2,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([
+      warningAlert('to', WARNING_ADDRESS),
+      warningAlert('recipient', WARNING_ADDRESS_2),
+    ]);
+  });
+
+  it('flags malicious and warning addresses while ignoring benign ones', () => {
+    mockTrustSignalsFor({
+      [MALICIOUS_ADDRESS]: TrustSignalDisplayState.Malicious,
+      [WARNING_ADDRESS]: TrustSignalDisplayState.Warning,
+      [BENIGN_ADDRESS]: TrustSignalDisplayState.Unknown,
+    });
+
+    const signature = buildTypedSignature('GenericSignatureType', {
+      to: MALICIOUS_ADDRESS,
+      recipient: WARNING_ADDRESS,
+      operator: BENIGN_ADDRESS,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      getMockTypedSignConfirmStateForRequest(signature),
+    );
+
+    expect(result.current).toEqual([
+      maliciousAlert('to', MALICIOUS_ADDRESS),
+      warningAlert('recipient', WARNING_ADDRESS),
+    ]);
   });
 
   it('returns an empty array when the address is not flagged', () => {
