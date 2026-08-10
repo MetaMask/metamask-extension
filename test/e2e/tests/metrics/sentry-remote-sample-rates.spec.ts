@@ -213,7 +213,7 @@ describe('Sentry remote sample rates', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const uiState = await getCleanAppState(driver);
-        const sentry = uiState.metamask.remoteFeatureFlags.sentry;
+        const { sentry } = uiState.metamask.remoteFeatureFlags;
 
         // No build is at 999.0.0, so the 0.0.1 rung wins. Asserting the whole
         // object rather than one key also proves the `versions` wrapper is gone
