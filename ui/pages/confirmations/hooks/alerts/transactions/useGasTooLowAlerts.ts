@@ -41,5 +41,5 @@ export function useGasTooLowAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [gasTooLow]);
+  }, [gasTooLow, t]);
 }

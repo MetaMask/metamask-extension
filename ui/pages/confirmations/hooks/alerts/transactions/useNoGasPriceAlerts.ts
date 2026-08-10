@@ -49,5 +49,5 @@ export function useNoGasPriceAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [noGasPrice]);
+  }, [noGasPrice, t]);
 }
