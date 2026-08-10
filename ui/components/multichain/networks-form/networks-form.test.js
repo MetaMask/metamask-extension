@@ -693,7 +693,7 @@ describe('NetworkForm Component', () => {
       rpcEndpoints: [
         {
           networkClientId: 'bsc',
-          type: 'custom',
+          type: 'infura',
           url: 'https://bsc-mainnet.infura.io/v3/test',
           failoverUrls: [],
         },
@@ -780,12 +780,10 @@ describe('NetworkForm Component', () => {
     expect(getByText(messages.failover.message)).toBeInTheDocument();
   });
 
-  it('suppresses persisted failoverUrls for a map chain when the shared config env is unset', () => {
-    // The chain is in the shared failover map but its QuickNode env is unset,
-    // so the shared config resolves to an empty array and no failover is shown.
-    // The form reads the shared config only, so the persisted failoverUrls on
-    // the endpoint are ignored.
-    delete process.env.QUICKNODE_BSC_URL;
+  it('does not show failover for a custom endpoint even when the chain has a shared config failover', () => {
+    // Failover only applies to Infura endpoints, so a custom endpoint shows no
+    // failover even though this chain (BSC) has a shared config failover.
+    process.env.QUICKNODE_BSC_URL = 'https://failover.example/bsc';
 
     const existingNetwork = {
       chainId: '0x38',
@@ -799,7 +797,7 @@ describe('NetworkForm Component', () => {
           networkClientId: 'bsc',
           type: 'custom',
           url: 'https://bsc.example/rpc',
-          failoverUrls: ['https://persisted.example'],
+          failoverUrls: [],
         },
       ],
     };
@@ -833,10 +831,9 @@ describe('NetworkForm Component', () => {
     expect(queryByText(messages.failover.message)).toBeNull();
   });
 
-  it('does not show failover for a chain not in the shared config, even with persisted failoverUrls', () => {
-    // 0x2328 (9000) is not in the shared failover map. The form reads the
-    // shared config only, so it shows no failover even though the endpoint
-    // carries persisted failoverUrls.
+  it('does not show failover for a chain not in the shared config', () => {
+    // 0x2328 (9000) is not in the shared failover map, so even an Infura
+    // endpoint gets no failover.
     const existingNetwork = {
       chainId: '0x2328',
       name: 'Some Custom Network',
@@ -847,9 +844,9 @@ describe('NetworkForm Component', () => {
       rpcEndpoints: [
         {
           networkClientId: 'custom',
-          type: 'custom',
+          type: 'infura',
           url: 'https://custom.example/rpc',
-          failoverUrls: ['https://persisted.example'],
+          failoverUrls: [],
         },
       ],
     };
