@@ -22,17 +22,18 @@ export type GetDefaultConnectChainIdsParams = {
 /**
  * Returns the chain IDs that should be granted when the user connects a dapp
  * without manually selecting networks on the connect screen.
- * @param options0
- * @param options0.nonTestNetworkConfigurations
- * @param options0.testNetworkConfigurations
- * @param options0.globallySelectedNetworkChainId
- * @param options0.requestedCaipChainIds
- * @param options0.alreadyConnectedCaipChainIds
- * @param options0.requestedNamespaces
- * @param options0.requestedNamespacesWithoutWallet
- * @param options0.isEip1193Request
- * @param options0.isSolanaWalletStandardRequest
- * @param options0.isTronWalletAdapterRequest
+ * @param options
+ * @param options.nonTestNetworkConfigurations - All non-test (mainnet) network configurations.
+ * @param options.testNetworkConfigurations - All test network configurations.
+ * @param options.globallySelectedNetworkChainId - The currently selected network in the wallet UI.
+ * @param options.requestedCaipChainIds - Specific chain IDs requested by the dapp.
+ * @param options.alreadyConnectedCaipChainIds - Chain IDs the dapp already has permission to use.
+ * @param options.requestedNamespaces - CAIP namespaces requested by the dapp (e.g., "eip155", "solana").
+ * @param options.requestedNamespacesWithoutWallet - Requested namespaces excluding the "wallet" namespace.
+ * @param options.isEip1193Request - Whether this is a legacy EIP-1193 connection request.
+ * @param options.isSolanaWalletStandardRequest - Whether this is a Solana Wallet Standard request.
+ * @param options.isTronWalletAdapterRequest - Whether this is a Tron Wallet Adapter request.
+ * @returns The CAIP chain IDs to grant by default.
  */
 export function getDefaultConnectChainIds({
   nonTestNetworkConfigurations,
