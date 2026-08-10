@@ -43,8 +43,8 @@ describe('Swap', function () {
           title: this.test?.fullTitle(),
           featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
         }),
-        async ({ driver }) => {
-          await login(driver, { expectedBalance: '$225,730.11' });
+        async ({ driver, localNodes }) => {
+          await login(driver, { localNode: localNodes[0] });
 
           await bridgeTransaction({
             driver,
