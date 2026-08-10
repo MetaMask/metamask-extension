@@ -2512,28 +2512,34 @@ export default class MetamaskController extends EventEmitter {
       restorePreviousEnabledNetworkMap,
     );
 
+    let addedNetwork;
     try {
-      const addedNetwork =
+      addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      if (setActive) {
-        const { networkClientId } =
-          addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-          {};
-        await this.networkController.setActiveNetwork(networkClientId);
-      } else {
-        await this.controllerMessenger.call(
-          'LegacyBackgroundApiService:lookupSelectedNetworks',
-        );
-      }
-      return addedNetwork;
     } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
+      // `addNetwork` rejected, so `networkAdded` was never published and
+      // `restorePreviousEnabledNetworkMap` never ran - clean up the
+      // subscription ourselves. Once `addNetwork` succeeds, that callback
+      // already unsubscribes itself, so nothing below this point should
+      // touch the subscription again.
       this.controllerMessenger.unsubscribe(
         'NetworkEnablementController:stateChange',
         restorePreviousEnabledNetworkMap,
       );
       throw error;
     }
+
+    if (setActive) {
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.networkController.setActiveNetwork(networkClientId);
+    } else {
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      );
+    }
+    return addedNetwork;
   }
 
   /**
