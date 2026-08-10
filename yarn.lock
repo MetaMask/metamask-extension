@@ -9003,10 +9003,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.33.1":
-  version: 1.33.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.33.1"
-  checksum: 10/cd1d5acb6ad4b7753aca0fd78bb2abec2dc1977d6e93fd6512e9536cf6af46ded04e83092b63a13ba6aac91e96b192a38aba959b96d42c025b13d3d7bfab5c79
+"@metamask/tron-wallet-snap@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/tron-wallet-snap@npm:3.1.0"
+  checksum: 10/9a91bd31746240c0be188b963c9c08749cacff1f0ab9a9b9d93f7e4f47719313f53c7ce953afcaa303cc3d997a8ea3f83f448087a1ddb98f2d2150766533b108
   languageName: node
   linkType: hard
 
@@ -33385,7 +33385,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.5.1"
     "@metamask/transaction-pay-controller": "npm:^26.0.0"
-    "@metamask/tron-wallet-snap": "npm:^1.33.1"
+    "@metamask/tron-wallet-snap": "npm:^3.1.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^8.1.0"
