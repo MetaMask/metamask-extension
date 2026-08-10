@@ -206,7 +206,7 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  */
 const onMessageSetUpPhishingStreams = (
   msg: unknown,
-): Promise<string | undefined> => {
+): Promise<string> | undefined => {
   if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
@@ -215,7 +215,8 @@ const onMessageSetUpPhishingStreams = (
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
   }
-  return Promise.resolve(undefined);
+  // A Promise would claim the response channel from other message listeners.
+  return undefined;
 };
 
 export const isDetectedPhishingSite: boolean =
