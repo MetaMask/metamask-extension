@@ -55,6 +55,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerClearStateAction,
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -500,6 +501,7 @@ type AllowedActions =
   | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
+  | AccountsControllerClearStateAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
