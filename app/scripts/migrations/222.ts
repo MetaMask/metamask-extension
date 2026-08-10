@@ -72,8 +72,9 @@ function getBrowserStorageLocal(): BrowserStorageLocal | undefined {
  * browser.storage.local. Users who already ran those migrations need this
  * follow-up migration because old migrations are not rerun.
  * @param versionedData
+ * @param _changedKeys
  */
-export const migrate = (async (versionedData) => {
+export const migrate = (async (versionedData, _changedKeys) => {
   versionedData.meta.version = version;
 
   let database: IndexedDBStore | undefined;

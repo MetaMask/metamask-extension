@@ -5,6 +5,7 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -290,15 +291,17 @@ const destroyLegacyExtensionStreams = () => {
  * @param msg.name - custom property and name to identify the message received
  * @returns
  */
-const onMessageSetUpExtensionStreams = (msg: MessageType) => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+const onMessageSetUpExtensionStreams = (
+  msg: unknown,
+): Promise<string | undefined> => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();
       setupLegacyExtensionStreams();
     }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
-  return undefined;
+  return Promise.resolve(undefined);
 };
 
 /**

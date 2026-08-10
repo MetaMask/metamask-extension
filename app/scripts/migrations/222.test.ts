@@ -169,7 +169,9 @@ describe(`migration #${version}`, () => {
   });
 
   it('keeps legacy storageService keys when IndexedDB mutations are blocked', async () => {
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
     const blockedError = new DOMException(
       'A mutation operation was attempted on a database that did not allow mutations.',
       'InvalidStateError',
@@ -193,7 +195,9 @@ describe(`migration #${version}`, () => {
   });
 
   it('does not throw when migration storage access fails', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
     const storageError = new Error('storage.local failed');
     mockBrowser.storage.local.getKeys.mockRejectedValueOnce(storageError);
     const oldStorage = buildVersionedData();
