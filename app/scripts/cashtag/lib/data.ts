@@ -1,27 +1,10 @@
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import type { AssetData, ResolvedTicker } from './types';
 
 const tokenSearchUrl = 'https://token.api.cx.metamask.io/tokens/search';
 const historicalPricesUrl = 'https://price.api.cx.metamask.io/v3/historical-prices';
 const iconBase = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
-
-const searchChainIds: CaipChainId[] = [
-  toEvmCaipChainId(CHAIN_IDS.MAINNET),
-  MultichainNetworks.SOLANA,
-  MultichainNetworks.BITCOIN,
-  MultichainNetworks.TRON,
-  MultichainNetworks.STELLAR,
-  toEvmCaipChainId(CHAIN_IDS.BSC),
-  toEvmCaipChainId(CHAIN_IDS.BASE),
-  toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
-  toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
-  toEvmCaipChainId(CHAIN_IDS.POLYGON),
-  toEvmCaipChainId(CHAIN_IDS.AVALANCHE),
-];
 
 type SearchHit = {
   assetId: CaipAssetType;
@@ -85,7 +68,6 @@ function compareHits(left: SearchHit, right: SearchHit) {
 async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
   const params = new URLSearchParams({
     query: symbol,
-    networks: searchChainIds.join(','),
     first: '25',
     includeMarketData: 'true',
   });
