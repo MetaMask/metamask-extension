@@ -207,7 +207,7 @@ class HeaderNavbar {
   }
 
   async clickDrawerBackButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.drawerBackButton);
+    await this.driver.clickElement(this.drawerBackButton);
   }
 
   /**
