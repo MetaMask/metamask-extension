@@ -34,6 +34,7 @@ jest.mock(
 );
 jest.mock('../../components/app/recovery-phrase-reminder', () => ({
   RecoveryPhraseReminderContainer: () => null,
+  SeedPhraseBackupNotificationContainer: () => null,
 }));
 jest.mock(
   '../../components/app/imported-tokens-notification/imported-tokens-notification-container',
