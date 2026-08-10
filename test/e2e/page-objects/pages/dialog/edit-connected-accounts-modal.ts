@@ -97,6 +97,12 @@ class EditConnectedAccountsModal {
     await this.driver.clickElement(this.connectAccountsButton);
   }
 
+  async isConnectButtonEnabled(): Promise<boolean> {
+    console.log('Check if Connect button is enabled');
+    const button = await this.driver.findElement(this.connectAccountsButton);
+    return await button.isEnabled();
+  }
+
   /**
    * Toggles an account at the specified index.
    *
