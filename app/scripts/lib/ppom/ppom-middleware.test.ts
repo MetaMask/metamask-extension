@@ -343,7 +343,7 @@ describe('PPOMMiddleware', () => {
     expect(validateRequestWithPPOM).toHaveBeenCalledTimes(1);
     expect(validateRequestWithPPOM).toHaveBeenCalledWith(
       expect.objectContaining({
-        request: expect.objectContaining({ originPath: undefined }),
+        request: expect.not.objectContaining({ originPath: expect.anything() }),
       }),
     );
   });
