@@ -13,6 +13,7 @@ export type Preferences = {
   showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
+  showTickerWidget: boolean;
   showMultiRpcModal: boolean;
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;
