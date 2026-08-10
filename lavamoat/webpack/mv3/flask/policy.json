@@ -2085,6 +2085,11 @@
         "@metamask/mobile-wallet-protocol-dapp-client>uuid": true
       }
     },
+    "@metamask/money-account-utils": {
+      "packages": {
+        "@metamask/transaction-controller": true
+      }
+    },
     "@metamask/multichain-account-service": {
       "globals": {
         "clearTimeout": true,
