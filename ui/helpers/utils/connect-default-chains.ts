@@ -72,10 +72,15 @@ export function getDefaultConnectChainIds({
   // request (with no specific chains requested), an EIP-1193 compatible
   // request (a Multichain API request carrying the `eip1193-compatible`
   // session property, set by MetaMask Connect's `@metamask/connect-evm`), a
-  // Solana wallet standard request, or a tronWallet library request
+  // Solana wallet standard request, or a tronWallet library request.
+  // Legacy EIP-1193 requests also carry the `eip1193-compatible` session
+  // property (it is added by `getCaip25PermissionFromLegacyPermissions`), so
+  // the flag only takes the all-networks path for non-legacy requests;
+  // otherwise legacy requests with specific chains would lose their
+  // requested-chains-only pre-selection.
   if (
     (requestedCaipChainIds.length === 0 && isEip1193Request) ||
-    isEip1193CompatibleRequest ||
+    (isEip1193CompatibleRequest && !isEip1193Request) ||
     isSolanaWalletStandardRequest ||
     isTronWalletAdapterRequest
   ) {

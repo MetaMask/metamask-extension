@@ -236,4 +236,34 @@ describe('getDefaultConnectChainIds', () => {
       solana.caipChainId,
     ]);
   });
+
+  it('keeps only the requested chains for legacy EIP-1193 requests with specific chains even though they carry the eip1193-compatible session property', () => {
+    // Legacy EIP-1193 requests are also tagged with the `eip1193-compatible`
+    // session property by `getCaip25PermissionFromLegacyPermissions`, but
+    // specific-chain requests (e.g. `wallet_requestPermissions` with
+    // `endowment:permitted-chains`) must not take the all-networks path.
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedCaipChainIds: [polygon.caipChainId],
+      isEip1193Request: true,
+      isEip1193CompatibleRequest: true,
+    });
+
+    expect(result).toEqual([polygon.caipChainId]);
+  });
+
+  it('returns all default networks for legacy EIP-1193 requests with no specific chains and the eip1193-compatible session property', () => {
+    const result = getDefaultConnectChainIds({
+      ...baseParams,
+      requestedCaipChainIds: [],
+      isEip1193Request: true,
+      isEip1193CompatibleRequest: true,
+    });
+
+    expect(result).toEqual([
+      ethMainnet.caipChainId,
+      polygon.caipChainId,
+      solana.caipChainId,
+    ]);
+  });
 });
