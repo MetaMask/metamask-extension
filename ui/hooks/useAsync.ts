@@ -76,6 +76,25 @@ export function createErrorResult(error: Error): ResultError {
 }
 
 /**
+ * Shallow-compare two React dependency lists (Object.is per element).
+ *
+ * @param left - Previous dependency list
+ * @param right - Next dependency list
+ * @returns True when both lists are the same length and every element matches
+ */
+function areDepsEqual(left: DependencyList, right: DependencyList): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+  for (let i = 0; i < left.length; i++) {
+    if (!Object.is(left[i], right[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Hook that provides a callback for manual execution of an async function,
  * along with state management for the operation.
  *
@@ -92,6 +111,11 @@ export function useAsyncCallback<T>(
 
   // Track component mount state
   const isMounted = useRef(true);
+  const asyncFnRef = useRef(asyncFn);
+
+  useEffect(() => {
+    asyncFnRef.current = asyncFn;
+  });
 
   // Update ref when component unmounts
   useEffect(() => {
@@ -100,13 +124,21 @@ export function useAsyncCallback<T>(
     };
   }, []);
 
+  // Mirror deps into a version so useCallback can use an array literal.
+  const [prevDeps, setPrevDeps] = useState(deps);
+  const [depsVersion, setDepsVersion] = useState(0);
+  if (!areDepsEqual(prevDeps, deps)) {
+    setPrevDeps(deps);
+    setDepsVersion((version) => version + 1);
+  }
+
   const execute = useCallback(async () => {
     if (!isMounted.current) {
       return;
     }
     setResult(RESULT_PENDING);
     try {
-      const value = await asyncFn();
+      const value = await asyncFnRef.current();
       if (isMounted.current) {
         setResult(createSuccessResult(value));
       }
@@ -115,8 +147,7 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-    // eslint-disable-next-line react-hooks/use-memo
-  }, deps);
+  }, [depsVersion]);
 
   return [execute, result];
 }

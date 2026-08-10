@@ -29,7 +29,7 @@ export type MapToTemplateParams = {
   componentMap: COMPONENT_MAPPING;
   isScrollableContainer?: boolean;
   setScroll: () => void;
-  scrollableContainerRef: React.RefObject<HTMLDivElement>;
+  scrollableContainerRef: React.Ref<HTMLDivElement>;
 };
 
 /**

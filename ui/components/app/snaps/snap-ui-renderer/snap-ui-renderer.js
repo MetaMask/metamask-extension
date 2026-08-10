@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -29,15 +29,6 @@ import {
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
 
-// Component for tracking the number of re-renders
-// DO NOT USE IN PRODUCTION
-const PerformanceTracker = () => {
-  const rendersRef = useRef(0);
-  rendersRef.current += 1;
-
-  return <span data-testid="performance" data-renders={rendersRef.current} />;
-};
-
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
@@ -51,10 +42,33 @@ const SnapUIRendererComponent = ({
   useFooter = false,
   onCancel,
   contentBackgroundColor,
-  PERF_DEBUG,
 }) => {
-  const scrollableContainerRef = useRef(null);
-  const scrollRef = useRef(null);
+  const scrollHost = useMemo(() => {
+    const host = {
+      node: null,
+      scrollTop: 0,
+      setNode: (node) => {
+        host.node = node;
+      },
+      onScroll: () => {
+        if (host.node) {
+          host.scrollTop = host.node.scrollTop;
+        }
+      },
+    };
+    return host;
+  }, []);
+
+  const scrollableContainerRef = useCallback(
+    (node) => {
+      scrollHost.setNode(node);
+    },
+    [scrollHost],
+  );
+
+  const setScroll = useCallback(() => {
+    scrollHost.onScroll();
+  }, [scrollHost]);
 
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
@@ -67,20 +81,8 @@ const SnapUIRendererComponent = ({
   );
 
   useEffect(() => {
-    if (scrollableContainerRef.current) {
-      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
-    }
-  }, [interfaceState?.content]);
-
-  /**
-   * Sets the scroll position to the current scroll position of the scrollable container.
-   * This is used to restore the scroll position when the content changes.
-   */
-  const setScroll = () => {
-    if (scrollableContainerRef.current) {
-      scrollRef.current = scrollableContainerRef.current.scrollTop;
-    }
-  };
+    scrollHost.node?.scrollTo?.(0, scrollHost.scrollTop);
+  }, [interfaceState?.content, scrollHost]);
 
   const rawContent = interfaceState?.content;
   const content =
@@ -118,7 +120,16 @@ const SnapUIRendererComponent = ({
         setScroll,
         scrollableContainerRef,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
+    [
+      content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      backgroundColor,
+      setScroll,
+      scrollableContainerRef,
+    ],
   );
 
   const pickerLocaleText = useMemo(
@@ -167,7 +178,6 @@ const SnapUIRendererComponent = ({
             }}
           >
             <MetaMaskTemplateRenderer sections={sections} />
-            {PERF_DEBUG && <PerformanceTracker />}
           </Box>
         </LocalizationProvider>
       </ThemeProvider>
@@ -192,5 +202,4 @@ SnapUIRendererComponent.propTypes = {
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
-  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };

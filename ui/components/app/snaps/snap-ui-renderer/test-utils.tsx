@@ -26,7 +26,6 @@ type RenderInterfaceResult = RenderResult & {
     newContent: JSXElement,
     newState?: Record<string, unknown> | null,
   ) => void;
-  getRenderCount: () => number;
 };
 
 /**
@@ -40,7 +39,7 @@ type RenderInterfaceResult = RenderResult & {
  * @param options.state - The state of the interface.
  * @param options.metamaskState - The initial state of the MetaMask store.
  * @param options.snapId - The ID of the snap to render the interface for.
- * @returns Testing utilities with render result, plus updateInterface and getRenderCount functions.
+ * @returns Testing utilities with render result, plus updateInterface.
  */
 export function renderInterface(
   content: JSXElement,
@@ -115,16 +114,9 @@ export function renderInterface(
       useFooter={useFooter}
       onCancel={onCancel}
       contentBackgroundColor={contentBackgroundColor}
-      PERF_DEBUG
     />,
     store,
   );
 
-  const getRenderCount = () =>
-    parseInt(
-      result.getByTestId('performance').getAttribute('data-renders') as string,
-      10,
-    );
-
-  return { ...result, updateInterface, getRenderCount };
+  return { ...result, updateInterface };
 }

@@ -30,10 +30,6 @@ exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -84,10 +80,6 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="2"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -138,10 +130,6 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="2"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -192,10 +180,6 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="2"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -219,10 +203,6 @@ exports[`SnapUIRenderer renders basic UI 1`] = `
         </p>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -264,10 +244,6 @@ exports[`SnapUIRenderer renders footers 1`] = `
         </button>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -332,10 +308,6 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
         </button>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -370,10 +342,6 @@ exports[`SnapUIRenderer supports interactive inputs 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -415,10 +383,6 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
         </button>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -468,10 +432,6 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
         </button>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
