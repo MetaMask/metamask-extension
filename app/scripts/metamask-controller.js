@@ -2453,31 +2453,36 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a network and (optionally) sets it as the active network.
    *
+   * Every call to `NetworkController:addNetwork` makes
+   * `NetworkEnablementController#onAddNetwork` run its exclusive-switch side
+   * effect: unless the added network is itself a popular/featured one, it
+   * disables every other currently-enabled network (across every namespace —
+   * EVM and non-EVM alike) and enables only the one just added. That flag is
+   * separate from "active network" (`NetworkController`'s selected RPC
+   * endpoint) and drives which networks are included in multi-network
+   * aggregation (home asset list "All networks" totals, the Activity tab).
+   * Left uncorrected, adding any custom network silently drops every other
+   * network the user had on out of those aggregated views.
+   *
+   * This always snapshots the enabled-network map before adding, and restores
+   * it afterward so other networks keep their prior enabled state, regardless
+   * of whether we're also switching the active network.
+   *
    * @param {object} networkConfiguration - The network configuration to add.
    * @param {object} [options0] - Options for post-add behavior.
    * @param {boolean} [options0.setActive] - Whether to switch to the added network.
-   * @param {boolean} [options0.enableNetwork] - When `setActive` is false, whether
-   * to additionally mark the added network as enabled (in addition to restoring
-   * every other network's prior enabled state). Without this,
-   * `NetworkEnablementController#onAddNetwork`'s exclusive-switch side effect is
-   * fully undone, including for the network just added, so it ends up added but
-   * disabled. Needed for callers where the user expects the network they just
-   * picked to show up immediately, without disabling their other enabled networks.
+   * @param {boolean} [options0.enableNetwork] - Whether to additionally mark the
+   * added network as enabled (in addition to restoring every other network's
+   * prior enabled state). Defaults to the value of `setActive`, since a caller
+   * asking to switch to the added network also expects it to show up in
+   * aggregated views. Pass `false` explicitly for callers that only want to
+   * persist the network's configuration without changing what's enabled.
    * @returns {Promise<object>} The added network configuration.
    */
   async _addNetworkAndSetActive(
     networkConfiguration,
-    { setActive = true, enableNetwork = false } = {},
+    { setActive = true, enableNetwork = setActive } = {},
   ) {
-    if (setActive) {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      const { networkClientId } =
-        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-        {};
-      await this.networkController.setActiveNetwork(networkClientId);
-      return addedNetwork;
-    }
     const previousEnabledNetworkMap = Object.fromEntries(
       Object.entries(
         this.networkEnablementController.state.enabledNetworkMap,
@@ -2510,9 +2515,16 @@ export default class MetamaskController extends EventEmitter {
     try {
       const addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      );
+      if (setActive) {
+        const { networkClientId } =
+          addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+          {};
+        await this.networkController.setActiveNetwork(networkClientId);
+      } else {
+        await this.controllerMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+      }
       return addedNetwork;
     } catch (error) {
       // `addNetwork` rejected, so `networkAdded` was not published

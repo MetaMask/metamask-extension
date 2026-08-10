@@ -384,14 +384,19 @@ export const NetworksForm = ({
           // network from the Networks page should only persist the
           // configuration; switching is reserved for the homepage network
           // modal (`toggleNetworkMenuAfterSubmit=true`).
+          //
+          // `setActive: toggleNetworkMenuAfterSubmit` also enables the added
+          // network by default (see `_addNetworkAndSetActive`) without
+          // disabling any other network the user already had enabled. Don't
+          // follow up with `setEnabledNetworks` here — that exclusively
+          // enables only this one network, undoing that protection and
+          // silently dropping every other enabled network out of aggregated
+          // views (home asset list totals, Activity tab).
           await dispatch(
             addNetwork(networkPayload, {
               setActive: toggleNetworkMenuAfterSubmit,
             }),
           );
-          if (toggleNetworkMenuAfterSubmit) {
-            await dispatch(setEnabledNetworks(networkPayload.chainId));
-          }
         }
 
         trackEvent(

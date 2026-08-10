@@ -19,11 +19,7 @@ import {
   PopoverPosition,
 } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
-import {
-  setEnabledNetworks,
-  toggleNetworkMenu,
-  addNetwork,
-} from '../../../../store/actions';
+import { toggleNetworkMenu, addNetwork } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   AlignItems,
@@ -179,11 +175,14 @@ const PopularNetworkList = ({
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 
-                  // First add the network to user's configuration
+                  // Adds the network and enables it (default setActive:true
+                  // also enables it, without disabling any other network the
+                  // user already had enabled — see `_addNetworkAndSetActive`).
+                  // Don't follow up with `setEnabledNetworks`: it exclusively
+                  // enables only this one network, silently dropping every
+                  // other enabled network out of aggregated views (home asset
+                  // list totals, Activity tab).
                   await dispatch(addNetwork(network));
-
-                  // Then enable it in the network list
-                  await dispatch(setEnabledNetworks(network.chainId));
                 }}
               />
             </Box>
