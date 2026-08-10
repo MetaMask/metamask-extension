@@ -101,6 +101,9 @@ describe('MultichainAccountCellDefaultAddress', () => {
         `${messages.networkNameEthereum.message} ${messages.addressCopied.message.toLowerCase()}`,
       ),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('default-address-copy-icon'),
+    ).not.toBeInTheDocument();
   });
 
   describe('when showDefaultAddress preference is false', () => {
