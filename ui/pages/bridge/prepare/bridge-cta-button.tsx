@@ -9,6 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { InputPrimaryDenomination } from '@metamask/bridge-controller';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import {
   getFromAmount,
@@ -37,12 +38,14 @@ export const BridgeCTAButton = ({
   onOpenRecipientModal,
   onOpenAlertModals,
   onOpenMarketClosedModal,
+  inputPrimaryDenomination,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal: () => void;
   onOpenAlertModals?: () => void;
   onOpenMarketClosedModal: () => void;
+  inputPrimaryDenomination?: InputPrimaryDenomination;
 }) => {
   const t = useI18nContext();
 
@@ -52,8 +55,9 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const { submitBridgeTransaction, isSubmitting } =
-    useSubmitBridgeTransaction();
+  const { submitBridgeTransaction, isSubmitting } = useSubmitBridgeTransaction(
+    inputPrimaryDenomination,
+  );
 
   const {
     isNoQuotesAvailable,

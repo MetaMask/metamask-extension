@@ -9,6 +9,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
+  type InputPrimaryDenomination,
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
@@ -112,6 +113,7 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
+import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-order';
 import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
@@ -207,6 +209,14 @@ export const getBridgeFeatureFlags = createDeepEqualSelector(
     });
     return validatedFlags;
   },
+);
+
+export const getChainValueOrderOverride = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getRemoteFeatureFlags(state).swapsChainValueOrderOverride,
+  ],
+  parsePositionOverrides,
 );
 
 const getChainRanking = (state: BridgeAppState) =>
@@ -506,6 +516,17 @@ export const getToChain = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+export const getInputPrimaryDenomination = (
+  state: BridgeAppState,
+): InputPrimaryDenomination =>
+  state.metamask.inputPrimaryDenomination ?? 'token_amount';
+
+export const getIsFiatToggleEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags): boolean =>
+    (flags as { enableFiatToggle?: boolean }).enableFiatToggle === true,
+);
 
 export const getAccountGroupNameByInternalAccount = createSelector(
   [getAllAccountGroups, (_, account: InternalAccount | null) => account],

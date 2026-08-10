@@ -62,6 +62,7 @@ import {
   getIsSolanaSwap,
   getIsRWASwap,
   getIsStxEnabled,
+  getIsFiatToggleEnabled,
   getAccountGroupNameByInternalAccount,
   getToAccounts,
   getHardwareWalletName,
@@ -76,6 +77,7 @@ import {
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
   resolveMinimumBalanceToKeep,
+  getChainValueOrderOverride,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -355,6 +357,44 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         name: 'Test',
       });
+    });
+  });
+
+  describe('getChainValueOrderOverride', () => {
+    it('returns valid controller-processed promotions', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          swapsChainValueOrderOverride: {
+            positionOverrides: [
+              { chainId: 'eip155:8453', name: 'Base' },
+              { chainId: 'eip155:1', name: 'Ethereum' },
+            ],
+          },
+        },
+      });
+
+      expect(getChainValueOrderOverride(state as never)).toStrictEqual([
+        { chainId: 'eip155:8453', name: 'Base' },
+        { chainId: 'eip155:1', name: 'Ethereum' },
+      ]);
+    });
+
+    it('returns an empty list for malformed promotions', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          swapsChainValueOrderOverride: {
+            positionOverrides: [
+              {
+                // @ts-expect-error - intentionally malformed remote flag value
+                chainId: 'invalid',
+                name: 'Invalid',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(getChainValueOrderOverride(state as never)).toStrictEqual([]);
     });
   });
 
@@ -1021,6 +1061,22 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual('');
     });
+  });
+
+  it('returns true only for a strict boolean true flag', () => {
+    const enabledState = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: true,
+      } as never,
+    });
+    const stringState = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: 'true',
+      } as never,
+    });
+
+    expect(getIsFiatToggleEnabled(enabledState as never)).toBe(true);
+    expect(getIsFiatToggleEnabled(stringState as never)).toBe(false);
   });
 
   describe('getBridgeQuotes', () => {

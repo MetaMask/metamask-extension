@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
+  FeatureId,
   RequestStatus,
+  UnifiedSwapBridgeEventName,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
@@ -25,6 +27,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import BridgeAssetPickerPage from './bridge-asset-picker-page';
@@ -34,6 +37,7 @@ const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
+const mockTrackUnifiedSwapBridgeEvent = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -246,6 +250,11 @@ describe('BridgeInputGroup', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
+    setBackgroundConnection({
+      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      getStatePatches: jest.fn(),
+    } as never);
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -257,6 +266,43 @@ describe('BridgeInputGroup', () => {
       measureElement: () => 78,
     });
   });
+
+  // @ts-expect-error - each is a valid test function
+  it.each([
+    [false, 'source'],
+    [true, 'destination'],
+  ] as const)(
+    'tracks opening the %s asset picker',
+    async (isDestination: boolean, assetLocation: 'source' | 'destination') => {
+      renderBridgeInputGroup(
+        {
+          featureFlagOverrides: {
+            // @ts-expect-error - the mock store type only declares bridgeConfig
+            extensionUxNetworkManagement: {
+              enabled: true,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
+        { isDestination },
+      );
+
+      await act(async () => {
+        await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
+      });
+      await flushPromises();
+
+      expect(mockTrackUnifiedSwapBridgeEvent).toHaveBeenCalledWith(
+        UnifiedSwapBridgeEventName.AssetPickerOpened,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_location: assetLocation,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+        },
+      );
+    },
+  );
 
   it('passes fetched security metadata to the selected asset button', () => {
     const { getByTestId } = renderBridgeInputGroup(
@@ -275,6 +321,37 @@ describe('BridgeInputGroup', () => {
     expect(
       queryByTestId('bridge-selected-asset-verified-badge'),
     ).not.toBeInTheDocument();
+  });
+
+  it('moves the caret only when the input denomination changes', () => {
+    const mockState = createBridgeMockStore();
+    const view = renderWithProvider(
+      <InputGroup mockState={mockState} />,
+      configureStore(mockState),
+    );
+    const input = view.getByTestId('from-amount') as HTMLInputElement;
+    const setSelectionRangeSpy = jest.spyOn(input, 'setSelectionRange');
+
+    act(() => {
+      view.rerender(
+        <InputGroup
+          mockState={mockState}
+          amountFieldProps={{
+            testId: 'from-amount',
+            autoFocus: true,
+            value: '12',
+          }}
+        />,
+      );
+    });
+
+    expect(setSelectionRangeSpy).not.toHaveBeenCalled();
+
+    act(() => {
+      view.rerender(<InputGroup mockState={mockState} amountInputPrefix="$" />);
+    });
+
+    expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should search for tokens', async () => {
