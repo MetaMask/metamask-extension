@@ -5856,7 +5856,7 @@ __metadata:
 
 "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch":
   version: 13.1.1
-  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch::version=13.1.1&hash=b2d0e9"
+  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch::version=13.1.1&hash=3496a5"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5889,7 +5889,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/968fffbfb85b85647873ac04048ac095fc1c34a208e4a66798f35627e62a5abdde871b0103444337eabc76378d34f6dd14c91583f613db8711014b0e66223eaa
+  checksum: 10/c379353957de34960791309e7eab9cf57a44ea668391cb76655e789b42d80ddf415bfbb906fb7746953a17d6d077c884f64c34910d0088c07e6a0580e86e0c00
   languageName: node
   linkType: hard
 
@@ -6393,7 +6393,7 @@ __metadata:
 
 "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch":
   version: 8.1.1
-  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch::version=8.1.1&hash=bef1bd"
+  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch::version=8.1.1&hash=223808"
   dependencies:
     "@metamask/account-tree-controller": "npm:^7.6.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -6406,7 +6406,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/52d05de5519c43ff549684e4764eaf9be58c75ab34d984ccee482b79a1deb0721ecc953f14df6706aafbfe0a02c3446b18151a10d58e3c8ea8eea8eaa858ff05
+  checksum: 10/da647d0e30e931d702fe6be15c9661a335eb10352b1ed3eb42a47eea9e97eb3fb69be4e584ec022759102a581476275b2f6126a704e7000128bd0c53f8bc3c81
   languageName: node
   linkType: hard
 
