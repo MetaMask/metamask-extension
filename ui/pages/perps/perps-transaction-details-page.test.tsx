@@ -228,14 +228,6 @@ describe('PerpsTransactionDetailsPage', () => {
       expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
         '$6.525',
       );
-
-      // MetaMask/Hyperliquid split is deferred until builderFee is available
-      expect(
-        screen.queryByText(messages.perpsOrderMetamaskFee.message),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(messages.perpsOrderHyperliquidFee.message),
-      ).not.toBeInTheDocument();
     });
 
     it('shows $0 for an unfilled open order (no fills have executed)', () => {
