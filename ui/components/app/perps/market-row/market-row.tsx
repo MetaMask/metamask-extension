@@ -20,6 +20,9 @@ import {
 } from '../utils';
 import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRates } from '../../../../selectors';
+import { formatCompactCurrency } from '../../../../helpers/utils/token-insights';
 import type { PerpsMarketData } from '../types';
 
 /**
@@ -56,6 +59,84 @@ export type MarketRowProps = {
 // ever the losing side of a class conflict.
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
+const USD_CURRENCY = 'USD';
+const COMPACT_USD_MULTIPLIERS: Record<string, number> = {
+  K: 1_000,
+  M: 1_000_000,
+  B: 1_000_000_000,
+  T: 1_000_000_000_000,
+};
+
+type CurrencyRate = {
+  conversionRate?: number | null;
+  usdConversionRate?: number | null;
+};
+type CurrencyRates = Record<string, CurrencyRate>;
+
+const getUsdToCurrentCurrencyRate = (currencyRates?: CurrencyRates) => {
+  const currencyRate = Object.values(currencyRates ?? {}).find(
+    ({ conversionRate, usdConversionRate }) =>
+      typeof conversionRate === 'number' &&
+      typeof usdConversionRate === 'number' &&
+      Number.isFinite(conversionRate) &&
+      Number.isFinite(usdConversionRate) &&
+      conversionRate > 0 &&
+      usdConversionRate > 0,
+  );
+
+  if (!currencyRate?.conversionRate || !currencyRate.usdConversionRate) {
+    return null;
+  }
+
+  return currencyRate.conversionRate / currencyRate.usdConversionRate;
+};
+
+const convertUsdValueToDisplayCurrency = (
+  value: number,
+  shouldConvertUsd: boolean,
+  usdToCurrentCurrencyRate: number | null,
+) =>
+  shouldConvertUsd && usdToCurrentCurrencyRate
+    ? value * usdToCurrentCurrencyRate
+    : value;
+
+const parseFormattedUsdValue = (value: string) => {
+  const match = value
+    .trim()
+    .replace(/,/gu, '')
+    .match(/^([+-])?\$?([\d.]+)\s*([KMBT])?/iu);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, sign = '', numericValue, compactSuffix = ''] = match;
+  const parsedValue = Number(numericValue);
+  if (!Number.isFinite(parsedValue)) {
+    return null;
+  }
+
+  const multiplier =
+    COMPACT_USD_MULTIPLIERS[compactSuffix.toUpperCase()] ?? 1;
+  return (sign === '-' ? -1 : 1) * parsedValue * multiplier;
+};
+
+const getConvertedUsdValue = (
+  value: string,
+  shouldConvertUsd: boolean,
+  usdToCurrentCurrencyRate: number | null,
+) => {
+  const usdValue = parseFormattedUsdValue(value);
+  if (usdValue === null) {
+    return null;
+  }
+
+  return convertUsdValueToDisplayCurrency(
+    usdValue,
+    shouldConvertUsd,
+    usdToCurrentCurrencyRate,
+  );
+};
 
 /**
  * Get the metric value to display based on the sort field
@@ -69,10 +150,11 @@ const getMetricValue = (
   market: PerpsMarketData,
   metric: MarketRowDisplayMetric,
   formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+  formatUsdCompactValue: (value: string) => string,
 ): string => {
   switch (metric) {
     case 'volume':
-      return `${market.volume} Vol`;
+      return `${formatUsdCompactValue(market.volume)} Vol`;
     case 'priceChange':
       return formatSignedChangePercent(market.change24hPercent);
     case 'fundingRate':
@@ -84,9 +166,11 @@ const getMetricValue = (
         maximumFractionDigits: 4,
       })}% FR`;
     case 'openInterest':
-      return market.openInterest ? `${market.openInterest} OI` : 'N/A';
+      return market.openInterest
+        ? `${formatUsdCompactValue(market.openInterest)} OI`
+        : 'N/A';
     default:
-      return `${market.volume} Vol`;
+      return `${formatUsdCompactValue(market.volume)} Vol`;
   }
 };
 
@@ -108,8 +192,54 @@ export const MarketRow = ({
   displayMetric = 'volume',
   'data-testid': testIdOverride,
 }: MarketRowProps) => {
-  const { formatNumber } = useFormatters();
+  const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
+  const usdToCurrentCurrencyRate = getUsdToCurrentCurrencyRate(currencyRates);
+  const shouldConvertUsd =
+    currentCurrency.toUpperCase() !== USD_CURRENCY &&
+    usdToCurrentCurrencyRate !== null;
+  const displayCurrency = shouldConvertUsd ? currentCurrency : USD_CURRENCY;
+  const formatUsdCompactValue = useCallback(
+    (value: string) => {
+      if (!shouldConvertUsd) {
+        return value;
+      }
+
+      const convertedValue = getConvertedUsdValue(
+        value,
+        shouldConvertUsd,
+        usdToCurrentCurrencyRate,
+      );
+
+      return convertedValue === null
+        ? value
+        : formatCompactCurrency(convertedValue, displayCurrency);
+    },
+    [displayCurrency, shouldConvertUsd, usdToCurrentCurrencyRate],
+  );
+  const formattedPrice = useMemo(() => {
+    if (!shouldConvertUsd) {
+      return market.price;
+    }
+
+    const convertedValue = getConvertedUsdValue(
+      market.price,
+      shouldConvertUsd,
+      usdToCurrentCurrencyRate,
+    );
+
+    return convertedValue === null
+      ? market.price
+      : formatCurrencyWithMinThreshold(convertedValue, displayCurrency);
+  }, [
+    displayCurrency,
+    formatCurrencyWithMinThreshold,
+    market.price,
+    shouldConvertUsd,
+    usdToCurrentCurrencyRate,
+  ]);
   const displaySymbol = useMemo(
     () =>
       getDisplaySymbol(
@@ -128,8 +258,8 @@ export const MarketRow = ({
   // would otherwise duplicate the ticker.
   const showTickerSuffix = displaySymbol !== displayTicker;
   const metricValue = useMemo(
-    () => getMetricValue(market, displayMetric, formatNumber),
-    [market, displayMetric, formatNumber],
+    () => getMetricValue(market, displayMetric, formatNumber, formatUsdCompactValue),
+    [market, displayMetric, formatNumber, formatUsdCompactValue],
   );
 
   // Determine the appropriate color for price change
@@ -238,7 +368,7 @@ export const MarketRow = ({
           fontWeight={FontWeight.Medium}
           className="block max-w-full truncate text-right"
         >
-          {market.price}
+          {formattedPrice}
         </Text>
         <Text
           variant={TextVariant.BodySm}
