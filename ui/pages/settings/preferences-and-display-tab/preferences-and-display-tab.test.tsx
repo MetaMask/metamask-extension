@@ -53,9 +53,7 @@ describe('PreferencesAndDisplayTab', () => {
         );
       });
 
-      expect(
-        view.queryByTestId('show-metamask-widget-on-x'),
-      ).not.toBeInTheDocument();
+      expect(view.queryByTestId('show-ticker-widget')).not.toBeInTheDocument();
     });
 
     it('shows the setting when the cashtagInjection feature flag is on', async () => {
@@ -67,7 +65,7 @@ describe('PreferencesAndDisplayTab', () => {
         );
       });
 
-      expect(view.getByTestId('show-metamask-widget-on-x')).toBeInTheDocument();
+      expect(view.getByTestId('show-ticker-widget')).toBeInTheDocument();
     });
   });
 });

@@ -102,9 +102,19 @@ const PreferencesAndDisplayTab = () => {
       { id: 'account-identicon', component: AccountIdenticonItem },
       { id: 'show-default-address', component: ShowDefaultAddressItem },
       ...(isTickerWidgetFeatureEnabled
-        ? [{ id: 'show-ticker-widget', component: ShowTickerWidgetItem }]
+        ? [
+            {
+              id: 'show-ticker-widget',
+              component: ShowTickerWidgetItem,
+              hasDividerBefore: true,
+            },
+          ]
         : []),
-      { id: 'show-extension', component: ShowExtensionItem },
+      {
+        id: 'show-extension',
+        component: ShowExtensionItem,
+        hasDividerBefore: !isTickerWidgetFeatureEnabled,
+      },
       {
         id: 'manage-institutional-wallet',
         component: ManageInstitutionalWalletItem,

@@ -21,6 +21,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
       theme: 'Theme',
       language: 'Language',
       localCurrency: 'Local currency',
+      showTickerWidget: 'Show web widget on X',
       autoDetectTokens: 'Auto-detect tokens',
     };
 
@@ -84,6 +85,7 @@ jest.mock('./search-config', () => ({
         { id: 'theme', titleKey: 'theme' },
         { id: 'language', titleKey: 'language' },
         { id: 'local-currency', titleKey: 'localCurrency' },
+        { id: 'show-ticker-widget', titleKey: 'showTickerWidget' },
       ],
     },
     {
@@ -185,6 +187,29 @@ describe('useSettingsSearch', () => {
     });
 
     expect(result.current).toEqual([]);
+  });
+
+  it('hides the X widget setting when cashtagInjection is disabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: false }),
+    });
+
+    expect(result.current).toEqual([]);
+  });
+
+  it('keeps the X widget setting searchable when cashtagInjection is enabled', () => {
+    const { result } = renderHook(() => useSettingsSearch('widget'), {
+      wrapper: createWrapper({ cashtagInjection: true }),
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toEqual(
+      expect.objectContaining({
+        settingId: 'show-ticker-widget',
+        titleKey: 'showTickerWidget',
+        tabRoute: '/settings/preferences-and-display',
+      }),
+    );
   });
 
   it('keeps IPFS searchable on the Privacy page when the flag is enabled', () => {
