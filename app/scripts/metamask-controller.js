@@ -681,13 +681,8 @@ export default class MetamaskController extends EventEmitter {
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
-      // MoneyAccountApiDataService is the Money API source behind
-      // MoneyAccountBalanceService:fetchBalanceWithFallback, so it registers
-      // MoneyAccountApiDataService:fetchPositions first.
+      // MoneyAccountApiDataService must be intialized before MoneyAccountBalanceService
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
-      // MoneyAccountBalanceService reads the vault config during its own init
-      // via RemoteFeatureFlagController:getState, which the wallet registers
-      // before these init functions run.
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }

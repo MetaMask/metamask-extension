@@ -15,14 +15,6 @@ const DISABLED_FLAG = { enabled: false, minimumVersion: '0.0.1' };
 
 const deriveMoneyAccountAddressMock = jest.mocked(deriveMoneyAccountAddress);
 
-/**
- * Build a messenger that answers the actions the service calls, and records
- * the `KeyringController:unlock` subscriber so a test can fire it.
- *
- * @param options - Options.
- * @param options.moneyFlag - The raw `moneyEnableMoneyAccount` flag value.
- * @returns The messenger, its mocks, and a way to publish an unlock.
- */
 function createMockMessenger({
   moneyFlag = ENABLED_FLAG as unknown,
 }: {

@@ -10,9 +10,6 @@ import type { RootMessenger } from '../../lib/messenger';
  * Create a messenger for the MoneyAccountApiDataService, scoped to the actions
  * and events the service is allowed to use.
  *
- * The bearer token is best-effort: the service swallows a rejection and issues
- * the request unauthenticated, falling back to IP-based rate limiting.
- *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountApiDataService messenger.
  */

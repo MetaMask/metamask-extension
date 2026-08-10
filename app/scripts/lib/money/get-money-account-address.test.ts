@@ -18,11 +18,7 @@ const EXPECTED_MONEY_ADDRESS = '0xd5fe9b0579443e7025cf3309ba420977710e7183';
 const PRIMARY_KEYRING_ID = 'primary-hd-keyring-id';
 
 /**
- * Encode a mnemonic the way `HdKeyring` holds it internally: a byte view over
- * the 16-bit indices of its words in the English wordlist.
- *
- * @param mnemonic - The mnemonic phrase.
- * @returns The wordlist indices as a byte array.
+ * Encode a mnemonic the way `HdKeyring` holds it internally
  */
 function toMnemonicIndicesBytes(mnemonic: string): Uint8Array {
   const indices = mnemonic.split(' ').map((word) => wordlist.indexOf(word));
@@ -30,14 +26,6 @@ function toMnemonicIndicesBytes(mnemonic: string): Uint8Array {
   return new Uint8Array(new Uint16Array(indices).buffer);
 }
 
-/**
- * Build a messenger whose `withKeyringUnsafe` runs the given operation against
- * a stub primary HD keyring.
- *
- * @param options - Options.
- * @param options.mnemonic - The mnemonic the stub keyring holds, if any.
- * @returns The messenger and its `call` mock.
- */
 function createMockMessenger({
   mnemonic = TEST_MNEMONIC,
 }: { mnemonic?: string | null } = {}) {

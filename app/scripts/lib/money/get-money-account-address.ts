@@ -28,7 +28,8 @@ type PrimarySeed = {
  *
  * Uses `withKeyringUnsafe`, which asserts the wallet is unlocked but does not
  * require the password. The `{ type }` selector picks the first keyring of that
- * type, which is the primary HD keyring.
+ * type, which is the primary HD keyring. This is because the money account is always
+ * derived from the primary SRP
  *
  * @param messenger - The messenger used to reach the `KeyringController`.
  * @returns The primary entropy source id and its mnemonic as UTF-8 byte values.
@@ -54,8 +55,6 @@ async function getPrimarySeed(
         entropySource: metadata.id,
         mnemonic: encodeMnemonic(mnemonic),
       };
-      // The action type erases `withKeyringUnsafe`'s `CallbackResult` generic
-      // to its `void` default, so the callback's return type is lost here.
     },
   )) as unknown as PrimarySeed;
 }
@@ -65,9 +64,7 @@ async function getPrimarySeed(
  *
  * The address is a deterministic BIP-44 derivation of the user's existing
  * primary HD seed at `MONEY_DERIVATION_PATH`, so it can be recomputed at any
- * time from an unlocked wallet. `MoneyKeyring` is used purely as a deriver
- * here: the instance is discarded once the address has been read, and is never
- * registered with the `KeyringController`.
+ * time from an unlocked wallet.
  *
  * @param messenger - The messenger used to reach the `KeyringController`.
  * @returns The money account address.

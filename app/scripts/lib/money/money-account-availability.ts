@@ -22,11 +22,6 @@ export type MoneyAccountAvailabilityMessenger = Messenger<
 
 /**
  * Whether this user has a usable Money Account, and its address when they do.
- *
- * The address is only present in the available case: when the account is
- * unavailable the entire Money surface is hidden, so there is nothing for a
- * caller to render it against. Callers get one answer rather than a flag per
- * input to recombine.
  */
 export type MoneyAccountAvailability =
   | { isAvailable: true; address: Hex }
@@ -37,25 +32,16 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 /**
  * Resolves whether the Money Account surface should be shown at all.
  *
- * Two things have to hold: the `moneyEnableMoneyAccount` flag is on, and the
- * money address can be derived (which requires an unlocked wallet).
- * Visibility is deliberately controlled by the flag alone — it is **not**
- * gated on the account having an EIP-7702 delegation, because an upgrade flow
- * is planned for the extension: a user whose account is not yet upgraded
- * should still see the surface that leads them there.
+ * We look at the state of the `moneyEnableMoneyAccount` flag, and whether
+ * a money address can be derived from an unlocked wallet.
  *
- * ## Not a deposit pre-flight
+ * A money account being available doesn’t mean that the account has been
+ * upgraded yet.
  *
- * A `true` answer means "the feature is on and this wallet derives a money
- * address", nothing more. A visible account may not be upgraded yet, and even
- * an upgraded one can fail a deposit (insufficient gas, an unavailable
- * network client). A deposit path must handle its own failures.
+ * The flag is checked first and never cached because it can
+ * change when remote feature flags update.
  *
- * ## Caching
- *
- * The flag is checked first and never cached: it is a synchronous state read,
- * and it can flip while the wallet stays unlocked when the remote flags
- * refresh. The derived address is cached as a promise until the next unlock,
+ * The derived address is cached as a promise until the next unlock,
  * so concurrent callers share one in-flight derivation; failures are not
  * cached, so a locked wallet is retried on the next call.
  */
