@@ -19,6 +19,7 @@ import {
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
@@ -579,6 +580,23 @@ function mockSseEventSource(
   );
 }
 
+/**
+ * Production sends smart transactions to endpoints these fixtures do not mock:
+ * the migration flags move them to the per-network sentinel hosts instead of
+ * `transaction.api.cx.metamask.io`, and EIP-7702 support on mainnet publishes
+ * gasless swaps through the transaction relay. Pinning both off keeps the
+ * request URLs the mocks below answer.
+ */
+const UNMOCKED_TRANSACTION_ENDPOINTS_OFF = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_eip_7702: { contracts: {}, supportedChains: [] },
+  stxMigrationBatchStatus: { value: false },
+  stxMigrationCancel: { value: false },
+  stxMigrationGetFees: { value: false },
+  stxMigrationSubmitTransactions: { value: false },
+};
+
 async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
@@ -591,8 +609,10 @@ async function mockFeatureFlags(
         ok: true,
         statusCode: 200,
         json: [
+          ...getProductionRemoteFlagApiResponse(),
           {
             bridgeConfig: featureFlags,
+            ...UNMOCKED_TRANSACTION_ENDPOINTS_OFF,
             ...additionalFlags,
           },
         ],

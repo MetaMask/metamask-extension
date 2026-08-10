@@ -9,6 +9,7 @@ import {
 import {
   isSolanaChainId,
   isBitcoinChainId,
+  isNonEvmChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -16,7 +17,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
-  isNonEvmChainId,
+  isStellarChainId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -157,8 +158,8 @@ export const useTokensWithFiltering = (
       }
       return undefined;
     }
-    // For Solana chains, we don't cache in the same way, return undefined to trigger fetch
-    if (isSolanaChainId(chainId)) {
+    // For Solana chains and Stellar Chain, we don't cache in the same way, return undefined to trigger fetch
+    if (isSolanaChainId(chainId) || isStellarChainId(chainId)) {
       return undefined;
     }
     // For EVM chains, check the cache

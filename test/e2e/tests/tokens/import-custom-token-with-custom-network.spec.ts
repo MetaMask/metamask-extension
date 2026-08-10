@@ -336,11 +336,7 @@ describe('Import custom token on a custom network', function () {
 
         // Switch the active network to PulseChain so the "Add a custom token"
         // page defaults to it.
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          PULSECHAIN_NETWORK_NAME,
-        );
+        await switchToNetworkFromNetworkSelect(driver, PULSECHAIN_NETWORK_NAME);
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
