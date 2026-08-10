@@ -224,20 +224,6 @@
         "nock>debug": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "depcheck>@babel/traverse>@babel/helper-globals": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "nock>debug": true
-      }
-    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -2100,8 +2086,8 @@
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
