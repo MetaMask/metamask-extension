@@ -293,7 +293,7 @@ const destroyLegacyExtensionStreams = () => {
  */
 const onMessageSetUpExtensionStreams = (
   msg: unknown,
-): Promise<string | undefined> => {
+): Promise<string> | undefined => {
   if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();
@@ -301,7 +301,8 @@ const onMessageSetUpExtensionStreams = (
     }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
-  return Promise.resolve(undefined);
+  // A Promise would claim the response channel from other message listeners.
+  return undefined;
 };
 
 /**
