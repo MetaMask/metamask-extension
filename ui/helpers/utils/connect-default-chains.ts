@@ -32,7 +32,7 @@ export type GetDefaultConnectChainIdsParams = {
  * @param options.requestedNamespaces - CAIP namespaces requested by the dapp (e.g., "eip155", "solana").
  * @param options.requestedNamespacesWithoutWallet - Requested namespaces excluding the "wallet" namespace.
  * @param options.isEip1193Request - Whether this is a legacy EIP-1193 connection request.
- * @param options.isEip1193CompatibleRequest - Whether this is an EIP-1193 compatible request.
+ * @param options.isEip1193CompatibleRequest - Whether this request carries an `eip1193-compatible` session property set by `@metamask/connect-evm`.
  * @param options.isSolanaWalletStandardRequest - Whether this is a Solana Wallet Standard request.
  * @param options.isTronWalletAdapterRequest - Whether this is a Tron Wallet Adapter request.
  * @returns The CAIP chain IDs to grant by default.
