@@ -76,6 +76,7 @@ import {
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
   resolveMinimumBalanceToKeep,
+  getChainValueOrderOverride,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -355,6 +356,44 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         name: 'Test',
       });
+    });
+  });
+
+  describe('getChainValueOrderOverride', () => {
+    it('returns valid controller-processed promotions', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          swapsChainValueOrderOverride: {
+            positionOverrides: [
+              { chainId: 'eip155:8453', name: 'Base' },
+              { chainId: 'eip155:1', name: 'Ethereum' },
+            ],
+          },
+        },
+      });
+
+      expect(getChainValueOrderOverride(state as never)).toStrictEqual([
+        { chainId: 'eip155:8453', name: 'Base' },
+        { chainId: 'eip155:1', name: 'Ethereum' },
+      ]);
+    });
+
+    it('returns an empty list for malformed promotions', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          swapsChainValueOrderOverride: {
+            positionOverrides: [
+              {
+                // @ts-expect-error - intentionally malformed remote flag value
+                chainId: 'invalid',
+                name: 'Invalid',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(getChainValueOrderOverride(state as never)).toStrictEqual([]);
     });
   });
 
@@ -970,6 +1009,35 @@ describe('Bridge selectors', () => {
         rwaData: undefined,
         isVerified: undefined,
         securityData: undefined,
+      });
+    });
+
+    it('returns USDC as default token when swapping from Stellar', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.STELLAR),
+          ),
+          toToken: null,
+        },
+      });
+      const result = getToToken(state as never);
+
+      expect(result).toStrictEqual({
+        accountType: undefined,
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+        balance: '0',
+        chainId: 'stellar:pubnet',
+        decimals: 7,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN.png',
+        isVerified: undefined,
+        name: 'USDC',
+        rwaData: undefined,
+        securityData: undefined,
+        symbol: 'USDC',
+        tokenFiatAmount: undefined,
       });
     });
   });
