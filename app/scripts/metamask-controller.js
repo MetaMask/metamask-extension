@@ -2456,11 +2456,18 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} networkConfiguration - The network configuration to add.
    * @param {object} [options0] - Options for post-add behavior.
    * @param {boolean} [options0.setActive] - Whether to switch to the added network.
+   * @param {boolean} [options0.enableNetwork] - When `setActive` is false, whether
+   * to additionally mark the added network as enabled (in addition to restoring
+   * every other network's prior enabled state). Without this,
+   * `NetworkEnablementController#onAddNetwork`'s exclusive-switch side effect is
+   * fully undone, including for the network just added, so it ends up added but
+   * disabled. Needed for callers where the user expects the network they just
+   * picked to show up immediately, without disabling their other enabled networks.
    * @returns {Promise<object>} The added network configuration.
    */
   async _addNetworkAndSetActive(
     networkConfiguration,
-    { setActive = true } = {},
+    { setActive = true, enableNetwork = false } = {},
   ) {
     if (setActive) {
       const addedNetwork =
@@ -2481,8 +2488,17 @@ export default class MetamaskController extends EventEmitter {
         'NetworkEnablementController:stateChange',
         restorePreviousEnabledNetworkMap,
       );
+      const enabledNetworkMapToRestore = enableNetwork
+        ? {
+            ...previousEnabledNetworkMap,
+            eip155: {
+              ...previousEnabledNetworkMap.eip155,
+              [networkConfiguration.chainId]: true,
+            },
+          }
+        : previousEnabledNetworkMap;
       this.networkEnablementController.restoreEnabledNetworkMap(
-        previousEnabledNetworkMap,
+        enabledNetworkMapToRestore,
       );
     };
 

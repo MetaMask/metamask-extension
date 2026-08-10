@@ -500,7 +500,13 @@ const HomeNetworkFilterModalContent = ({
 
   const handleAddNetwork = useCallback(
     async (network: AddNetworkFields) => {
-      await dispatch(addNetwork(network));
+      // setActive: false + enableNetwork: true adds and enables this network
+      // without disabling every other currently-enabled network, which is
+      // NetworkEnablementController#onAddNetwork's default side effect for
+      // any non-popular (e.g. Base Enablement) network.
+      await dispatch(
+        addNetwork(network, { setActive: false, enableNetwork: true }),
+      );
       onClose();
     },
     [dispatch, onClose],

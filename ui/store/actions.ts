@@ -2357,7 +2357,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -3615,7 +3615,7 @@ export function createSpeedUpTransaction(
 }
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
-  options: { setActive?: boolean } = {},
+  options: { setActive?: boolean; enableNetwork?: boolean } = {},
 ): ThunkAction<
   Promise<NetworkConfiguration>,
   MetaMaskReduxState,
