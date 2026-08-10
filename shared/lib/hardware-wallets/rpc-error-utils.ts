@@ -885,6 +885,8 @@ function tryFromLedgerErrorMessage(
   const normalizedMessage = errorMessage.toLowerCase();
 
   // Chrome runtime / offscreen bridge unavailable (DMK or legacy path).
+  // Map to ErrorCode only; user-facing copy is localized in the UI via
+  // buildErrorContent(ErrorCode.ConnectionTransportMissing).
   if (
     normalizedMessage.includes('receiving end does not exist') ||
     normalizedMessage.includes('could not establish connection') ||
@@ -893,7 +895,7 @@ function tryFromLedgerErrorMessage(
     return createHardwareWalletError(
       ErrorCode.ConnectionTransportMissing,
       walletType,
-      'Ledger hardware wallet service is not available. Please try again.',
+      errorMessage,
       { cause: getErrorCause(error) },
     );
   }
