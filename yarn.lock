@@ -24280,13 +24280,13 @@ __metadata:
 
 "dompurify@patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch":
   version: 3.4.13
-  resolution: "dompurify@patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch::version=3.4.13&hash=1f531d"
+  resolution: "dompurify@patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch::version=3.4.13&hash=7713e0"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/ae33e4915d6462d9faf52ae0922b3922b8d0dd7c29c8373f3c55da3fb2568bf38b58c3bb9df06f99070fea3df860338539a71b1e6e26404c4e31761db319a67b
+  checksum: 10/a04cfdceb31360c4105d49c0a0fe9cc6e095f48a7606353983cfc5be7b28386865898d4984d48d6cb3ee7409d6c36d62a2f4a54a184c3e7c4a0366efeb00c7b3
   languageName: node
   linkType: hard
 
