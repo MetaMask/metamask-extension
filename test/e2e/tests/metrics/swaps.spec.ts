@@ -50,7 +50,9 @@ describe('Swap metrics', function (this: Suite) {
         ).filter((payload) => payload?.event?.startsWith('Unified SwapBridge'));
 
         const emittedAt = EXPECTED_EVENT_SEQUENCE.map((name) =>
-          swapEvents.findIndex(({ event }: { event: string }) => event === name),
+          swapEvents.findIndex(
+            ({ event }: { event: string }) => event === name,
+          ),
         );
         EXPECTED_EVENT_SEQUENCE.forEach((name, index) => {
           assert.notEqual(emittedAt[index], -1, `${name} was not emitted`);
