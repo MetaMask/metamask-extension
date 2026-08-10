@@ -86,8 +86,14 @@ export default function HardwareWalletSignatures() {
           />
         }
       />
+      {/*
+        This box must not have a fixed height. It grows with its content so the
+        scroll container (`Content`) can scroll and the footer stays below it.
+        A `h-full` here caps it at the viewport, so tall content (the inline QR
+        code on a two-confirmation flow) overflows and renders behind the footer.
+      */}
       <Box
-        className="hardware-wallet-signatures__content h-full"
+        className="hardware-wallet-signatures__content"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
         paddingHorizontal={4}
