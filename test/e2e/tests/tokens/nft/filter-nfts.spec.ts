@@ -8,6 +8,7 @@ import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import SelectNetworkModal, {
   NetworkId,
 } from '../../../page-objects/pages/dialog/select-network-modal';
+import NetworkFilter from '../../../page-objects/pages/home/network-filter';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 
@@ -99,13 +100,15 @@ describe('Filter NFTs by network', function () {
         await login(driver, { validateBalance: false });
 
         const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
         // Show Ethereum NFTs
         const nftsTab = new NftsTab(driver);
-        await selectNetworkModal.open();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
         await nftsTab.checkNumberOfNftsDisplayed(2);
 
@@ -113,7 +116,8 @@ describe('Filter NFTs by network', function () {
         await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
 
         // Show All NFTs
-        await selectNetworkModal.open();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectAllNetworks();
 
         await nftsTab.checkNumberOfNftsDisplayed(3);

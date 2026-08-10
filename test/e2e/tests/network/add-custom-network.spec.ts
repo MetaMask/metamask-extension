@@ -8,7 +8,7 @@ import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import NetworkFilter from '../../page-objects/pages/home/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -37,8 +37,8 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -75,7 +75,7 @@ describe('Add Custom network', function (this: Suite) {
         // Validate the network was added
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
       },
     );
   });
@@ -103,8 +103,8 @@ describe('Add Custom network', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 

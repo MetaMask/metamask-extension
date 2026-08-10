@@ -50,8 +50,6 @@ class SelectNetworkModal {
 
   private readonly networkListItemClass = '.multichain-network-list-item';
 
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
-
   private readonly selectedAllNetworksItem = `${this.allNetworksItem}.bg-muted`;
 
   private readonly selectedNetworkListItem = (selector: string) =>
@@ -153,22 +151,6 @@ class SelectNetworkModal {
   async close(): Promise<void> {
     console.log(`Closing the select network modal`);
     await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
-  }
-
-  async open(): Promise<void> {
-    console.log(`Opening the select network modal`);
-    await this.driver.clickElement(this.networksToggle);
-    await this.checkPageIsLoaded();
-  }
-
-  async openNetworkAndSelectNetwork(networkName: string): Promise<void> {
-    console.log(`Opening select network modal and selecting ${networkName}`);
-    await this.open();
-    if (networkName.startsWith('eip155:')) {
-      await this.selectNetworkByChainId(networkName);
-    } else {
-      await this.selectNetworkByNameWithWait(networkName);
-    }
   }
 
   async selectAllNetworks(): Promise<void> {

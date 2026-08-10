@@ -7,6 +7,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/home/network-filter';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
@@ -44,7 +45,9 @@ describe('Tron - Network', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.checkNetworkIsListed('Tron');
       },
     );
@@ -68,10 +71,12 @@ describe('Tron - Network', function (this: Suite) {
         await login(driver);
         const tokensTab = new TokensTab(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
-        await selectNetworkModal.open();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByChainId(TRON_CHAIN_ID);
-        await tokensTab.checkNetworkFilterText('Tron');
+        await networkFilter.checkLabelIs('Tron');
       },
     );
   });
@@ -129,7 +134,9 @@ describe('Tron - Network', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.checkNetworkIsListed(TRON_NILE_NAME);
       },
     );
@@ -152,7 +159,9 @@ describe('Tron - Network', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.checkNetworkIsListed(TRON_SHASTA_NAME);
       },
     );
@@ -177,7 +186,9 @@ describe('Tron - Network', function (this: Suite) {
         const home = new HomePage(driver);
         await home.goToTokensTab();
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.checkNetworkIsListed('Tron');
         await selectNetworkModal.close();
       },

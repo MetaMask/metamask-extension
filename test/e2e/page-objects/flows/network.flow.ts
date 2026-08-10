@@ -1,6 +1,6 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
-import TokensTab from '../pages/home/tokens-tab';
+import NetworkFilter from '../pages/home/network-filter';
 import SelectNetworkModal from '../pages/dialog/select-network-modal';
 import NetworksPage from '../pages/networks/networks-page';
 
@@ -21,10 +21,10 @@ const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
  */
 export const selectAllNetworksFromNetworkSelect = async (driver: Driver) => {
   console.log('Selecting all networks');
-  const tokensTab = new TokensTab(driver);
+  const networkFilter = new NetworkFilter(driver);
   const selectNetworkModal = new SelectNetworkModal(driver);
 
-  await tokensTab.openNetworksFilter();
+  await networkFilter.open();
   await selectNetworkModal.checkPageIsLoaded();
   await selectNetworkModal.selectAllNetworks();
 };
@@ -41,10 +41,12 @@ export const deleteNetworkFromNetworkSelect = async (
   hexChainId: `0x${string}`,
 ) => {
   console.log(`Deleting network: ${hexChainId}`);
+  const networkFilter = new NetworkFilter(driver);
   const selectNetworkModal = new SelectNetworkModal(driver);
   const networksPage = new NetworksPage(driver);
 
-  await selectNetworkModal.open();
+  await networkFilter.open();
+  await selectNetworkModal.checkPageIsLoaded();
   await selectNetworkModal.clickManageNetworks();
   await networksPage.checkPageIsLoaded();
   // The networks page keys its list items by CAIP chain id.
@@ -57,23 +59,28 @@ export const deleteNetworkFromNetworkSelect = async (
  * network, scoping the asset list to it.
  *
  * @param driver - The webdriver instance.
- * @param networkName - The display name of the network to switch to.
+ * @param network - The display name of the network to switch to, or its CAIP
+ * chain id, e.g. `eip155:1`.
  */
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
-  networkName: string,
+  network: string,
 ) => {
-  console.log(`Switching to network: ${networkName}`);
-  const tokensTab = new TokensTab(driver);
+  console.log(`Switching to network: ${network}`);
+  const networkFilter = new NetworkFilter(driver);
   const selectNetworkModal = new SelectNetworkModal(driver);
 
-  if (NON_EVM_NETWORKS_NEEDING_DELAY.includes(networkName)) {
+  if (NON_EVM_NETWORKS_NEEDING_DELAY.includes(network)) {
     await driver.delay(NON_EVM_SNAP_READY_DELAY_MS);
   }
 
-  await tokensTab.openNetworksFilter();
+  await networkFilter.open();
   await selectNetworkModal.checkPageIsLoaded();
-  await selectNetworkModal.selectNetworkByNameWithWait(networkName);
+  if (network.startsWith('eip155:')) {
+    await selectNetworkModal.selectNetworkByChainId(network);
+  } else {
+    await selectNetworkModal.selectNetworkByNameWithWait(network);
+  }
 };
 
 export async function waitForNetworkModalBackdropToClear(

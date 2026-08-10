@@ -9,7 +9,7 @@ import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-netwo
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import NetworkFilter from '../../page-objects/pages/home/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -75,8 +75,8 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -90,7 +90,7 @@ describe('Popular Networks', function (this: Suite) {
 
         // verify the additional network was added without switching the home filter
         await new Homepage(driver).checkPageIsLoaded();
-        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
       },
     );
   });

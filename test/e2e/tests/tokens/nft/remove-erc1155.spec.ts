@@ -6,6 +6,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import SelectNetworkModal from '../../../page-objects/pages/dialog/select-network-modal';
+import NetworkFilter from '../../../page-objects/pages/home/network-filter';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -78,7 +79,9 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.goToNftTab();
         const nftsTab = new NftsTab(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.close();
         await nftsTab.checkNftNameIsDisplayed('ENS: Ethereum Name Service');
         await nftsTab.checkNftImageIsDisplayed();

@@ -5,6 +5,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/home/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -662,7 +663,9 @@ describe('Swap on Solana', function () {
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -761,7 +764,9 @@ describe('Swap on Solana', function () {
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -816,7 +821,9 @@ describe('Swap on Solana', function () {
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
@@ -859,7 +866,9 @@ describe('Swap on Solana', function () {
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();

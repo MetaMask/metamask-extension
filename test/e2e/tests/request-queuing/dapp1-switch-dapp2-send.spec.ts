@@ -10,6 +10,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/home/network-filter';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -108,7 +109,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Network Selector
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
@@ -258,7 +261,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Network Selector
         const selectNetworkModal = new SelectNetworkModal(driver);
-        await selectNetworkModal.open();
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
         await selectNetworkModal.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
