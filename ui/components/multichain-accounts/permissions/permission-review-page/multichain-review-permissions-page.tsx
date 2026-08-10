@@ -142,24 +142,6 @@ export const MultichainReviewPermissions = () => {
     endTrace({ name: TraceName.DisconnectAllModal });
   };
 
-  // Handle disconnect flow with gator permissions check: if token transfer
-  // permissions exist, shows the permissions modal, else disconnect directly
-  const handleDisconnectWithGatorCheck = () => {
-    const hasTokenTransferPermissions =
-      gatorPermissionsGroupMetaData &&
-      Object.values(gatorPermissionsGroupMetaData).some(
-        (details) => details.count > 0,
-      );
-
-    if (hasTokenTransferPermissions) {
-      setShowDisconnectPermissionsModal(true);
-    } else {
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
-    }
-  };
-
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
@@ -325,6 +307,24 @@ export const MultichainReviewPermissions = () => {
       !isPermissionGroupDetailsMapEmpty
     );
   }, [gatorPermissionsGroupMetaData]);
+
+  // Handle disconnect flow with gator permissions check: if token transfer
+  // permissions exist, shows the permissions modal, else disconnect directly
+  const handleDisconnectWithGatorCheck = () => {
+    const hasTokenTransferPermissions =
+      gatorPermissionsGroupMetaData &&
+      Object.values(gatorPermissionsGroupMetaData).some(
+        (details) => details.count > 0,
+      );
+
+    if (hasTokenTransferPermissions) {
+      setShowDisconnectPermissionsModal(true);
+    } else {
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
+    }
+  };
 
   const handleRemoveAllPermissions = async () => {
     try {
