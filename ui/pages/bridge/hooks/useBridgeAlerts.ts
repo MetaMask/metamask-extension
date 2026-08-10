@@ -19,7 +19,7 @@ import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { isQuoteExpiredOrInvalid } from '../utils/quote';
+import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
 import { useSecurityAlerts } from './useSecurityAlerts';
@@ -82,8 +82,10 @@ export const useBridgeAlerts = () => {
   })
     ? undefined
     : unvalidatedQuote;
-  const isSwap =
-    activeQuote?.quote.srcChainId === activeQuote?.quote.destChainId;
+
+  const isSwap = activeQuote
+    ? activeQuote.chainId === getDestChainId(activeQuote)
+    : false;
 
   return useMemo(() => {
     const alertsById: Partial<Record<BridgeAlert['id'], BridgeAlert>> = {};

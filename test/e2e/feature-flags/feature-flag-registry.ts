@@ -2216,8 +2216,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.38.0',
+      enabled: true,
+      minimumVersion: '13.36.0',
     },
     status: FeatureFlagStatus.Active,
   },
@@ -3040,6 +3040,39 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: [],
+    status: FeatureFlagStatus.Active,
+  },
+
+  swapsSWAPS4827AbtestChainValueOrder: {
+    name: 'swapsSWAPS4827AbtestChainValueOrder',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 0.5,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
+  swapsChainValueOrderOverride: {
+    name: 'swapsChainValueOrderOverride',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      positionOverrides: [],
+    },
     status: FeatureFlagStatus.Active,
   },
 
