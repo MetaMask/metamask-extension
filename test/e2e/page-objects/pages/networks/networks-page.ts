@@ -11,8 +11,8 @@ import { Driver } from '../../../webdriver/driver';
  * the add and edit forms.
  * Boundaries: the list view only. Once a form opens, the form's page object
  * takes over; these methods return without filling anything in.
- * Related: `AddEditNetworkPage` (opened by `openAddCustomNetworkModal` /
- * `openEditNetworkModal`), `SelectNetworkModal` (how tests get here),
+ * Related: `AddEditNetworkPage` (opened by `openAddCustomNetworkPage` /
+ * `openEditNetworkPage`), `SelectNetworkModal` (how tests get here),
  * `flows/network.flow.ts` for journeys spanning both.
  *
  * @see ui/pages/networks/networks-page.tsx
@@ -274,15 +274,15 @@ class NetworksPage {
     await this.driver.fill(this.searchInput, networkName);
   }
 
-  async openAddCustomNetworkModal(): Promise<void> {
-    console.log('Open add custom network modal');
+  async openAddCustomNetworkPage(): Promise<void> {
+    console.log('Open the add custom network page');
     await this.driver.clickElementAndWaitToDisappear(
       this.addCustomNetworkButton,
     );
   }
 
-  async openEditNetworkModal(): Promise<void> {
-    console.log('Open edit network modal');
+  async openEditNetworkPage(): Promise<void> {
+    console.log('Open the edit network page');
     await this.driver.clickElementAndWaitToDisappear(this.editNetworkButton);
   }
 

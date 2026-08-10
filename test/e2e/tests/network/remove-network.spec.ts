@@ -142,12 +142,12 @@ describe('Remove Network', function (this: Suite) {
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
         await networksPage.openNetworkListOptions('eip155:1338');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
 
         // Remove the second RPC
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
-        await editNetworkPage.removeRPCInEditNetworkModal(2);
+        await editNetworkPage.removeRpcUrl(2);
         await editNetworkPage.checkRpcIsDisplayed('127.0.0.1:8546', false);
 
         // Save the edited network

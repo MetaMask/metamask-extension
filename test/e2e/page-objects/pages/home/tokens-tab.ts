@@ -3,7 +3,6 @@ import { By, WebElement } from 'selenium-webdriver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import HomePage from './homepage';
-import NetworkFilter from './network-filter';
 
 /** Timeout for waiting on the import-confirm button to disappear after submit. */
 const TOKEN_IMPORT_CONFIRM_TIMEOUT_MS = 20_000;
@@ -42,11 +41,6 @@ class TokensTab extends HomePage {
     text: 'Would you like to import this token?',
     tag: 'p',
   };
-
-  private readonly currentNetworkOption =
-    '[data-testid="network-filter-current__button"]';
-
-  private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
   private readonly customTokenImportAddressInput =
     '[data-testid="custom-token-import-address-input"]';
@@ -675,32 +669,6 @@ class TokensTab extends HomePage {
     console.log(`Token details verified successfully for ${symbol}`);
   }
 
-  async clickCurrentNetworkOption(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    const networkFilter = new NetworkFilter(this.driver);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await networkFilter.getLabel();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
-        const label = await toggle.getText();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
     await this.driver.clickElement(this.manageTokensButton);
@@ -709,11 +677,6 @@ class TokensTab extends HomePage {
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
     await this.driver.clickElement(this.multichainTokenListButton);
-  }
-
-  async clickNetworkSelectorDropdown(): Promise<void> {
-    console.log(`Clicking on the network selector dropdown`);
-    await this.driver.clickElement(this.sortByPopoverToggle);
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
@@ -795,15 +758,6 @@ class TokensTab extends HomePage {
     }
 
     return matchingRow;
-  }
-
-  async getCurrentNetworksOptionTotal(): Promise<string> {
-    console.log(`Retrieving the "Current network" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.currentNetworksTotal,
-    );
-    const value = await allNetworksValueElement.getText();
-    return value;
   }
 
   async getNumberOfAssets(): Promise<number> {

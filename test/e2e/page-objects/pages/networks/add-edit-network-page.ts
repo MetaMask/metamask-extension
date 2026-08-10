@@ -6,11 +6,11 @@ import { Driver } from '../../../webdriver/driver';
  * page object covers both; only the prefilled values and the save button differ.
  *
  * Screen: `#/networks?view=add` and `#/networks?view=edit`, reached from
- * `NetworksPage.openAddCustomNetworkModal` / `openEditNetworkModal`.
+ * `NetworksPage.openAddCustomNetworkPage` / `openEditNetworkPage`.
  * Owns: the name, chain ID and currency symbol fields with their inline
  * errors and warnings, the RPC list, and saving or leaving the form.
  * Boundaries: the RPC URL and block explorer URL sub-forms are separate
- * screens. `openAddRpcUrlView` and `openAddBlockExplorerView` navigate to them
+ * screens. `openAddRpcUrlPage` and `openAddBlockExplorerPage` navigate to them
  * and hand off to their page objects.
  * Related: `NetworksPage` (how tests get here and where the back button
  * returns), `AddEditRpcUrlPage`, `AddEditBlockExplorerPage`.
@@ -45,19 +45,18 @@ class AddEditNetworkPage {
 
   private driver: Driver;
 
-  private readonly editModalRpcDropDownButton =
-    '[data-testid="test-add-rpc-drop-down"]';
-
-  private readonly editModalSaveButton = {
-    testId: 'page-container-footer-next',
-  };
-
   private readonly explorerUrlInputDropDownButton = {
     testId: 'test-explorer-drop-down',
   };
 
   private readonly networkNameInputField = {
     testId: 'network-form-network-name',
+  };
+
+  private readonly rpcDropDownButton = '[data-testid="test-add-rpc-drop-down"]';
+
+  private readonly saveButton = {
+    testId: 'page-container-footer-next',
   };
 
   constructor(driver: Driver) {
@@ -114,9 +113,9 @@ class AddEditNetworkPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.networkNameInputField,
-        this.editModalRpcDropDownButton,
+        this.rpcDropDownButton,
       ]);
-      await this.driver.waitForSelector(this.editModalSaveButton);
+      await this.driver.waitForSelector(this.saveButton);
     } catch (e) {
       console.log(
         'Timeout while waiting for the add/edit network page to be loaded',
@@ -142,7 +141,7 @@ class AddEditNetworkPage {
         shouldBeDisplayed ? '' : 'not '
       } displayed on the edit network page`,
     );
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.clickElement(this.rpcDropDownButton);
     if (shouldBeDisplayed) {
       await this.driver.waitForSelector({
         text: rpcName,
@@ -159,7 +158,7 @@ class AddEditNetworkPage {
   async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on the add/edit network page');
     try {
-      await this.driver.findClickableElement(this.editModalSaveButton);
+      await this.driver.findClickableElement(this.saveButton);
     } catch (e) {
       console.log('Save button not enabled', e);
       return false;
@@ -204,11 +203,11 @@ class AddEditNetworkPage {
   }
 
   /**
-   * Opens the block explorer URL view from the form's explorer dropdown. Await
-   * `AddEditBlockExplorerPage.checkPageIsLoaded` to wait for that view.
+   * Opens the block explorer URL page from the form's explorer dropdown. Await
+   * `AddEditBlockExplorerPage.checkPageIsLoaded` to wait for that page.
    */
-  async openAddBlockExplorerView(): Promise<void> {
-    console.log('Open the add block explorer URL view');
+  async openAddBlockExplorerPage(): Promise<void> {
+    console.log('Open the add block explorer URL page');
     await this.driver.findScrollToAndClickElement(
       this.explorerUrlInputDropDownButton,
     );
@@ -216,12 +215,12 @@ class AddEditNetworkPage {
   }
 
   /**
-   * Opens the RPC URL view from the form's RPC dropdown. Await
-   * `AddEditRpcUrlPage.checkPageIsLoaded` to wait for that view.
+   * Opens the RPC URL page from the form's RPC dropdown. Await
+   * `AddEditRpcUrlPage.checkPageIsLoaded` to wait for that page.
    */
-  async openAddRpcUrlView(): Promise<void> {
-    console.log('Open the add RPC URL view');
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+  async openAddRpcUrlPage(): Promise<void> {
+    console.log('Open the add RPC URL page');
+    await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
   }
 
@@ -230,9 +229,9 @@ class AddEditNetworkPage {
    *
    * @param rpcOrder - The order number of the RPC to remove (1-based index)
    */
-  async removeRPCInEditNetworkModal(rpcOrder: number): Promise<void> {
+  async removeRpcUrl(rpcOrder: number): Promise<void> {
     console.log(`Remove RPC at position ${rpcOrder} on the edit network page`);
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="delete-item-${rpcOrder - 1}"]`,
     );
@@ -240,10 +239,7 @@ class AddEditNetworkPage {
 
   async saveEditedNetwork(timeout?: number): Promise<void> {
     console.log('Save and close the edit network page');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.editModalSaveButton,
-      timeout,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.saveButton, timeout);
   }
 
   /**
@@ -251,9 +247,9 @@ class AddEditNetworkPage {
    *
    * @param rpcName - The name of the RPC to select.
    */
-  async selectRPCInEditNetworkModal(rpcName: string): Promise<void> {
+  async selectRpcUrlAndSave(rpcName: string): Promise<void> {
     console.log(`Select RPC ${rpcName} on the edit network page`);
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElement({
       text: rpcName,
       tag: 'button',

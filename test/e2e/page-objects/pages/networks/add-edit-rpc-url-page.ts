@@ -6,7 +6,7 @@ import { Driver } from '../../../webdriver/driver';
  * endpoint's URL and display name are entered.
  *
  * Screen: `#/networks?view=add-rpc` and `#/networks?view=edit-rpc`, reached
- * from `AddEditNetworkPage.openAddRpcUrlView`.
+ * from `AddEditNetworkPage.openAddRpcUrlPage`.
  * Owns: the RPC URL and RPC name fields, the invalid-URL error, and saving or
  * cancelling the sub-form.
  * Boundaries: saving here only returns to the network form - the RPC is not

@@ -8,7 +8,7 @@ import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -44,7 +44,7 @@ describe('Add Custom network', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
@@ -53,7 +53,7 @@ describe('Add Custom network', function (this: Suite) {
           toHex(100).toString(),
         );
         await addEditNetworkPage.fillCurrencySymbolInputField('XDAI');
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url and explorer url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -63,7 +63,7 @@ describe('Add Custom network', function (this: Suite) {
         );
         await addEditRpcUrlPage.fillAddRpcNameInput('testName');
         await addEditRpcUrlPage.saveAddRpcUrl();
-        await addEditNetworkPage.openAddBlockExplorerView();
+        await addEditNetworkPage.openAddBlockExplorerPage();
         const addEditBlockExplorerPage = new AddEditBlockExplorerPage(driver);
         await addEditBlockExplorerPage.checkPageIsLoaded();
         await addEditBlockExplorerPage.fillUrl('https://test.com');
@@ -110,14 +110,14 @@ describe('Add Custom network', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
         await addEditNetworkPage.fillNetworkNameInputField('Ethereum mainnet');
         await addEditNetworkPage.fillNetworkChainIdInputField('1');
         await addEditNetworkPage.fillCurrencySymbolInputField('TST');
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -168,14 +168,14 @@ describe('Add Custom network', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
         await addEditNetworkPage.fillNetworkNameInputField('Collision network');
         await addEditNetworkPage.fillNetworkChainIdInputField('78');
         await addEditNetworkPage.fillCurrencySymbolInputField('TST');
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);

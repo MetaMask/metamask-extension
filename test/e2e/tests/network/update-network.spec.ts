@@ -7,7 +7,7 @@ import { Mockttp } from '../../mock-e2e';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -31,7 +31,7 @@ describe('Update Network:', function (this: Suite) {
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
         await networksPage.openNetworkListOptions('eip155:1337');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
 
         // Verify chain id is not editable when updating a network
         const editNetworkPage = new AddEditNetworkPage(driver);
@@ -54,11 +54,11 @@ describe('Update Network:', function (this: Suite) {
 
         await networksPage.checkPageIsLoaded();
         await networksPage.openNetworkListOptions('eip155:1337');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 
         // Edit the RPC URL to something invalid
-        await editNetworkPage.openAddRpcUrlView();
+        await editNetworkPage.openAddRpcUrlPage();
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
         await addEditRpcUrlPage.checkPageIsLoaded();
         await addEditRpcUrlPage.fillAddRpcUrlInput(inputData.rpcUrl);
@@ -149,12 +149,12 @@ describe('Update Network:', function (this: Suite) {
 
         // Go to Edit Menu
         await networksPage.openNetworkListOptions('eip155:42161');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
 
         // Remove the RPC
-        await editNetworkPage.removeRPCInEditNetworkModal(2);
+        await editNetworkPage.removeRpcUrl(2);
         await editNetworkPage.checkRpcIsDisplayed('responsive-rpc.test', false);
         await editNetworkPage.saveEditedNetwork();
         await networksPage.checkEditNetworkMessageIsDisplayed('Arbitrum');
@@ -168,7 +168,7 @@ describe('Update Network:', function (this: Suite) {
 
         await networksPage.checkPageIsLoaded();
         await networksPage.openNetworkListOptions('eip155:42161');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 
         // Verify the rpc endpoint is removed
@@ -235,12 +235,12 @@ describe('Update Network:', function (this: Suite) {
 
         // Go to Edit Menu
         await networksPage.openNetworkListOptions('eip155:42161');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
 
         // Add a new rpc url and verify it appears in the dropdown
-        await editNetworkPage.openAddRpcUrlView();
+        await editNetworkPage.openAddRpcUrlPage();
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
         await addEditRpcUrlPage.checkPageIsLoaded();
         await addEditRpcUrlPage.fillAddRpcUrlInput(
@@ -264,7 +264,7 @@ describe('Update Network:', function (this: Suite) {
 
         await networksPage.checkPageIsLoaded();
         await networksPage.openNetworkListOptions('eip155:42161');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
         await editNetworkPage.checkPageIsLoaded();
 
         // Verify the new endpoint is still there

@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: `#/networks?view=add-explorer-url` and
  * `#/networks?view=edit-explorer-url`, reached from
- * `AddEditNetworkPage.openAddBlockExplorerView`.
+ * `AddEditNetworkPage.openAddBlockExplorerPage`.
  * Owns: the block explorer URL field and saving the sub-form.
  * Boundaries: saving here only returns to the network form - the URL is not
  * persisted until that form is saved. Asserting the result belongs to

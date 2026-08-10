@@ -306,7 +306,7 @@ describe('Import custom token on a custom network', function () {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
@@ -319,7 +319,7 @@ describe('Import custom token on a custom network', function () {
         await addEditNetworkPage.fillCurrencySymbolInputField(
           PULSECHAIN_CURRENCY_SYMBOL,
         );
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
         await addEditRpcUrlPage.checkPageIsLoaded();

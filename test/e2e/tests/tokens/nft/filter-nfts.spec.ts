@@ -8,7 +8,7 @@ import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import SelectNetworkModal, {
   NetworkId,
 } from '../../../page-objects/pages/dialog/select-network-modal';
-import NetworkFilter from '../../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../../page-objects/pages/networks/network-filter';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 

@@ -9,7 +9,7 @@ import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-netwo
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -156,7 +156,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
@@ -165,7 +165,7 @@ describe('Popular Networks', function (this: Suite) {
           toHex(777).toString(),
         );
         await addEditNetworkPage.fillCurrencySymbolInputField('cTH');
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // add rpc url and explorer url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -239,7 +239,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
@@ -248,7 +248,7 @@ describe('Popular Networks', function (this: Suite) {
           toHex(100).toString(),
         );
         await addEditNetworkPage.fillCurrencySymbolInputField('cTH');
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // add rpc url and explorer url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -258,7 +258,7 @@ describe('Popular Networks', function (this: Suite) {
         );
         await addEditRpcUrlPage.fillAddRpcNameInput('testName');
         await addEditRpcUrlPage.saveAddRpcUrl();
-        await addEditNetworkPage.openAddBlockExplorerView();
+        await addEditNetworkPage.openAddBlockExplorerPage();
         const addEditBlockExplorerPage = new AddEditBlockExplorerPage(driver);
         await addEditBlockExplorerPage.checkPageIsLoaded();
         await addEditBlockExplorerPage.fillUrl('https://block-explorer.url');

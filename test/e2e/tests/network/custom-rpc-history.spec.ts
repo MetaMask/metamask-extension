@@ -43,7 +43,7 @@ describe('Custom RPC history', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
 
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
@@ -52,7 +52,7 @@ describe('Custom RPC history', function (this: Suite) {
           chainId.toString(),
         );
         await addEditNetworkPage.fillCurrencySymbolInputField(symbol);
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -83,10 +83,10 @@ describe('Custom RPC history', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
@@ -120,7 +120,7 @@ describe('Custom RPC history', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openAddCustomNetworkModal();
+        await networksPage.openAddCustomNetworkPage();
         const addEditNetworkPage = new AddEditNetworkPage(driver);
         await addEditNetworkPage.checkPageIsLoaded();
         await addEditNetworkPage.fillNetworkChainIdInputField(duplicateChainId);
@@ -129,7 +129,7 @@ describe('Custom RPC history', function (this: Suite) {
         );
 
         // Add invalid rcp url
-        await addEditNetworkPage.openAddRpcUrlView();
+        await addEditNetworkPage.openAddRpcUrlPage();
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
         await addEditRpcUrlPage.checkPageIsLoaded();
         await addEditRpcUrlPage.fillAddRpcUrlInput('test');

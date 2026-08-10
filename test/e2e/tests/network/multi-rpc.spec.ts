@@ -10,7 +10,7 @@ import {
   expectNoMockRequest,
 } from '../../helpers/mock-server';
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -407,11 +407,11 @@ describe('MultiRpc:', function (this: Suite) {
 
         // go to Edit Menu for Arbitrum network and select the second rpc
         await networksPage.openNetworkListOptions('eip155:42161');
-        await networksPage.openEditNetworkModal();
+        await networksPage.openEditNetworkPage();
 
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
-        await editNetworkPage.selectRPCInEditNetworkModal('Arbitrum mainnet 2');
+        await editNetworkPage.selectRpcUrlAndSave('Arbitrum mainnet 2');
         await networksPage.checkEditNetworkMessageIsDisplayed('Arbitrum');
         await networksPage.clickCloseButton();
 
@@ -535,7 +535,7 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
         const editNetworkPage = new AddEditNetworkPage(driver);
         await editNetworkPage.checkPageIsLoaded();
-        await editNetworkPage.selectRPCInEditNetworkModal('Arbitrum mainnet 2');
+        await editNetworkPage.selectRpcUrlAndSave('Arbitrum mainnet 2');
         await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();

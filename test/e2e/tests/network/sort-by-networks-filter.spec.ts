@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 
 describe('Sort By Networks Filter', function (this: Suite) {
   it('should display the selected network name when only Ethereum is enabled', async function () {

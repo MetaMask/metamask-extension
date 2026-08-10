@@ -8,7 +8,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';

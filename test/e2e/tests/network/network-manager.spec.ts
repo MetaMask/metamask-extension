@@ -12,7 +12,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal, {
   NetworkId,
 } from '../../page-objects/pages/dialog/select-network-modal';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';

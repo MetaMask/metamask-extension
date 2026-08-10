@@ -1,6 +1,6 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
-import NetworkFilter from '../pages/home/network-filter';
+import NetworkFilter from '../pages/networks/network-filter';
 import SelectNetworkModal from '../pages/dialog/select-network-modal';
 import NetworksPage from '../pages/networks/networks-page';
 

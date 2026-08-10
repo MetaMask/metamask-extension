@@ -16,7 +16,7 @@ import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 import SelectNetworkModal, {
   NetworkId,
 } from '../../page-objects/pages/dialog/select-network-modal';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;

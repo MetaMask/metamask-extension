@@ -10,7 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
-import NetworkFilter from '../../page-objects/pages/home/network-filter';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';

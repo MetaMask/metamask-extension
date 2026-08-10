@@ -5,7 +5,8 @@ import { Driver } from '../../../webdriver/driver';
  * network scope the asset list is currently filtered to.
  *
  * Screen: home, above the asset list. The control bar is shared by the tokens,
- * NFTs and DeFi tabs, so this belongs to no single tab.
+ * NFTs and DeFi tabs, so this belongs to no single tab - it lives here rather
+ * than under `home/` because it is the entry point to network selection.
  * Owns: the `sort-by-networks` toggle, its label, and opening the modal.
  * Boundaries: nothing inside the modal it opens. `open()` only clicks the
  * toggle; await `SelectNetworkModal.checkPageIsLoaded` to wait for the modal.
