@@ -243,7 +243,7 @@ export const Tabs = <TKey extends string = string>({
       }
       case 'End': {
         event.preventDefault();
-        nextIndex = enabledIndices[enabledIndices.length - 1];
+        nextIndex = enabledIndices.at(-1);
         break;
       }
       default:
