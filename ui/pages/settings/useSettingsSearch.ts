@@ -48,45 +48,26 @@ const HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY: ReadonlySet<stri
     'proposed-nicknames',
   ]);
 
-const HIDDEN_WHEN_TICKER_WIDGET_DISABLED: ReadonlySet<string> = new Set([
-  'show-ticker-widget',
-]);
+function getSearchConfig(
+  isBasicFunctionalityToggleEnabled: boolean,
+): TabSearchConfig[] {
+  if (!isBasicFunctionalityToggleEnabled) {
+    return SETTINGS_SEARCH_CONFIG;
+  }
 
-type SearchVisibilityOptions = {
-  isBasicFunctionalityToggleEnabled: boolean;
-  isTickerWidgetFeatureEnabled: boolean;
-};
-
-function getSearchConfig({
-  isBasicFunctionalityToggleEnabled,
-  isTickerWidgetFeatureEnabled,
-}: SearchVisibilityOptions): TabSearchConfig[] {
   return SETTINGS_SEARCH_CONFIG.map((config) => {
-    const hiddenByBasicFunctionality = isBasicFunctionalityToggleEnabled
-      ? (HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY[config.tabId] ?? new Set())
-      : new Set<string>();
-    const hiddenByTickerWidget = isTickerWidgetFeatureEnabled
-      ? new Set<string>()
-      : HIDDEN_WHEN_TICKER_WIDGET_DISABLED;
-
-    const items = config.items.filter(
-      (item) =>
-        !hiddenByBasicFunctionality.has(item.id) &&
-        !hiddenByTickerWidget.has(item.id),
-    );
-
+    const hiddenItems =
+      HIDDEN_BY_CONSOLIDATED_BASIC_FUNCTIONALITY[config.tabId] ?? new Set();
+    const items = config.items.filter((item) => !hiddenItems.has(item.id));
     const subPages =
-      isBasicFunctionalityToggleEnabled && config.tabId === 'privacy'
+      config.tabId === 'privacy'
         ? undefined
         : config.subPages?.map((subPage) => ({
             ...subPage,
             items: subPage.items.filter(
               (item) =>
-                !(
-                  isBasicFunctionalityToggleEnabled &&
-                  HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY.has(
-                    item.id,
-                  )
+                !HIDDEN_SUBPAGE_ITEMS_BY_CONSOLIDATED_BASIC_FUNCTIONALITY.has(
+                  item.id,
                 ),
             ),
           }));
@@ -95,12 +76,41 @@ function getSearchConfig({
   });
 }
 
+function excludeHiddenItems(
+  configs: TabSearchConfig[],
+  hiddenItemIds: ReadonlySet<string>,
+): TabSearchConfig[] {
+  if (hiddenItemIds.size === 0) {
+    return configs;
+  }
+
+  return configs.map((config) => ({
+    ...config,
+    items: config.items.filter((item) => !hiddenItemIds.has(item.id)),
+    subPages: config.subPages?.map((subPage) => ({
+      ...subPage,
+      items: subPage.items.filter((item) => !hiddenItemIds.has(item.id)),
+    })),
+  }));
+}
+
+/**
+ * Builds a flat list of searchable items by joining the lightweight
+ * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
+ *
+ * @param isBasicFunctionalityToggleEnabled - Whether consolidated Basic Functionality settings should hide granular items.
+ * @param hiddenItemIds - Setting item ids that should be excluded from search results.
+ */
 function buildSearchableItems(
-  options: SearchVisibilityOptions,
+  isBasicFunctionalityToggleEnabled: boolean,
+  hiddenItemIds: ReadonlySet<string>,
 ): SettingsSearchResult[] {
   const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
-  return getSearchConfig(options).flatMap((cfg) => {
+  return excludeHiddenItems(
+    getSearchConfig(isBasicFunctionalityToggleEnabled),
+    hiddenItemIds,
+  ).flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);
     if (!tab) {
       return [];
@@ -150,11 +160,15 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   );
 
   const fuse = useMemo(() => {
-    const items = buildSearchableItems({
-      isBasicFunctionalityToggleEnabled:
-        isBasicFunctionalityConsolidationEnabled,
-      isTickerWidgetFeatureEnabled,
-    });
+    const hiddenItemIds = new Set<string>();
+    if (!isTickerWidgetFeatureEnabled) {
+      hiddenItemIds.add('show-ticker-widget');
+    }
+
+    const items = buildSearchableItems(
+      isBasicFunctionalityConsolidationEnabled,
+      hiddenItemIds,
+    );
     return new Fuse(items, {
       shouldSort: true,
       threshold: 0.3,
