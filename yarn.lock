@@ -5856,7 +5856,7 @@ __metadata:
 
 "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch":
   version: 13.1.1
-  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch::version=13.1.1&hash=3496a5"
+  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A13.1.1#~/.yarn/patches/@metamask-assets-controller-npm-13.1.1-5b6318b4cb.patch::version=13.1.1&hash=12b345"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5889,7 +5889,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/c379353957de34960791309e7eab9cf57a44ea668391cb76655e789b42d80ddf415bfbb906fb7746953a17d6d077c884f64c34910d0088c07e6a0580e86e0c00
+  checksum: 10/dc731a8373dfe9525eb7f326520025bdc0c743b2f18f06f8104904b3cb3076b90072670ffc98f6b2f4de896da949b27663dd88fe6661948dd9d197e500c38443
   languageName: node
   linkType: hard
 
@@ -6393,7 +6393,7 @@ __metadata:
 
 "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch":
   version: 8.1.1
-  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch::version=8.1.1&hash=223808"
+  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A8.1.1#~/.yarn/patches/@metamask-core-backend-npm-8.1.1-c34bad9216.patch::version=8.1.1&hash=992cfc"
   dependencies:
     "@metamask/account-tree-controller": "npm:^7.6.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -6406,7 +6406,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/da647d0e30e931d702fe6be15c9661a335eb10352b1ed3eb42a47eea9e97eb3fb69be4e584ec022759102a581476275b2f6126a704e7000128bd0c53f8bc3c81
+  checksum: 10/14c0973f01c423c8ddc8501d6c2b9839e0fff0f6ac5892731645bdbcb1c56fe2c77997a3585d0ec6b668543c0cd170a511cbeec7722ded4db88a4632994aed72
   languageName: node
   linkType: hard
 
