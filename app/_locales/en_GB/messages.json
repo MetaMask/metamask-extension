@@ -3509,14 +3509,14 @@
   "disconnectAllSites": {
     "message": "Disconnect all"
   },
-  "disconnectAllSitesQuestion": {
-    "message": "Disconnect all?"
-  },
   "disconnectAllSitesDescriptionText": {
     "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
     "message": "Some dapps couldn't be disconnected. Please try again."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
