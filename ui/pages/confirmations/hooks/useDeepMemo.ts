@@ -15,6 +15,11 @@ export function useDeepMemo<Type>(
   factory: () => Type,
   deps: DependencyList,
 ): Type {
+  // Deliberate opt-out: this hook's contract IS deep-equality dependency comparison via render-time ref reads/writes — auto-memoization
+  // would freeze its output. Do not remove without redesigning the hook.
+  // See MetaMask-planning#6551 (root-cause cluster A).
+  'use no memo';
+
   const depsRef = useRef<DependencyList | undefined>(undefined);
   const resultRef = useRef<Type>();
 

@@ -30,6 +30,11 @@ import { shallowEqual } from 'react-redux';
  * @returns Referentially stable value that only changes when shallow comparison fails
  */
 export function useShallowEqualityCheck<Value>(value: Value): Value {
+  // Deliberate opt-out: this hook's contract IS referential stability via render-time ref compare-and-swap — auto-memoization
+  // would freeze its output. Do not remove without redesigning the hook.
+  // See MetaMask-planning#6551 (root-cause cluster A).
+  'use no memo';
+
   const ref = useRef<Value>(value);
   if (!shallowEqual(ref.current, value)) {
     ref.current = value;

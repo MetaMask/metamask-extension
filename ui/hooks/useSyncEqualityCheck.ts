@@ -23,6 +23,11 @@ import type { Json } from '@metamask/utils';
  * ```
  */
 export function useSyncEqualityCheck<Value extends Json>(value: Value): Value {
+  // Deliberate opt-out: this hook's contract IS referential stability via render-time ref compare-and-swap — auto-memoization
+  // would freeze its output. Do not remove without redesigning the hook.
+  // See MetaMask-planning#6551 (root-cause cluster A).
+  'use no memo';
+
   const currentSnapshot = stringify(value);
   const snapshotRef = useRef<string>(currentSnapshot);
   const valueRef = useRef<Value>(value);

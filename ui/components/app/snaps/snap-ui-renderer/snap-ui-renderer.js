@@ -32,6 +32,11 @@ import { COMPONENT_MAPPING } from './components';
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION
 const PerformanceTracker = () => {
+  // Deliberate opt-out: this debug component counts renders via a render-time
+  // ref mutation — memoizing it would defeat its purpose entirely.
+  // See MetaMask-planning#6551 (root-cause cluster A).
+  'use no memo';
+
   const rendersRef = useRef(0);
   rendersRef.current += 1;
 
