@@ -5,8 +5,8 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  type QuoteResponseV1,
   QuoteStreamCompleteReason,
+  toQuoteResponseV2,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
@@ -52,6 +52,8 @@ setBackgroundConnection({
   resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
+  setInputPrimaryDenomination: async () => undefined,
+  trackUnifiedSwapBridgeEvent: async () => undefined,
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -130,6 +132,33 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
 
     expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
+  });
+
+  it('toggles only the source input to fiat when the feature flag is enabled', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        enableFiatToggle: true,
+      } as never,
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    await act(async () => {
+      await userEvent.click(getByTestId('bridge-input-denomination-toggle'));
+    });
+
+    expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');
+    expect(getByTestId('to-amount')).toHaveValue('0');
   });
 
   it('should render the component, with inputs set', async () => {
@@ -457,7 +486,7 @@ describe('PrepareBridgePage', () => {
     const ethAsset = getNativeAssetForChainId(ChainId.ETH);
     const btcToken = toBridgeToken(btcAsset);
     const ethToken = toBridgeToken(ethAsset);
-    const btcQuote = {
+    const btcQuote = toQuoteResponseV2({
       quote: {
         requestId: 'btc-quote',
         bridgeId: 'rango',
@@ -485,7 +514,7 @@ describe('PrepareBridgePage', () => {
       },
       estimatedProcessingTimeInSeconds: 600,
       nonEvmFeesInNative: '0.00000001',
-    } as unknown as QuoteResponseV1;
+    });
 
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
