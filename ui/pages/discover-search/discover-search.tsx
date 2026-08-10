@@ -895,7 +895,7 @@ export const DiscoverSearchPage = () => {
         ) : null}
 
         <Tab
-          name={t('tokenStock')}
+          name={t('perpsFilterStocks')}
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
