@@ -18,9 +18,10 @@ import { useDispatch } from '../store/hooks';
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();
 
-  const alerts: Alert[] = sortAlertsBySeverity(
-    useSelector((state) => selectAlerts(state as AlertsState, ownerId)),
+  const unsortedAlerts = useSelector((state) =>
+    selectAlerts(state as AlertsState, ownerId),
   );
+  const alerts: Alert[] = [...sortAlertsBySeverity(unsortedAlerts)];
 
   const confirmedAlertKeys = useSelector(
     (state) => selectConfirmedAlertKeys(state as AlertsState, ownerId),

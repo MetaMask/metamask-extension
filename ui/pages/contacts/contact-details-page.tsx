@@ -50,18 +50,19 @@ export function ContactDetailsPage() {
         )
       : null,
   );
+  const contactChainId = contact?.chainId;
   const internalAccount = useSelector((state) =>
     address ? getInternalAccountByAddress(state, address) : null,
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (!address || !contact?.chainId) {
+    if (!address || !contactChainId) {
       lastTrackedContactKeyRef.current = null;
       return;
     }
 
-    const contactKey = `${contact.chainId}:${address}`;
+    const contactKey = `${contactChainId}:${address}`;
     if (lastTrackedContactKeyRef.current === contactKey) {
       return;
     }
@@ -72,7 +73,7 @@ export function ContactDetailsPage() {
         .addCategory(MetaMetricsEventCategory.Contacts)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: contact.chainId,
+          chain_id: contactChainId,
         })
         .addSensitiveProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -80,7 +81,7 @@ export function ContactDetailsPage() {
         })
         .build(),
     );
-  }, [address, contact?.chainId, createEventBuilder, trackEvent]);
+  }, [address, contactChainId, createEventBuilder, trackEvent]);
 
   const handleBack = () => {
     navigate(CONTACTS_ROUTE);
@@ -97,7 +98,7 @@ export function ContactDetailsPage() {
       .addCategory(MetaMetricsEventCategory.Contacts)
       .addProperties({
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: contact?.chainId,
+        chain_id: contactChainId,
       });
 
     trackEvent(
@@ -110,14 +111,14 @@ export function ContactDetailsPage() {
       ).build(),
     );
     setShowDeleteModal(true);
-  }, [address, contact?.chainId, createEventBuilder, trackEvent]);
+  }, [address, contactChainId, createEventBuilder, trackEvent]);
 
   const closeDeleteModal = useCallback(() => {
     setShowDeleteModal(false);
   }, []);
 
   const handleConfirmDelete = useCallback(async () => {
-    if (!address || !contact?.chainId) {
+    if (!address || !contactChainId) {
       return;
     }
     setShowDeleteModal(false);
@@ -126,7 +127,7 @@ export function ContactDetailsPage() {
         .addCategory(MetaMetricsEventCategory.Contacts)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: contact.chainId,
+          chain_id: contactChainId,
         })
         .addSensitiveProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -135,10 +136,10 @@ export function ContactDetailsPage() {
         .build(),
     );
     navigate(CONTACTS_ROUTE, { state: { showContactDeletedToast: true } });
-    dispatch(removeFromAddressBook(contact.chainId, address));
+    dispatch(removeFromAddressBook(contactChainId, address));
   }, [
     address,
-    contact?.chainId,
+    contactChainId,
     createEventBuilder,
     dispatch,
     navigate,

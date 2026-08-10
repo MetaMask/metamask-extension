@@ -26,7 +26,6 @@ export function useDestinationToken(
   metamaskPay: MetamaskPayMetadata | undefined,
 ) {
   const { chainId, targetFiat, tokenAddress } = metamaskPay ?? {};
-  const fiatUsd = Number.parseFloat(targetFiat || '');
 
   const nativeTokenUsdRate = useSelector((state) =>
     chainId ? getUSDConversionRateByChainId(chainId)(state) : undefined,
@@ -36,6 +35,8 @@ export function useDestinationToken(
     if (!targetFiat || !tokenAddress || !chainId) {
       return undefined;
     }
+
+    const fiatUsd = Number.parseFloat(targetFiat || '');
 
     if (!Number.isFinite(fiatUsd) || fiatUsd <= 0) {
       return undefined;

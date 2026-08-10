@@ -182,7 +182,7 @@ const DecodedSimulation = () => {
         />
       )),
     );
-  }, [decodingData?.stateChanges]);
+  }, [chainId, decodingData?.stateChanges]);
 
   return (
     <StaticSimulation

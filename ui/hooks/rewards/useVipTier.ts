@@ -45,19 +45,21 @@ export function useVipTier(): number | null {
 
 function useVipTierAccountId() {
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const address = selectedAccount?.address;
+  const scopes = selectedAccount?.scopes;
   return useMemo<CaipAccountId | null>(() => {
-    const [scope] = selectedAccount?.scopes ?? [];
-    if (!selectedAccount?.address || !scope) {
+    const [scope] = scopes ?? [];
+    if (!address || !scope) {
       return null;
     }
     try {
       const { namespace, reference } = parseCaipChainId(scope);
-      return toCaipAccountId(namespace, reference, selectedAccount.address);
+      return toCaipAccountId(namespace, reference, address);
     } catch (error) {
       log.error('[useVipTier] Error formatting account to CAIP-10:', error);
       return null;
     }
-  }, [selectedAccount?.address, selectedAccount?.scopes]);
+  }, [address, scopes]);
 }
 
 function useRewardsVipTierQuery(

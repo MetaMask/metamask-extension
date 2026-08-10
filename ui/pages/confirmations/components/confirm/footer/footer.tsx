@@ -111,6 +111,7 @@ const ConfirmButton = ({
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmationId = currentConfirmation?.id;
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
@@ -146,7 +147,7 @@ const ConfirmButton = ({
   } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
 
   const handleSubmitConfirmModal = useCallback(async () => {
-    if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
+    if (currentConfirmationId && alertOwnerId === currentConfirmationId) {
       const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
 
       if (selectedUnconfirmedDangerAlert) {
@@ -157,7 +158,7 @@ const ConfirmButton = ({
     setConfirmModalVisible(false);
   }, [
     alertOwnerId,
-    currentConfirmation?.id,
+    currentConfirmationId,
     setAlertConfirmed,
     unconfirmedDangerAlerts,
   ]);

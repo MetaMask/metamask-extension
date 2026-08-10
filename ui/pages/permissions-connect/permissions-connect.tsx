@@ -203,10 +203,13 @@ function PermissionsConnect() {
 
   // Selectors
   const { pathname } = location;
-  let permissionsRequests = useSelector(getPermissionsRequests);
-  permissionsRequests = [
-    ...permissionsRequests,
-    ...useSelector(getSnapInstallOrUpdateRequests),
+  const pendingPermissionsRequests = useSelector(getPermissionsRequests);
+  const snapInstallOrUpdateRequests = useSelector(
+    getSnapInstallOrUpdateRequests,
+  );
+  const permissionsRequests = [
+    ...pendingPermissionsRequests,
+    ...snapInstallOrUpdateRequests,
   ];
   const { address: currentAddress } = useSelector(getSelectedInternalAccount);
 
@@ -220,6 +223,10 @@ function PermissionsConnect() {
     string,
     string
   >;
+
+  const isRequestingSnap = isSnapId(
+    (metadata as Record<string, string>)?.origin,
+  );
 
   const isRequestApprovalPermittedChains = Boolean(
     (diff as Record<string, unknown>)?.permissionDiffMap,
@@ -248,20 +255,19 @@ function PermissionsConnect() {
     [targetSubjectMetadataFromSelector, originFromRequest],
   );
 
-  let requestType = useSelector((state) =>
+  const requestTypeFromSelector = useSelector((state) =>
     getRequestType(state, permissionsRequestId),
   );
 
   // We want to only assign the wallet_connectSnaps request type (i.e. only show
   // SnapsConnect) if and only if we get a singular wallet_snap permission request.
   // Any other request gets pushed to the normal permission connect flow.
-  if (
+  const requestType =
     permissionsRequest &&
     Object.keys(permissions || {}).length === 1 &&
     permissions?.[WALLET_SNAP_PERMISSION_KEY]
-  ) {
-    requestType = 'wallet_connectSnaps';
-  }
+      ? 'wallet_connectSnaps'
+      : requestTypeFromSelector;
 
   const requestState =
     useSelector((state) => getRequestState(state, permissionsRequestId)) || {};
@@ -629,10 +635,6 @@ function PermissionsConnect() {
       );
     },
     [targetSubjectMetadata, cancelPermissionsRequest],
-  );
-
-  const isRequestingSnap = isSnapId(
-    (metadata as Record<string, string>)?.origin,
   );
 
   const cancelFromTrustSignalGate = useCallback(

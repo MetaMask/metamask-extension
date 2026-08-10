@@ -75,6 +75,9 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
     accountGroupId: primaryWalletAccountGroupId,
   } = usePrimaryWalletGroupAccounts();
 
+  const rewardPoints = options?.rewardPoints;
+  const shieldSubscriptionId = options?.shieldSubscriptionId;
+
   const handleOptIn = useCallback(
     async (referralCode?: string) => {
       const referred = Boolean(referralCode);
@@ -151,12 +154,12 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           }
 
           // Link the reward to the shield subscription if opt in from the shield subscription
-          if (options?.rewardPoints && options?.shieldSubscriptionId) {
+          if (rewardPoints && shieldSubscriptionId) {
             try {
               await dispatch(
                 linkRewardToShieldSubscription(
-                  options.shieldSubscriptionId,
-                  options.rewardPoints,
+                  shieldSubscriptionId,
+                  rewardPoints,
                 ),
               );
             } catch (error) {
@@ -191,8 +194,8 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
       activeGroupAccounts,
       dispatch,
       t,
-      options?.rewardPoints,
-      options?.shieldSubscriptionId,
+      rewardPoints,
+      shieldSubscriptionId,
     ],
   );
 

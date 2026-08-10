@@ -125,7 +125,7 @@ const PopularNetworkList = ({
         </Box>
       </Box>
     );
-  }, [searchAddNetworkResults, referenceElement, isOpen, t]);
+  }, [searchAddNetworkResults, referenceElement, isOpen, open, close, t]);
 
   return (
     <Box className="new-network-list__networks-container">

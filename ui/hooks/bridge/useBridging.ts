@@ -46,6 +46,7 @@ const useBridging = () => {
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
   const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
+  const fromChainId = fromChain?.chainId;
 
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
@@ -132,9 +133,9 @@ const useBridging = () => {
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
           search.set(BridgeQueryParams.From, assetId);
         }
-      } else if (lastSelectedChainId !== fromChain.chainId) {
+      } else if (lastSelectedChainId !== fromChainId) {
         // If an unsupported network is selected in the network filter, use bridge page's default fromChain
-        const fallbackChainId = lastSelectedChainId ?? fromChain.chainId;
+        const fallbackChainId = lastSelectedChainId ?? fromChainId;
         const { namespace } = parseCaipChainId(fallbackChainId);
         // Use the bip44 default asset for the fallback chain if it is defined
         const bip44AssetId = Object.keys(
@@ -163,7 +164,7 @@ const useBridging = () => {
     [
       navigateToBridgePage,
       lastSelectedChainId,
-      fromChain?.chainId,
+      fromChainId,
       isChainIdEnabledForBridging,
       bip44DefaultPairsConfig,
       bridgeState,

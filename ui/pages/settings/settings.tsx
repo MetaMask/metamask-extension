@@ -128,7 +128,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useSettingsI18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
-  const meta = getSettingsRouteMeta(normalizedPathname);
+  const meta = useMemo(
+    () => getSettingsRouteMeta(normalizedPathname),
+    [normalizedPathname],
+  );
   const environmentType = getEnvironmentType();
 
   // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)

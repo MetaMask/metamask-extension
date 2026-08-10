@@ -40,7 +40,7 @@ export const HexData = ({
       setHexDataErrorLocal(invalidHexData);
       setHexDataError(invalidHexData);
     },
-    [updateHexData, setHexDataErrorLocal, setHexDataError],
+    [t, updateHexData, setHexDataErrorLocal, setHexDataError],
   );
 
   if (!isEvmSendType || !asset?.isNative || !showHexDataFlag) {

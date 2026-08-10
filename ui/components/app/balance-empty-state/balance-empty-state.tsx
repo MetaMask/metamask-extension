@@ -87,7 +87,7 @@ export const BalanceEmptyState = ({
     );
 
     setIsModalOpen(true);
-  }, [chainId, trackEvent]);
+  }, [chainId, createEventBuilder, trackEvent]);
 
   // Handle modal close
   const handleModalClose = useCallback(() => {

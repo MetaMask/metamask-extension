@@ -216,6 +216,16 @@ type CoinButtonsProps = {
   buyAssetId?: CaipAssetType;
 };
 
+const getChainId = (
+  chainId: CoinButtonsProps['chainId'],
+): CaipChainId | ChainId => {
+  if (isCaipChainId(chainId)) {
+    return chainId as CaipChainId;
+  }
+  // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
+  return toHex(chainId) as ChainId;
+};
+
 const CoinButtons = ({
   account,
   chainId,
@@ -315,14 +325,6 @@ const CoinButtons = ({
     return contents;
   };
 
-  const getChainId = (): CaipChainId | ChainId => {
-    if (isCaipChainId(chainId)) {
-      return chainId as CaipChainId;
-    }
-    // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
-    return toHex(chainId) as ChainId;
-  };
-
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -398,12 +400,21 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, trackingLocation]);
+  }, [
+    chainId,
+    account,
+    setCorrectChain,
+    trackingLocation,
+    nativeToken,
+    navigate,
+    trackEvent,
+    createEventBuilder,
+  ]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const opened = await goToBuy({
       assetId: buyAssetId,
-      chainId: getChainId(),
+      chainId: getChainId(chainId),
     });
     if (!opened) {
       return;
@@ -435,7 +446,17 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
+  }, [
+    chainId,
+    defaultSwapsToken,
+    buyAssetId,
+    goToBuy,
+    opensBuyInPortfolioTab,
+    account,
+    t,
+    trackEvent,
+    createEventBuilder,
+  ]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -484,7 +505,14 @@ const CoinButtons = ({
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
+  }, [
+    selectedAccountGroup,
+    navigate,
+    trackEvent,
+    trackingLocation,
+    chainId,
+    createEventBuilder,
+  ]);
 
   const handleBatchSellOnClick = useCallback(() => {
     trace({ name: TraceName.BatchSellModal });
@@ -502,7 +530,13 @@ const CoinButtons = ({
     );
 
     transitionForward(() => openBatchSellExperience());
-  }, [trackEvent, trackingLocation, chainId, openBatchSellExperience]);
+  }, [
+    trackEvent,
+    trackingLocation,
+    chainId,
+    openBatchSellExperience,
+    createEventBuilder,
+  ]);
 
   useOnClickOutside({
     containerRef,

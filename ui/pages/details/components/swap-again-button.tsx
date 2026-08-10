@@ -28,28 +28,31 @@ export function SwapAgainButton({
   const dispatch = useDispatch();
   const { navigateToBridgePage } = useBridgeNavigation();
 
+  const sourceAssetId = sourceToken?.assetId;
+  const destinationAssetId = destinationToken?.assetId;
+
   const buttonLabelKey = useMemo(() => {
-    if (!sourceToken?.assetId || !destinationToken?.assetId) {
+    if (!sourceAssetId || !destinationAssetId) {
       return 'swapAgain';
     }
 
-    const sourceChainId = sourceToken.assetId.split('/')[0];
-    const destinationChainId = destinationToken.assetId.split('/')[0];
+    const sourceChainId = sourceAssetId.split('/')[0];
+    const destinationChainId = destinationAssetId.split('/')[0];
 
     return sourceChainId === destinationChainId ? 'swapAgain' : 'bridgeAgain';
-  }, [destinationToken?.assetId, sourceToken?.assetId]);
+  }, [destinationAssetId, sourceAssetId]);
 
   const searchParams = useMemo(() => {
-    if (!sourceToken?.assetId || !destinationToken?.assetId) {
+    if (!sourceAssetId || !destinationAssetId) {
       return undefined;
     }
 
     const params = new URLSearchParams();
-    params.set(BridgeQueryParams.From, sourceToken.assetId);
-    params.set(BridgeQueryParams.To, destinationToken.assetId);
+    params.set(BridgeQueryParams.From, sourceAssetId);
+    params.set(BridgeQueryParams.To, destinationAssetId);
 
     return params;
-  }, [destinationToken?.assetId, sourceToken?.assetId]);
+  }, [destinationAssetId, sourceAssetId]);
 
   const handleClick = useCallback(() => {
     if (!searchParams) {

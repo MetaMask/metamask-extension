@@ -198,18 +198,21 @@ const PrepareBridgePage = ({
   }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const fromTokenAssetId = fromToken?.assetId;
+  const toTokenAssetId = toToken?.assetId;
+  const selectedAccountAddress = selectedAccount?.address;
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    if (!selectedAccount?.address) {
+    if (!selectedAccountAddress) {
       return undefined;
     }
     return {
-      srcTokenAddress: fromToken?.assetId
-        ? formatAddressToCaipReference(fromToken.assetId)
+      srcTokenAddress: fromTokenAssetId
+        ? formatAddressToCaipReference(fromTokenAssetId)
         : undefined,
-      destTokenAddress: toToken?.assetId
-        ? formatAddressToCaipReference(toToken.assetId)
+      destTokenAddress: toTokenAssetId
+        ? formatAddressToCaipReference(toTokenAssetId)
         : undefined,
       srcTokenAmount: validatedFromValue,
       srcChainId: fromToken?.chainId,
@@ -221,19 +224,19 @@ const PrepareBridgePage = ({
         ? true
         : isQuoteRequestInsufficientBal,
       ...(slippage === undefined ? {} : { slippage }),
-      walletAddress: selectedAccount.address,
+      walletAddress: selectedAccountAddress,
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded,
       gasIncluded7702,
     };
   }, [
-    fromToken?.assetId,
-    toToken?.assetId,
+    fromTokenAssetId,
+    toTokenAssetId,
     validatedFromValue,
     fromToken?.chainId,
     toToken?.chainId,
     slippage,
-    selectedAccount?.address,
+    selectedAccountAddress,
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
     gasIncluded,

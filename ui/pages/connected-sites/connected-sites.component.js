@@ -31,23 +31,17 @@ export default function ConnectedSites({
     setSitePendingDisconnect({ subjectKey });
   }, []);
 
+  const pendingSubjectKey = sitePendingDisconnect?.subjectKey;
+
   const handleDisconnectAccount = useCallback(() => {
-    disconnectAccount(sitePendingDisconnect.subjectKey);
+    disconnectAccount(pendingSubjectKey);
     clearPendingDisconnect();
-  }, [
-    clearPendingDisconnect,
-    disconnectAccount,
-    sitePendingDisconnect?.subjectKey,
-  ]);
+  }, [clearPendingDisconnect, disconnectAccount, pendingSubjectKey]);
 
   const handleDisconnectAllAccounts = useCallback(() => {
-    disconnectAllAccounts(sitePendingDisconnect.subjectKey);
+    disconnectAllAccounts(pendingSubjectKey);
     clearPendingDisconnect();
-  }, [
-    clearPendingDisconnect,
-    disconnectAllAccounts,
-    sitePendingDisconnect?.subjectKey,
-  ]);
+  }, [clearPendingDisconnect, disconnectAllAccounts, pendingSubjectKey]);
 
   const renderConnectedSitesList = () => (
     <ConnectedSitesList

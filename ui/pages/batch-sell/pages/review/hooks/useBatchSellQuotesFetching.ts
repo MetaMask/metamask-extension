@@ -56,6 +56,7 @@ export const useBatchSellQuotesFetching = (
       batchSellCaipChainId,
     ),
   );
+  const selectedAccountAddress = selectedAccount?.address;
 
   const batchSellHexChainId = useMemo(
     () => getMaybeHexChainId(receivedAsset.chainId),
@@ -150,7 +151,7 @@ export const useBatchSellQuotesFetching = (
   );
 
   const refetch = useCallback(() => {
-    if (!enabled || enabledEntries.length === 0 || !selectedAccount?.address) {
+    if (!enabled || enabledEntries.length === 0 || !selectedAccountAddress) {
       return;
     }
 
@@ -159,7 +160,7 @@ export const useBatchSellQuotesFetching = (
         const params = buildQuoteRequestForEntry({
           entry,
           destAssetId: receivedAsset.assetId,
-          walletAddress: selectedAccount.address,
+          walletAddress: selectedAccountAddress,
         });
         if (!params) {
           return undefined;
@@ -191,7 +192,7 @@ export const useBatchSellQuotesFetching = (
     enabled,
     enabledEntries,
     receivedAsset,
-    selectedAccount?.address,
+    selectedAccountAddress,
     smartTransactionsEnabled,
     dispatch,
   ]);

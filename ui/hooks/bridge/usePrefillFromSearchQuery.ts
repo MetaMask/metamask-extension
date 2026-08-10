@@ -135,7 +135,7 @@ export const usePrefillFromSearchQuery = () => {
       // Clear parsed to asset ID after successful processing
       setParsedToAssetId(null);
     },
-    [],
+    [dispatch],
   );
 
   // Main effect to orchestrate the parameter processing

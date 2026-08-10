@@ -87,21 +87,18 @@ export function FromAccountRow({
     (address: string) => {
       closeModal();
 
-      if (
-        currentConfirmation?.id &&
-        address.toLowerCase() !== from.toLowerCase()
-      ) {
+      if (ownerId && address.toLowerCase() !== from.toLowerCase()) {
         // The TransactionPayController resolves the funding account (and gas)
         // from `accountOverride ?? txParams.from`, so keep it in sync with the
         // newly selected account.
-        setAccountOverride(currentConfirmation.id, address as Hex).catch(
+        setAccountOverride(ownerId, address as Hex).catch(
           (error) => {
             console.error('Failed to set pay account override', error);
           },
         );
       }
     },
-    [closeModal, currentConfirmation?.id, from],
+    [closeModal, ownerId, from],
   );
 
   if (!currentConfirmation || !from) {

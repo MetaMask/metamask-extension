@@ -57,12 +57,16 @@ export const Amount = ({
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
   } = useAmountSelectionMetrics();
+  const assetName = asset?.name;
+  const assetStandard = asset?.standard;
+  const assetSymbol = asset?.symbol;
+
   const alternateDisplayValue = useMemo(
     () =>
       fiatMode
-        ? `${formatToFixedDecimals(value, 5)} ${asset?.symbol}`
+        ? `${formatToFixedDecimals(value, 5)} ${assetSymbol}`
         : getFiatDisplayValue(amount),
-    [amount, fiatMode, getFiatDisplayValue, value],
+    [amount, assetSymbol, fiatMode, getFiatDisplayValue, value],
   );
 
   const onChange = useCallback(
@@ -132,24 +136,24 @@ export const Amount = ({
     }
 
     // For ERC1155 tokens, use name or just show balance without symbol
-    if (asset?.standard === ERC1155) {
-      const displayName = asset?.name ? ` ${asset.name}` : '';
+    if (assetStandard === ERC1155) {
+      const displayName = assetName ? ` ${assetName}` : '';
       return `${balance}${displayName} ${t('available')}`;
     }
 
     // For other tokens, use symbol
-    return `${balance} ${asset?.symbol} ${t('available')}`;
+    return `${balance} ${assetSymbol} ${t('available')}`;
   }, [
     fiatMode,
     getFiatDisplayValue,
     balance,
-    asset?.symbol,
-    asset?.name,
-    asset?.standard,
+    assetSymbol,
+    assetName,
+    assetStandard,
     t,
   ]);
 
-  if (asset?.standard === ERC721) {
+  if (assetStandard === ERC721) {
     return null;
   }
 
@@ -169,7 +173,7 @@ export const Amount = ({
         endAccessory={
           <Box display={Display.Flex}>
             <Text>
-              {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
+              {fiatMode ? fiatCurrencyName?.toUpperCase() : assetSymbol}
             </Text>
             {conversionSupportedForAsset && (
               <ButtonIcon
