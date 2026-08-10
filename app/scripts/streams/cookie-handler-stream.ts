@@ -212,7 +212,7 @@ const onDisconnectDestroyCookieStreams = () => {
 
 const onMessageSetUpCookieHandlerStreams = (
   msg: unknown,
-): Promise<string | undefined> => {
+): Promise<string> | undefined => {
   if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!cookieHandlerExtStream) {
       setupCookieHandlerExtStreams();
@@ -221,7 +221,8 @@ const onMessageSetUpCookieHandlerStreams = (
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
-  return Promise.resolve(undefined);
+  // A Promise would claim the response channel from other message listeners.
+  return undefined;
 };
 
 /**
