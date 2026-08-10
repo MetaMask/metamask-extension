@@ -29,7 +29,7 @@ export const DISCOVER_STOCKS_CHAIN_IDS: CaipChainId[] = [
   toEvmCaipChainId(CHAIN_IDS.BSC),
 ];
 
-export const DISCOVER_SEARCH_DEBOUNCE_MS = 200;
+export const DISCOVER_SEARCH_DEBOUNCE_MS = 500;
 export const DISCOVER_SEARCH_PREVIEW_COUNT = 3;
 export const DISCOVER_SEARCH_PAGE_SIZE = 20;
 export const DISCOVER_SEARCH_STALE_TIME_MS = 30_000;
