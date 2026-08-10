@@ -1,6 +1,22 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * The network details form. Adding and editing render the same form, so one
+ * page object covers both; only the prefilled values and the save button differ.
+ *
+ * Screen: `#/networks?view=add` and `#/networks?view=edit`, reached from
+ * `NetworksPage.openAddCustomNetworkModal` / `openEditNetworkModal`.
+ * Owns: the name, chain ID and currency symbol fields with their inline
+ * errors and warnings, the RPC list, and saving or leaving the form.
+ * Boundaries: the RPC URL and block explorer URL sub-forms are separate
+ * screens. `openAddRpcUrlView` and `openAddBlockExplorerView` navigate to them
+ * and hand off to their page objects.
+ * Related: `NetworksPage` (how tests get here and where the back button
+ * returns), `AddEditRpcUrlPage`, `AddEditBlockExplorerPage`.
+ *
+ * @see ui/components/multichain/networks-form/networks-form.tsx
+ */
 class AddEditNetworkPage {
   private readonly addExplorerUrlButton = {
     text: 'Add a block explorer URL',

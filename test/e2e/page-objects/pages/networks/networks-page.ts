@@ -1,5 +1,23 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * The network management list: custom networks, popular networks available to
+ * add, and the per-network options menu.
+ *
+ * Screen: `#/networks` (list view), reached from
+ * `SelectNetworkModal.clickManageNetworks`.
+ * Owns: the network search, the show-test-networks toggle, enabling/disabling
+ * and deleting networks, adding popular networks, RPC selection, and entering
+ * the add and edit forms.
+ * Boundaries: the list view only. Once a form opens, the form's page object
+ * takes over; these methods return without filling anything in.
+ * Related: `AddEditNetworkPage` (opened by `openAddCustomNetworkModal` /
+ * `openEditNetworkModal`), `SelectNetworkModal` (how tests get here),
+ * `flows/network.flow.ts` for journeys spanning both.
+ *
+ * @see ui/pages/networks/networks-page.tsx
+ * @see ui/pages/networks/networks-page-list.tsx
+ */
 class NetworksPage {
   private readonly addCustomNetworkButton =
     '[data-testid="networks-page-add-custom-network-button"]';

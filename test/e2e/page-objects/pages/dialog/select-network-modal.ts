@@ -26,6 +26,21 @@ function toListItemChainId(chainId: string): string {
     : chainId;
 }
 
+/**
+ * The network selection modal, used both to switch the active network and to
+ * filter the asset list by network.
+ *
+ * Screen: modal layered over the current page, opened by `NetworkFilter.open()`.
+ * Owns: the network rows and their selected state, the "All networks" row, the
+ * "Manage networks" button, and closing the modal.
+ * Boundaries: stops at the modal edge. Opening it belongs to `NetworkFilter`;
+ * everything behind "Manage networks" belongs to `NetworksPage`.
+ * `clickManageNetworks` only clicks - it does not assert the next screen.
+ * Related: `NetworkFilter` (opens this), `NetworksPage` (reached via
+ * `clickManageNetworks`), `flows/network.flow.ts` for journeys spanning both.
+ *
+ * @see ui/components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal.tsx
+ */
 class SelectNetworkModal {
   private readonly allNetworksItem =
     '[data-testid="home-network-filter-all-default"]';

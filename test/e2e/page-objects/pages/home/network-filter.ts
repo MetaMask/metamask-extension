@@ -1,10 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * The network filter button in the asset list control bar. It displays the
- * currently active network filter and opens the select network modal. The
- * control bar is shared by the asset list tabs, so this is not owned by any
- * single tab.
+ * The network filter button in the asset list control bar, showing which
+ * network scope the asset list is currently filtered to.
+ *
+ * Screen: home, above the asset list. The control bar is shared by the tokens,
+ * NFTs and DeFi tabs, so this belongs to no single tab.
+ * Owns: the `sort-by-networks` toggle, its label, and opening the modal.
+ * Boundaries: nothing inside the modal it opens. `open()` only clicks the
+ * toggle; await `SelectNetworkModal.checkPageIsLoaded` to wait for the modal.
+ * Related: `SelectNetworkModal` (what `open()` opens), `TokensTab` / `DefiTab`
+ * (the lists this filters).
+ *
+ * @see ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx
  */
 class NetworkFilter {
   private readonly driver: Driver;

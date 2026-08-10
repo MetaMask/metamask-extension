@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * The block explorer URL sub-form of the network details form.
+ *
+ * Screen: `#/networks?view=add-explorer-url` and
+ * `#/networks?view=edit-explorer-url`, reached from
+ * `AddEditNetworkPage.openAddBlockExplorerView`.
+ * Owns: the block explorer URL field and saving the sub-form.
+ * Boundaries: saving here only returns to the network form - the URL is not
+ * persisted until that form is saved. Asserting the result belongs to
+ * `AddEditNetworkPage`.
+ * Related: `AddEditNetworkPage` (opens this, and where save returns to).
+ *
+ * @see ui/components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal.tsx
+ */
 class AddEditBlockExplorerPage {
   private readonly blockExplorerUrlInput = {
     testId: 'explorer-url-input',

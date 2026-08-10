@@ -1,6 +1,22 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * The RPC URL sub-form of the network details form, where a single RPC
+ * endpoint's URL and display name are entered.
+ *
+ * Screen: `#/networks?view=add-rpc` and `#/networks?view=edit-rpc`, reached
+ * from `AddEditNetworkPage.openAddRpcUrlView`.
+ * Owns: the RPC URL and RPC name fields, the invalid-URL error, and saving or
+ * cancelling the sub-form.
+ * Boundaries: saving here only returns to the network form - the RPC is not
+ * persisted until that form is saved. Asserting the resulting RPC list belongs
+ * to `AddEditNetworkPage`.
+ * Related: `AddEditNetworkPage` (opens this, and where both save and cancel
+ * return to).
+ *
+ * @see ui/pages/networks/add-rpc-url-page-form.tsx
+ */
 class AddEditRpcUrlPage {
   private readonly addRpcNameInput = {
     testId: 'rpc-name-input-test',
