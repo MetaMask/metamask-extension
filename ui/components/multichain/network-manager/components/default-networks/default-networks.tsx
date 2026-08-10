@@ -390,6 +390,7 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
+    xlmAccountGroup,
     evmAccountGroup,
     dispatch,
     enabledChainIds,

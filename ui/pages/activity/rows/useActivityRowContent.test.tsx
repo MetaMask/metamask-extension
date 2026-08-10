@@ -17,8 +17,14 @@ jest.mock('../../../hooks/useFormatAsFiat', () => ({
   useFormatAsFiat: () => jest.fn(),
 }));
 
+const mockFormatCurrencyWithMinThreshold = jest.fn(
+  (amount: number, currency: string) => `${amount} ${currency}`,
+);
+
 jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({ formatCurrencyWithMinThreshold: jest.fn() }),
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: mockFormatCurrencyWithMinThreshold,
+  }),
 }));
 
 jest.mock('../../../components/app/activity-list-item-avatar', () => ({
@@ -160,6 +166,116 @@ describe('useActivityRowContent', () => {
       'activity_swap_success_title',
     );
     expect(result.current.subtitle).toBe('ETH → USDC');
+  });
+
+  it('names the provider in the ramp order subtitle', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_rampBuy_success_title|ETH',
+    );
+    expect(result.current.subtitle).toBe('MoonPay');
+  });
+
+  it('omits the ramp subtitle when the provider is unnamed', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        provider: { id: '/providers/moonpay', name: '' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBeUndefined();
+  });
+
+  it('shows a placeholder for a pending ramp order without a crypto amount', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('... ETH');
+  });
+
+  it('shows an ellipsis without a symbol when pending and symbol is missing', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('...');
+  });
+
+  it('uses the order fiat amount for the secondary amount on ramp sells', () => {
+    const activity = {
+      type: 'rampSell',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'out', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBe('MoonPay');
+    expect(result.current.title.props.children).toBe(
+      'activity_rampSell_success_title|ETH',
+    );
+    expect(result.current.secondaryAmount).toBe('100 USD');
+    expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(100, 'USD');
   });
 
   it('shows the display name in send To: subtitles', () => {
