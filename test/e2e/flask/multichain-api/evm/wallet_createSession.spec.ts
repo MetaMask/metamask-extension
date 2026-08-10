@@ -228,6 +228,8 @@ describe('Multichain API', function () {
             await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
+            assert.ok(getSessionResult.sessionScopes['eip155:1337']);
+
             assert.deepEqual(
               getSessionResult.sessionScopes['eip155:1337'].accounts,
               getExpectedSessionScope('eip155:1337', [ACCOUNT_1, ACCOUNT_2])
