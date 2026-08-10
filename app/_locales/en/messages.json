@@ -7467,12 +7467,6 @@
   "perpsOrderFilled": {
     "message": "Filled"
   },
-  "perpsOrderHyperliquidFee": {
-    "message": "Hyperliquid fee"
-  },
-  "perpsOrderMetamaskFee": {
-    "message": "MetaMask fee"
-  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
