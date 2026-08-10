@@ -31,7 +31,7 @@ class SitePermissionPage {
   private driver: Driver;
 
   private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
+    text: 'Manage connected accounts',
     tag: 'h4',
   };
 

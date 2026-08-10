@@ -25,7 +25,7 @@ class EditConnectedAccountsModal {
   driver: Driver;
 
   private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
+    text: 'Select accounts',
     tag: 'h4',
   };
 
