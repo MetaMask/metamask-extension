@@ -1,4 +1,3 @@
-import { Browser } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
@@ -13,8 +12,6 @@ import {
   LEDGER_SWAP_EXPECTED_FIAT_BALANCE,
   LEDGER_SWAP_MAINNET_ETH_WEI,
 } from './fixtures';
-
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Swap', function (this: Suite) {
   this.timeout(160000);
@@ -35,14 +32,6 @@ describe('Ledger Swap', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
-
-        if (isFirefox) {
-          // Firefox may open swap in another tab with the same title.
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await driver.closeWindow();
-        }
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
