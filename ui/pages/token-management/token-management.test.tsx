@@ -659,6 +659,14 @@ describe('TokenManagementPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the selected network icon in the network filter button', () => {
+    renderPage();
+
+    expect(
+      screen.getByTestId('token-management-network-filter-icon'),
+    ).toBeInTheDocument();
+  });
+
   it('navigates to the dedicated networks page from manage networks in the shared modal', async () => {
     renderPage();
 

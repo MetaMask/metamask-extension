@@ -10,6 +10,28 @@ import {
 } from '../../../../selectors';
 import { useNetworkManagerState } from '../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkIcon } from '../../../../../shared/lib/network.utils';
+
+const toCaipChainId = (chainId: string) =>
+  isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId;
+
+export function useNetworkFilterButtonIcon():
+  | { name: string; src?: string }
+  | undefined {
+  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
+
+  return useMemo(() => {
+    if (enabledNetworks.length !== 1) {
+      return undefined;
+    }
+
+    const network = allCaipNetworks[toCaipChainId(enabledNetworks[0])];
+    return network
+      ? { name: network.name, src: getNetworkIcon(network) }
+      : undefined;
+  }, [allCaipNetworks, enabledNetworks]);
+}
 
 export function useNetworkFilterButtonLabel(): string {
   const t = useI18nContext();
@@ -40,9 +62,7 @@ export function useNetworkFilterButtonLabel(): string {
   return useMemo(() => {
     if (totalEnabledNetworkCount === 1) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
+      const caipChainId = toCaipChainId(chainId);
       const networkName =
         allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
       return `${t('network')}: ${networkName}`;
