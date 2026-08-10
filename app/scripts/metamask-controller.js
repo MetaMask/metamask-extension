@@ -1116,7 +1116,7 @@ export default class MetamaskController extends EventEmitter {
                 validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
-                  request,
+                  request: { ...request, originPath: req.originPath },
                   securityAlertId,
                   updateSecurityAlertResponse:
                     this.updateSecurityAlertResponse.bind(this),
@@ -6010,7 +6010,12 @@ export default class MetamaskController extends EventEmitter {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
+    engine.push(
+      createOriginMiddleware({
+        origin,
+        originPath: getSenderOriginPath(sender?.url),
+      }),
+    );
 
     // Append mainFrameOrigin to each request if present
     if (mainFrameOrigin) {
@@ -6077,7 +6082,6 @@ export default class MetamaskController extends EventEmitter {
         this.updateSecurityAlertResponse.bind(this),
         {
           getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
-          originPath: getSenderOriginPath(sender?.url),
         },
       ),
     );
@@ -6421,7 +6425,12 @@ export default class MetamaskController extends EventEmitter {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
+    engine.push(
+      createOriginMiddleware({
+        origin,
+        originPath: getSenderOriginPath(sender?.url),
+      }),
+    );
 
     // Append mainFrameOrigin to each request if present
     if (mainFrameOrigin) {
@@ -6600,7 +6609,6 @@ export default class MetamaskController extends EventEmitter {
         this.updateSecurityAlertResponse.bind(this),
         {
           getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
-          originPath: getSenderOriginPath(sender?.url),
         },
       ),
     );

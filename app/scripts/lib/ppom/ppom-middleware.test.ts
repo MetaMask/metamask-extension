@@ -48,7 +48,6 @@ const createMiddleware = (
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateSecurityAlertResponse?: any;
-    originPath?: string;
   } = {
     updateSecurityAlertResponse: () => undefined,
   },
@@ -58,7 +57,6 @@ const createMiddleware = (
     error,
     securityAlertsEnabled,
     updateSecurityAlertResponse,
-    originPath,
   } = options;
 
   const ppomController = {};
@@ -108,7 +106,6 @@ const createMiddleware = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
-    { originPath },
   );
   return { middlewareFunction, networkController };
 };
@@ -309,12 +306,13 @@ describe('PPOMMiddleware', () => {
     const originPath =
       'https://ipfs.io/ipfs/bafkreifmjawtugkhf7b4ellqrh6uk72ky7d2ev7q7ucdpvlryrzf2xuysi';
 
-    const { middlewareFunction } = createMiddleware({ originPath });
+    const { middlewareFunction } = createMiddleware();
 
     const req = {
       ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
+      originPath,
     };
 
     await middlewareFunction(
