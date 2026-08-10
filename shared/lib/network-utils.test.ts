@@ -1,8 +1,4 @@
-import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../constants/network';
-import {
-  getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
-} from './network-utils';
+import { getIsMetaMaskInfuraEndpointUrl } from './network-utils';
 
 jest.mock('../constants/network', () => ({
   FEATURED_RPCS: [
@@ -35,10 +31,6 @@ jest.mock('../constants/network', () => ({
       ],
     },
   ],
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME: {
-    'ethereum-mainnet': () => 'https://mainnet.quiknode.pro/test',
-    'ethereum-sepolia': () => 'https://sepolia.quiknode.pro/test',
-  },
 }));
 
 jest.mock('@metamask/controller-utils', () => ({
@@ -125,28 +117,5 @@ describe('getIsMetaMaskInfuraEndpointUrl', () => {
     expect(getIsMetaMaskInfuraEndpointUrl('', 'the-infura-project-id')).toBe(
       false,
     );
-  });
-});
-
-describe('getIsQuicknodeEndpointUrl', () => {
-  for (const getQuicknodeEndpointUrl of Object.values(
-    QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-  )) {
-    const quicknodeEndpointUrl = getQuicknodeEndpointUrl();
-    it(`returns true for known Quicknode URL "${quicknodeEndpointUrl}"`, () => {
-      // We can assume this is set.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(getIsQuicknodeEndpointUrl(quicknodeEndpointUrl!)).toBe(true);
-    });
-  }
-
-  it('returns false for unknown URLs', () => {
-    expect(getIsQuicknodeEndpointUrl('https://unknown.example.com')).toBe(
-      false,
-    );
-  });
-
-  it('returns false for an empty URL', () => {
-    expect(getIsQuicknodeEndpointUrl('')).toBe(false);
   });
 });
