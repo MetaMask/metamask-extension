@@ -7,7 +7,7 @@ import {
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import SelectNetworkModal from '../../page-objects/pages/dialog/select-network-modal';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';

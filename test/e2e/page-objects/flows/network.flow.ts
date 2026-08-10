@@ -1,7 +1,7 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
 import NetworkFilter from '../pages/networks/network-filter';
-import SelectNetworkModal from '../pages/dialog/select-network-modal';
+import SelectNetworkModal from '../pages/networks/select-network-modal';
 import NetworksPage from '../pages/networks/networks-page';
 
 // TODO: Replace this fixed delay with a deterministic wait. Non-EVM accounts (Tron, Bitcoin) are created

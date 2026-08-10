@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
-import SelectNetworkModal from '../../../page-objects/pages/dialog/select-network-modal';
+import SelectNetworkModal from '../../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../../page-objects/pages/networks/network-filter';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
