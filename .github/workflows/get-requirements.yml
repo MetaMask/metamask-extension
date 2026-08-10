@@ -651,6 +651,15 @@ jobs:
       # Benchmarks measure build output performance — reused builds produce
       # identical results, so running them is pointless. This absorbs the
       # inline builds-from-run == github.run_id gate from main.yml.
+      #
+      # The decision is pinned to the head SHA as a commit status, because the
+      # inputs to it drift with the clock: `find-reusable-builds` scans only the
+      # 10 most recent runs on a branch and additionally requires that run's
+      # artifacts to still exist. The same commit can therefore resolve to
+      # "reusable" on one attempt and "not reusable" on the next. Left unpinned
+      # that is a gate bypass, since a skipped job counts as passing in
+      # ci-status-gate.yml — a failing benchmark gate could be cleared by
+      # re-running until the lookup happened to find a base build.
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Skip on cross-repo PRs — benchmarks need secrets not available to external contributors.
@@ -661,18 +670,65 @@ jobs:
             env.EVENT_NAME != 'merge_group' &&
             steps.set-skip-everything.outputs.skip-everything != 'true'
           }}
+        uses: actions/github-script@v8
         env:
           BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
-        run: |
-          echo "=== Benchmarks skip decision ==="
-          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
+          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = process.env.HEAD_COMMIT_HASH;
+            const statusContext = 'benchmarks-required';
 
-          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
-            echo "-> needs-benchmarks=false (builds from base branch — identical output)"
-          else
-            echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
-            echo "-> needs-benchmarks=true (fresh builds)"
-          fi
+            core.info('=== Benchmarks skip decision ===');
+            core.info(`  Builds from base branch: ${process.env.BUILDS_FROM_BASE_BRANCH}`);
+
+            // Honour a decision already recorded for this commit, so a re-run
+            // cannot turn a gated commit into an ungated one.
+            let pinned;
+            try {
+              const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
+                owner,
+                repo,
+                ref: sha,
+                per_page: 100,
+              });
+              pinned = statuses.find((s) => s.context === statusContext)?.description;
+            } catch (err) {
+              core.warning(`Could not read ${statusContext} status: ${err.message}`);
+            }
+
+            if (pinned === 'true' || pinned === 'false') {
+              if (pinned === 'true') {
+                core.setOutput('needs-benchmarks', 'true');
+              }
+              core.info(`-> needs-benchmarks=${pinned} (pinned to ${sha.slice(0, 9)} by an earlier attempt)`);
+              return;
+            }
+
+            const required = process.env.BUILDS_FROM_BASE_BRANCH !== 'true';
+            if (required) {
+              core.setOutput('needs-benchmarks', 'true');
+              core.info('-> needs-benchmarks=true (fresh builds)');
+            } else {
+              core.info('-> needs-benchmarks=false (builds from base branch — identical output)');
+            }
+
+            // Best-effort, like the other commit statuses in this job: if the
+            // write fails, the next attempt simply recomputes as before.
+            try {
+              await github.rest.repos.createCommitStatus({
+                owner,
+                repo,
+                sha,
+                state: 'success',
+                context: statusContext,
+                description: String(required),
+              });
+              core.info(`Posted ${statusContext}: ${required}`);
+            } catch (err) {
+              core.warning(`Could not post ${statusContext} status: ${err.message}`);
+            }
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
