@@ -395,7 +395,10 @@ export class CriticalStartupErrorHandler {
    * it minimize abstractions that could cause further issues.
    */
   install() {
-    this.#port.onMessage.addListener(this.#handler);
+    // The port may lack `onMessage` in browsers where the native `browser`
+    // namespace is present, making webextension-polyfill a no-op. Guard so a
+    // missing listener sink doesn't crash UI startup (see #45337).
+    this.#port.onMessage?.addListener(this.#handler);
 
     // Pre-register all phase completion callbacks so messages can arrive before we enter
     // the corresponding phase (avoids race where BACKGROUND_INITIALIZED or START_UI_SYNC
@@ -426,7 +429,7 @@ export class CriticalStartupErrorHandler {
    */
   uninstall() {
     this.#uninstalled = true;
-    this.#port.onMessage.removeListener(this.#handler);
+    this.#port.onMessage?.removeListener(this.#handler);
 
     clearTimeout(this.#livenessCheckTimeoutId);
     clearTimeout(this.#initializationCheckTimeoutId);
