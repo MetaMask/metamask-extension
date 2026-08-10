@@ -9370,11 +9370,11 @@
   "select": {
     "message": "Select"
   },
-  "selectAccounts": {
-    "message": "Select accounts"
-  },
   "selectAccountToConnect": {
     "message": "Select an account to connect"
+  },
+  "selectAccounts": {
+    "message": "Select accounts"
   },
   "selectAll": {
     "message": "Select all"
