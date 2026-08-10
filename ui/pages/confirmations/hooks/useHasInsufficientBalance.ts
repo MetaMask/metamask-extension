@@ -9,7 +9,7 @@ import { isBalanceSufficient } from '../send-utils/send.utils';
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
 import { useNativeCurrencySymbol } from '../components/confirm/info/hooks/useNativeCurrencySymbol';
 
-const NO_NATIVE_ASSET_CHAIN_IDS = new Set(['0x1079', '0xa5bf']);
+const NO_NATIVE_ASSET_CHAIN_IDS = new Set(['0x1079', '0xa5bf', '0x7']);
 
 const ZERO_HEX_FALLBACK = '0x0';
 
