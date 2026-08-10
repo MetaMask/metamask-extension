@@ -126,6 +126,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
       `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
       error,
     );
+    throw error;
   } finally {
     database?.close();
   }

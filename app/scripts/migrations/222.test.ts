@@ -194,7 +194,7 @@ describe(`migration #${version}`, () => {
     );
   });
 
-  it('does not throw when migration storage access fails', async () => {
+  it('rethrows browser.storage.local access errors', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
@@ -202,12 +202,37 @@ describe(`migration #${version}`, () => {
     mockBrowser.storage.local.getKeys.mockRejectedValueOnce(storageError);
     const oldStorage = buildVersionedData();
 
-    await migrate(oldStorage, new Set());
+    await expect(migrate(oldStorage, new Set())).rejects.toBe(storageError);
 
-    expect(oldStorage.meta).toStrictEqual({ version });
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
       storageError,
+    );
+  });
+
+  it('rethrows unexpected IndexedDB errors', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const indexedDBError = new Error('IndexedDB failed');
+    jest
+      .spyOn(IndexedDBStore.prototype, 'open')
+      .mockRejectedValue(indexedDBError);
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
+      STORAGE_SERVICE_KEY,
+    ]);
+    mockBrowser.storage.local.get.mockResolvedValueOnce({
+      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
+    });
+
+    await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
+      indexedDBError,
+    );
+
+    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
+      indexedDBError,
     );
   });
 
