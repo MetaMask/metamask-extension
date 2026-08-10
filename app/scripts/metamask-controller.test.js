@@ -5735,3 +5735,206 @@ describe('MetaMaskController', () => {
     });
   });
 });
+
+/**
+ * Builds a minimal fake `this` context for calling
+ * `MetaMaskController.prototype._addNetworkAndSetActive` in isolation,
+ * without constructing a full MetaMaskController instance.
+ *
+ * `addNetworkImpl` is expected to invoke the captured
+ * `NetworkEnablementController:stateChange` subscriber itself, mirroring how
+ * `NetworkEnablementController#onAddNetwork` reacts synchronously to
+ * `NetworkController:addNetwork` publishing `networkAdded` in the real app.
+ *
+ * @param {object} options0 - Options bag.
+ * @param {object} options0.enabledNetworkMapBefore - Initial enabledNetworkMap.
+ * @param {Function} options0.addNetworkImpl - Fake NetworkController.addNetwork.
+ * @param {Function} [options0.setActiveNetworkImpl] - Fake NetworkController.setActiveNetwork.
+ */
+function createFakeAddNetworkController({
+  enabledNetworkMapBefore,
+  addNetworkImpl,
+  setActiveNetworkImpl = jest.fn().mockResolvedValue(undefined),
+}) {
+  let subscribedCallback;
+  let isSubscribed = false;
+
+  const restoreEnabledNetworkMap = jest.fn();
+  const lookupSelectedNetworks = jest.fn().mockResolvedValue(undefined);
+
+  const controllerMessenger = {
+    subscribe: jest.fn((_event, callback) => {
+      subscribedCallback = callback;
+      isSubscribed = true;
+    }),
+    unsubscribe: jest.fn((_event, callback) => {
+      if (!isSubscribed) {
+        throw new Error('Subscription not found.');
+      }
+      isSubscribed = false;
+      expect(callback).toBe(subscribedCallback);
+    }),
+    call: jest.fn((event) => {
+      if (event === 'LegacyBackgroundApiService:lookupSelectedNetworks') {
+        return lookupSelectedNetworks();
+      }
+      throw new Error(`Unexpected messenger call: ${event}`);
+    }),
+  };
+
+  const fakeController = {
+    networkEnablementController: {
+      state: { enabledNetworkMap: enabledNetworkMapBefore },
+      restoreEnabledNetworkMap,
+    },
+    networkController: {
+      addNetwork: jest.fn(async (networkConfiguration) => {
+        const result = await addNetworkImpl(networkConfiguration);
+        // Mirrors NetworkEnablementController#onAddNetwork reacting to the
+        // real `networkAdded` event fired by NetworkController.addNetwork().
+        subscribedCallback?.();
+        return result;
+      }),
+      setActiveNetwork: setActiveNetworkImpl,
+    },
+    controllerMessenger,
+  };
+
+  return { fakeController, restoreEnabledNetworkMap, lookupSelectedNetworks };
+}
+
+describe('MetaMaskController#_addNetworkAndSetActive', () => {
+  const enabledNetworkMapBefore = {
+    eip155: { '0x1': true, '0x2105': true, '0xa': true, '0x15b38': true },
+  };
+
+  const addedNetwork = {
+    chainId: '0x2711',
+    defaultRpcEndpointIndex: 0,
+    rpcEndpoints: [{ networkClientId: 'stable-client-id' }],
+  };
+
+  it('defaults to setActive: true, and enableNetwork follows setActive - preserving other enabled networks and enabling the new one', async () => {
+    const { fakeController, restoreEnabledNetworkMap } =
+      createFakeAddNetworkController({
+        enabledNetworkMapBefore,
+        addNetworkImpl: async () => addedNetwork,
+      });
+
+    const result =
+      await MetaMaskController.prototype._addNetworkAndSetActive.call(
+        fakeController,
+        { chainId: '0x2711' },
+      );
+
+    expect(result).toBe(addedNetwork);
+    expect(
+      fakeController.networkController.setActiveNetwork,
+    ).toHaveBeenCalledWith('stable-client-id');
+    expect(restoreEnabledNetworkMap).toHaveBeenCalledWith({
+      eip155: {
+        '0x1': true,
+        '0x2105': true,
+        '0xa': true,
+        '0x15b38': true,
+        '0x2711': true,
+      },
+    });
+  });
+
+  it('setActive: false, enableNetwork: true preserves other enabled networks and enables the new one, without switching the active network', async () => {
+    const { fakeController, restoreEnabledNetworkMap, lookupSelectedNetworks } =
+      createFakeAddNetworkController({
+        enabledNetworkMapBefore,
+        addNetworkImpl: async () => addedNetwork,
+      });
+
+    await MetaMaskController.prototype._addNetworkAndSetActive.call(
+      fakeController,
+      { chainId: '0x2711' },
+      { setActive: false, enableNetwork: true },
+    );
+
+    expect(
+      fakeController.networkController.setActiveNetwork,
+    ).not.toHaveBeenCalled();
+    expect(lookupSelectedNetworks).toHaveBeenCalled();
+    expect(restoreEnabledNetworkMap).toHaveBeenCalledWith({
+      eip155: {
+        '0x1': true,
+        '0x2105': true,
+        '0xa': true,
+        '0x15b38': true,
+        '0x2711': true,
+      },
+    });
+  });
+
+  it('setActive: false alone (enableNetwork left unset) preserves other enabled networks but does not enable the new one', async () => {
+    const { fakeController, restoreEnabledNetworkMap } =
+      createFakeAddNetworkController({
+        enabledNetworkMapBefore,
+        addNetworkImpl: async () => addedNetwork,
+      });
+
+    await MetaMaskController.prototype._addNetworkAndSetActive.call(
+      fakeController,
+      { chainId: '0x2711' },
+      { setActive: false },
+    );
+
+    expect(restoreEnabledNetworkMap).toHaveBeenCalledWith(
+      enabledNetworkMapBefore,
+    );
+  });
+
+  it('cleans up the subscription itself when addNetwork rejects', async () => {
+    const addNetworkError = new Error('addNetwork failed');
+    const { fakeController, restoreEnabledNetworkMap } =
+      createFakeAddNetworkController({
+        enabledNetworkMapBefore,
+        addNetworkImpl: async () => {
+          throw addNetworkError;
+        },
+      });
+
+    await expect(
+      MetaMaskController.prototype._addNetworkAndSetActive.call(
+        fakeController,
+        { chainId: '0x2711' },
+      ),
+    ).rejects.toBe(addNetworkError);
+
+    expect(
+      fakeController.controllerMessenger.unsubscribe,
+    ).toHaveBeenCalledTimes(1);
+    expect(restoreEnabledNetworkMap).not.toHaveBeenCalled();
+  });
+
+  it('does not mask a post-add failure with a stale unsubscribe (regression test)', async () => {
+    const postAddError = new Error('setActiveNetwork failed');
+    const setActiveNetworkImpl = jest.fn().mockRejectedValue(postAddError);
+    const { fakeController } = createFakeAddNetworkController({
+      enabledNetworkMapBefore,
+      addNetworkImpl: async () => addedNetwork,
+      setActiveNetworkImpl,
+    });
+
+    // Before the fix, this used to throw "Subscription not found." instead,
+    // because the catch block unsubscribed a second time after
+    // restorePreviousEnabledNetworkMap had already unsubscribed itself in
+    // reaction to addNetwork's (successful) networkAdded event.
+    await expect(
+      MetaMaskController.prototype._addNetworkAndSetActive.call(
+        fakeController,
+        { chainId: '0x2711' },
+      ),
+    ).rejects.toBe(postAddError);
+
+    // Only the automatic unsubscribe-on-restore should have run - the catch
+    // block must not attempt a second one.
+    expect(
+      fakeController.controllerMessenger.unsubscribe,
+    ).toHaveBeenCalledTimes(1);
+  });
+});
