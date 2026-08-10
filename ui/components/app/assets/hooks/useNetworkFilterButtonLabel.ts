@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getAllMultichainNetworkConfigurations,
+} from '../../../../selectors/multichain/networks';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getShowTestNetworks,
@@ -19,18 +22,18 @@ export function useNetworkFilterButtonIcon():
   | { name: string; src?: string }
   | undefined {
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
-  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
+  const allNetworks = useSelector(getAllMultichainNetworkConfigurations);
 
   return useMemo(() => {
     if (enabledNetworks.length !== 1) {
       return undefined;
     }
 
-    const network = allCaipNetworks[toCaipChainId(enabledNetworks[0])];
+    const network = allNetworks[toCaipChainId(enabledNetworks[0])];
     return network
       ? { name: network.name, src: getNetworkIcon(network) }
       : undefined;
-  }, [allCaipNetworks, enabledNetworks]);
+  }, [allNetworks, enabledNetworks]);
 }
 
 export function useNetworkFilterButtonLabel(): string {
