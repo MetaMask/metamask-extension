@@ -8,7 +8,9 @@ process.env.PHISHING_WARNING_PAGE_URL = 'https://example.com/phishing';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).mockLogCalls = [] as unknown[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).mockOnMessageListeners = [] as ((message: unknown) => unknown)[];
+(global as any).mockOnMessageListeners = [] as ((
+  message: unknown,
+) => unknown)[];
 
 jest.mock('readable-stream', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
