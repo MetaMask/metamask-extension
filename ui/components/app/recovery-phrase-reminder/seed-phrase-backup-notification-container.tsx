@@ -53,7 +53,7 @@ export function SeedPhraseBackupNotificationContainer() {
       return;
     }
 
-    toast.success(
+    toast(
       <ToastContent
         dataTestId={toastId}
         title={t('backupApprovalNotice')}

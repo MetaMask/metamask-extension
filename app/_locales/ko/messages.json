@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "개인 정보 보호 방법 알아보기"
   },
-  "backupApprovalInfo": {
-    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
-  },
   "backupApprovalNotice": {
     "message": "비밀복구구문을 백업하여 지갑과 자금을 안전하게 보호하세요."
   },

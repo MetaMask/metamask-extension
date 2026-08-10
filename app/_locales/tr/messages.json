@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
   },
-  "backupApprovalInfo": {
-    "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
-  },
   "backupApprovalNotice": {
     "message": "Cüzdanınızı ve paranızı güvende tutmak için Gizli Kurtarma İfadenizi yedekleyin."
   },

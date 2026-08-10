@@ -38,6 +38,7 @@ import { FontWeight } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
+import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
 import { useDispatch } from '../../store/hooks';
@@ -266,9 +267,12 @@ export const HomeNotificationsContainer = memo(function () {
     ) : null,
   ].filter(Boolean);
 
-  if (!notificationItems.length) {
-    return null;
-  }
-
-  return <MultipleNotifications>{notificationItems}</MultipleNotifications>;
+  return (
+    <>
+      <SeedPhraseBackupNotificationContainer />
+      {notificationItems.length > 0 ? (
+        <MultipleNotifications>{notificationItems}</MultipleNotifications>
+      ) : null}
+    </>
+  );
 });

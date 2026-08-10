@@ -30,6 +30,10 @@ jest.mock('../../ducks/metamask/metamask', () => ({
   getWeb3ShimUsageAlertEnabledness: () => false,
 }));
 
+jest.mock('../../components/app/recovery-phrase-reminder', () => ({
+  SeedPhraseBackupNotificationContainer: () => null,
+}));
+
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   setActiveNetwork: jest.fn((configurationId: string) => ({

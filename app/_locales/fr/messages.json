@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Découvrez comment nous protégeons vos données personnelles"
   },
-  "backupApprovalInfo": {
-    "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
-  },
   "backupApprovalNotice": {
     "message": "Sauvegardez votre phrase secrète de récupération pour garder votre portefeuille et vos fonds en sécurité."
   },
