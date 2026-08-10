@@ -10,6 +10,7 @@ describe('DisconnectAllModal', () => {
   const args = {
     onClose: jest.fn(),
     onClick,
+    origin: 'https://example.com',
   };
 
   const renderModal = (props = {}) => {
@@ -32,20 +33,11 @@ describe('DisconnectAllModal', () => {
     expect(onClick).toHaveBeenCalled();
   });
 
-  describe('with origin prop', () => {
-    it('should render site-specific description when origin is provided', () => {
-      renderModal({ origin: 'https://example.com' });
-      expect(screen.getByText('example.com')).toBeInTheDocument();
-      expect(
-        screen.getByText(/disconnect all your accounts from/iu),
-      ).toBeInTheDocument();
-    });
-
-    it('should render generic description when origin is not provided', () => {
-      renderModal();
-      expect(
-        screen.getByText(/need to reconnect your accounts and networks/iu),
-      ).toBeInTheDocument();
-    });
+  it('should render site-specific description with origin host', () => {
+    renderModal({ origin: 'https://example.com' });
+    expect(screen.getByText('example.com')).toBeInTheDocument();
+    expect(
+      screen.getByText(/disconnect all your accounts from/iu),
+    ).toBeInTheDocument();
   });
 });

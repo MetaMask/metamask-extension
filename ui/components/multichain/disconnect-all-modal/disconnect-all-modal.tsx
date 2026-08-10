@@ -20,7 +20,7 @@ import { getURLHost } from '../../../helpers/utils/util';
 type DisconnectAllModalProps = {
   onClick: () => void;
   onClose: () => void;
-  origin?: string;
+  origin: string;
 };
 
 export const DisconnectAllModal = ({
@@ -29,7 +29,7 @@ export const DisconnectAllModal = ({
   origin,
 }: DisconnectAllModalProps) => {
   const t = useI18nContext();
-  const host = origin ? getURLHost(origin) : undefined;
+  const host = getURLHost(origin);
 
   return (
     <Modal isOpen onClose={onClose} data-testid="disconnect-all-modal">
@@ -40,19 +40,17 @@ export const DisconnectAllModal = ({
         </ModalHeader>
         <ModalBody>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {origin
-              ? t('disconnectSiteDescriptionText', [
-                  <Text
-                    key="siteHost"
-                    asChild
-                    variant={TextVariant.BodyMd}
-                    color={TextColor.TextAlternative}
-                    fontWeight={FontWeight.Bold}
-                  >
-                    <span>{host}</span>
-                  </Text>,
-                ])
-              : t('disconnectAllDescriptionText')}
+            {t('disconnectSiteDescriptionText', [
+              <Text
+                key="siteHost"
+                asChild
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                fontWeight={FontWeight.Bold}
+              >
+                <span>{host}</span>
+              </Text>,
+            ])}
           </Text>
         </ModalBody>
         <ModalFooter>

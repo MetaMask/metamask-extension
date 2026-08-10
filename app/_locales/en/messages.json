@@ -3503,9 +3503,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllDescriptionText": {
-    "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
-  },
   "disconnectAllSites": {
     "message": "Disconnect all"
   },
