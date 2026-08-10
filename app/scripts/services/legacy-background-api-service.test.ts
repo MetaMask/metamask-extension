@@ -5633,6 +5633,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
         expect(clearAccountsState).toHaveBeenCalled();
+        expect(reinit).toHaveBeenCalledTimes(2);
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
@@ -5641,6 +5642,9 @@ describe('LegacyBackgroundApiService', () => {
         });
         expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
         expect(result).toStrictEqual(primaryKeyring);
+        expect(reinit.mock.invocationCallOrder[0]).toBeLessThan(
+          createWallet.mock.invocationCallOrder[0],
+        );
       });
     });
   });

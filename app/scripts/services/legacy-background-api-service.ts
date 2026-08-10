@@ -3640,6 +3640,11 @@ export class LegacyBackgroundApiService {
       // Clear accounts state
       this.#messenger.call('AccountsController:clearState');
 
+      // Re-init the account tree while accounts are empty so stale
+      // account→group mappings from clearState are wiped before the
+      // keyring recreate publishes selectedAccountChange.
+      this.#messenger.call('AccountTreeController:reinit');
+
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
       // of accounts, we should add a new flag to the account struct
@@ -4058,6 +4063,11 @@ export class LegacyBackgroundApiService {
 
       // Clear accounts state
       this.#messenger.call('AccountsController:clearState');
+
+      // Re-init the account tree while accounts are empty so stale
+      // account→group mappings from clearState are wiped before the
+      // keyring recreate publishes selectedAccountChange.
+      this.#messenger.call('AccountTreeController:reinit');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
