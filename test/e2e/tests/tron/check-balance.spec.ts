@@ -22,7 +22,7 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
@@ -47,7 +47,7 @@ describe('Check balance', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
@@ -73,7 +73,7 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();

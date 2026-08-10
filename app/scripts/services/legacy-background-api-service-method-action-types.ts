@@ -267,6 +267,54 @@ export type LegacyBackgroundApiServiceGetGlobalChainIdAction = {
 };
 
 /**
+ * Gets the standard and details for a token on the globally selected network.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction = {
+  type: `LegacyBackgroundApiService:getTokenStandardAndDetails`;
+  handler: LegacyBackgroundApiService['getTokenStandardAndDetails'];
+};
+
+/**
+ * Gets the standard and details for a token on a specific chain.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @param chainId - The chain ID to resolve the token on.
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction =
+  {
+    type: `LegacyBackgroundApiService:getTokenStandardAndDetailsByChain`;
+    handler: LegacyBackgroundApiService['getTokenStandardAndDetailsByChain'];
+  };
+
+/**
+ * Gets the symbol of a token via an on-chain lookup through the
+ * `AssetsContractController`.
+ *
+ * @param address - The token contract address.
+ * @returns The token symbol, or `null` if it could not be resolved.
+ */
+export type LegacyBackgroundApiServiceGetTokenSymbolAction = {
+  type: `LegacyBackgroundApiService:getTokenSymbol`;
+  handler: LegacyBackgroundApiService['getTokenSymbol'];
+};
+
+/**
  * Removes an account from state / storage.
  *
  * @param address - The account address, not CAIP-10 formatted.
@@ -408,6 +456,47 @@ export type LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction = {
 export type LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction = {
   type: `LegacyBackgroundApiService:submitPasswordOrEncryptionKey`;
   handler: LegacyBackgroundApiService['submitPasswordOrEncryptionKey'];
+};
+
+/**
+ * Changes the wallet password using a verified passkey assertion.
+ *
+ * Delegates the actual password change and vault-key renewal to
+ * `PasskeyController:changePasswordWithPasskeyVerification`, but wraps the call
+ * in the shared `seedlessOperationMutex` so it stays serialized against the
+ * other keyring/seedless operations (password change, SRP backups, keyring
+ * encryption key sync) that mutate the same keyring encryption key and vault.
+ * The PasskeyController has its own internal mutex, which only serializes
+ * passkey operations against each other, so the extension-level lock is still
+ * required to avoid interleaving with those flows.
+ *
+ * @param params - Passkey password-change parameters.
+ * @param params.newPassword - The new wallet password.
+ * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+ * @param params.options - Optional flow controls.
+ * @param params.options.renewVaultKeyProtection - Re-wrap the vault key after the password change.
+ */
+export type LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction =
+  {
+    type: `LegacyBackgroundApiService:changePasswordWithPasskeyVerification`;
+    handler: LegacyBackgroundApiService['changePasswordWithPasskeyVerification'];
+  };
+
+/**
+ * Unlocks the vault with a passkey, then runs the post-unlock account
+ * initialization sequence.
+ *
+ * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+ * verifies the authentication assertion and submits the decrypted vault key to
+ * the KeyringController), then performs the awaited post-unlock account init
+ * (accounts / multichain / account-tree) that the controller's keyring-only
+ * unlock does not run.
+ *
+ * @param authenticationResponse - Result of `navigator.credentials.get()`.
+ */
+export type LegacyBackgroundApiServiceUnlockWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:unlockWithPasskey`;
+  handler: LegacyBackgroundApiService['unlockWithPasskey'];
 };
 
 /**
@@ -887,6 +976,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetEnabledNetworksAction
   | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction
+  | LegacyBackgroundApiServiceGetTokenSymbolAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
@@ -900,6 +992,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
+  | LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction
+  | LegacyBackgroundApiServiceUnlockWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction

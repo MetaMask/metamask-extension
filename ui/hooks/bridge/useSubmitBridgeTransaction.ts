@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
@@ -39,6 +39,12 @@ import {
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
+import {
+  CHAIN_VALUE_ORDER_AB_KEY,
+  CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+} from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { useABTest } from '../useABTest';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -72,6 +78,27 @@ export default function useSubmitBridgeTransaction() {
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    variantName: chainValueOrderVariantName,
+    isActive: isChainValueOrderExperimentActive,
+  } = useABTest(
+    CHAIN_VALUE_ORDER_AB_KEY,
+    CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+    undefined,
+    { trackExposure: false },
+  );
+  const activeAbTests = useMemo(
+    () =>
+      isChainValueOrderExperimentActive
+        ? [
+            createActiveABTestAssignment(
+              CHAIN_VALUE_ORDER_AB_KEY,
+              chainValueOrderVariantName,
+            ),
+          ]
+        : undefined,
+    [chainValueOrderVariantName, isChainValueOrderExperimentActive],
+  );
   // Tracks an in-flight submitBridgeTx so Promise.race timeouts cannot leave a
   // live dispatch that a hardware-wallet retry would duplicate.
   const inFlightSubmitBridgeTxRef = useRef<{
@@ -96,6 +123,7 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+            activeAbTests,
           }),
         );
         return;
@@ -123,6 +151,7 @@ export default function useSubmitBridgeTransaction() {
             ),
             location,
             toToken?.securityData?.type ?? null,
+            activeAbTests,
           ),
         );
         const tracked = { requestId, promise: rpcPromise };
