@@ -247,24 +247,32 @@ describe('RampsTokenSelectionScreen', () => {
     expect(screen.queryByTestId('ramps-show-all-tokens')).toBeNull();
   });
 
-  it('shows loading screen when tokensLoading is true', () => {
+  it('shows loading state when tokensLoading is true', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: true,
       tokensError: null,
     });
 
-    renderWithProvider(
+    const { container } = renderWithProvider(
       <RampsTokenSelectionScreen />,
       createStore(),
       '/ramps/token-selection',
     );
 
-    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
+    const page = screen.getByTestId('ramps-token-selection-loading');
+
+    expect(page).toContainElement(
+      screen.getByTestId('ramps-token-selection-back'),
+    );
+    expect(page.querySelector('.spinner')).toBeInTheDocument();
+    // `loading-overlay` is the fixed-position full-screen LoadingScreen that
+    // used to cover the header, leaving no way to leave the screen.
+    expect(container.querySelector('.loading-overlay')).toBeNull();
     expect(screen.queryByTestId('send-asset-picker')).toBeNull();
   });
 
-  it('shows loading screen when tokens are unset and there is no error', () => {
+  it('shows loading state when tokens are unset and there is no error', () => {
     useRampsController.mockReturnValue({
       tokens: null,
       tokensLoading: false,
@@ -277,8 +285,28 @@ describe('RampsTokenSelectionScreen', () => {
       '/ramps/token-selection',
     );
 
-    expect(screen.queryByTestId('ramps-token-selection-screen')).toBeNull();
+    expect(
+      screen.getByTestId('ramps-token-selection-loading'),
+    ).toBeInTheDocument();
     expect(screen.queryByTestId('send-asset-picker')).toBeNull();
+  });
+
+  it('keeps back navigation available while loading', () => {
+    useRampsController.mockReturnValue({
+      tokens: null,
+      tokensLoading: true,
+      tokensError: null,
+    });
+
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-token-selection-back'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('shows error state when tokensError exists', () => {

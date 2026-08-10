@@ -12,6 +12,7 @@ import { DiscoverSearchPage } from './discover-search';
 const mockNavigate = jest.fn();
 const mockRunCloseTransition = jest.fn((callback: () => void) => callback());
 const mockUseDiscoverSearch = jest.fn();
+const mockGetIsPerpsExperienceAvailable = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -23,7 +24,7 @@ jest.mock('../routes/global-menu-route-transition', () => ({
 }));
 
 jest.mock('../../hooks/discover-search/useDiscoverSearch', () => ({
-  useDiscoverSearch: () => mockUseDiscoverSearch(),
+  useDiscoverSearch: (options: unknown) => mockUseDiscoverSearch(options),
 }));
 
 const getDefaultDiscoverSearchResult = () => ({
@@ -39,11 +40,15 @@ const getDefaultDiscoverSearchResult = () => ({
         marketCap: 20_000_000_000,
         aggregatedUsdVolume: 126_000_000,
         priceChangePct: { h24: '0.02' },
+        securityData: { resultType: 'Verified' },
       },
     ],
     isLoading: false,
     error: null,
     totalCount: 1,
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: jest.fn(),
   },
   perps: {
     id: 'perps' as const,
@@ -59,7 +64,7 @@ const getDefaultDiscoverSearchResult = () => ({
         name: 'Stock1',
         symbol: 'STK1',
         decimals: 18,
-        price: '406.78',
+        price: '0.000131',
         marketCap: 20_000_000_000,
         aggregatedUsdVolume: 126_000_000,
         priceChangePct: { h24: '9.4' },
@@ -68,6 +73,9 @@ const getDefaultDiscoverSearchResult = () => ({
     isLoading: false,
     error: null,
     totalCount: 1,
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: jest.fn(),
   },
   isDebouncing: false,
 });
@@ -95,7 +103,7 @@ const getEmptyDiscoverSearchResult = () => ({
 });
 
 jest.mock('../../selectors/perps/feature-flags', () => ({
-  getIsPerpsExperienceAvailable: () => false,
+  getIsPerpsExperienceAvailable: () => mockGetIsPerpsExperienceAvailable(),
 }));
 
 const mockStore = configureMockStore();
@@ -104,10 +112,14 @@ describe('DiscoverSearchPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     mockRunCloseTransition.mockClear();
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
     mockUseDiscoverSearch.mockReturnValue(getDefaultDiscoverSearchResult());
   });
 
-  const renderPage = ({ currentCurrency = 'usd' } = {}) => {
+  const renderPage = ({
+    currentCurrency = 'usd',
+    route = DISCOVER_SEARCH_ROUTE,
+  } = {}) => {
     const store = mockStore({
       ...mockState,
       metamask: {
@@ -124,7 +136,7 @@ describe('DiscoverSearchPage', () => {
         <DiscoverSearchPage />
       </QueryClientProvider>,
       store,
-      DISCOVER_SEARCH_ROUTE,
+      route,
     );
   };
 
@@ -139,6 +151,42 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.getByText(messages.networkNameEthereum.message),
     ).toBeInTheDocument();
+    expect(screen.getByText('$2,500.00')).toBeInTheDocument();
+    expect(screen.getByTestId('security-badge-icon')).toBeInTheDocument();
+    expect(screen.getByText('<$0.01')).toBeInTheDocument();
+  });
+
+  it('restores the search query and active tab from the route query string', () => {
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=crypto` });
+
+    expect(screen.getByTestId('discover-search-input')).toHaveValue('eth');
+    expect(mockUseDiscoverSearch).toHaveBeenCalledWith(
+      expect.objectContaining({ query: 'eth', activeTab: 'crypto' }),
+    );
+    expect(
+      screen.getByTestId('discover-crypto-eip155:1/slip44:60'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders risky security badges for suspicious assets', () => {
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        ...getDefaultDiscoverSearchResult().crypto,
+        items: [
+          {
+            ...getDefaultDiscoverSearchResult().crypto.items[0],
+            securityData: { type: 'Warning' },
+          },
+        ],
+      },
+    });
+
+    renderPage();
+
+    expect(
+      screen.getByText(messages.securityTrustRisky.message),
+    ).toBeInTheDocument();
   });
 
   it('switches to Crypto tab when View all is clicked', () => {
@@ -150,6 +198,38 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.getByTestId('discover-crypto-eip155:1/slip44:60'),
     ).toBeInTheDocument();
+  });
+
+  it('loads the next Crypto search page once when scrolled near the bottom', () => {
+    const fetchNextPage = jest.fn(() => new Promise(() => undefined));
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      crypto: {
+        ...getDefaultDiscoverSearchResult().crypto,
+        hasNextPage: true,
+        fetchNextPage,
+      },
+    });
+
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=crypto` });
+
+    const tabContent = screen
+      .getByTestId('discover-search-page')
+      .querySelector('.overflow-y-auto');
+    expect(tabContent).not.toBeNull();
+    if (!tabContent) {
+      throw new Error('Expected Discover Search tab content');
+    }
+    Object.defineProperties(tabContent, {
+      clientHeight: { configurable: true, value: 500 },
+      scrollHeight: { configurable: true, value: 1000 },
+      scrollTop: { configurable: true, value: 350 },
+    });
+
+    fireEvent.scroll(tabContent);
+    fireEvent.scroll(tabContent);
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
   });
 
   it('shows View X more when an active search has more matches than the preview', () => {
@@ -297,5 +377,55 @@ describe('DiscoverSearchPage', () => {
     expect(
       screen.getByText(messages.discoverSearchPopularAssets.message),
     ).toBeInTheDocument();
+  });
+
+  it('renders no results when the selected Perps tab is empty, regardless of other feeds loading', () => {
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getEmptyDiscoverSearchResult(),
+      crypto: {
+        ...getEmptyDiscoverSearchResult().crypto,
+        isLoading: true,
+      },
+      stocks: {
+        ...getEmptyDiscoverSearchResult().stocks,
+        isLoading: true,
+      },
+    });
+    renderPage({ route: `${DISCOVER_SEARCH_ROUTE}?q=eth&tab=perps` });
+
+    expect(
+      screen.getByTestId('discover-search-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('discover-search-loading'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render other category results in an empty selected Perps tab', () => {
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+    mockUseDiscoverSearch.mockReturnValue({
+      ...getDefaultDiscoverSearchResult(),
+      perps: {
+        ...getDefaultDiscoverSearchResult().perps,
+        items: [],
+      },
+    });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('discover-search-input'), {
+      target: { value: 'eth' },
+    });
+    fireEvent.click(screen.getByTestId('discover-tab-perps'));
+
+    expect(
+      screen.getByTestId('discover-search-no-results'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('discover-crypto-preview-eip155:1/slip44:60'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('discover-section-crypto'),
+    ).not.toBeInTheDocument();
   });
 });
