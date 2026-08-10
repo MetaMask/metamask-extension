@@ -123,4 +123,5 @@ export const CHAIN_IDS = {
   ARC: '0x13b2',
   ROBINHOOD_CHAIN: '0x1237',
   STABLE: '0x3dc',
+  SOMNIA: '0x13a7',
 } as const;
