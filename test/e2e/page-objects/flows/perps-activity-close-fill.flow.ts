@@ -32,35 +32,17 @@ export async function assertPerpsActivityShowsCloseFill({
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
-  try {
-    const marketListPage = new PerpsMarketListPage(driver);
+
+  // Back lands on the market list only when the test reached market detail
+  // through it; entering from a position card on Perps home skips it.
+  const marketListPage = new PerpsMarketListPage(driver);
+  if (await marketListPage.isBackButtonPresent()) {
     await marketListPage.clickBack();
-  } catch (error) {
-    console.error('Market list not displayed, moving on', error);
   }
 
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
-  await perpsTab.waitForRecentActivitySection();
-
-  // Re-push until the fill lands. A `userFills` snapshot both replaces the
-  // controller's fills cache and notifies live subscribers, but neither helps
-  // if it arrives while a view is mid-mount: the cache read happens once, and
-  // the live subscriber is not registered yet. The controller then answers
-  // `perpsGetOrderFills` from that initialized-but-empty cache without ever
-  // going to the wire, so nothing retries on its own. Pushing again once the
-  // view is up is delivered straight to the mounted subscriber. Snapshots
-  // replace rather than append, so repeating one is harmless.
-  await driver.waitUntil(
-    async () => {
-      if (await perpsTab.isRecentActivitySeeAllPresent()) {
-        return true;
-      }
-      pushUserFills();
-      return false;
-    },
-    { interval: 500, timeout: 30000 },
-  );
+  await perpsTab.checkPageIsLoaded();
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);

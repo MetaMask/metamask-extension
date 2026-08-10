@@ -100,6 +100,19 @@ export class PerpsMarketListPage {
    * moving (watchlist mount / toast dismiss can shift layout), then clicks with
    * {@link Driver.clickElement}.
    */
+  /**
+   * Non-blocking check for the header back control, for callers that reach this
+   * page conditionally and must not pay a full find timeout when it is absent.
+   *
+   * @param timeout - How long to look before reporting absence, in ms.
+   */
+  async isBackButtonPresent(timeout: number = 2000): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.headerBackButton,
+      timeout,
+    );
+  }
+
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
     await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);

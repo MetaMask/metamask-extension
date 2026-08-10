@@ -129,7 +129,7 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Shown for both the populated list header and the empty-state header.
+   * Only rendered once the section has history; the empty state has no header link.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -172,7 +172,9 @@ export class PerpsTab extends PerpsPositionsBase {
    *
    * @param timeout - How long to look before reporting absence, in ms.
    */
-  async isRecentActivitySeeAllPresent(timeout: number = 1000): Promise<boolean> {
+  async isRecentActivitySeeAllPresent(
+    timeout: number = 1000,
+  ): Promise<boolean> {
     return await this.driver.isElementPresentAndVisible(
       this.perpsRecentActivitySeeAll,
       timeout,
