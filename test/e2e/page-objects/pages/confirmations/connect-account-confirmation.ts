@@ -5,6 +5,10 @@ class ConnectAccountConfirmation {
     testId: `multichain-account-cell-name-${accountName}`,
   });
 
+  private readonly accountSection = {
+    testId: 'account-selection-section',
+  };
+
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
   };
@@ -13,22 +17,12 @@ class ConnectAccountConfirmation {
     testId: 'confirm-btn',
   };
 
-  private readonly connectAccountConfirmationButton = {
-    text: 'Connect',
-    tag: 'button',
-  };
-
   private readonly connectAccountConfirmationTitle = {
     text: 'Connect this website with MetaMask',
     tag: 'p',
   };
 
   driver: Driver;
-
-  private readonly editAccountButton = {
-    text: 'Edit accounts',
-    tag: 'button',
-  };
 
   private readonly originHeader = (origin: string) => {
     return {
@@ -59,7 +53,7 @@ class ConnectAccountConfirmation {
   }: { origin?: string } = {}): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.connectAccountConfirmationTitle,
-      this.connectAccountConfirmationButton,
+      this.confirmConnectButton,
       this.originHeader(origin),
     ]);
     console.log(`Connect Account confirmation page is loaded`);
@@ -68,7 +62,7 @@ class ConnectAccountConfirmation {
   async confirmConnect(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.connectAccountConfirmationButton,
+      this.confirmConnectButton,
     );
   }
 
@@ -87,7 +81,7 @@ class ConnectAccountConfirmation {
 
   async openEditAccountsModal(): Promise<void> {
     console.log('Open edit accounts modal');
-    await this.driver.clickElement(this.editAccountButton);
+    await this.driver.clickElement(this.accountSection);
   }
 }
 

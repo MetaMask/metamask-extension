@@ -27,8 +27,7 @@ describe('Multichain API - Non EVM', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
+              testId: 'confirm-btn',
             });
 
             await driver.switchToWindowWithTitle(
@@ -67,8 +66,7 @@ describe('Multichain API - Non EVM', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
+              testId: 'confirm-btn',
             });
 
             await driver.switchToWindowWithTitle(

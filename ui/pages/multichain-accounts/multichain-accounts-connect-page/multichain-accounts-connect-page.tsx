@@ -163,7 +163,6 @@ const MultiAccountRow = ({
       padding={4}
       gap={3}
       onClick={onEdit}
-      data-testid="multi-account-row"
     >
       <AvatarGroup
         avatarPropsArr={avatarMembers}
@@ -597,6 +596,7 @@ export const MultichainAccountsConnectPage = ({
           <Box
             backgroundColor={BoxBackgroundColor.BackgroundMuted}
             className="rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             {singleAccountData && (
               <SingleAccountCell

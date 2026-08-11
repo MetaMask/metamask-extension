@@ -63,6 +63,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
@@ -343,6 +344,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"
@@ -623,6 +625,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
+            data-testid="account-selection-section"
           >
             <div
               class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell multichain-account-cell--no-hover"

@@ -33,8 +33,7 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectDappButton = {
-    text: 'Connect',
-    tag: 'button',
+    testId: 'confirm-btn',
   };
 
   private readonly connectedAccount = '#accounts';

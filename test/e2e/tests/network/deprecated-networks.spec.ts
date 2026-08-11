@@ -28,8 +28,7 @@ describe('Deprecated networks', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
+          testId: 'confirm-btn',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.openNewPage(

@@ -71,8 +71,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
-                text: 'Connect',
-                tag: 'button',
+                testId: 'confirm-btn',
               });
 
               const screenshotTwo = await this.driver.driver.takeScreenshot();
@@ -82,8 +81,7 @@ export class ConfirmationsRejectRule implements Rule {
               });
 
               await this.driver.clickElementAndWaitForWindowToClose({
-                text: 'Connect',
-                tag: 'button',
+                testId: 'confirm-btn',
               });
 
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
