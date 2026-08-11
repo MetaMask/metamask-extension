@@ -47,6 +47,9 @@
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
+    "app/scripts/messenger-client-init/identity/authentication-controller-init.test.ts": {
+      "warn: [authentication] Clearing persisted Profile Sync": 1
+    },
     "app/scripts/messenger-client-init/snaps/snap-controller-init.test.ts": {
       "error: Error: A handler for SnapController:setClientActive": 2
     },
