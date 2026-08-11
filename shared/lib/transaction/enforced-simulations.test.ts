@@ -11,6 +11,7 @@ import {
   DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
   EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
+  getEnforcedSimulationsSlippageBasisPoints,
   isEnforcedSimulationsEligible,
 } from './enforced-simulations';
 
@@ -115,6 +116,12 @@ describe('enforced-simulations', () => {
       expect(
         getEnforcedSimulationsSlippage(buildRemoteFeatureFlagState()),
       ).toBe(DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE);
+    });
+  });
+
+  describe('getEnforcedSimulationsSlippageBasisPoints', () => {
+    it('converts percentages to basis points', () => {
+      expect(getEnforcedSimulationsSlippageBasisPoints(2.5)).toBe(250);
     });
   });
 

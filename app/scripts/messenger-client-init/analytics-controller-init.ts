@@ -58,6 +58,7 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isAnonymousEventsFeatureEnabled: true,
     isEventQueuePersistenceEnabled: true,
     isPreConsentQueueEnabled: true,
+    isGeolocationEnabled: true,
   });
   controller.init();
 

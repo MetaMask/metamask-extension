@@ -17,6 +17,32 @@ import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
+let mockExposeCancelAllOrders = false;
+jest.mock('./perps-positions-orders', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const actual = jest.requireActual('./perps-positions-orders');
+
+  return {
+    ...actual,
+    PerpsPositionsOrders: (
+      props: import('./perps-positions-orders').PerpsPositionsOrdersProps,
+    ) => (
+      <ReactActual.Fragment>
+        <actual.PerpsPositionsOrders {...props} />
+        {mockExposeCancelAllOrders ? (
+          <button
+            data-testid="invoke-cancel-all-orders"
+            onClick={props.onCancelAllOrders}
+            type="button"
+          >
+            Cancel all
+          </button>
+        ) : null}
+      </ReactActual.Fragment>
+    ),
+  };
+});
+
 const mockAnalyticsTrackEvent = jest.fn();
 const mockUsePerpsBottomNavSource = jest.fn<
   typeof PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR | undefined,
@@ -56,6 +82,11 @@ jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
 }));
 
 jest.mock('./perps-toast', () => ({
@@ -195,6 +226,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockExposeCancelAllOrders = false;
     mockUsePerpsBottomNavSource.mockReturnValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockComplianceGate.mockImplementation(async (action: () => unknown) =>
@@ -592,6 +624,82 @@ describe('PerpsView', () => {
       );
     });
 
+    it('reports the displayed error screen when cancel all returns success: false', async () => {
+      mockExposeCancelAllOrders = true;
+      mockSubmitRequestToBackground.mockResolvedValue({ success: false });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('invoke-cancel-all-orders'));
+
+      await waitFor(() => {
+        expect(screen.getByText("We couldn't load this page.")).toBeVisible();
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsCancelOrders',
+        [{ cancelAll: true }],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetOpenOrders',
+        [],
+      );
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+            [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+              PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+          }),
+        }),
+      );
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ name: MetaMetricsEventName.PerpsError }),
+      );
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsOrderCancelTransaction,
+        }),
+      );
+    });
+
+    it('reports the displayed error when cancel all throws', async () => {
+      mockExposeCancelAllOrders = true;
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('Cancel transport failed'),
+      );
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('invoke-cancel-all-orders'));
+
+      await waitFor(() => {
+        expect(screen.getByText("We couldn't load this page.")).toBeVisible();
+      });
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsError,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Cancel transport failed',
+          }),
+        }),
+      );
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+            [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+              PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+          }),
+        }),
+      );
+    });
+
     it('shows partial toast and reports EXECUTED with the count when some positions fail to close', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
@@ -711,6 +819,46 @@ describe('PerpsView', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+        }),
+      );
+    });
+
+    it('reports the displayed error when close all throws', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('Close transport failed'),
+      );
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseAllFailed',
+        });
+      });
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsError,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'Close transport failed',
+          }),
+        }),
+      );
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
+            [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
+              PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+          }),
         }),
       );
     });

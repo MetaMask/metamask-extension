@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { By, WebElement } from 'selenium-webdriver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
-import NetworkManager from '../network-manager';
 import HomePage from './homepage';
 
 /** Timeout for waiting on the import-confirm button to disappear after submit. */
@@ -42,11 +41,6 @@ class TokensTab extends HomePage {
     text: 'Would you like to import this token?',
     tag: 'p',
   };
-
-  private readonly currentNetworkOption =
-    '[data-testid="network-filter-current__button"]';
-
-  private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
   private readonly customTokenImportAddressInput =
     '[data-testid="custom-token-import-address-input"]';
@@ -104,16 +98,11 @@ class TokensTab extends HomePage {
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
-
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
   };
-
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -288,16 +277,6 @@ class TokensTab extends HomePage {
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
-  }
-
-  async checkNetworkFilterText(expectedText: string): Promise<void> {
-    console.log(
-      `Verify the displayed account label in header is: ${expectedText}`,
-    );
-    await this.driver.waitForSelector({
-      css: this.networksToggle,
-      text: expectedText,
-    });
   }
 
   /**
@@ -690,31 +669,6 @@ class TokensTab extends HomePage {
     console.log(`Token details verified successfully for ${symbol}`);
   }
 
-  async clickCurrentNetworkOption(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
-        const label = await toggle.getText();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
     await this.driver.clickElement(this.manageTokensButton);
@@ -723,11 +677,6 @@ class TokensTab extends HomePage {
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
     await this.driver.clickElement(this.multichainTokenListButton);
-  }
-
-  async clickNetworkSelectorDropdown(): Promise<void> {
-    console.log(`Clicking on the network selector dropdown`);
-    await this.driver.clickElement(this.sortByPopoverToggle);
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
@@ -809,22 +758,6 @@ class TokensTab extends HomePage {
     }
 
     return matchingRow;
-  }
-
-  async getCurrentNetworksOptionTotal(): Promise<string> {
-    console.log(`Retrieving the "Current network" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.currentNetworksTotal,
-    );
-    const value = await allNetworksValueElement.getText();
-    return value;
-  }
-
-  async getNetworksFilterLabel(): Promise<string> {
-    console.log(`Retrieving the network filter label`);
-    const toggle = await this.driver.findElement(this.networksToggle);
-    const text = await toggle.getText();
-    return text;
   }
 
   async getNumberOfAssets(): Promise<number> {
@@ -1109,13 +1042,6 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
-  async openNetworksFilter(): Promise<void> {
-    console.log(`Opening the network filter`);
-    await this.waitForNetworksToggleStable();
-    await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitForSelector(this.modalCloseButton);
-  }
-
   /**
    * Opens the token details modal by finding and clicking the token in the token list
    *
@@ -1144,52 +1070,6 @@ class TokensTab extends HomePage {
   private async returnFromTokenManagementToHome(): Promise<void> {
     await this.driver.clickElement(this.tokenManagementBackButton);
     await this.driver.waitForSelector(this.multichainTokenListButton);
-  }
-
-  async selectAllNetworksInFilter(tab: string = 'Popular'): Promise<void> {
-    console.log('Selecting all networks in the asset list network filter');
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab(tab);
-    await networkManager.selectAllNetworks();
-  }
-
-  /**
-   * Opens the Network Manager modal and selects all popular networks.
-   */
-  async selectAllNetworksInNetworkFilter(): Promise<void> {
-    console.log(
-      'Selecting all popular networks in the asset list network filter',
-    );
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
-    await networkManager.selectAllNetworks();
-  }
-
-  async selectOnlyNetworkInFilter(
-    networkName: string,
-    tab: string = 'Popular',
-  ): Promise<void> {
-    console.log(
-      `Selecting only ${networkName} in the asset list network filter`,
-    );
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab(tab);
-    await networkManager.selectNetworkByNameWithWait(networkName);
-  }
-
-  /**
-   * Opens the Network Manager modal and selects only Tron, scoping the asset
-   * list to a single network.
-   */
-  async selectOnlyTronInNetworkFilter(): Promise<void> {
-    console.log('Selecting only Tron in the asset list network filter');
-    await this.openNetworksFilter();
-    const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
-    await networkManager.selectNetworkByNameWithWait('Tron');
   }
 
   async sortTokenList(
@@ -1225,30 +1105,6 @@ class TokensTab extends HomePage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
-  async waitForNetworksFilter(): Promise<void> {
-    console.log(`Waiting for the network filter`);
-    await this.driver.waitForSelector(this.networksToggle);
-  }
-
-  /**
-   * Waits until the network filter toggle is present, visible, and no longer
-   * remounting/moving before interaction. Guards against post-network-switch
-   * homepage re-renders that can swallow a click.
-   */
-  async waitForNetworksToggleStable(): Promise<void> {
-    console.log('Waiting for network filter toggle to be stable');
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          this.networksToggle,
-          1000,
-        );
-      },
-      { timeout: 15000, interval: 200, stableFor: 1000 },
-    );
-    await this.driver.waitForElementToStopMoving(this.networksToggle);
-  }
-
   /**
    * Waits for a token to be displayed in the token list
    * This is done due to the snap delay.
@@ -1266,17 +1122,6 @@ class TokensTab extends HomePage {
         text: tokenName,
       },
       { timeout },
-    );
-  }
-
-  async waitUntilFilterLabelIs(label: string): Promise<void> {
-    console.log(`Waiting until the filter label is ${label}`);
-    await this.driver.waitUntil(
-      async () => {
-        const currentLabel = await this.getNetworksFilterLabel();
-        return currentLabel === label;
-      },
-      { timeout: 5000, interval: 100 },
     );
   }
 

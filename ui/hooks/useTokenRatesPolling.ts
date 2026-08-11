@@ -16,7 +16,11 @@ const useTokenRatesPolling = () => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
+  const enabled =
+    completedOnboarding &&
+    isUnlocked &&
+    useCurrencyRateCheck &&
+    enabledChainIds.length > 0;
 
   useMultiPolling({
     startPolling: tokenRatesStartPolling,

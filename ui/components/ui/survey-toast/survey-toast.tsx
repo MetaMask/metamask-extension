@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
@@ -15,10 +16,10 @@ import {
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
 } from '../../../selectors';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import { Toast } from '../../multichain';
+import { ToastContent, type ToastWithClose, toast } from '../toast/toast';
 import { useDispatch } from '../../../store/hooks';
 
 type Survey = {
@@ -29,9 +30,12 @@ type Survey = {
   id: number;
 };
 
+const toastId = 'survey-toast';
+const surveyQueryKey = 'survey-toast';
+
 export function SurveyToast() {
-  const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const isOptedIn = useSelector(getOptedIn);
@@ -39,23 +43,23 @@ export function SurveyToast() {
     getCompletedMetaMetricsOnboarding,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
-  const internalAccount = useSelector(getSelectedInternalAccount);
+  const isUnlocked = useSelector(getIsUnlocked);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
 
-  const surveyUrl = useMemo(
-    () => `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`,
-    [analyticsId],
-  );
+  const surveyUrl = `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`;
 
-  useEffect(() => {
-    if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
-      return undefined;
-    }
+  const canFetchSurvey =
+    isUnlocked &&
+    basicFunctionality &&
+    Boolean(analyticsId) &&
+    isMetaMetricsEnabled;
 
-    const controller = new AbortController();
-
-    const fetchSurvey = async () => {
+  const { data } = useQuery<Survey | null>({
+    queryKey: [surveyQueryKey, analyticsId],
+    enabled: canFetchSurvey,
+    staleTime: process.env.IN_TEST ? 0 : DAY,
+    queryFn: async ({ signal }) => {
       try {
         const response = await fetchWithCache({
           url: surveyUrl,
@@ -64,93 +68,114 @@ export function SurveyToast() {
             headers: {
               'x-metamask-clientproduct': 'metamask-extension',
             },
-            signal: controller.signal,
+            signal,
           },
           functionName: 'fetchSurveys',
           cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
         });
 
-        const _survey: Survey = response?.surveys;
+        const _survey = response?.surveys as Survey;
 
         if (
           !_survey ||
           Object.keys(_survey).length === 0 ||
           _survey.id <= lastViewedUserSurvey
         ) {
-          return;
+          return null;
         }
 
-        setSurvey(_survey);
+        return _survey;
       } catch (error: unknown) {
         if (error instanceof Error && error.name !== 'AbortError') {
           console.error('Failed to fetch survey:', analyticsId, error);
         }
+        throw error;
       }
-    };
+    },
+  });
 
-    fetchSurvey();
+  const survey = canFetchSurvey ? data : undefined;
 
-    return () => {
-      controller.abort();
-    };
-  }, [
-    internalAccount?.address,
-    lastViewedUserSurvey,
-    basicFunctionality,
-    analyticsId,
-    isMetaMetricsEnabled,
-    dispatch,
-  ]);
+  const trackAction = useCallback(
+    (response: 'accept' | 'deny') => {
+      if (!isMetaMetricsEnabled || !survey) {
+        return;
+      }
 
-  function handleActionClick() {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SurveyToast)
+          .addCategory(MetaMetricsEventCategory.Feedback)
+          .addProperties({
+            response,
+            survey: survey.id,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, isMetaMetricsEnabled, survey, trackEvent],
+  );
+
+  const dismissSurvey = useCallback(
+    (response: 'accept' | 'deny') => {
+      if (!survey) {
+        return;
+      }
+
+      dispatch(setLastViewedUserSurvey(survey.id));
+      queryClient.invalidateQueries({
+        queryKey: [surveyQueryKey, analyticsId],
+      });
+      trackAction(response);
+      toast.dismiss(toastId);
+    },
+    [analyticsId, dispatch, queryClient, survey, trackAction],
+  );
+
+  const handleActionClick = useCallback(() => {
     if (!survey) {
       return;
     }
+
     global.platform.openTab({
       url: survey.url,
     });
-    dispatch(setLastViewedUserSurvey(survey.id));
-    trackAction('accept');
-  }
+    dismissSurvey('accept');
+  }, [dismissSurvey, survey]);
 
-  function handleClose() {
-    if (!survey) {
-      return;
-    }
-    dispatch(setLastViewedUserSurvey(survey.id));
-    trackAction('deny');
-  }
-
-  function trackAction(response: 'accept' | 'deny') {
-    if (!isMetaMetricsEnabled || !survey) {
+  useEffect(() => {
+    if (!survey || survey.id <= lastViewedUserSurvey) {
+      toast.dismiss(toastId);
       return;
     }
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SurveyToast)
-        .addCategory(MetaMetricsEventCategory.Feedback)
-        .addProperties({
-          response,
-          survey: survey.id,
-        })
-        .build(),
+    toast.success(
+      <ToastContent
+        dataTestId={toastId}
+        title={survey.description}
+        description={survey.content}
+        actionText={survey.cta}
+        onActionClick={handleActionClick}
+      />,
+      {
+        id: toastId,
+        duration: Infinity,
+        icon: (
+          <Icon
+            className="self-start"
+            name={IconName.Feedback}
+            size={IconSize.Lg}
+          />
+        ),
+        onClose: () => dismissSurvey('deny'),
+      } as ToastWithClose,
     );
-  }
+  }, [dismissSurvey, handleActionClick, lastViewedUserSurvey, survey]);
 
-  if (!survey || survey.id <= lastViewedUserSurvey) {
-    return null;
-  }
+  useEffect(() => {
+    return () => {
+      toast.dismiss(toastId);
+    };
+  }, []);
 
-  return (
-    <Toast
-      dataTestId="survey-toast"
-      key="survey-toast"
-      text={survey.description}
-      description={survey.content}
-      actionText={survey.cta}
-      onActionClick={handleActionClick}
-      onClose={handleClose}
-      startAdornment={<Icon name={IconName.Feedback} size={IconSize.Lg} />}
-    />
-  );
+  return null;
 }

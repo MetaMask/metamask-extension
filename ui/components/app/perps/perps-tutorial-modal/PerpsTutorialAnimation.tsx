@@ -142,15 +142,6 @@ const PerpsTutorialAnimation = ({
     }
   }, [rive, isWasmReady, bufferLoading, buffer]);
 
-  // Cleanup Rive animation resources on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (rive) {
-        rive.cleanup();
-      }
-    };
-  }, [rive]);
-
   if (
     !isWasmReady ||
     bufferLoading ||

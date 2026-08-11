@@ -41,6 +41,9 @@ type PerpsAttributionContextValue = {
 export const PerpsAttributionReactContext =
   createContext<PerpsAttributionContextValue | null>(null);
 
+// UTM search parameters enrich analytics only. They never influence routing,
+// authorization, or controller requests; external deeplink queries reach this
+// parser only after signed-deeplink canonicalization.
 function parseUtmAttribution(
   search: string,
 ): ControllerAttributionContext | null {

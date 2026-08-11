@@ -1,4 +1,3 @@
-import { withDeeplinkAttribution } from './perps-attribution';
 import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
 
 /**
@@ -19,10 +18,6 @@ import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
 export const perpsAsset = new Route({
   pathname: '/perps-asset',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsMarketDetailPage',
-  // Read original params so campaign `utm_*` (appended unsigned, absent from
-  // the canonical/signed set) survive to `withDeeplinkAttribution`. Perps
-  // deeplinks only open read-only screens, so unsigned routing params are safe.
-  handlerSearchParams: 'original',
   handler: function handler(params: URLSearchParams) {
     const symbol = params.get('symbol');
 
@@ -32,7 +27,7 @@ export const perpsAsset = new Route({
 
     return {
       path: `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`,
-      query: withDeeplinkAttribution(params),
+      query: new URLSearchParams(),
     };
   },
 });

@@ -151,6 +151,8 @@ const mockPerpsEventValueLiterals = {
     CLOSE_ALL_TAPPED: 'close_all_tapped',
     CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    ORDER_BOOK_OPENED: 'order_book_opened',
+    ORDER_BOOK_CLOSED: 'order_book_closed',
     SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
     SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
     SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',

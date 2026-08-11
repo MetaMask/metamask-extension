@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, render, renderHook } from '@testing-library/react';
 import React from 'react';
 
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
@@ -43,13 +43,22 @@ describe('PerpsAttributionContext', () => {
   });
 
   it('throws when used outside PerpsAttributionProvider', () => {
-    const { result } = renderHook(() => usePerpsAttributionContext());
+    const HookConsumer = () => {
+      usePerpsAttributionContext();
+      return null;
+    };
 
-    expect(result.error).toEqual(
-      new Error(
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      expect(() => render(<HookConsumer />)).toThrow(
         'usePerpsAttributionContext must be used within PerpsAttributionProvider',
-      ),
-    );
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it('merges and clears flow attribution', () => {

@@ -672,6 +672,7 @@
         }
       }
     },
+    "country": "string",
     "coverageResults": {},
     "countries": {
       "data": [],
@@ -1277,6 +1278,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
+      "showTickerWidget": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
@@ -1344,6 +1346,7 @@
       "gmx": {},
       "hyperliquid": {}
     },
+    "region": "string",
     "requests": {
       "*": {
         "status": "string",
@@ -1554,6 +1557,7 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
+    "timezone": "string",
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {

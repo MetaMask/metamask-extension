@@ -347,9 +347,6 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Má dheimhníonn tú an t-iarratas seo, is dócha go gcaillfidh tú do shócmhainní le camscéimeoir."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Tá athruithe measta don idirbheart seo nuashonraithe. Déan athbhreithniú géar orthu sula leanann tú ar aghaidh."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Tá tú ag idirghníomhú leis an seoladh seo den chéad uair. Déan cinnte go bhfuil sé ceart sula leanann tú ar aghaidh."
   },
@@ -394,9 +391,6 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Athbhreithnigh na foláirimh uile"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Tá athrú tagtha ar na torthaí"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1ú idirghníomhaíocht"

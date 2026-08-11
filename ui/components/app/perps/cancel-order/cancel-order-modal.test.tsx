@@ -36,10 +36,10 @@ jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
 }));
 
 jest.mock('../perps-toast', () => ({
-  PERPS_TOAST_KEYS: {
-    CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
-    CANCEL_ORDER_SUCCESS: 'perpsToastCancelOrderSuccess',
-  },
+  // Real keys: a hand-maintained subset silently emits `key: undefined` for any
+  // toast the mock has not been updated for.
+  PERPS_TOAST_KEYS: jest.requireActual('../perps-toast/perps-toast.constants')
+    .PERPS_TOAST_KEYS,
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -454,7 +454,7 @@ describe('CancelOrderModal', () => {
       });
     });
 
-    it('shows error message when perpsCancelOrder returns success: false', async () => {
+    it('shows a generic cancel failure when the provider error has no translation', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
@@ -469,12 +469,14 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Order not found')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsCancelOrderFailed.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
-    it('shows generic error message when perpsCancelOrder rejects', async () => {
+    it('shows the translated message when the provider error maps to a known code', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('Network error'),
@@ -488,9 +490,40 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsNetworkError.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+    });
+
+    it('translates a retried ORDER_UNKNOWN_COIN cancel failure', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'ORDER_UNKNOWN_COIN',
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        // Cancel copy, not the placement copy the shared map resolves
+        // ORDER_UNKNOWN_COIN to — the user pressed Cancel order, not Place.
+        expect(
+          screen.getByText(messages.perpsCancelOrderFailed.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.queryByText(messages.perpsOrderFailed.message),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText('ORDER_UNKNOWN_COIN')).not.toBeInTheDocument();
     });
 
     it('does not call onClose when cancel fails', async () => {
@@ -509,7 +542,9 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Cancel request rejected')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsCancelOrderFailed.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
       expect(onClose).not.toHaveBeenCalled();
@@ -574,14 +609,25 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          'Perp Order Cancel Transaction',
+          expect.objectContaining({
+            asset: baseOrder.symbol,
+            status: 'success',
+            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: baseOrder.orderType,
+          }),
+        );
+      });
+
+      await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
 
       expect(
-        mockTrack.mock.calls.some(
+        mockTrack.mock.calls.filter(
           ([event]) => event === 'Perp Order Cancel Transaction',
         ),
-      ).toBe(false);
+      ).toHaveLength(1);
     });
 
     it('emits PerpsError but not cancel transaction analytics on failure', async () => {
@@ -618,6 +664,86 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+    });
+  });
+
+  describe('order already closed on the provider', () => {
+    const alreadyClosedError =
+      'cancel 0: Order was never placed, already canceled, or filled. asset=4';
+
+    it('closes the modal without an error when the order is no longer open', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: alreadyClosedError,
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Error',
+        expect.anything(),
+      );
+      // No UI-side transaction event either: the controller already emitted
+      // `Perp Order Cancel Transaction` for this attempt, so one here would be a
+      // second, contradictory-status row for a single user action.
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Order Cancel Transaction',
+        expect.anything(),
+      );
+    });
+
+    it('closes the modal without an error when the background throws the same rejection', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error(alreadyClosedError),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Error',
+        expect.anything(),
+      );
+      // No UI-side transaction event either: the controller already emitted
+      // `Perp Order Cancel Transaction` for this attempt, so one here would be a
+      // second, contradictory-status row for a single user action.
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Order Cancel Transaction',
+        expect.anything(),
+      );
     });
   });
 
@@ -677,7 +803,7 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCancelOrderFailed',
-          description: 'Order not found',
+          description: messages.perpsCancelOrderFailed.message,
         });
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
@@ -699,7 +825,7 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCancelOrderFailed',
-          description: 'Network error',
+          description: messages.perpsNetworkError.message,
         });
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });

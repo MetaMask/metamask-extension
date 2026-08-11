@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
