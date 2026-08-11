@@ -18,10 +18,10 @@ import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import type { LocalActivityListItem } from './types';
 
 export type ActivityListFilter =
-  | { assetId: CaipAssetType; isNative?: boolean }
+  | { assetId: CaipAssetType; isNative: boolean }
   | { networks: string[] };
 
-export function activityMatchesAssetId(
+export function activityMatchesAsset(
   item: ActivityListItem,
   assetId: CaipAssetType,
   isNativeAssetFilter?: boolean,

@@ -1,6 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
-  activityMatchesAssetId,
+  activityMatchesAsset,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -350,7 +350,7 @@ describe('getLastEvmItemIndex', () => {
   });
 });
 
-describe('activityMatchesAssetId', () => {
+describe('activityMatchesAsset', () => {
   const chzNativeAssetId = 'eip155:88888/slip44:60';
 
   it('matches when the token has an assetId equal to the filter', () => {
@@ -365,7 +365,7 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(true);
+    expect(activityMatchesAsset(item, chzNativeAssetId)).toBe(true);
   });
 
   it('matches a native transfer with no assetId when the filter is explicitly native and on the same chain', () => {
@@ -380,7 +380,7 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(true);
+    expect(activityMatchesAsset(item, chzNativeAssetId, true)).toBe(true);
   });
 
   it('does not match a native transfer with no assetId when the filter does not explicitly mark itself native', () => {
@@ -395,7 +395,7 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(false);
+    expect(activityMatchesAsset(item, chzNativeAssetId)).toBe(false);
   });
 
   it('does not match a native transfer with no assetId on a different chain', () => {
@@ -410,7 +410,7 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(false);
+    expect(activityMatchesAsset(item, chzNativeAssetId, true)).toBe(false);
   });
 
   it('does not match a non-native token with no assetId even on the same chain', () => {
@@ -425,7 +425,7 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(false);
+    expect(activityMatchesAsset(item, chzNativeAssetId, true)).toBe(false);
   });
 
   it('does not match unrelated tokens', () => {
@@ -443,6 +443,6 @@ describe('activityMatchesAssetId', () => {
       },
     });
 
-    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(false);
+    expect(activityMatchesAsset(item, chzNativeAssetId)).toBe(false);
   });
 });

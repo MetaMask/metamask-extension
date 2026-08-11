@@ -10,7 +10,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
-import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
+import { activityMatchesAsset, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
 import { isIncomingTokenTransfer } from './incoming-token-transfer';
@@ -49,7 +49,7 @@ export function useQueryFilters(queryFilters: Props) {
       // This really should be moved to the API
       const activityFilters: ((activity: ActivityListItem) => boolean)[] = [
         (activity) =>
-          !assetId || activityMatchesAssetId(activity, assetId, isNative),
+          !assetId || activityMatchesAsset(activity, assetId, isNative),
       ];
 
       return {
