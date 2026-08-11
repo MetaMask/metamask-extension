@@ -1,34 +1,34 @@
 import { MessengerClientInitRequest } from '../types';
-import { getSubscriptionServiceMessenger } from '../messengers/subscription';
+import { getShieldSubscriptionServiceMessenger } from '../messengers/subscription';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { SubscriptionServiceMessenger } from '../../services/subscription/types';
-import { SubscriptionService } from '../../services/subscription/subscription-service';
-import { SubscriptionServiceInit } from './subscription-service-init';
+import { ShieldSubscriptionServiceMessenger } from '../../services/subscription/types';
+import { ShieldSubscriptionService } from '../../services/subscription/subscription-service';
+import { ShieldSubscriptionServiceInit } from './subscription-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<SubscriptionServiceMessenger>
+  MessengerClientInitRequest<ShieldSubscriptionServiceMessenger>
 > {
   const baseControllerMessenger = getRootMessenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSubscriptionServiceMessenger(
+    controllerMessenger: getShieldSubscriptionServiceMessenger(
       baseControllerMessenger,
     ),
     initMessenger: undefined,
   };
 }
 
-describe('SubscriptionServiceInit', () => {
+describe('ShieldSubscriptionServiceInit', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(SubscriptionServiceInit(requestMock).messengerClient).toBeInstanceOf(
-      SubscriptionService,
-    );
+    expect(
+      ShieldSubscriptionServiceInit(requestMock).messengerClient,
+    ).toBeInstanceOf(ShieldSubscriptionService);
   });
 });

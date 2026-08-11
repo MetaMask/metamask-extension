@@ -23,8 +23,8 @@ import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
 import { SHIELD_ERROR } from '../../../../shared/lib/shield';
-import { SubscriptionService } from './subscription-service';
-import { SubscriptionServiceMessenger } from './types';
+import { ShieldSubscriptionService } from './subscription-service';
+import { ShieldSubscriptionServiceMessenger } from './types';
 
 jest.mock('../../controllers/analytics', () => ({
   createEventBuilder: jest.requireActual('../../controllers/analytics')
@@ -32,9 +32,9 @@ jest.mock('../../controllers/analytics', () => ({
   trackEvent: jest.fn(),
 }));
 
-type Actions = MessengerActions<SubscriptionServiceMessenger>;
+type Actions = MessengerActions<ShieldSubscriptionServiceMessenger>;
 
-type Events = MessengerEvents<SubscriptionServiceMessenger>;
+type Events = MessengerEvents<ShieldSubscriptionServiceMessenger>;
 
 type RootMessenger = Messenger<MockAnyNamespace, Actions, Events>;
 
@@ -183,8 +183,8 @@ rootMessenger.registerActionHandler(
   mockSetShieldSubscriptionError,
 );
 
-const messenger: SubscriptionServiceMessenger = new Messenger({
-  namespace: 'SubscriptionService',
+const messenger: ShieldSubscriptionServiceMessenger = new Messenger({
+  namespace: 'ShieldSubscriptionService',
   parent: rootMessenger,
 });
 rootMessenger.delegate({
@@ -220,7 +220,7 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
-const subscriptionService = new SubscriptionService({
+const subscriptionService = new ShieldSubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
@@ -228,7 +228,7 @@ const subscriptionService = new SubscriptionService({
 // Mock environment variables
 const originalEnv = process.env;
 
-describe('SubscriptionService - startSubscriptionWithCard', () => {
+describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
 
   beforeAll(() => {
@@ -488,7 +488,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 });
 
-describe('SubscriptionService - handlePostTransaction', () => {
+describe('ShieldSubscriptionService - handlePostTransaction', () => {
   const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
     jest.fn();
   const MOCK_STATE = createSwapsMockStore().metamask;
@@ -646,7 +646,7 @@ describe('SubscriptionService - handlePostTransaction', () => {
   });
 });
 
-describe('SubscriptionService - linkRewardToExistingSubscription', () => {
+describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
   const MOCK_REWARD_ACCOUNT_ID =
     'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -742,7 +742,7 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
   });
 });
 
-describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
+describe('ShieldSubscriptionService - submitSubscriptionSponsorshipIntent', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
   const MOCK_TX_META = {
     id: '1',

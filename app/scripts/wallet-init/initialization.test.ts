@@ -23,6 +23,7 @@ import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-controller';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -50,6 +51,11 @@ jest.mock('./instance-options/shield-controller', () => ({
   ),
   getShieldControllerInstanceOptions: jest.fn(
     () => 'shield-controller-options',
+  ),
+}));
+jest.mock('./instance-options/subscription-controller', () => ({
+  getSubscriptionServiceInstanceOptions: jest.fn(
+    () => 'subscription-service-options',
   ),
 }));
 jest.mock('./instance-options/gas-fee-controller', () => ({
@@ -161,6 +167,7 @@ describe('initializeWallet', () => {
         shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
+        subscriptionService: 'subscription-service-options',
         transactionController: 'transaction-controller-options',
       },
       messenger,
@@ -193,6 +200,7 @@ describe('initializeWallet', () => {
     expect(getClaimsControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
+    expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
       messenger,
       platform,

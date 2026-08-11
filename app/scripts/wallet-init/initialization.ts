@@ -25,6 +25,7 @@ import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -83,6 +84,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
+      subscriptionService: getSubscriptionServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
         initMessenger: transactionControllerInitMessenger,
         getFlatState,

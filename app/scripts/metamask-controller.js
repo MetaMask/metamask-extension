@@ -339,10 +339,7 @@ import { CurrencyRateControllerInit } from './messenger-client-init/currency-rat
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
-import {
-  SubscriptionControllerInit,
-  SubscriptionServiceInit,
-} from './messenger-client-init/subscription';
+import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
@@ -650,8 +647,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      SubscriptionController: SubscriptionControllerInit,
-      SubscriptionService: SubscriptionServiceInit,
+      ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
       SnapsNameProvider: SnapsNameProviderInit,
@@ -796,11 +792,14 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
-    this.subscriptionService = messengerClientsByName.SubscriptionService;
+    this.shieldSubscriptionService =
+      messengerClientsByName.ShieldSubscriptionService;
     this.seedlessOnboardingController = this.wallet.getInstance(
       'SeedlessOnboardingController',
     );
-    this.subscriptionController = messengerClientsByName.SubscriptionController;
+    this.subscriptionController = this.wallet.getInstance(
+      'SubscriptionController',
+    );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
       messengerClientsByName.NetworkEnablementController;
@@ -952,7 +951,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this.subscriptionService
+        this.shieldSubscriptionService
           .handlePostTransaction(transactionMeta)
           .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
@@ -1401,6 +1400,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ShieldController: this.shieldController,
       ClaimsController: this.claimsController,
+      SubscriptionController: this.subscriptionController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -2734,24 +2734,24 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.subscriptionService.startSubscriptionWithCard.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.startSubscriptionWithCard.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
       linkRewardToShieldSubscription:
-        this.subscriptionService.linkRewardToExistingSubscription.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.linkRewardToExistingSubscription.bind(
+          this.shieldSubscriptionService,
         ),
 
       // rewards

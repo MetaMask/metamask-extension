@@ -5,7 +5,7 @@ import {
 } from '@metamask/messenger';
 import {
   SERVICE_NAME,
-  SubscriptionServiceMessenger,
+  ShieldSubscriptionServiceMessenger,
 } from '../../../services/subscription/types';
 import { RootMessenger } from '../../../lib/messenger';
 
@@ -16,13 +16,13 @@ import { RootMessenger } from '../../../lib/messenger';
  * @param messenger - The messenger to restrict.
  * @returns The restricted messenger.
  */
-export function getSubscriptionServiceMessenger(
+export function getShieldSubscriptionServiceMessenger(
   messenger: RootMessenger<
-    MessengerActions<SubscriptionServiceMessenger>,
-    MessengerEvents<SubscriptionServiceMessenger>
+    MessengerActions<ShieldSubscriptionServiceMessenger>,
+    MessengerEvents<ShieldSubscriptionServiceMessenger>
   >,
-): SubscriptionServiceMessenger {
-  const serviceMessenger: SubscriptionServiceMessenger = new Messenger({
+): ShieldSubscriptionServiceMessenger {
+  const serviceMessenger: ShieldSubscriptionServiceMessenger = new Messenger({
     namespace: SERVICE_NAME,
     parent: messenger,
   });
