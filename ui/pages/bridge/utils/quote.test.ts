@@ -6,7 +6,13 @@ import {
   type DeepPartial,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
-import { formatTokenAmount, formatCurrencyAmount, readMmFee } from './quote';
+import {
+  convertFiatToTokenAmount,
+  convertTokenAmountToFiat,
+  formatCurrencyAmount,
+  formatTokenAmount,
+  readMmFee,
+} from './quote';
 
 describe('Bridge quote utils', () => {
   describe('getNativeAssetForChainId', () => {
@@ -119,6 +125,16 @@ describe('Bridge quote utils', () => {
       const expectedAmount = `$${Number(amount).toFixed(precision)}`;
       expect(result).toBe(expectedAmount);
     });
+  });
+
+  it('converts token amounts and handles unavailable rates', () => {
+    expect(convertTokenAmountToFiat('1.234', 2.5)).toBe('3.09');
+    expect(convertTokenAmountToFiat('1', null)).toBeUndefined();
+  });
+
+  it('converts amounts and handles unavailable token precision', () => {
+    expect(convertFiatToTokenAmount('3.09', 2.5, 6)).toBe('1.236');
+    expect(convertFiatToTokenAmount('3.09', 2.5, undefined)).toBeUndefined();
   });
 
   describe('formatProviderLabel', () => {
