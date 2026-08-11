@@ -152,6 +152,10 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
+  "accountsCount": {
+    "message": "$1 accounts",
+    "description": "Label showing number of accounts selected, $1 is the count"
+  },
   "accountsPermissionsTitle": {
     "message": "See your accounts and suggest transactions"
   },
@@ -1826,6 +1830,9 @@
   "back": {
     "message": "Back"
   },
+  "backToSafety": {
+    "message": "Back to safety",
+  },
   "backUpIncomplete": {
     "message": "Back up incomplete"
   },
@@ -2981,6 +2988,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Continue at your own risk",
   },
   "contract": {
     "message": "Contract"
@@ -6675,6 +6685,10 @@
   "percentChange": {
     "message": "Percent change"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Cannot move funds without your permission",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Permission for"
   },
@@ -6694,6 +6708,14 @@
   "permissionRevokedForAccounts": {
     "message": "Revoked in this update for $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "See addresses, balances, and activity",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Send requests for transactions",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
