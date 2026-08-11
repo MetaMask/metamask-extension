@@ -103,7 +103,9 @@ jest.mock('../../../hooks/musd', () => {
   };
 });
 jest.mock('../../activity/activity-list', () => ({
-  ActivityList: () => <div data-testid="mock-activity-list" />,
+  ActivityList: ({ filter }: { filter?: { assetId?: string; isNative?: boolean } }) => (
+    <div data-testid="mock-activity-list">{JSON.stringify(filter)}</div>
+  ),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -599,6 +601,9 @@ describe('AssetPage', () => {
       '/0x1',
     );
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
+    expect(getByTestId('mock-activity-list')).toHaveTextContent(
+      JSON.stringify({ assetId: 'eip155:1/slip44:60', isNative: true }),
+    );
   });
 
   it('should render an ERC20 asset without prices', async () => {

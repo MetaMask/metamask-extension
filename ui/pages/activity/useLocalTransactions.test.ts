@@ -49,4 +49,34 @@ describe('useLocalTransactions', () => {
 
     expect(result.current).toStrictEqual([otherSend]);
   });
+
+  it('matches a native item with no assetId when the filter is native and on the same chain', () => {
+    const nativeSend = {
+      type: 'send',
+      chainId: 'eip155:88888',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xchz',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetType: 'native', symbol: 'CHZ' },
+      },
+    } as ActivityListItem;
+
+    jest
+      .mocked(useSelector)
+      .mockReturnValueOnce([nativeSend, otherSend])
+      .mockReturnValueOnce(new Map())
+      .mockReturnValueOnce(new Set());
+
+    const { result } = renderHook(() =>
+      useLocalTransactions({
+        assetId: 'eip155:88888/slip44:60',
+        isNative: true,
+      }),
+    );
+
+    expect(result.current).toStrictEqual([nativeSend]);
+  });
 });

@@ -200,4 +200,57 @@ describe('query filters', () => {
       },
     ]);
   });
+
+  it('honors the isNative filter flag when matching by assetId', () => {
+    jest.mocked(useSelector).mockReturnValue(new Set());
+    const sameChainTransfer = transaction({
+      hash: '0xsame-chain',
+      chainId: 1,
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: otherAddress,
+          transferType: 'normal',
+          amount: '1',
+          decimal: 18,
+          symbol: 'ETH',
+        },
+      ],
+    });
+    const otherChainTransfer = transaction({
+      hash: '0xother-chain',
+      chainId: 10,
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: otherAddress,
+          transferType: 'normal',
+          amount: '1',
+          decimal: 18,
+          symbol: 'ETH',
+        },
+      ],
+    });
+
+    const { result } = renderHook(() =>
+      useQueryFilters({
+        subjectAddress,
+        assetId: 'eip155:1/slip44:60',
+        isNative: true,
+      }),
+    );
+    const filtered = result.current({
+      pages: [
+        {
+          data: [sameChainTransfer, otherChainTransfer],
+          pageInfo: { count: 2, hasNextPage: false },
+          unprocessedNetworks: [],
+        },
+      ],
+      pageParams: [],
+    });
+
+    expect(filtered.pages[0].data).toHaveLength(1);
+    expect(filtered.pages[0].data[0]).toMatchObject({ hash: '0xsame-chain' });
+  });
 });

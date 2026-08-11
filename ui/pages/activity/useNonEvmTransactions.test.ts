@@ -59,4 +59,33 @@ describe('useNonEvmTransactions', () => {
 
     expect(result.current).toStrictEqual([solanaReceive, otherReceive]);
   });
+
+  it('filters non-EVM items by assetId, honoring the isNative flag', () => {
+    const nativeReceive = {
+      type: 'receive',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xsol',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'in', assetType: 'native', symbol: 'SOL' },
+      },
+    } as unknown as ActivityListItem;
+
+    jest
+      .mocked(useSelector)
+      .mockReturnValueOnce([nativeReceive, otherReceive])
+      .mockReturnValueOnce(new Set());
+
+    const { result } = renderHook(() =>
+      useNonEvmTransactions({
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        isNative: true,
+      }),
+    );
+
+    expect(result.current).toStrictEqual([nativeReceive]);
+  });
 });
