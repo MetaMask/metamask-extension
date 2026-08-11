@@ -59,7 +59,7 @@ class AccountListPage {
     'header button[aria-label="Close"]';
 
   private readonly closeMultichainAccountsPageButton =
-    '.multichain-page-header button[aria-label="Back"]';
+    '[data-testid="account-list-page-back-button"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
@@ -806,7 +806,9 @@ class AccountListPage {
 
   async closeChooseWalletTypePage(): Promise<void> {
     console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.chooseWalletTypeBackButton,
+    );
   }
 
   async closeMultichainAccountsPage(): Promise<void> {

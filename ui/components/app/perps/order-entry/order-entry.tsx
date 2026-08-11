@@ -14,6 +14,7 @@ import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
+import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -190,7 +191,7 @@ export const OrderEntry = ({
     }
   }, [calculations, hasCalculationsChanged]);
 
-  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+  const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };

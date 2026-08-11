@@ -314,6 +314,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
+      "showTickerWidget": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,

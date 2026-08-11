@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
+import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -10,6 +11,7 @@ import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
+import { useRampsDetailsItem } from './templates/ramps/hooks';
 
 type Props = {
   chainId: string | undefined;
@@ -32,12 +34,26 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
+  const rampsActivityItem = useRampsDetailsItem(txIdentifier);
+
   const apiTransaction = useApiTransaction({
     chainId,
-    txHash: isEvm && selectedAddress ? txIdentifier : undefined,
+    txHash:
+      isEvm &&
+      selectedAddress &&
+      txIdentifier &&
+      isValidTransactionHash(txIdentifier)
+        ? txIdentifier
+        : undefined,
   });
 
   const transaction = useMemo(() => {
+    // Ramps first so settled orders keep the ramp classification over the
+    // generic transaction that shares their settlement hash.
+    if (rampsActivityItem) {
+      return rampsActivityItem;
+    }
+
     const apiActivityItem =
       apiTransaction && selectedAddress
         ? mapApiTransaction({
@@ -72,7 +88,13 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
+  }, [
+    apiTransaction,
+    localActivityItem,
+    nonEvmActivityItem,
+    rampsActivityItem,
+    selectedAddress,
+  ]);
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">

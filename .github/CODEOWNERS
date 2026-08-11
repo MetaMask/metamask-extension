@@ -135,6 +135,7 @@ ui/pages/home                                   @MetaMask/core-extension-ux
 ui/pages/activity                               @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
 ui/pages/details                                @MetaMask/core-extension-ux
+ui/pages/details/templates/ramps/               @MetaMask/money-movement
 ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
@@ -243,8 +244,10 @@ app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/
 app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/core-platform
 
 # mUSD
-**/musd/** @MetaMask/earn
+**/musd/**                           @MetaMask/earn
 shared/lib/deep-links/routes/musd.ts @MetaMask/earn
+ui/selectors/money/                  @MetaMask/earn
+
 
 # Extension Platform owns build, development tooling,
 # CI, background process, and platform infrastructure. Changes to
@@ -321,3 +324,20 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 # This allows anyone with write access to approve changes to any *.snap files.
 # ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for snapshot files.
 **/*.snap
+
+# Deep-link security boundary
+#
+# These files control whether external input can bypass the deep-link security
+# interstitial. Security is deliberately the sole code owner because GitHub
+# accepts approval from any owner on a multi-owner rule; adding another owner
+# here would not guarantee Extension Security review.
+/AGENTS.md                                                    @MetaMask/extension-security-team
+/app/scripts/lib/deep-links/deep-link-router.ts               @MetaMask/extension-security-team
+/app/scripts/lib/deep-links/deep-link.router.test.ts          @MetaMask/extension-security-team
+/shared/lib/deep-links/parse*                                 @MetaMask/extension-security-team
+/shared/lib/deep-links/security-policy*                       @MetaMask/extension-security-team
+/shared/lib/deep-links/utils*                                 @MetaMask/extension-security-team
+/shared/lib/deep-links/verify*                                @MetaMask/extension-security-team
+/shared/lib/deep-links/routes/route*                          @MetaMask/extension-security-team
+/ui/helpers/utils/resolve-deep-link-href*                     @MetaMask/extension-security-team
+/ui/pages/deep-link/                                          @MetaMask/extension-security-team
