@@ -379,13 +379,11 @@ describe('Multichain API', function () {
             );
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
-            await editConnectedAccountsModal.clickOnConnect();
 
-            await connectAccountConfirmation.checkPageIsLoaded();
             assert.strictEqual(
-              await connectAccountConfirmation.isConfirmButtonEnabled(),
+              await editConnectedAccountsModal.isConnectButtonEnabled(),
               false,
-              'should not able to approve the create session request without at least one account should be selected',
+              'should not be able to approve the create session request without at least one account selected',
             );
           },
         );
