@@ -1,5 +1,6 @@
 import type { CaipAssetType } from '@metamask/utils';
 import browser from 'webextension-polyfill';
+import { POPUP_FILE, SIDEPANEL_FILE } from '../../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
@@ -9,6 +10,7 @@ import type { Controller } from './lib/types';
 
 const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
+const popupResetDelayMs = 1000;
 
 let registered = false;
 
@@ -45,6 +47,10 @@ function assetRoutePath(caipAssetId: string) {
   return buildAssetRoutePath(caipAssetId as CaipAssetType);
 }
 
+function routeHash(path: string, search?: `?${string}`) {
+  return `#${path}${search ?? ''}`;
+}
+
 function shouldUseSidePanel(controller: Controller | undefined) {
   const preferred =
     controller?.preferencesController?.state?.preferences
@@ -52,41 +58,80 @@ function shouldUseSidePanel(controller: Controller | undefined) {
   return preferred && Boolean(globalThis.chrome?.sidePanel?.open);
 }
 
-function openPopup() {
-  const openPopupFn = globalThis.chrome?.action?.openPopup;
-  if (typeof openPopupFn !== 'function') {
-    return Promise.reject(new Error('popup-unavailable'));
-  }
-  return Promise.resolve(openPopupFn.call(globalThis.chrome.action));
+function broadcastOpenRoute(path: string, search?: `?${string}`) {
+  return browser.runtime
+    .sendMessage({
+      type: EXTENSION_MESSAGES.OPEN_ROUTE,
+      body: {
+        path,
+        ...(search ? { search } : {}),
+      },
+    })
+    .catch(() => undefined);
 }
 
-function openPreferredExtensionUi({
-  controller,
+async function openSidePanelWithRoute({
   sender,
+  hash,
 }: {
-  controller: Controller | undefined;
   sender: { tab?: { windowId?: number; id?: number } };
+  hash: string;
 }) {
-  if (shouldUseSidePanel(controller)) {
-    const windowId = sender?.tab?.windowId;
-    const tabId = sender?.tab?.id;
-    let openOptions: { windowId: number } | { tabId: number } | null = null;
-    if (typeof windowId === 'number') {
-      openOptions = { windowId };
-    } else if (typeof tabId === 'number') {
-      openOptions = { tabId };
-    }
-    if (openOptions) {
-      return Promise.resolve(
-        globalThis.chrome.sidePanel.open(openOptions),
-      ).catch(() => openPopup());
-    }
+  const sidePanel = globalThis.chrome?.sidePanel;
+  if (!sidePanel?.open || !sidePanel?.setOptions) {
+    throw new Error('sidepanel-unavailable');
   }
 
-  return openPopup();
+  const tabId = sender?.tab?.id;
+  const windowId = sender?.tab?.windowId;
+  const tabOptions =
+    typeof tabId === 'number' ? { tabId } : ({} as { tabId?: number });
+
+  await sidePanel.setOptions({
+    ...tabOptions,
+    path: `${SIDEPANEL_FILE}${hash}`,
+    enabled: true,
+  });
+
+  let openOptions: { windowId: number } | { tabId: number } | null = null;
+  if (typeof windowId === 'number') {
+    openOptions = { windowId };
+  } else if (typeof tabId === 'number') {
+    openOptions = { tabId };
+  }
+  if (!openOptions) {
+    throw new Error('sidepanel-no-window');
+  }
+
+  await sidePanel.open(openOptions);
+
+  // Next toolbar/open should not reuse the deep-link path.
+  await sidePanel.setOptions({
+    ...tabOptions,
+    path: SIDEPANEL_FILE,
+    enabled: true,
+  });
 }
 
-function openExtensionPage({
+async function openPopupWithRoute(hash: string) {
+  const action = globalThis.chrome?.action;
+  const openPopupFn = action?.openPopup;
+  if (!action?.setPopup || typeof openPopupFn !== 'function') {
+    throw new Error('popup-unavailable');
+  }
+
+  await action.setPopup({ popup: `${POPUP_FILE}${hash}` });
+  try {
+    await openPopupFn.call(action);
+  } finally {
+    // Delay reset so the popup document can start loading the hash URL.
+    globalThis.setTimeout(() => {
+      action.setPopup({ popup: POPUP_FILE }).catch(() => undefined);
+    }, popupResetDelayMs);
+  }
+}
+
+async function openExtensionPage({
   controller,
   sender,
   path,
@@ -99,26 +144,27 @@ function openExtensionPage({
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  // AppState syncs into the UI store — Routes navigates when it sees this.
-  controller?.appStateController?.setPendingRedirectRoute?.({
-    path,
-    ...(search ? { search } : {}),
-  });
+  const hash = routeHash(path, search);
 
-  return openPreferredExtensionUi({ controller, sender }).then(
-    () => ({
-      type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-      body: { ok: true, caipAssetId },
-    }),
-    (error: unknown) => ({
-      type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-      body: {
-        ok: false,
-        reason: 'open-failed',
-        error: error instanceof Error ? error.message : 'unknown',
-      },
-    }),
-  );
+  // Warm UI navigates via message; cold UI mounts from the hash URL.
+  const warmNavigate = broadcastOpenRoute(path, search);
+
+  try {
+    if (shouldUseSidePanel(controller)) {
+      await openSidePanelWithRoute({ sender, hash });
+    } else {
+      await openPopupWithRoute(hash);
+    }
+  } catch {
+    await openPopupWithRoute(hash);
+  }
+
+  await warmNavigate;
+
+  return {
+    type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+    body: { ok: true, caipAssetId },
+  };
 }
 
 export function registerCashtagBackgroundBridge({
@@ -243,7 +289,14 @@ export function registerCashtagBackgroundBridge({
             ? { search: swapRouteSearchForDest(caipAssetId) }
             : {}),
           caipAssetId,
-        });
+        }).catch((error: unknown) => ({
+          type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+          body: {
+            ok: false,
+            reason: 'open-failed',
+            error: error instanceof Error ? error.message : 'unknown',
+          },
+        }));
       }
 
       if (page === 'asset') {
@@ -259,7 +312,14 @@ export function registerCashtagBackgroundBridge({
             sender,
             path: assetRoutePath(caipAssetId),
             caipAssetId,
-          });
+          }).catch((error: unknown) => ({
+            type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+            body: {
+              ok: false,
+              reason: 'open-failed',
+              error: error instanceof Error ? error.message : 'unknown',
+            },
+          }));
         } catch {
           return Promise.resolve({
             type: EXTENSION_MESSAGES.OPEN_EXTENSION,
