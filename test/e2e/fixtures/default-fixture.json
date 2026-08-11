@@ -1163,7 +1163,7 @@
         "assetsAccountsApiV6": "feature is OFF",
         "assetsEnableNotificationsByDefaultV2": "feature is ON",
         "backendWebSocketConnection": "feature is ON",
-        "coreExtensionUxCeux1096AbtestReferralUi": "control",
+        "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
         "coreExtensionUxCeux1141AbtestBottomNav": "control",
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
