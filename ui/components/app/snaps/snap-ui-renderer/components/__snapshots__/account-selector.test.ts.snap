@@ -298,10 +298,6 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -610,10 +606,6 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;

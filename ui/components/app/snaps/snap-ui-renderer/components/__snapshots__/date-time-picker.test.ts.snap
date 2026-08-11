@@ -48,10 +48,6 @@ exports[`SnapUIDateTimePicker snapshot can show an error 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -93,10 +89,6 @@ exports[`SnapUIDateTimePicker snapshot renders a date picker 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -138,10 +130,6 @@ exports[`SnapUIDateTimePicker snapshot renders a date time picker 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -183,10 +171,6 @@ exports[`SnapUIDateTimePicker snapshot renders a time picker 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -234,10 +218,6 @@ exports[`SnapUIDateTimePicker snapshot renders inside a field 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;

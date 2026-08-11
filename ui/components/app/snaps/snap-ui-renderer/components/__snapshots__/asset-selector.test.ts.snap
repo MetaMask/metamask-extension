@@ -96,10 +96,6 @@ exports[`SnapUIAssetSelector renders an asset selector 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -206,10 +202,6 @@ exports[`SnapUIAssetSelector renders inside a field 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;

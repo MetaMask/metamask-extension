@@ -90,10 +90,6 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -132,10 +128,6 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -174,10 +166,6 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -212,10 +200,6 @@ exports[`SnapUIAddressInput will render 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -310,10 +294,6 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -395,10 +375,6 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
         </div>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;

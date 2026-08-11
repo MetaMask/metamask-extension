@@ -42,10 +42,6 @@ exports[`SnapUIForm will render 1`] = `
         </form>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
@@ -124,10 +120,6 @@ exports[`SnapUIForm will render with fields 1`] = `
         </form>
       </div>
     </div>
-    <span
-      data-renders="1"
-      data-testid="performance"
-    />
   </div>
 </div>
 `;
