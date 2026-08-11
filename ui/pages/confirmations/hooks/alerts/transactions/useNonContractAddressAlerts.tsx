@@ -3,10 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -19,7 +17,6 @@ import { useContractCode } from './useContractCode';
 export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { isUpgrade } = useIsUpgradeTransaction();
   const { pending, value } = useContractCode(
     currentConfirmation?.txParams?.to as Hex,
@@ -54,16 +51,9 @@ export function useNonContractAddressAlerts(): Alert[] {
         isBlocking: false,
         key: 'hexDataWhileInteractingWithNonContractAddress',
         reason: t('nonContractAddressAlertTitle'),
-        content: React.createElement(NonContractAddressAlertMessage, {
-          networkConfigurations,
-        }),
+        content: <NonContractAddressAlertMessage />,
         severity: Severity.Warning,
       },
     ];
-  }, [
-    isSendingHexDataWhileInteractingWithNonContractAddress,
-    isUpgrade,
-    networkConfigurations,
-    t,
-  ]);
+  }, [isSendingHexDataWhileInteractingWithNonContractAddress, isUpgrade]);
 }

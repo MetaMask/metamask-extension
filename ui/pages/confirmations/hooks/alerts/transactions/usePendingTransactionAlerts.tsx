@@ -30,9 +30,7 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        content: React.createElement(PendingTransactionAlertMessage, {
-          t: t as (key: string, ...args: unknown[]) => string,
-        }),
+        content: <PendingTransactionAlertMessage />,
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },

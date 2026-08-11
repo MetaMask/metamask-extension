@@ -1,6 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { Text } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -10,18 +12,14 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { ellipsify } from '../../../send-utils/send.utils';
 
-export const NonContractAddressAlertMessage = ({
-  networkConfigurations,
-}: {
-  networkConfigurations: Record<Hex, { name: string }>;
-}) => {
+export const NonContractAddressAlertMessage = () => {
   const t = useI18nContext();
-
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const networkName =
     currentConfirmation?.chainId &&
-    networkConfigurations[currentConfirmation.chainId as Hex].name;
+    networkConfigurations[currentConfirmation.chainId as Hex]?.name;
   const recipientAddress = ellipsify(currentConfirmation?.txParams.to);
 
   return (

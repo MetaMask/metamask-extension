@@ -301,9 +301,7 @@ export function useShieldCoverageAlert(): Alert[] {
         reason: modalTitle,
         field: RowAlertKey.ShieldFooterCoverageIndicator,
         severity,
-        content: React.createElement(ShieldCoverageAlertMessage, {
-          modalBodyStr,
-        }),
+        content: <ShieldCoverageAlertMessage modalBodyStr={modalBodyStr} />,
         isBlocking: false,
         inlineAlertText,
         inlineAlertTextPill: true,

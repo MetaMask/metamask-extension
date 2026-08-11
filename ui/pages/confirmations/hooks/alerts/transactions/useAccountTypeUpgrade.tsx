@@ -19,9 +19,7 @@ export function useAccountTypeUpgrade(): Alert[] {
       {
         field: RowAlertKey.AccountTypeUpgrade,
         key: RowAlertKey.AccountTypeUpgrade,
-        // Element form so React Compiler / Rules of Hooks treat this as a
-        // component, not a conditional hook call inside useMemo.
-        content: React.createElement(AccountTypeMessage),
+        content: <AccountTypeMessage />,
         reason: t('alertAccountTypeUpgradeTitle'),
         severity: Severity.Info,
       },
