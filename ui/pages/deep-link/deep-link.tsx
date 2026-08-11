@@ -384,7 +384,7 @@ export const DeepLink = () => {
                     data-testid="deep-link-checkbox"
                     isSelected={skipDeepLinkInterstitialChecked}
                     onChange={onRemindMeStateChanged}
-                  ></Checkbox>
+                  />
                   <Label
                     htmlFor="dont-remind-me-checkbox"
                     fontWeight={FontWeight.Normal}
