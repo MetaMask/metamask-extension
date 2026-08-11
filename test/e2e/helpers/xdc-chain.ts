@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   MOCK_ETH_CONVERSION_RATE,
@@ -250,6 +251,160 @@ export async function mockXdcChainApisWithErc20(mockServer: Mockttp) {
         symbol: string;
         decimals: number;
       }[] = [];
+
+      if (assetIds.includes(XDC_NATIVE_ASSET_ID)) {
+        results.push({
+          assetId: XDC_NATIVE_ASSET_ID,
+          name: 'XDC Network',
+          symbol: 'XDC',
+          decimals: 18,
+        });
+      }
+
+      if (assetIds.includes(XDC_ERC20_ASSET_ID)) {
+        results.push({
+          assetId: XDC_ERC20_ASSET_ID,
+          name: XDC_ERC20_SYMBOL,
+          symbol: XDC_ERC20_SYMBOL,
+          decimals: 4,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+
+  return [spotPricesMock, exchangeRatesMock, assetsMetadataMock];
+}
+
+/** CAIP-19 asset id for native ETH on Ethereum Mainnet. */
+const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+
+/**
+ * Builds a fixture with both XDC and Ethereum Mainnet enabled, XDC selected,
+ * and balances seeded for both chains. Used by specs that switch between
+ * networks and verify balances persist.
+ *
+ * `withEnabledNetworks` replaces the map entirely, so both chains must be
+ * listed in one call. `withAssetsController` seeds Mainnet native ETH
+ * explicitly (the default fixture has it, but being explicit avoids surprises
+ * when the map is replaced).
+ *
+ * @returns A `FixtureBuilderV2` for further chaining.
+ */
+export function getXdcAndMainnetFixtureBuilderWithErc20(): FixtureBuilderV2 {
+  return new FixtureBuilderV2()
+    .withNetworkControllerOnXdc()
+    .withEnabledNetworks({
+      eip155: { [XDC_CHAIN_ID_HEX]: true, '0x1': true },
+    })
+    .withNetworkEnablementController({
+      nativeAssetIdentifiers: {
+        [XDC_CAIP_CHAIN_ID]: XDC_NATIVE_ASSET_ID,
+      },
+    })
+    .withTokensControllerERC20({ chainId: XDC_CHAIN_ID_DECIMAL })
+    .withAssetsController({
+      assetsBalance: {
+        [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+          [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+          [XDC_NATIVE_ASSET_ID]: { amount: '25' },
+        },
+      },
+    });
+}
+
+/**
+ * Registers every network mock a dual-network (XDC + Mainnet) test needs.
+ * Pass directly as `withFixtures({ testSpecificMock })`.
+ *
+ * Uses a SINGLE `v3/assets` handler and a SINGLE `v3/spot-prices` handler
+ * covering all three assets (Mainnet ETH, XDC native, XDC ERC-20 TST), to
+ * avoid the mockttp first-handler-wins shadowing that occurs when two
+ * `always()` handlers are registered on the same URL.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+export async function mockXdcAndMainnetApis(mockServer: Mockttp) {
+  const xdcPriceInUsd = MOCK_ETH_CONVERSION_RATE;
+  const erc20PriceInUsd = 1;
+
+  const spotPricesMock = await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        [MAINNET_NATIVE_ASSET_ID]: {
+          id: 'ethereum',
+          price: xdcPriceInUsd,
+          marketCap: 382623505141,
+          totalVolume: 4500000,
+          dilutedMarketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+        [XDC_NATIVE_ASSET_ID]: {
+          id: 'xdc',
+          price: xdcPriceInUsd,
+          marketCap: 112500000,
+          totalVolume: 4500000,
+          dilutedMarketCap: 120000000,
+          pricePercentChange1d: 0,
+        },
+        [XDC_ERC20_ASSET_ID]: {
+          id: 'tst',
+          price: erc20PriceInUsd,
+          marketCap: 1000000,
+          totalVolume: 10000,
+          dilutedMarketCap: 1000000,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  const exchangeRatesMock = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / MOCK_ETH_CONVERSION_RATE,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+
+  const assetsMetadataMock = await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+
+      const results: {
+        assetId: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+      }[] = [];
+
+      if (assetIds.includes(MAINNET_NATIVE_ASSET_ID)) {
+        results.push({
+          assetId: MAINNET_NATIVE_ASSET_ID,
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        });
+      }
 
       if (assetIds.includes(XDC_NATIVE_ASSET_ID)) {
         results.push({
