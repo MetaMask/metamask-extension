@@ -68,7 +68,11 @@ describe('useRampsOrderActivity', () => {
     const store = createRampsMockStore({ orders: [buyOrder] });
 
     const { result } = renderHook(
-      () => useRampsOrderActivity({ assetId: 'eip155:1/slip44:60' as never }),
+      () =>
+        useRampsOrderActivity({
+          assetId: 'eip155:1/slip44:60' as never,
+          isNative: false,
+        }),
       { wrapper: createRampsTestWrapper(store) },
     );
 
