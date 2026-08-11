@@ -483,7 +483,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 13
+      "MetaMask: Background connection not initialized": 17
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
       "MetaMask: Background connection not initialized": 12
@@ -501,7 +501,7 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 10
+      "MetaMask: Background connection not initialized": 14
     },
     "ui/hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing.test.tsx": {
       "MetaMask: Background connection not initialized": 8

@@ -31,10 +31,9 @@ function sessionMatchesEnv(
 }
 
 /**
- * Drop persisted Profile Sync sessions minted for a different OIDC env.
- * @param state - Persisted AuthenticationController state, if any.
- * @param env - Target Profile Sync OIDC environment.
- * @returns Original state when sessions match `env`, otherwise a cleared copy.
+ * Clears persisted Profile Sync sessions minted for a different OIDC env.
+ * @param state
+ * @param env
  */
 export function sanitizePersistedAuthenticationState(
   state: AuthenticationControllerState | undefined,

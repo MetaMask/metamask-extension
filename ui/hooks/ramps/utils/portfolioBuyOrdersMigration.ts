@@ -102,8 +102,7 @@ async function withTimeout<Result>(
 let migrationInFlight: Promise<void> | null = null;
 
 /**
- * Opens a background Portfolio tab to upload Buy orders, syncs User Storage
- * into RampsController, and marks completion only after sync succeeds.
+ * Opens Portfolio migrate tab, syncs orders, marks complete after sync. @param options
  * @param options
  */
 export async function runPortfolioBuyOrdersMigration(
@@ -202,19 +201,21 @@ function waitForMigrateDone(
   timeoutMs: number,
 ): Promise<void> {
   return new Promise((resolve) => {
-    let settled = false;
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    const wait = {
+      settled: false,
+      timeoutId: undefined as ReturnType<typeof setTimeout> | undefined,
+    };
 
     const finish = () => {
-      if (settled) {
+      if (wait.settled) {
         return;
       }
-      settled = true;
+      wait.settled = true;
       platform.removeTabUpdatedListener(
         onUpdated as (...args: unknown[]) => void,
       );
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
+      if (wait.timeoutId !== undefined) {
+        clearTimeout(wait.timeoutId);
       }
       resolve();
     };
@@ -234,7 +235,7 @@ function waitForMigrateDone(
       }
     }
 
-    timeoutId = setTimeout(finish, timeoutMs);
+    wait.timeoutId = setTimeout(finish, timeoutMs);
     platform.addTabUpdatedListener(onUpdated);
   });
 }
