@@ -26,7 +26,6 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -161,28 +160,23 @@ const MultiAccountRow = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Between}
       padding={4}
+      gap={3}
       onClick={onEdit}
       data-testid="multi-account-row"
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={3}
-      >
-        <AvatarGroup
-          avatarPropsArr={avatarMembers}
-          variant={AvatarGroupVariant.Account}
-        />
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-          {accountsCountLabel}
-        </Text>
-      </Box>
+      <AvatarGroup
+        avatarPropsArr={avatarMembers}
+        variant={AvatarGroupVariant.Account}
+      />
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+        {accountsCountLabel}
+      </Text>
       <Icon
         name={IconName.ArrowRight}
         size={IconSize.Sm}
         color={IconColor.IconAlternative}
+        className="ml-auto"
       />
     </Box>
   );
@@ -560,11 +554,7 @@ export const MultichainAccountsConnectPage = ({
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header paddingTop={12} paddingBottom={6}>
-        <Box
-          className="flex"
-          justifyContent={BoxJustifyContent.Center}
-          marginBottom={6}
-        >
+        <Box className="flex justify-center mb-6">
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
               className="bg-muted"
@@ -632,9 +622,12 @@ export const MultichainAccountsConnectPage = ({
 
       <Footer>
         <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={4}
-          className="flex w-full"
+          className={`flex w-full gap-4 ${
+            trustSignalState === TrustSignalDisplayState.Malicious ||
+            trustSignalState === TrustSignalDisplayState.Warning
+              ? 'flex-col'
+              : 'flex-row'
+          }`}
         >
           {trustSignalState === TrustSignalDisplayState.Malicious ||
           trustSignalState === TrustSignalDisplayState.Warning ? (
@@ -658,9 +651,9 @@ export const MultichainAccountsConnectPage = ({
               </Button>
             </>
           ) : (
-            <Box gap={4} className="flex w-full">
+            <>
               <Button
-                className="w-full"
+                className="flex-1"
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 data-testid="cancel-btn"
@@ -669,7 +662,7 @@ export const MultichainAccountsConnectPage = ({
                 {t('cancel')}
               </Button>
               <Button
-                className="w-full"
+                className="flex-1"
                 data-testid="confirm-btn"
                 size={ButtonSize.Lg}
                 onClick={onConfirm}
@@ -677,7 +670,7 @@ export const MultichainAccountsConnectPage = ({
               >
                 {t('connect')}
               </Button>
-            </Box>
+            </>
           )}
         </Box>
       </Footer>

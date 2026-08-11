@@ -20,7 +20,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-6 flex"
+              class="flex justify-center mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -249,34 +249,30 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="cancel-btn"
-              role="button"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Cancel
-              </span>
-            </button>
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="confirm-btn"
-              role="button"
+              Cancel
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Connect
-              </span>
-            </button>
-          </div>
+              Connect
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -304,7 +300,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-6 flex"
+              class="flex justify-center mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -533,34 +529,30 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="cancel-btn"
-              role="button"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Cancel
-              </span>
-            </button>
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="confirm-btn"
-              role="button"
+              Cancel
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Connect
-              </span>
-            </button>
-          </div>
+              Connect
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -588,7 +580,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="justify-center mb-6 flex"
+              class="flex justify-center mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -817,34 +809,30 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="flex-col gap-4 flex w-full"
+          class="flex w-full gap-4 flex-row"
         >
-          <div
-            class="gap-4 flex w-full"
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="cancel-btn"
+            role="button"
           >
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="cancel-btn"
-              role="button"
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Cancel
-              </span>
-            </button>
-            <button
-              class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-              data-testid="confirm-btn"
-              role="button"
+              Cancel
+            </span>
+          </button>
+          <button
+            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            data-testid="confirm-btn"
+            role="button"
+          >
+            <span
+              class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              <span
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              >
-                Connect
-              </span>
-            </button>
-          </div>
+              Connect
+            </span>
+          </button>
         </div>
       </div>
     </div>
