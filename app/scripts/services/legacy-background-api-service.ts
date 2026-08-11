@@ -13,7 +13,6 @@ import {
   NetworkControllerResetConnectionAction,
   NetworkControllerSetActiveNetworkAction,
   Provider,
-  UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerActions,
@@ -541,9 +540,9 @@ const MESSENGER_EXPOSED_METHODS = [
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
-// ponytail: `@metamask/network-enablement-controller`@6.0.0 defines this action
-// type but omits it from the package's public exports, so derive it from the
-// exported actions union. Import it directly once the package re-exports
+// `@metamask/network-enablement-controller`@6.0.0 defines this action type but
+// omits it from the package's public exports, so derive it from the exported
+// actions union. Import it directly once the package re-exports
 // `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
 type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
   NetworkEnablementControllerActions,
@@ -1205,13 +1204,13 @@ export class LegacyBackgroundApiService {
    * @returns The added network configuration.
    */
   async addNetwork(
-    networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+    networkConfiguration: AddNetworkFields,
     { setActive = true } = {},
   ): Promise<NetworkConfiguration> {
     if (setActive) {
-      const addedNetwork = await this.#messenger.call(
+      const addedNetwork = this.#messenger.call(
         'NetworkController:addNetwork',
-        networkConfiguration as AddNetworkFields,
+        networkConfiguration,
       );
       const { networkClientId } =
         addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
@@ -1233,9 +1232,9 @@ export class LegacyBackgroundApiService {
       ]),
     ) as NetworkEnablementControllerState['enabledNetworkMap'];
 
-    const addedNetwork = await this.#messenger.call(
+    const addedNetwork = this.#messenger.call(
       'NetworkController:addNetwork',
-      networkConfiguration as AddNetworkFields,
+      networkConfiguration,
     );
     await this.lookupSelectedNetworks();
 
@@ -1250,7 +1249,7 @@ export class LegacyBackgroundApiService {
     // subscriber re-enters the messenger's publish and the restore update is
     // dropped. Awaiting first defers the restore to a microtask outside that
     // publish.
-    await this.#whenNetworkEnabled(networkConfiguration.chainId);
+    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
     this.#messenger.call(
       'NetworkEnablementController:restoreEnabledNetworkMap',
       previousEnabledNetworkMap,
@@ -1267,7 +1266,7 @@ export class LegacyBackgroundApiService {
    * @param chainId - The chain ID of the newly added network.
    * @param timeout - Maximum time to wait, in milliseconds.
    */
-  #whenNetworkEnabled(chainId: Hex, timeout = 15_000): Promise<void> {
+  #waitForNetworkToBeEnabled(chainId: Hex, timeout = 15_000): Promise<void> {
     if (
       this.#messenger.call(
         'NetworkEnablementController:isNetworkEnabled',
