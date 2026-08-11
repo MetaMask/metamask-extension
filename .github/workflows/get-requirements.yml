@@ -674,6 +674,7 @@ jobs:
         env:
           BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
           HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
+          SKIP_BUILDS: ${{ steps.build-overrides.outputs.skip }}
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -712,6 +713,22 @@ jobs:
               core.info('-> needs-benchmarks=true (fresh builds)');
             } else {
               core.info('-> needs-benchmarks=false (builds from base branch — identical output)');
+            }
+
+            // Never pin a decision reached under [skip-builds]. That path skips the
+            // build-hash check when matching a donor run, so `builds-from-base-branch`
+            // can be true without the build output being equivalent, and the resulting
+            // `false` says nothing about this commit. ci-status-gate blocks the merge
+            // while the label is present, but that block lifts when the label is
+            // removed — so a pin written here would outlive the only thing making it
+            // safe, and a same-SHA re-run would skip benchmarks with nothing blocking.
+            // Reading an existing pin stays unconditional: one written by a normal,
+            // hash-checked evaluation is still valid.
+            if (process.env.SKIP_BUILDS === 'true') {
+              core.info(
+                `Not pinning ${statusContext} under [skip-builds] — the decision was made without a build-hash check`,
+              );
+              return;
             }
 
             // Best-effort, like the other commit statuses in this job: if the
