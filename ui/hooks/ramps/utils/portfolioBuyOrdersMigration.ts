@@ -2,6 +2,7 @@ import {
   getStorageItem,
   setStorageItem,
 } from '../../../../shared/lib/storage-helpers';
+import { isProduction } from '../../../../shared/lib/environment';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   setRampsSelectedProvider,
@@ -162,10 +163,18 @@ async function runPortfolioBuyOrdersMigrationInner(
   }
 
   try {
-    try {
-      await submitRequestToBackground('performSignOut');
-    } catch (signOutError) {
-      console.error('performSignOut before migrate sync failed', signOutError);
+    // DEV/testing only: clear stale local Profile Sync sessions before sync.
+    // Never sign out in production — a failed follow-up sign-in would leave
+    // Backup & Sync disrupted during Buy.
+    if (!isProduction()) {
+      try {
+        await submitRequestToBackground('performSignOut');
+      } catch (signOutError) {
+        console.error(
+          'performSignOut before migrate sync failed',
+          signOutError,
+        );
+      }
     }
     await submitRequestToBackground('performSignIn');
     await withTimeout(

@@ -1,4 +1,5 @@
 import { Env } from '@metamask/profile-sync-controller/sdk';
+import { ENVIRONMENT } from '../../constants/build';
 
 /**
  * Check if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`.
@@ -10,11 +11,19 @@ export function isForceAuthMatchBuild() {
 }
 
 export function loadAuthenticationConfig(): Env {
-  // Local `yarn start` must mint DEV OIDC tokens. Staging on-ramp
+  // Local webpack (`yarn start`) and test builds must use DEV Profile Sync to
+  // match Portfolio localhost + staging on-ramp. Staging on-ramp
   // (`on-ramp.uat-api`) accepts `iss: https://oidc.dev-api.cx.metamask.io`
   // and rejects PRD tokens on /v2/quotes and buy-widget (401).
-  if (!isForceAuthMatchBuild()) {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
     return Env.DEV;
+  }
+
+  if (!isForceAuthMatchBuild()) {
+    return Env.PRD;
   }
 
   const buildType = process.env.METAMASK_BUILD_TYPE;
