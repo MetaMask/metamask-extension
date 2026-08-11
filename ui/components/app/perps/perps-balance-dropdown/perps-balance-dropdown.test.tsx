@@ -213,6 +213,25 @@ describe('PerpsBalanceDropdown', () => {
     consoleErrorSpy.mockRestore();
   });
 
+  it('opens the multi-sig modal and does not call onWithdraw when account is a multi-sig user', async () => {
+    mockCheckIsMultiSigAccount.mockResolvedValueOnce(true);
+    const onWithdraw = jest.fn();
+    renderWithProvider(
+      <PerpsBalanceDropdown onWithdraw={onWithdraw} />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-withdraw-multi-sig-modal'),
+      ).toBeInTheDocument();
+    });
+    expect(onWithdraw).not.toHaveBeenCalled();
+  });
+
   it('does not show P&L row when hasPositions is false', () => {
     renderWithProvider(
       <PerpsBalanceDropdown hasPositions={false} />,
