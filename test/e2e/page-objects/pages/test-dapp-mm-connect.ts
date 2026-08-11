@@ -15,9 +15,9 @@ import { Driver } from '../../webdriver/driver';
  *
  * Selector notes (from `@metamask/playground-ui` TEST_IDS + App.tsx):
  * - Network checkboxes live inside DynamicInputs; testId is
- *   `createTestId('dynamic-inputs', 'checkbox', chainId)`.
+ * `createTestId('dynamic-inputs', 'checkbox', chainId)`.
  * - `app-section-connected` is always in the DOM; use `app-section-scopes` to
- *   confirm a multichain session is active.
+ * confirm a multichain session is active.
  * - On localhost/127.0.0.1, `eip155:1337` is pre-checked on page load (≥0.6.1).
  * - Method selector in each ScopeCard is a native HTML `<select>`.
  * - Solana is included via `selectNetworks()` as a ScopeCard.
