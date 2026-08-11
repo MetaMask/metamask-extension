@@ -48,13 +48,12 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
-import * as tokenUtils from '../../shared/lib/token-util';
 
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { SECOND } from '../../shared/constants/time';
-import * as NetworkConstantsModule from '../../shared/constants/network';
+import * as NetworkFailoverModule from '../../shared/constants/network-failover';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -1013,61 +1012,6 @@ describe('MetaMaskController', () => {
         });
 
         expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('#getAddTransactionRequest', () => {
-      it('formats the transaction for submission', () => {
-        const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = {
-          foo: true,
-          networkClientId: NETWORK_CONFIGURATION_ID_1,
-        };
-        const result = metamaskController.getAddTransactionRequest({
-          transactionParams,
-          transactionOptions,
-        });
-        expect(result).toStrictEqual({
-          internalAccounts:
-            metamaskController.accountsController.listAccounts(),
-          dappRequest: undefined,
-          requestContext: undefined,
-          networkClientId: NETWORK_CONFIGURATION_ID_1,
-          selectedAccount:
-            metamaskController.accountsController.getAccountByAddress(
-              transactionParams.from,
-            ),
-          transactionController: expect.any(Object),
-          keyringController: expect.any(Object),
-          transactionOptions,
-          transactionParams,
-          userOperationController: expect.any(Object),
-          chainId: '0x1',
-          ppomController: expect.any(Object),
-          securityAlertsEnabled: expect.any(Boolean),
-          updateSecurityAlertResponse: expect.any(Function),
-          getSecurityAlertResponse: expect.any(Function),
-          addSecurityAlertResponse: expect.any(Function),
-          getSecurityAlertsConfig: expect.any(Function),
-        });
-      });
-      it('passes through any additional params to the object', () => {
-        const transactionParams = { from: '0xa', to: '0xb' };
-        const transactionOptions = {
-          foo: true,
-          networkClientId: NETWORK_CONFIGURATION_ID_1,
-        };
-        const result = metamaskController.getAddTransactionRequest({
-          transactionParams,
-          transactionOptions,
-          test: '123',
-        });
-
-        expect(result).toMatchObject({
-          transactionParams,
-          transactionOptions,
-          test: '123',
-        });
       });
     });
 
@@ -3287,371 +3231,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('getTokenStandardAndDetails', () => {
-      it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        const tokenData = {
-          decimals: 18,
-          symbol: 'DAI',
-        };
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(tokenDetails.standard).toStrictEqual('ERC20');
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
-        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
-        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
-      });
-
-      it('gets token data from tokens if available, and with a balance retrieved by fetchTokenBalance', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '0x1',
-          chainId: '0x1',
-        });
-
-        const tokenData = {
-          decimals: 18,
-          symbol: 'DAI',
-        };
-
-        await metamaskController.tokensController.addTokens(
-          [
-            {
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-              ...tokenData,
-            },
-          ],
-          'networkConfigurationId1',
-        );
-
-        metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(tokenDetails.standard).toStrictEqual('ERC20');
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
-        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
-        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
-      });
-
-      it('gets token data from contract-metadata if available, and with a balance retrieved by fetchTokenBalance', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(tokenDetails.standard).toStrictEqual('ERC20');
-        expect(tokenDetails.decimals).toStrictEqual('18');
-        expect(tokenDetails.symbol).toStrictEqual('DAI');
-        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
-      });
-
-      it('gets token data from the blockchain, via the assetsContractController, if not available through other sources', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        const tokenData = {
-          standard: 'ERC20',
-          decimals: 18,
-          symbol: 'DAI',
-          balance: '333',
-        };
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-
-        jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
-
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0xNotInTokenList',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(tokenDetails.standard).toStrictEqual(
-          tokenData.standard.toUpperCase(),
-        );
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
-        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
-        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
-      });
-
-      it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC721', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        const tokenData = {
-          standard: 'ERC721',
-          decimals: 18,
-          symbol: 'DAI',
-          balance: '333',
-        };
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-
-        jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
-
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0xAAA75474e89094c44da98b954eedeac495271d0f',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(tokenDetails.standard).toStrictEqual(
-          tokenData.standard.toUpperCase(),
-        );
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
-        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
-        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
-      });
-
-      it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC1155', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        const tokenData = {
-          standard: 'ERC1155',
-          decimals: 18,
-          symbol: 'DAI',
-          balance: '1',
-        };
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-
-        jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
-
-        const spyOnFetchERC1155Balance = jest
-          .spyOn(tokenUtils, 'fetchERC1155Balance')
-          .mockReturnValue({ _hex: '0x1' });
-
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
-            '0xAAA75474e89094c44da98b954eedeac495271d0f',
-            '0xf0d172594caedee459b89ad44c94098e474571b6',
-          );
-
-        expect(spyOnFetchERC1155Balance).toHaveBeenCalled();
-        expect(tokenDetails.standard).toStrictEqual(
-          tokenData.standard.toUpperCase(),
-        );
-        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
-        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
-        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
-      });
-    });
-
-    describe('getTokenSymbol', () => {
-      it('should gets token symbol for given address', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        const tokenData = {
-          standard: 'ERC20',
-          decimals: 18,
-          symbol: 'DAI',
-          balance: '333',
-        };
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-
-        jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
-
-        const tokenSymbol =
-          await metamaskController.getTokenSymbol('0xNotInTokenList');
-
-        expect(tokenSymbol).toStrictEqual(tokenData.symbol);
-      });
-
-      it('should return null for given token address', async () => {
-        const providerResultStub = {
-          eth_getCode: '0x123',
-          eth_call:
-            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
-        };
-        const { provider } = createTestProviderTools({
-          scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
-        });
-
-        metamaskController.tokenListController.update(() => {
-          return {
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': {},
-                },
-              },
-            },
-          };
-        });
-
-        metamaskController.provider = provider;
-
-        jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockImplementation(() => {
-            throw new Error('error');
-          });
-
-        const tokenSymbol =
-          await metamaskController.getTokenSymbol('0xNotInTokenList');
-
-        expect(tokenSymbol).toStrictEqual(null);
-      });
-    });
-
     describe('MultichainRatesController start/stop', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
@@ -4208,9 +3787,36 @@ describe('MetaMaskController', () => {
       });
 
       it('ensures default networks contain failover RPCs', () => {
+        const networksWithFailoverUrls = [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.BASE,
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.POLYGON,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.SEI,
+          CHAIN_IDS.MONAD,
+          CHAIN_IDS.BSC,
+        ];
+        const networksWithoutFailoverUrls = [
+          CHAIN_IDS.SEPOLIA,
+          CHAIN_IDS.LINEA_SEPOLIA,
+          '0x18c7', // MegaETH Testnet
+          '0x279f', // Monad Testnet
+        ];
+
+        // Give every failover network a mock url so the assertions do not
+        // depend on the QuickNode env being set.
         jest
-          .spyOn(NetworkConstantsModule, 'getFailoverUrlsForInfuraNetwork')
-          .mockReturnValue(['https://mock_rpc']);
+          .spyOn(NetworkFailoverModule, 'getFailoverUrlsByChainId')
+          .mockReturnValue(
+            Object.fromEntries(
+              networksWithFailoverUrls.map((chainId) => [
+                chainId,
+                ['https://mock_rpc'],
+              ]),
+            ),
+          );
 
         const initState = cloneDeep(firstTimeState);
         delete initState.NetworkController;
@@ -4239,23 +3845,6 @@ describe('MetaMaskController', () => {
         });
 
         const networkState = metamaskController.networkController.state;
-        const networksWithFailoverUrls = [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.LINEA_MAINNET,
-          CHAIN_IDS.BASE,
-          CHAIN_IDS.ARBITRUM,
-          CHAIN_IDS.POLYGON,
-          CHAIN_IDS.OPTIMISM,
-          CHAIN_IDS.SEI,
-          CHAIN_IDS.MONAD,
-          CHAIN_IDS.BSC,
-        ];
-        const networksWithoutFailoverUrls = [
-          CHAIN_IDS.SEPOLIA,
-          CHAIN_IDS.LINEA_SEPOLIA,
-          '0x18c7', // MegaETH Testnet
-          '0x279f', // Monad Testnet
-        ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
         // NOTE - if a network enabled by default is missing a failover, double check if it needs to be inserted

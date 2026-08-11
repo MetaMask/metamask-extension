@@ -198,6 +198,34 @@ export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
 };
 
 /**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, without waiting for the
+ * transaction to be published.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAction = {
+  type: `LegacyBackgroundApiService:addTransaction`;
+  handler: LegacyBackgroundApiService['addTransaction'];
+};
+
+/**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, waiting for the
+ * transaction to be published and returning the final transaction metadata.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The final transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction = {
+  type: `LegacyBackgroundApiService:addTransactionAndWaitForPublish`;
+  handler: LegacyBackgroundApiService['addTransactionAndWaitForPublish'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -264,6 +292,54 @@ export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
 export type LegacyBackgroundApiServiceGetGlobalChainIdAction = {
   type: `LegacyBackgroundApiService:getGlobalChainId`;
   handler: LegacyBackgroundApiService['getGlobalChainId'];
+};
+
+/**
+ * Gets the standard and details for a token on the globally selected network.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction = {
+  type: `LegacyBackgroundApiService:getTokenStandardAndDetails`;
+  handler: LegacyBackgroundApiService['getTokenStandardAndDetails'];
+};
+
+/**
+ * Gets the standard and details for a token on a specific chain.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @param chainId - The chain ID to resolve the token on.
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction =
+  {
+    type: `LegacyBackgroundApiService:getTokenStandardAndDetailsByChain`;
+    handler: LegacyBackgroundApiService['getTokenStandardAndDetailsByChain'];
+  };
+
+/**
+ * Gets the symbol of a token via an on-chain lookup through the
+ * `AssetsContractController`.
+ *
+ * @param address - The token contract address.
+ * @returns The token symbol, or `null` if it could not be resolved.
+ */
+export type LegacyBackgroundApiServiceGetTokenSymbolAction = {
+  type: `LegacyBackgroundApiService:getTokenSymbol`;
+  handler: LegacyBackgroundApiService['getTokenSymbol'];
 };
 
 /**
@@ -922,12 +998,17 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
+  | LegacyBackgroundApiServiceAddTransactionAction
+  | LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceLookupSelectedNetworksAction
   | LegacyBackgroundApiServiceSetEnabledNetworksAction
   | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction
+  | LegacyBackgroundApiServiceGetTokenSymbolAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
