@@ -673,17 +673,17 @@ export { BENCHMARK_ANNOUNCE_SECTIONS };
  * User journey benchmarks use the real API on `main` and `release/*` branches; other
  * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
  *
- * KNOWN DISCREPANCY (pre-existing, deliberately not changed here): this labels the
- * PR comment, and it resolves the branch differently from the harness that decides
- * what actually ran. `shouldUseMockedRequests()` reads `GITHUB_REF_NAME`, which on a
- * `pull_request` event is `<number>/merge`; `getCiBranchName()` prefers
- * `BRANCH`/`GITHUB_HEAD_REF`, which is the head branch. So a PR *from* a `release/*`
- * branch runs against mocks while this reports `real`. Whether the harness or this
- * label is the wrong one is a product question — #39587 intended release branches to
- * exercise real servers, which a release PR currently does not — so it is filed
- * rather than silently resolved. Anything that must describe the population that was
- * *measured* (baseline selection, gating) reads `GITHUB_REF_NAME` via
- * `resolveBenchmarkMockMode`, never this function.
+ * This resolves the branch differently from `shouldUseMockedRequests()`, which reads
+ * `GITHUB_REF_NAME` while this prefers `BRANCH`/`GITHUB_HEAD_REF`. The two cannot
+ * currently disagree: main.yml's `pull_request` trigger carries
+ * `branches-ignore: [stable]`, which filters on the base branch, so release PRs
+ * (base `stable`) never reach it and release branches are exercised through `push`,
+ * where both sources return `release/…`. Feature PRs return `mock` from either.
+ *
+ * The equivalence is a property of the trigger config rather than of these functions,
+ * so anything that must describe the population actually *measured* — baseline
+ * selection, gating — still reads `GITHUB_REF_NAME` via `resolveBenchmarkMockMode`,
+ * which is the source the harness itself uses.
  */
 export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
   const branch = getCiBranchName();
@@ -1238,13 +1238,10 @@ export async function buildPerformanceBenchmarksSection(
     // Reads `GITHUB_REF_NAME` bare, NOT `getCiBranchName()`, because this must
     // report the population the benchmark harness actually measured, and
     // `shouldUseMockedRequests()` in mock-config.ts reads `GITHUB_REF_NAME`.
-    // The two sources disagree on `pull_request` events, where `GITHUB_REF_NAME`
-    // is `<number>/merge` while `GITHUB_HEAD_REF` is the head branch — so a PR
-    // from a `release/*` branch runs mocked but `getCiBranchName()` reports
-    // `release/…`. Selecting a baseline off the head branch there would compare
-    // a mocked run against the live series, which is the defect this whole
-    // change exists to remove. See the note on
-    // `getUserJourneyBenchmarkApiModeFromBranch`.
+    // The two agree today, but only because main.yml's `pull_request` trigger
+    // excludes base `stable`, so release branches arrive via `push`. Reading the
+    // same source the harness reads keeps that agreement a property of this call
+    // rather than of the trigger config.
     fetchHistoricalPerformanceDataFromMain(
       resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME),
     ),
