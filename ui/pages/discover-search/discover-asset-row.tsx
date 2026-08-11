@@ -25,7 +25,6 @@ import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { getCurrencyRates } from '../../selectors';
 import { getChangeColor } from '../../components/app/perps/utils';
 import {
   getSecurityTrustBadgeConfig,
@@ -35,15 +34,9 @@ import {
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
-const USD_CURRENCY = 'USD';
 type SecurityResultType = NonNullable<
   TrendingAsset['securityData']
 >['resultType'];
-type CurrencyRate = {
-  conversionRate?: number | null;
-  usdConversionRate?: number | null;
-};
-type CurrencyRates = Record<string, CurrencyRate>;
 
 export type DiscoverAssetRowProps = {
   asset: TrendingAsset;
@@ -59,33 +52,6 @@ const getAssetPrice = (price: string | undefined) => {
 
   return value;
 };
-
-const getUsdToCurrentCurrencyRate = (currencyRates?: CurrencyRates) => {
-  const currencyRate = Object.values(currencyRates ?? {}).find(
-    ({ conversionRate, usdConversionRate }) =>
-      typeof conversionRate === 'number' &&
-      typeof usdConversionRate === 'number' &&
-      Number.isFinite(conversionRate) &&
-      Number.isFinite(usdConversionRate) &&
-      conversionRate > 0 &&
-      usdConversionRate > 0,
-  );
-
-  if (!currencyRate?.conversionRate || !currencyRate.usdConversionRate) {
-    return null;
-  }
-
-  return currencyRate.conversionRate / currencyRate.usdConversionRate;
-};
-
-const convertUsdValueToDisplayCurrency = (
-  value: number,
-  shouldConvertUsd: boolean,
-  usdToCurrentCurrencyRate: number | null,
-) =>
-  shouldConvertUsd && usdToCurrentCurrencyRate
-    ? value * usdToCurrentCurrencyRate
-    : value;
 
 const getNetworkImageMapKey = ({
   namespace,
@@ -156,12 +122,6 @@ export const DiscoverAssetRow = ({
   const t = useI18nContext() as SecurityTrustTranslate;
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const currentCurrency = useSelector(getCurrentCurrency);
-  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
-  const usdToCurrentCurrencyRate = getUsdToCurrentCurrencyRate(currencyRates);
-  const shouldConvertUsd =
-    currentCurrency.toUpperCase() !== USD_CURRENCY &&
-    usdToCurrentCurrencyRate !== null;
-  const displayCurrency = shouldConvertUsd ? currentCurrency : USD_CURRENCY;
 
   const imageUrl = useMemo(() => {
     if (!isCaipAssetType(asset.assetId)) {
@@ -185,48 +145,24 @@ export const DiscoverAssetRow = ({
   }, [asset.assetId]);
 
   const secondaryText = useMemo(() => {
-    const cap = formatCompactCurrency(
-      asset.marketCap
-        ? convertUsdValueToDisplayCurrency(
-            asset.marketCap,
-            shouldConvertUsd,
-            usdToCurrentCurrencyRate,
-          )
-        : asset.marketCap,
-      displayCurrency,
-    );
+    const cap = formatCompactCurrency(asset.marketCap, currentCurrency);
     const vol = formatCompactCurrency(
-      asset.aggregatedUsdVolume
-        ? convertUsdValueToDisplayCurrency(
-            asset.aggregatedUsdVolume,
-            shouldConvertUsd,
-            usdToCurrentCurrencyRate,
-          )
-        : asset.aggregatedUsdVolume,
-      displayCurrency,
+      asset.aggregatedUsdVolume,
+      currentCurrency,
     );
     return `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
   }, [
     asset.aggregatedUsdVolume,
     asset.marketCap,
-    displayCurrency,
-    shouldConvertUsd,
+    currentCurrency,
     t,
-    usdToCurrentCurrencyRate,
   ]);
 
   const price = getAssetPrice(asset.price);
   const formattedPrice =
     price === null
       ? '—'
-      : formatCurrencyWithMinThreshold(
-          convertUsdValueToDisplayCurrency(
-            price,
-            shouldConvertUsd,
-            usdToCurrentCurrencyRate,
-          ),
-          displayCurrency,
-        );
+      : formatCurrencyWithMinThreshold(price, currentCurrency);
   const changePct = asset.priceChangePct?.h24 ?? '';
   const formattedChange = changePct
     ? formatPriceChangePercent(changePct)
