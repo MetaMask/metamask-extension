@@ -718,6 +718,7 @@ const AssetPage = ({
                 <ActivityList
                   filter={{
                     assetId: caipAssetId,
+                    isNative: type === AssetType.native,
                   }}
                 />
               )}

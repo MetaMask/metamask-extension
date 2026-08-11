@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { CaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -17,23 +18,30 @@ import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import type { LocalActivityListItem } from './types';
 
 export type ActivityListFilter =
-  | { assetId: CaipAssetType }
+  | { assetId: CaipAssetType; isNative?: boolean }
   | { networks: string[] };
 
 export function activityMatchesAssetId(
   item: ActivityListItem,
   assetId: CaipAssetType,
+  isNativeAssetFilter?: boolean,
 ) {
   const { data } = item;
-  const tokenAssetIds = [
-    'token' in data ? data.token?.assetId : undefined,
-    'sourceToken' in data ? data.sourceToken?.assetId : undefined,
-    'destinationToken' in data ? data.destinationToken?.assetId : undefined,
+  const tokens = [
+    'token' in data ? data.token : undefined,
+    'sourceToken' in data ? data.sourceToken : undefined,
+    'destinationToken' in data ? data.destinationToken : undefined,
   ];
+  const { chainId } = parseCaipAssetType(assetId);
 
-  return tokenAssetIds.some(
-    (tokenAssetId) =>
-      tokenAssetId && isEqualCaseInsensitive(tokenAssetId, assetId),
+  return tokens.some(
+    (token) =>
+      (token?.assetId && isEqualCaseInsensitive(token.assetId, assetId)) ||
+      // Some chains' native assets never get a resolvable assetId, so match
+      // by assetType/chainId when the filter itself is for a native asset.
+      (isNativeAssetFilter &&
+        token?.assetType === 'native' &&
+        item.chainId === chainId),
   );
 }
 

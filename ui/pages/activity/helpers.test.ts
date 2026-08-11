@@ -1,5 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
+  activityMatchesAssetId,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -346,5 +347,102 @@ describe('getLastEvmItemIndex', () => {
     ]);
 
     expect(getLastEvmItemIndex(grouped, [])).toBe(-1);
+  });
+});
+
+describe('activityMatchesAssetId', () => {
+  const chzNativeAssetId = 'eip155:88888/slip44:60';
+
+  it('matches when the token has an assetId equal to the filter', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:88888',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetId: chzNativeAssetId },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(true);
+  });
+
+  it('matches a native transfer with no assetId when the filter is explicitly native and on the same chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:88888',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetType: 'native', symbol: 'CHZ' },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(true);
+  });
+
+  it('does not match a native transfer with no assetId when the filter does not explicitly mark itself native', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:88888',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetType: 'native', symbol: 'CHZ' },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(false);
+  });
+
+  it('does not match a native transfer with no assetId on a different chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetType: 'native', symbol: 'ETH' },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(false);
+  });
+
+  it('does not match a non-native token with no assetId even on the same chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:88888',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: { direction: 'out', assetType: 'erc20', symbol: 'USDC' },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId, true)).toBe(false);
+  });
+
+  it('does not match unrelated tokens', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: {
+          direction: 'out',
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        },
+      },
+    });
+
+    expect(activityMatchesAssetId(item, chzNativeAssetId)).toBe(false);
   });
 });

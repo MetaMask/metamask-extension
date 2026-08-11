@@ -32,6 +32,8 @@ export function useQueryFilters(queryFilters: Props) {
     selectProtectedLocalTransactions,
   );
   const assetId = 'assetId' in queryFilters ? queryFilters.assetId : undefined;
+  const isNative =
+    'assetId' in queryFilters ? queryFilters.isNative : undefined;
 
   return useCallback(
     (data: InfiniteData<V4MultiAccountTransactionsResponse>) => {
@@ -46,7 +48,8 @@ export function useQueryFilters(queryFilters: Props) {
       ];
       // This really should be moved to the API
       const activityFilters: ((activity: ActivityListItem) => boolean)[] = [
-        (activity) => !assetId || activityMatchesAssetId(activity, assetId),
+        (activity) =>
+          !assetId || activityMatchesAssetId(activity, assetId, isNative),
       ];
 
       return {
@@ -75,6 +78,12 @@ export function useQueryFilters(queryFilters: Props) {
         })),
       };
     },
-    [assetId, excludedHashes, protectedLocalTransactions, subjectAddress],
+    [
+      assetId,
+      isNative,
+      excludedHashes,
+      protectedLocalTransactions,
+      subjectAddress,
+    ],
   );
 }

@@ -8,13 +8,16 @@ export function useNonEvmTransactions(filters: ActivityListFilter) {
   const nonEvmItems = useSelector(selectNonEvmActivityItems);
   const rampSettlementHashes = useSelector(selectRampsSettlementHashes);
   const assetId = 'assetId' in filters ? filters.assetId : undefined;
+  const isNative = 'assetId' in filters ? filters.isNative : undefined;
   const networks = 'networks' in filters ? filters.networks : undefined;
 
   return useMemo(() => {
     let items = nonEvmItems;
 
     if (assetId) {
-      items = items.filter((item) => activityMatchesAssetId(item, assetId));
+      items = items.filter((item) =>
+        activityMatchesAssetId(item, assetId, isNative),
+      );
     } else if (networks?.length) {
       const selectedNetworks = new Set(networks);
       items = items.filter((item) => selectedNetworks.has(item.chainId));
@@ -30,5 +33,5 @@ export function useNonEvmTransactions(filters: ActivityListFilter) {
       const hash = item.hash?.toLowerCase();
       return !hash || !rampSettlementHashes.has(hash);
     });
-  }, [assetId, networks, nonEvmItems, rampSettlementHashes]);
+  }, [assetId, isNative, networks, nonEvmItems, rampSettlementHashes]);
 }

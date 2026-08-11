@@ -16,13 +16,16 @@ export function useLocalTransactions(filters: ActivityListFilter) {
   const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
   const rampSettlementHashes = useSelector(selectRampsSettlementHashes);
   const assetId = 'assetId' in filters ? filters.assetId : undefined;
+  const isNative = 'assetId' in filters ? filters.isNative : undefined;
   const networks = 'networks' in filters ? filters.networks : undefined;
 
   const filteredLocalItems = useMemo(() => {
     let items = localItems;
 
     if (assetId) {
-      items = items.filter((item) => activityMatchesAssetId(item, assetId));
+      items = items.filter((item) =>
+        activityMatchesAssetId(item, assetId, isNative),
+      );
     } else if (networks?.length) {
       const selectedNetworks = new Set(networks);
       items = items.filter((item) => selectedNetworks.has(item.chainId));
@@ -38,7 +41,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
       const hash = item.hash?.toLowerCase();
       return !hash || !rampSettlementHashes.has(hash);
     });
-  }, [assetId, localItems, networks, rampSettlementHashes]);
+  }, [assetId, isNative, localItems, networks, rampSettlementHashes]);
 
   const localTransactionGroups = useMemo(
     () =>
