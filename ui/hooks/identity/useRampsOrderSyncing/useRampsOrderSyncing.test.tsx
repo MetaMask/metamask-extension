@@ -76,28 +76,20 @@ describe('useRampsOrderSyncing', () => {
   };
 
   it('dispatches when conditions are met', async () => {
-    const {
-      mockSync,
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing,
-    } = arrange();
-    dispatchRampsOrderSyncing();
+    const arranged = arrange();
+    arranged.dispatchRampsOrderSyncing();
     await waitFor(() => {
-      expect(mockSync).toHaveBeenCalled();
-      expect(shouldDispatchRampsOrderSyncing).toBe(true);
+      expect(arranged.mockSync).toHaveBeenCalled();
+      expect(arranged.shouldDispatchRampsOrderSyncing).toBe(true);
     });
   });
 
   it('does not dispatch when conditions fail', async () => {
-    const {
-      mockSync,
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing,
-    } = arrange({ isRampsSyncingEnabled: false });
-    dispatchRampsOrderSyncing();
+    const arranged = arrange({ isRampsSyncingEnabled: false });
+    arranged.dispatchRampsOrderSyncing();
     await waitFor(() => {
-      expect(mockSync).not.toHaveBeenCalled();
-      expect(shouldDispatchRampsOrderSyncing).toBe(false);
+      expect(arranged.mockSync).not.toHaveBeenCalled();
+      expect(arranged.shouldDispatchRampsOrderSyncing).toBe(false);
     });
   });
 });
