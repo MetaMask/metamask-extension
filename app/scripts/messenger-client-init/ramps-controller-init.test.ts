@@ -152,6 +152,8 @@ describe('RampsControllerInit', () => {
     expect(RampsController).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: getDefaultRampsControllerState(),
+      trace: expect.any(Function),
+      onOrderSyncErroneousSituation: expect.any(Function),
     });
   });
 

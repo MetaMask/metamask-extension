@@ -7872,6 +7872,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@29.0.0-preview-8c482076b":
+  version: 29.0.0-preview-8c482076b
+  resolution: "@metamask-previews/profile-sync-controller@npm:29.0.0-preview-8c482076b"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.1.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/seedless-onboarding-controller": "npm:^10.1.1"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/utils": "npm:^11.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/956b9203032e598bf865cc70420c10e4d4c75015bf239d60c2e48a5405e138dc0eb5fd99e4acbbe21c9ab076ed861206587dfe24c9e29ff41f309972b7552f4d
+  languageName: node
+  linkType: hard
+
 "@metamask/profile-sync-controller@npm:^28.1.1, @metamask/profile-sync-controller@npm:^28.2.0, @metamask/profile-sync-controller@npm:^28.3.0":
   version: 28.3.0
   resolution: "@metamask/profile-sync-controller@npm:28.3.0"
@@ -7984,28 +8009,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/ramps-controller@npm:15.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
-  checksum: 10/55b01d219de88432299cd4a27482cbfe7b659b6a69f74ef57fcc799b5a91356abe1880f4194ba24cb978a47d25968df21c8a7734cfc4e900b4db0b55881d7ae1
-  languageName: node
-  linkType: hard
-
-"@metamask/ramps-controller@npm:^18.0.1":
-  version: 18.0.1
-  resolution: "@metamask/ramps-controller@npm:18.0.1"
+"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@20.0.0-preview-8c482076b":
+  version: 20.0.0-preview-8c482076b
+  resolution: "@metamask-previews/ramps-controller@npm:20.0.0-preview-8c482076b"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
-  checksum: 10/49e4cbb05994d4ad5994bb88a20817722bf2c7361edeed1b46d45e7bf7e7db94c81338a7590e3845721272f26bab7af4e6a2df16c39248daf06140fa5ccc9a7f
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/6e0cc664928f6d7910fcf829db1a0b04920c0234dbe659b1a44dab3daf9dd039fa5c5dae134c9a98df03d26a680ef7bf87508dcd716cbf31d95cec4e9a78896d
   languageName: node
   linkType: hard
 
@@ -33173,7 +33187,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^4.0.3"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:^15.0.0"
+    "@metamask/ramps-controller": "npm:^20.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.2"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
