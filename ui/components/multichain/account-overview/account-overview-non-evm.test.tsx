@@ -21,6 +21,20 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+// Asset list mUSD CTAs mount useMusdGeoBlocking; its deferred geo fetch
+// setStates after render and trip console Act baselines in these tab tests.
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 // Mock the dispatch function
 const mockDispatch = jest.fn();
 

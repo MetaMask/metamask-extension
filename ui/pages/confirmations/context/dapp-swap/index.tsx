@@ -2,7 +2,6 @@ import React, {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -28,22 +27,23 @@ export const DappSwapContextProvider = ({
   children: ReactElement;
 }>) => {
   const { currentConfirmation } = useCurrentConfirmation();
+  const confirmationId = currentConfirmation?.id;
   const [selectedQuote, setSelectedQuote] = useState<
     QuoteResponseV1 | undefined
   >(undefined);
-  const [isQuotedSwapDisplayedInInfo, setQuotedSwapDisplayedInInfo] =
+  const [isQuotedSwapDisplayedInInfoState, setQuotedSwapDisplayedInInfo] =
     useState(false);
+  const [prevConfirmationId, setPrevConfirmationId] = useState(confirmationId);
 
-  useEffect(() => {
+  if (confirmationId !== prevConfirmationId) {
+    setPrevConfirmationId(confirmationId);
     setSelectedQuote(undefined);
     setQuotedSwapDisplayedInInfo(false);
-  }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
+  }
 
-  useEffect(() => {
-    if (!selectedQuote) {
-      setQuotedSwapDisplayedInInfo(false);
-    }
-  }, [selectedQuote, setQuotedSwapDisplayedInInfo]);
+  const isQuotedSwapDisplayedInInfo = Boolean(
+    selectedQuote && isQuotedSwapDisplayedInInfoState,
+  );
 
   const value = useMemo(
     () => ({

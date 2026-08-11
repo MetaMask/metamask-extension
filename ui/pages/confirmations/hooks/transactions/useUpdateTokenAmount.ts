@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -33,6 +33,7 @@ export function useUpdateTokenAmount() {
 
   const transactionId = transactionMeta?.id ?? '';
   const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();
+  const [prevTransactionId, setPrevTransactionId] = useState(transactionId);
 
   const {
     data,
@@ -67,11 +68,12 @@ export function useUpdateTokenAmount() {
   const isUpdating =
     Boolean(previousAmountRaw) && amountRaw === previousAmountRaw;
 
-  useEffect(() => {
-    if (!isUpdating) {
-      setPreviousAmountRaw(undefined);
-    }
-  }, [isUpdating, transactionId]);
+  if (transactionId !== prevTransactionId) {
+    setPrevTransactionId(transactionId);
+    setPreviousAmountRaw(undefined);
+  } else if (!isUpdating && previousAmountRaw !== undefined) {
+    setPreviousAmountRaw(undefined);
+  }
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {

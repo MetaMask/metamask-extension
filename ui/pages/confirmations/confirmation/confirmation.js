@@ -250,7 +250,8 @@ export default function ConfirmationPage({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+  const approvalFlowLoadingText =
+    approvalFlows[approvalFlows.length - 1]?.loadingText ?? null;
 
   const { id } = useParams();
 
@@ -364,11 +365,12 @@ export default function ConfirmationPage({
 
   const [lastConfirmationType, setLastConfirmationType] = useState(null);
 
-  useEffect(() => {
-    if (pendingConfirmation?.type) {
-      setLastConfirmationType(pendingConfirmation.type);
-    }
-  }, [pendingConfirmation?.type]);
+  if (
+    pendingConfirmation?.type &&
+    pendingConfirmation.type !== lastConfirmationType
+  ) {
+    setLastConfirmationType(pendingConfirmation.type);
+  }
 
   // send-tron.spec expects Activity tab
   const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
@@ -401,12 +403,6 @@ export default function ConfirmationPage({
     shouldShowActivity,
     isHardwareWalletErrorModalVisible,
   ]);
-
-  useEffect(() => {
-    const childFlow = approvalFlows[approvalFlows.length - 1];
-
-    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
-  }, [approvalFlows]);
 
   useEffect(() => {
     async function fetchSafeChainsList(_pendingConfirmation) {

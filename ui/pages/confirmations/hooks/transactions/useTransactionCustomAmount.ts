@@ -41,7 +41,6 @@ export function useTransactionCustomAmount({
   prefillMaxOnLoad?: boolean;
 } = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
-  const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
 
   const { currentConfirmation: transactionMeta } =
@@ -137,15 +136,12 @@ export function useTransactionCustomAmount({
     }
   }, [amountHuman, isMaxAmount]);
 
-  useEffect(() => {
-    if (amountHumanDebounced !== '0') {
-      setInputChanged(true);
-    }
+  if (!isInputChanged && amountHumanDebounced !== '0') {
+    setInputChanged(true);
+  }
 
-    setHasInput(
-      Boolean(amountHumanDebounced?.length) && amountHumanDebounced !== '0',
-    );
-  }, [amountHumanDebounced]);
+  const hasInput =
+    Boolean(amountHumanDebounced?.length) && amountHumanDebounced !== '0';
 
   const setIsMax = useCallback(
     (value: boolean) => {

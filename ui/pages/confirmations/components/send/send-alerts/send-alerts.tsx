@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
@@ -21,19 +15,19 @@ export const SendAlerts = () => {
   } = useUnreliableNetworkRpc();
 
   const [isNetworkAlertOpen, setIsNetworkAlertOpen] = useState(false);
-  const lastAutoOpenedChainIdRef = useRef<string | undefined>(undefined);
+  const [lastAutoOpenedChainId, setLastAutoOpenedChainId] = useState<
+    string | undefined
+  >();
 
-  useEffect(() => {
-    if (isNetworkUnreliable) {
-      if (lastAutoOpenedChainIdRef.current !== chainId) {
-        setIsNetworkAlertOpen(true);
-        lastAutoOpenedChainIdRef.current = chainId;
-      }
-    } else {
-      lastAutoOpenedChainIdRef.current = undefined;
-      setIsNetworkAlertOpen(false);
+  if (isNetworkUnreliable) {
+    if (lastAutoOpenedChainId !== chainId) {
+      setLastAutoOpenedChainId(chainId);
+      setIsNetworkAlertOpen(true);
     }
-  }, [chainId, isNetworkUnreliable]);
+  } else if (lastAutoOpenedChainId !== undefined || isNetworkAlertOpen) {
+    setLastAutoOpenedChainId(undefined);
+    setIsNetworkAlertOpen(false);
+  }
 
   const handleNetworkClose = useCallback(() => {
     setIsNetworkAlertOpen(false);

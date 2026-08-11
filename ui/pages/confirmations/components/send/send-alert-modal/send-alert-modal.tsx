@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   Box,
@@ -136,10 +136,30 @@ export const SendAlertModal = ({
   const t = useI18nContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedKeys, setViewedKeys] = useState<Set<string>>(() => new Set());
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const alertKeys = alerts.map((alert) => alert.key).join('|');
+  const [prevAlertKeys, setPrevAlertKeys] = useState(alertKeys);
+
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    setCurrentIndex(0);
+    setViewedKeys(new Set());
+  }
+
+  if (alertKeys !== prevAlertKeys) {
+    setPrevAlertKeys(alertKeys);
+    setCurrentIndex(0);
+  }
 
   const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
   const currentAlert = alerts[safeIndex];
   const hasMultiple = alerts.length > 1;
+
+  if (isOpen && currentAlert && !viewedKeys.has(currentAlert.key)) {
+    const next = new Set(viewedKeys);
+    next.add(currentAlert.key);
+    setViewedKeys(next);
+  }
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => Math.max(prev - 1, 0));
@@ -148,31 +168,6 @@ export const SendAlertModal = ({
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
   }, [alerts.length]);
-
-  const alertKeys = alerts.map((alert) => alert.key).join('|');
-
-  useEffect(() => {
-    setCurrentIndex(0);
-    setViewedKeys(new Set());
-  }, [isOpen]);
-
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [alertKeys]);
-
-  useEffect(() => {
-    if (!isOpen || !currentAlert) {
-      return;
-    }
-    setViewedKeys((prev) => {
-      if (prev.has(currentAlert.key)) {
-        return prev;
-      }
-      const next = new Set(prev);
-      next.add(currentAlert.key);
-      return next;
-    });
-  }, [isOpen, currentAlert]);
 
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
 

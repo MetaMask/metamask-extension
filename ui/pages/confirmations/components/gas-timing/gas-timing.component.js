@@ -83,7 +83,14 @@ export default function GasTiming({
 
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
-  const previousIsUnknownLow = usePrevious(isUnknownLow);
+  const [prevIsUnknownLow, setPrevIsUnknownLow] = useState(isUnknownLow);
+
+  if (isUnknownLow !== prevIsUnknownLow) {
+    setPrevIsUnknownLow(isUnknownLow);
+    if (isUnknownLow !== false && prevIsUnknownLow === true) {
+      setCustomEstimatedTime(null);
+    }
+  }
 
   const estimateTextMap = useMemo(
     () => ({
@@ -119,10 +126,6 @@ export default function GasTiming({
       });
     }
 
-    if (isUnknownLow !== false && previousIsUnknownLow === true) {
-      setCustomEstimatedTime(null);
-    }
-
     return () => {
       isMounted = false;
     };
@@ -132,7 +135,6 @@ export default function GasTiming({
     isUnknownLow,
     previousMaxFeePerGas,
     previousMaxPriorityFeePerGas,
-    previousIsUnknownLow,
   ]);
 
   if (

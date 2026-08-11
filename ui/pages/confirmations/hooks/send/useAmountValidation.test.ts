@@ -346,7 +346,8 @@ describe('useAmountValidation', () => {
 
   it('accepts valid decimal amount', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      // 10 ETH
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x8ac7230489e80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '0.5',
@@ -361,7 +362,8 @@ describe('useAmountValidation', () => {
 
   it('accepts "." as zero without reporting invalid amount', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      // 10 ETH
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x8ac7230489e80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '.',
@@ -376,7 +378,8 @@ describe('useAmountValidation', () => {
 
   it('accepts "0." as zero without reporting invalid amount', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      // 10 ETH
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x8ac7230489e80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '0.',
@@ -391,7 +394,8 @@ describe('useAmountValidation', () => {
 
   it('accepts trailing dot as valid intermediate input', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5f5e100' },
+      // 10 ETH
+      asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x8ac7230489e80000' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
       value: '5.',
