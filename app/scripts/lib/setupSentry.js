@@ -705,15 +705,22 @@ function integrateLogging() {
     return;
   }
 
-  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
-  // override its methods so SDK-internal logs flow through our module logger.
+  // In debug mode, route SDK-internal logs through our module logger when the
+  // installed SDK exposes mutable logger methods.
   const sentrySdkLogger = logger;
 
   for (const loggerType of ['log', 'error']) {
-    sentrySdkLogger[loggerType] = (...args) => {
-      const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
-      internalLog(message, ...args.slice(1));
-    };
+    try {
+      sentrySdkLogger[loggerType] = (...args) => {
+        const message = args[0].replace(
+          `Sentry Logger [${loggerType}]: `,
+          '',
+        );
+        internalLog(message, ...args.slice(1));
+      };
+    } catch {
+      // Newer SDK versions can expose getter-only logger methods.
+    }
   }
 
   log('Integrated logging');
