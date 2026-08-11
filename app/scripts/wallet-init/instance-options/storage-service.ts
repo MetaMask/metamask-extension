@@ -3,9 +3,7 @@ import type { WalletOptions } from '@metamask/wallet';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 import { BrowserStorageAdapter } from '../../../../shared/lib/stores/browser-storage-adapter';
-import {
-  IndexedDBStorageAdapter,
-} from '../../../../shared/lib/stores/indexeddb-storage-adapter';
+import { IndexedDBStorageAdapter } from '../../../../shared/lib/stores/indexeddb-storage-adapter';
 import { STORAGE_SERVICE_INDEXED_DB_FEATURE_FLAG } from '../../../../shared/lib/stores/indexeddb-storage-constants';
 
 type StorageServiceInstanceOptions =
@@ -32,9 +30,7 @@ export function getStorageServiceInstanceOptions({
     ];
   const isIndexedDBEnabled = getBooleanFeatureFlag(
     manifestFlag ??
-      persistedRemoteFeatureFlags?.[
-        STORAGE_SERVICE_INDEXED_DB_FEATURE_FLAG
-      ],
+      persistedRemoteFeatureFlags?.[STORAGE_SERVICE_INDEXED_DB_FEATURE_FLAG],
     false,
   );
 

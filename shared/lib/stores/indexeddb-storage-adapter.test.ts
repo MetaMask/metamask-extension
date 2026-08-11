@@ -183,9 +183,7 @@ describe('IndexedDBStorageAdapter', () => {
       ).resolves.toStrictEqual({});
 
       await database.open(databaseName, 1);
-      await expect(database.get([fullKey])).resolves.toStrictEqual([
-        undefined,
-      ]);
+      await expect(database.get([fullKey])).resolves.toStrictEqual([undefined]);
       database.close();
     });
   });
@@ -291,11 +289,7 @@ describe('IndexedDBStorageAdapter', () => {
         database,
         fallbackStorage,
       });
-      await restartedAdapter.setItem(
-        'TestController',
-        'myKey',
-        'second-value',
-      );
+      await restartedAdapter.setItem('TestController', 'myKey', 'second-value');
 
       expect(database.open).toHaveBeenCalledTimes(2);
       expect(database.set).toHaveBeenCalledWith({

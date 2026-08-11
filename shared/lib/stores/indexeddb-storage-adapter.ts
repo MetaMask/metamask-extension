@@ -201,8 +201,7 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
       }
 
       return (
-        fallbackResult ??
-        (await this.#fallbackStorage.getItem(namespace, key))
+        fallbackResult ?? (await this.#fallbackStorage.getItem(namespace, key))
       );
     } catch (error) {
       console.error(

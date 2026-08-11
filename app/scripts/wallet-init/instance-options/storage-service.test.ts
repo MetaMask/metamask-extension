@@ -1,8 +1,6 @@
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { BrowserStorageAdapter } from '../../../../shared/lib/stores/browser-storage-adapter';
-import {
-  IndexedDBStorageAdapter,
-} from '../../../../shared/lib/stores/indexeddb-storage-adapter';
+import { IndexedDBStorageAdapter } from '../../../../shared/lib/stores/indexeddb-storage-adapter';
 import { STORAGE_SERVICE_INDEXED_DB_FEATURE_FLAG } from '../../../../shared/lib/stores/indexeddb-storage-constants';
 import { getStorageServiceInstanceOptions } from './storage-service';
 
