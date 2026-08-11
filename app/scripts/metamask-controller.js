@@ -3585,6 +3585,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:resetState`,
       ),
+      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
+      ),
       updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
