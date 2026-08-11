@@ -982,12 +982,12 @@
       "ignoredNfts": []
     },
     "NotificationServicesController": {
-      "isFeatureAnnouncementsEnabled": false,
-      "isMetamaskNotificationsFeatureSeen": false,
-      "isNotificationServicesEnabled": false,
+      "isFeatureAnnouncementsEnabled": true,
+      "isMetamaskNotificationsFeatureSeen": true,
+      "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": []
+      "subscriptionAccountsSeen": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
@@ -1163,7 +1163,7 @@
         "assetsAccountsApiV6": "feature is OFF",
         "assetsEnableNotificationsByDefaultV2": "feature is ON",
         "backendWebSocketConnection": "feature is ON",
-        "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
+        "coreExtensionUxCeux1096AbtestReferralUi": "control",
         "coreExtensionUxCeux1141AbtestBottomNav": "control",
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
