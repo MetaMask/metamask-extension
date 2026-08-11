@@ -12,7 +12,7 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import HeaderNavbar from 'test/e2e/page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
