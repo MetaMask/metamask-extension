@@ -27,28 +27,49 @@ export function useSpinDelay(loading: boolean, options?: SpinDelayOptions) {
     ...defaultOptions,
     ...options,
   };
-  const [state, setState] = useState<State>('idle');
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const [state, setState] = useState<State>(loading ? 'delay' : 'idle');
+  const [prevLoading, setPrevLoading] = useState(loading);
+  const delayTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const minDurationTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const loadingRef = useRef(loading);
+  loadingRef.current = loading;
 
-  useEffect(() => {
+  if (loading !== prevLoading) {
+    setPrevLoading(loading);
     if (loading && state === 'idle') {
-      clearTimeout(timeout.current);
-
-      timeout.current = setTimeout(() => {
-        timeout.current = setTimeout(() => setState('expire'), minDuration);
-        setState('display');
-      }, delay);
-
       setState('delay');
-    }
-
-    if (!loading && state !== 'display') {
-      clearTimeout(timeout.current);
+    } else if (!loading && state !== 'display') {
+      clearTimeout(delayTimeout.current);
+      clearTimeout(minDurationTimeout.current);
       setState('idle');
     }
-  }, [loading, state, delay, minDuration]);
+  }
 
-  useEffect(() => () => clearTimeout(timeout.current), []);
+  useEffect(() => {
+    if (state !== 'delay') {
+      return undefined;
+    }
+
+    clearTimeout(delayTimeout.current);
+    delayTimeout.current = setTimeout(() => {
+      setState('display');
+      minDurationTimeout.current = setTimeout(() => {
+        setState(loadingRef.current ? 'expire' : 'idle');
+      }, minDuration);
+    }, delay);
+
+    return () => {
+      clearTimeout(delayTimeout.current);
+    };
+  }, [state, delay, minDuration]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(delayTimeout.current);
+      clearTimeout(minDurationTimeout.current);
+    },
+    [],
+  );
 
   return state === 'display' || state === 'expire';
 }

@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react';
+import { useState } from 'react';
 
 import { isEqual } from 'lodash';
 
@@ -17,11 +17,9 @@ import { isEqual } from 'lodash';
 export function useEqualityCheck(value, equalityFn = isEqual) {
   const [computedValue, setComputedValue] = useState(value);
 
-  useLayoutEffect(() => {
-    if (!equalityFn(value, computedValue)) {
-      setComputedValue(value);
-    }
-  }, [value, equalityFn, computedValue]);
+  if (!equalityFn(value, computedValue)) {
+    setComputedValue(value);
+  }
 
   return computedValue;
 }

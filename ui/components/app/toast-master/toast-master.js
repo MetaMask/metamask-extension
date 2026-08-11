@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
@@ -334,7 +334,7 @@ function StorageErrorToast() {
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
-  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const hasTrackedViewRef = useRef(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
@@ -352,15 +352,15 @@ function StorageErrorToast() {
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
-    if (shouldShow && !hasTrackedView) {
+    if (shouldShow && !hasTrackedViewRef.current) {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
           .addCategory(MetaMetricsEventCategory.Error)
           .build(),
       );
-      setHasTrackedView(true);
+      hasTrackedViewRef.current = true;
     }
-  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
+  }, [shouldShow, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
     trackEvent(

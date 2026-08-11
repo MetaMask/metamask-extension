@@ -98,30 +98,43 @@ export const useTokenSecurityData = ({
     }
   }, []);
 
-  useEffect(() => {
+  const securityRequestKey = `${assetId ?? ''}|${prefetchedData ? 'prefetched' : 'fetch'}`;
+  const [prevSecurityRequestKey, setPrevSecurityRequestKey] =
+    useState(securityRequestKey);
+
+  if (securityRequestKey !== prevSecurityRequestKey) {
+    setPrevSecurityRequestKey(securityRequestKey);
+    activeAssetIdRef.current = assetId;
+
     if (prefetchedData) {
-      activeAssetIdRef.current = assetId;
       setSecurityData(prefetchedData);
       setError(null);
       setIsLoading(false);
-      return undefined;
-    }
-
-    if (!assetId) {
+    } else if (!assetId) {
       activeAssetIdRef.current = null;
       setSecurityData(null);
       setError(null);
       setAssetMetadata({});
       setIsLoading(false);
+    } else {
+      setSecurityData(null);
+      setError(null);
+      setAssetMetadata(getAssetMetadataFromAssetId(assetId));
+      setIsLoading(true);
+    }
+  }
+
+  useEffect(() => {
+    if (prefetchedData || !assetId) {
       return undefined;
     }
 
     activeAssetIdRef.current = assetId;
-    setSecurityData(null);
-    setError(null);
-    setAssetMetadata(getAssetMetadataFromAssetId(assetId));
-    setIsLoading(true);
-    fetchData(assetId);
+    // Defer so async helper setState paths are not treated as synchronous
+    // effect updates (react-hooks/set-state-in-effect).
+    queueMicrotask(() => {
+      fetchData(assetId);
+    });
 
     return () => {
       activeAssetIdRef.current = null;

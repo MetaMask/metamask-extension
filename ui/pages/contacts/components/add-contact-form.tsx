@@ -136,7 +136,9 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
     prevChainIdRef.current = selectedChainId;
   }, [selectedChainId, enteredDomainName, input, dispatch]);
 
-  useEffect(() => {
+  const [prevQrCodeData, setPrevQrCodeData] = useState(qrCodeData);
+  if (qrCodeData !== prevQrCodeData) {
+    setPrevQrCodeData(qrCodeData);
     if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
       const scannedAddress = qrCodeData.values.address.toLowerCase();
       const addresses = [
@@ -150,10 +152,26 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       if (!addresses.includes(scannedAddress)) {
         setInput(scannedAddress);
         validate(scannedAddress);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
+      const scannedAddress = qrCodeData.values.address.toLowerCase();
+      const addresses = [
+        ...(domainResolutions?.map(
+          (r: { resolvedAddress: string }) => r.resolvedAddress,
+        ) ?? []),
+        selectedAddress,
+      ]
+        .filter(Boolean)
+        .map((addr: string) => addr.toLowerCase());
+      if (!addresses.includes(scannedAddress)) {
         dispatch(qrCodeDetected(null as never));
       }
     }
-  }, [qrCodeData, domainResolutions, selectedAddress, validate, dispatch]);
+  }, [qrCodeData, domainResolutions, selectedAddress, dispatch]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;

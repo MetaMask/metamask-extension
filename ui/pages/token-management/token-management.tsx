@@ -822,15 +822,29 @@ export const TokenManagementPage = () => {
     };
   }, []);
 
+  const toastFromRoute = getTokenManagementToastFromRouteState(location.state);
+  const toastFromRouteSymbol = toastFromRoute?.symbol;
+  const [prevToastFromRouteSymbol, setPrevToastFromRouteSymbol] = useState<
+    string | undefined
+  >(undefined);
+  if (
+    toastFromRoute &&
+    toastFromRouteSymbol &&
+    toastFromRouteSymbol !== prevToastFromRouteSymbol
+  ) {
+    setPrevToastFromRouteSymbol(toastFromRouteSymbol);
+    setPageToast(toastFromRoute);
+  } else if (!toastFromRouteSymbol && prevToastFromRouteSymbol) {
+    setPrevToastFromRouteSymbol(undefined);
+  }
+
   useEffect(() => {
-    const toast = getTokenManagementToastFromRouteState(location.state);
-    if (!toast) {
+    if (!toastFromRoute) {
       return;
     }
 
-    setPageToast(toast);
     navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
-  }, [location.state, navigate]);
+  }, [toastFromRoute, navigate]);
 
   useEffect(() => {
     if (!pageToast) {

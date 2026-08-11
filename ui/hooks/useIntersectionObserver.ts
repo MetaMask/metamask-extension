@@ -85,11 +85,13 @@ export function useIntersectionObserver({
     };
   }, [ref, thresholdKey, root, rootMargin]);
 
-  useEffect(() => {
+  const [prevRef, setPrevRef] = useState(ref);
+  if (ref !== prevRef) {
+    setPrevRef(ref);
     if (!ref && state.entry?.target) {
       setState({ isIntersecting: initialIsIntersecting, entry: undefined });
     }
-  }, [ref, state.entry, initialIsIntersecting]);
+  }
 
   const result = useMemo(
     () =>
