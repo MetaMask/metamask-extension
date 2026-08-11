@@ -106,9 +106,7 @@ function checkDomainBranch({
   const isDappInitiated = Boolean(origin && origin !== ORIGIN_METAMASK);
   return (
     isDappInitiated &&
-    scamDomains.some((domain) =>
-      matchesScamDomain(origin as string, domain),
-    ) &&
+    scamDomains.some((domain) => matchesScamDomain(origin as string, domain)) &&
     !hasPassed
   );
 }
@@ -136,7 +134,12 @@ export function useScamQuestionnaire({
     required: isSendBranchRequired,
     securityAlert,
     isMMSend,
-  } = checkSendBranch({ variant, currentConfirmation, alerts, isAlertConfirmed });
+  } = checkSendBranch({
+    variant,
+    currentConfirmation,
+    alerts,
+    isAlertConfirmed,
+  });
 
   // Domain-list branch
   const remoteFlags = useSelector(getRemoteFeatureFlags);
