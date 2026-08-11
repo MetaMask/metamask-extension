@@ -40,8 +40,8 @@ const sanitizeTokens = (
         Boolean(token?.assetId) || Boolean(token?.isNative),
     );
 
-// Most custom networks' native assets never get a resolvable assetId, so
-// this resolves via chainId instead, like the asset list does.
+// Most custom networks' native assets never get a resolvable assetId, so try
+// chainId first (like the asset list does); assetId is still a valid fallback.
 const getNativeAssetImageSrc = (chainId?: string): string | undefined =>
   chainId
     ? CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP]
@@ -58,7 +58,8 @@ const ActivityTokenAvatar = ({
 }>) => {
   const { assetId, isNative } = token;
   const src = isNative
-    ? getNativeAssetImageSrc(chainId)
+    ? (getNativeAssetImageSrc(chainId) ??
+      getCaipAssetImageUrl(assetId as CaipAssetType))
     : getCaipAssetImageUrl(assetId as CaipAssetType);
 
   return (

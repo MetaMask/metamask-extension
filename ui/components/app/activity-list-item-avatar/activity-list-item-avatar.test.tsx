@@ -11,6 +11,8 @@ const usdcToken = {
 };
 // Mirrors a native send where the upstream mapper never resolved an assetId.
 const nativeTokenWithoutAssetId = { isNative: true };
+// Mirrors a native send (e.g. mainnet ETH) whose assetId did resolve.
+const nativeTokenWithAssetId = { assetId: 'eip155:1/slip44:60', isNative: true };
 
 function renderAvatar(tokens: ActivityListItemAvatarTokens, chainId?: string) {
   return render(<ActivityListItemAvatar tokens={tokens} chainId={chainId} />);
@@ -71,6 +73,24 @@ describe('ActivityListItemAvatar', () => {
       .getByTestId('activity-list-item-avatar-token')
       .querySelector('img');
     expect(img).toHaveAttribute('src', ETH_TOKEN_IMAGE_URL);
+  });
+
+  it('falls back to the assetId-based CDN for a native asset when no chainId is passed', () => {
+    renderAvatar([nativeTokenWithAssetId]);
+
+    const img = screen
+      .getByTestId('activity-list-item-avatar-token')
+      .querySelector('img');
+    expect(img?.getAttribute('src')).toContain('static.cx.metamask.io');
+  });
+
+  it('falls back to the assetId-based CDN for a native asset on a chain missing from the local map', () => {
+    renderAvatar([nativeTokenWithAssetId], '0x999999');
+
+    const img = screen
+      .getByTestId('activity-list-item-avatar-token')
+      .querySelector('img');
+    expect(img?.getAttribute('src')).toContain('static.cx.metamask.io');
   });
 
   it('falls back to the remote token-icon CDN for non-native assets', () => {
