@@ -359,24 +359,51 @@ describe('useActivityRowContent', () => {
     type: string;
     data: Record<string, unknown>;
   }[] = [
-    { type: 'wrap', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
-    { type: 'convert', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
-    { type: 'unwrap', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
-    { type: 'lendingWithdrawal', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
-    { type: 'bridge', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
+    {
+      type: 'wrap',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
+    {
+      type: 'convert',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
+    {
+      type: 'unwrap',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
+    {
+      type: 'lendingWithdrawal',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
+    {
+      type: 'bridge',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
     { type: 'buy', data: { from: '0x1', token: ethToken } },
     { type: 'claim', data: { from: '0x1', token: ethToken } },
     { type: 'deposit', data: { from: '0x1', token: ethToken } },
-    { type: 'perpsAddFunds', data: { fiat: { amount: '10' }, token: ethToken } },
-    { type: 'perpsWithdraw', data: { fiat: { amount: '10' }, token: ethToken } },
+    {
+      type: 'perpsAddFunds',
+      data: { fiat: { amount: '10' }, token: ethToken },
+    },
+    {
+      type: 'perpsWithdraw',
+      data: { fiat: { amount: '10' }, token: ethToken },
+    },
     { type: 'nftBuy', data: { token: ethToken, paymentToken: usdcToken } },
     { type: 'nftSell', data: { token: ethToken, paymentToken: usdcToken } },
     { type: 'nftMint', data: { token: ethToken } },
-    { type: 'contractInteraction', data: { from: '0x1', to: '0x2', token: ethToken } },
+    {
+      type: 'contractInteraction',
+      data: { from: '0x1', to: '0x2', token: ethToken },
+    },
     { type: 'approveSpendingCap', data: { token: ethToken } },
     { type: 'increaseSpendingCap', data: { token: ethToken } },
     { type: 'revokeSpendingCap', data: { token: ethToken } },
-    { type: 'lendingDeposit', data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken } },
+    {
+      type: 'lendingDeposit',
+      data: { from: '0x1', sourceToken: ethToken, destinationToken: usdcToken },
+    },
     { type: 'claimMusdBonus', data: { token: ethToken } },
   ];
 

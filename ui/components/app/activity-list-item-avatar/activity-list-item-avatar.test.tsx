@@ -12,7 +12,10 @@ const usdcToken = {
 // Mirrors a native send where the upstream mapper never resolved an assetId.
 const nativeTokenWithoutAssetId = { isNative: true };
 // Mirrors a native send (e.g. mainnet ETH) whose assetId did resolve.
-const nativeTokenWithAssetId = { assetId: 'eip155:1/slip44:60', isNative: true };
+const nativeTokenWithAssetId = {
+  assetId: 'eip155:1/slip44:60',
+  isNative: true,
+};
 
 function renderAvatar(tokens: ActivityListItemAvatarTokens, chainId?: string) {
   return render(<ActivityListItemAvatar tokens={tokens} chainId={chainId} />);

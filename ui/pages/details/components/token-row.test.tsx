@@ -10,7 +10,13 @@ jest.mock('../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock('../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: ({ tokens, chainId }: { tokens: unknown; chainId?: string }) => (
+  ActivityAvatar: ({
+    tokens,
+    chainId,
+  }: {
+    tokens: unknown;
+    chainId?: string;
+  }) => (
     <div data-testid="activity-avatar">
       {JSON.stringify({ tokens, chainId })}
     </div>

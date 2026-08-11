@@ -103,9 +103,11 @@ jest.mock('../../../hooks/musd', () => {
   };
 });
 jest.mock('../../activity/activity-list', () => ({
-  ActivityList: ({ filter }: { filter?: { assetId?: string; isNative?: boolean } }) => (
-    <div data-testid="mock-activity-list">{JSON.stringify(filter)}</div>
-  ),
+  ActivityList: ({
+    filter,
+  }: {
+    filter?: { assetId?: string; isNative?: boolean };
+  }) => <div data-testid="mock-activity-list">{JSON.stringify(filter)}</div>,
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
