@@ -8,7 +8,10 @@ import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
-import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
+import type {
+  ActivityAvatarToken,
+  ActivityListItemAvatarTokens,
+} from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -31,6 +34,13 @@ type ActivityContent = {
   secondaryAmount?: ReactNode;
   avatarTokens: ActivityListItemAvatarTokens;
 };
+
+const toAvatarToken = (
+  token?: Pick<TokenAmount, 'assetId' | 'assetType'>,
+): ActivityAvatarToken | undefined =>
+  token?.assetId || token?.assetType === 'native'
+    ? { assetId: token.assetId, isNative: token.assetType === 'native' }
+    : undefined;
 
 function getChainDisplay(caipChainId: CaipChainId) {
   const { namespace } = parseCaipChainId(caipChainId);
@@ -69,7 +79,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = token?.symbol ?? '';
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
             formatDisplayName(address) || t('unknown'),
@@ -96,8 +106,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
 
         return {
           avatarTokens: hasDestination
-            ? [sourceToken?.assetId, destinationToken?.assetId]
-            : [sourceToken?.assetId],
+            ? [toAvatarToken(sourceToken), toAvatarToken(destinationToken)]
+            : [toAvatarToken(sourceToken)],
           title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
           subtitle,
           primaryAmount: formatTokenAmount(primaryToken),
@@ -118,7 +128,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
-          avatarTokens: [sourceToken?.assetId],
+          avatarTokens: [toAvatarToken(sourceToken)],
           title: t(labelKeys.title.key, [sourceSymbol ?? '']),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken),
@@ -138,7 +148,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
-          avatarTokens: [destinationToken?.assetId],
+          avatarTokens: [toAvatarToken(destinationToken)],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken),
@@ -152,7 +162,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = destinationToken?.symbol ?? '';
 
         return {
-          avatarTokens: [destinationToken?.assetId ?? sourceToken?.assetId],
+          avatarTokens: [
+            toAvatarToken(destinationToken) ?? toAvatarToken(sourceToken),
+          ],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
           primaryAmount: formatTokenAmount(destinationToken),
@@ -177,8 +189,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
 
         return {
           avatarTokens: destinationToken
-            ? [sourceToken?.assetId, destinationToken?.assetId]
-            : [sourceToken?.assetId],
+            ? [toAvatarToken(sourceToken), toAvatarToken(destinationToken)]
+            : [toAvatarToken(sourceToken)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
@@ -197,7 +209,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = token?.symbol ?? '';
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
           primaryAmount: formatTokenAmount(token),
@@ -239,7 +251,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : fiatAmount;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key),
           subtitle: t('perpsBalance'),
           primaryAmount:
@@ -255,7 +267,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, paymentToken } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
           primaryAmount: formatTokenAmount(paymentToken),
           primaryDirection: paymentToken?.direction,
@@ -266,7 +278,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
@@ -277,7 +289,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, to } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
             shortenAddress(to) || 'Contract',
@@ -293,7 +305,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
           primaryAmount: token?.amount
@@ -312,7 +324,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const secondaryToken = destinationToken ? sourceToken : undefined;
 
         return {
-          avatarTokens: [secondaryToken?.assetId],
+          avatarTokens: [toAvatarToken(secondaryToken)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
           primaryAmount: formatTokenAmount(primaryToken),
@@ -324,7 +336,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
           primaryAmount: formatTokenAmount(token),
@@ -337,7 +349,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [token?.assetId],
+          avatarTokens: [toAvatarToken(token)],
           title: t(labelKeys.title.key, [token?.symbol ?? '']),
           subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
@@ -362,7 +374,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   return {
     avatar: (
       <ChainBadge chainId={chainId}>
-        <ActivityAvatar tokens={avatarTokens} />
+        <ActivityAvatar tokens={avatarTokens} chainId={chainId} />
       </ChainBadge>
     ),
     title: (
