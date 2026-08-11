@@ -2,26 +2,26 @@ import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../pages/dialog/edit-connected-accounts-modal';
-import NetworkPermissionSelectModal from '../pages/dialog/network-permission-select-modal';
+import HomePage from '../pages/home/homepage';
+import {
+  type NetworkSelectionUpdate,
+  updateConnectedSiteNetworkSelection,
+  updateConnectedSiteNetworksToOnly,
+} from './permissions.flow';
 
 /**
  * Approve the MetaMask connect dialog after the dapp has initiated a
- * connection. Switches to the dialog, optionally adds extra accounts and
- * extra permitted networks, then confirms. The caller is responsible for
- * triggering the connect action on the dapp and for switching focus back
- * to it afterwards.
+ * connection. Switches to the dialog, optionally adds extra accounts, then
+ * confirms. The caller is responsible for triggering the connect action on the
+ * dapp and for switching focus back to it afterwards.
  *
  * @param driver - Selenium driver
- * @param options - Options object with totalAccounts and extraNetworks
+ * @param options - Options object with totalAccounts
  * @param options.totalAccounts - Total number of accounts to connect (default: 1)
- * @param options.extraNetworks - Additional network display names to permit (e.g. ['Polygon'])
  */
 export async function approveConnect(
   driver: Driver,
-  {
-    totalAccounts = 1,
-    extraNetworks = [],
-  }: { totalAccounts?: number; extraNetworks?: string[] } = {},
+  { totalAccounts = 1 }: { totalAccounts?: number } = {},
 ): Promise<void> {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new ConnectAccountConfirmation(driver);
@@ -36,17 +36,45 @@ export async function approveConnect(
     }
   }
 
-  if (extraNetworks.length > 0) {
-    await confirmation.goToPermissionsTab();
-    await confirmation.openEditNetworksModal();
-    const networkModal = new NetworkPermissionSelectModal(driver);
-    await networkModal.checkPageIsLoaded();
-    for (const networkName of extraNetworks) {
-      await networkModal.selectNetwork({ networkName, shouldBeSelected: true });
-    }
-    await networkModal.clickConfirmEditButton();
-    await confirmation.checkPageIsLoaded();
-  }
-
   await confirmation.confirmConnect();
+}
+
+/**
+ * Confirms the connect dialog, then narrows the connected site's network
+ * permissions from the Connected sites page.
+ *
+ * @param driver - Selenium driver
+ * @param hostname - Site hostname shown on the permissions page
+ * @param networkUpdates - Network display names and desired selection state
+ */
+export async function confirmConnectAndUpdateSiteNetworks(
+  driver: Driver,
+  hostname: string,
+  networkUpdates: NetworkSelectionUpdate[],
+): Promise<void> {
+  await approveConnect(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await updateConnectedSiteNetworkSelection(driver, hostname, networkUpdates);
+}
+
+/**
+ * Confirms the connect dialog, then limits the connected site's network
+ * permissions to the provided list from the Connected sites page.
+ *
+ * @param driver - Selenium driver
+ * @param hostname - Site hostname shown on the permissions page
+ * @param selectedNetworkNames - Network display names that should remain selected
+ */
+export async function confirmConnectAndUpdateSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  await approveConnect(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await updateConnectedSiteNetworksToOnly(
+    driver,
+    hostname,
+    selectedNetworkNames,
+  );
 }

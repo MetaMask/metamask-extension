@@ -5,8 +5,27 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
+import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
+
+/**
+ * Asserts that the specified account is visible in the account list.
+ *
+ * @param driver - The WebDriver instance.
+ * @param accountName - The name of the account to check.
+ */
+export const assertAccountVisible = async (
+  driver: Driver,
+  accountName: string,
+): Promise<void> => {
+  const headerNavbar = new HeaderNavbar(driver);
+  const accountListPage = new AccountListPage(driver);
+  await headerNavbar.checkPageIsLoaded();
+  await headerNavbar.openAccountMenu();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.closeMultichainAccountsPage();
+};
 
 export async function checkAccountAddressDisplayedInAccountList(
   driver: Driver,

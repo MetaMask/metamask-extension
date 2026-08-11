@@ -38,21 +38,13 @@ class DeFiToken {
 }
 
 class DeFiTab extends HomePage {
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
-
   readonly defiTabCells: DeFiToken;
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
 
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
-
   private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
-
-  private readonly popularNetworks =
-    '[data-testid="network-filter-all__button"]';
 
   constructor(driver: Driver) {
     super(driver);
@@ -79,21 +71,6 @@ class DeFiTab extends HomePage {
     await this.driver.clickElement({
       text: 'Aave V3',
     });
-  }
-
-  async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
-    console.log(`Opening the network filter and click popular networks`);
-    await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitUntil(
-      async () => {
-        return Boolean(await this.driver.findElement(this.allNetworksOption));
-      },
-      {
-        timeout: 5000,
-        interval: 100,
-      },
-    );
-    await this.driver.clickElement(this.popularNetworks);
   }
 }
 
