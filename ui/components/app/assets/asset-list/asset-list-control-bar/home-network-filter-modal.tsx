@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
@@ -390,12 +390,12 @@ const HomeNetworkFilterModalContent = ({
   );
   const { handleNetworkChange, isPending } = useNetworkChangeHandlers();
 
-  useEffect(() => {
-    onPendingChange?.(isPending);
-    return () => {
-      onPendingChange?.(false);
-    };
-  }, [isPending, onPendingChange]);
+  const handleClose = useCallback(() => {
+    if (isPending) {
+      return;
+    }
+    onClose();
+  }, [isPending, onClose]);
 
   const {
     nonTestNetworks: allDefaultNetworkMap,
@@ -497,27 +497,40 @@ const HomeNetworkFilterModalContent = ({
   }, [blacklistedChainIds, evmNetworks, useExternalServices]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
+    if (isPending) {
+      return;
+    }
     dispatch(setEnabledAllPopularNetworks());
     onClose();
-  }, [dispatch, onClose]);
+  }, [dispatch, isPending, onClose]);
 
   const handleSelectNetwork = useCallback(
     async (chainId: CaipChainId) => {
       if (isPending) {
         return;
       }
-      await handleNetworkChange(chainId);
-      onClose();
+      // Own parent pending here so the filter button stays loading for the full
+      // awaited switch, including after this modal content unmounts on close.
+      onPendingChange?.(true);
+      try {
+        await handleNetworkChange(chainId);
+      } finally {
+        onPendingChange?.(false);
+        onClose();
+      }
     },
-    [handleNetworkChange, isPending, onClose],
+    [handleNetworkChange, isPending, onClose, onPendingChange],
   );
 
   const handleAddNetwork = useCallback(
     async (network: AddNetworkFields) => {
+      if (isPending) {
+        return;
+      }
       await dispatch(addNetwork(network));
       onClose();
     },
-    [dispatch, onClose],
+    [dispatch, isPending, onClose],
   );
 
   const handleManageNetworks = useCallback(() => {
@@ -631,7 +644,7 @@ const HomeNetworkFilterModalContent = ({
   return (
     <NetworkSelectionModal
       isOpen
-      onClose={onClose}
+      onClose={handleClose}
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',

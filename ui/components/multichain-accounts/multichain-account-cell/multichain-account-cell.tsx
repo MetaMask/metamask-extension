@@ -126,7 +126,6 @@ export const MultichainAccountCell = ({
         cursor,
         position: 'relative',
         opacity: pending ? 0.6 : undefined,
-        pointerEvents: pending ? 'none' : undefined,
       }}
       padding={4}
       gap={4}

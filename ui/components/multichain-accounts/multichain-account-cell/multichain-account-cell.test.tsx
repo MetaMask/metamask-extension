@@ -83,6 +83,7 @@ describe('MultichainAccountCell', () => {
 
     expect(cellElement).toHaveClass('is-pending');
     expect(cellElement).toHaveAttribute('aria-busy', 'true');
+    expect(cellElement.style.cursor).toBe('wait');
     fireEvent.click(cellElement);
     expect(handleClick).not.toHaveBeenCalled();
   });

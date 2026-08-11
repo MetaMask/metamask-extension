@@ -365,7 +365,7 @@ const DefaultNetworks = memo(() => {
           selected={isSelected}
           // Last-remaining stays clickable so the modal can still close; the
           // switch itself is no-op'd in handleNetworkChangeCallback.
-          disabled={isPending}
+          disabled={isPending && !isLastRemainingNetwork}
         />
       );
     });

@@ -60,7 +60,9 @@ export enum ACTION_MODE {
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const [isPending, startTransition] = useTransition();
+  const [isTransitionPending, startTransition] = useTransition();
+  const [isNetworkChangePending, setIsNetworkChangePending] = useState(false);
+  const isPending = isTransitionPending || isNetworkChangePending;
 
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -94,27 +96,46 @@ export const useNetworkChangeHandlers = () => {
   }, [enabledNetworksByNamespace, dispatch, allChainIds]);
 
   const handleEvmNetworkChange = useCallback(
-    (chainId: CaipChainId) => {
+    async (chainId: CaipChainId) => {
       const hexChainId = convertCaipToHexChainId(chainId);
 
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      // Defer expensive Home/Routes re-renders so the network list stays responsive.
-      startTransition(() => {
-        dispatch(setEnabledNetworks(hexChainId));
-        dispatch(setActiveNetwork(finalNetworkClientId));
-      });
+      setIsNetworkChangePending(true);
+      try {
+        // Defer expensive Home/Routes re-renders so the network list stays responsive.
+        // Promise.resolve unwraps thunk promises so isPending covers the background switch.
+        await new Promise<void>((resolve, reject) => {
+          startTransition(() => {
+            Promise.all([
+              Promise.resolve(dispatch(setEnabledNetworks(hexChainId))),
+              Promise.resolve(dispatch(setActiveNetwork(finalNetworkClientId))),
+            ]).then(() => resolve(), reject);
+          });
+        });
+      } finally {
+        setIsNetworkChangePending(false);
+      }
     },
     [dispatch, evmNetworks, startTransition],
   );
 
   const handleNonEvmNetworkChange = useCallback(
-    (chainId: CaipChainId) => {
-      startTransition(() => {
-        dispatch(setActiveNetwork(chainId));
-        dispatch(setEnabledNetworks(chainId));
-      });
+    async (chainId: CaipChainId) => {
+      setIsNetworkChangePending(true);
+      try {
+        await new Promise<void>((resolve, reject) => {
+          startTransition(() => {
+            Promise.all([
+              Promise.resolve(dispatch(setActiveNetwork(chainId))),
+              Promise.resolve(dispatch(setEnabledNetworks(chainId))),
+            ]).then(() => resolve(), reject);
+          });
+        });
+      } finally {
+        setIsNetworkChangePending(false);
+      }
     },
     [dispatch, startTransition],
   );
@@ -143,9 +164,9 @@ export const useNetworkChangeHandlers = () => {
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId);
+        await handleEvmNetworkChange(chainId);
       } else {
-        handleNonEvmNetworkChange(chainId);
+        await handleNonEvmNetworkChange(chainId);
       }
 
       const chainIdToTrack = chain.isEvm

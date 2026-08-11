@@ -147,4 +147,34 @@ describe('useNetworkChangeHandlers', () => {
     expect(result.current.isPending).toBe(false);
     expect(typeof result.current.startTransition).toBe('function');
   });
+
+  it('keeps isPending true until network switch dispatches settle', async () => {
+    let resolveEnabled!: () => void;
+    const enabledPromise = new Promise<void>((resolve) => {
+      resolveEnabled = resolve;
+    });
+
+    mockDispatch.mockImplementation((action: { type?: string }) => {
+      if (action?.type === 'SET_ENABLED_NETWORKS') {
+        return enabledPromise;
+      }
+      return Promise.resolve();
+    });
+
+    const { result } = renderHook(() => useNetworkChangeHandlers());
+
+    let changePromise!: Promise<void>;
+    await act(async () => {
+      changePromise = result.current.handleNetworkChange(mockLineaCaip);
+    });
+
+    expect(result.current.isPending).toBe(true);
+
+    await act(async () => {
+      resolveEnabled();
+      await changePromise;
+    });
+
+    expect(result.current.isPending).toBe(false);
+  });
 });
