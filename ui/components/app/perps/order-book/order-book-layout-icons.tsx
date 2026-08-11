@@ -12,42 +12,43 @@ const ORDER_BOOK_BARS = [
 const ORDER_BOOK_BAR_Y = [2.5, 7.5, 12.5, 17.5, 22.5, 27.5] as const;
 const FORM_BAR_Y = [2.5, 12.5, 22.5] as const;
 
-function OrderBookBars({
-  edgeX,
-  align,
-}: {
+type OrderBookBarsProps = {
+  /** X coordinate of the edge the bars sit flush against. */
   edgeX: number;
+  /** Which edge `edgeX` is. */
   align: 'left' | 'right';
-}) {
-  return (
-    <>
-      {ORDER_BOOK_BARS.map(({ width, fill }, i) => (
-        <rect
-          // eslint-disable-next-line react/no-array-index-key
-          key={i}
-          x={align === 'left' ? edgeX : edgeX - width}
-          y={ORDER_BOOK_BAR_Y[i]}
-          width={width}
-          height={2}
-          rx={1}
-          fill={fill}
-        />
-      ))}
-    </>
-  );
-}
+};
+
+const OrderBookBars = ({ edgeX, align }: OrderBookBarsProps) => (
+  <>
+    {ORDER_BOOK_BARS.map(({ width, fill }, i) => (
+      <rect
+        key={ORDER_BOOK_BAR_Y[i]}
+        x={align === 'left' ? edgeX : edgeX - width}
+        y={ORDER_BOOK_BAR_Y[i]}
+        width={width}
+        height={2}
+        rx={1}
+        fill={fill}
+      />
+    ))}
+  </>
+);
 
 /**
  * Mini thumbnail icon used in the order-book layout picker.
  *
  * `position="left"` — order book on the left (flat outer edge), form on the right.
  * `position="right"` — form on the left, order book on the right (flat outer edge).
+ *
+ * @param props - Component props.
+ * @param props.position - Side the thumbnail shows the order book pinned to.
  */
-export function OrderBookLayoutIcon({
+export const OrderBookLayoutIcon = ({
   position,
 }: {
   position: 'left' | 'right';
-}) {
+}) => {
   const isLeft = position === 'left';
   const formX = isLeft ? 38 : 5;
 
@@ -77,4 +78,4 @@ export function OrderBookLayoutIcon({
       ))}
     </svg>
   );
-}
+};

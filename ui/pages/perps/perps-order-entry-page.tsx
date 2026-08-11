@@ -71,7 +71,7 @@ import {
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
-  selectProLayoutPreferences,
+  selectOrderBookPosition,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -342,7 +342,7 @@ const PerpsOrderEntryPage = () => {
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
-  const { orderBookPosition } = useSelector(selectProLayoutPreferences);
+  const orderBookPosition = useSelector(selectOrderBookPosition);
   const isOrderBookOnLeft = orderBookPosition === 'left';
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
@@ -2092,15 +2092,15 @@ const PerpsOrderEntryPage = () => {
         }
       />
 
-      {/* Body: form content + sliding order book. flex-row-reverse positions
-          the order book on the left when orderBookPosition === 'left'. */}
+      {/* Body: form content + sliding order book, ordered by
+          `orderBookPosition`. Scrolls horizontally as a fallback when a narrow
+          popup cannot fit both pixel-floored panes — hence flex `order` rather
+          than `flex-row-reverse`, which would push that overflow past the
+          inline-start edge where it is unreachable by scrolling. */}
       <div
         ref={setBodyEl}
         data-testid="perps-order-body"
-        className={twMerge(
-          'flex flex-row flex-1 min-h-0 w-full overflow-x-auto',
-          isOrderBookOnLeft && 'flex-row-reverse',
-        )}
+        className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -2108,6 +2108,7 @@ const PerpsOrderEntryPage = () => {
             minWidth: isOrderBookOpen
               ? ORDER_BOOK_FORM_MIN_WIDTH_PX
               : undefined,
+            order: isOrderBookOnLeft ? 3 : 1,
           }}
           className="flex-1 min-w-0 h-full overflow-hidden"
         >
@@ -2241,13 +2242,14 @@ const PerpsOrderEntryPage = () => {
             tabIndex={0}
             onMouseDown={handleOrderBookResizeStart}
             onKeyDown={handleOrderBookResizeKeyDown}
+            style={{ order: 2 }}
             className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
             data-testid="perps-order-book-resize-handle"
           />
         )}
-        {/* Order book: slides in from the right, resizable via the divider. It
-            is unmounted while collapsed so its focusable controls never sit in
-            a zero-width, hidden panel. */}
+        {/* Order book: slides in from whichever side `orderBookPosition` pins
+            it to, resizable via the divider. It is unmounted while collapsed so
+            its focusable controls never sit in a zero-width, hidden panel. */}
         {isOrderBookEnabled && (
           <Box
             flexDirection={BoxFlexDirection.Column}
@@ -2259,6 +2261,7 @@ const PerpsOrderEntryPage = () => {
               // snap to full width on open instead of animating. Animating
               // min-width between 0 and the floor keeps open and close symmetric.
               minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
+              order: isOrderBookOnLeft ? 1 : 3,
             }}
             className={twMerge(
               'shrink-0 h-full overflow-hidden',

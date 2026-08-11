@@ -5,24 +5,20 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { PerpsOrderBook } from './order-book';
 
 jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLiveOrderBook: jest.fn(),
 }));
 
-jest.mock('../../../../selectors/perps-controller', () => ({
-  selectProLayoutPreferences: () => ({
-    orderBookPosition: 'left',
-    orderFormPosition: 'right',
-  }),
-}));
-
 jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockUsePerpsLiveOrderBook = jest.mocked(usePerpsLiveOrderBook);
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 const mockOrderBook = {
   bids: [
@@ -64,16 +60,22 @@ const mockOrderBook = {
   maxTotal: '0.62',
 };
 
-const mockStore = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
-});
+function makeStore(orderBookPosition?: 'left' | 'right') {
+  return configureStore({
+    metamask: {
+      ...mockState.metamask,
+      ...(orderBookPosition && {
+        proLayoutPreferences: { orderBookPosition },
+      }),
+    },
+  });
+}
 
 function renderOrderBook(props?: {
   isOpen?: boolean;
   marketPrice?: number;
   onSelectPrice?: (price: string) => void;
+  orderBookPosition?: 'left' | 'right';
 }) {
   return renderWithProvider(
     <PerpsOrderBook
@@ -82,7 +84,7 @@ function renderOrderBook(props?: {
       marketPrice={props?.marketPrice ?? 73776}
       onSelectPrice={props?.onSelectPrice}
     />,
-    mockStore,
+    makeStore(props?.orderBookPosition),
   );
 }
 
@@ -345,7 +347,20 @@ describe('PerpsOrderBook', () => {
       ).toHaveAttribute('aria-checked', 'false');
     });
 
-    it('selects Right layout and applies it', () => {
+    it('seeds the layout pills from the persisted position', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      ).toHaveAttribute('aria-checked', 'true');
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'false');
+    });
+
+    it('persists the chosen layout to the controller on apply', () => {
       renderOrderBook();
 
       fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
@@ -356,11 +371,31 @@ describe('PerpsOrderBook', () => {
         screen.getByTestId('perps-order-book-config-modal-apply'),
       );
 
-      // Modal closes on apply — the layout pill state was saved (persistence
-      // is verified via the submitRequestToBackground mock in integration tests).
+      // A patch, so sibling preferences like orderFormPosition survive.
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookPosition: 'right' }],
+      );
       expect(
         screen.queryByText(messages.perpsOrderBookConfigTitle.message),
       ).not.toBeInTheDocument();
+    });
+
+    it('does not persist a layout the user did not change', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-close'),
+      );
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        expect.anything(),
+      );
     });
 
     it('discards layout draft when the modal is dismissed', () => {
@@ -374,7 +409,6 @@ describe('PerpsOrderBook', () => {
         screen.getByTestId('perps-order-book-config-modal-close'),
       );
 
-      // Reopen: draft should be reset to the applied value (Left).
       fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
       expect(
         screen.getByTestId('perps-order-book-config-modal-layout-left'),

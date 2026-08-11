@@ -403,6 +403,15 @@ export function computeOrderBookWidthPct(
   return clampOrderBookWidthPct(pct, containerWidth);
 }
 
+/**
+ * Mirror of {@link computeOrderBookWidthPct} for a left-aligned panel: width
+ * grows as the pointer moves right.
+ *
+ * @param containerLeft - Left edge of the body (viewport px).
+ * @param containerWidth - Body width (px).
+ * @param pointerX - Pointer x-position (viewport px).
+ * @returns Clamped width percentage.
+ */
 export function computeOrderBookWidthPctFromLeft(
   containerLeft: number,
   containerWidth: number,

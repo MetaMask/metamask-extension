@@ -386,6 +386,19 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  const createMockStateWithOrderBookPosition = (
+    orderBookPosition: 'left' | 'right',
+  ) => {
+    const state = createMockState();
+    return {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        proLayoutPreferences: { orderBookPosition },
+      },
+    };
+  };
+
   const createMockStateWithLocale = (
     locale: string,
     perpsEnabled = true,
@@ -464,25 +477,48 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('order book layout position', () => {
-    it('applies flex-row-reverse when orderBookPosition is left (the default)', () => {
-      // Default proLayoutPreferences → orderBookPosition: 'left'
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
+    // DOM order is fixed; the panes are reordered visually with flex `order`.
+    const readPaneOrder = () => {
       const body = screen.getByTestId('perps-order-body');
-      expect(body.className).toContain('flex-row-reverse');
+      const orderOf = (el: Element | null) =>
+        Number((el as HTMLElement).style.order);
+
+      return {
+        form: orderOf(body.firstElementChild),
+        divider: orderOf(screen.getByTestId('perps-order-book-resize-handle')),
+        orderBook: orderOf(
+          screen.getByTestId('perps-order-book').parentElement,
+        ),
+      };
+    };
+
+    it('places the order book left of the divider and form when orderBookPosition is left', () => {
+      const store = mockStore(createMockStateWithOrderBookPosition('left'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      const { form, divider, orderBook } = readPaneOrder();
+      expect(orderBook).toBeLessThan(divider);
+      expect(divider).toBeLessThan(form);
     });
 
-    it('does not apply flex-row-reverse when orderBookPosition is right', () => {
-      const store = mockStore({
-        ...createMockState(),
-        metamask: {
-          ...createMockState().metamask,
-          proLayoutPreferences: { orderBookPosition: 'right' },
-        },
-      });
+    it('places the form left of the divider and order book when orderBookPosition is right', () => {
+      const store = mockStore(createMockStateWithOrderBookPosition('right'));
       renderWithProvider(<PerpsOrderEntryPage />, store);
-      const body = screen.getByTestId('perps-order-body');
-      expect(body.className).not.toContain('flex-row-reverse');
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      const { form, divider, orderBook } = readPaneOrder();
+      expect(form).toBeLessThan(divider);
+      expect(divider).toBeLessThan(orderBook);
+    });
+
+    it('defaults to the left position when no preference is persisted', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      const { form, orderBook } = readPaneOrder();
+      expect(orderBook).toBeLessThan(form);
     });
   });
 
@@ -633,15 +669,38 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('resizes the split within bounds using the keyboard', () => {
-      const store = mockStore(createMockState());
+      const store = mockStore(createMockStateWithOrderBookPosition('right'));
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
       const divider = screen.getByTestId('perps-order-book-resize-handle');
 
+      // Order book on the right: it grows leftward, so ArrowLeft widens it.
       fireEvent.keyDown(divider, { key: 'ArrowLeft' });
       expect(divider).toHaveAttribute('aria-valuenow', '35');
 
+      fireEvent.keyDown(divider, { key: 'Home' });
+      expect(divider).toHaveAttribute('aria-valuenow', '60');
+
+      fireEvent.keyDown(divider, { key: 'End' });
+      expect(divider).toHaveAttribute('aria-valuenow', '22');
+    });
+
+    it('flips the arrow keys when the order book is on the left', () => {
+      const store = mockStore(createMockStateWithOrderBookPosition('left'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+      // The pane grows rightward now, so the arrows swap roles.
+      fireEvent.keyDown(divider, { key: 'ArrowRight' });
+      expect(divider).toHaveAttribute('aria-valuenow', '35');
+
+      fireEvent.keyDown(divider, { key: 'ArrowLeft' });
+      expect(divider).toHaveAttribute('aria-valuenow', '33');
+
+      // Home/End remain position-independent (widest / narrowest).
       fireEvent.keyDown(divider, { key: 'Home' });
       expect(divider).toHaveAttribute('aria-valuenow', '60');
 
@@ -682,7 +741,7 @@ describe('PerpsOrderEntryPage', () => {
         } as DOMRect);
 
       try {
-        const store = mockStore(createMockState());
+        const store = mockStore(createMockStateWithOrderBookPosition('right'));
         renderWithProvider(<PerpsOrderEntryPage />, store);
 
         fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
@@ -702,6 +761,44 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.mouseUp(window);
         fireEvent.mouseMove(window, { clientX: 900 });
         expect(divider).toHaveAttribute('aria-valuenow', '60');
+      } finally {
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('measures the drag from the left edge when the order book is on the left', () => {
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 1000,
+          width: 1000,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      try {
+        const store = mockStore(createMockStateWithOrderBookPosition('left'));
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+        fireEvent.mouseDown(divider);
+        // Mirrored math: (500 - 0) / 1000 = 50%.
+        fireEvent.mouseMove(window, { clientX: 500 });
+        expect(divider).toHaveAttribute('aria-valuenow', '50');
+
+        // Dragging toward the right edge (not the left) is what clamps now.
+        fireEvent.mouseMove(window, { clientX: 900 });
+        expect(divider).toHaveAttribute('aria-valuenow', '60');
+
+        fireEvent.mouseMove(window, { clientX: 100 });
+        expect(divider).toHaveAttribute('aria-valuenow', '22');
       } finally {
         rectSpy.mockRestore();
       }
@@ -728,7 +825,7 @@ describe('PerpsOrderEntryPage', () => {
         } as DOMRect);
 
       try {
-        const store = mockStore(createMockState());
+        const store = mockStore(createMockStateWithOrderBookPosition('right'));
         renderWithProvider(<PerpsOrderEntryPage />, store);
 
         fireEvent.click(screen.getByTestId('perps-order-book-toggle'));

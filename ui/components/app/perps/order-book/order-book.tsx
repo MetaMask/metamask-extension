@@ -19,7 +19,7 @@ import {
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { selectProLayoutPreferences } from '../../../../selectors/perps-controller';
+import { selectOrderBookPosition } from '../../../../selectors/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -256,9 +256,9 @@ export const PerpsOrderBook = ({
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
 
-  const proLayoutPreferences = useSelector(selectProLayoutPreferences);
-  const orderBookLayout: OrderBookLayoutPosition =
-    proLayoutPreferences.orderBookPosition ?? 'left';
+  const orderBookLayout: OrderBookLayoutPosition = useSelector(
+    selectOrderBookPosition,
+  );
 
   // Cycle the ladder view: both sides -> buy (bids) only -> sell (asks) only.
   const handleCycleViewMode = useCallback(() => {
@@ -408,7 +408,9 @@ export const PerpsOrderBook = ({
       setSelectedGrouping(next.grouping);
       submitRequestToBackground('perpsSetProLayoutPreferences', [
         { orderBookPosition: next.layout },
-      ]).catch(() => undefined);
+      ]).catch((error) =>
+        console.error('Failed to persist order book layout', error),
+      );
     },
     [],
   );

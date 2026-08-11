@@ -364,7 +364,10 @@ function mockGetMaxAllowedAmount({
   return Math.max(0, Math.floor(spendableBalance * leverage * 0.99));
 }
 
+// Mirrors DEFAULT_PRO_LAYOUT_PREFERENCES in @metamask/perps-controller.
 const mockDefaultProLayoutPreferences = {
+  orderBookExpanded: false,
+  chartExpanded: false,
   orderBookPosition: 'left',
   orderFormPosition: 'right',
 };
