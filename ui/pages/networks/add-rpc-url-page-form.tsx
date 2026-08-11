@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -14,6 +14,15 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import { isWebUrl } from '../../../shared/lib/url-utils';
+import { infuraProjectId } from '../../../shared/constants/network';
+import { jsonRpcRequest } from '../../../shared/lib/rpc.utils';
+
+const templateInfuraRpc = (endpoint: string) =>
+  endpoint.endsWith('{infuraProjectId}')
+    ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
+    : endpoint;
+
+const RPC_VALIDATION_DEBOUNCE_MS = 500;
 
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;
@@ -27,24 +36,85 @@ export const AddRpcUrlPageForm = ({
   const t = useI18nContext();
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
+  const [rpcValidationError, setRpcValidationError] = useState<string>();
+  const [isValidatingRpcUrl, setIsValidatingRpcUrl] = useState(false);
+  const validationRequestIdRef = useRef(0);
+  const validationTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
-  const error = useMemo(() => {
-    if (!url) {
+  const getUrlError = (nextUrl: string) => {
+    if (!nextUrl) {
       return undefined;
     }
 
-    if (isWebUrl(url)) {
+    if (isWebUrl(nextUrl)) {
       return undefined;
     }
 
-    if (isWebUrl(`https://${url}`)) {
-      return t('urlErrorMsg');
+    return isWebUrl(`https://${nextUrl}`)
+      ? t('urlErrorMsg')
+      : t('invalidRPC');
+  };
+
+  const urlError = getUrlError(url);
+
+  useEffect(() => {
+    return () => {
+      validationRequestIdRef.current += 1;
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextUrl = event.target.value;
+    setUrl(nextUrl);
+    validationRequestIdRef.current += 1;
+    if (validationTimeoutRef.current) {
+      clearTimeout(validationTimeoutRef.current);
+    }
+    setRpcValidationError(undefined);
+
+    const trimmedUrl = nextUrl.trim();
+    const nextUrlError = getUrlError(nextUrl);
+    if (!trimmedUrl || nextUrlError) {
+      setIsValidatingRpcUrl(false);
+      return;
     }
 
-    return t('invalidRPC');
-  }, [t, url]);
+    setIsValidatingRpcUrl(true);
+    const requestId = validationRequestIdRef.current;
+    validationTimeoutRef.current = setTimeout(() => {
+      jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
+        .then(() => {
+          if (validationRequestIdRef.current === requestId) {
+            setRpcValidationError(undefined);
+          }
+        })
+        .catch(() => {
+          if (validationRequestIdRef.current === requestId) {
+            setRpcValidationError(t('failedToFetchChainId'));
+          }
+        })
+        .finally(() => {
+          if (validationRequestIdRef.current === requestId) {
+            setIsValidatingRpcUrl(false);
+          }
+        });
+    }, RPC_VALIDATION_DEBOUNCE_MS);
+  };
 
-  const isSubmitDisabled = !url.trim() || Boolean(error);
+  const error = urlError ?? rpcValidationError;
+  const isSubmitDisabled = !url.trim() || Boolean(error) || isValidatingRpcUrl;
+  const handleSubmit = () => {
+    if (isSubmitDisabled) {
+      return;
+    }
+
+    onAdded(url.trim(), name || undefined);
+  };
 
   return (
     <Box
@@ -69,9 +139,7 @@ export const AddRpcUrlPageForm = ({
               id="rpcUrl"
               placeholder={t('enterRpcUrl')}
               value={url}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setUrl(event.target.value)
-              }
+              onChange={handleUrlChange}
               className="rounded-xl border border-border-muted bg-background-muted px-4 py-3"
               style={{ borderRadius: BorderRadius.XL }}
               data-testid="rpc-url-input-test"
@@ -126,7 +194,7 @@ export const AddRpcUrlPageForm = ({
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSubmitDisabled}
-          onClick={() => onAdded(url, name || undefined)}
+          onClick={handleSubmit}
           className="flex-1 rounded-xl"
           data-testid="page-container-footer-next"
         >
