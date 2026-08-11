@@ -34,9 +34,8 @@ export const getRemoteFeatureFlags = createSelector(
 const EMPTY_THRESHOLD_GROUPS: Record<string, string> = {};
 
 /**
- * Gets the selected threshold group name per feature flag, which
- * remote-feature-flag-controller v5 stores separately from the flag value for
- * threshold and A/B flags.
+ * Gets the selected threshold group name per feature flag, stored separately
+ * from the flag value for threshold and A/B flags.
  *
  * @param state - The MetaMask state object
  * @returns A map of feature flag name to its selected threshold group name

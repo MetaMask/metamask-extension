@@ -93,7 +93,7 @@ describe('Metamask Notifications Selectors', () => {
       return state;
     };
 
-    it('reads a bare boolean (rff v5 threshold shape)', () => {
+    it('reads a bare boolean (threshold shape)', () => {
       expect(
         getIsNotificationEnabledByDefaultFeatureFlag(stateWithFlag(true)),
       ).toBe(true);

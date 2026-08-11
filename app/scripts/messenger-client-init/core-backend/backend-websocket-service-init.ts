@@ -45,10 +45,9 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
         const { backendWebSocketConnection } =
           remoteFeatureFlagState?.remoteFeatureFlags || {};
 
-        // backendWebSocketConnection is a threshold flag. rff v5 resolves it to
-        // its value directly (a boolean here) instead of the legacy
-        // { name, value } wrapper. Support both shapes so the service still
-        // connects on v5.
+        // The value is a boolean when resolved from the remote config, or a
+        // `{ value }` object when provided by a flag override or test mock.
+        // Handle both so `{ value: false }` is not misread as truthy.
         if (
           typeof backendWebSocketConnection === 'object' &&
           backendWebSocketConnection !== null &&
