@@ -190,6 +190,9 @@ env:
   - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
   - TRANSACTION_SECURITY_PROVIDER: false
+  # [BNES] H1.3 — optional seed for BNS resolve; empty keeps isConfigured() false (fail-closed)
+  - BNS_REGISTRY_ADDRESS: null
+  - BNS_IPFS_GATEWAY_HOST: null
   # The unlock password
   - PASSWORD: null
   - TEST_SRP: null

@@ -88,6 +88,10 @@ import MetamaskController, {
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+// [BNES] H1.2 — internal BNS resolve API (fail-closed config)
+import { setupBnsResolver } from './lib/bns/setup';
+// [BNES] H1.5 — *.bnes main_frame error → trusted gateway tab redirect only
+import { setupBnsWebRequestRedirect } from './lib/bns/web-request';
 import {
   getPlatform,
   initInstallType,
@@ -1666,6 +1670,18 @@ export function setupController(
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
+
+  // [BNES] H1.2/H1.3 — install internal resolver; empty BNS_REGISTRY_ADDRESS
+  // keeps isConfigured() false and resolve() fail-closed until seeded.
+  setupBnsResolver({
+    getConfigSources: () => ({
+      registryAddress: process.env.BNS_REGISTRY_ADDRESS,
+      gatewayHost: process.env.BNS_IPFS_GATEWAY_HOST,
+    }),
+  });
+  // [BNES] H1.5 — on DNS-fail .bnes navigations, redirect tab to pinned
+  // gateway only (never chrome-extension HTML / remote content in extension).
+  setupBnsWebRequestRedirect();
 
   setupSentryGetStateGlobal(controller);
 

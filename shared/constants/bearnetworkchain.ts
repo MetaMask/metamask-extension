@@ -27,10 +27,17 @@ export const BEAR_NETWORK_CHAIN_RPC_URL =
  * Official NetworkController failover list (not custom round-robin).
  * Primary endpoint stays `BEAR_NETWORK_CHAIN_RPC_URL`; these are used when it fails.
  */
+/**
+ * Official NetworkController failover list (not BNS eth_call 3-of-2).
+ * Full mainnet inventory minus primary; BNS read quorum still uses primary +
+ * the first two of these only (see shared/bns/constants.ts).
+ */
 export const BEAR_NETWORK_CHAIN_FAILOVER_URLS = [
   'https://brnkc-mainnet1.bearnetwork.net',
   'https://bnes-mainnet.bearnetwork.net',
   'https://bnes-mainnet1.bearnetwork.net',
+  'https://rpc-ci.bearnetwork.net',
+  'https://rpc-ci1.bearnetwork.net',
 ] as const;
 
 export const BEAR_NETWORK_CHAIN_BLOCK_EXPLORER_URL =
