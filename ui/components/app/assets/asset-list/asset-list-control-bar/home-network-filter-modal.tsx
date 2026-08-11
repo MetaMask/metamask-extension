@@ -509,14 +509,12 @@ const HomeNetworkFilterModalContent = ({
       if (isPending) {
         return;
       }
-      // Own parent pending here so the filter button stays loading for the full
-      // awaited switch, including after this modal content unmounts on close.
       onPendingChange?.(true);
+      onClose();
       try {
         await handleNetworkChange(chainId);
       } finally {
         onPendingChange?.(false);
-        onClose();
       }
     },
     [handleNetworkChange, isPending, onClose, onPendingChange],
