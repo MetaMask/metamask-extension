@@ -1,19 +1,12 @@
 import { useMemo } from 'react';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import {
   type CaipAssetType,
-  type CaipChainId,
-  type Hex,
-  isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
 import { getUseExternalServices } from '../../../selectors';
@@ -26,26 +19,13 @@ import {
   getSecurityAlertIconProps,
   getTop10HoldingPct,
 } from '../utils/security-utils';
+import {
+  getSecurityTrustTokenTypeLabel,
+  toSecurityTrustChainId,
+} from '../utils/security-trust-utils';
+import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
 import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import type { SecurityTrustLocationState } from '../types/security-trust';
-
-const getCaipChainIdForLookup = (
-  chainId: Hex | CaipChainId | undefined,
-): CaipChainId | undefined => {
-  if (!chainId) {
-    return undefined;
-  }
-
-  if (isCaipChainId(chainId)) {
-    return chainId;
-  }
-
-  if (isEvmChainId(chainId)) {
-    return toEvmCaipChainId(chainId);
-  }
-
-  return undefined;
-};
 
 export const useSecurityTrustPageData = () => {
   const t = useI18nContext();
@@ -124,25 +104,21 @@ export const useSecurityTrustPageData = () => {
     getAllMultichainNetworkConfigurations,
   );
 
-  const caipChainIdForLookup = getCaipChainIdForLookup(chainId);
+  const caipChainId = toSecurityTrustChainId(locationState?.chainId ?? chainId);
 
   const networkName = useMemo(() => {
-    if (!chainId) {
-      return undefined;
+    if (caipChainId) {
+      return allMultichainNetworkConfigurations[caipChainId]?.name;
     }
 
-    if (caipChainIdForLookup) {
-      return allMultichainNetworkConfigurations[caipChainIdForLookup]?.name;
-    }
-
-    if (isStrictHexString(chainId)) {
+    if (chainId && isStrictHexString(chainId)) {
       return evmNetworkConfigurations[chainId]?.name;
     }
 
     return undefined;
   }, [
     allMultichainNetworkConfigurations,
-    caipChainIdForLookup,
+    caipChainId,
     chainId,
     evmNetworkConfigurations,
   ]);
@@ -199,58 +175,30 @@ export const useSecurityTrustPageData = () => {
     }
   }, [securityData?.created, t]);
 
-  const tokenType = isNative ? 'Native' : 'ERC-20';
-
-  const blockExplorerLink = useMemo(() => {
-    if (!tokenAddress || isNative || !chainId || !isEvmChainId(chainId)) {
-      return null;
-    }
-
-    let evmHexChainId: Hex | undefined;
-    if (isStrictHexString(chainId)) {
-      evmHexChainId = chainId;
-    } else if (caipChainIdForLookup) {
-      evmHexChainId = convertCaipToHexChainId(caipChainIdForLookup);
-    } else {
-      evmHexChainId = undefined;
-    }
-
-    const evmNetworkConfig = evmHexChainId
-      ? evmNetworkConfigurations[evmHexChainId]
-      : undefined;
-
-    const multichainNetworkConfig = caipChainIdForLookup
-      ? allMultichainNetworkConfigurations[caipChainIdForLookup]
-      : undefined;
-
-    const defaultIdx = evmNetworkConfig?.defaultBlockExplorerUrlIndex;
-    const blockExplorerUrl =
-      defaultIdx === undefined
-        ? ''
-        : (evmNetworkConfig?.blockExplorerUrls?.[defaultIdx] ?? '');
-
-    const contractAddress = isCaipChainId(tokenAddress)
-      ? parseCaipAssetType(tokenAddress as CaipAssetType).assetReference
-      : tokenAddress;
-
-    return {
-      url: getTokenTrackerLink(contractAddress, chainId, '', '', {
-        blockExplorerUrl,
-      }),
-      name:
-        multichainNetworkConfig?.name ??
-        evmNetworkConfig?.name ??
-        t('securityTrustEtherscan'),
-    };
-  }, [
-    allMultichainNetworkConfigurations,
-    caipChainIdForLookup,
-    chainId,
-    evmNetworkConfigurations,
+  const tokenType = getSecurityTrustTokenTypeLabel(
+    assetId as CaipAssetType | undefined,
     isNative,
-    t,
-    tokenAddress,
-  ]);
+  );
+
+  const blockExplorerLink = useMemo(
+    () =>
+      getFungibleAssetBlockExplorerLink({
+        caipChainId,
+        tokenAddress,
+        isNative,
+        evmNetworkConfigurations,
+        multichainNetworkConfigurations: allMultichainNetworkConfigurations,
+        fallbackExplorerLabel: t('securityTrustEtherscan') as string,
+      }),
+    [
+      allMultichainNetworkConfigurations,
+      caipChainId,
+      evmNetworkConfigurations,
+      isNative,
+      t,
+      tokenAddress,
+    ],
+  );
 
   return {
     t,
@@ -266,6 +214,7 @@ export const useSecurityTrustPageData = () => {
     otherPct,
     symbol,
     decimals,
+    chainId: caipChainId,
     formattedCreatedDate,
     tokenAgeDisplay,
     tokenType,

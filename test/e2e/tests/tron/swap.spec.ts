@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -110,6 +111,131 @@ describe('Swap on Tron', function () {
 
         // Verify no quotes available message
         await swapPage.checkNoQuotesAvailable();
+      },
+    );
+  });
+
+  it('Quote displayed for USDT to TRX swap (reverse direction)', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 1,
+          swapTo: 'TRX',
+          swapFrom: 'USDT',
+          network: 'Tron',
+        });
+
+        await swapPage.waitForQuote();
+        await swapPage.checkQuoteIsDisplayed();
+        await swapPage.checkSourceToken('USDT');
+        await swapPage.checkDestinationToken('TRX');
+        assert.notEqual(await swapPage.getFromAmountValue(), '');
+        assert.notEqual(await swapPage.getToAmountValue(), '');
+      },
+    );
+  });
+
+  it('Amount exceeding balance shows insufficient funds', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 999999,
+          swapTo: 'USDT',
+          swapFrom: 'TRX',
+          network: 'Tron',
+        });
+
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
+      },
+    );
+  });
+
+  it('Quote updates when selecting different destination token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 10,
+          swapTo: 'USDT',
+          swapFrom: 'TRX',
+          network: 'Tron',
+        });
+
+        await swapPage.waitForQuote();
+        await swapPage.checkQuoteIsDisplayed();
+
+        await swapPage.selectDestinationToken('USDC');
+        await swapPage.waitForQuote();
+        await swapPage.checkQuoteIsDisplayed();
+        await swapPage.checkDestinationToken('USDC');
+        await swapPage.checkSourceToken('TRX');
+      },
+    );
+  });
+
+  it('Swap form shows default token on open', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockTronSwapApis,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.07');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.checkSourceToken('TRX');
       },
     );
   });

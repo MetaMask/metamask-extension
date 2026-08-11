@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { escapeRegExp } = require('lodash');
+const { RulePriority } = require('mockttp');
 
 const {
   ACCOUNTS_PROD_API_BASE_URL,
@@ -155,6 +156,52 @@ const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
   144: 1,
 };
 
+// The canonical Solana mainnet genesis hash. `getGenesisHash` is the network
+// identity check the Solana snap runs during discovery — like Bitcoin's
+// `/block-height/0`, returning any other value makes the snap reject the network.
+const SOLANA_MAINNET_GENESIS_HASH =
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
+const SOLANA_RPC_CONTEXT = { apiVersion: '2.0.18', slot: 308460925 };
+
+// Well-formed empty/identity results for every JSON-RPC method the Solana snap
+// calls during account discovery. Mirrors the shapes in
+// `test/e2e/tests/solana/common-solana.ts`. Returning these (instead of letting
+// the requests fall through to the empty-200 catch-all) lets discovery resolve
+// to "no extra accounts" in a single pass instead of a retry storm.
+const SOLANA_DISCOVERY_RPC_RESULTS = {
+  getGenesisHash: SOLANA_MAINNET_GENESIS_HASH,
+  getHealth: 'ok',
+  getVersion: { 'solana-core': '2.0.18', 'feature-set': 3271415109 },
+  getSlot: SOLANA_RPC_CONTEXT.slot,
+  getBalance: { context: SOLANA_RPC_CONTEXT, value: 0 },
+  getAccountInfo: { context: SOLANA_RPC_CONTEXT, value: null },
+  getMultipleAccounts: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getProgramAccounts: [],
+  getTokenAccountsByOwner: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getTokenAccountBalance: {
+    context: SOLANA_RPC_CONTEXT,
+    value: { amount: '0', decimals: 9, uiAmount: null, uiAmountString: '0' },
+  },
+  getLatestBlockhash: {
+    context: SOLANA_RPC_CONTEXT,
+    value: {
+      blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
+      lastValidBlockHeight: 341034515,
+    },
+  },
+  getMinimumBalanceForRentExemption: 890880,
+  getFeeForMessage: { context: SOLANA_RPC_CONTEXT, value: 5000 },
+  getEpochInfo: {
+    absoluteSlot: 308460925,
+    blockHeight: 286665030,
+    epoch: 762,
+    slotIndex: 156925,
+    slotsInEpoch: 432000,
+    transactionCount: 386021115957,
+  },
+};
+
 /**
  * Registers default non-EVM discovery mocks for the shared E2E environment.
  *
@@ -262,6 +309,31 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
         result: [],
       },
     }));
+
+  // The Solana snap calls many more JSON-RPC methods than `getSignaturesForAddress`
+  // during discovery (balance, account info, blockhash, the `getGenesisHash`
+  // network check, …). Mock each with a well-formed empty/identity result so the
+  // request doesn't fall through to the empty-200 catch-all and trigger a retry
+  // storm. Registered at FALLBACK priority: mockttp always prefers a matching
+  // DEFAULT-priority rule (`.always()` rules included), so test-specific mocks
+  // that need richer Solana responses (e.g. the solana-wallet-standard specs)
+  // take precedence, and these defaults only answer methods no spec mocked.
+  // They still beat the empty-200 catch-all, which is also FALLBACK priority
+  // but loses to these rules within the set (`.always()` wins the first pass).
+  for (const [method, result] of Object.entries(SOLANA_DISCOVERY_RPC_RESULTS)) {
+    await server
+      .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+      .withJsonBodyIncluding({ method })
+      .asPriority(RulePriority.FALLBACK)
+      .always()
+      .thenCallback(async (request) => {
+        const body = await request.body.getJson();
+        return {
+          statusCode: 200,
+          json: { id: body?.id ?? '1337', jsonrpc: '2.0', result },
+        };
+      });
+  }
 }
 
 /**
@@ -324,31 +396,38 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
-      if (!host || !url) {
+  // FALLBACK priority so that this catch-all only handles requests no other
+  // DEFAULT-priority mock matches. This also lets other FALLBACK-priority
+  // defaults (e.g. the Solana discovery mocks below) take precedence over the
+  // catch-all while still yielding to test-specific and shared DEFAULT mocks.
+  await server
+    .forAnyRequest()
+    .asPriority(RulePriority.FALLBACK)
+    .thenPassThrough({
+      beforeRequest: ({ headers: { host }, url }) => {
+        if (!host || !url) {
+          return {
+            response: {
+              statusCode: 200,
+            },
+          };
+        }
+        if (blocklistedHosts.includes(host)) {
+          return {
+            url: 'http://localhost:8545',
+          };
+        } else if (ALLOWLISTED_URLS.includes(url)) {
+          // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+          return {};
+        }
         return {
+          // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
           response: {
             statusCode: 200,
           },
         };
-      }
-      if (blocklistedHosts.includes(host)) {
-        return {
-          url: 'http://localhost:8545',
-        };
-      } else if (ALLOWLISTED_URLS.includes(url)) {
-        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        return {};
-      }
-      return {
-        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
-        response: {
-          statusCode: 200,
-        },
-      };
-    },
-  });
+      },
+    });
 
   function getNetworkReport() {
     return { numNetworkReqs };

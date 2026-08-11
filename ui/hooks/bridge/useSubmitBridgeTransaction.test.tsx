@@ -1,8 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderHook } from '@testing-library/react-hooks';
-import { act } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import type {
   QuoteMetadata,
   QuoteResponseV1,

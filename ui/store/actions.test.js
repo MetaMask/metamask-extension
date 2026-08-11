@@ -167,6 +167,16 @@ describe('Actions', () => {
     background.importMnemonicToVault = sinon.stub();
     background.discoverAndCreateAccounts = sinon.stub();
 
+    // Hardware wallet methods moved to `LegacyBackgroundApiService`, so they are
+    // no longer stubbed automatically by `createStubInstance(MetaMaskController)`.
+    background.connectHardware = sinon.stub();
+    background.checkHardwareStatus = sinon.stub();
+    background.forgetDevice = sinon.stub();
+    background.getAppNameAndVersion = sinon.stub();
+    background.getLedgerAppConfiguration = sinon.stub();
+    background.getLedgerPublicKey = sinon.stub();
+    background.unlockHardwareWalletAccount = sinon.stub();
+
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
       global.navigator = {};

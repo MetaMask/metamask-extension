@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -128,24 +128,24 @@ describe('usePerpsOrderFees', () => {
     const feeResult = makeFeeResult({ feeRate: 0.001 });
     setBackgroundResponses({ feeResponse: feeResult, discountBips: null });
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
     );
 
-    await waitForNextUpdate();
-
-    expect(result.current.feeRate).toBe(0.001);
-    expect(result.current.protocolFeeRate).toBe(0.00025);
-    expect(result.current.metamaskFeeRate).toBe(0.001);
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.hasError).toBe(false);
-    expect(result.current.feeResult).toEqual(feeResult);
+    await waitFor(() => {
+      expect(result.current.feeRate).toBe(0.001);
+      expect(result.current.protocolFeeRate).toBe(0.00025);
+      expect(result.current.metamaskFeeRate).toBe(0.001);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.hasError).toBe(false);
+      expect(result.current.feeResult).toEqual(feeResult);
+    });
   });
 
   it('calls perpsCalculateFees with the correct params', async () => {
     setBackgroundResponses({ feeResponse: makeFeeResult() });
 
-    const { waitForNextUpdate } = renderHook(() =>
+    renderHook(() =>
       usePerpsOrderFees({
         symbol: 'HYPE',
         orderType: 'limit',
@@ -154,12 +154,12 @@ describe('usePerpsOrderFees', () => {
       }),
     );
 
-    await waitForNextUpdate();
-
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsCalculateFees',
-      [{ orderType: 'limit', isMaker: true, amount: '100', symbol: 'HYPE' }],
-    );
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsCalculateFees',
+        [{ orderType: 'limit', isMaker: true, amount: '100', symbol: 'HYPE' }],
+      );
+    });
   });
 
   it('falls back to base rates when the RPC call fails', async () => {
@@ -251,22 +251,24 @@ describe('usePerpsOrderFees', () => {
       return Promise.resolve(null);
     });
 
-    const { result, waitForNextUpdate, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ symbol }: { symbol: string }) =>
         usePerpsOrderFees({ symbol, orderType: 'market' }),
       { initialProps: { symbol: 'BTC' } },
     );
 
-    await waitForNextUpdate();
-    expect(result.current.feeRate).toBe(0.001);
+    await waitFor(() => {
+      expect(result.current.feeRate).toBe(0.001);
+    });
 
     rerender({ symbol: 'ETH' });
     // Keep the previous result visible while the replacement request loads.
     expect(result.current.feeRate).toBe(0.001);
     expect(result.current.isLoading).toBe(true);
 
-    await waitForNextUpdate();
-    expect(result.current.feeRate).toBe(0.0008);
+    await waitFor(() => {
+      expect(result.current.feeRate).toBe(0.0008);
+    });
   });
 
   it('retains the previous rate while order type fees are refetched', async () => {
@@ -291,7 +293,7 @@ describe('usePerpsOrderFees', () => {
       return Promise.resolve(null);
     });
 
-    const { result, waitForNextUpdate, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ orderType, isMaker }: FeeProps) =>
         usePerpsOrderFees({ symbol: 'BTC', orderType, isMaker }),
       {
@@ -302,8 +304,9 @@ describe('usePerpsOrderFees', () => {
       },
     );
 
-    await waitForNextUpdate();
-    expect(result.current.feeRate).toBe(0.00145);
+    await waitFor(() => {
+      expect(result.current.feeRate).toBe(0.00145);
+    });
 
     rerender({ orderType: 'limit', isMaker: true });
 
@@ -332,7 +335,7 @@ describe('usePerpsOrderFees', () => {
       return Promise.resolve(null);
     });
 
-    const { result, waitForNextUpdate, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ symbol }: { symbol: string }) =>
         usePerpsOrderFees({ symbol, orderType: 'market' }),
       { initialProps: { symbol: 'BTC' } },
@@ -346,10 +349,10 @@ describe('usePerpsOrderFees', () => {
     expect(result.current.feeRate).toBe(0.00145);
 
     rerender({ symbol: 'ETH' });
-    await waitForNextUpdate();
-
-    expect(result.current.hasError).toBe(false);
-    expect(result.current.feeRate).toBe(0.001);
+    await waitFor(() => {
+      expect(result.current.hasError).toBe(false);
+      expect(result.current.feeRate).toBe(0.001);
+    });
   });
 
   describe('discount surface', () => {
@@ -359,12 +362,12 @@ describe('usePerpsOrderFees', () => {
         discountBips: 5000,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBe(50);
+      await waitFor(() => {
+        expect(result.current.metamaskFeeRateDiscountPercentage).toBe(50);
+      });
     });
 
     it('caps the discount at 100% (10000 bips)', async () => {
@@ -373,12 +376,12 @@ describe('usePerpsOrderFees', () => {
         discountBips: 12000,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBe(100);
+      await waitFor(() => {
+        expect(result.current.metamaskFeeRateDiscountPercentage).toBe(100);
+      });
     });
 
     it('is undefined when discountBips is 0', async () => {
@@ -387,12 +390,14 @@ describe('usePerpsOrderFees', () => {
         discountBips: 0,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
+      await waitFor(() => {
+        expect(
+          result.current.metamaskFeeRateDiscountPercentage,
+        ).toBeUndefined();
+      });
     });
 
     it('is undefined when the rewards controller returns null', async () => {
@@ -401,12 +406,14 @@ describe('usePerpsOrderFees', () => {
         discountBips: null,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
+      await waitFor(() => {
+        expect(
+          result.current.metamaskFeeRateDiscountPercentage,
+        ).toBeUndefined();
+      });
     });
 
     it('is undefined and skips the lookup when no account is selected', async () => {
@@ -416,12 +423,14 @@ describe('usePerpsOrderFees', () => {
         discountBips: 5000,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
+      await waitFor(() => {
+        expect(
+          result.current.metamaskFeeRateDiscountPercentage,
+        ).toBeUndefined();
+      });
       const calledMethods = mockSubmitRequestToBackground.mock.calls.map(
         (call) => call[0],
       );
@@ -434,15 +443,15 @@ describe('usePerpsOrderFees', () => {
         discountBips: 0,
       });
 
-      const { waitForNextUpdate } = renderHook(() =>
+      renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'rewardsGetPerpsDiscountForAccount',
-        [TEST_CAIP_ACCOUNT_ID, 10],
-      );
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'rewardsGetPerpsDiscountForAccount',
+          [TEST_CAIP_ACCOUNT_ID, 10],
+        );
+      });
     });
 
     it('caches a non-null discount across rerenders for the same address', async () => {
@@ -451,16 +460,20 @@ describe('usePerpsOrderFees', () => {
         discountBips: 2000,
       });
 
-      const { waitForNextUpdate, rerender } = renderHook(
+      const { rerender } = renderHook(
         ({ symbol }: { symbol: string }) =>
           usePerpsOrderFees({ symbol, orderType: 'market' }),
         { initialProps: { symbol: 'BTC' } },
       );
 
-      await waitForNextUpdate();
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       rerender({ symbol: 'ETH' });
-      await waitForNextUpdate();
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
         (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
@@ -481,27 +494,27 @@ describe('usePerpsOrderFees', () => {
         discountBips: 5000,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({
           symbol: 'BTC',
           orderType: 'market',
           amount: '100',
         }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBe(50);
-      expect(result.current.metamaskFeeRate).toBeCloseTo(0.0005, 10);
-      expect(result.current.feeRate).toBeCloseTo(0.00095, 10);
-      expect(result.current.undiscountedFeeRate).toBe(0.00145);
-      expect(result.current.protocolFeeRate).toBe(0.00045);
-      expect(result.current.feeResult).toEqual({
-        feeRate: 0.00095,
-        protocolFeeRate: 0.00045,
-        metamaskFeeRate: 0.0005,
-        feeAmount: 0.095,
-        protocolFeeAmount: 0.045,
-        metamaskFeeAmount: 0.05,
+      await waitFor(() => {
+        expect(result.current.metamaskFeeRateDiscountPercentage).toBe(50);
+        expect(result.current.metamaskFeeRate).toBeCloseTo(0.0005, 10);
+        expect(result.current.feeRate).toBeCloseTo(0.00095, 10);
+        expect(result.current.undiscountedFeeRate).toBe(0.00145);
+        expect(result.current.protocolFeeRate).toBe(0.00045);
+        expect(result.current.feeResult).toEqual({
+          feeRate: 0.00095,
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.0005,
+          feeAmount: 0.095,
+          protocolFeeAmount: 0.045,
+          metamaskFeeAmount: 0.05,
+        });
       });
     });
 
@@ -515,15 +528,17 @@ describe('usePerpsOrderFees', () => {
         discountBips: 0,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
-      expect(result.current.metamaskFeeRate).toBe(0.001);
-      expect(result.current.feeRate).toBe(0.00145);
-      expect(result.current.undiscountedFeeRate).toBe(0.00145);
+      await waitFor(() => {
+        expect(
+          result.current.metamaskFeeRateDiscountPercentage,
+        ).toBeUndefined();
+        expect(result.current.metamaskFeeRate).toBe(0.001);
+        expect(result.current.feeRate).toBe(0.00145);
+        expect(result.current.undiscountedFeeRate).toBe(0.00145);
+      });
     });
 
     it('swallows a thrown discount lookup (no error state surfaced)', async () => {
@@ -537,13 +552,15 @@ describe('usePerpsOrderFees', () => {
         return Promise.resolve(null);
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
-      expect(result.current.hasError).toBe(false);
+      await waitFor(() => {
+        expect(
+          result.current.metamaskFeeRateDiscountPercentage,
+        ).toBeUndefined();
+        expect(result.current.hasError).toBe(false);
+      });
     });
   });
 });

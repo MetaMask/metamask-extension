@@ -146,7 +146,9 @@ jobs:
       - build-flask-mv2-webpack
     runs-on: ubuntu-latest
     environment: release-branch
-    timeout-minutes: 45
+    # Publish work is ~10 min; the AMO reviewer step adds two full cold
+    # production builds (main + Flask) for the reproducible-build comparison.
+    timeout-minutes: 90
     env:
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
       RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
@@ -184,6 +186,9 @@ jobs:
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
       QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
+      QUICKNODE_BSC_URL: ${{ secrets.QUICKNODE_BSC_URL }}
+      QUICKNODE_ZKSYNC_URL: ${{ secrets.QUICKNODE_ZKSYNC_URL }}
+      QUICKNODE_MEGAETH_URL: ${{ secrets.QUICKNODE_MEGAETH_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -360,9 +365,9 @@ jobs:
             echo "| SHA256SUMS | ✅ Generated |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
-            if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "success" ]]; then
+            if [[ "${{ steps.amo-reviewer-s3.outcome }}" == "success" ]]; then
               echo "| AMO reviewer S3 (PRD) | ✅ Published |"
-            elif [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "skipped" ]]; then
+            elif [[ "${{ steps.amo-reviewer-s3.outcome }}" == "skipped" ]]; then
               echo "| AMO reviewer S3 (PRD) | ⏭ Skipped |"
             else
               echo "| AMO reviewer S3 (PRD) | ❌ Failed |"
@@ -370,6 +375,6 @@ jobs:
             echo ""
             echo "**Release:** [${RELEASE_TAG}](https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG})"
           } >> "${GITHUB_STEP_SUMMARY}"
-          if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "failure" ]]; then
+          if [[ "${{ steps.amo-reviewer-s3.outcome }}" == "failure" ]]; then
             exit 1
           fi

@@ -12,6 +12,9 @@ class PreferencesAndDisplaySettings {
 
   private readonly assetsTabButton = '[data-testid="settings-tab-item-assets"]';
 
+  private readonly autodetectNftsToggleLabel =
+    "label.toggle-button:has([data-testid='use-nft-detection-input'])";
+
   private readonly autoDetectTokensToggleLabel =
     "label.toggle-button:has([data-testid='autodetect-tokens'])";
 
@@ -151,6 +154,13 @@ class PreferencesAndDisplaySettings {
     await this.driver.clickElement(this.preferencesTabButton);
     await this.checkNoLoadingOverlaySpinner();
     await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
+  }
+
+  async toggleAutodetectNfts(): Promise<void> {
+    console.log('Toggle autodetect NFTs on Assets settings page');
+    await this.checkAssetsPageIsLoaded();
+    await this.driver.waitForSelector(this.autodetectNftsToggleLabel);
+    await this.driver.clickElement(this.autodetectNftsToggleLabel);
   }
 
   async toggleAutoDetectTokens(): Promise<void> {
