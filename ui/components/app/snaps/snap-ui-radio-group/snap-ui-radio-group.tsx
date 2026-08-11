@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -42,14 +42,14 @@ export const SnapUIRadioGroup = ({
   const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
-  useEffect(() => {
-    if (initialValue) {
-      setValue((currentValue) =>
-        currentValue === initialValue ? currentValue : initialValue,
-      );
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
+    if (initialValue && value !== initialValue) {
+      setValue(initialValue);
     }
-  }, [initialValue]);
+  }
 
   const handleChange = (newValue: string) => {
     setValue(newValue);

@@ -57,9 +57,12 @@ export const MultichainAggregatedAddressListRow = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update `displayText` when the address prop changes
-  useEffect(() => {
+  const [prevTruncatedAddress, setPrevTruncatedAddress] =
+    useState(truncatedAddress);
+  if (truncatedAddress !== prevTruncatedAddress) {
+    setPrevTruncatedAddress(truncatedAddress);
     setDisplayText(truncatedAddress);
-  }, [address, truncatedAddress]);
+  }
 
   // Cleanup timeout when component unmounts
   useEffect(() => {

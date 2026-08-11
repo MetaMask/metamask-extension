@@ -111,9 +111,15 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     return t('connectedSites');
   };
 
-  useEffect(() => {
+  const [prevInitRemove, setPrevInitRemove] = useState(initRemove);
+  if (initRemove !== prevInitRemove) {
+    setPrevInitRemove(initRemove);
     if (initRemove) {
       setIsShowingRemoveWarning(true);
+    }
+  }
+  useEffect(() => {
+    if (initRemove) {
       resetInitRemove();
     }
   }, [initRemove, resetInitRemove]);

@@ -43,18 +43,17 @@ const QrSignatureCode = ({
     currentQrCode: initialQrCode,
     urEncoder,
   }));
-  // Payload changes create a new encoder before effects run, so render its
-  // first fragment immediately instead of showing a stale QR code.
-  const currentQrCode =
-    qrCodeState.urEncoder === urEncoder
-      ? qrCodeState.currentQrCode
-      : initialQrCode;
-
-  useEffect(() => {
+  // Payload changes create a new encoder before effects run, so sync state
+  // during render instead of showing a stale QR code.
+  if (qrCodeState.urEncoder !== urEncoder) {
     setQrCodeState({
       currentQrCode: initialQrCode,
       urEncoder,
     });
+  }
+  const { currentQrCode } = qrCodeState;
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setQrCodeState({
         currentQrCode: urEncoder.nextPart(),

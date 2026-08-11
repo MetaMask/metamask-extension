@@ -438,7 +438,7 @@ describe('HardwareWalletErrorProvider', () => {
       expect(mockShowModal).not.toHaveBeenCalled();
     });
 
-    it('auto-shows errors on the confirm-transaction page', () => {
+    it('auto-shows errors on the confirm-transaction page', async () => {
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
@@ -452,6 +452,10 @@ describe('HardwareWalletErrorProvider', () => {
 
       const store = mockStore(createMockState());
       renderHardwareWalletErrorHook(store, CONFIRM_TRANSACTION_ROUTE);
+
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       expect(mockShowModal).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -491,7 +495,7 @@ describe('HardwareWalletErrorProvider', () => {
       expect(mockShowModal).not.toHaveBeenCalled();
     });
 
-    it('auto-shows errors on the bridge page', () => {
+    it('auto-shows errors on the bridge page', async () => {
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
@@ -505,6 +509,10 @@ describe('HardwareWalletErrorProvider', () => {
 
       const store = mockStore(createMockState());
       renderHardwareWalletErrorHook(store, CROSS_CHAIN_SWAP_ROUTE);
+
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       expect(mockShowModal).toHaveBeenCalledWith(
         expect.objectContaining({

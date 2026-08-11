@@ -144,13 +144,20 @@ export const SnapUISelector = ({
 
   const [selectedOptionValue, setSelectedOption] = useState(initialValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
+
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
+    if (initialValue !== undefined && initialValue !== null) {
+      setSelectedOption(initialValue);
+    }
+  }
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
-      setSelectedOption(initialValue);
       onSelect?.(initialValue);
     }
-  }, [initialValue]);
+  }, [initialValue, onSelect]);
 
   const handleModalOpen = (event: ReactMouseEvent<HTMLElement>) => {
     event.preventDefault();

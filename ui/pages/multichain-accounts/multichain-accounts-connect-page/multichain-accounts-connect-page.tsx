@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
@@ -389,24 +389,17 @@ export const MultichainAccountsConnectPage = ({
     [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  useEffect(() => {
-    const defaultAccountGroupIds = suggestedAccountGroups.map(
-      (group) => group.id,
-    );
-    if (
-      !userHasModifiedAccountSelection &&
-      !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
-    ) {
-      handleAccountGroupIdsSelected(defaultAccountGroupIds, {
-        isUserModified: false,
-      });
-    }
-  }, [
-    userHasModifiedAccountSelection,
-    handleAccountGroupIdsSelected,
-    selectedAccountGroupIds,
-    suggestedAccountGroups,
-  ]);
+  const defaultAccountGroupIds = suggestedAccountGroups.map(
+    (group) => group.id,
+  );
+  if (
+    !userHasModifiedAccountSelection &&
+    !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
+  ) {
+    handleAccountGroupIdsSelected(defaultAccountGroupIds, {
+      isUserModified: false,
+    });
+  }
 
   const setModeToEditAccounts = useCallback(() => {
     trackEvent(

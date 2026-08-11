@@ -188,11 +188,13 @@ export const SnapUIAddressInput = ({
     chainId,
   });
 
-  useEffect(() => {
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
     if (initialValue !== undefined && initialValue !== null) {
       setValue(getParsedValue(initialValue));
     }
-  }, [initialValue]);
+  }
 
   /*
    * Focus input if the last focused input was this input
