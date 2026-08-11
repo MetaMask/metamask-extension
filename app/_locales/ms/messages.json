@@ -336,9 +336,6 @@
   "networks": {
     "message": "Rangkaian"
   },
-  "nevermind": {
-    "message": "Tidak mengapa"
-  },
   "newAccountNumberName": {
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"

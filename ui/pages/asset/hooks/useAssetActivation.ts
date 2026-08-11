@@ -1,97 +1,99 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
 
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { getAsset } from '../../../selectors/assets';
 import {
-  isAssetRequireActivate,
-  isTrustlineAsset,
-} from '../../../../shared/lib/multichain/trustline';
+  getIsAssetRequireActivate,
+  isAssetSupportActivation,
+} from '../../../selectors/stellar-assets';
+import { getMultichainBalances } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import {
   requestStellarChangeTrustOptAdd,
   requestStellarChangeTrustOptDelete,
 } from '../utils/stellar-snap-client-requests';
-import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { Asset } from '../types/asset';
 
 /**
  * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
  *
  * @param params - Hook parameters.
- * @param params.asset - Asset to activate or deactivate.
- * @returns Trustline actions, loading flags, error state, and whether deactivation is allowed.
- * For assets that do not require a trustline, actions are inert and deactivation is disabled.
+ * @param params.assetId - Asset id for the trustline asset.
+ * @param params.assetSymbol - Symbol of the asset.
+ * @returns Trustline actions, loading flags, error state, activation requirement, and whether deactivation is allowed. For assets that do not require a trustline, actions are inert and deactivation is disabled.
  */
-export const useAssetActivation = ({ asset }: { asset: Asset }) => {
+export const useAssetActivation = ({
+  assetId,
+  assetSymbol,
+}: {
+  assetId: string;
+  assetSymbol?: string;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  // For non trusline asset, assetId and chainId are undefined.
-  let assetId: CaipAssetType | undefined;
-  let chainId: CaipChainId | undefined;
-  let isAssetIsTrustlineAsset: boolean = false;
-  if (asset.type === AssetType.token) {
-    assetId = asset.address as CaipAssetType;
-    isAssetIsTrustlineAsset = isTrustlineAsset(assetId);
-    if (isAssetIsTrustlineAsset) {
-      chainId = getChainIdFromAssetId(assetId);
-    }
-  }
+  const chainId = isCaipAssetType(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
 
-  const account = useSelector((state) =>
-    chainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
-      : undefined,
-  ) as InternalAccount | undefined;
+  const resolvedAccountId = useSelector((state) => {
+    if (!chainId) {
+      return undefined;
+    }
+
+    return getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)?.id;
+  });
+
+  const multichainBalances = useSelector(getMultichainBalances);
+
+  const balanceAmount =
+    resolvedAccountId && assetId
+      ? multichainBalances[resolvedAccountId]?.[assetId]?.amount
+      : undefined;
+
+  const requiresActivate = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId,
+      accountId: resolvedAccountId,
+    }),
+  );
+
+  // Classic asset with an active trustline (not requiring activation).
+  const canDeactivate = Boolean(
+    isAssetSupportActivation(assetId) &&
+    !requiresActivate &&
+    resolvedAccountId &&
+    chainId,
+  );
 
   const [isDeactivating, setIsDeactivating] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const dismissErrorMessage = useCallback(() => {
     setErrorMessage(null);
   }, []);
 
-  const canDeactivate =
-    assetId &&
-    isAssetIsTrustlineAsset &&
-    !isAssetRequireActivate({
-      assetId,
-      assetMetadata: {
-        // hardcoded for now to prevent breaking the test
-        // TODO: we will change it to use the unified asset controller once it is ready
-        limit: '0',
-      },
-    });
-
   const deactivateAsset = useCallback(async () => {
     if (
       !canDeactivate ||
-      !account ||
+      !resolvedAccountId ||
       !chainId ||
-      !assetId ||
-      !asset ||
-      !asset.balance?.display
+      !isCaipAssetType(assetId)
     ) {
       return;
     }
 
-    const hasNonZeroBalance = Boolean(
-      asset.balance?.value && asset.balance.value !== '0',
-    );
-    const balance = asset.balance?.display;
-    const { symbol } = asset;
+    const hasNonZeroBalance = Boolean(balanceAmount && balanceAmount !== '0');
+    const balanceDisplay = balanceAmount ?? '0';
 
     setErrorMessage(null);
     setIsDeactivating(true);
     try {
       await requestStellarChangeTrustOptDelete({
-        accountId: account.id,
+        accountId: resolvedAccountId,
         assetId,
         scope: chainId,
       });
@@ -103,27 +105,42 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
       if (!isUserRejection) {
         setErrorMessage(
           hasNonZeroBalance
-            ? (t('stellarClassicTrustlineRemoveNonZeroBalanceError', [
-                balance,
-                symbol,
+            ? (t('assetDeactivationNonZeroBalanceError', [
+                balanceDisplay,
+                assetSymbol,
               ]) as string)
-            : (t('stellarClassicTrustlineRemoveError') as string),
+            : (t('assetDeactivationError') as string),
         );
       }
     } finally {
       setIsDeactivating(false);
     }
-  }, [account, assetId, asset, canDeactivate, chainId, dispatch, t]);
+  }, [
+    assetId,
+    assetSymbol,
+    balanceAmount,
+    canDeactivate,
+    chainId,
+    dispatch,
+    resolvedAccountId,
+    t,
+  ]);
 
   const activateAsset = useCallback(async () => {
-    if (!account || !chainId || !assetId) {
+    // Non-classic / already-active assets have requiresActivate === false.
+    if (
+      !resolvedAccountId ||
+      !chainId ||
+      !isCaipAssetType(assetId) ||
+      !requiresActivate
+    ) {
       return;
     }
     setErrorMessage(null);
     setIsActivating(true);
     try {
       const result = await requestStellarChangeTrustOptAdd({
-        accountId: account.id,
+        accountId: resolvedAccountId,
         assetId,
         scope: chainId,
       });
@@ -137,17 +154,18 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
       const isUserRejection =
         errorCode === errorCodes.provider.userRejectedRequest;
       if (!isUserRejection) {
-        setErrorMessage(t('stellarClassicTrustlineAddError') as string);
+        setErrorMessage(t('assetActivationError') as string);
       }
     } finally {
       setIsActivating(false);
     }
-  }, [account, assetId, chainId, dispatch, t]);
+  }, [assetId, chainId, dispatch, requiresActivate, resolvedAccountId, t]);
 
   return {
     deactivateAsset,
     activateAsset,
     canDeactivate,
+    requiresActivate,
     isDeactivating,
     isActivating,
     errorMessage,

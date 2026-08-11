@@ -23,7 +23,7 @@ import {
   TextVariant,
   Skeleton,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -64,7 +64,8 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
@@ -81,7 +82,7 @@ import CryptoAccountDisplay from './components/crypto-account-display';
 const TransactionShield = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();

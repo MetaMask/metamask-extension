@@ -1,6 +1,6 @@
 import {
   getLastConnectedInfo,
-  getPermissionSubjects,
+  getPermittedAccountsByOrigin,
 } from '../../../selectors';
 
 export const PORTFOLIO_ORIGINS = [
@@ -21,19 +21,34 @@ function getConfiguredPortfolioOrigin(): string | null {
 }
 
 /**
- * Whether this wallet has ever connected to Portfolio (active permission or
- * eth_accounts history). Used as a proxy for "may have local Buy orders".
- * Includes `PORTFOLIO_URL` origin so local Portfolio (e.g. localhost:3000) works.
+ * Whether this wallet has ever connected accounts to Portfolio (live accounts
+ * permission or eth_accounts history). Used as a proxy for "may have local Buy
+ * orders" (silent Portfolio migrate) and related Buy entry gating. Includes
+ * `PORTFOLIO_URL` origin so local Portfolio (e.g. localhost:3000) works.
+ *
+ * Portfolio origins are present in `subjects` on a fresh install because
+ * preinstalled snaps pre-approve them via `initialConnections`, so a subject
+ * entry alone is not evidence of a connection — only permitted accounts are.
+ *
+ * @param state - Redux root state (or metamask slice wrapper used by selectors).
+ * @returns True when any known Portfolio origin has permitted accounts or history.
  */
-export function hasEverConnectedToPortfolio(state: unknown): boolean {
-  const subjects = getPermissionSubjects(state) ?? {};
-  const history = getLastConnectedInfo(state) ?? {};
+export function hasEverConnectedToPortfolio(
+  state: Record<string, unknown>,
+): boolean {
+  const permittedAccountsByOrigin = (getPermittedAccountsByOrigin(state) ??
+    {}) as Record<string, string[]>;
+  const history = (getLastConnectedInfo(state) ?? {}) as Record<
+    string,
+    unknown
+  >;
   const configuredOrigin = getConfiguredPortfolioOrigin();
   const origins = configuredOrigin
     ? [...PORTFOLIO_ORIGINS, configuredOrigin]
     : [...PORTFOLIO_ORIGINS];
 
   return origins.some(
-    (origin) => Boolean(subjects[origin]) || Boolean(history[origin]),
+    (origin) =>
+      Boolean(permittedAccountsByOrigin[origin]) || Boolean(history[origin]),
   );
 }

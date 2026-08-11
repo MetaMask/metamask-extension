@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import SettingsPage from '../pages/settings/settings-page';
 import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display-settings';
-import SelectNetwork from '../pages/dialog/select-network';
+import NetworksPage from '../pages/networks/networks-page';
 import HeaderNavbar from '../pages/header-navbar';
 import PrivacySettings from '../pages/settings/privacy-settings';
 import ChangePasswordPage from '../pages/settings/change-password-page';
@@ -35,10 +35,10 @@ export const enableTestNetworks = async (driver: Driver): Promise<void> => {
   const homePage = new HomePage(driver);
   await headerNavbar.openGlobalNetworksMenu();
 
-  const selectNetworkDialog = new SelectNetwork(driver);
-  await selectNetworkDialog.checkPageIsLoaded();
-  await selectNetworkDialog.toggleShowTestNetwork();
-  await selectNetworkDialog.clickCloseButton();
+  const networksPage = new NetworksPage(driver);
+  await networksPage.checkPageIsLoaded();
+  await networksPage.toggleShowTestNetwork();
+  await networksPage.clickCloseButton();
   await homePage.headerNavbar.clickDrawerBackButton();
 };
 

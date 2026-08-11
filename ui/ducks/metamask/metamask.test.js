@@ -215,7 +215,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: 'old-analytics-id',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
         {
@@ -225,7 +225,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: 'old-analytics-id',
-      completedMetaMetricsOnboarding: false,
+      consentDecisionMade: false,
       optedIn: false,
     });
 
@@ -233,7 +233,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: null,
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: false,
         },
         {
@@ -243,7 +243,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: null,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     });
 
@@ -251,7 +251,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: 'old-analytics-id',
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: true,
         },
         {
@@ -261,7 +261,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: 'old-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: false,
     });
   });

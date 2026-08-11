@@ -7,7 +7,7 @@ import React, {
   useState,
   type ComponentType,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -62,6 +62,7 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
 import WelcomeLogin from './welcome-login';
 import {
   LOGIN_ERROR,
@@ -99,8 +100,6 @@ const FoxAppearAnimation = lazy(
     }>,
 );
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();

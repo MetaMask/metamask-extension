@@ -2,8 +2,6 @@ import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 
 class LoginPage {
-  private driver: Driver;
-
   private readonly connectionsRemovedModal: object = {
     testId: 'connections-removed-modal',
   };
@@ -12,6 +10,8 @@ class LoginPage {
     testId: 'connections-removed-modal-button',
   };
 
+  private driver: Driver;
+
   private readonly forgotPasswordButton: object = {
     testId: 'unlock-forgot-password-button',
   };
@@ -19,6 +19,10 @@ class LoginPage {
   private readonly incorrectPasswordMessage: object = {
     testId: 'unlock-page-help-text',
     text: 'Password is incorrect. Please try again.',
+  };
+
+  private readonly passkeyUnlockButton: object = {
+    testId: 'unlock-passkey-button',
   };
 
   private readonly passwordInput: object = { testId: 'unlock-password' };
@@ -35,9 +39,7 @@ class LoginPage {
     testId: 'login-error-modal-button',
   };
 
-  private readonly passkeyUnlockButton: object = {
-    testId: 'unlock-passkey-button',
-  };
+  private readonly unlockButton: object = { testId: 'unlock-submit' };
 
   private readonly unlockWithPasskeyButton: object = {
     testId: 'unlock-with-passkey',
@@ -47,10 +49,37 @@ class LoginPage {
     testId: 'unlock-use-password-button',
   };
 
-  private readonly unlockButton: object = { testId: 'unlock-submit' };
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
+    console.log('Checking if connections removed modal is displayed');
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkIncorrectPasswordMessageIsDisplayed(): Promise<void> {
+    console.log('Checking if incorrect password message is displayed');
+    const isDisplayed = await this.driver.waitForSelector(
+      this.incorrectPasswordMessage,
+    );
+    if (!isDisplayed) {
+      throw new Error('Incorrect password message is not displayed');
+    }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.forgotPasswordButton,
+        this.passwordInput,
+        this.unlockButton,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for login page to be loaded', e);
+      throw e;
+    }
+    console.log('Login page is loaded');
   }
 
   async checkPasskeyUnlockPageIsLoaded(): Promise<void> {
@@ -76,18 +105,12 @@ class LoginPage {
     await this.driver.clickElement(this.usePasswordButton);
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.forgotPasswordButton,
-        this.passwordInput,
-        this.unlockButton,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for login page to be loaded', e);
-      throw e;
-    }
-    console.log('Login page is loaded');
+  async gotoResetPasswordPage(): Promise<void> {
+    console.log('Navigating to reset password page');
+    await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 
   /**
@@ -101,29 +124,16 @@ class LoginPage {
     await this.driver.clickElement(this.unlockButton);
   }
 
-  async checkIncorrectPasswordMessageIsDisplayed(): Promise<void> {
-    console.log('Checking if incorrect password message is displayed');
-    const isDisplayed = await this.driver.waitForSelector(
-      this.incorrectPasswordMessage,
-    );
-    if (!isDisplayed) {
-      throw new Error('Incorrect password message is not displayed');
-    }
-  }
-
-  async gotoResetPasswordPage(): Promise<void> {
-    console.log('Navigating to reset password page');
-    await this.driver.clickElement(this.forgotPasswordButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.resetPasswordModalButton,
-    );
-  }
-
   async resetWallet(): Promise<void> {
     console.log(
       'Resetting wallet due to unrecoverable error in social login unlock',
     );
     await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
+  }
+
+  async resetWalletFromConnectionsRemovedModal(): Promise<void> {
+    console.log('Resetting wallet from connections removed modal');
+    await this.driver.clickElement(this.connectionsRemovedModalButton);
   }
 
   /**
@@ -139,16 +149,6 @@ class LoginPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.resetPasswordModalButton,
     );
-  }
-
-  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
-    console.log('Checking if connections removed modal is displayed');
-    await this.driver.waitForSelector(this.connectionsRemovedModal);
-  }
-
-  async resetWalletFromConnectionsRemovedModal(): Promise<void> {
-    console.log('Resetting wallet from connections removed modal');
-    await this.driver.clickElement(this.connectionsRemovedModalButton);
   }
 }
 

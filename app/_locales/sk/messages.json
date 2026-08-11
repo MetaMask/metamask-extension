@@ -324,9 +324,6 @@
   "networks": {
     "message": "Sítě"
   },
-  "nevermind": {
-    "message": "Nevadí"
-  },
   "newAccountNumberName": {
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"

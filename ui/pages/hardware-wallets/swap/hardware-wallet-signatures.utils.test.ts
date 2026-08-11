@@ -29,7 +29,6 @@ jest.mock('../../../store/actions', () => ({
   rejectPendingApproval: jest.fn(() => 'REJECT_ACTION'),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockRejectPendingApproval = jest.requireMock(
   '../../../store/actions',
 ).rejectPendingApproval;

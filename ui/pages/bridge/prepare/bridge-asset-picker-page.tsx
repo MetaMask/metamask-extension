@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
@@ -40,6 +40,8 @@ import {
 } from '../../../ducks/bridge/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   BridgeAssetPickerContent,
   type BridgeAssetPickerContentHandle,

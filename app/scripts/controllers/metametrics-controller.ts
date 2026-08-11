@@ -65,6 +65,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
@@ -163,7 +164,7 @@ export type MetaMaskState = Pick<
   | 'firstTimeFlowType'
   | 'analyticsId'
   | 'optedIn'
-  | 'completedMetaMetricsOnboarding'
+  | 'consentDecisionMade'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -184,23 +185,11 @@ export type MetaMaskState = Pick<
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  completedMetaMetricsOnboarding: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   fragments: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
-  },
-  eventsBeforeMetricsOptIn: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
@@ -231,18 +220,14 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property completedMetaMetricsOnboarding - Whether the user has completed the metrics participation prompt (onboarding/settings).
  * @property fragments - Object keyed by UUID with stored fragments as values.
- * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
 export type MetaMetricsControllerState = {
-  completedMetaMetricsOnboarding: boolean;
   fragments: Record<string, MetaMetricsEventFragment>;
-  eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   tracesBeforeMetricsOptIn: BufferedTrace[];
   traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
@@ -318,21 +303,17 @@ export type MetaMetricsControllerOptions = {
  */
 export const getDefaultMetaMetricsControllerState =
   (): MetaMetricsControllerState => ({
-    completedMetaMetricsOnboarding: false,
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
-    eventsBeforeMetricsOptIn: [],
     tracesBeforeMetricsOptIn: [],
     traits: {},
     fragments: {},
   });
 
 const MESSENGER_EXPOSED_METHODS = [
-  'addEventBeforeMetricsOptIn',
   'addTraceBeforeMetricsOptIn',
   'bufferedEndTrace',
   'bufferedTrace',
-  'clearEventsAfterMetricsOptIn',
   'clearTracesAfterMetricsOptIn',
   'createEventFragment',
   'deleteEventFragment',
@@ -344,7 +325,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
   'setParticipateInMetaMetrics',
-  'trackEventsAfterMetricsOptIn',
   'trackTracesAfterMetricsOptIn',
   'updateEventFragment',
   'updateExtensionUninstallUrl',
@@ -421,6 +401,7 @@ export class MetaMetricsController extends BaseController<
 
     // Register A/B test analytics mappings so that matching events are
     // enriched with their `active_ab_tests` assignment.
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
     registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
     this.messenger.registerMethodActionHandlers(
@@ -460,7 +441,6 @@ export class MetaMetricsController extends BaseController<
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
-      /* eslint-disable no-undef */
       this.#extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
@@ -496,8 +476,6 @@ export class MetaMetricsController extends BaseController<
    */
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
       this.messenger.call('NetworkController:getState').selectedNetworkClientId;
     const {
@@ -766,8 +744,6 @@ export class MetaMetricsController extends BaseController<
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -784,26 +760,21 @@ export class MetaMetricsController extends BaseController<
   ): Promise<string | null> {
     const { analyticsId } = this.#analyticsGetState();
 
+    // Opt-in/out and the undecided reset are owned by AnalyticsController, which
+    // also replays/clears its pre-consent event queue. Traces remain buffered
+    // here (out of scope) and are flushed/cleared alongside.
     if (participateInMetaMetrics === true) {
       this.messenger.call('AnalyticsController:optIn');
-    } else {
-      this.messenger.call('AnalyticsController:optOut');
-    }
-
-    this.update((state) => {
-      state.completedMetaMetricsOnboarding = participateInMetaMetrics !== null;
-    });
-
-    if (participateInMetaMetrics) {
-      this.trackEventsAfterMetricsOptIn();
-      this.clearEventsAfterMetricsOptIn();
       this.trackTracesAfterMetricsOptIn();
       this.clearTracesAfterMetricsOptIn();
     } else {
       if (participateInMetaMetrics === false) {
-        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
-        this.clearEventsAfterMetricsOptIn();
+        this.messenger.call('AnalyticsController:optOut');
+        // Drop any UI-buffered pre-submit traces; they must not be sent after opt-out.
         this.clearTracesAfterMetricsOptIn();
+      } else {
+        // `null` returns the user to the undecided state.
+        this.messenger.call('AnalyticsController:resetConsentDecision');
       }
       if (this.state.marketingCampaignCookieId) {
         this.setMarketingCampaignCookieId(null);
@@ -850,30 +821,6 @@ export class MetaMetricsController extends BaseController<
     if (userTraits) {
       analytics.identify(userTraits);
     }
-  }
-
-  // Track all queued events after a user opted into metrics.
-  trackEventsAfterMetricsOptIn(): void {
-    const { eventsBeforeMetricsOptIn } = this.state;
-    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      trackLegacyMetaMetricsPayload(eventBeforeMetricsOptIn);
-    });
-  }
-
-  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
-  clearEventsAfterMetricsOptIn(): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn = [];
-    });
-  }
-
-  // It adds an event into a queue, which is only tracked if a user opts into metrics.
-  addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
-    });
   }
 
   // Track all queued traces after a user opted into metrics.
@@ -991,8 +938,6 @@ export class MetaMetricsController extends BaseController<
         Object.values(metamaskState.addressBook).map(size),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       ...(storageKindTrait
         ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
@@ -1042,7 +987,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.completedMetaMetricsOnboarding === true
+        metamaskState.consentDecisionMade === true
           ? metamaskState.optedIn === true
           : null,
       [MetaMetricsUserTrait.HasMarketingConsent]:
@@ -1077,7 +1022,7 @@ export class MetaMetricsController extends BaseController<
 
     if (
       !this.previousUserTraits &&
-      metamaskState.completedMetaMetricsOnboarding === true &&
+      metamaskState.consentDecisionMade === true &&
       metamaskState.optedIn === true
     ) {
       this.previousUserTraits = currentTraits;
@@ -1095,7 +1040,7 @@ export class MetaMetricsController extends BaseController<
       });
 
       if (
-        metamaskState.completedMetaMetricsOnboarding === true &&
+        metamaskState.consentDecisionMade === true &&
         metamaskState.optedIn === true
       ) {
         this.previousUserTraits = currentTraits;

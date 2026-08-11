@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox, IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -17,7 +18,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Checkbox,
   Text,
   Box,
   ModalFooter,
@@ -25,7 +25,6 @@ import {
   ButtonPrimarySize,
   ModalBody,
   Icon,
-  IconName,
   IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '../network-list-item';
@@ -34,6 +33,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+
+const checkboxContainerProps = {
+  style: { pointerEvents: 'none' },
+};
 
 export const EditNetworksModal = ({
   nonTestNetworks,
@@ -113,10 +116,12 @@ export const EditNetworksModal = ({
           <Box padding={4}>
             <Checkbox
               label={t('selectAll')}
-              isChecked={checked}
-              gap={4}
-              onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
-              isIndeterminate={isIndeterminate}
+              isSelected={checked || isIndeterminate}
+              onChange={() => (allAreSelected() ? deselectAll() : selectAll())}
+              checkboxContainerProps={checkboxContainerProps}
+              checkedIconProps={
+                isIndeterminate ? { name: IconName.MinusBold } : undefined
+              }
             />
           </Box>
           {nonTestNetworks.map((network) => (
@@ -129,7 +134,10 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.caipChainId)}
+                  isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
+                  onChange={() => handleNetworkClick(network.caipChainId)}
+                  onClick={(event) => event.stopPropagation()}
                 />
               }
             />
@@ -147,7 +155,10 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.caipChainId)}
+                  isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
+                  onChange={() => handleNetworkClick(network.caipChainId)}
+                  onClick={(event) => event.stopPropagation()}
                 />
               }
               showEndAccessory={false}

@@ -1,6 +1,7 @@
 *.scss
 .nyc_output/**/*
 node_modules/**/*
+/.yarn/**/*
 __snapshots__/**/*
 # Exclude lottie json files
 /app/images/animations/**/*.json
@@ -8,10 +9,12 @@ __snapshots__/**/*
 /builds/**/*
 /changed-files/**/*
 /coverage/**/*
+/development/.webpack/**/*
 /development/chromereload.js
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**
 /dist/**/*
+/eslint-suppressions.json
 /lavamoat/**/policy.json
 /lavamoat/**/policy-override.json
 /storybook-build/**/*

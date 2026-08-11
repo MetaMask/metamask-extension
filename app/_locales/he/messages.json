@@ -346,9 +346,6 @@
   "networks": {
     "message": "רשתות"
   },
-  "nevermind": {
-    "message": "לא משנה"
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"

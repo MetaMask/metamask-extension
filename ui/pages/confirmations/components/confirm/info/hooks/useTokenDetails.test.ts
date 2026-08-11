@@ -44,6 +44,47 @@ describe('useTokenDetails', () => {
     });
   });
 
+  it('uses the original token address when the transaction is wrapped', () => {
+    const transactionMeta = genUnapprovedTokenTransferConfirmation(
+      {},
+    ) as TransactionMeta;
+    const originalTxParams = { ...transactionMeta.txParams };
+    transactionMeta.txParamsOriginal = originalTxParams;
+    transactionMeta.txParams = {
+      ...transactionMeta.txParams,
+      to: '0x1111111111111111111111111111111111111111',
+    };
+
+    const stateWithToken = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        allTokens: {
+          [transactionMeta.chainId]: {
+            [originalTxParams.from as string]: [
+              {
+                address: originalTxParams.to,
+                symbol: ICON_SYMBOL,
+                image: ICON_URL,
+                decimals: 9,
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTokenDetails(transactionMeta),
+      stateWithToken,
+    );
+
+    expect(result.current).toEqual({
+      tokenImage: ICON_URL,
+      tokenSymbol: ICON_SYMBOL,
+    });
+  });
+
   it('returns undefined for tokenImage and "Unknown" for tokenSymbol if token is not in allTokens', () => {
     const transactionMeta = genUnapprovedTokenTransferConfirmation(
       {},

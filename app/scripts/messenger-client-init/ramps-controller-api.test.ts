@@ -1,3 +1,4 @@
+import ExtensionPlatform from '../platforms/extension';
 import { getRampsControllerApi } from './ramps-controller-api';
 
 describe('getRampsControllerApi', () => {
@@ -20,10 +21,15 @@ describe('getRampsControllerApi', () => {
       syncOrdersWithUserStorage: jest.fn(),
     };
 
-    const api = getRampsControllerApi(rampsController as never);
+    const api = getRampsControllerApi(
+      rampsController as never,
+      new ExtensionPlatform(),
+    );
 
     expect(Object.keys(api).sort()).toMatchSnapshot();
     expect(typeof api.setRampsUserRegion).toBe('function');
     expect(typeof api.getRampsQuotes).toBe('function');
+    expect(typeof api.syncRampsOrdersWithUserStorage).toBe('function');
+    expect(typeof api.watchRampsCheckoutTab).toBe('function');
   });
 });

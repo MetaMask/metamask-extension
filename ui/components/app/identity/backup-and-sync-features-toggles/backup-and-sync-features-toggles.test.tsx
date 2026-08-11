@@ -35,7 +35,7 @@ const initialStore = () => ({
     isAccountSyncingEnabled: false,
     isContactSyncingEnabled: false,
     isRampsSyncingEnabled: false,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],

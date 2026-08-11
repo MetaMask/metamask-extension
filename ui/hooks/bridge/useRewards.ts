@@ -1,11 +1,13 @@
 'use no memo';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   selectBridgeQuotes,
+  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { type CaipAccountId } from '@metamask/utils';
 import { debounce } from 'lodash';
@@ -30,6 +32,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
+import { useDispatch } from '../../store/hooks';
 
 // Set to true when a rewards season is active and points estimation should run.
 const REWARDS_SEASON_ACTIVE = false;
@@ -84,9 +87,7 @@ type UseRewardsParams = {
 };
 
 type UseRewardsWithQuoteParams = {
-  quote: NonNullable<
-    NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
-  > | null;
+  quote: QuoteResponse['quote'] | QuoteResponseV1['quote'] | null;
   fromAddress: string | null | undefined;
   fromAddressAccount?: InternalAccount | null;
   chainId: string | null | undefined;
@@ -130,13 +131,12 @@ export const useRewardsWithQuote = ({
   const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
     useState<number | null>(null);
   const debouncedEstimatePoints = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/use-memo
     debounce(
       async (
         _estimationQuoteArg:
-          | NonNullable<
-              ReturnType<typeof selectBridgeQuotes>['activeQuote']
-            >['quote']
+          | QuoteResponse['quote']
+          | QuoteResponseV1['quote']
           | null,
         _caipAccountArg: CaipAccountId | null,
       ) => {
@@ -153,9 +153,8 @@ export const useRewardsWithQuote = ({
   const estimatePoints = useCallback(
     async (
       estimationQuoteArg:
-        | NonNullable<
-            ReturnType<typeof selectBridgeQuotes>['activeQuote']
-          >['quote']
+        | QuoteResponse['quote']
+        | QuoteResponseV1['quote']
         | null,
     ) => {
       // Skip if no active quote or missing required data, or if no season is active

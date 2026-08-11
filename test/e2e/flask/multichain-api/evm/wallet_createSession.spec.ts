@@ -12,7 +12,6 @@ import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-u
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
@@ -158,7 +157,6 @@ describe('Multichain API', function () {
           'eip155:59141': 'Linea Sepolia',
         };
         const requestScopes = Object.keys(requestScopesToNetworkMap);
-        const networksToRequest = Object.values(requestScopesToNetworkMap);
 
         await login(driver);
         const testDapp = new TestDappMultichain(driver);
@@ -167,34 +165,33 @@ describe('Multichain API', function () {
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(requestScopes);
 
-        // navigate to network selection screen
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
+        await connectAccountConfirmation.confirmConnect();
 
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.checkNetworkStatus(
-          networksToRequest,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await testDapp.checkPageIsLoaded();
+
+        const getSessionResult = await testDapp.getSession();
+        for (const scope of requestScopes) {
+          assert.ok(
+            getSessionResult.sessionScopes[scope],
+            `scope ${scope} should be granted`,
+          );
+        }
       },
     );
   });
 
   describe('Call `wallet_createSession`', function () {
-    describe("With requested EVM scope that match the user's enabled networks, edit selection in wallet UI", function () {
-      it('should change result according to changed network & accounts', async function () {
+    describe("With requested EVM scope that match the user's enabled networks, edit account selection in wallet UI", function () {
+      it('should change result according to changed accounts', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilderV2()
-              .withNetworkControllerTripleNode()
-              .build(),
+            fixtures: new FixtureBuilderV2().build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -205,7 +202,7 @@ describe('Multichain API', function () {
             await testDapp.checkPageIsLoaded();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
-              ['eip155:1337', 'eip155:1338'],
+              ['eip155:1337'],
               [ACCOUNT_1],
             );
 
@@ -222,18 +219,6 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.addNewAccount();
 
             await connectAccountConfirmation.checkPageIsLoaded();
-            await connectAccountConfirmation.goToPermissionsTab();
-            await connectAccountConfirmation.openEditNetworksModal();
-
-            const networkPermissionSelectModal =
-              new NetworkPermissionSelectModal(driver);
-            await networkPermissionSelectModal.checkPageIsLoaded();
-            await networkPermissionSelectModal.updateNetworkStatus([
-              'Localhost 8545',
-            ]);
-            await networkPermissionSelectModal.clickConfirmEditButton();
-
-            await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
@@ -242,11 +227,6 @@ describe('Multichain API', function () {
             await testDapp.checkPageIsLoaded();
             await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
-
-            assert.strictEqual(
-              getSessionResult.sessionScopes['eip155:1338'],
-              undefined,
-            );
 
             assert.ok(getSessionResult.sessionScopes['eip155:1337']);
 
@@ -399,13 +379,11 @@ describe('Multichain API', function () {
             );
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
-            await editConnectedAccountsModal.clickOnConnect();
 
-            await connectAccountConfirmation.checkPageIsLoaded();
             assert.strictEqual(
-              await connectAccountConfirmation.isConfirmButtonEnabled(),
+              await editConnectedAccountsModal.isConnectButtonEnabled(),
               false,
-              'should not able to approve the create session request without at least one account should be selected',
+              'should not be able to approve the create session request without at least one account selected',
             );
           },
         );

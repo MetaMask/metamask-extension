@@ -17,6 +17,7 @@ import {
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { MoneyAccountDepositInfo } from './money-account-deposit-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
@@ -31,8 +32,6 @@ import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const DefaultHeadingSkeleton = () => (
   <>
     <Skeleton
@@ -54,7 +53,6 @@ const DefaultHeadingSkeleton = () => (
   </>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SendHeadingSkeleton = () => (
   <div
     data-testid="confirmation__send_info_skeleton"
@@ -76,7 +74,6 @@ const SendHeadingSkeleton = () => (
   </div>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SectionSkeletons = () => (
   <>
     <Skeleton
@@ -160,6 +157,7 @@ const Info = () => {
 
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
+      [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,

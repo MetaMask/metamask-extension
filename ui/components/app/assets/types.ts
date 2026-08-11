@@ -6,6 +6,7 @@ import type { Asset, TokenListToken } from '@metamask/assets-controllers';
 export type TokenDisplayValues = {
   secondary: number | null;
   string?: string;
+  isFiatLoading?: boolean;
 };
 
 export type TokenBalanceValues = {
@@ -47,6 +48,8 @@ export type TokenDisplayInfo = TokenDisplayValues & {
   tokenImage: string;
   isStakeable?: boolean;
   tokenChainImage: string;
+  /** True when a Stellar classic asset still needs trustline activation. */
+  tokenRequireActivate?: boolean;
 };
 
 // Token type that includes fiat amount, balance, and display values

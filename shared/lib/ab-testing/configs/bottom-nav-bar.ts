@@ -32,9 +32,11 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
   flagKey: BOTTOM_NAV_AB_TEST_KEY,
   validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
   eventNames: [
-    MetaMetricsEventName.TokenScreenOpened,
+    MetaMetricsEventName.TokenScreenViewed,
+    MetaMetricsEventName.DeFiScreenViewed,
+    MetaMetricsEventName.NftScreenViewed,
     MetaMetricsEventName.PerpsScreenViewed,
-    MetaMetricsEventName.ActivityScreenOpened,
+    MetaMetricsEventName.ActivityScreenViewed,
     'Unified SwapBridge Page Viewed',
   ],
 };

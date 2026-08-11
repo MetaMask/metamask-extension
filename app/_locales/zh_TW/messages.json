@@ -645,9 +645,6 @@
   "networks": {
     "message": "網路"
   },
-  "nevermind": {
-    "message": "算了"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"

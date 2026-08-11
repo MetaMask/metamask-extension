@@ -109,11 +109,13 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * sync into Extension) before opening the in-wallet buy flow. Never-connected
  * wallets skip Portfolio entirely.
  *
+ * When the flag is off, everyone is redirected to Portfolio.
+ *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
  * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, so callers can gate follow-up UI (e.g. a
- * "tab opened" toast).
+ * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
+ * gate follow-up UI (e.g. a "tab opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -218,7 +220,12 @@ export default function useRampsNavigation() {
     ],
   );
 
-  // Expose the rollout flag so callers can gate follow-up UI (e.g. the flag-off
-  // "tab opened" toast) without re-reading the selector themselves.
-  return { goToBuy, isRampsEnabled: isEnabled };
+  // Expose whether Buy leaves the extension so callers can gate follow-up UI
+  // (e.g. the "tab opened" toast) without re-deriving the destination. With
+  // Profile Sync migrate in place, Portfolio-connected wallets stay in-app
+  // when the flag is on — only the flag-off path opens a Portfolio tab.
+  return {
+    goToBuy,
+    opensBuyInPortfolioTab: !isEnabled,
+  };
 }

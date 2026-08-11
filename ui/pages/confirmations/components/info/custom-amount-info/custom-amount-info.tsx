@@ -19,6 +19,7 @@ import {
   PayTokenAmountSkeleton,
 } from '../../pay-token-amount/pay-token-amount';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
+import { FromAccountRow } from '../../rows/from-account-row';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
@@ -66,6 +67,11 @@ export type CustomAmountInfoProps = {
    * When true, it disables MetaMask Pay for transactions that just need custom amount input
    */
   disablePay?: boolean;
+  /**
+   * When true, renders a "From account" selector row above the "Pay with" row,
+   * letting the user choose which account funds the transaction.
+   */
+  displayAccountRow?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
@@ -84,6 +90,7 @@ export const CustomAmountInfo = React.memo(
     currency,
     disableAutomaticToken,
     disablePay,
+    displayAccountRow,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -153,6 +160,7 @@ export const CustomAmountInfo = React.memo(
           <BottomContainer
             amountFiat={amountFiat}
             disablePay={disablePay}
+            displayAccountRow={displayAccountRow}
             hasTokens={hasTokens}
           />
         )}
@@ -256,10 +264,12 @@ function CenterContainerSkeleton() {
 function BottomContainer({
   amountFiat,
   disablePay,
+  displayAccountRow,
   hasTokens,
 }: {
   amountFiat: string;
   disablePay?: boolean;
+  displayAccountRow?: boolean;
   hasTokens: boolean;
 }) {
   const t = useI18nContext();
@@ -276,6 +286,7 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
+      {displayAccountRow && <FromAccountRow showDivider />}
       {disablePay !== true && hasTokens && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>

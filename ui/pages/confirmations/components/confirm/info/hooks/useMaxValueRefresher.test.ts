@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useSearchParams } from 'react-router-dom';
 import { merge } from 'lodash';
@@ -186,6 +186,27 @@ describe('useMaxValueRefresher', () => {
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: contractInteractionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update transaction value when gas estimation has failed', () => {
+    // Simulates a tx that reverted on-chain during gas estimation (e.g. a
+    // chain-enforced minimum balance being breached by a "send max" attempt).
+    // The resulting gas is an unreliable fallback, not a real cost, so the
+    // hook must not use it to shrink the value further.
+    const transactionMeta = merge({}, baseTransactionMeta, {
+      simulationFails: {
+        reason: 'execution reverted',
+        debug: {},
+      },
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: transactionMeta,
     } as unknown as ReturnType<typeof useConfirmContext>);
 
     renderHook(() => useMaxValueRefresher());

@@ -19,8 +19,6 @@ import {
 const TOAST_ID = 'gas-fee-token-toast';
 const TOAST_DURATION = 5 * SECOND;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenToast() {
   const t = useI18nContext();
   const chainId = useTransactionMetadataRequestOptional()?.chainId;

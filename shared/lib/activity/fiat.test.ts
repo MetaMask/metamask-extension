@@ -63,6 +63,25 @@ describe('getHumanReadableTokenAmount', () => {
       }),
     ).toBe('1');
   });
+
+  it('treats omitted zero native amounts as 0 when token metadata exists', () => {
+    expect(
+      getHumanReadableTokenAmount({
+        decimals: 18,
+        direction: 'out',
+        symbol: 'ETH',
+        assetId: 'eip155:1/slip44:60',
+      }),
+    ).toBe('0');
+  });
+
+  it('returns undefined when amount and token metadata are both missing', () => {
+    expect(
+      getHumanReadableTokenAmount({
+        direction: 'out',
+      }),
+    ).toBeUndefined();
+  });
 });
 
 describe('getDisplaySignPrefix', () => {

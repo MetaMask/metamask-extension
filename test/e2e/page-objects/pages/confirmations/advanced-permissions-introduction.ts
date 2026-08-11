@@ -1,15 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AdvancedPermissionsIntroduction {
-  driver: Driver;
-
   private readonly cancelButton = {
     // This button isn't explicitly defined in the snap, so doesn't have a nice selector
     testId: 'undefined-snap-footer-button',
   };
 
+  driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async cancel(): Promise<void> {
+    console.log('Cancel on Advanced Permissions Introduction page');
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -23,11 +28,6 @@ class AdvancedPermissionsIntroduction {
       throw e;
     }
     console.log('Advanced Permissions Introduction page is loaded');
-  }
-
-  async cancel(): Promise<void> {
-    console.log('Cancel on Advanced Permissions Introduction page');
-    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 }
 

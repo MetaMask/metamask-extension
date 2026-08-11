@@ -346,9 +346,6 @@
   "networks": {
     "message": "Hálózatok"
   },
-  "nevermind": {
-    "message": "Nem fontos"
-  },
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"

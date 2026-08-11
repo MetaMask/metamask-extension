@@ -6,75 +6,92 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { type UIMetricsEventPayload } from '../../../../contexts/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useTransactionMetadataRequest } from '../../../../pages/confirmations/hooks/transactions/useTransactionMetadataRequest';
+import { useBalanceChanges } from '../../../../pages/confirmations/components/simulation-details/useBalanceChanges';
+import { calculateTotalFiat } from '../../../../pages/confirmations/components/simulation-details/fiat-display';
 import {
   Answers,
-  QuestionId,
+  QUESTIONNAIRE_VERSION,
+  type Step,
+  getAnswerRecord,
   getRedFlagCount,
-  getRedFlagQuestions,
+  stepLabelFromIndex,
 } from './scam-questionnaire.constants';
+
+export type CompletionStatus = 'clean' | 'payment_stopped' | 'proceeded';
+
+// Mirrors the arithmetic behind `simulation_sending_assets_total_value` on
+// transaction events so the two stay comparable. `undefined` rather than `0`
+// when rates are unavailable, so the property is omitted instead of reporting
+// the send as free.
+function useValueAtRisk(): number | undefined {
+  const transactionMeta = useTransactionMetadataRequest();
+  const { value: balanceChanges } = useBalanceChanges({
+    chainId: transactionMeta.chainId,
+    simulationData: transactionMeta.simulationData,
+  });
+
+  return useMemo(() => {
+    const sendingAssets = balanceChanges.filter((change) =>
+      change.amount.isNegative(),
+    );
+    const total = calculateTotalFiat(
+      sendingAssets.map((change) => change.usdAmount),
+    );
+    return total ? Math.abs(total) : undefined;
+  }, [balanceChanges]);
+}
 
 export function useScamQuestionnaireMetrics() {
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const valueAtRisk = useValueAtRisk();
 
   return useMemo(() => {
     const fire = (
       event: MetaMetricsEventName,
-      properties: UIMetricsEventPayload['properties'] = {},
+      properties: UIMetricsEventPayload['properties'],
     ) => {
       trackEvent(
         createEventBuilder(event)
           .addCategory(MetaMetricsEventCategory.Confirmations)
-          .addProperties(properties)
+          .addProperties({
+            ...properties,
+            questionnaire_version: QUESTIONNAIRE_VERSION,
+          })
           .build(),
       );
     };
 
     return {
-      trackStarted: () => fire(MetaMetricsEventName.SecurityCheckStarted),
-
-      trackQuestionAnswered: (
-        question: QuestionId,
-        answerKey: string,
-        isRedFlag: boolean,
-      ) =>
-        fire(MetaMetricsEventName.SecurityCheckQuestionAnswered, {
-          question,
-          answer_key: answerKey,
-          is_red_flag: isRedFlag,
+      // `step: 'warning'` covers the warning screen, so reaching it and never
+      // resolving is still visible as a funnel step. Answers live on
+      // `Completed` only — here they'd lag a step, since a step's answer isn't
+      // committed until the user leaves it.
+      trackViewed: (step: Step) =>
+        fire(MetaMetricsEventName.ScamQuestionnaireViewed, {
+          step: stepLabelFromIndex(step),
         }),
 
-      trackCompletedClean: () =>
-        fire(MetaMetricsEventName.SecurityCheckCompletedClean, {
-          red_flag_count: 0,
-        }),
-
-      trackDismissed: (lastStep: number, answers: Answers) =>
-        fire(MetaMetricsEventName.SecurityCheckDismissed, {
-          last_step: lastStep,
-          red_flag_count_so_far: getRedFlagCount(answers),
-        }),
-
-      trackWarningShown: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamWarningShown, {
+      trackContactSupport: (answers: Answers) =>
+        fire(MetaMetricsEventName.ScamQuestionnaireContactSupport, {
+          ...getAnswerRecord(answers),
           red_flag_count: getRedFlagCount(answers),
-          red_flag_questions: getRedFlagQuestions(answers),
+          simulation_sending_assets_total_value: valueAtRisk,
         }),
 
-      trackWarningStopped: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamWarningStopped, {
+      trackCompleted: ({
+        status,
+        answers,
+      }: {
+        status: CompletionStatus;
+        answers: Answers;
+      }) =>
+        fire(MetaMetricsEventName.ScamQuestionnaireCompleted, {
+          status,
+          ...getAnswerRecord(answers),
           red_flag_count: getRedFlagCount(answers),
-        }),
-
-      trackWarningContactSupport: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamWarningContactSupport, {
-          red_flag_count: getRedFlagCount(answers),
-        }),
-
-      trackWarningProceeded: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamWarningProceeded, {
-          red_flag_count: getRedFlagCount(answers),
-          red_flag_questions: getRedFlagQuestions(answers),
+          simulation_sending_assets_total_value: valueAtRisk,
         }),
     };
-  }, [createEventBuilder, trackEvent]);
+  }, [createEventBuilder, trackEvent, valueAtRisk]);
 }

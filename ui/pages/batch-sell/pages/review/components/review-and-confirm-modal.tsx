@@ -34,7 +34,6 @@ import { AvatarGroup } from '../../../../../components/multichain/avatar-group';
 import { AvatarType } from '../../../../../components/multichain/avatar-group/avatar-group.types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Tooltip } from '../../../../bridge/layout';
-// eslint-disable-next-line import-x/no-restricted-paths
 import {
   bpsToPercentage,
   formatCurrencyAmount,
