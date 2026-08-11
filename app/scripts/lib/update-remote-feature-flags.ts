@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import MetamaskController from '../metamask-controller';
 
 /**
@@ -13,7 +14,8 @@ export async function updateRemoteFeatureFlags(
   metamaskController: MetamaskController,
 ): Promise<void> {
   try {
-    const remoteController = metamaskController.remoteFeatureFlagController;
+    const remoteController: RemoteFeatureFlagController =
+      metamaskController.remoteFeatureFlagController;
     // initialize the request to fetch remote feature flags
     await remoteController.updateRemoteFeatureFlags();
   } catch (error) {
