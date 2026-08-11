@@ -1,12 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect } from '@playwright/test';
-import type {
-  BrowserContext,
-  CDPSession,
-  Locator,
-  Page,
-} from '@playwright/test';
+import type { BrowserContext, Locator, Page } from '@playwright/test';
 
 /**
  * PlaywrightDriver — drop-in replacement for `webdriver/driver.js`'s `Driver`
@@ -254,11 +249,6 @@ export class PlaywrightDriver {
   private readonly pages: Map<string, Page> = new Map();
 
   private handleCounter = 0;
-
-  // CDP session used for the WebAuthn virtual authenticator (Chromium only).
-  private webAuthnCdpSession: CDPSession | null = null;
-
-  private virtualAuthenticatorId: string | null = null;
 
   constructor({
     context,
@@ -1073,60 +1063,6 @@ export class PlaywrightDriver {
         `Frame target: ${typeof frame === 'string' ? frame : 'PlaywrightElement'}. ` +
         `Implement when migrating a spec that needs it.`,
     );
-  }
-
-  // -- WebAuthn / passkeys ----------------------------------------------------
-
-  /**
-   * Attaches a CTAP2 platform virtual authenticator to the current page via
-   * the CDP `WebAuthn` domain. Mirrors Selenium's virtual authenticator
-   * (`webdriver/virtual-authenticator.ts`): resident keys, user
-   * verification, and presence simulation are all enabled so passkey
-   * ceremonies complete without any native OS dialog.
-   *
-   * Chromium only — matching Selenium, where the passkey specs skip Firefox.
-   * The CDP session is attached to the extension's main page target, which
-   * is where all passkey ceremonies in the migrated specs take place; it
-   * survives in-page navigation.
-   */
-  async addVirtualAuthenticator(): Promise<void> {
-    if (this.browser !== 'chrome') {
-      throw new Error(
-        'PlaywrightDriver.addVirtualAuthenticator is only supported on Chromium (CDP WebAuthn domain).',
-      );
-    }
-    if (!this.webAuthnCdpSession) {
-      this.webAuthnCdpSession = await this.context.newCDPSession(this.page);
-      await this.webAuthnCdpSession.send('WebAuthn.enable');
-    }
-    const { authenticatorId } = await this.webAuthnCdpSession.send(
-      'WebAuthn.addVirtualAuthenticator',
-      {
-        options: {
-          protocol: 'ctap2',
-          transport: 'internal',
-          hasResidentKey: true,
-          hasUserVerification: true,
-          isUserVerified: true,
-          automaticPresenceSimulation: true,
-        },
-      },
-    );
-    this.virtualAuthenticatorId = authenticatorId;
-  }
-
-  /**
-   * Removes the virtual authenticator added by `addVirtualAuthenticator`.
-   * No-op when none is attached, mirroring Selenium's behavior.
-   */
-  async removeVirtualAuthenticator(): Promise<void> {
-    if (!this.webAuthnCdpSession || !this.virtualAuthenticatorId) {
-      return;
-    }
-    await this.webAuthnCdpSession.send('WebAuthn.removeVirtualAuthenticator', {
-      authenticatorId: this.virtualAuthenticatorId,
-    });
-    this.virtualAuthenticatorId = null;
   }
 
   // -- Alerts ---------------------------------------------------------------
