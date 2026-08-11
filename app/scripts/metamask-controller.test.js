@@ -46,6 +46,7 @@ import { parseCaipAccountId } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 
@@ -2219,6 +2220,41 @@ describe('MetaMaskController', () => {
 
           expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           expect(result).toBeDefined();
+        });
+      });
+
+      describe('getLedgerMode', () => {
+        it('delegates to LegacyBackgroundApiService:getLedgerMode', () => {
+          const callSpy = jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockReturnValue(LedgerHandlerMode.DMK);
+
+          try {
+            expect(metamaskController.getLedgerMode()).toBe(
+              LedgerHandlerMode.DMK,
+            );
+            expect(callSpy).toHaveBeenCalledWith(
+              'LegacyBackgroundApiService:getLedgerMode',
+            );
+          } finally {
+            callSpy.mockRestore();
+          }
+        });
+
+        it('exposes getLedgerMode on the public API map', () => {
+          const api = metamaskController.getApi();
+          const callSpy = jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockReturnValue(LedgerHandlerMode.Legacy);
+
+          try {
+            expect(api.getLedgerMode()).toBe(LedgerHandlerMode.Legacy);
+            expect(callSpy).toHaveBeenCalledWith(
+              'LegacyBackgroundApiService:getLedgerMode',
+            );
+          } finally {
+            callSpy.mockRestore();
+          }
         });
       });
     });

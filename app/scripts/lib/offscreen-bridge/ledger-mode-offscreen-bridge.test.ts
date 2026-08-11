@@ -151,6 +151,78 @@ describe('ledger-mode-offscreen-bridge', () => {
       });
     });
 
+    it('ignores runtime messages that are not ledgerModeReady for the extension', () => {
+      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
+
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe: jest.fn() },
+        },
+        neverReady,
+      );
+
+      const listener = addListenerMock.mock.calls[0][0];
+      sendMessageMock.mockClear();
+
+      listener({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.ledgerModeReady,
+      });
+      listener({
+        target: OffscreenCommunicationTarget.extensionMain,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+      });
+      listener({
+        target: OffscreenCommunicationTarget.extensionMain,
+        event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+      });
+      listener({});
+
+      expect(getLedgerMode).not.toHaveBeenCalled();
+      expect(sendMessageMock).not.toHaveBeenCalled();
+    });
+
+    it('pushes the current mode immediately when offscreenReady is null', async () => {
+      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
+
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe: jest.fn() },
+        },
+        null,
+      );
+
+      await Promise.resolve();
+
+      expect(getLedgerMode).toHaveBeenCalledTimes(1);
+      expect(sendMessageMock).toHaveBeenCalledWith({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: LedgerHandlerMode.DMK,
+      });
+    });
+
+    it('does not push a mode when offscreenReady rejects', async () => {
+      const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
+      const offscreenReady = Promise.reject(new Error('offscreen unavailable'));
+
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe: jest.fn() },
+        },
+        offscreenReady,
+      );
+
+      await expect(offscreenReady).rejects.toThrow('offscreen unavailable');
+      await Promise.resolve();
+
+      expect(getLedgerMode).not.toHaveBeenCalled();
+      expect(sendMessageMock).not.toHaveBeenCalled();
+    });
+
     it('uses the controller-resolved DMK mode when the remote flag is disabled', () => {
       const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
       let handler: ((isDmkEnabled: boolean) => void) | undefined;
@@ -276,6 +348,80 @@ describe('ledger-mode-offscreen-bridge', () => {
 
       expect(selector?.({ remoteFeatureFlags: {} })).toBe(false);
       expect(selector?.({})).toBe(false);
+    });
+
+    it('selector returns true for a version-gated ledgerDmk flag that meets minimumVersion', () => {
+      let selector:
+        | ((state: { remoteFeatureFlags?: Record<string, unknown> }) => boolean)
+        | undefined;
+      const subscribe = jest.fn(
+        (
+          _event: string,
+          _handler: (isDmkEnabled: boolean) => void,
+          nextSelector: (state: {
+            remoteFeatureFlags?: Record<string, unknown>;
+          }) => boolean,
+        ) => {
+          selector = nextSelector;
+        },
+      );
+
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
+
+      expect(
+        selector?.({
+          remoteFeatureFlags: {
+            [ENABLE_DMK_FEATURE_FLAG]: {
+              enabled: true,
+              featureVersion: '13.0.0',
+              minimumVersion: '13.0.0',
+            },
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('selector returns false for a version-gated ledgerDmk flag with unmet minimumVersion', () => {
+      let selector:
+        | ((state: { remoteFeatureFlags?: Record<string, unknown> }) => boolean)
+        | undefined;
+      const subscribe = jest.fn(
+        (
+          _event: string,
+          _handler: (isDmkEnabled: boolean) => void,
+          nextSelector: (state: {
+            remoteFeatureFlags?: Record<string, unknown>;
+          }) => boolean,
+        ) => {
+          selector = nextSelector;
+        },
+      );
+
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
+
+      expect(
+        selector?.({
+          remoteFeatureFlags: {
+            [ENABLE_DMK_FEATURE_FLAG]: {
+              enabled: true,
+              featureVersion: '100.0.0',
+              minimumVersion: '100.0.0',
+            },
+          },
+        }),
+      ).toBe(false);
     });
   });
 });
