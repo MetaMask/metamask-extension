@@ -807,7 +807,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -825,7 +825,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
@@ -844,7 +844,7 @@ describe('PPOM Utils', () => {
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
-          ppomController,
+          messenger,
           request,
         });
 
