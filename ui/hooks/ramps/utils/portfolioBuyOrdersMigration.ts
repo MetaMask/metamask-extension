@@ -8,18 +8,14 @@ import {
   syncRampsOrdersWithUserStorage,
 } from '../../../store/controller-actions/ramps-controller';
 
-// Bump when migrate must re-run after fixing Portfolio Profile Sync session
-// handling (stale auth could mark migrate done without a successful upload).
+// Bump when migrate must re-run after Profile Sync session-handling fixes.
 export const PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY =
   'portfolio-buy-orders-migration-v13';
-
 export const EXT_MIGRATE_ORDERS_ENTRY = 'ext_migrate_orders';
 export const MIGRATE_STATUS_QUERY_PARAM = 'migrateStatus';
 export const MIGRATE_STATUS_DONE = 'done';
-
 const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 const MIGRATE_TIMEOUT_MS = 45_000;
-/** Soft cap so a hung User Storage sync cannot block native Buy forever. */
 const SYNC_TIMEOUT_MS = 12_000;
 
 type PlatformTabApi = {
@@ -36,6 +32,13 @@ type PlatformTabApi = {
     ) => void,
   ) => void;
   removeTabUpdatedListener: (listener: (...args: unknown[]) => void) => void;
+};
+
+type MigrationOptions = {
+  platform?: PlatformTabApi;
+  timeoutMs?: number;
+  syncTimeoutMs?: number;
+  syncOrders?: () => Promise<void>;
 };
 
 export async function hasCompletedPortfolioBuyOrdersMigration(): Promise<boolean> {
@@ -95,24 +98,21 @@ async function withTimeout<Result>(
   }
 }
 
-/**
- * Opens a background Portfolio tab to upload Buy orders, waits for the done
- * signal (URL query), closes the tab, syncs User Storage into RampsController,
- * and marks migration attempted so we do not open Portfolio again.
- */
 let migrationInFlight: Promise<void> | null = null;
 
-export async function runPortfolioBuyOrdersMigration(options?: {
-  platform?: PlatformTabApi;
-  timeoutMs?: number;
-  syncTimeoutMs?: number;
-  syncOrders?: () => Promise<void>;
-}): Promise<void> {
+/**
+ * Opens a background Portfolio tab to upload Buy orders, waits for the done
+ * signal, syncs User Storage into RampsController, and marks completion only
+ * after sync succeeds.
+ * @param options
+ */
+export async function runPortfolioBuyOrdersMigration(
+  options?: MigrationOptions,
+): Promise<void> {
   if (migrationInFlight) {
     await migrationInFlight;
     return;
   }
-
   migrationInFlight = runPortfolioBuyOrdersMigrationInner(options).finally(
     () => {
       migrationInFlight = null;
@@ -121,14 +121,10 @@ export async function runPortfolioBuyOrdersMigration(options?: {
   await migrationInFlight;
 }
 
-async function runPortfolioBuyOrdersMigrationInner(options?: {
-  platform?: PlatformTabApi;
-  timeoutMs?: number;
-  syncTimeoutMs?: number;
-  syncOrders?: () => Promise<void>;
-}): Promise<void> {
-  const alreadyDone = await hasCompletedPortfolioBuyOrdersMigration();
-  if (alreadyDone) {
+async function runPortfolioBuyOrdersMigrationInner(
+  options?: MigrationOptions,
+): Promise<void> {
+  if (await hasCompletedPortfolioBuyOrdersMigration()) {
     return;
   }
 
@@ -142,16 +138,14 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
   const timeoutMs = options?.timeoutMs ?? MIGRATE_TIMEOUT_MS;
   const syncTimeoutMs = options?.syncTimeoutMs ?? SYNC_TIMEOUT_MS;
   const syncOrders = options?.syncOrders ?? syncRampsOrdersWithUserStorage;
-  const migrateUrl = getPortfolioMigrateOrdersUrl();
-
   let openedTabId: number | undefined;
+
   try {
     const openedTab = await platform.openTab({
-      url: migrateUrl,
+      url: getPortfolioMigrateOrdersUrl(),
       active: false,
     });
     openedTabId = openedTab.id;
-
     if (openedTabId !== undefined) {
       await waitForMigrateDone(platform, openedTabId, timeoutMs);
     }
@@ -167,25 +161,18 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
     }
   }
 
-  let syncSucceeded = false;
   try {
-    // Drop any stale DEV/UAT bearer, then mint a fresh session for the
-    // configured Profile Sync env (local yarn start → PRD, for UAT on-ramp).
     try {
       await submitRequestToBackground('performSignOut');
     } catch (signOutError) {
       console.error('performSignOut before migrate sync failed', signOutError);
     }
     await submitRequestToBackground('performSignIn');
-
     await withTimeout(
       syncOrders(),
       syncTimeoutMs,
       'syncRampsOrdersWithUserStorage',
     );
-
-    // Clear any pre-migrate auto-selection (often Transak with empty history)
-    // so preferred-provider can re-run against synced completed orders.
     try {
       await setRampsSelectedProvider(null);
     } catch (clearError) {
@@ -194,19 +181,12 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
         clearError,
       );
     }
-
-    syncSucceeded = true;
+    await markPortfolioBuyOrdersMigrationCompleted();
   } catch (error) {
     console.error(
       'syncRampsOrdersWithUserStorage after Portfolio migrate failed',
       error,
     );
-  }
-
-  // Only mark complete when sync succeeded — otherwise the next Buy re-runs
-  // migrate+sync (previous bug: invalid token still marked done → permanent Transak).
-  if (syncSucceeded) {
-    await markPortfolioBuyOrdersMigrationCompleted();
   }
 }
 
@@ -229,9 +209,9 @@ function waitForMigrateDone(
       if (tabId !== openedTabId) {
         return;
       }
-      const candidateUrl =
-        changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
-      if (isMigrateDoneUrl(candidateUrl)) {
+      if (
+        isMigrateDoneUrl(changeInfo?.url || changeInfo?.pendingUrl || tab?.url)
+      ) {
         finish();
       }
     }

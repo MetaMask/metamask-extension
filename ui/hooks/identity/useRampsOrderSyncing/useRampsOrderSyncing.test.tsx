@@ -7,7 +7,7 @@ import {
   useShouldDispatchRampsOrderSyncing,
 } from './useRampsOrderSyncing';
 
-type ArrangeMocksMetamaskStateOverrides = {
+type StateOverrides = {
   isSignedIn?: boolean;
   isBackupAndSyncEnabled?: boolean;
   isRampsSyncingEnabled?: boolean;
@@ -16,7 +16,7 @@ type ArrangeMocksMetamaskStateOverrides = {
   completedOnboarding?: boolean;
 };
 
-const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
+const defaultState: Required<StateOverrides> = {
   isSignedIn: true,
   isBackupAndSyncEnabled: true,
   isRampsSyncingEnabled: true,
@@ -25,56 +25,15 @@ const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   completedOnboarding: true,
 };
 
-const arrangeMockState = (
-  metamaskStateOverrides?: ArrangeMocksMetamaskStateOverrides,
-) => {
-  const state = {
-    metamask: {
-      ...initialMetamaskState,
-      ...metamaskStateOverrides,
-      keyrings: [],
-    },
-  };
-
-  return { state };
-};
+const arrangeState = (overrides: StateOverrides = {}) => ({
+  state: { metamask: { ...defaultState, ...overrides, keyrings: [] } },
+});
 
 describe('useShouldDispatchRampsOrderSyncing()', () => {
-  const testCases = (() => {
-    const properties = [
-      'isSignedIn',
-      'isBackupAndSyncEnabled',
-      'isRampsSyncingEnabled',
-      'isUnlocked',
-      'useExternalServices',
-      'completedOnboarding',
-    ] as const;
-    const baseState = {
-      isSignedIn: true,
-      isBackupAndSyncEnabled: true,
-      isRampsSyncingEnabled: true,
-      isUnlocked: true,
-      useExternalServices: true,
-      completedOnboarding: true,
-    };
+  const gateKeys = Object.keys(defaultState) as (keyof typeof defaultState)[];
 
-    const failureStateCases: {
-      state: ArrangeMocksMetamaskStateOverrides;
-      failingField: string;
-    }[] = [];
-
-    properties.forEach((property) => {
-      const state = { ...baseState, [property]: false };
-      failureStateCases.push({ state, failingField: property });
-    });
-
-    const successTestCase = { state: baseState };
-
-    return { successTestCase, failureStateCases };
-  })();
-
-  it('should return true if all conditions are met', () => {
-    const { state } = arrangeMockState(testCases.successTestCase.state);
+  it('returns true when all gates pass', () => {
+    const { state } = arrangeState();
     const hook = renderHookWithProviderTyped(
       () => useShouldDispatchRampsOrderSyncing(),
       state,
@@ -86,12 +45,10 @@ describe('useShouldDispatchRampsOrderSyncing()', () => {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  it.each(testCases.failureStateCases)(
-    'should return false if not all conditions are met [%s = false]',
-    ({
-      state: failureState,
-    }: (typeof testCases)['failureStateCases'][number]) => {
-      const { state } = arrangeMockState(failureState);
+  it.each(gateKeys)(
+    'returns false when %s is false',
+    (key: keyof typeof defaultState) => {
+      const { state } = arrangeState({ [key]: false });
       const hook = renderHookWithProviderTyped(
         () => useShouldDispatchRampsOrderSyncing(),
         state,
@@ -104,63 +61,42 @@ describe('useShouldDispatchRampsOrderSyncing()', () => {
 });
 
 describe('useRampsOrderSyncing', () => {
-  const arrangeMocks = () => {
-    const mockSyncRampsOrdersAction = jest
+  const arrange = (overrides: StateOverrides = defaultState) => {
+    const mockSync = jest
       .spyOn(rampsControllerActions, 'syncRampsOrdersWithUserStorage')
       .mockResolvedValue(undefined);
-    return {
-      mockSyncRampsOrdersAction,
-    };
-  };
-
-  const arrangeAndAct = (
-    stateOverrides: ArrangeMocksMetamaskStateOverrides = initialMetamaskState,
-  ) => {
-    const mocks = arrangeMocks();
-    const { state } = arrangeMockState(stateOverrides);
-
+    const { state } = arrangeState(overrides);
     const { result } = renderHookWithProviderTyped(
       () => useRampsOrderSyncing(),
       state,
       undefined,
       MetamaskIdentityProvider,
     );
-    const { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
-      result.current;
-
-    return {
-      mocks,
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing,
-    };
+    return { mockSync, ...result.current };
   };
 
-  it('should dispatch if conditions are met', async () => {
+  it('dispatches when conditions are met', async () => {
     const {
-      mocks,
+      mockSync,
       dispatchRampsOrderSyncing,
       shouldDispatchRampsOrderSyncing,
-    } = arrangeAndAct();
-
+    } = arrange();
     dispatchRampsOrderSyncing();
-
     await waitFor(() => {
-      expect(mocks.mockSyncRampsOrdersAction).toHaveBeenCalled();
+      expect(mockSync).toHaveBeenCalled();
       expect(shouldDispatchRampsOrderSyncing).toBe(true);
     });
   });
 
-  it('should not dispatch conditions are not met', async () => {
+  it('does not dispatch when conditions fail', async () => {
     const {
-      mocks,
+      mockSync,
       dispatchRampsOrderSyncing,
       shouldDispatchRampsOrderSyncing,
-    } = arrangeAndAct({ isRampsSyncingEnabled: false });
-
+    } = arrange({ isRampsSyncingEnabled: false });
     dispatchRampsOrderSyncing();
-
     await waitFor(() => {
-      expect(mocks.mockSyncRampsOrdersAction).not.toHaveBeenCalled();
+      expect(mockSync).not.toHaveBeenCalled();
       expect(shouldDispatchRampsOrderSyncing).toBe(false);
     });
   });

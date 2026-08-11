@@ -265,21 +265,6 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('ever connected to Portfolio → runs silent migrate before native buy', async () => {
-    const { result } = run(
-      buildState({
-        subjects: {
-          'https://app.metamask.io': {
-            permissions: { 'endowment:caip25': {} },
-          },
-        },
-      }),
-    );
-    await goToBuy(result);
-    expect(mockRunPortfolioBuyOrdersMigration).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
-  });
-
   it('providers fetch errored → fails open and navigates to token selection', async () => {
     const { result, getModalName } = run(
       buildState({

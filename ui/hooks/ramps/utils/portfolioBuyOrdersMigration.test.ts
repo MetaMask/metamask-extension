@@ -16,11 +16,9 @@ jest.mock('../../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));
-
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
-
 jest.mock('../../../store/controller-actions/ramps-controller', () => ({
   setRampsSelectedProvider: jest.fn().mockResolvedValue(undefined),
   syncRampsOrdersWithUserStorage: jest.fn().mockResolvedValue(undefined),
@@ -28,6 +26,18 @@ jest.mock('../../../store/controller-actions/ramps-controller', () => ({
 
 const mockGetStorageItem = getStorageItem as jest.Mock;
 const mockSetStorageItem = setStorageItem as jest.Mock;
+const doneUrl = `https://app.metamask.io/buy?metamaskEntry=${EXT_MIGRATE_ORDERS_ENTRY}&${MIGRATE_STATUS_QUERY_PARAM}=${MIGRATE_STATUS_DONE}`;
+
+function createPlatform(tabId: number) {
+  return {
+    openTab: jest.fn().mockResolvedValue({ id: tabId }),
+    closeTab: jest.fn().mockResolvedValue(undefined),
+    addTabUpdatedListener: jest.fn((listener) => {
+      queueMicrotask(() => listener(tabId, { url: doneUrl }));
+    }),
+    removeTabUpdatedListener: jest.fn(),
+  };
+}
 
 describe('portfolioBuyOrdersMigration', () => {
   beforeEach(() => {
@@ -37,8 +47,7 @@ describe('portfolioBuyOrdersMigration', () => {
   });
 
   it('builds a migrate URL with the Extension entry param', () => {
-    const url = getPortfolioMigrateOrdersUrl('https://app.metamask.io');
-    expect(url).toBe(
+    expect(getPortfolioMigrateOrdersUrl('https://app.metamask.io')).toBe(
       `https://app.metamask.io/buy?metamaskEntry=${EXT_MIGRATE_ORDERS_ENTRY}`,
     );
   });
@@ -53,51 +62,21 @@ describe('portfolioBuyOrdersMigration', () => {
 
   it('no-ops when migration already completed', async () => {
     mockGetStorageItem.mockResolvedValue(true);
-    const platform = {
-      openTab: jest.fn(),
-      closeTab: jest.fn(),
-      addTabUpdatedListener: jest.fn(),
-      removeTabUpdatedListener: jest.fn(),
-    };
+    const platform = createPlatform(1);
     const syncOrders = jest.fn();
-
     await runPortfolioBuyOrdersMigration({ platform, syncOrders });
-
     expect(platform.openTab).not.toHaveBeenCalled();
     expect(syncOrders).not.toHaveBeenCalled();
   });
 
   it('opens Portfolio, waits for done URL, closes tab, syncs, and marks complete', async () => {
-    let tabListener:
-      | ((
-          tabId: number,
-          changeInfo: { url?: string },
-          tab?: { url?: string },
-        ) => void)
-      | undefined;
-
-    const platform = {
-      openTab: jest.fn().mockResolvedValue({ id: 42 }),
-      closeTab: jest.fn().mockResolvedValue(undefined),
-      addTabUpdatedListener: jest.fn((listener) => {
-        tabListener = listener;
-        // Portfolio signals done after Extension starts listening.
-        queueMicrotask(() => {
-          listener(42, {
-            url: `https://app.metamask.io/buy?metamaskEntry=${EXT_MIGRATE_ORDERS_ENTRY}&${MIGRATE_STATUS_QUERY_PARAM}=${MIGRATE_STATUS_DONE}`,
-          });
-        });
-      }),
-      removeTabUpdatedListener: jest.fn(),
-    };
+    const platform = createPlatform(42);
     const syncOrders = jest.fn().mockResolvedValue(undefined);
-
     await runPortfolioBuyOrdersMigration({
       platform,
       syncOrders,
       timeoutMs: 5_000,
     });
-
     expect(platform.openTab).toHaveBeenCalledWith({
       url: expect.stringContaining(`metamaskEntry=${EXT_MIGRATE_ORDERS_ENTRY}`),
       active: false,
@@ -111,32 +90,21 @@ describe('portfolioBuyOrdersMigration', () => {
   });
 
   it('does not mark complete when sync fails so Buy can retry', async () => {
-    const platform = {
-      openTab: jest.fn().mockResolvedValue({ id: 7 }),
-      closeTab: jest.fn().mockResolvedValue(undefined),
-      addTabUpdatedListener: jest.fn((listener) => {
-        queueMicrotask(() => {
-          listener(7, {
-            url: `https://app.metamask.io/buy?metamaskEntry=${EXT_MIGRATE_ORDERS_ENTRY}&${MIGRATE_STATUS_QUERY_PARAM}=${MIGRATE_STATUS_DONE}`,
-          });
-        });
-      }),
-      removeTabUpdatedListener: jest.fn(),
-    };
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+    const platform = createPlatform(7);
     const syncOrders = jest
       .fn()
       .mockRejectedValue(new Error('invalid access token'));
-
     await runPortfolioBuyOrdersMigration({
       platform,
       syncOrders,
       timeoutMs: 5_000,
     });
-
     expect(syncOrders).toHaveBeenCalledTimes(1);
     expect(mockSetStorageItem).not.toHaveBeenCalledWith(
       PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY,
       true,
     );
+    errorSpy.mockRestore();
   });
 });

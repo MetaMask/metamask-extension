@@ -67,21 +67,15 @@ describe('AuthenticationControllerInit', () => {
   });
 
   it('clears persisted sessions minted for a different OIDC env', () => {
-    // Minimal JWT payload: {"iss":"https://oidc.api.cx.metamask.io"} (PRD)
     const prdJwt = `aaa.${Buffer.from(
       JSON.stringify({ iss: 'https://oidc.api.cx.metamask.io' }),
     ).toString('base64url')}.bbb`;
-
     const requestMock = buildInitRequestMock();
     requestMock.persistedState.AuthenticationController = {
       isSignedIn: true,
       srpSessionData: {
         'entropy-1': {
-          token: {
-            accessToken: prdJwt,
-            expiresIn: 3600,
-            obtainedAt: Date.now(),
-          },
+          token: { accessToken: prdJwt, expiresIn: 3600, obtainedAt: 1 },
           profile: {
             identifierId: 'id',
             profileId: 'profile',
