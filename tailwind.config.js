@@ -27,8 +27,22 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    plugin(({ addVariant }) => {
+    plugin(({ addVariant, addUtilities, addBase }) => {
       addVariant('@compact', '@container list-item (max-width: 399px)');
+      // Tailwind v4 ships these; polyfill for v3.4
+      addVariant('starting', '@starting-style');
+      addUtilities({
+        '.transition-discrete': {
+          'transition-behavior': 'allow-discrete',
+        },
+      });
+      // Emitted via addBase so arbitrary `animation: … drawer-slide-in …` can reference it
+      addBase({
+        '@keyframes drawer-slide-in': {
+          from: { translate: '100% 0' },
+          to: { translate: '0 0' },
+        },
+      });
     }),
   ],
 };
