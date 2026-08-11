@@ -109,7 +109,7 @@ Capabilities added by the settings-folder migration (each mirrors the Selenium c
 
 - **Downloads** — Playwright intercepts downloads instead of using the browser's native download directory, so the driver saves every download to `test-artifacts/downloads/<suggested filename>` via a per-page `download` listener (used by `backup-restore` and `state-logs`).
 - **WebAuthn virtual authenticator** — `withFixtures({ virtualAuthenticator: true })` works on the PW path via the CDP `WebAuthn` domain (Chromium only, like Selenium's virtual authenticator; used by the passkey specs). All passkey specs are migrated, so the Selenium implementation was removed from [`virtual-authenticator.ts`](../webdriver/virtual-authenticator.ts) — Selenium specs can no longer use `virtualAuthenticator: true`.
-- **`waitForUrl`** — exact-match URL wait backed by `page.waitForURL`. `openNewPage` also switches the current page *before* navigating, matching Selenium, so specs that swallow navigation errors (e.g. `ipfs-ens-resolution`) still observe the new tab.
+- **`waitForUrl`** — exact-match URL wait backed by `page.waitForURL`. `openNewPage` also switches the current page _before_ navigating, matching Selenium, so specs that swallow navigation errors (e.g. `ipfs-ens-resolution`) still observe the new tab.
 
 Capabilities added by the onboarding/account migration:
 

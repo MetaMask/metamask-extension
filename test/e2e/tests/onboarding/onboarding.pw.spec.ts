@@ -1,10 +1,6 @@
 import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import {
-  E2E_DRIVER,
-  TEST_SEED_PHRASE,
-  WALLET_PASSWORD,
-} from '../../constants';
+import { E2E_DRIVER, TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../constants';
 import {
   convertToHexValue,
   withFixtures,
