@@ -5,6 +5,10 @@ class ConnectAccountConfirmation {
     testId: `multichain-account-cell-name-${accountName}`,
   });
 
+  private readonly accountsCount = (count: number) => ({
+    testId: `accounts-count-${count}`,
+  });
+
   private readonly accountSection = {
     testId: 'account-selection-section',
   };
@@ -41,8 +45,12 @@ class ConnectAccountConfirmation {
   }
 
   async checkForAccountsInPermissionList(accounts: string[]): Promise<void> {
-    for (const account of accounts) {
-      await this.driver.waitForSelector(this.accountListItem(account));
+    if (accounts.length === 1) {
+      // Single account: look for the account cell with the name
+      await this.driver.waitForSelector(this.accountListItem(accounts[0]));
+    } else {
+      // Multiple accounts: look for the accounts count indicator
+      await this.driver.waitForSelector(this.accountsCount(accounts.length));
     }
   }
 

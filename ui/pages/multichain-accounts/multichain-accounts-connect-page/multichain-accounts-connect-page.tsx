@@ -119,7 +119,7 @@ type SingleAccountCellProps = {
 type MultiAccountRowProps = {
   seedAddresses: string[];
   onEdit: () => void;
-  accountsCountLabel: string;
+  accountsCount: number;
 };
 
 const SingleAccountCell = ({
@@ -148,13 +148,14 @@ const SingleAccountCell = ({
 const MultiAccountRow = ({
   seedAddresses,
   onEdit,
-  accountsCountLabel,
+  accountsCount,
 }: MultiAccountRowProps) => {
   const avatarVariant = useSelector(getAvatarType);
   const avatarMembers = seedAddresses.map((address) => ({
     address,
     variant: avatarVariant,
   }));
+  const t = useI18nContext();
 
   return (
     <Box
@@ -168,8 +169,12 @@ const MultiAccountRow = ({
         avatarPropsArr={avatarMembers}
         variant={AvatarGroupVariant.Account}
       />
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-        {accountsCountLabel}
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextDefault}
+        data-testid={`accounts-count-${accountsCount}`}
+      >
+        {t('accountsCount', { count: accountsCount.toString() })}
       </Text>
       <Icon
         name={IconName.ArrowRight}
@@ -610,9 +615,7 @@ export const MultichainAccountsConnectPage = ({
               <MultiAccountRow
                 seedAddresses={seedAddresses}
                 onEdit={setModeToEditAccounts}
-                accountsCountLabel={t('accountsCount', [
-                  selectedAccountGroupIds.length.toString(),
-                ])}
+                accountsCount={selectedAccountGroupIds.length}
               />
             )}
           </Box>
