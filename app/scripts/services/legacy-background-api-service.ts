@@ -20,6 +20,7 @@ import {
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerIsNetworkEnabledAction,
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
@@ -633,6 +634,7 @@ type AllowedActions =
   | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerIsNetworkEnabledAction
   | NetworkEnablementControllerGetStateAction
   | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
@@ -1230,37 +1232,71 @@ export class LegacyBackgroundApiService {
         { ...networks },
       ]),
     ) as NetworkEnablementControllerState['enabledNetworkMap'];
-    const restorePreviousEnabledNetworkMap = () => {
-      this.#messenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      this.#messenger.call(
-        'NetworkEnablementController:restoreEnabledNetworkMap',
-        previousEnabledNetworkMap,
-      );
-    };
 
-    this.#messenger.subscribe(
-      'NetworkEnablementController:stateChange',
-      restorePreviousEnabledNetworkMap,
+    const addedNetwork = await this.#messenger.call(
+      'NetworkController:addNetwork',
+      networkConfiguration as AddNetworkFields,
+    );
+    await this.lookupSelectedNetworks();
+
+    // The NetworkEnablementController enables the newly added network
+    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
+    // updating state), which switches the active network filter. Wait for that
+    // enablement to land, then restore the previous map.
+    //
+    // The restore runs here in the linear flow rather than from a
+    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
+    // the `restoreEnabledNetworkMap` action synchronously from inside the
+    // subscriber re-enters the messenger's publish and the restore update is
+    // dropped. Awaiting first defers the restore to a microtask outside that
+    // publish.
+    await this.#whenNetworkEnabled(networkConfiguration.chainId);
+    this.#messenger.call(
+      'NetworkEnablementController:restoreEnabledNetworkMap',
+      previousEnabledNetworkMap,
     );
 
-    try {
-      const addedNetwork = await this.#messenger.call(
-        'NetworkController:addNetwork',
-        networkConfiguration as AddNetworkFields,
-      );
-      await this.lookupSelectedNetworks();
-      return addedNetwork;
-    } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
-      this.#messenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      throw error;
+    return addedNetwork;
+  }
+
+  /**
+   * Resolves once the given network is enabled in the
+   * NetworkEnablementController, or after `timeout` ms as a safety net so a
+   * missing enablement can't hang `addNetwork`.
+   *
+   * @param chainId - The chain ID of the newly added network.
+   * @param timeout - Maximum time to wait, in milliseconds.
+   */
+  #whenNetworkEnabled(chainId: Hex, timeout = 15_000): Promise<void> {
+    if (
+      this.#messenger.call(
+        'NetworkEnablementController:isNetworkEnabled',
+        chainId,
+      )
+    ) {
+      return Promise.resolve();
     }
+
+    return new Promise((resolve) => {
+      // Safety net so a missing enablement can't hang `addNetwork`.
+      const timer = setTimeout(resolve, timeout);
+
+      // `subscribeOnce` unsubscribes itself once the condition passes.
+      this.#messenger.subscribeOnce(
+        'NetworkEnablementController:stateChange',
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        {
+          condition: () =>
+            this.#messenger.call(
+              'NetworkEnablementController:isNetworkEnabled',
+              chainId,
+            ),
+        },
+      );
+    });
   }
 
   /**

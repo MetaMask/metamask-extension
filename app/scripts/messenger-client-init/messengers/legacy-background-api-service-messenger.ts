@@ -37,6 +37,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkEnablementController:getState',
       'NetworkEnablementController:enableNetwork',
       'NetworkEnablementController:enableAllPopularNetworks',
+      'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
