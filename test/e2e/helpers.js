@@ -544,11 +544,6 @@ async function withFixtures(options, testSuite) {
     await setManifestFlags(manifestFlags);
 
     if (driverType === E2E_DRIVER.PLAYWRIGHT) {
-      if (virtualAuthenticator) {
-        throw new Error(
-          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',
-        );
-      }
       const pwBrowser =
         process.env.SELENIUM_BROWSER === 'firefox' ||
         process.env.PLAYWRIGHT_BROWSER === 'firefox'

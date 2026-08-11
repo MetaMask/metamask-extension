@@ -5,6 +5,7 @@ import {
 } from 'selenium-webdriver/lib/virtual_authenticator';
 import type { PasskeyRecord } from '@metamask/passkey-controller';
 import { Driver } from './driver';
+import { PlaywrightDriver } from './driver-playwright';
 
 type RawDriverWithVirtualAuth = {
   addVirtualAuthenticator: (
@@ -28,15 +29,29 @@ function getRawDriver(driver: Driver): RawDriverWithVirtualAuth {
   return driver.driver as unknown as RawDriverWithVirtualAuth;
 }
 
-export async function addVirtualAuthenticator(driver: Driver): Promise<void> {
+export async function addVirtualAuthenticator(
+  driver: Driver | PlaywrightDriver,
+): Promise<void> {
+  // The Playwright driver implements the virtual authenticator itself via
+  // the CDP WebAuthn domain; the Selenium path goes through the raw
+  // WebDriver session. `instanceof` also works when `driver` is the
+  // E2E_DEBUG logging proxy, since Proxy forwards getPrototypeOf.
+  if (driver instanceof PlaywrightDriver) {
+    await driver.addVirtualAuthenticator();
+    return;
+  }
   await getRawDriver(driver).addVirtualAuthenticator(
     createPlatformAuthenticatorOptions(),
   );
 }
 
 export async function removeVirtualAuthenticator(
-  driver: Driver,
+  driver: Driver | PlaywrightDriver,
 ): Promise<void> {
+  if (driver instanceof PlaywrightDriver) {
+    await driver.removeVirtualAuthenticator();
+    return;
+  }
   await getRawDriver(driver).removeVirtualAuthenticator();
 }
 

@@ -1,7 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect } from '@playwright/test';
-import type { BrowserContext, Locator, Page } from '@playwright/test';
+import type {
+  BrowserContext,
+  CDPSession,
+  Locator,
+  Page,
+} from '@playwright/test';
 
 /**
  * PlaywrightDriver — drop-in replacement for `webdriver/driver.js`'s `Driver`
@@ -92,6 +97,16 @@ export type PlaywrightDriverOptions = {
 function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
+
+// Where browser downloads land. Matches the Selenium drivers, which
+// configure the browser's native download directory to this same path so
+// specs (e.g. backup-restore, state-logs) can read downloaded files from
+// disk.
+const DOWNLOADS_FOLDER = path.join(
+  process.cwd(),
+  'test-artifacts',
+  'downloads',
+);
 
 /**
  * Wraps a Playwright `Locator` with the same surface as the Selenium-flavored
@@ -244,6 +259,11 @@ export class PlaywrightDriver {
 
   private handleCounter = 0;
 
+  // CDP session used for the WebAuthn virtual authenticator (Chromium only).
+  private webAuthnCdpSession: CDPSession | null = null;
+
+  private virtualAuthenticatorId: string | null = null;
+
   constructor({
     context,
     page,
@@ -285,6 +305,20 @@ export class PlaywrightDriver {
     this.handleCounter += 1;
     const handle = `pw-handle-${this.handleCounter}`;
     this.pages.set(handle, page);
+    // Selenium relies on the browser's native download directory. Playwright
+    // instead intercepts downloads, so persist each one under the shared
+    // downloads folder with its real filename to keep spec expectations
+    // (read file by name from `test-artifacts/downloads`) working.
+    page.on('download', (download) => {
+      download
+        .saveAs(path.join(DOWNLOADS_FOLDER, download.suggestedFilename()))
+        .catch((error) => {
+          console.error(
+            `PlaywrightDriver: failed to save download '${download.suggestedFilename()}'`,
+            error,
+          );
+        });
+    });
     page.on('close', () => {
       this.pages.delete(handle);
       if (this.currentPage === page) {
@@ -879,9 +913,14 @@ export class PlaywrightDriver {
 
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    // Selenium switches to the new tab *before* navigating, so callers that
+    // swallow navigation errors (e.g. intentional proxy failures in the ENS
+    // resolution spec) still end up focused on the new tab. Mirror that by
+    // making the page current before `goto` can throw.
     this.currentPage = page;
-    return this.handleFor(page);
+    const handle = this.handleFor(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return handle;
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -890,6 +929,25 @@ export class PlaywrightDriver {
 
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
+  }
+
+  /**
+   * Waits until the current page's URL equals the given URL. Mirrors the
+   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
+   * plain string (no glob characters) as an exact-match pattern.
+   *
+   * @param options - Parameters for the function.
+   * @param options.url - The URL to wait for.
+   * @param options.timeout - Optional timeout period, defaults to `this.timeout`.
+   */
+  async waitForUrl({
+    url,
+    timeout = this.timeout,
+  }: {
+    url: string;
+    timeout?: number;
+  }): Promise<void> {
+    await this.page.waitForURL(url, { timeout });
   }
 
   async refresh(): Promise<void> {
@@ -972,6 +1030,60 @@ export class PlaywrightDriver {
         `Frame target: ${typeof frame === 'string' ? frame : 'PlaywrightElement'}. ` +
         `Implement when migrating a spec that needs it.`,
     );
+  }
+
+  // -- WebAuthn / passkeys ----------------------------------------------------
+
+  /**
+   * Attaches a CTAP2 platform virtual authenticator to the current page via
+   * the CDP `WebAuthn` domain. Mirrors Selenium's virtual authenticator
+   * (`webdriver/virtual-authenticator.ts`): resident keys, user
+   * verification, and presence simulation are all enabled so passkey
+   * ceremonies complete without any native OS dialog.
+   *
+   * Chromium only — matching Selenium, where the passkey specs skip Firefox.
+   * The CDP session is attached to the extension's main page target, which
+   * is where all passkey ceremonies in the migrated specs take place; it
+   * survives in-page navigation.
+   */
+  async addVirtualAuthenticator(): Promise<void> {
+    if (this.browser !== 'chrome') {
+      throw new Error(
+        'PlaywrightDriver.addVirtualAuthenticator is only supported on Chromium (CDP WebAuthn domain).',
+      );
+    }
+    if (!this.webAuthnCdpSession) {
+      this.webAuthnCdpSession = await this.context.newCDPSession(this.page);
+      await this.webAuthnCdpSession.send('WebAuthn.enable');
+    }
+    const { authenticatorId } = await this.webAuthnCdpSession.send(
+      'WebAuthn.addVirtualAuthenticator',
+      {
+        options: {
+          protocol: 'ctap2',
+          transport: 'internal',
+          hasResidentKey: true,
+          hasUserVerification: true,
+          isUserVerified: true,
+          automaticPresenceSimulation: true,
+        },
+      },
+    );
+    this.virtualAuthenticatorId = authenticatorId;
+  }
+
+  /**
+   * Removes the virtual authenticator added by `addVirtualAuthenticator`.
+   * No-op when none is attached, mirroring Selenium's behavior.
+   */
+  async removeVirtualAuthenticator(): Promise<void> {
+    if (!this.webAuthnCdpSession || !this.virtualAuthenticatorId) {
+      return;
+    }
+    await this.webAuthnCdpSession.send('WebAuthn.removeVirtualAuthenticator', {
+      authenticatorId: this.virtualAuthenticatorId,
+    });
+    this.virtualAuthenticatorId = null;
   }
 
   // -- Alerts ---------------------------------------------------------------

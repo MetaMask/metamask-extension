@@ -1,3 +1,5 @@
+import { test as pwTest } from '@playwright/test';
+import { E2E_DRIVER } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Mockttp } from '../../mock-e2e';
@@ -90,36 +92,44 @@ async function mockPhpConversion(mockServer: Mockttp) {
   ];
 }
 
-describe('Localization', function () {
-  it('can correctly display Philippine peso symbol and code', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withCurrencyController({
-            currentCurrency: 'php',
-          })
-          .withAssetsController({
-            selectedCurrency: 'php',
-          })
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-              showNativeTokenAsMainBalance: false,
-            },
-          })
-          .withEnabledNetworks({ eip155: { '0x1': true } })
-          .build(),
-        testSpecificMock: mockPhpConversion,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+pwTest.describe('Localization', () => {
+  pwTest(
+    'can correctly display Philippine peso symbol and code',
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withCurrencyController({
+              currentCurrency: 'php',
+            })
+            .withAssetsController({
+              selectedCurrency: 'php',
+            })
+            .withPreferencesController({
+              preferences: {
+                showFiatInTestnets: true,
+                showNativeTokenAsMainBalance: false,
+              },
+            })
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
+          testSpecificMock: mockPhpConversion,
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          title: testInfo.titlePath.join(' '),
+        },
+        async ({ driver }) => {
+          await login(driver, { validateBalance: false });
 
-        // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed(
-          '₱2,500,000.00',
-        );
-      },
-    );
-  });
+          // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed(
+            '₱2,500,000.00',
+          );
+        },
+      );
+    },
+  );
 });
