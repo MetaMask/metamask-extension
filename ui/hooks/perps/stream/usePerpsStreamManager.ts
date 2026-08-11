@@ -69,9 +69,13 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     () =>
       selectedAddress !== null && streamManager.isInitialized(selectedAddress),
   );
-  const [error, setError] = useState<Error | null>(null);
-  const [prevSelectedAddress, setPrevSelectedAddress] =
-    useState(selectedAddress);
+  const [error, setError] = useState<Error | null>(() =>
+    selectedAddress ? null : new Error('No account selected'),
+  );
+  // Start unset so the first address (including null) syncs on mount.
+  const [prevSelectedAddress, setPrevSelectedAddress] = useState<
+    string | null | undefined
+  >(undefined);
 
   if (selectedAddress !== prevSelectedAddress) {
     setPrevSelectedAddress(selectedAddress);

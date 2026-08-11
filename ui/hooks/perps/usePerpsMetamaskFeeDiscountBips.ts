@@ -98,7 +98,10 @@ export function usePerpsMetamaskFeeDiscountBips(
     undefined,
   );
   const discountKey = `${isVipProgramEnabled}|${selectedAddress ?? ''}|${currentChainId}|${baseFeeBips}`;
-  const [prevDiscountKey, setPrevDiscountKey] = useState(discountKey);
+  // Unset so the first mount still runs the sync below (and can hit the cache).
+  const [prevDiscountKey, setPrevDiscountKey] = useState<string | undefined>(
+    undefined,
+  );
 
   if (discountKey !== prevDiscountKey) {
     setPrevDiscountKey(discountKey);
@@ -110,20 +113,13 @@ export function usePerpsMetamaskFeeDiscountBips(
         selectedAddress,
         currentChainId,
       );
-      if (!caipAccountId) {
-        setDiscountBips(undefined);
+      if (caipAccountId && feeDiscountCache?.caipAccountId === caipAccountId) {
+        // TTL is enforced in the effect (Date.now is impure in render).
+        setDiscountBips(feeDiscountCache.discountBips);
       } else {
-        const now = Date.now();
-        if (
-          feeDiscountCache?.caipAccountId === caipAccountId &&
-          now - feeDiscountCache.timestamp < FEE_DISCOUNT_CACHE_TTL_MS
-        ) {
-          setDiscountBips(feeDiscountCache.discountBips);
-        } else {
-          // Clear the previous account's discount immediately so downstream memos
-          // don't apply a stale discount while the new fetch is in flight.
-          setDiscountBips(undefined);
-        }
+        // Clear the previous account's discount immediately so downstream memos
+        // don't apply a stale discount while the new fetch is in flight.
+        setDiscountBips(undefined);
       }
     }
   }

@@ -210,8 +210,12 @@ export function usePerpsLiveOrderBook(
   // (grouping, reconnect, or a fresh open after close).
   const resetKey = isAggregated ? subscriptionId : activeSymbol;
 
-  const [prevActivationKey, setPrevActivationKey] = useState(activationKey);
-  const [prevIsAggregated, setPrevIsAggregated] = useState(isAggregated);
+  // Start as unset so the first aggregated mount still allocates an identity
+  // (initializing to `activationKey` would skip the sync on mount).
+  const [prevActivationKey, setPrevActivationKey] = useState<
+    string | undefined
+  >(undefined);
+  const [prevIsAggregated, setPrevIsAggregated] = useState(false);
 
   // Allocate subscription identity during render when activation inputs change.
   // Ids are memoized by activationKey so StrictMode double-render does not

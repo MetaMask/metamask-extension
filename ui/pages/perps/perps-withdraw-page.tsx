@@ -197,18 +197,13 @@ const PerpsWithdrawPage = () => {
   const estimatedMinutes =
     usdcRoute?.constraints?.estimatedMinutes ?? HYPERLIQUID_WITHDRAWAL_MINUTES;
 
-  const [prevRoutesErrorTranslator, setPrevRoutesErrorTranslator] = useState(t);
-  if (t !== prevRoutesErrorTranslator) {
-    setPrevRoutesErrorTranslator(t);
-    setRoutesError(null);
-  }
-
   useEffect(() => {
     let cancelled = false;
 
     submitRequestToBackground<AssetRoute[]>('perpsGetWithdrawalRoutes', [])
       .then((routes) => {
         if (!cancelled) {
+          setRoutesError(null);
           setWithdrawalRoutes(Array.isArray(routes) ? routes : []);
         }
       })

@@ -70,9 +70,9 @@ export function PerpsControllerProvider({
 
   if (providedController !== prevProvidedController) {
     setPrevProvidedController(providedController);
-    if (providedController) {
-      setController(providedController);
-    }
+    // Clear when the prop is removed so children do not keep a stale instance
+    // while async init (or the loading fallback) takes over.
+    setController(providedController ?? null);
   }
 
   const selectedAccount = useSelector(getSelectedInternalAccount);

@@ -64,13 +64,13 @@ export function usePerpsMarketFills({
   if (fillsCacheKey !== prevFillsCacheKey) {
     setPrevFillsCacheKey(fillsCacheKey);
     const cached = peekWarmFills(fillsCacheKey);
-    if (cached !== undefined) {
+    if (cached === undefined) {
+      setRestFills([]);
+      setIsRestLoading(true);
+    } else {
       setRestFills(cached);
       setCurrentScopeKey(fillsCacheKey);
       setIsRestLoading(false);
-    } else {
-      setRestFills([]);
-      setIsRestLoading(true);
     }
   }
 
