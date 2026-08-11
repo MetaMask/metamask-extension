@@ -3402,9 +3402,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "您确定要断开连接吗？您可能会失去网站功能。"
   },
-  "disconnectAllDescriptionText": {
-    "message": "如果您断开与此网站的连接，则需要重新连接您的账户和网络才能再次使用此网站。"
-  },
   "disconnectAllSites": {
     "message": "断开所有连接"
   },
@@ -5391,10 +5388,6 @@
     "message": "将您的稳定币兑换为 mUSD，即可赚取高达 $1% 的年化奖励，该奖励每日可领取。$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "由 Relay 提供技术支持",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "将您的稳定币兑换为 mUSD，即可获得 $1% 的年化奖励。",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5430,10 +5423,6 @@
     "message": "可领取奖励详情",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "奖励详情",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5458,10 +5447,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdConvertAndGetBonus": {
-    "message": "兑换并获得 $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "获得 $1% 的奖励",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5475,10 +5460,6 @@
   },
   "musdEducationNotNow": {
     "message": "暂时不"
-  },
-  "musdGetBonusPercentage": {
-    "message": "获取 $1% mUSD 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "获取 mUSD"

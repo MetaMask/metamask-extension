@@ -394,6 +394,7 @@ export const DappConnectionControlBar = memo(() => {
         <DisconnectAllModal
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
+          origin={activeTabOrigin}
         />
       )}
 
