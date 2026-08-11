@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 
@@ -46,9 +52,7 @@ describe('AddRpcUrlPageForm', () => {
   it('disables Add URL when RPC validation fails', async () => {
     const onAdded = jest.fn();
     mockJsonRpcRequest.mockRejectedValue(new Error('invalid rpc'));
-    render(
-      <AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />,
-    );
+    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://invalid-rpc.example.com' },
@@ -70,9 +74,7 @@ describe('AddRpcUrlPageForm', () => {
 
   it('enables Add URL when RPC validation succeeds', async () => {
     const onAdded = jest.fn();
-    render(
-      <AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />,
-    );
+    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://rpc.example.com' },
@@ -93,7 +95,10 @@ describe('AddRpcUrlPageForm', () => {
 
   it('does not validate RPC when the URL format is invalid', () => {
     render(
-      <AddRpcUrlPageForm onCancel={() => undefined} onAdded={() => undefined} />,
+      <AddRpcUrlPageForm
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
     );
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {

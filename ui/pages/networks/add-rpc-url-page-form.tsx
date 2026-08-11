@@ -39,9 +39,9 @@ export const AddRpcUrlPageForm = ({
   const [rpcValidationError, setRpcValidationError] = useState<string>();
   const [isValidatingRpcUrl, setIsValidatingRpcUrl] = useState(false);
   const validationRequestIdRef = useRef(0);
-  const validationTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+  const validationTimeoutRef = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
 
   const getUrlError = (nextUrl: string) => {
     if (!nextUrl) {
@@ -52,9 +52,7 @@ export const AddRpcUrlPageForm = ({
       return undefined;
     }
 
-    return isWebUrl(`https://${nextUrl}`)
-      ? t('urlErrorMsg')
-      : t('invalidRPC');
+    return isWebUrl(`https://${nextUrl}`) ? t('urlErrorMsg') : t('invalidRPC');
   };
 
   const urlError = getUrlError(url);
