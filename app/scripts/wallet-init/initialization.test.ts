@@ -18,6 +18,7 @@ import { getTransactionControllerInitMessenger } from './messengers/transaction-
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -35,6 +36,9 @@ jest.mock('./instance-options/connectivity-controller', () => ({
   getConnectivityControllerInstanceOptions: jest.fn(
     () => 'connectivity-options',
   ),
+}));
+jest.mock('./instance-options/claims-controller', () => ({
+  getClaimsControllerInstanceOptions: jest.fn(() => 'claims-options'),
 }));
 jest.mock('./instance-options/gas-fee-controller', () => ({
   getGasFeeControllerInstanceOptions: jest.fn(
@@ -115,6 +119,7 @@ describe('initializeWallet', () => {
     expect(MockWallet).toHaveBeenCalledWith({
       instanceOptions: {
         approvalController: 'approval-options',
+        claimsService: 'claims-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
@@ -171,6 +176,7 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
+    expect(getClaimsControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
       messenger,
       platform,

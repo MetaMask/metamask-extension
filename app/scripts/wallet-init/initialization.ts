@@ -20,6 +20,7 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -53,6 +54,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
+      claimsService: getClaimsControllerInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
       }),
