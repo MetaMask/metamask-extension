@@ -34,7 +34,9 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../../shared/constants/app';
 import { formatGroupingLabel } from './order-book.utils';
+import { OrderBookLayoutIcon } from './order-book-layout-icons';
 import type {
+  OrderBookLayoutPosition,
   OrderBookListCurrency,
   OrderBookListMetric,
   PerpsOrderBookConfigModalProps,
@@ -46,8 +48,10 @@ const PILL_SELECTED_CLASS = 'bg-transparent border-muted';
 const PILL_UNSELECTED_CLASS =
   'bg-muted border-transparent hover:bg-muted-hover';
 
+
 type PillProps = {
   label: string;
+  icon?: React.ReactNode;
   isSelected: boolean;
   onSelect: () => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
@@ -58,6 +62,7 @@ type PillProps = {
 
 const Pill = ({
   label,
+  icon,
   isSelected,
   onSelect,
   onKeyDown,
@@ -74,10 +79,12 @@ const Pill = ({
     data-testid={testId}
     className={twMerge(
       PILL_BASE_CLASS,
+      icon && 'flex-col gap-2 rounded-xl',
       isSelected ? PILL_SELECTED_CLASS : PILL_UNSELECTED_CLASS,
       className,
     )}
   >
+    {icon}
     <Text
       variant={TextVariant.BodyMd}
       fontWeight={isSelected ? FontWeight.Medium : FontWeight.Regular}
@@ -91,6 +98,7 @@ const Pill = ({
 type RadioPillOption<Value> = {
   value: Value;
   label: string;
+  icon?: React.ReactNode;
   testId?: string;
 };
 
@@ -197,6 +205,7 @@ function RadioPillGroup<Value extends string | number>({
         <Pill
           key={String(option.value)}
           label={option.label}
+          icon={option.icon}
           isSelected={option.value === value}
           tabIndex={index === tabStopIndex ? 0 : -1}
           onSelect={() => onChange(option.value)}
@@ -234,6 +243,7 @@ export const PerpsOrderBookConfigModal = ({
   metric,
   grouping,
   groupingOptions,
+  layout,
   onApply,
   onClose,
   'data-testid': dataTestId = 'perps-order-book-config-modal',
@@ -243,6 +253,8 @@ export const PerpsOrderBookConfigModal = ({
     useState<OrderBookListCurrency>(currency);
   const [draftMetric, setDraftMetric] = useState<OrderBookListMetric>(metric);
   const [draftGrouping, setDraftGrouping] = useState<number | null>(grouping);
+  const [draftLayout, setDraftLayout] =
+    useState<OrderBookLayoutPosition>(layout);
 
   // Seed drafts only on the rising edge of isOpen. Re-running while open would
   // overwrite an in-progress selection if a parent prop (e.g. grouping after a
@@ -253,9 +265,10 @@ export const PerpsOrderBookConfigModal = ({
       setDraftCurrency(currency);
       setDraftMetric(metric);
       setDraftGrouping(grouping);
+      setDraftLayout(layout);
     }
     wasOpenRef.current = isOpen;
-  }, [isOpen, currency, metric, grouping]);
+  }, [isOpen, currency, metric, grouping, layout]);
 
   const environmentType = getEnvironmentType();
   const isCompactSheet =
@@ -300,6 +313,7 @@ export const PerpsOrderBookConfigModal = ({
       currency: draftCurrency,
       metric: draftMetric,
       grouping: draftGrouping ?? groupingOptions[0] ?? 1,
+      layout: draftLayout,
     });
     onClose();
   };
@@ -398,6 +412,36 @@ export const PerpsOrderBookConfigModal = ({
                 label: formatGroupingLabel(option),
                 testId: `${dataTestId}-grouping-${option}`,
               }))}
+            />
+          </Box>
+
+          {/* Order book layout */}
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsOrderBookLayout')}
+            </Text>
+            <RadioPillGroup<OrderBookLayoutPosition>
+              ariaLabel={t('perpsOrderBookLayout')}
+              value={draftLayout}
+              onChange={setDraftLayout}
+              pillClassName="flex-1"
+              options={[
+                {
+                  value: 'left',
+                  label: t('perpsOrderBookLayoutLeft'),
+                  icon: <OrderBookLayoutIcon position="left" />,
+                  testId: `${dataTestId}-layout-left`,
+                },
+                {
+                  value: 'right',
+                  label: t('perpsOrderBookLayoutRight'),
+                  icon: <OrderBookLayoutIcon position="right" />,
+                  testId: `${dataTestId}-layout-right`,
+                },
+              ]}
             />
           </Box>
         </Box>

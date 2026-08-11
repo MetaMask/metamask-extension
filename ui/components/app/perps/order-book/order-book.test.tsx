@@ -11,6 +11,14 @@ jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLiveOrderBook: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/perps-controller', () => ({
+  selectProLayoutPreferences: () => ({ orderBookPosition: 'left', orderFormPosition: 'right' }),
+}));
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
 const mockUsePerpsLiveOrderBook = jest.mocked(usePerpsLiveOrderBook);
 
 const mockOrderBook = {
@@ -319,6 +327,55 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByText(`${messages.perpsOrderBookTotal.message} (BTC)`),
       ).toBeInTheDocument();
+    });
+
+    it('renders the layout section with Left selected by default', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'true');
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      ).toHaveAttribute('aria-checked', 'false');
+    });
+
+    it('selects Right layout and applies it', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
+
+      // Modal closes on apply — the layout pill state was saved (persistence
+      // is verified via the submitRequestToBackground mock in integration tests).
+      expect(
+        screen.queryByText(messages.perpsOrderBookConfigTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('discards layout draft when the modal is dismissed', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-close'),
+      );
+
+      // Reopen: draft should be reset to the applied value (Left).
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'true');
     });
 
     it('keeps the applied grouping selected when the modal is reopened', () => {

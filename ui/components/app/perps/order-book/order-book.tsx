@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -17,6 +18,8 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { selectProLayoutPreferences } from '../../../../selectors/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -38,6 +41,7 @@ import {
 import { PerpsOrderBookConfigModal } from './order-book-config-modal';
 import { PerpsOrderBookSkeleton } from './order-book-skeleton';
 import type {
+  OrderBookLayoutPosition,
   OrderBookListCurrency,
   OrderBookListMetric,
   PerpsOrderBookProps,
@@ -252,6 +256,10 @@ export const PerpsOrderBook = ({
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
 
+  const proLayoutPreferences = useSelector(selectProLayoutPreferences);
+  const orderBookLayout: OrderBookLayoutPosition =
+    proLayoutPreferences.orderBookPosition ?? 'left';
+
   // Cycle the ladder view: both sides -> buy (bids) only -> sell (asks) only.
   const handleCycleViewMode = useCallback(() => {
     setViewMode((current) => {
@@ -393,10 +401,14 @@ export const PerpsOrderBook = ({
       currency: OrderBookListCurrency;
       metric: OrderBookListMetric;
       grouping: number;
+      layout: OrderBookLayoutPosition;
     }) => {
       setCurrency(next.currency);
       setMetric(next.metric);
       setSelectedGrouping(next.grouping);
+      submitRequestToBackground('perpsSetProLayoutPreferences', [
+        { orderBookPosition: next.layout },
+      ]).catch(() => undefined);
     },
     [],
   );
@@ -710,6 +722,7 @@ export const PerpsOrderBook = ({
         metric={metric}
         grouping={currentGrouping}
         groupingOptions={groupingOptions}
+        layout={orderBookLayout}
         onApply={handleApplyConfig}
         onClose={() => setIsConfigOpen(false)}
         data-testid={`${dataTestId}-config-modal`}

@@ -71,6 +71,7 @@ import {
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
+  selectProLayoutPreferences,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -150,6 +151,7 @@ import {
   ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  computeOrderBookWidthPctFromLeft,
   getOrderBookMaxWidthPct,
 } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
@@ -340,6 +342,8 @@ const PerpsOrderEntryPage = () => {
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
+  const { orderBookPosition } = useSelector(selectProLayoutPreferences);
+  const isOrderBookOnLeft = orderBookPosition === 'left';
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
@@ -1340,7 +1344,13 @@ const PerpsOrderEntryPage = () => {
       // dragging (ResizeObserver also refreshes this on container resize).
       setOrderBookMaxWidthPct(getOrderBookMaxWidthPct(rect.width));
       setOrderBookWidthPct(
-        computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
+        isOrderBookOnLeft
+          ? computeOrderBookWidthPctFromLeft(
+              rect.left,
+              rect.width,
+              moveEvent.clientX,
+            )
+          : computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
       );
     };
     const handleUp = () => setIsResizingOrderBook(false);
@@ -1350,7 +1360,7 @@ const PerpsOrderEntryPage = () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
     };
-  }, [isResizingOrderBook, bodyEl]);
+  }, [isResizingOrderBook, bodyEl, isOrderBookOnLeft]);
 
   // Re-clamp the stored width when the body resizes (popup resize / expand to
   // fullscreen). Without this, a width set on a wide body would exceed the
@@ -1373,8 +1383,6 @@ const PerpsOrderEntryPage = () => {
     return () => observer.disconnect();
   }, [bodyEl]);
 
-  // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
-  // the bounds. The order book is right-aligned, so ArrowLeft widens it.
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const containerWidth = bodyEl?.getBoundingClientRect().width;
@@ -1385,7 +1393,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width + ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width - ORDER_BOOK_RESIZE_STEP_PCT
+                : width + ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1394,7 +1404,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width - ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width + ORDER_BOOK_RESIZE_STEP_PCT
+                : width - ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1411,7 +1423,7 @@ const PerpsOrderEntryPage = () => {
           break;
       }
     },
-    [bodyEl],
+    [bodyEl, isOrderBookOnLeft],
   );
 
   const handleToggleOrderBook = useCallback(() => {
@@ -2080,12 +2092,15 @@ const PerpsOrderEntryPage = () => {
         }
       />
 
-      {/* Body: form content (left) + sliding order book (right). Scrolls
-          horizontally as a fallback when a narrow popup cannot fit both
-          pixel-floored panes. */}
+      {/* Body: form content + sliding order book. flex-row-reverse positions
+          the order book on the left when orderBookPosition === 'left'. */}
       <div
         ref={setBodyEl}
-        className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
+        data-testid="perps-order-body"
+        className={twMerge(
+          'flex flex-row flex-1 min-h-0 w-full overflow-x-auto',
+          isOrderBookOnLeft && 'flex-row-reverse',
+        )}
       >
         <Box
           flexDirection={BoxFlexDirection.Column}

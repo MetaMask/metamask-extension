@@ -402,3 +402,15 @@ export function computeOrderBookWidthPct(
   const pct = ((containerRight - pointerX) / containerWidth) * 100;
   return clampOrderBookWidthPct(pct, containerWidth);
 }
+
+export function computeOrderBookWidthPctFromLeft(
+  containerLeft: number,
+  containerWidth: number,
+  pointerX: number,
+): number {
+  if (!Number.isFinite(containerWidth) || containerWidth <= 0) {
+    return ORDER_BOOK_DEFAULT_WIDTH_PCT;
+  }
+  const pct = ((pointerX - containerLeft) / containerWidth) * 100;
+  return clampOrderBookWidthPct(pct, containerWidth);
+}

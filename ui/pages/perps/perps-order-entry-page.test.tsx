@@ -463,6 +463,29 @@ describe('PerpsOrderEntryPage', () => {
     });
   });
 
+  describe('order book layout position', () => {
+    it('applies flex-row-reverse when orderBookPosition is left (the default)', () => {
+      // Default proLayoutPreferences → orderBookPosition: 'left'
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      const body = screen.getByTestId('perps-order-body');
+      expect(body.className).toContain('flex-row-reverse');
+    });
+
+    it('does not apply flex-row-reverse when orderBookPosition is right', () => {
+      const store = mockStore({
+        ...createMockState(),
+        metamask: {
+          ...createMockState().metamask,
+          proLayoutPreferences: { orderBookPosition: 'right' },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      const body = screen.getByTestId('perps-order-body');
+      expect(body.className).not.toContain('flex-row-reverse');
+    });
+  });
+
   describe('rendering', () => {
     it('renders the page with order entry form', () => {
       const store = mockStore(createMockState());

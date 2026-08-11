@@ -364,7 +364,13 @@ function mockGetMaxAllowedAmount({
   return Math.max(0, Math.floor(spendableBalance * leverage * 0.99));
 }
 
+const mockDefaultProLayoutPreferences = {
+  orderBookPosition: 'left',
+  orderFormPosition: 'right',
+};
+
 module.exports = {
+  DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,
