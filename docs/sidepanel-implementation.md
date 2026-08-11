@@ -365,7 +365,7 @@ IS_SIDEPANEL=true yarn build:test
 yarn test:e2e:chrome
 
 # Or run a specific test
-yarn test:e2e:playwright:chrome test/e2e/tests/onboarding/onboarding.pw.spec.ts
+yarn test:e2e:single test/e2e/tests/onboarding/onboarding.spec.ts --browser=chrome
 ```
 
 ### Current Testing Strategy
