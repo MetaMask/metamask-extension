@@ -258,7 +258,7 @@
       "packages": {
         "sass-embedded>immutable": true,
         "sass-embedded>@bufbuild/protobuf": true,
-        "wait-on>rxjs": true,
+        "rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>varint": true,
         "sass-embedded>buffer-builder": true
@@ -282,7 +282,7 @@
         "Buffer": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "setTimeout": true
       }

@@ -176,7 +176,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -233,7 +233,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -292,7 +292,7 @@ describe('Multiple Standard Dapp Connections', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
