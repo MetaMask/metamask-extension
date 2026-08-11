@@ -72,9 +72,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       if (
         payToken &&
         payToken.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken.chainId.toLowerCase() === (token.chainId as string)?.toLowerCase()
+        payToken.chainId.toLowerCase() ===
+          (token.chainId as string)?.toLowerCase()
       ) {
-        console.log("OGP - Token already selected");
+        console.log('OGP - Token already selected');
         handleClose();
         return;
       }
