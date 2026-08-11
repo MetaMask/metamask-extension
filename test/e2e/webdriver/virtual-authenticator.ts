@@ -1,58 +1,42 @@
-import {
-  VirtualAuthenticatorOptions,
-  Transport,
-  Protocol,
-} from 'selenium-webdriver/lib/virtual_authenticator';
 import type { PasskeyRecord } from '@metamask/passkey-controller';
 import { Driver } from './driver';
 import { PlaywrightDriver } from './driver-playwright';
 
-type RawDriverWithVirtualAuth = {
-  addVirtualAuthenticator: (
-    options: VirtualAuthenticatorOptions,
-  ) => Promise<void>;
-  removeVirtualAuthenticator: () => Promise<void>;
-};
-
-function createPlatformAuthenticatorOptions(): VirtualAuthenticatorOptions {
-  const authOptions = new VirtualAuthenticatorOptions();
-  authOptions.setProtocol(Protocol.CTAP2);
-  authOptions.setTransport(Transport.INTERNAL);
-  authOptions.setHasResidentKey(true);
-  authOptions.setHasUserVerification(true);
-  authOptions.setIsUserVerified(true);
-  authOptions.setIsUserConsenting(true);
-  return authOptions;
-}
-
-function getRawDriver(driver: Driver): RawDriverWithVirtualAuth {
-  return driver.driver as unknown as RawDriverWithVirtualAuth;
-}
-
+/**
+ * WebAuthn virtual authenticator helpers.
+ *
+ * All passkey specs are migrated to Playwright, where the virtual
+ * authenticator is implemented by the Playwright driver itself via the CDP
+ * WebAuthn domain (Chromium-only). The former Selenium implementation
+ * (selenium-webdriver's VirtualAuthenticatorOptions) has been removed.
+ *
+ * The `instanceof` check also works when `driver` is the E2E_DEBUG logging
+ * proxy, since Proxy forwards getPrototypeOf.
+ *
+ * @param driver - The driver for the current test.
+ */
 export async function addVirtualAuthenticator(
   driver: Driver | PlaywrightDriver,
 ): Promise<void> {
-  // The Playwright driver implements the virtual authenticator itself via
-  // the CDP WebAuthn domain; the Selenium path goes through the raw
-  // WebDriver session. `instanceof` also works when `driver` is the
-  // E2E_DEBUG logging proxy, since Proxy forwards getPrototypeOf.
-  if (driver instanceof PlaywrightDriver) {
-    await driver.addVirtualAuthenticator();
-    return;
+  if (!(driver instanceof PlaywrightDriver)) {
+    throw new Error(
+      'virtualAuthenticator is only supported on the Playwright driver. ' +
+        'Migrate the spec to Playwright (driverType: E2E_DRIVER.PLAYWRIGHT).',
+    );
   }
-  await getRawDriver(driver).addVirtualAuthenticator(
-    createPlatformAuthenticatorOptions(),
-  );
+  await driver.addVirtualAuthenticator();
 }
 
 export async function removeVirtualAuthenticator(
   driver: Driver | PlaywrightDriver,
 ): Promise<void> {
-  if (driver instanceof PlaywrightDriver) {
-    await driver.removeVirtualAuthenticator();
-    return;
+  if (!(driver instanceof PlaywrightDriver)) {
+    throw new Error(
+      'virtualAuthenticator is only supported on the Playwright driver. ' +
+        'Migrate the spec to Playwright (driverType: E2E_DRIVER.PLAYWRIGHT).',
+    );
   }
-  await getRawDriver(driver).removeVirtualAuthenticator();
+  await driver.removeVirtualAuthenticator();
 }
 
 export const DUMMY_PASSKEY_RECORD: PasskeyRecord = {

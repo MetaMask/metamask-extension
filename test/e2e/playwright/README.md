@@ -105,6 +105,17 @@ The `PlaywrightDriver` shim only implements what migrated specs actually exercis
 
 Intentional no-ops (not gaps): `checkBrowserForExceptions` / `checkBrowserForConsoleErrors` — the PW path records `weberror` events automatically, so these stay as no-ops for API parity rather than throwing.
 
+Capabilities added by the settings-folder migration (each mirrors the Selenium contract):
+
+- **Downloads** — Playwright intercepts downloads instead of using the browser's native download directory, so the driver saves every download to `test-artifacts/downloads/<suggested filename>` via a per-page `download` listener (used by `backup-restore` and `state-logs`).
+- **WebAuthn virtual authenticator** — `withFixtures({ virtualAuthenticator: true })` works on the PW path via the CDP `WebAuthn` domain (Chromium only, like Selenium's virtual authenticator; used by the passkey specs). All passkey specs are migrated, so the Selenium implementation was removed from [`virtual-authenticator.ts`](../webdriver/virtual-authenticator.ts) — Selenium specs can no longer use `virtualAuthenticator: true`.
+- **`waitForUrl`** — exact-match URL wait backed by `page.waitForURL`. `openNewPage` also switches the current page *before* navigating, matching Selenium, so specs that swallow navigation errors (e.g. `ipfs-ens-resolution`) still observe the new tab.
+
+Capabilities added by the onboarding/account migration:
+
+- **Window handles** — `getCurrentWindowHandle`, `getAllWindowHandles`, `switchToWindow`, and `closeWindowHandle` map Selenium's opaque window handles onto synthetic `pw-handle-N` handles backed by Playwright `Page`s. Tabs opened by the extension background arrive via the context's `page` event and get a handle automatically (used by the deferred deep-link and Terms-of-Use link tests). Title/URL-based switching (`switchToWindowWithTitle` / `switchToWindowWithUrl`) is still unimplemented.
+- **`clickElementUsingMouseMove`** — Selenium's escape hatch for `ElementClickInterceptedError` maps to `locator.click({ force: true })`, which skips the receives-pointer-events check (used as a fallback by `HeaderNavbar.openGlobalMenu` when the notification badge overlaps the menu button).
+
 ### CI
 
 - New jobs: `test-e2e-chrome-playwright` (in `.github/workflows/e2e-chrome.yml`) and `test-e2e-firefox-playwright` (in `.github/workflows/e2e-firefox.yml`). Both use the existing `run-e2e.yml` reusable workflow, with the test command set to `yarn test:e2e:playwright:<browser>` (the [`run-all-pw.mts`](../run-all-pw.mts) runner — see [Test runner](#test-runner-run-all-pwmts) for what it does).
