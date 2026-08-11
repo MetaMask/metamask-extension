@@ -220,7 +220,8 @@ function RadioPillGroup<Value extends string | number>({
 /**
  * PerpsOrderBookConfigModal - "Listed by & Group by" bottom sheet used to pick
  * the order book's denomination (base/USD), the value column metric
- * (size/total) and the price grouping increment.
+ * (size/total), the price grouping increment and which side of the trading view
+ * the order book sits on.
  *
  * @param props - Component props.
  * @param props.isOpen
@@ -229,6 +230,7 @@ function RadioPillGroup<Value extends string | number>({
  * @param props.metric
  * @param props.grouping
  * @param props.groupingOptions
+ * @param props.layout
  * @param props.onApply
  * @param props.onClose
  * @param props.'data-testid'

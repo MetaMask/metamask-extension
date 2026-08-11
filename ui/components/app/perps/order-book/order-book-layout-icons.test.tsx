@@ -30,14 +30,15 @@ describe('OrderBookLayoutIcon', () => {
     expect(svg).toHaveAttribute('viewBox', '0 0 71 32');
   });
 
-  it.each(['left', 'right'] as const)(
-    'renders 6 order-book bars and 3 form bars for the %s position',
-    (position) => {
-      const { orderBookBars, formBars } = renderIcon(position);
-      expect(orderBookBars).toHaveLength(6);
-      expect(formBars).toHaveLength(3);
-    },
-  );
+  it('renders 6 order-book bars and 3 form bars for both positions', () => {
+    const left = renderIcon('left');
+    expect(left.orderBookBars).toHaveLength(6);
+    expect(left.formBars).toHaveLength(3);
+
+    const right = renderIcon('right');
+    expect(right.orderBookBars).toHaveLength(6);
+    expect(right.formBars).toHaveLength(3);
+  });
 
   describe('left position', () => {
     it('sits the order-book bars flat against the left outer edge', () => {
