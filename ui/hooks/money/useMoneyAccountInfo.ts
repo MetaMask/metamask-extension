@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import type { MoneyAccountAvailability } from '../../../shared/lib/money/availability';
 import { selectMoneyAccountFeatureEnabled } from '../../selectors/money/money-account-feature-flags';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { useMessenger } from '../useMessenger';
 
 /**
  * The Money Account, as much of it as Tier 1 knows about.
@@ -84,15 +83,14 @@ export function useMoneyAccountInfo(): UseMoneyAccountInfoResult {
   const isMoneyAccountFeatureEnabled = useSelector(
     selectMoneyAccountFeatureEnabled,
   );
+  const messenger = useMessenger();
 
   // Skipped entirely when the flag is off, mirroring the background gate's own
   // ordering: a flag-off user costs no seed access and no RPC.
   const { data: availability } = useQuery({
     queryKey: MONEY_ACCOUNT_AVAILABILITY_QUERY_KEY,
     queryFn: () =>
-      submitRequestToBackground<MoneyAccountAvailability>(
-        'getMoneyAccountAvailability',
-      ),
+      messenger.call('MoneyAccountAvailabilityService:getAvailability'),
     enabled: isMoneyAccountFeatureEnabled,
   });
 

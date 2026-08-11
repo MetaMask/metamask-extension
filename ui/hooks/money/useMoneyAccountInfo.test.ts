@@ -1,16 +1,16 @@
 import { waitFor } from '@testing-library/react';
 import type { Hex } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { setBackgroundConnection } from '../../store/background-connection';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 
 const mockGetMoneyAccountAvailability = jest.fn();
 
-setBackgroundConnection({
-  getMoneyAccountAvailability: async (...args: unknown[]) =>
-    mockGetMoneyAccountAvailability(...args),
-} as never);
+jest.mock('../useMessenger', () => ({
+  useMessenger: () => ({
+    call: (...args: unknown[]) => mockGetMoneyAccountAvailability(...args),
+  }),
+}));
 
 const MONEY_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
 
@@ -53,6 +53,9 @@ describe('useMoneyAccountInfo', () => {
       hasMoneyAccount: true,
       primaryMoneyAccount: { address: MONEY_ADDRESS },
     });
+    expect(mockGetMoneyAccountAvailability).toHaveBeenCalledWith(
+      'MoneyAccountAvailabilityService:getAvailability',
+    );
   });
 
   it('reports no account when the gate says it is unavailable, e.g. no delegation', async () => {
