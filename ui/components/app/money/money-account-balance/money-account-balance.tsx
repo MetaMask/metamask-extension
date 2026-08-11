@@ -17,6 +17,8 @@ import { getPreferences } from '../../../../../shared/lib/selectors/preferences'
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { RouteWithMessenger } from '../../../../layouts/route-with-messenger';
+import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from './messenger';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
@@ -57,7 +59,7 @@ export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
  *
  * @returns The balance row, or `null`.
  */
-export const MoneyAccountBalance = () => {
+const MoneyAccountBalanceContent = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
   const { hasMoneyAccount } = useMoneyAccountInfo();
@@ -107,5 +109,21 @@ export const MoneyAccountBalance = () => {
     </Box>
   );
 };
+
+/**
+ * The Money Account balance, wrapped in the route messenger it needs to call
+ * `MoneyAccountAvailabilityService:getAvailability` — see
+ * {@link MoneyAccountBalanceContent}. Mounted from multiple places on the
+ * account overview, so it carries its own messenger rather than relying on
+ * whichever route embeds it to declare the capability.
+ */
+export const MoneyAccountBalance = () => (
+  <RouteWithMessenger
+    path="money-account-balance"
+    capabilities={MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES}
+  >
+    <MoneyAccountBalanceContent />
+  </RouteWithMessenger>
+);
 
 export default MoneyAccountBalance;
