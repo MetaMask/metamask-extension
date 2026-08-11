@@ -33,16 +33,16 @@ function clearDrawerOpen(root: HTMLElement = document.documentElement) {
 const dialogClassNameBase = classnames(
   'group',
 
-  // Reset + shell (clip stencil on the right edge of the app column)
+  // Reset + clip stencil
   'box-border border-0 bg-transparent p-0',
   'm-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))]',
   'h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none]',
 
-  // Dialog enter/exit via display/overlay
+  // Dialog enter/exit
   'transition-[display,overlay] transition-discrete duration-300 ease-in-out',
   'motion-reduce:duration-[0.01ms]',
 
-  // Backdrop fade (UA default bg; we only animate opacity)
+  // Backdrop fade
   'backdrop:opacity-0 open:backdrop:opacity-100',
   'backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete',
   'backdrop:duration-[var(--global-drawer-open,300ms)] backdrop:ease-linear',
@@ -59,14 +59,14 @@ const dialogClassNameFullscreen =
 const frameClassName = classnames(
   'h-full w-full',
 
-  // Closed / exit: parked off-screen to the right
+  // Closed: slide out
   '[translate:100%_0]',
   'transition-[translate] duration-300 ease-in-out',
   'motion-reduce:duration-[0.01ms]',
 
-  // Open: slide in (`--global-drawer-open: none` skips replay across routes)
+  // Open: slide in (`--global-drawer-open: none` skips)
   'group-open:[translate:0_0]',
-  'group-open:[animation:var(--global-drawer-open,drawer-slide-in_300ms_ease-in-out_backwards)]',
+  'group-open:[animation:var(--global-drawer-open,slide-in-from-right_300ms_ease-in-out_backwards)]',
   'starting:group-open:[translate:var(--global-drawer-open,100%_0)]',
   'motion-reduce:group-open:animate-none',
 );

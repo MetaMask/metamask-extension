@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
+  Text,
+  TextColor,
   TextVariant,
   FontWeight,
   BoxFlexDirection,
@@ -12,7 +14,6 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
 import { transitionForward } from '../../ui/transition';
 import { preserveDrawerOpen } from '../global-menu-drawer/global-menu-drawer';
@@ -74,86 +75,83 @@ export const GlobalMenuList = ({
   className = '',
 }: GlobalMenuListProps) => {
   const navigate = useNavigate();
-  const t = useI18nContext();
 
   return (
-    <Box
-      asChild
-      className={`global-menu-list ${className}`}
-      flexDirection={BoxFlexDirection.Column}
-    >
-      <nav aria-label={t('accountOptions')}>
-        {sections.map((section, sectionIndex) => (
-          <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
-            {sectionIndex > 0 && !section.hideDividerAbove && (
-              <Box className="w-full px-2 py-2">
-                <hr className="m-0 w-full border-0 border-t border-muted" />
-              </Box>
-            )}
+    <nav className={`global-menu-list ${className}`}>
+      {sections.map((section, sectionIndex) => (
+        <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
+          {/* Section Separator - Show before section if it's not the first section */}
+          {sectionIndex > 0 && !section.hideDividerAbove && (
+            <Box className="w-full px-2 py-2">
+              <hr className="m-0 w-full border-0 border-t border-muted" />
+            </Box>
+          )}
 
-            {/* Section Header */}
-            {section.title && (
-              <Box
-                className="mx-4"
-                paddingTop={sectionIndex > 0 ? 4 : 2}
-                paddingBottom={2}
+          {/* Section Header */}
+          {section.title && (
+            <Box
+              className="mx-4"
+              paddingTop={sectionIndex > 0 ? 4 : 2}
+              paddingBottom={2}
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
               >
-                <h2 className="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium text-alternative">
-                  {section.title}
-                </h2>
-              </Box>
-            )}
+                {section.title}
+              </Text>
+            </Box>
+          )}
 
-            {/* Section Items */}
-            {section.items.map((item) => {
-              // Show chevron for route items or when explicitly requested (e.g. notifications)
-              const showChevron =
-                isRouteItem(item) || item.showChevron === true;
-              const routeState = isRouteItem(item)
-                ? getRouteState(item.state)
-                : undefined;
+          {/* Section Items */}
+          {section.items.map((item) => {
+            // Show chevron for route items or when explicitly requested (e.g. notifications)
+            const showChevron = isRouteItem(item) || item.showChevron === true;
+            const routeState = isRouteItem(item)
+              ? getRouteState(item.state)
+              : undefined;
 
-              return (
-                <MenuItem
-                  key={item.id}
-                  iconName={item.iconName}
-                  iconSize={item.iconSize ?? IconSize.Lg}
-                  iconColor={item.iconColor ?? IconColor.IconAlternative}
-                  textVariant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  textColor={item.textColor}
-                  to={isRouteItem(item) ? item.to : undefined}
-                  state={routeState}
-                  onClick={(event) => {
-                    if (!isRouteItem(item)) {
-                      item.onClick();
-                      return;
-                    }
+            return (
+              <MenuItem
+                key={item.id}
+                iconName={item.iconName}
+                iconSize={item.iconSize ?? IconSize.Lg}
+                iconColor={item.iconColor ?? IconColor.IconAlternative}
+                textVariant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                textColor={item.textColor}
+                to={isRouteItem(item) ? item.to : undefined}
+                state={routeState}
+                onClick={(event) => {
+                  if (!isRouteItem(item)) {
+                    item.onClick();
+                    return;
+                  }
 
-                    event.preventDefault();
-                    item.onClick?.();
-                    preserveDrawerOpen();
-                    transitionForward(() =>
-                      navigate(item.to, {
-                        state: routeState,
-                      }),
-                    );
-                  }}
-                  disabled={item.disabled}
-                  showInfoDot={item.showInfoDot}
-                  subtitle={item.subtitle}
-                  className={`first:rounded-t-none last:rounded-b-none ${
-                    item.className ?? ''
-                  }`}
-                  data-testid={item.id}
-                >
-                  {renderMenuItemContent(item.label, item.badge, showChevron)}
-                </MenuItem>
-              );
-            })}
-          </Box>
-        ))}
-      </nav>
-    </Box>
+                  event.preventDefault();
+                  item.onClick?.();
+                  preserveDrawerOpen();
+                  transitionForward(() =>
+                    navigate(item.to, {
+                      state: routeState,
+                    }),
+                  );
+                }}
+                disabled={item.disabled}
+                showInfoDot={item.showInfoDot}
+                subtitle={item.subtitle}
+                className={`first:rounded-t-none last:rounded-b-none ${
+                  item.className ?? ''
+                }`}
+                data-testid={item.id}
+              >
+                {renderMenuItemContent(item.label, item.badge, showChevron)}
+              </MenuItem>
+            );
+          })}
+        </Box>
+      ))}
+    </nav>
   );
 };
