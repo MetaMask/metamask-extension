@@ -30,9 +30,8 @@ class SitePermissionPage {
 
   private driver: Driver;
 
-  private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
-    tag: 'h4',
+  private readonly editAccountsModalHeader = {
+    testId: 'edit-accounts-modal-header',
   };
 
   private readonly editButton = '[data-testid="edit"]';
@@ -162,7 +161,7 @@ class SitePermissionPage {
   async openAccountPermissionsModal(): Promise<void> {
     const editButtons = await this.driver.findElements(this.editButton);
     await editButtons[0].click();
-    await this.driver.waitForSelector(this.editAccountsModalTitle);
+    await this.driver.waitForSelector(this.editAccountsModalHeader);
   }
 
   /**
