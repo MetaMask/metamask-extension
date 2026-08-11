@@ -306,6 +306,22 @@ describe('PerpsRecentActivity - Empty State', () => {
       screen.getByTestId('perps-recent-activity-empty'),
     ).toBeInTheDocument();
   });
+
+  it('shows "See All" button when no transactions', () => {
+    renderWithProvider(<PerpsRecentActivity transactions={[]} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-recent-activity-see-all'),
+    ).toBeInTheDocument();
+  });
+
+  it('"See All" navigates to PERPS_ACTIVITY_ROUTE when no transactions', () => {
+    renderWithProvider(<PerpsRecentActivity transactions={[]} />, mockStore);
+
+    fireEvent.click(screen.getByTestId('perps-recent-activity-see-all'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+  });
 });
 
 describe('PerpsRecentActivity - Loading state', () => {
