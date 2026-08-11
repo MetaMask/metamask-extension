@@ -16,6 +16,7 @@ import { BorderRadius } from '../../helpers/constants/design-system';
 import { isWebUrl } from '../../../shared/lib/url-utils';
 import { infuraProjectId } from '../../../shared/constants/network';
 import { jsonRpcRequest } from '../../../shared/lib/rpc.utils';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 
 const templateInfuraRpc = (endpoint: string) => {
   const rpcUrl = endpoint.endsWith('{infuraProjectId}')
@@ -24,8 +25,6 @@ const templateInfuraRpc = (endpoint: string) => {
 
   return new URL(rpcUrl).toString();
 };
-
-const RPC_VALIDATION_DEBOUNCE_MS = 300;
 
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;
@@ -42,9 +41,7 @@ export const AddRpcUrlPageForm = ({
   const [rpcValidationError, setRpcValidationError] = useState<string>();
   const [isValidatingRpcUrl, setIsValidatingRpcUrl] = useState(false);
   const validationRequestIdRef = useRef(0);
-  const validationTimeoutRef = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined);
+  const debouncedUrl = useDebouncedValue(url);
 
   const getUrlError = (nextUrl: string) => {
     if (!nextUrl) {
@@ -60,55 +57,47 @@ export const AddRpcUrlPageForm = ({
 
   const urlError = getUrlError(url);
 
-  useEffect(() => {
-    return () => {
-      validationRequestIdRef.current += 1;
-      if (validationTimeoutRef.current) {
-        clearTimeout(validationTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextUrl = event.target.value;
     setUrl(nextUrl);
-    validationRequestIdRef.current += 1;
-    if (validationTimeoutRef.current) {
-      clearTimeout(validationTimeoutRef.current);
-    }
     setRpcValidationError(undefined);
+  };
 
-    const trimmedUrl = nextUrl.trim();
-    const nextUrlError = getUrlError(nextUrl);
-    if (!trimmedUrl || nextUrlError) {
+  useEffect(() => {
+    const requestId = ++validationRequestIdRef.current;
+    const trimmedUrl = debouncedUrl.trim();
+    const debouncedUrlError = getUrlError(debouncedUrl);
+
+    if (!trimmedUrl || debouncedUrlError) {
       setIsValidatingRpcUrl(false);
       return;
     }
 
     setIsValidatingRpcUrl(true);
-    const requestId = validationRequestIdRef.current;
-    validationTimeoutRef.current = setTimeout(() => {
-      jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
-        .then(() => {
-          if (validationRequestIdRef.current === requestId) {
-            setRpcValidationError(undefined);
-          }
-        })
-        .catch(() => {
-          if (validationRequestIdRef.current === requestId) {
-            setRpcValidationError(t('failedToFetchChainId'));
-          }
-        })
-        .finally(() => {
-          if (validationRequestIdRef.current === requestId) {
-            setIsValidatingRpcUrl(false);
-          }
-        });
-    }, RPC_VALIDATION_DEBOUNCE_MS);
-  };
+    jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
+      .then(() => {
+        if (validationRequestIdRef.current === requestId) {
+          setRpcValidationError(undefined);
+        }
+      })
+      .catch(() => {
+        if (validationRequestIdRef.current === requestId) {
+          setRpcValidationError(t('failedToFetchChainId'));
+        }
+      })
+      .finally(() => {
+        if (validationRequestIdRef.current === requestId) {
+          setIsValidatingRpcUrl(false);
+        }
+      });
+  }, [debouncedUrl, t]);
 
   const error = urlError ?? rpcValidationError;
-  const isSubmitDisabled = !url.trim() || Boolean(error) || isValidatingRpcUrl;
+  const isSubmitDisabled =
+    !url.trim() ||
+    url !== debouncedUrl ||
+    Boolean(error) ||
+    isValidatingRpcUrl;
   const handleSubmit = () => {
     if (isSubmitDisabled) {
       return;
