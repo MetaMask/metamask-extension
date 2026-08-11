@@ -97,12 +97,6 @@ class EditConnectedAccountsModal {
     await this.driver.clickElement(this.connectAccountsButton);
   }
 
-  async isConnectButtonEnabled(): Promise<boolean> {
-    console.log('Check if Connect button is enabled');
-    const button = await this.driver.findElement(this.connectAccountsButton);
-    return await button.isEnabled();
-  }
-
   /**
    * Toggles an account at the specified index.
    *
@@ -159,6 +153,28 @@ class EditConnectedAccountsModal {
       },
       { interval: 500, timeout: 5000 },
     );
+  }
+
+  /**
+   * Waits until the Connect button becomes disabled.
+   * This is the preferred pattern over checking state with isEnabled() to avoid race conditions.
+   */
+  async waitForConnectButtonDisabled(): Promise<void> {
+    console.log('Waiting for Connect button to be disabled');
+    await this.driver.waitForSelector(this.connectAccountsButton, {
+      state: 'disabled',
+    });
+  }
+
+  /**
+   * Waits until the Connect button becomes enabled.
+   * This is the preferred pattern over checking state with isEnabled() to avoid race conditions.
+   */
+  async waitForConnectButtonEnabled(): Promise<void> {
+    console.log('Waiting for Connect button to be enabled');
+    await this.driver.waitForSelector(this.connectAccountsButton, {
+      state: 'enabled',
+    });
   }
 }
 
