@@ -3503,17 +3503,17 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllDescriptionText": {
-    "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
-  },
   "disconnectAllSites": {
-    "message": "Disconnect All"
+    "message": "Disconnect all"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "If you disconnect from all sites, you'll need to reconnect your accounts and networks to use them again."
+    "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
     "message": "Some dapps couldn't be disconnected. Please try again."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
@@ -3523,6 +3523,13 @@
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
+  },
+  "disconnectQuestion": {
+    "message": "Disconnect?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
@@ -5171,6 +5178,9 @@
   },
   "manage": {
     "message": "Manage"
+  },
+  "manageConnectedAccounts": {
+    "message": "Manage connected accounts"
   },
   "manageDefaultSettings": {
     "message": "Manage default settings"
@@ -9360,6 +9370,9 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
+  "selectAccounts": {
+    "message": "Select accounts"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -10248,6 +10261,10 @@
   },
   "singleNetwork": {
     "message": "1 network"
+  },
+  "sitePermissionsBanner": {
+    "message": "$1 can see your connected accounts and suggest transactions.",
+    "description": "$1 is the site hostname"
   },
   "sites": {
     "message": "Sites"
