@@ -518,7 +518,9 @@ describe('useBridgeAlerts', () => {
     });
 
     it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present even when a quote is loading', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest
+        .mocked(getBridgeQuotes)
+        .mockReturnValue({ ...MOCK_GET_BRIDGE_QUOTES, isLoading: true });
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
         priceImpact: { amount: '0.05' },
       });
