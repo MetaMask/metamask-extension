@@ -6,6 +6,11 @@ type SubscriptionServiceInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['subscriptionService']
 >;
 
+/**
+ * Builds the service options required by the wallet-owned `SubscriptionService`.
+ *
+ * @returns The SubscriptionService instance options.
+ */
 export function getSubscriptionServiceInstanceOptions(): SubscriptionServiceInstanceOptions {
   const { subscriptionEnv } = loadShieldConfig();
 

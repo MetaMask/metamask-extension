@@ -23,7 +23,7 @@ import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
-import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -53,7 +53,7 @@ jest.mock('./instance-options/shield-controller', () => ({
     () => 'shield-controller-options',
   ),
 }));
-jest.mock('./instance-options/subscription-controller', () => ({
+jest.mock('./instance-options/subscription-service', () => ({
   getSubscriptionServiceInstanceOptions: jest.fn(
     () => 'subscription-service-options',
   ),

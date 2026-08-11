@@ -25,7 +25,7 @@ import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
-import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each

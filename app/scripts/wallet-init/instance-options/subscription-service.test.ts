@@ -1,6 +1,6 @@
 import { Env } from '@metamask/subscription-controller';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
-import { getSubscriptionServiceInstanceOptions } from './subscription-controller';
+import { getSubscriptionServiceInstanceOptions } from './subscription-service';
 
 jest.mock('../../../../shared/lib/shield');
 
