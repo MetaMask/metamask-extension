@@ -12,24 +12,43 @@ type State = {
   NetworkController?: NetworkState;
 };
 
-function isFlagValid(flag?: Json): flag is {
-  value: {
-    enabled: number;
-    maxAccounts: number;
-    maxNetworks: number;
-  };
-} {
+type SplitStateConfig = {
+  enabled: number;
+  maxAccounts: number;
+  maxNetworks: number;
+};
+
+function isSplitStateConfig(value?: Json): value is SplitStateConfig {
   return (
+    isObject(value) &&
+    hasProperty(value, 'enabled') &&
+    typeof value.enabled === 'number' &&
+    hasProperty(value, 'maxAccounts') &&
+    typeof value.maxAccounts === 'number' &&
+    hasProperty(value, 'maxNetworks') &&
+    typeof value.maxNetworks === 'number'
+  );
+}
+
+/**
+ * Extract the rollout config from the flag. This is a threshold flag:
+ * remote-feature-flag-controller v5 resolves it to its value directly
+ * (`{ enabled, maxAccounts, maxNetworks }`), while older versions wrapped it as
+ * `{ value: { ... } }`. Support both shapes.
+ *
+ * @param flag - The `platformSplitStateGradualRollout` flag value.
+ * @returns The rollout config, or `undefined` when the flag is missing/invalid.
+ */
+function getSplitStateConfig(flag?: Json): SplitStateConfig | undefined {
+  if (
     isObject(flag) &&
     hasProperty(flag, 'value') &&
-    isObject(flag.value) &&
-    hasProperty(flag.value, 'enabled') &&
-    typeof flag.value.enabled === 'number' &&
-    hasProperty(flag.value, 'maxAccounts') &&
-    typeof flag.value.maxAccounts === 'number' &&
-    hasProperty(flag.value, 'maxNetworks') &&
-    typeof flag.value.maxNetworks === 'number'
-  );
+    isSplitStateConfig(flag.value)
+  ) {
+    return flag.value;
+  }
+
+  return isSplitStateConfig(flag) ? flag : undefined;
 }
 
 async function developerOverrides() {
@@ -100,18 +119,18 @@ export async function useSplitStateStorage(state: State): Promise<boolean> {
   }
 
   const remoteFeatureFlagControllerState = state.RemoteFeatureFlagController;
-  const flag =
+  const config = getSplitStateConfig(
     remoteFeatureFlagControllerState?.remoteFeatureFlags
-      ?.platformSplitStateGradualRollout;
+      ?.platformSplitStateGradualRollout,
+  );
 
-  if (!isFlagValid(flag) || flag.value.enabled <= 0) {
+  if (!config || config.enabled <= 0) {
     return false;
   }
 
   const { accountCount, networkCount } = getCounts(state);
 
   return (
-    accountCount <= flag.value.maxAccounts &&
-    networkCount <= flag.value.maxNetworks
+    accountCount <= config.maxAccounts && networkCount <= config.maxNetworks
   );
 }

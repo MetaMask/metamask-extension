@@ -6,6 +6,7 @@ import { getManifestFlags, ManifestFlags } from '../manifestFlags';
 export type RemoteFeatureFlagsState = {
   metamask: {
     remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
+    featureFlagThresholdGroups?: RemoteFeatureFlagControllerState['featureFlagThresholdGroups'];
   };
 };
 
@@ -26,3 +27,17 @@ export const getRemoteFeatureFlags = createSelector(
     state.metamask.remoteFeatureFlags,
   (manifestFlags, stateFlags) => merge({}, stateFlags, manifestFlags),
 );
+
+/**
+ * Gets the selected threshold group name per feature flag, which
+ * remote-feature-flag-controller v5 stores separately from the flag value for
+ * threshold and A/B flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns A map of feature flag name to its selected threshold group name
+ */
+export function getFeatureFlagThresholdGroups(
+  state: RemoteFeatureFlagsState,
+): Record<string, string> {
+  return state.metamask.featureFlagThresholdGroups ?? {};
+}
