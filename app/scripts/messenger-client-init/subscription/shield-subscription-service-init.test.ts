@@ -4,7 +4,7 @@ import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ShieldSubscriptionServiceMessenger } from '../../services/subscription/types';
 import { ShieldSubscriptionService } from '../../services/subscription/shield-subscription-service';
-import { ShieldSubscriptionServiceInit } from './subscription-service-init';
+import { ShieldSubscriptionServiceInit } from './shield-subscription-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<ShieldSubscriptionServiceMessenger>

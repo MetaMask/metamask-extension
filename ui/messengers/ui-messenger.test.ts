@@ -52,13 +52,18 @@ describe('UIMessenger', () => {
           messenger: delegatee,
         });
 
-        const result = await delegatee.call('SnapController:installSnaps', {
-          'npm:my-snap': {},
-        });
+        const result = await delegatee.call(
+          'SnapController:installSnaps',
+          'npm:my-snap',
+          { 'npm:my-snap': {} },
+        );
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'messengerCall',
-          ['SnapController:installSnaps', [{ 'npm:my-snap': {} }]],
+          [
+            'SnapController:installSnaps',
+            ['npm:my-snap', { 'npm:my-snap': {} }],
+          ],
         );
         expect(result).toBe('result');
       });
@@ -67,12 +72,18 @@ describe('UIMessenger', () => {
         const delegatee = createDelegatee();
 
         await uiMessenger.delegate({
-          actions: ['KeyringController:addKeyring'],
+          actions: [
+            'KeyringController:addNewKeyring' as UIMessengerActions['type'],
+          ],
           messenger: delegatee,
         });
 
-        expect(() => delegatee.call('KeyringController:addKeyring')).toThrow(
-          'The action "KeyringController:addKeyring" has not been exposed to the UI.',
+        expect(() =>
+          delegatee.call(
+            'KeyringController:addNewKeyring' as UIMessengerActions['type'],
+          ),
+        ).toThrow(
+          'The action "KeyringController:addNewKeyring" has not been exposed to the UI.',
         );
       });
 
@@ -203,7 +214,9 @@ describe('UIMessenger', () => {
         });
 
         expect(() =>
-          delegatee.call('SnapController:installSnaps', { 'npm:my-snap': {} }),
+          delegatee.call('SnapController:installSnaps', 'npm:my-snap', {
+            'npm:my-snap': {},
+          }),
         ).toThrow();
       });
 

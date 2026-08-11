@@ -1,7 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 
 import { getRootMessenger } from '../../../lib/messenger';
-import { getShieldSubscriptionServiceMessenger } from './subscription-service-messenger';
+import { getShieldSubscriptionServiceMessenger } from './shield-subscription-service-messenger';
 
 describe('getShieldSubscriptionServiceMessenger', () => {
   it('returns a restricted messenger', () => {

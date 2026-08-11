@@ -4,6 +4,7 @@ import {
   MessengerEvents,
   type ActionConstraint,
   type EventConstraint,
+  type ActionHandler,
   type ExtractEventPayload,
   type ExtractActionParameters,
   ExtractActionResponse,
@@ -59,9 +60,16 @@ type ExcludedEventTypes =
  * Keeps only actions whose parameters and return value are JSON-serializable,
  * since all actions go through the background connection.
  */
+type TupleElementsAreJson<Elements extends unknown[]> =
+  Elements extends readonly [infer Head, ...infer Tail]
+    ? Head extends Json
+      ? TupleElementsAreJson<Tail>
+      : false
+    : true;
+
 type WithJsonParams<Action extends ActionConstraint> =
   Action extends ActionConstraint
-    ? Parameters<Action['handler']> extends Json[]
+    ? TupleElementsAreJson<Parameters<Action['handler']>> extends true
       ? Action
       : never
     : never;
@@ -164,17 +172,27 @@ export class UIMessenger {
           MessengerActions<Delegatee> & UIMessengerActions,
           typeof actionType
         >
-      ): ExtractActionResponse<
-        MessengerActions<Delegatee> & UIMessengerActions,
-        typeof actionType
+      ): Promise<
+        ExtractActionResponse<
+          MessengerActions<Delegatee> & UIMessengerActions,
+          typeof actionType
+        >
       > => {
-        if (EXCLUDED_ACTIONS.includes(actionType)) {
+        if ((EXCLUDED_ACTIONS as string[]).includes(actionType)) {
           throw new Error(
             `The action "${actionType}" has not been exposed to the UI.`,
           );
         }
 
-        return submitRequestToBackground('messengerCall', [actionType, args]);
+        return submitRequestToBackground('messengerCall', [
+          actionType as string,
+          args as Json[],
+        ]) as Promise<
+          ExtractActionResponse<
+            MessengerActions<Delegatee> & UIMessengerActions,
+            typeof actionType
+          >
+        >;
       };
 
       let delegationTargets = this.#actionDelegationTargets.get(actionType);
@@ -195,7 +213,10 @@ export class UIMessenger {
       // internal API for delegation.
       messenger._internalRegisterDelegatedActionHandler(
         actionType,
-        delegatedActionHandler,
+        delegatedActionHandler as ActionHandler<
+          MessengerActions<Delegatee> & UIMessengerActions,
+          typeof actionType
+        >,
       );
     }
 
