@@ -1,5 +1,8 @@
 import type { CaipChainId } from '@metamask/utils';
 import { isCaipChainId } from '@metamask/utils';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 // X cashtag links look like:
@@ -10,53 +13,44 @@ const cashtagAnchorSelector =
 const tweetAncestorSelector = '[data-testid="tweet"]';
 const cashtagHrefPattern = /[?&]q=(?:%24|\$)([A-Z0-9]+)/iu;
 
-const networkImageCdn =
-  'https://cdn.jsdelivr.net/gh/MetaMask/metamask-extension@main/app/images';
+// Content-script pages can't load extension image URLs without WAR; map the
+// shared relative paths (./images/...) onto the public CDN mirror instead.
+const appImageCdn =
+  'https://cdn.jsdelivr.net/gh/MetaMask/metamask-extension@main/app';
 
-const chainImageUrlByCaip: Record<string, string> = {
-  'eip155:1': `${networkImageCdn}/eth_logo.svg`,
-  'eip155:56': `${networkImageCdn}/bnb.svg`,
-  'eip155:137': `${networkImageCdn}/pol-token.svg`,
-  'eip155:43114': `${networkImageCdn}/avax-token.svg`,
-  'eip155:10': `${networkImageCdn}/optimism.svg`,
-  'eip155:42161': `${networkImageCdn}/arbitrum.svg`,
-  'eip155:8453': `${networkImageCdn}/base.svg`,
-  'bip122:000000000019d6689c085ae165831e93': `${networkImageCdn}/bitcoin-logo.svg`,
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': `${networkImageCdn}/solana-logo.svg`,
-  'tron:728126428': `${networkImageCdn}/tron-logo.svg`,
-  'stellar:pubnet': `${networkImageCdn}/xlm.svg`,
+const chainImageMap: Record<string, string> = {
+  ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ...MULTICHAIN_TOKEN_IMAGE_MAP,
 };
 
-const chainImageUrlByHex: Record<string, string> = {
-  '0x1': chainImageUrlByCaip['eip155:1'],
-  '0x38': chainImageUrlByCaip['eip155:56'],
-  '0x89': chainImageUrlByCaip['eip155:137'],
-  '0xa86a': chainImageUrlByCaip['eip155:43114'],
-  '0xa': chainImageUrlByCaip['eip155:10'],
-  '0xa4b1': chainImageUrlByCaip['eip155:42161'],
-  '0x2105': chainImageUrlByCaip['eip155:8453'],
-};
+function relativeChainImagePath(chainId: string) {
+  const direct = chainImageMap[chainId];
+  if (direct) {
+    return direct;
+  }
+
+  if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
+    try {
+      return chainImageMap[convertCaipToHexChainId(chainId as CaipChainId)];
+    } catch {
+      return undefined;
+    }
+  }
+
+  return undefined;
+}
 
 export function getChainImageUrl(chainId: string | null | undefined) {
   if (!chainId) {
     return null;
   }
 
-  const direct = chainImageUrlByCaip[chainId] ?? chainImageUrlByHex[chainId];
-  if (direct) {
-    return direct;
+  const relative = relativeChainImagePath(chainId);
+  if (!relative) {
+    return null;
   }
 
-  if (isCaipChainId(chainId) && chainId.startsWith('eip155:')) {
-    try {
-      const hex = convertCaipToHexChainId(chainId as CaipChainId);
-      return chainImageUrlByHex[hex] ?? null;
-    } catch {
-      return null;
-    }
-  }
-
-  return null;
+  return `${appImageCdn}/${relative.replace(/^\.\//u, '')}`;
 }
 
 export function formatUsd(amount: number) {

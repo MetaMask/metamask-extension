@@ -37,10 +37,7 @@
       "all_frames": true
     },
     {
-      "matches": [
-        "*://x.com/*",
-        "*://www.x.com/*"
-      ],
+      "matches": ["*://x.com/*", "*://www.x.com/*"],
       "js": ["scripts/cashtag/content-script.ts"],
       "run_at": "document_idle"
     },

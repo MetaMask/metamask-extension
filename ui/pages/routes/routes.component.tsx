@@ -717,22 +717,16 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
 
-  // Cashtag sidepanel redirects (swap / asset details). Home may not be mounted.
+  // Cashtag OPEN_EXTENSION: pending route is set in AppState, then sidepanel/popup opens.
   const pendingRedirectRoute = useAppSelector(getPendingRedirectRoute);
   useEffect(() => {
     if (!isUnlocked || !pendingRedirectRoute?.path) {
       return;
     }
     const { path, search } = pendingRedirectRoute;
-    const isCashtagRedirect =
+    const isExtensionOpenRedirect =
       path === SWAP_PATH || path.startsWith(`${ASSET_ROUTE}/`);
-    if (!isCashtagRedirect) {
-      return;
-    }
-    if (
-      pendingRedirectRoute.environmentType &&
-      pendingRedirectRoute.environmentType !== getEnvironmentType()
-    ) {
+    if (!isExtensionOpenRedirect) {
       return;
     }
     dispatch(setPendingRedirectRoute(null));

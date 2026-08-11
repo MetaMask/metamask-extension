@@ -62,7 +62,6 @@ export type Controller = {
     setPendingRedirectRoute?: (route: {
       path: string;
       search?: `?${string}`;
-      environmentType?: string;
     }) => void;
   };
 };

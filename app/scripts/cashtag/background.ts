@@ -52,15 +52,12 @@ function shouldUseSidePanel(controller: Controller | undefined) {
   return preferred && Boolean(globalThis.chrome?.sidePanel?.open);
 }
 
-function openPopupOrHome() {
-  const openPopup = globalThis.chrome?.action?.openPopup;
-  if (typeof openPopup === 'function') {
-    return Promise.resolve(openPopup.call(globalThis.chrome.action));
+function openPopup() {
+  const openPopupFn = globalThis.chrome?.action?.openPopup;
+  if (typeof openPopupFn !== 'function') {
+    return Promise.reject(new Error('popup-unavailable'));
   }
-
-  return browser.tabs
-    .create({ url: browser.runtime.getURL('home.html') })
-    .then(() => undefined);
+  return Promise.resolve(openPopupFn.call(globalThis.chrome.action));
 }
 
 function openPreferredExtensionUi({
@@ -82,11 +79,11 @@ function openPreferredExtensionUi({
     if (openOptions) {
       return Promise.resolve(
         globalThis.chrome.sidePanel.open(openOptions),
-      ).catch(() => openPopupOrHome());
+      ).catch(() => openPopup());
     }
   }
 
-  return openPopupOrHome();
+  return openPopup();
 }
 
 function openExtensionPage({
@@ -102,8 +99,7 @@ function openExtensionPage({
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  const messageType = EXTENSION_MESSAGES.OPEN_EXTENSION;
-
+  // AppState syncs into the UI store — Routes navigates when it sees this.
   controller?.appStateController?.setPendingRedirectRoute?.({
     path,
     ...(search ? { search } : {}),
@@ -111,11 +107,11 @@ function openExtensionPage({
 
   return openPreferredExtensionUi({ controller, sender }).then(
     () => ({
-      type: messageType,
+      type: EXTENSION_MESSAGES.OPEN_EXTENSION,
       body: { ok: true, caipAssetId },
     }),
     (error: unknown) => ({
-      type: messageType,
+      type: EXTENSION_MESSAGES.OPEN_EXTENSION,
       body: {
         ok: false,
         reason: 'open-failed',
