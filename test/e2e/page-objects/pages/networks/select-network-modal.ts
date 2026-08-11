@@ -1,7 +1,6 @@
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { Driver } from '../../webdriver/driver';
+import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
+import { Driver } from '../../../webdriver/driver';
 
 export enum NetworkId {
   ETHEREUM = 'eip155:1',
@@ -28,7 +27,22 @@ function toListItemChainId(chainId: string): string {
     : chainId;
 }
 
-class NetworkManager {
+/**
+ * The network selection modal, used both to switch the active network and to
+ * filter the asset list by network.
+ *
+ * Screen: modal layered over the current page, opened by `NetworkFilter.open()`.
+ * Owns: the network rows and their selected state, the "All networks" row, the
+ * "Manage networks" button, and closing the modal.
+ * Boundaries: stops at the modal edge. Opening it belongs to `NetworkFilter`;
+ * everything behind "Manage networks" belongs to `NetworksPage`.
+ * `clickManageNetworks` only clicks - it does not assert the next screen.
+ * Related: `NetworkFilter` (opens this), `NetworksPage` (reached via
+ * `clickManageNetworks`), `flows/network.flow.ts` for journeys spanning both.
+ *
+ * @see ui/components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal.tsx
+ */
+class SelectNetworkModal {
   private readonly allNetworksItem =
     '[data-testid="home-network-filter-all-default"]';
 
@@ -44,26 +58,13 @@ class NetworkManager {
 
   private readonly modalCloseButton = 'header button[aria-label="Close"]';
 
-  private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
-
-  private readonly networkItemMenuButtonByChainId = (chainId: string) =>
-    `[data-testid="network-list-item-options-button-${chainId}"]`;
-
   private readonly networkListItem = (chainId: string) =>
     `[data-testid="network-list-item-${toListItemChainId(chainId)}"]`;
 
   private readonly networkListItemByName = (networkName: string) =>
     `[data-testid="${networkName}"]`;
 
-  private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
-
-  private readonly networkPopupDeleteButton =
-    '[data-testid="confirm-delete-network-modal-delete-button"]';
-
-  private readonly networksPageBackButton =
-    '[data-testid="page-header-back-button"]';
-
-  private readonly networksPageList = '[data-testid="networks-page-list"]';
+  private readonly networkListItemClass = '.multichain-network-list-item';
 
   private readonly selectedAllNetworksItem = `${this.allNetworksItem}.bg-muted`;
 
@@ -120,6 +121,19 @@ class NetworkManager {
     }
   }
 
+  /**
+   * Checks that a network is present in the modal's list.
+   *
+   * @param networkName - The display name of the network, e.g. `Tron`.
+   */
+  async checkNetworkIsListed(networkName: string): Promise<void> {
+    console.log(`Verify network "${networkName}" appears in the network modal`);
+    await this.driver.waitForSelector({
+      css: this.networkListItemClass,
+      text: networkName,
+    });
+  }
+
   // Method to check if a network is currently selected/active
   async checkNetworkIsSelected(chainId: string): Promise<void> {
     console.log(`Checking if network is selected: ${chainId}`);
@@ -136,75 +150,23 @@ class NetworkManager {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    console.log('Checking the network manager is loaded');
+    console.log('Checking the select network modal is loaded');
     await this.driver.waitForSelector(this.allNetworksItem);
   }
 
-  async closeNetworkManager(): Promise<void> {
-    console.log(`Closing the network manager`);
-    await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
-  }
-
   /**
-   * Deletes a network from the networks page. `goToManageNetworksPage` must run first.
-   *
-   * @param chainId - The hexadecimal chain id of the network to delete.
+   * Navigates from the modal to the networks page, which is where networks can
+   * be added, edited and deleted. Await `NetworksPage.checkPageIsLoaded` to wait
+   * for that page.
    */
-  async deleteNetworkByChainId(chainId: `0x${string}`): Promise<void> {
-    console.log(`Deleting network: ${chainId}`);
-
-    // The networks page keys its list items by CAIP chain id.
-    const caipChainId = toEvmCaipChainId(chainId);
-
-    await this.driver.clickElement(
-      this.networkItemMenuButtonByChainId(caipChainId),
-    );
-    await this.driver.clickElement(this.networkItemDeleteOption);
-    await this.driver.clickElement(this.networkPopupDeleteButton);
-
-    console.log(`Successfully deleted network: ${chainId}`);
-  }
-
-  /**
-   * Navigates from the network filter to the full networks page, which is where
-   * networks can be added, edited and deleted.
-   */
-  async goToManageNetworksPage(): Promise<void> {
-    console.log('Going to the manage networks page');
+  async clickManageNetworks(): Promise<void> {
+    console.log('Going to the networks page');
     await this.driver.clickElement(this.manageNetworksButton);
-    await this.driver.waitForSelector(this.networksPageList);
   }
 
-  async leaveNetworksPage(): Promise<void> {
-    console.log('Leaving the networks page');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.networksPageBackButton,
-    );
-  }
-
-  async openNetworkAndDeleteNetwork(networkName: string): Promise<void> {
-    console.log(`Opening network manager and deleting ${networkName}`);
-    await this.openNetworkManager();
-    await this.goToManageNetworksPage();
-    await this.deleteNetworkByChainId(networkName as `0x${string}`);
-    await this.leaveNetworksPage();
-  }
-
-  async openNetworkAndSelectNetwork(networkName: string): Promise<void> {
-    console.log(`Opening network manager and selecting ${networkName}`);
-    await this.openNetworkManager();
-    if (networkName.startsWith('eip155:')) {
-      await this.selectNetworkByChainId(networkName);
-    } else {
-      await this.selectNetworkByNameWithWait(networkName);
-    }
-  }
-
-  // select a network from the manager list
-  async openNetworkManager(): Promise<void> {
-    console.log(`Opening the network manager`);
-    await this.driver.clickElement(this.networkManagerToggle);
-    await this.checkPageIsLoaded();
+  async close(): Promise<void> {
+    console.log(`Closing the select network modal`);
+    await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
   }
 
   async selectAllNetworks(): Promise<void> {
@@ -217,7 +179,9 @@ class NetworkManager {
   }
 
   async selectNetworkByName(networkName: string): Promise<void> {
-    console.log(`Selecting network by name: ${networkName} on network manager`);
+    console.log(
+      `Selecting network by name: ${networkName} on select network modal`,
+    );
     await this.driver.clickElement(this.networkListItemByName(networkName));
   }
 
@@ -229,4 +193,4 @@ class NetworkManager {
   }
 }
 
-export default NetworkManager;
+export default SelectNetworkModal;

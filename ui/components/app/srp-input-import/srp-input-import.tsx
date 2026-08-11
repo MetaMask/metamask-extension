@@ -157,11 +157,7 @@ export default function SrpInputImport({
         checkForInvalidWords();
       }
 
-      if (
-        (SRP_LENGTHS.includes(draftSrp.length) &&
-          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
-        draftSrp.length === MAX_SRP_LENGTH
-      ) {
+      if (draftSrp.length === MAX_SRP_LENGTH) {
         return;
       }
 

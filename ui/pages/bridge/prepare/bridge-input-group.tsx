@@ -14,22 +14,19 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
 import {
+  IconName,
   Text,
   TextField,
   TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  sanitizeAmountInput,
-} from '../utils/quote';
+import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
   FontWeight,
+  IconColor,
   TextAlign,
   JustifyContent,
   TextVariant,
@@ -60,7 +57,9 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networks,
   amountFieldProps,
-  amountInFiat,
+  secondaryDisplay,
+  amountInputPrefix,
+  onAmountTypeToggle,
   onMaxButtonClick,
   onBlockExplorerClick,
   buttonProps,
@@ -75,7 +74,9 @@ export const BridgeInputGroup = ({
 }: {
   isAssetPickerOpen: boolean;
   setIsAssetPickerOpen: (isOpen: boolean) => void;
-  amountInFiat?: string;
+  secondaryDisplay?: string;
+  amountInputPrefix?: React.ReactNode;
+  onAmountTypeToggle?: () => void;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
@@ -106,7 +107,6 @@ export const BridgeInputGroup = ({
     getValidationErrors,
     shallowEqual,
   );
-  const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = token?.chainId;
@@ -134,7 +134,8 @@ export const BridgeInputGroup = ({
   const shouldShowAmountSkeleton = Boolean(
     showAmountSkeleton && isAmountReadOnly,
   );
-
+  const hasAmountInputPrefix = Boolean(amountInputPrefix);
+  const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
   const formattedTokenAmount = useMemo(() => {
     if (!balanceAmount) {
       return null;
@@ -168,11 +169,22 @@ export const BridgeInputGroup = ({
   }, [amountFieldProps?.value]);
 
   useEffect(() => {
+    const hasAmountInputPrefixChanged =
+      previousHasAmountInputPrefix.current !== hasAmountInputPrefix;
+
     if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
+      if (hasAmountInputPrefixChanged) {
+        inputRef.current.setSelectionRange(
+          inputRef.current.value.length,
+          inputRef.current.value.length,
+        );
+      }
     }
-  }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+    previousHasAmountInputPrefix.current = hasAmountInputPrefix;
+  }, [amountFieldProps?.value, hasAmountInputPrefix, isAmountReadOnly, token]);
 
   useEffect(() => {
     return () => {
@@ -230,6 +242,20 @@ export const BridgeInputGroup = ({
           />
         ) : (
           <TextField
+            startAccessory={
+              amountInputPrefix ? (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  style={{
+                    fontSize: inputFontSize,
+                    fontWeight: 400,
+                    lineHeight: 1,
+                  }}
+                >
+                  {amountInputPrefix}
+                </Text>
+              ) : undefined
+            }
             inputProps={{
               disableStateStyles: true,
               textAlign: TextAlign.Start,
@@ -327,19 +353,37 @@ export const BridgeInputGroup = ({
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
-        <Text
-          variant={TextVariant.bodyMd}
-          fontWeight={FontWeight.Normal}
-          color={
-            isAmountReadOnly && isEstimatedReturnLow
-              ? TextColor.warningDefault
-              : TextColor.textAlternative
-          }
-          textAlign={TextAlign.End}
-          ellipsis
-        >
-          {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
-        </Text>
+        {onAmountTypeToggle ? (
+          <ButtonLink
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            endIconName={IconName.SwapVertical}
+            endIconProps={{ color: IconColor.iconAlternative }}
+            ellipsis
+            style={{ textDecoration: 'none' }}
+            data-testid="bridge-input-denomination-toggle"
+            aria-label={`Toggle input denomination${
+              secondaryDisplay ? `, ${secondaryDisplay}` : ''
+            }`}
+            onClick={onAmountTypeToggle}
+          >
+            {secondaryDisplay}
+          </ButtonLink>
+        ) : (
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Normal}
+            color={
+              isAmountReadOnly && isEstimatedReturnLow
+                ? TextColor.warningDefault
+                : TextColor.textAlternative
+            }
+            textAlign={TextAlign.End}
+            ellipsis
+          >
+            {secondaryDisplay}
+          </Text>
+        )}
         {!isAmountReadOnly && balanceAmount && token && (
           <Text
             display={Display.Flex}

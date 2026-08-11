@@ -61,6 +61,20 @@ jest.mock('../../../pages/notifications/NewFeatureTag', () => ({
 }));
 
 describe('GlobalMenuDrawer', () => {
+  beforeAll(() => {
+    if (!HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = function showModal() {
+        this.setAttribute('open', '');
+      };
+    }
+    if (!HTMLDialogElement.prototype.close) {
+      HTMLDialogElement.prototype.close = function close() {
+        this.removeAttribute('open');
+        this.dispatchEvent(new Event('close'));
+      };
+    }
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     getEnvironmentType.mockReturnValue('popup');
@@ -87,8 +101,7 @@ describe('GlobalMenuDrawer', () => {
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
   });
 
-  // Fullscreen drawer uses a portal that requires layout measurement — tested via manual QA.
-  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or wide sidepanel).
+  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or sidepanel).
 
   it('does not apply border-l in pure black mode on popup', async () => {
     const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
@@ -132,9 +145,9 @@ describe('GlobalMenuDrawer', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when Escape key is pressed', async () => {
+  it('calls onClose when the dialog is dismissed', async () => {
     const onClose = jest.fn();
-    renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen
         onClose={onClose}
@@ -147,18 +160,17 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      expect(
-        document.querySelector('[data-testid="global-menu-drawer"]'),
-      ).toBeInTheDocument();
+      expect(getByTestId('global-menu-drawer')).toHaveAttribute('open');
     });
 
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Native <dialog> closes on Escape and fires the close event
+    (getByTestId('global-menu-drawer') as HTMLDialogElement).close();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render when isOpen is false', () => {
+  it('keeps the dialog closed when isOpen is false', () => {
     const onClose = jest.fn();
-    const { queryByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen={false}
         onClose={onClose}
@@ -170,7 +182,7 @@ describe('GlobalMenuDrawer', () => {
       '/',
     );
 
-    expect(queryByTestId('global-menu-drawer')).not.toBeInTheDocument();
+    expect(getByTestId('global-menu-drawer')).not.toHaveAttribute('open');
   });
 
   it('networks item navigates to the dedicated networks page', async () => {

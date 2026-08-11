@@ -109,7 +109,6 @@ import {
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
 import {
-  CHAIN_IDS,
   CHAIN_SPEC_URL,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
@@ -137,15 +136,10 @@ import {
   getStorageItem,
   setStorageItem,
 } from '../../shared/lib/storage-helpers';
-import {
-  getTokenIdParam,
-  fetchTokenBalance,
-  fetchERC1155Balance,
-} from '../../shared/lib/token-util';
+import { getTokenIdParam } from '../../shared/lib/token-util';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import {
   createEnsureOnboardingCompleteCallback,
@@ -248,7 +242,7 @@ import {
   getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -1102,7 +1096,7 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  ppomController: this.ppomController,
+                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -1178,14 +1172,27 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest, requestContext) =>
-        addDappTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            dappRequest,
-            requestContext,
-          }),
-        ),
+      processTransaction: (transactionParams, dappRequest, requestContext) => {
+        const networkClientId = requestContext?.get('networkClientId');
+        const { chainId } =
+          this.networkController.getNetworkConfigurationByNetworkClientId(
+            networkClientId,
+          );
+        return addDappTransaction({
+          messenger: this.controllerMessenger,
+          internalAccounts: this.accountsController.listAccounts(),
+          selectedAccount: this.accountsController.getAccountByAddress(
+            transactionParams.from,
+          ),
+          networkClientId,
+          chainId,
+          transactionParams,
+          dappRequest,
+          requestContext,
+          securityAlertsEnabled:
+            this.preferencesController.state?.securityAlertsEnabled,
+        });
+      },
       // msg signing
       processTypedMessage: (...args) =>
         addTypedMessage({
@@ -3109,10 +3116,18 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // AssetsContractController
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTokenSymbol: this.getTokenSymbol.bind(this),
-      getTokenStandardAndDetailsByChain:
-        this.getTokenStandardAndDetailsByChain.bind(this),
+      getTokenStandardAndDetails: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetails',
+      ),
+      getTokenSymbol: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenSymbol',
+      ),
+      getTokenStandardAndDetailsByChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+      ),
       getERC1155BalanceOf:
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
@@ -3386,25 +3401,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getNextNonce',
       ),
-      addTransaction: (transactionParams, transactionOptions) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: { ...transactionOptions, isInternal: true },
-            waitForSubmit: false,
-          }),
-        ),
-      addTransactionAndWaitForPublish: (
-        transactionParams,
-        transactionOptions,
-      ) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: { ...transactionOptions, isInternal: true },
-            waitForSubmit: true,
-          }),
-        ),
+      addTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransaction',
+      ),
+      addTransactionAndWaitForPublish: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+      ),
       upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
@@ -3548,6 +3552,10 @@ export default class MetamaskController extends EventEmitter {
       resetState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:resetState`,
+      ),
+      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
       ),
       updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -4035,279 +4043,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const currentChainId = this.controllerMessenger.call(
-      'LegacyBackgroundApiService:getGlobalChainId',
-    );
-
-    const { tokensChainsCache } = this.tokenListController.state;
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
-    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
-
-    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
-
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
-    const userDefinedTokenDetails =
-      tokens.find(({ address: _address }) =>
-        isEqualCaseInsensitive(_address, address),
-      ) || {};
-
-    const tokenDetails = {
-      ...staticTokenListDetails,
-      ...tokenListDetails,
-      ...userDefinedTokenDetails,
-    };
-
-    // boolean to check if the token is an ERC20
-    const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
-      tokenDetails.erc20 === true;
-
-    // boolean to check if the token is an NFT
-    const noEvidenceThatTokenIsAnNFT =
-      !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
-      !tokenDetails.erc721;
-
-    // boolean to check if the token is an ERC20 like
-    const otherDetailsAreERC20Like =
-      tokenDetails.decimals !== undefined && tokenDetails.symbol;
-
-    // boolean to check if the token can be treated as an ERC20
-    const tokenCanBeTreatedAsAnERC20 =
-      tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
-
-    let details;
-    if (tokenCanBeTreatedAsAnERC20) {
-      try {
-        const balance = userAddress
-          ? await fetchTokenBalance(address, userAddress, this.provider)
-          : undefined;
-
-        details = {
-          address,
-          balance,
-          standard: ERC20,
-          decimals: tokenDetails.decimals,
-          symbol: tokenDetails.symbol,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn(`Failed to get token balance. Error: ${e}`);
-      }
-    }
-
-    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
-    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
-    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
-    if (details === undefined) {
-      try {
-        details =
-          await this.assetsContractController.getTokenStandardAndDetails(
-            address,
-            userAddress,
-            tokenId,
-          );
-      } catch (e) {
-        log.warn(`Failed to get token standard and details. Error: ${e}`);
-      }
-    }
-
-    if (details) {
-      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-        details.standard,
-        ERC1155,
-      );
-
-      if (tokenDetailsStandardIsERC1155) {
-        try {
-          const balance = await fetchERC1155Balance(
-            address,
-            userAddress,
-            tokenId,
-            this.provider,
-          );
-
-          const balanceToUse = balance?._hex
-            ? parseInt(balance._hex, 16).toString()
-            : null;
-
-          details = {
-            ...details,
-            balance: balanceToUse,
-          };
-        } catch (e) {
-          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-          log.warn('Failed to get token balance. Error:', e);
-        }
-      }
-    }
-
-    return {
-      ...details,
-      decimals: details?.decimals?.toString(10),
-      balance: details?.balance?.toString(10),
-    };
-  }
-
-  async getTokenStandardAndDetailsByChain(
-    address,
-    userAddress,
-    tokenId,
-    chainId,
-  ) {
-    const { tokensChainsCache } = this.tokenListController.state;
-    const tokenList = tokensChainsCache?.[chainId]?.data || {};
-
-    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
-
-    let staticTokenListDetails = {};
-    if (chainId === CHAIN_IDS.MAINNET) {
-      staticTokenListDetails =
-        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    }
-
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
-    const userDefinedTokenDetails =
-      tokens.find(({ address: _address }) =>
-        isEqualCaseInsensitive(_address, address),
-      ) || {};
-    const tokenDetails = {
-      ...staticTokenListDetails,
-      ...tokenListDetails,
-      ...userDefinedTokenDetails,
-    };
-
-    const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
-      tokenDetails.erc20 === true;
-
-    const noEvidenceThatTokenIsAnNFT =
-      !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
-      !tokenDetails.erc721;
-
-    const otherDetailsAreERC20Like =
-      tokenDetails.decimals !== undefined && tokenDetails.symbol;
-
-    // boolean to check if the token can be treated as an ERC20
-    const tokenCanBeTreatedAsAnERC20 =
-      tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
-
-    let details;
-    if (tokenCanBeTreatedAsAnERC20) {
-      try {
-        let balance = 0;
-        if (
-          this.controllerMessenger.call(
-            'LegacyBackgroundApiService:getGlobalChainId',
-          ) === chainId
-        ) {
-          balance = await fetchTokenBalance(
-            address,
-            userAddress,
-            this.provider,
-          );
-        }
-
-        details = {
-          address,
-          balance,
-          standard: ERC20,
-          decimals: tokenDetails.decimals,
-          symbol: tokenDetails.symbol,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn(`Failed to get token balance. Error: ${e}`);
-      }
-    }
-
-    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
-    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
-    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
-    if (details === undefined) {
-      try {
-        const networkClientId =
-          this.networkController?.state?.networkConfigurationsByChainId?.[
-            chainId
-          ]?.rpcEndpoints[
-            this.networkController?.state?.networkConfigurationsByChainId?.[
-              chainId
-            ]?.defaultRpcEndpointIndex
-          ]?.networkClientId;
-
-        details =
-          await this.assetsContractController.getTokenStandardAndDetails(
-            address,
-            userAddress,
-            tokenId,
-            networkClientId,
-          );
-      } catch (e) {
-        log.warn(`Failed to get token standard and details. Error: ${e}`);
-      }
-    }
-
-    if (details) {
-      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-        details.standard,
-        ERC1155,
-      );
-
-      if (tokenDetailsStandardIsERC1155) {
-        try {
-          const balance = await fetchERC1155Balance(
-            address,
-            userAddress,
-            tokenId,
-            this.provider,
-          );
-
-          const balanceToUse = balance?._hex
-            ? parseInt(balance._hex, 16).toString()
-            : null;
-
-          details = {
-            ...details,
-            balance: balanceToUse,
-          };
-        } catch (e) {
-          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-          log.warn('Failed to get token balance. Error:', e);
-        }
-      }
-    }
-
-    return {
-      ...details,
-      decimals: details?.decimals?.toString(10),
-      balance: details?.balance?.toString(10),
-    };
-  }
-
-  async getTokenSymbol(address) {
-    try {
-      const details =
-        await this.assetsContractController.getTokenStandardAndDetails(address);
-      return details?.symbol;
-    } catch (e) {
-      return null;
-    }
-  }
-
   /**
    * Exports the Secret Recovery Phrase after verifying a passkey assertion,
    * used as a password-less alternative to {@link getSeedPhrase}.
@@ -4767,51 +4502,6 @@ export default class MetamaskController extends EventEmitter {
   }
   // Identity Management (signature operations)
 
-  getAddTransactionRequest({
-    transactionParams,
-    transactionOptions,
-    dappRequest,
-    requestContext,
-    ...otherParams
-  }) {
-    const networkClientId =
-      requestContext?.get('networkClientId') ??
-      transactionOptions?.networkClientId;
-    const { chainId } =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        networkClientId,
-      );
-    return {
-      internalAccounts: this.accountsController.listAccounts(),
-      dappRequest,
-      requestContext,
-      networkClientId,
-      selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
-      ),
-      transactionController: this.txController,
-      keyringController: this.keyringController,
-      transactionOptions,
-      transactionParams,
-      userOperationController: this.userOperationController,
-      chainId,
-      ppomController: this.ppomController,
-      securityAlertsEnabled:
-        this.preferencesController.state?.securityAlertsEnabled,
-      updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
-      getSecurityAlertResponse:
-        this.appStateController.getAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      addSecurityAlertResponse:
-        this.appStateController.addAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
-      ...otherParams,
-    };
-  }
-
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
@@ -5004,13 +4694,10 @@ export default class MetamaskController extends EventEmitter {
     securityAlertResponse,
   ) {
     return await updateSecurityAlertResponse({
-      appStateController: this.appStateController,
       messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
-      signatureController: this.signatureController,
-      transactionController: this.txController,
     });
   }
 
@@ -5831,7 +5518,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.ppomController,
+        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -6351,7 +6038,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.ppomController,
+        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -6752,7 +6439,10 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.fetchGasFeeEstimates(...args),
       getSelectedAddress: () =>
         this.accountsController.getSelectedAccount().address,
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
+      getTokenStandardAndDetails: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetails',
+      ),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
       getTransactionPayData: (id) =>
@@ -7510,21 +7200,16 @@ export default class MetamaskController extends EventEmitter {
         upgradeContractAddress,
         networkClientId,
       },
-      async (transactionParams, options) => {
-        const transactionMeta = await addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: {
-              ...options,
-              isInternal: true,
-              origin: 'metamask',
-              requireApproval: true,
-            },
-            waitForSubmit: true,
-          }),
-        );
-        return transactionMeta;
-      },
+      async (transactionParams, options) =>
+        this.controllerMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          transactionParams,
+          {
+            ...options,
+            origin: 'metamask',
+            requireApproval: true,
+          },
+        ),
     );
   }
 
