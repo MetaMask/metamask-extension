@@ -34,6 +34,7 @@ const HideZeroBalanceTokensToggleItem = createToggleItem({
   action: setHideZeroBalanceTokens,
   dataTestId: 'toggle-zero-balance-button',
   trackEventProperty: 'hide_zero_balance_tokens',
+  deferUpdate: true,
 });
 
 const AutodetectTokensToggleItem = createToggleItem({
@@ -44,6 +45,7 @@ const AutodetectTokensToggleItem = createToggleItem({
   action: setUseTokenDetection,
   dataTestId: 'autodetect-tokens',
   containerDataTestId: 'autodetect-tokens',
+  deferUpdate: true,
 });
 
 /** Registry of setting items for the Assets page. Add new items here */

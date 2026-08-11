@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, startTransition } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -195,7 +195,9 @@ export default function Notifications() {
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
   useEffect(() => {
-    dispatch(deleteExpiredNotifications());
+    startTransition(() => {
+      dispatch(deleteExpiredNotifications());
+    });
   }, [dispatch]);
 
   return (
