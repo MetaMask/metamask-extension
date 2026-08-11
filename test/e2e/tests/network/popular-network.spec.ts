@@ -4,12 +4,13 @@ import { toHex } from '@metamask/controller-utils';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
+import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit-block-explorer-page';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
@@ -74,24 +75,22 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
+        const networksPage = new NetworksPage(driver);
 
-        await selectNetworkDialog.checkPageIsLoaded();
+        await networksPage.checkPageIsLoaded();
 
-        await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa86a');
-        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
-          'Avalanche',
-        );
-        await selectNetworkDialog.clickCloseButton();
+        await networksPage.clickAddButtonForPopularNetwork('0xa86a');
+        await networksPage.checkAddNetworkMessageIsDisplayed('Avalanche');
+        await networksPage.clickCloseButton();
 
         // verify the additional network was added without switching the home filter
         await new Homepage(driver).checkPageIsLoaded();
-        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
       },
     );
   });
@@ -108,10 +107,10 @@ describe('Popular Networks', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.disableNetwork('eip155:42161');
-        await selectNetworkDialog.clickCloseButton();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.disableNetwork('eip155:42161');
+        await networksPage.clickCloseButton();
         await headerNavbar.clickDrawerBackButton();
 
         await homepage.checkPageIsLoaded();
@@ -119,8 +118,8 @@ describe('Popular Networks', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         // check that arbitrum is on the list of popular network
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkPopularNetworkIsDisplayed({
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkPopularNetworkIsDisplayed({
           chainId: '0xa4b1',
           networkName: 'Arbitrum',
         });
@@ -155,34 +154,34 @@ describe('Popular Networks', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField('cheapETH');
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField('cheapETH');
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           toHex(777).toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField('cTH');
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.fillCurrencySymbolInputField('cTH');
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // add rpc url and explorer url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(
           'https://unresponsive-rpc.test',
         );
-        await addRpcUrlModal.fillAddRpcNameInput('testName');
-        await addRpcUrlModal.saveAddRpcUrl();
+        await addEditRpcUrlPage.fillAddRpcNameInput('testName');
+        await addEditRpcUrlPage.saveAddRpcUrl();
 
         // check the error message is displayed
-        await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
+        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
           'Could not fetch chain ID. Is your RPC URL correct?',
         );
         assert.equal(
-          await addEditNetworkModal.checkSaveButtonIsEnabled(),
+          await addEditNetworkPage.checkSaveButtonIsEnabled(),
           false,
         );
       },
@@ -238,32 +237,35 @@ describe('Popular Networks', function (this: Suite) {
         await homepage.checkExpectedBalanceIsDisplayed();
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField('cheapETH');
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField('cheapETH');
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           toHex(100).toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField('cTH');
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.fillCurrencySymbolInputField('cTH');
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // add rpc url and explorer url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput('https://responsive-rpc.test');
-        await addRpcUrlModal.fillAddRpcNameInput('testName');
-        await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.addExplorerUrl('https://block-explorer.url');
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(
+          'https://responsive-rpc.test',
+        );
+        await addEditRpcUrlPage.fillAddRpcNameInput('testName');
+        await addEditRpcUrlPage.saveAddRpcUrl();
+        await addEditNetworkPage.openAddBlockExplorerPage();
+        const addEditBlockExplorerPage = new AddEditBlockExplorerPage(driver);
+        await addEditBlockExplorerPage.checkPageIsLoaded();
+        await addEditBlockExplorerPage.fillUrl('https://block-explorer.url');
+        await addEditBlockExplorerPage.save();
 
         // check the save button is enabled
-        assert.equal(
-          await addEditNetworkModal.checkSaveButtonIsEnabled(),
-          true,
-        );
+        assert.equal(await addEditNetworkPage.checkSaveButtonIsEnabled(), true);
       },
     );
   });
