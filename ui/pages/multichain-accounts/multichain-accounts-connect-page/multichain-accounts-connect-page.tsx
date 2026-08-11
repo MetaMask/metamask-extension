@@ -174,7 +174,7 @@ const MultiAccountRow = ({
         color={TextColor.TextDefault}
         data-testid={`accounts-count-${accountsCount}`}
       >
-        {t('accountsCount', { count: accountsCount.toString() })}
+        {t('accountsCount', [accountsCount.toString()])}
       </Text>
       <Icon
         name={IconName.ArrowRight}
