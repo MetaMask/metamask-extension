@@ -2,7 +2,9 @@ import React from 'react';
 
 import { useMoneyAccountDeposit } from '../../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
+import { RouteWithMessenger } from '../../../../../layouts/route-with-messenger';
 import { DeveloperButton } from '../developer-button';
+import { MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 
 /**
  * Developer trigger for the real Money Account deposit flow: the placeholder
@@ -10,7 +12,7 @@ import { DeveloperButton } from '../developer-button';
  * amount is chosen. Hidden entirely — not disabled — when the money account
  * is unavailable, the same rule every production entry point follows.
  */
-export const MoneyAccountDepositButton = () => {
+const MoneyAccountDepositButtonContent = () => {
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const { initiateDeposit, isLoading } = useMoneyAccountDeposit();
 
@@ -30,3 +32,18 @@ export const MoneyAccountDepositButton = () => {
     />
   );
 };
+
+/**
+ * {@link MoneyAccountDepositButtonContent}, wrapped in the route messenger it
+ * needs to call `MoneyAccountAvailabilityService:getAvailability` via
+ * `useMoneyAccountInfo`. This settings panel isn't behind a router route with
+ * its own messenger, so it carries its own.
+ */
+export const MoneyAccountDepositButton = () => (
+  <RouteWithMessenger
+    path="money-account-deposit-button"
+    capabilities={MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES}
+  >
+    <MoneyAccountDepositButtonContent />
+  </RouteWithMessenger>
+);
