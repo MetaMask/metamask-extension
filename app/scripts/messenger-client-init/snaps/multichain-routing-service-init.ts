@@ -47,6 +47,7 @@ export async function withSnapKeyring(
             return keyring.submitRequest({
               id: crypto.randomUUID(),
               origin: request.origin,
+              originMetadata: request.originMetadata,
               scope: request.scope,
               account: request.account,
               request: {
