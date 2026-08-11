@@ -380,7 +380,9 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
 
-            await editConnectedAccountsModal.waitForConnectButtonState({ state: 'disabled' });
+            await editConnectedAccountsModal.waitForConnectButtonState({
+              state: 'disabled',
+            });
           },
         );
       });
