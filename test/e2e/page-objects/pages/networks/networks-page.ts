@@ -1,6 +1,24 @@
 import { Driver } from '../../../webdriver/driver';
 
-class SelectNetwork {
+/**
+ * The network management list: custom networks, popular networks available to
+ * add, and the per-network options menu.
+ *
+ * Screen: `#/networks` (list view), reached from
+ * `SelectNetworkModal.clickManageNetworks`.
+ * Owns: the network search, the show-test-networks toggle, enabling/disabling
+ * and deleting networks, adding popular networks, RPC selection, and entering
+ * the add and edit forms.
+ * Boundaries: the list view only. Once a form opens, the form's page object
+ * takes over; these methods return without filling anything in.
+ * Related: `AddEditNetworkPage` (opened by `openAddCustomNetworkPage` /
+ * `openEditNetworkPage`), `SelectNetworkModal` (how tests get here),
+ * `flows/network.flow.ts` for journeys spanning both.
+ *
+ * @see ui/pages/networks/networks-page.tsx
+ * @see ui/pages/networks/networks-page-list.tsx
+ */
+class NetworksPage {
   private readonly addCustomNetworkButton =
     '[data-testid="networks-page-add-custom-network-button"]';
 
@@ -99,7 +117,7 @@ class SelectNetwork {
   }
 
   /**
-   * Check if a network option is displayed in the select network dialog.
+   * Check if a network option is displayed on the networks page.
    *
    * @param networkName - The name of the network to check.
    * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
@@ -111,7 +129,7 @@ class SelectNetwork {
     console.log(
       `Check if ${networkName} is ${
         shouldBeDisplayed ? 'displayed' : 'not displayed'
-      } in select network dialog`,
+      } on the networks page`,
     );
     const networkNameItem = `[data-testid="${networkName}"]`;
     if (shouldBeDisplayed) {
@@ -123,13 +141,13 @@ class SelectNetwork {
 
   async checkNetworkRPCNumber(expectedNumber: number): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} RPC URLs to be displayed in select network dialog`,
+      `Wait for ${expectedNumber} RPC URLs to be displayed on the networks page`,
     );
     await this.driver.wait(async () => {
       const rpcNumber = await this.driver.findElements(this.rpcUrlItem);
       return rpcNumber.length === expectedNumber;
     }, 10000);
-    console.log(`${expectedNumber} RPC URLs found in select network dialog`);
+    console.log(`${expectedNumber} RPC URLs found on the networks page`);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -140,12 +158,12 @@ class SelectNetwork {
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for select network dialog to be loaded',
+        'Timeout while waiting for the networks page to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Select network dialog is loaded');
+    console.log('Networks page is loaded');
   }
 
   async checkPopularNetworkIsDisplayed({
@@ -168,7 +186,7 @@ class SelectNetwork {
   }
 
   async checkRpcIsSelected(rpcName: string): Promise<void> {
-    console.log(`Check RPC ${rpcName} is selected in network dialog`);
+    console.log(`Check RPC ${rpcName} is selected on the networks page`);
     await this.driver.waitForSelector({
       text: rpcName,
       tag: 'button',
@@ -180,12 +198,12 @@ class SelectNetwork {
       await this.driver.waitForSelector(this.yourNetworksMessage);
     } catch (e) {
       console.log(
-        'Timeout while waiting for select network dialog to be loaded',
+        'Timeout while waiting for the networks page to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Select network dialog is loaded');
+    console.log('Networks page is loaded');
   }
 
   async clickAddButton(): Promise<void> {
@@ -256,20 +274,20 @@ class SelectNetwork {
     await this.driver.fill(this.searchInput, networkName);
   }
 
-  async openAddCustomNetworkModal(): Promise<void> {
-    console.log('Open add custom network modal');
+  async openAddCustomNetworkPage(): Promise<void> {
+    console.log('Open the add custom network page');
     await this.driver.clickElementAndWaitToDisappear(
       this.addCustomNetworkButton,
     );
   }
 
-  async openEditNetworkModal(): Promise<void> {
-    console.log('Open edit network modal');
+  async openEditNetworkPage(): Promise<void> {
+    console.log('Open the edit network page');
     await this.driver.clickElementAndWaitToDisappear(this.editNetworkButton);
   }
 
   async openNetworkListOptions(chainId: string): Promise<void> {
-    console.log(`Open network options for ${chainId} in network dialog`);
+    console.log(`Open network options for ${chainId} on the networks page`);
     await this.driver.clickElement(
       `[data-testid="network-list-item-options-button-${chainId}"]`,
     );
@@ -307,10 +325,10 @@ class SelectNetwork {
   }
 
   async toggleShowTestNetwork(): Promise<void> {
-    console.log('Toggle show test network in select network dialog');
+    console.log('Toggle show test network on the networks page');
     await this.driver.clickElement(this.showTestNetworksToggle);
     await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
   }
 }
 
-export default SelectNetwork;
+export default NetworksPage;
