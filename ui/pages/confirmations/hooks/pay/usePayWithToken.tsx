@@ -1,8 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
@@ -56,6 +62,13 @@ export function usePayWithToken(): PayWithToken {
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
+  // payToken is cleared during account switches or initial auto-select.
+  const shouldWaitForPayToken =
+    isPerpsWithdraw ||
+    hasTransactionType(currentConfirmation, [
+      TransactionType.moneyAccountDeposit,
+    ]);
 
   const openModal = useCallback(() => {
     if (canEdit) {
@@ -69,7 +82,7 @@ export function usePayWithToken(): PayWithToken {
 
   const firstRequiredToken = requiredTokens?.[0];
   const resolvedToken =
-    payToken ?? (isPerpsWithdraw ? undefined : firstRequiredToken);
+    payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
   const balanceUsdFormatted = useMemo(
     () =>

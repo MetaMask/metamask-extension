@@ -254,12 +254,15 @@
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
+      "featureFlagThresholdGroups": "object",
       "localOverrides": "object",
+      "rawRemoteFeatureFlags": "object",
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
         "feature3": { "name": "groupC", "value": "valueC" }
-      }
+      },
+      "thresholdCache": "object"
     },
     "RewardsController": {
       "rewardsAccounts": "object",

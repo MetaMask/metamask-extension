@@ -31,13 +31,19 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
   state: NotificationAppState,
 ) {
   const { assetsEnableNotificationsByDefaultV2 } = getRemoteFeatureFlags(state);
-  const result =
-    assetsEnableNotificationsByDefaultV2 &&
-    typeof assetsEnableNotificationsByDefaultV2 === 'object' &&
-    'value' in assetsEnableNotificationsByDefaultV2 &&
-    Boolean(assetsEnableNotificationsByDefaultV2.value);
 
-  return Boolean(result);
+  // This is a threshold flag. remote-feature-flag-controller v5 resolves it to
+  // its value directly (a boolean here); older versions wrapped it as
+  // `{ value }`. Support both shapes.
+  if (
+    typeof assetsEnableNotificationsByDefaultV2 === 'object' &&
+    assetsEnableNotificationsByDefaultV2 !== null &&
+    'value' in assetsEnableNotificationsByDefaultV2
+  ) {
+    return Boolean(assetsEnableNotificationsByDefaultV2.value);
+  }
+
+  return Boolean(assetsEnableNotificationsByDefaultV2);
 }
 
 /**

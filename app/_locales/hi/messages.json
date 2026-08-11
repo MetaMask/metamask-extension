@@ -3402,9 +3402,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "क्या आप वाकई डिस्कनेक्ट करना चाहते हैं? आप साइट की फंक्शनलिटी खो सकते हैं।"
   },
-  "disconnectAllDescriptionText": {
-    "message": "यदि आप इस साइट से डिस्कनेक्ट हो जाते हैं, तो आपको इस साइट का दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
-  },
   "disconnectAllSites": {
     "message": "सभी को डिस्कनेक्ट करें"
   },

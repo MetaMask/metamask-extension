@@ -1,7 +1,23 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
-class AddNetworkRpcUrlModal {
+/**
+ * The RPC URL sub-form of the network details form, where a single RPC
+ * endpoint's URL and display name are entered.
+ *
+ * Screen: `#/networks?view=add-rpc` and `#/networks?view=edit-rpc`, reached
+ * from `AddEditNetworkPage.openAddRpcUrlPage`.
+ * Owns: the RPC URL and RPC name fields, the invalid-URL error, and saving or
+ * cancelling the sub-form.
+ * Boundaries: saving here only returns to the network form - the RPC is not
+ * persisted until that form is saved. Asserting the resulting RPC list belongs
+ * to `AddEditNetworkPage`.
+ * Related: `AddEditNetworkPage` (opens this, and where both save and cancel
+ * return to).
+ *
+ * @see ui/pages/networks/add-rpc-url-page-form.tsx
+ */
+class AddEditRpcUrlPage {
   private readonly addRpcNameInput = {
     testId: 'rpc-name-input-test',
   };
@@ -12,6 +28,10 @@ class AddNetworkRpcUrlModal {
 
   private readonly addRpcUrlInput = {
     testId: 'rpc-url-input-test',
+  };
+
+  private readonly cancelButton = {
+    testId: 'page-container-footer-cancel',
   };
 
   private readonly driver: Driver;
@@ -26,7 +46,7 @@ class AddNetworkRpcUrlModal {
   }
 
   /**
-   * Checks if the add RPC URL button is enabled on add network RPC URL modal.
+   * Checks if the add RPC URL button is enabled on the RPC URL page.
    *
    * @param shouldBeEnabled - Whether the add RPC URL button should be enabled. Defaults to true.
    */
@@ -54,13 +74,15 @@ class AddNetworkRpcUrlModal {
         this.addRpcUrlButton,
       ]);
     } catch (e) {
-      console.log(
-        'Timeout while waiting for Add network RPC URL dialog to be loaded',
-        e,
-      );
+      console.log('Timeout while waiting for the RPC URL page to be loaded', e);
       throw e;
     }
-    console.log('Add network RPC URL dialog was loaded');
+    console.log('RPC URL page was loaded');
+  }
+
+  async clickCancel(): Promise<void> {
+    console.log('Cancel out of the RPC URL page');
+    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
   }
 
   /**
@@ -69,9 +91,7 @@ class AddNetworkRpcUrlModal {
    * @param rpcName - The RPC name to fill in the input field.
    */
   async fillAddRpcNameInput(rpcName: string): Promise<void> {
-    console.log(
-      `Fill RPC name input with ${rpcName} in add network RPC URL modal`,
-    );
+    console.log(`Fill RPC name input with ${rpcName} on the RPC URL page`);
     const rpcNameInput = await this.driver.findElement(this.addRpcNameInput);
     await rpcNameInput.sendKeys(rpcName);
   }
@@ -82,9 +102,7 @@ class AddNetworkRpcUrlModal {
    * @param rpcUrl - The RPC URL to fill in the input field.
    */
   async fillAddRpcUrlInput(rpcUrl: string): Promise<void> {
-    console.log(
-      `Fill RPC URL input with ${rpcUrl} in add network RPC URL modal`,
-    );
+    console.log(`Fill RPC URL input with ${rpcUrl} on the RPC URL page`);
     const rpcUrlInput = await this.driver.findElement(this.addRpcUrlInput);
     await rpcUrlInput.sendKeys(rpcUrl);
   }
@@ -96,4 +114,4 @@ class AddNetworkRpcUrlModal {
   }
 }
 
-export default AddNetworkRpcUrlModal;
+export default AddEditRpcUrlPage;

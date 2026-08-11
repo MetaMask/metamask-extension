@@ -1,8 +1,10 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  NetworkConfiguration,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
@@ -40,6 +42,7 @@ import {
   KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
@@ -81,14 +84,28 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   TransactionContainerType,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionControllerWipeTransactionsAction,
+  type TransactionMeta,
+  type TransactionParams,
 } from '@metamask/transaction-controller';
+import {
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
+} from '@metamask/user-operation-controller';
+import {
+  GetSignatureState,
+  SignatureStateChange,
+} from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
@@ -199,11 +216,13 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
@@ -256,6 +275,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
@@ -267,6 +287,11 @@ import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import {
+  addTransaction as addTransactionToPipeline,
+  type AddTransactionOptions,
+  type AddTransactionRequest,
+} from '../lib/transaction/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerAddReferralApprovedAccountAction,
@@ -312,6 +337,9 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerAddSignatureSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
   AppStateControllerGetIsWalletResetInProgressAction,
   AppStateControllerSetIsWalletResetInProgressAction,
   AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
@@ -407,6 +435,8 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addTransaction',
+  'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
   'captureTestError',
@@ -513,6 +543,9 @@ type AllowedActions =
   | ApprovalControllerGetStateAction
   | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | AppStateControllerAddSignatureSecurityAlertResponseAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetIsWalletResetInProgressAction
@@ -522,6 +555,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
@@ -534,6 +568,7 @@ type AllowedActions =
   | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
@@ -560,6 +595,7 @@ type AllowedActions =
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
@@ -603,24 +639,42 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | GetSignatureState
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
   | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerGetStateAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateEditableParamsAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | TransactionControllerWipeTransactionsAction
+  | UsePPOMAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction;
+
+/**
+ * The events that the {@link LegacyBackgroundApiService} can subscribe to.
+ *
+ * Consumed by the shared transaction-add pipeline to await the pending
+ * transaction or signature request while running PPOM security validation.
+ */
+type AllowedEvents =
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | SignatureStateChange;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -628,7 +682,7 @@ type AllowedActions =
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -1017,6 +1071,88 @@ export class LegacyBackgroundApiService {
       ...request,
       provider,
     });
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, without waiting for the
+   * transaction to be published.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The transaction metadata.
+   */
+  async addTransaction(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        false,
+      ),
+    );
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, waiting for the
+   * transaction to be published and returning the final transaction metadata.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The final transaction metadata.
+   */
+  async addTransactionAndWaitForPublish(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        true,
+      ),
+    );
+  }
+
+  /**
+   * Builds the request consumed by the shared transaction-add pipeline from the
+   * messenger, mirroring the former `MetamaskController.getAddTransactionRequest`.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @param waitForSubmit - Whether to wait for the transaction to be published.
+   * @returns The transaction-add request.
+   */
+  #buildAddTransactionRequest(
+    transactionParams: TransactionParams,
+    transactionOptions: Partial<AddTransactionOptions> | undefined,
+    waitForSubmit: boolean,
+  ): AddTransactionRequest {
+    const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
+
+    return {
+      messenger: this.#messenger,
+      internalAccounts: this.#messenger.call('AccountsController:listAccounts'),
+      selectedAccount: this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        transactionParams.from,
+      ) as InternalAccount,
+      networkClientId: networkClientId as string,
+      chainId,
+      transactionParams,
+      transactionOptions: { ...transactionOptions, isInternal: true },
+      securityAlertsEnabled: this.#messenger.call(
+        'PreferencesController:getState',
+      ).securityAlertsEnabled,
+      waitForSubmit,
+    };
   }
 
   /**

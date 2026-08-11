@@ -343,6 +343,7 @@
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
+    "featureFlagThresholdGroups": "object",
     "localOverrides": "object",
     "rawRemoteFeatureFlags": "object",
     "remoteFeatureFlags": {
