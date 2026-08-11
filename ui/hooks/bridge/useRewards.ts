@@ -240,6 +240,9 @@ export const useRewardsWithQuote = ({
   }
   const currentAccountLinkedTimestamp = accountLinkSync.currentTimestamp;
 
+  // `debounce()` returns a new stateful function on every call, so it has to be
+  // built inside a `useMemo` factory — passing it to `useCallback` would construct
+  // (and discard) a fresh timer-holding instance on every render.
   const debouncedEstimatePoints = useMemo(
     () =>
       debounce(
