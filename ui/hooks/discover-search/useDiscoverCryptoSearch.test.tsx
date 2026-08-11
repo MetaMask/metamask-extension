@@ -3,6 +3,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getTrendingTokens, searchTokens } from '@metamask/assets-controllers';
 
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
 
 jest.mock('@metamask/assets-controllers', () => ({
@@ -60,6 +61,7 @@ describe('useDiscoverCryptoSearch', () => {
 
     expect(mockGetTrendingTokens).toHaveBeenCalledWith(
       expect.objectContaining({
+        chainIds: expect.arrayContaining([MultichainNetworks.BITCOIN]),
         includeTokenSecurityData: true,
       }),
     );
@@ -104,7 +106,7 @@ describe('useDiscoverCryptoSearch', () => {
     });
 
     expect(mockSearchTokens).toHaveBeenCalledWith(
-      expect.any(Array),
+      expect.arrayContaining([MultichainNetworks.BITCOIN]),
       'eth',
       expect.objectContaining({
         includeMarketData: true,
