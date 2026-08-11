@@ -1,8 +1,17 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useMoneyAccountDeposit } from '../../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
 import { MoneyAccountDepositButton } from './money-account-deposit-button';
+
+const render = () =>
+  renderWithProvider(
+    <MoneyAccountDepositButton />,
+    configureMockStore()(mockState),
+  );
 
 jest.mock('../../../../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: jest.fn(),
@@ -34,7 +43,7 @@ describe('MoneyAccountDepositButton', () => {
   });
 
   it('initiates the deposit on click', () => {
-    render(<MoneyAccountDepositButton />);
+    render();
 
     const button = screen.getByRole('button', {
       name: 'Money Account Deposit',
@@ -52,7 +61,7 @@ describe('MoneyAccountDepositButton', () => {
       primaryMoneyAccount: undefined,
     } as unknown as ReturnType<typeof useMoneyAccountInfo>);
 
-    const { container } = render(<MoneyAccountDepositButton />);
+    const { container } = render();
 
     expect(container).toBeEmptyDOMElement();
   });
@@ -63,7 +72,7 @@ describe('MoneyAccountDepositButton', () => {
       isLoading: true,
     });
 
-    render(<MoneyAccountDepositButton />);
+    render();
 
     expect(
       screen.getByRole('button', { name: 'Money Account Deposit' }),
