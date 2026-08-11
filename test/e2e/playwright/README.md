@@ -95,7 +95,7 @@ Locally (no `GITHUB_ACTION`) it skips all of the above and runs every discovered
 
 - **Driver shim**: [`test/e2e/webdriver/driver-playwright.ts`](../webdriver/driver-playwright.ts) — `PlaywrightDriver` + `PlaywrightElement`.
 - **Factory**: [`test/e2e/webdriver/build-playwright-driver.ts`](../webdriver/build-playwright-driver.ts) — dispatches between Chrome/Firefox harnesses.
-- **Chrome harness**: [`shared/chrome-extension-harness.ts`](./shared/chrome-extension-harness.ts) — `launchPersistentContext` + `--load-extension` + deterministic extension-ID derivation. Launches with `--ignore-certificate-errors`: mockttp answers HTTPS with a self-signed MITM certificate, and Playwright's `ignoreHTTPSErrors` only covers attached targets (pages) — not the MV3 service worker — so without the browser-wide flag every background fetch (remote feature flags, accounts/price APIs, ...) fails its TLS handshake and the extension silently runs without backend data.
+- **Chrome harness**: [`shared/chrome-extension-harness.ts`](./shared/chrome-extension-harness.ts) — `launchPersistentContext` + `--load-extension` + deterministic extension-ID derivation.
 - **Firefox harness**: [`shared/firefox-extension-harness.ts`](./shared/firefox-extension-harness.ts) — Playwright Firefox `omni.ja` patch + RDP install + UUID lookup.
 - **withFixtures branch**: [`test/e2e/helpers.js`](../helpers.js) — `driverType` from [`E2E_DRIVER`](../constants.ts) (`SELENIUM` default, `PLAYWRIGHT` for migrated specs).
 
@@ -104,17 +104,6 @@ Locally (no `GITHUB_ACTION`) it skips all of the above and runs every discovered
 The `PlaywrightDriver` shim only implements what migrated specs actually exercise. Every other method throws a clear `not yet implemented` error rather than shipping unverified behavior — so we add (and verify) methods one migrated spec at a time. When a spec you're migrating hits a gap, implement it (mirroring the Selenium `driver.js` contract) in the same PR.
 
 Intentional no-ops (not gaps): `checkBrowserForExceptions` / `checkBrowserForConsoleErrors` — the PW path records `weberror` events automatically, so these stay as no-ops for API parity rather than throwing.
-
-Capabilities added by the settings-folder migration (each mirrors the Selenium contract):
-
-- **Downloads** — Playwright intercepts downloads instead of using the browser's native download directory, so the driver saves every download to `test-artifacts/downloads/<suggested filename>` via a per-page `download` listener (used by `backup-restore` and `state-logs`).
-- **WebAuthn virtual authenticator** — `withFixtures({ virtualAuthenticator: true })` works on the PW path via the CDP `WebAuthn` domain (Chromium only, like Selenium's virtual authenticator; used by the passkey specs). All passkey specs are migrated, so the Selenium implementation was removed from [`virtual-authenticator.ts`](../webdriver/virtual-authenticator.ts) — Selenium specs can no longer use `virtualAuthenticator: true`.
-- **`waitForUrl`** — exact-match URL wait backed by `page.waitForURL`. `openNewPage` also switches the current page _before_ navigating, matching Selenium, so specs that swallow navigation errors (e.g. `ipfs-ens-resolution`) still observe the new tab.
-
-Capabilities added by the onboarding/account migration:
-
-- **Window handles** — `getCurrentWindowHandle`, `getAllWindowHandles`, `switchToWindow`, and `closeWindowHandle` map Selenium's opaque window handles onto synthetic `pw-handle-N` handles backed by Playwright `Page`s. Tabs opened by the extension background arrive via the context's `page` event and get a handle automatically (used by the deferred deep-link and Terms-of-Use link tests). Title/URL-based switching (`switchToWindowWithTitle` / `switchToWindowWithUrl`) is still unimplemented.
-- **`clickElementUsingMouseMove`** — Selenium's escape hatch for `ElementClickInterceptedError` maps to `locator.click({ force: true })`, which skips the receives-pointer-events check (used as a fallback by `HeaderNavbar.openGlobalMenu` when the notification badge overlaps the menu button).
 
 ### CI
 
