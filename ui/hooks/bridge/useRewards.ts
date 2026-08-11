@@ -322,10 +322,7 @@ export const useRewardsWithQuote = ({
         return;
       }
 
-      await debouncedEstimatePoints(
-        estimationQuoteArg,
-        detection.caipAccount,
-      );
+      await debouncedEstimatePoints(estimationQuoteArg, detection.caipAccount);
     },
     [
       fromAddress,
