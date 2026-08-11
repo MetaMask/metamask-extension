@@ -6,7 +6,6 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
   usePureBlack,
 } from '@metamask/design-system-react';
@@ -130,8 +129,6 @@ export const GlobalMenuDrawer = ({
             ariaLabel={title || t('close')}
             onClick={requestClose}
             data-testid="drawer-close-button"
-            className="text-icon-default"
-            iconProps={{ color: IconColor.IconDefault }}
           />
           {title && (
             <span className="sr-only" id={titleId}>
