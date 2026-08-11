@@ -65,10 +65,13 @@ export function TokenRow({
     <ActivityAvatar
       tokens={[
         token.assetId || token.assetType === 'native'
-          ? { assetId: token.assetId, isNative: token.assetType === 'native' }
+          ? {
+              assetId: token.assetId,
+              isNative: token.assetType === 'native',
+              chainId: nativeIconChainId,
+            }
           : undefined,
       ]}
-      chainId={nativeIconChainId}
     />
   );
 

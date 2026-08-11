@@ -13,10 +13,14 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 export type ActivityAvatarToken = {
   assetId?: string;
   isNative?: boolean;
+  // Each token carries its own chain: a shared chainId across both legs of
+  // a dual avatar is wrong for cross-chain rows (e.g. bridge), where the
+  // destination can be on a different chain than the source/activity chain.
+  chainId?: string;
 };
 
 // Most callers only pass a bare assetId; only the Activity list knows a
-// transfer's assetType and passes the richer object form.
+// transfer's assetType/chainId and passes the richer object form.
 export type ActivityListItemAvatarTokens = readonly (
   | ActivityAvatarToken
   | string
@@ -49,14 +53,12 @@ const getNativeAssetImageSrc = (chainId?: string): string | undefined =>
 
 const ActivityTokenAvatar = ({
   token,
-  chainId,
   className,
 }: Readonly<{
   token: ActivityAvatarToken;
-  chainId?: string;
   className?: string;
 }>) => {
-  const { assetId, isNative } = token;
+  const { assetId, isNative, chainId } = token;
   const src = isNative
     ? (getNativeAssetImageSrc(chainId) ??
       getCaipAssetImageUrl(assetId as CaipAssetType))
@@ -77,11 +79,9 @@ const ActivityTokenAvatar = ({
 const ActivityDualTokenAvatar = ({
   from,
   to,
-  chainId,
 }: Readonly<{
   from: ActivityAvatarToken;
   to: ActivityAvatarToken;
-  chainId?: string;
 }>) => {
   return (
     <div
@@ -91,14 +91,12 @@ const ActivityDualTokenAvatar = ({
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
           token={from}
-          chainId={chainId}
           className="activity-list-item-avatar-dual__token"
         />
       </div>
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
           token={to}
-          chainId={chainId}
           className="activity-list-item-avatar-dual__token"
         />
       </div>
@@ -107,7 +105,7 @@ const ActivityDualTokenAvatar = ({
 };
 
 export const ActivityListItemAvatar = (
-  props: Readonly<{ tokens: ActivityListItemAvatarTokens; chainId?: string }>,
+  props: Readonly<{ tokens: ActivityListItemAvatarTokens }>,
 ) => {
   const tokens = sanitizeTokens(props.tokens);
 
@@ -123,10 +121,8 @@ export const ActivityListItemAvatar = (
 
   if (tokens.length > 1) {
     const [from, to] = tokens;
-    return (
-      <ActivityDualTokenAvatar from={from} to={to} chainId={props.chainId} />
-    );
+    return <ActivityDualTokenAvatar from={from} to={to} />;
   }
 
-  return <ActivityTokenAvatar token={tokens[0]} chainId={props.chainId} />;
+  return <ActivityTokenAvatar token={tokens[0]} />;
 };

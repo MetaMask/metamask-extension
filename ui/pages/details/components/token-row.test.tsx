@@ -10,16 +10,8 @@ jest.mock('../../../hooks/useFormatters', () => ({
 }));
 
 jest.mock('../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: ({
-    tokens,
-    chainId,
-  }: {
-    tokens: unknown;
-    chainId?: string;
-  }) => (
-    <div data-testid="activity-avatar">
-      {JSON.stringify({ tokens, chainId })}
-    </div>
+  ActivityAvatar: ({ tokens }: { tokens: unknown }) => (
+    <div data-testid="activity-avatar">{JSON.stringify({ tokens })}</div>
   ),
 }));
 
@@ -78,10 +70,10 @@ describe('TokenRow', () => {
   it('tags a native token and converts the row chainId to hex for the avatar', () => {
     render(<TokenRow token={nativeChzToken} chainId="eip155:88888" />);
 
-    const avatar = getRenderedAvatar();
     // JSON round-tripping through the mock drops the undefined assetId key.
-    expect(avatar.tokens).toStrictEqual([{ isNative: true }]);
-    expect(avatar.chainId).toBe('0x15b38');
+    expect(getRenderedAvatar().tokens).toStrictEqual([
+      { isNative: true, chainId: '0x15b38' },
+    ]);
   });
 
   it('leaves a non-EVM chainId as-is for the avatar', () => {
@@ -92,9 +84,12 @@ describe('TokenRow', () => {
       />,
     );
 
-    expect(getRenderedAvatar().chainId).toBe(
-      'bip122:000000000019d6689c085ae165831e93',
-    );
+    expect(getRenderedAvatar().tokens).toStrictEqual([
+      {
+        isNative: true,
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+      },
+    ]);
   });
 
   it('derives a chain badge chainId from the assetId only when showNetworkBadge is set', () => {

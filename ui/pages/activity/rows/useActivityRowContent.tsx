@@ -37,9 +37,14 @@ type ActivityContent = {
 
 const toAvatarToken = (
   token?: Pick<TokenAmount, 'assetId' | 'assetType'>,
+  chainId?: string,
 ): ActivityAvatarToken | undefined =>
   token?.assetId || token?.assetType === 'native'
-    ? { assetId: token.assetId, isNative: token.assetType === 'native' }
+    ? {
+        assetId: token.assetId,
+        isNative: token.assetType === 'native',
+        chainId,
+      }
     : undefined;
 
 function getChainDisplay(caipChainId: CaipChainId) {
@@ -79,7 +84,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = token?.symbol ?? '';
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
             formatDisplayName(address) || t('unknown'),
@@ -106,8 +111,11 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
 
         return {
           avatarTokens: hasDestination
-            ? [toAvatarToken(sourceToken), toAvatarToken(destinationToken)]
-            : [toAvatarToken(sourceToken)],
+            ? [
+                toAvatarToken(sourceToken, chainId),
+                toAvatarToken(destinationToken, chainId),
+              ]
+            : [toAvatarToken(sourceToken, chainId)],
           title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
           subtitle,
           primaryAmount: formatTokenAmount(primaryToken),
@@ -128,7 +136,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
-          avatarTokens: [toAvatarToken(sourceToken)],
+          avatarTokens: [toAvatarToken(sourceToken, chainId)],
           title: t(labelKeys.title.key, [sourceSymbol ?? '']),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken),
@@ -148,7 +156,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
-          avatarTokens: [toAvatarToken(destinationToken)],
+          avatarTokens: [toAvatarToken(destinationToken, chainId)],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken),
@@ -163,7 +171,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
 
         return {
           avatarTokens: [
-            toAvatarToken(destinationToken) ?? toAvatarToken(sourceToken),
+            toAvatarToken(destinationToken, chainId) ??
+              toAvatarToken(sourceToken, chainId),
           ],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
@@ -186,11 +195,21 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           sourceChainId && destinationChainId
             ? `${getChainDisplay(sourceChainId).networkName} → ${getChainDisplay(destinationChainId).networkName}`
             : undefined;
+        // The destination can be on a different chain than the source/
+        // activity chain, so it needs its own derived chainId rather than
+        // the shared row chainId - a native destination with no assetId
+        // just won't get an icon rather than risk showing the wrong one.
+        const destinationAvatarChainId = destinationChainId
+          ? getChainDisplay(destinationChainId).chainId
+          : undefined;
 
         return {
           avatarTokens: destinationToken
-            ? [toAvatarToken(sourceToken), toAvatarToken(destinationToken)]
-            : [toAvatarToken(sourceToken)],
+            ? [
+                toAvatarToken(sourceToken, chainId),
+                toAvatarToken(destinationToken, destinationAvatarChainId),
+              ]
+            : [toAvatarToken(sourceToken, chainId)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle,
           primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
@@ -209,7 +228,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = token?.symbol ?? '';
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
           primaryAmount: formatTokenAmount(token),
@@ -251,7 +270,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : fiatAmount;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key),
           subtitle: t('perpsBalance'),
           primaryAmount:
@@ -267,7 +286,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, paymentToken } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
           primaryAmount: formatTokenAmount(paymentToken),
           primaryDirection: paymentToken?.direction,
@@ -278,7 +297,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
@@ -289,7 +308,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, to } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
             shortenAddress(to) || 'Contract',
@@ -305,7 +324,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
           primaryAmount: token?.amount
@@ -324,7 +343,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const secondaryToken = destinationToken ? sourceToken : undefined;
 
         return {
-          avatarTokens: [toAvatarToken(secondaryToken)],
+          avatarTokens: [toAvatarToken(secondaryToken, chainId)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
           primaryAmount: formatTokenAmount(primaryToken),
@@ -336,7 +355,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
           primaryAmount: formatTokenAmount(token),
@@ -349,7 +368,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token } = activity.data;
 
         return {
-          avatarTokens: [toAvatarToken(token)],
+          avatarTokens: [toAvatarToken(token, chainId)],
           title: t(labelKeys.title.key, [token?.symbol ?? '']),
           subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
         };
@@ -374,7 +393,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   return {
     avatar: (
       <ChainBadge chainId={chainId}>
-        <ActivityAvatar tokens={avatarTokens} chainId={chainId} />
+        <ActivityAvatar tokens={avatarTokens} />
       </ChainBadge>
     ),
     title: (
