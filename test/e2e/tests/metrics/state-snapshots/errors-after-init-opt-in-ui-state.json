@@ -161,6 +161,7 @@
     "eventQueue": "object",
     "events": "object",
     "fcmToken": "string",
+    "featureFlagThresholdGroups": "object",
     "featureFlags": {},
     "fiatCurrency": "usd",
     "firstTimeFlowType": "import",
@@ -343,7 +344,6 @@
       "btc": { "conversionDate": 0, "conversionRate": 0 },
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
-    "featureFlagThresholdGroups": "object",
     "rawRemoteFeatureFlags": "object",
     "recentlyViewedMarkets": "object",
     "recoveryPhraseReminderHasBeenShown": false,
