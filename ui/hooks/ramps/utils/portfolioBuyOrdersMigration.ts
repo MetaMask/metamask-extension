@@ -161,7 +161,6 @@ async function runPortfolioBuyOrdersMigrationInner(
   }
 
   try {
-    // Non-prod only: clear stale local sessions. Never sign out in production.
     if (!isProduction()) {
       try {
         await submitRequestToBackground('performSignOut');
