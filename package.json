@@ -393,7 +393,7 @@
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^1.3.0",
-    "@metamask/design-system-react": "^0.35.1",
+    "@metamask/design-system-react": "^0.35.2",
     "@metamask/design-system-tailwind-preset": "^0.10.0",
     "@metamask/design-tokens": "^8.7.0",
     "@metamask/dummy-package": "workspace:*",
