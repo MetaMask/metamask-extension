@@ -17,11 +17,11 @@ import {
   TextColor,
   TextVariant as DSTextVariant,
 } from '@metamask/design-system-react';
+import { useBoolean } from '../../../../hooks/useBoolean';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
-  Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -50,7 +50,7 @@ export enum SnapsPermissionsRequestType {
   None = 'none',
 }
 
-type SiteMetadata = {
+export type SiteMetadata = {
   origin: string;
   name?: string;
   iconUrl?: string;
@@ -84,7 +84,7 @@ export const MultichainEditAccountsPage = ({
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
     defaultSelectedAccountGroups,
   );
-  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+  const showDisconnectModal = useBoolean();
   const accountTree = useSelector(getAccountTree);
 
   const walletsWithSupportedAccountGroups = useMemo(() => {
@@ -161,12 +161,8 @@ export const MultichainEditAccountsPage = ({
     selectedAccountGroups.length === 0 &&
     snapsPermissionsRequestType !== SnapsPermissionsRequestType.Existing;
 
-  const handleDisconnectClick = () => {
-    setShowDisconnectModal(true);
-  };
-
   const handleDisconnectConfirm = () => {
-    setShowDisconnectModal(false);
+    showDisconnectModal.setFalse();
     onDisconnect?.();
   };
 
@@ -206,7 +202,7 @@ export const MultichainEditAccountsPage = ({
                 ariaLabel={t('disconnect')}
                 iconName={IconName.Logout}
                 size={ButtonIconSize.Md}
-                onClick={handleDisconnectClick}
+                onClick={showDisconnectModal.setTrue}
                 className="text-error-default"
               />
             ) : undefined
@@ -268,10 +264,10 @@ export const MultichainEditAccountsPage = ({
           {confirmButtonText ?? t('connect')}
         </Button>
       </Footer>
-      {showDisconnectModal && siteMetadata && (
+      {showDisconnectModal.value && siteMetadata && (
         <DisconnectAllModal
           onClick={handleDisconnectConfirm}
-          onClose={() => setShowDisconnectModal(false)}
+          onClose={showDisconnectModal.setFalse}
           origin={siteMetadata.origin}
         />
       )}

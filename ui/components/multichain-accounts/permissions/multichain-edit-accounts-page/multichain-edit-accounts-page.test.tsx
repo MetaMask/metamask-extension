@@ -19,6 +19,7 @@ import { createMockMultichainAccountsState } from '../../../../selectors/multich
 import * as assetsSelectors from '../../../../selectors/assets';
 import {
   MultichainEditAccountsPage,
+  SiteMetadata,
   SnapsPermissionsRequestType,
 } from './multichain-edit-accounts-page';
 
@@ -310,11 +311,7 @@ const render = (
     onSubmit?: (accountGroups: AccountGroupId[]) => void;
     onClose?: () => void;
     snapsPermissionsRequestType?: SnapsPermissionsRequestType;
-    siteMetadata?: {
-      origin: string;
-      name?: string;
-      iconUrl?: string;
-    };
+    siteMetadata?: SiteMetadata;
     onDisconnect?: () => void;
   } = {},
   state = {},
