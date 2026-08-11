@@ -1,1 +1,1 @@
-export { getShieldSubscriptionServiceMessenger } from './subscription-service-messenger';
+export { getShieldSubscriptionServiceMessenger } from './shield-subscription-service-messenger';

@@ -1,1 +1,1 @@
-export { ShieldSubscriptionServiceInit } from './subscription-service-init';
+export { ShieldSubscriptionServiceInit } from './shield-subscription-service-init';
