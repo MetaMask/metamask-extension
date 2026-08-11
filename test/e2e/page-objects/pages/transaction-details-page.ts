@@ -1,5 +1,18 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Activity transaction details for a single tx identifier on a chain.
+ *
+ * Screen: `#/tx/:caipChainId/:txIdentifier`, reached from activity list items.
+ * Owns: status, amount, fees, addresses, explorer hash link, and back
+ * navigation on the details screen.
+ * Boundaries: the details page only. Activity list rows belong to
+ * `ActivityTab`; speed-up/cancel modals belong to confirmation modals.
+ * Related: `ActivityTab`, `SpeedUpAndCancelModal`.
+ *
+ * @see ui/pages/details/transaction-details-route.tsx
+ * @see ui/pages/details/transaction-details.tsx
+ */
 class TransactionDetailsPage {
   private readonly addressInLog = (address: string) => ({
     testId: 'transaction-details-address',
