@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
-import { useExtensionRouteListener } from './useExtensionRouteListener';
+import { useNavigateRouteListener } from './useNavigateRouteListener';
 
 const mockNavigate = jest.fn();
 
@@ -22,7 +22,7 @@ jest.mock('../store/hooks', () => ({
 
 const mockGetIsUnlocked = jest.mocked(getIsUnlocked);
 
-describe('useExtensionRouteListener', () => {
+describe('useNavigateRouteListener', () => {
   let messageListener: ((message: unknown) => unknown) | undefined;
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('useExtensionRouteListener', () => {
   });
 
   it('navigates when OPEN_ROUTE is received while unlocked', () => {
-    renderHook(() => useExtensionRouteListener());
+    renderHook(() => useNavigateRouteListener());
 
     act(() => {
       messageListener?.({
@@ -56,14 +56,15 @@ describe('useExtensionRouteListener', () => {
       });
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/cross-chain/swaps/prepare-bridge-page?to=eip155:1/slip44:60',
-    );
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155:1/slip44:60',
+    });
   });
 
   it('defers navigation until unlocked', () => {
     mockGetIsUnlocked.mockReturnValue(false);
-    const { rerender } = renderHook(() => useExtensionRouteListener());
+    const { rerender } = renderHook(() => useNavigateRouteListener());
 
     act(() => {
       messageListener?.({
@@ -77,11 +78,14 @@ describe('useExtensionRouteListener', () => {
     mockGetIsUnlocked.mockReturnValue(true);
     rerender();
 
-    expect(mockNavigate).toHaveBeenCalledWith('/asset/eip155:1/slip44:60');
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/asset/eip155:1/slip44:60',
+      search: '',
+    });
   });
 
   it('ignores messages without a valid path', () => {
-    renderHook(() => useExtensionRouteListener());
+    renderHook(() => useNavigateRouteListener());
 
     act(() => {
       messageListener?.({

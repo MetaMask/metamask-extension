@@ -92,7 +92,7 @@ import {
 } from '../../selectors';
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
-import { useExtensionRouteListener } from '../../hooks/useExtensionRouteListener';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
@@ -713,7 +713,7 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
   // Warm OPEN_ROUTE navigates in-place; cold open uses sidepanel/popup hash URLs.
-  useExtensionRouteListener();
+  useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
