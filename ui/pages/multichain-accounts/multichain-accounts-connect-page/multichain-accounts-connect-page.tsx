@@ -179,6 +179,16 @@ export const MultichainAccountsConnectPage = ({
       ],
     );
 
+  // Requests carrying the `eip1193-compatible` session property come from
+  // EIP-1193 compatibility layers (e.g. `@metamask/connect-evm`) that route
+  // legacy-style dapp connections through the Multichain API. They should get
+  // the same all-networks pre-selection as legacy EIP-1193 requests.
+  const isEip1193CompatibleRequest = Boolean(
+    requestedCaip25CaveatValue.sessionProperties?.[
+      KnownSessionProperties.Eip1193Compatible
+    ],
+  );
+
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
       existingCaip25CaveatValue
@@ -264,6 +274,7 @@ export const MultichainAccountsConnectPage = ({
         requestedNamespaces,
         requestedNamespacesWithoutWallet,
         isEip1193Request,
+        isEip1193CompatibleRequest,
         isSolanaWalletStandardRequest,
         isTronWalletAdapterRequest,
       }),
@@ -276,6 +287,7 @@ export const MultichainAccountsConnectPage = ({
       requestedNamespaces,
       requestedNamespacesWithoutWallet,
       alreadyConnectedCaipChainIds,
+      isEip1193CompatibleRequest,
       isSolanaWalletStandardRequest,
       isTronWalletAdapterRequest,
     ],
@@ -646,6 +658,8 @@ export const MultichainAccountsConnectPage = ({
     </Page>
   ) : (
     <MultichainEditAccountsPage
+      title={t('selectAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
