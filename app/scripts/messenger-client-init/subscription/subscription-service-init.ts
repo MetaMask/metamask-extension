@@ -1,5 +1,5 @@
 import { MessengerClientInitFunction } from '../types';
-import { ShieldSubscriptionService } from '../../services/subscription/subscription-service';
+import { ShieldSubscriptionService } from '../../services/subscription/shield-subscription-service';
 import { ShieldSubscriptionServiceMessenger } from '../../services/subscription/types';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 

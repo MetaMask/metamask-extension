@@ -23,7 +23,7 @@ import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
 import { SHIELD_ERROR } from '../../../../shared/lib/shield';
-import { ShieldSubscriptionService } from './subscription-service';
+import { ShieldSubscriptionService } from './shield-subscription-service';
 import { ShieldSubscriptionServiceMessenger } from './types';
 
 jest.mock('../../controllers/analytics', () => ({

@@ -119,7 +119,7 @@ import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
-import { ShieldSubscriptionService } from '../services/subscription/subscription-service';
+import { ShieldSubscriptionService } from '../services/subscription/shield-subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';

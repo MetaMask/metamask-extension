@@ -13,9 +13,7 @@ import {
   SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import {
-  TransactionControllerGetTransactionsAction,
-} from '@metamask/transaction-controller';
+import { TransactionControllerGetTransactionsAction } from '@metamask/transaction-controller';
 import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
@@ -35,7 +33,7 @@ import {
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller-method-action-types';
-import { ShieldSubscriptionServiceMethodActions } from './subscription-service-method-action-types';
+import { ShieldSubscriptionServiceMethodActions } from './shield-subscription-service-method-action-types';
 
 export type {
   ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
@@ -44,7 +42,7 @@ export type {
   ShieldSubscriptionServiceHandlePostTransactionAction,
   ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
   ShieldSubscriptionServiceLinkRewardToExistingSubscriptionAction,
-} from './subscription-service-method-action-types';
+} from './shield-subscription-service-method-action-types';
 
 export const SERVICE_NAME = 'ShieldSubscriptionService';
 
