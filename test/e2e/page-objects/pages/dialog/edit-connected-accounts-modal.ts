@@ -165,17 +165,6 @@ class EditConnectedAccountsModal {
       state: 'disabled',
     });
   }
-
-  /**
-   * Waits until the Connect button becomes enabled.
-   * This is the preferred pattern over checking state with isEnabled() to avoid race conditions.
-   */
-  async waitForConnectButtonEnabled(): Promise<void> {
-    console.log('Waiting for Connect button to be enabled');
-    await this.driver.waitForSelector(this.connectAccountsButton, {
-      state: 'enabled',
-    });
-  }
 }
 
 export default EditConnectedAccountsModal;
