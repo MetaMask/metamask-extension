@@ -157,7 +157,6 @@ class EditConnectedAccountsModal {
 
   /**
    * Waits until the Connect button becomes disabled.
-   * This is the preferred pattern over checking state with isEnabled() to avoid race conditions.
    */
   async waitForConnectButtonDisabled(): Promise<void> {
     console.log('Waiting for Connect button to be disabled');
