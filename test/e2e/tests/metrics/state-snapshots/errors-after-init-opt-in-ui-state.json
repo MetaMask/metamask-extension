@@ -343,6 +343,7 @@
       "btc": { "conversionDate": 0, "conversionRate": 0 },
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
+    "featureFlagThresholdGroups": "object",
     "rawRemoteFeatureFlags": "object",
     "recentlyViewedMarkets": "object",
     "recoveryPhraseReminderHasBeenShown": false,
@@ -352,7 +353,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": "valueA"
     },
     "requests": "object",
     "rewardsAccounts": "object",
