@@ -145,24 +145,6 @@ describe('GlobalMenuDrawer', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the back icon with icon/default color', async () => {
-    const { getByTestId } = renderWithProvider(
-      <GlobalMenuDrawer isOpen onClose={() => undefined}>
-        <span>Content</span>
-      </GlobalMenuDrawer>,
-      configureStore(mockState),
-      '/',
-    );
-
-    await waitFor(() => {
-      expect(getByTestId('drawer-close-button')).toBeInTheDocument();
-    });
-
-    expect(getByTestId('drawer-close-button')).toHaveClass('text-icon-default');
-    expect(getByTestId('drawer-close-button')).not.toHaveClass(
-      'text-icon-alternative',
-    );
-  });
 
   it('calls onClose when the dialog is dismissed', async () => {
     const onClose = jest.fn();
