@@ -87,6 +87,10 @@ describe('AddRpcUrlPageForm', () => {
     await waitFor(() =>
       expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
+    expect(mockJsonRpcRequest).toHaveBeenCalledWith(
+      'https://rpc.example.com/',
+      'eth_chainId',
+    );
 
     fireEvent.click(screen.getByTestId('page-container-footer-next'));
 

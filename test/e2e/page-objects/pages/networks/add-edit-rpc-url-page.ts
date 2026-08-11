@@ -41,6 +41,11 @@ class AddEditRpcUrlPage {
     tag: 'p',
   };
 
+  private readonly errorMessageFailedToFetchChainId = {
+    text: 'Could not fetch chain ID. Is your RPC URL correct?',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -65,6 +70,11 @@ class AddEditRpcUrlPage {
   async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
     console.log('Check that error message invalid URL is displayed');
     await this.driver.waitForSelector(this.errorMessageInvalidUrl);
+  }
+
+  async checkErrorMessageFailedToFetchChainIdIsDisplayed(): Promise<void> {
+    console.log('Check that failed chain ID fetch error message is displayed');
+    await this.driver.waitForSelector(this.errorMessageFailedToFetchChainId);
   }
 
   async checkPageIsLoaded(): Promise<void> {

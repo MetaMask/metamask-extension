@@ -17,10 +17,13 @@ import { isWebUrl } from '../../../shared/lib/url-utils';
 import { infuraProjectId } from '../../../shared/constants/network';
 import { jsonRpcRequest } from '../../../shared/lib/rpc.utils';
 
-const templateInfuraRpc = (endpoint: string) =>
-  endpoint.endsWith('{infuraProjectId}')
+const templateInfuraRpc = (endpoint: string) => {
+  const rpcUrl = endpoint.endsWith('{infuraProjectId}')
     ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
     : endpoint;
+
+  return new URL(rpcUrl).toString();
+};
 
 const RPC_VALIDATION_DEBOUNCE_MS = 500;
 
