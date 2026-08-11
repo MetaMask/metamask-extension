@@ -27,9 +27,7 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import {
-  ResultType,
-} from '../../../../shared/lib/trust-signals';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   AddDappTransactionRequest,

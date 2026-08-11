@@ -109,7 +109,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
-            chainId: '',
+            chainId: undefined,
           },
         ];
 
