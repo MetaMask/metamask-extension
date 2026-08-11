@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as browserRuntime from '../../../../shared/lib/browser-runtime.utils';
 import {
@@ -57,27 +56,32 @@ describe('SrpInputImport', () => {
     const words = COLLIDING_24_WORD_SRP.split(' ');
     const firstTwelveWords = words.slice(0, 12).join(' ');
 
-    await userEvent.type(
-      getByTestId('srp-input-import__srp-note'),
-      firstTwelveWords,
-    );
+    const initialInput = getByTestId('srp-input-import__srp-note');
+    fireEvent.change(initialInput, { target: { value: words[0] } });
+    fireEvent.keyDown(initialInput, { key: ' ' });
+
+    for (let index = 1; index < 12; index += 1) {
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
+      if (index < 11) {
+        fireEvent.keyDown(input, { key: ' ' });
+      }
+    }
 
     await waitFor(() => {
       expect(onChange).toHaveBeenLastCalledWith(firstTwelveWords);
     });
 
-    await userEvent.keyboard(' ');
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-11'), { key: ' ' });
 
     expect(getByTestId('import-srp__srp-word-12')).toBeInTheDocument();
     expect(onChange).toHaveBeenLastCalledWith('');
 
     for (let index = 12; index < words.length; index += 1) {
-      await userEvent.type(
-        getByTestId(`import-srp__srp-word-${index}`),
-        words[index],
-      );
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
       if (index < words.length - 1) {
-        await userEvent.keyboard(' ');
+        fireEvent.keyDown(input, { key: ' ' });
       }
     }
 
@@ -85,7 +89,7 @@ describe('SrpInputImport', () => {
       expect(onChange).toHaveBeenLastCalledWith(COLLIDING_24_WORD_SRP);
     });
 
-    await userEvent.keyboard(' ');
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-23'), { key: ' ' });
 
     expect(getByTestId('import-srp__srp-word-23')).toBeInTheDocument();
     expect(queryByTestId('import-srp__srp-word-24')).not.toBeInTheDocument();

@@ -4102,7 +4102,7 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink) {
+    if (!deferredDeepLink || !deferredDeepLink.referringLink) {
       return null;
     }
 
