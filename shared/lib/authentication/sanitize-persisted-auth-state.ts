@@ -27,8 +27,7 @@ function sessionMatchesEnv(
   if (typeof accessToken !== 'string' || accessToken.length === 0) {
     return false;
   }
-  const iss = decodeJwtIss(accessToken);
-  return iss === expectedOidcIss;
+  return decodeJwtIss(accessToken) === expectedOidcIss;
 }
 
 /**
@@ -50,7 +49,6 @@ export function sanitizePersistedAuthenticationState(
   const allMatch =
     sessions.length > 0 &&
     sessions.every((session) => sessionMatchesEnv(session, expectedOidcIss));
-
   if (allMatch) {
     return state;
   }
@@ -58,10 +56,5 @@ export function sanitizePersistedAuthenticationState(
   console.warn(
     `[authentication] Clearing persisted Profile Sync session(s) that were not minted for OIDC ${expectedOidcIss}. A fresh sign-in will mint a matching token.`,
   );
-
-  return {
-    ...state,
-    isSignedIn: false,
-    srpSessionData: undefined,
-  };
+  return { ...state, isSignedIn: false, srpSessionData: undefined };
 }

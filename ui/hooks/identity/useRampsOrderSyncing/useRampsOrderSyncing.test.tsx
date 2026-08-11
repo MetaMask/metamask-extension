@@ -76,11 +76,8 @@ describe('useRampsOrderSyncing', () => {
   };
 
   it('dispatches when conditions are met', async () => {
-    const {
-      mockSync,
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing,
-    } = arrange();
+    const { mockSync, dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
+      arrange();
     dispatchRampsOrderSyncing();
     await waitFor(() => {
       expect(mockSync).toHaveBeenCalled();
@@ -89,11 +86,8 @@ describe('useRampsOrderSyncing', () => {
   });
 
   it('does not dispatch when conditions fail', async () => {
-    const {
-      mockSync,
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing,
-    } = arrange({ isRampsSyncingEnabled: false });
+    const { mockSync, dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
+      arrange({ isRampsSyncingEnabled: false });
     dispatchRampsOrderSyncing();
     await waitFor(() => {
       expect(mockSync).not.toHaveBeenCalled();
