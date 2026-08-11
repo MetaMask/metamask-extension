@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { ShieldSubscriptionService } from './subscription-service';
+import type { ShieldSubscriptionService } from './shield-subscription-service';
 
 export type ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction =
   {
