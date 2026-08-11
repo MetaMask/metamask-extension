@@ -25,7 +25,7 @@ const templateInfuraRpc = (endpoint: string) => {
   return new URL(rpcUrl).toString();
 };
 
-const RPC_VALIDATION_DEBOUNCE_MS = 500;
+const RPC_VALIDATION_DEBOUNCE_MS = 300;
 
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;

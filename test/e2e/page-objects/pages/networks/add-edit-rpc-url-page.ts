@@ -36,13 +36,13 @@ class AddEditRpcUrlPage {
 
   private readonly driver: Driver;
 
-  private readonly errorMessageInvalidUrl = {
-    text: 'URLs require the appropriate HTTP/HTTPS prefix.',
+  private readonly errorMessageFailedToFetchChainId = {
+    text: 'Could not fetch chain ID. Is your RPC URL correct?',
     tag: 'p',
   };
 
-  private readonly errorMessageFailedToFetchChainId = {
-    text: 'Could not fetch chain ID. Is your RPC URL correct?',
+  private readonly errorMessageInvalidUrl = {
+    text: 'URLs require the appropriate HTTP/HTTPS prefix.',
     tag: 'p',
   };
 
@@ -67,14 +67,14 @@ class AddEditRpcUrlPage {
     assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
   }
 
-  async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
-    console.log('Check that error message invalid URL is displayed');
-    await this.driver.waitForSelector(this.errorMessageInvalidUrl);
-  }
-
   async checkErrorMessageFailedToFetchChainIdIsDisplayed(): Promise<void> {
     console.log('Check that failed chain ID fetch error message is displayed');
     await this.driver.waitForSelector(this.errorMessageFailedToFetchChainId);
+  }
+
+  async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {
+    console.log('Check that error message invalid URL is displayed');
+    await this.driver.waitForSelector(this.errorMessageInvalidUrl);
   }
 
   async checkPageIsLoaded(): Promise<void> {
