@@ -30,7 +30,7 @@ describe('resolveABTestAssignment', () => {
     });
   });
 
-  it('resolves the variant from threshold groups when the flag value carries no name (rff v5)', () => {
+  it('resolves the variant from threshold groups when the flag value carries no name', () => {
     expect(
       resolveABTestAssignment(
         { [flagKey]: undefined },

@@ -343,8 +343,6 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
-  // rff v5 resolves threshold flags to their value directly (the selected group
-  // name moves to featureFlagThresholdGroups).
   feature3: 'valueA',
 };
 

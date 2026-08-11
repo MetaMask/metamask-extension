@@ -18,6 +18,12 @@ type SplitStateConfig = {
   maxNetworks: number;
 };
 
+/**
+ * Type guard for the split-state rollout config.
+ *
+ * @param value - The value to check.
+ * @returns True when the value has numeric `enabled`, `maxAccounts` and `maxNetworks`.
+ */
 function isSplitStateConfig(value?: Json): value is SplitStateConfig {
   return (
     isObject(value) &&
@@ -31,10 +37,9 @@ function isSplitStateConfig(value?: Json): value is SplitStateConfig {
 }
 
 /**
- * Extract the rollout config from the flag. This is a threshold flag:
- * remote-feature-flag-controller v5 resolves it to its value directly
- * (`{ enabled, maxAccounts, maxNetworks }`), while older versions wrapped it as
- * `{ value: { ... } }`. Support both shapes.
+ * Extract the rollout config from the flag value, which may be the config
+ * object directly (`{ enabled, maxAccounts, maxNetworks }`) or wrapped as
+ * `{ value: { ... } }` by a flag override or test mock.
  *
  * @param flag - The `platformSplitStateGradualRollout` flag value.
  * @returns The rollout config, or `undefined` when the flag is missing/invalid.

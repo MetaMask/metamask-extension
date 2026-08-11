@@ -176,7 +176,7 @@ describe('BackendWebSocketServiceInit', () => {
       expect(isEnabled?.()).toBe(true);
     });
 
-    it('returns true when feature flag resolves to a bare boolean (rff v5 threshold shape)', () => {
+    it('returns true when feature flag resolves to a bare boolean (threshold shape)', () => {
       const baseMessenger = new Messenger<
         MockAnyNamespace,
         ActionConstraint,

@@ -32,9 +32,9 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
 ) {
   const { assetsEnableNotificationsByDefaultV2 } = getRemoteFeatureFlags(state);
 
-  // This is a threshold flag. remote-feature-flag-controller v5 resolves it to
-  // its value directly (a boolean here); older versions wrapped it as
-  // `{ value }`. Support both shapes.
+  // The value is a boolean when resolved from the remote config, or a
+  // `{ value }` object when provided by a flag override or test mock. Handle
+  // both so `{ value: false }` is not misread as truthy.
   if (
     typeof assetsEnableNotificationsByDefaultV2 === 'object' &&
     assetsEnableNotificationsByDefaultV2 !== null &&
