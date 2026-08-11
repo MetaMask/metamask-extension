@@ -712,7 +712,7 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
-  // Warm OPEN_ROUTE navigates in-place; cold open uses sidepanel/popup hash URLs.
+  // OPEN_ROUTE navigates in-place (sidepanel cold/warm + popup warm).
   useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();

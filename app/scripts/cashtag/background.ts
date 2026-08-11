@@ -11,6 +11,10 @@ import type { Controller } from './lib/types';
 const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const popupResetDelayMs = 1000;
+// Side panel must not use a hash in setOptions — Chrome reuses that path on
+// reopen and leaves the user stuck on swap/asset. Cold open uses OPEN_ROUTE
+// retries instead once the panel document mounts.
+const openRouteRetryDelaysMs = [0, 150, 400];
 
 let registered = false;
 
@@ -70,12 +74,43 @@ function broadcastOpenRoute(path: string, search?: `?${string}`) {
     .catch(() => undefined);
 }
 
-async function openSidePanelWithRoute({
-  sender,
-  hash,
-}: {
-  sender: { tab?: { windowId?: number; id?: number } };
-  hash: string;
+function delay(ms: number) {
+  return new Promise((resolve) => {
+    globalThis.setTimeout(resolve, ms);
+  });
+}
+
+async function broadcastOpenRouteWithRetries(
+  path: string,
+  search?: `?${string}`,
+) {
+  for (const delayMs of openRouteRetryDelaysMs) {
+    if (delayMs > 0) {
+      await delay(delayMs);
+    }
+    await broadcastOpenRoute(path, search);
+  }
+}
+
+async function resetSidePanelPath(tabId?: number) {
+  const sidePanel = globalThis.chrome?.sidePanel;
+  if (!sidePanel?.setOptions) {
+    return;
+  }
+
+  // Clear both global and tab-scoped options — either may retain a prior hash.
+  await sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true });
+  if (typeof tabId === 'number') {
+    await sidePanel.setOptions({
+      tabId,
+      path: SIDEPANEL_FILE,
+      enabled: true,
+    });
+  }
+}
+
+async function openSidePanel(sender: {
+  tab?: { windowId?: number; id?: number };
 }) {
   const sidePanel = globalThis.chrome?.sidePanel;
   if (!sidePanel?.open || !sidePanel?.setOptions) {
@@ -84,14 +119,8 @@ async function openSidePanelWithRoute({
 
   const tabId = sender?.tab?.id;
   const windowId = sender?.tab?.windowId;
-  const tabOptions =
-    typeof tabId === 'number' ? { tabId } : ({} as { tabId?: number });
 
-  await sidePanel.setOptions({
-    ...tabOptions,
-    path: `${SIDEPANEL_FILE}${hash}`,
-    enabled: true,
-  });
+  await resetSidePanelPath(tabId);
 
   let openOptions: { windowId: number } | { tabId: number } | null = null;
   if (typeof windowId === 'number') {
@@ -104,13 +133,6 @@ async function openSidePanelWithRoute({
   }
 
   await sidePanel.open(openOptions);
-
-  // Next toolbar/open should not reuse the deep-link path.
-  await sidePanel.setOptions({
-    ...tabOptions,
-    path: SIDEPANEL_FILE,
-    enabled: true,
-  });
 }
 
 async function openPopupWithRoute(hash: string) {
@@ -146,20 +168,20 @@ async function openExtensionPage({
 }) {
   const hash = routeHash(path, search);
 
-  // Warm UI navigates via message; cold UI mounts from the hash URL.
-  const warmNavigate = broadcastOpenRoute(path, search);
-
   try {
     if (shouldUseSidePanel(controller)) {
-      await openSidePanelWithRoute({ sender, hash });
+      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
+      await openSidePanel(sender);
+      await broadcastOpenRouteWithRetries(path, search);
     } else {
+      // Popup is destroyed on close, so a one-shot hash deep link is safe.
       await openPopupWithRoute(hash);
+      await broadcastOpenRoute(path, search);
     }
   } catch {
     await openPopupWithRoute(hash);
+    await broadcastOpenRoute(path, search);
   }
-
-  await warmNavigate;
 
   return {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,

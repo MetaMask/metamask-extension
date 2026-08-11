@@ -29,8 +29,9 @@ function routeFromMessage(
 
 /**
  * Listens for `OPEN_ROUTE` runtime messages and navigates to the requested
- * path. Used for warm opens when the side panel or popup is already mounted;
- * cold opens deep-link via the surface URL hash instead.
+ * path. Used when the side panel or popup UI is (or becomes) mounted.
+ * Side panel opens keep `sidepanel.html` as the panel path so Chrome does not
+ * sticky-reuse a deep-linked swap/asset URL on the next toolbar open.
  *
  * If a message arrives while the wallet is locked, the route is held until
  * unlock and then applied.
