@@ -19,10 +19,11 @@ import {
   mockXdcAndMainnetApis,
 } from '../../helpers/xdc-chain';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager, {
-  NetworkId,
-} from '../../page-objects/pages/network-manager';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import SelectNetworkModal, {
+  NetworkId,
+} from '../../page-objects/pages/networks/select-network-modal';
 
 describe('Balance persistence on XDC Network', function () {
   it('retains XDC balances after switching to Mainnet and back', async function () {
@@ -46,7 +47,8 @@ describe('Balance persistence on XDC Network', function () {
         await login(driver, { validateBalance: false });
 
         const tokensTab = new TokensTab(driver);
-        const networkManager = new NetworkManager(driver);
+        const networkFilter = new NetworkFilter(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
 
         // Step 1: On XDC — verify native + ERC-20 visible
         await tokensTab.checkTokenListIsDisplayed();
@@ -56,9 +58,10 @@ describe('Balance persistence on XDC Network', function () {
 
         // Step 2: Switch to Ethereum Mainnet.
         // selectNetworkByChainId auto-closes the dropdown, so no
-        // closeNetworkManager call is needed after selecting.
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        // close() call is needed after selecting.
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
 
         // Verify Mainnet native token is visible and XDC is absent.
         // The native token may display as "Ethereum" (name) rather than "ETH"
@@ -67,8 +70,9 @@ describe('Balance persistence on XDC Network', function () {
         await tokensTab.checkAssetIsAbsent('XDC');
 
         // Step 3: Switch back to XDC
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.XDC);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.XDC);
 
         // Step 4: Verify XDC balances persisted — did not flicker or reset
         await tokensTab.checkTokenExistsInList('XDC');

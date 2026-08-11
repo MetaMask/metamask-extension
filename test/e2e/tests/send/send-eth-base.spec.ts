@@ -8,9 +8,10 @@
 
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkManager, {
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import SelectNetworkModal, {
   NetworkId,
-} from '../../page-objects/pages/network-manager';
+} from '../../page-objects/pages/networks/select-network-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { Anvil } from '../../seeder/anvil';
@@ -46,15 +47,17 @@ describe('Send ETH on Base', function () {
 
         const activityTab = new ActivityTab(driver);
         const homePage = new HomePage(driver);
-        const networkManager = new NetworkManager(driver);
+        const networkFilter = new NetworkFilter(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
         const sendPage = new SendPage(driver);
         const transactionConfirmation = new TransactionConfirmation(driver);
 
         // Guards against the fixture silently falling back to another network,
         // which would otherwise let the send below pass on the wrong chain.
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.BASE);
-        await networkManager.closeNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.BASE);
+        await selectNetworkModal.close();
 
         await homePage.startSendFlow();
         await sendPage.selectToken(BASE_CHAIN_ID_HEX, 'ETH');
