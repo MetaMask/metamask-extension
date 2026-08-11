@@ -504,6 +504,9 @@
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
       "MetaMask: Background connection not initialized": 10
     },
+    "ui/hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing.test.tsx": {
+      "MetaMask: Background connection not initialized": 8
+    },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 2
     },

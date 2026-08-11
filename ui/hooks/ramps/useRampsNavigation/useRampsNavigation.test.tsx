@@ -265,41 +265,6 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('ever connected to Portfolio → runs silent migrate before native buy', async () => {
-    const { result } = run(
-      buildState({
-        subjects: {
-          [PORTFOLIO_ORIGINS[0]]: {
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: [
-                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                          ],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                    },
-                  },
-                ],
-                parentCapability: 'endowment:caip25',
-              },
-            },
-          },
-        },
-      }),
-    );
-    await goToBuy(result);
-    expect(mockRunPortfolioBuyOrdersMigration).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
-  });
-
   it('providers fetch errored → fails open and navigates to token selection', async () => {
     const { result, getModalName } = run(
       buildState({

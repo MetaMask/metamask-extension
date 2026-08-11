@@ -11,11 +11,7 @@ import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 
-/**
- * Decides whether ramps order syncing should be dispatched.
- *
- * @returns Whether ramps order syncing can be performed.
- */
+/** @returns Whether ramps order syncing can be performed. */
 export const useShouldDispatchRampsOrderSyncing = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
@@ -27,8 +23,7 @@ export const useShouldDispatchRampsOrderSyncing = () => {
   const completedOnboarding: boolean | undefined = useSelector(
     getCompletedOnboarding,
   );
-
-  const shouldDispatchRampsOrderSyncing: boolean = Boolean(
+  return Boolean(
     basicFunctionality &&
     isBackupAndSyncEnabled &&
     isRampsSyncingEnabled &&
@@ -36,18 +31,11 @@ export const useShouldDispatchRampsOrderSyncing = () => {
     isSignedIn &&
     completedOnboarding,
   );
-
-  return shouldDispatchRampsOrderSyncing;
 };
 
-/**
- * Dispatches bidirectional V2 ramps order sync with User Storage.
- *
- * @returns `dispatchRampsOrderSyncing` and `shouldDispatchRampsOrderSyncing`.
- */
+/** @returns `dispatchRampsOrderSyncing` and `shouldDispatchRampsOrderSyncing`. */
 export const useRampsOrderSyncing = () => {
   const shouldDispatchRampsOrderSyncing = useShouldDispatchRampsOrderSyncing();
-
   const dispatchRampsOrderSyncing = useCallback(() => {
     const action = async () => {
       if (!shouldDispatchRampsOrderSyncing) {
@@ -59,9 +47,5 @@ export const useRampsOrderSyncing = () => {
       log.error(error);
     });
   }, [shouldDispatchRampsOrderSyncing]);
-
-  return {
-    dispatchRampsOrderSyncing,
-    shouldDispatchRampsOrderSyncing,
-  };
+  return { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing };
 };

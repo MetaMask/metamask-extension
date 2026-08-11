@@ -33,14 +33,9 @@ function sessionMatchesEnv(
 
 /**
  * Drop persisted Profile Sync sessions minted for a different OIDC env.
- *
- * Restarting the app alone is not enough: `AuthenticationController` reuses
- * `srpSessionData` until expiry, so a DEV JWT keeps getting sent after switching
- * local config to PRD (and staging on-ramp then returns 401).
- *
  * @param state - Persisted AuthenticationController state, if any.
  * @param env - Target Profile Sync OIDC environment.
- * @returns The original state when sessions match `env`, otherwise a cleared copy.
+ * @returns Original state when sessions match `env`, otherwise a cleared copy.
  */
 export function sanitizePersistedAuthenticationState(
   state: AuthenticationControllerState | undefined,

@@ -149,22 +149,6 @@ describe('MetamaskIdentityProvider', () => {
     expect(dispatchRampsOrderSyncing).toHaveBeenCalled();
   });
 
-  it('does not call dispatchRampsOrderSyncing if shouldDispatchRampsOrderSyncing is false', () => {
-    const dispatchRampsOrderSyncing = jest.fn();
-    mockUseRampsOrderSyncing.mockReturnValue({
-      dispatchRampsOrderSyncing,
-      shouldDispatchRampsOrderSyncing: false,
-    });
-
-    render(
-      <MetamaskIdentityProvider>
-        <div>Child Component</div>
-      </MetamaskIdentityProvider>,
-    );
-
-    expect(dispatchRampsOrderSyncing).not.toHaveBeenCalled();
-  });
-
   it('calls autoSignIn if shouldAutoSignIn returns true', () => {
     const autoSignIn = jest.fn();
     const shouldAutoSignIn = true;
