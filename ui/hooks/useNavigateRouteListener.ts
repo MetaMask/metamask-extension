@@ -28,13 +28,7 @@ function routeFromMessage(
 }
 
 /**
- * Listens for `OPEN_ROUTE` runtime messages and navigates to the requested
- * path. Used when the side panel or popup UI is (or becomes) mounted.
- * Side panel opens keep `sidepanel.html` as the panel path so Chrome does not
- * sticky-reuse a deep-linked swap/asset URL on the next toolbar open.
- *
- * If a message arrives while the wallet is locked, the route is held until
- * unlock and then applied.
+ * Navigates on `OPEN_ROUTE` runtime messages. Defers until unlock if locked.
  */
 export function useNavigateRouteListener(): void {
   const navigate = useNavigate();

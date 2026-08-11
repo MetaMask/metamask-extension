@@ -11,7 +11,7 @@ import type { Args } from '../../cli';
 const rootDir = join(__dirname, '../../../../../');
 
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
-export const nullUnsafeEntries: Set<string> = new Set([
+const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
   // X widget content script uses React. Manifest key is `.ts`; asset is `.js`.
@@ -206,7 +206,7 @@ export const lavamoatBackgroundLayerRule = {
 } satisfies RuleSetRule;
 
 // Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
-export const unsafeLayerEntries: Set<string> = new Set([
+const unsafeLayerEntries: Set<string> = new Set([
   ...nullUnsafeEntries,
   'service-worker.ts',
 ]);
