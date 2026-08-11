@@ -592,7 +592,7 @@ export const MultichainAccountsConnectPage = ({
       >
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('accounts')}
+            {t('account')}
           </Text>
           <Box
             backgroundColor={BoxBackgroundColor.BackgroundMuted}
@@ -645,7 +645,6 @@ export const MultichainAccountsConnectPage = ({
                 data-testid="confirm-btn"
                 onClick={onConfirm}
                 isDanger
-                disabled={selectedAccountGroupIds.length === 0}
               >
                 {t('continueAtYourOwnRisk')}
               </Button>
@@ -666,7 +665,6 @@ export const MultichainAccountsConnectPage = ({
                 data-testid="confirm-btn"
                 size={ButtonSize.Lg}
                 onClick={onConfirm}
-                disabled={selectedAccountGroupIds.length === 0}
               >
                 {t('connect')}
               </Button>

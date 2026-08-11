@@ -59,7 +59,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
@@ -339,7 +339,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
@@ -619,7 +619,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           >
-            Accounts
+            Account
           </p>
           <div
             class="bg-muted rounded-lg cursor-pointer"
