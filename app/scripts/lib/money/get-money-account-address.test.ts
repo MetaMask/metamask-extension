@@ -19,6 +19,8 @@ const PRIMARY_KEYRING_ID = 'primary-hd-keyring-id';
 
 /**
  * Encode a mnemonic the way `HdKeyring` holds it internally
+ *
+ * @param mnemonic - The mnemonic to encode.
  */
 function toMnemonicIndicesBytes(mnemonic: string): Uint8Array {
   const indices = mnemonic.split(' ').map((word) => wordlist.indexOf(word));
