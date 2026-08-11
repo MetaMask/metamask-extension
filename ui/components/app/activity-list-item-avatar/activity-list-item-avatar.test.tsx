@@ -9,8 +9,7 @@ import {
 const usdcToken = {
   assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
 };
-// Mirrors a real Chiliz/Stable native send: assetType is 'native' but the
-// upstream mapper never resolved an assetId for it.
+// Mirrors a native send where the upstream mapper never resolved an assetId.
 const nativeTokenWithoutAssetId = { isNative: true };
 
 function renderAvatar(tokens: ActivityListItemAvatarTokens, chainId?: string) {

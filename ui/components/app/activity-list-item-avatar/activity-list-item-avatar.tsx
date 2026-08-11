@@ -15,9 +15,8 @@ export type ActivityAvatarToken = {
   isNative?: boolean;
 };
 
-// Most callers only have a bare assetId (no native/non-native distinction);
-// only the Activity list itself knows a transfer's assetType and passes the
-// richer object form to unlock the native-icon lookup below.
+// Most callers only pass a bare assetId; only the Activity list knows a
+// transfer's assetType and passes the richer object form.
 export type ActivityListItemAvatarTokens = readonly (
   | ActivityAvatarToken
   | string
@@ -41,11 +40,8 @@ const sanitizeTokens = (
         Boolean(token?.assetId) || Boolean(token?.isNative),
     );
 
-// Native assets aren't guaranteed a resolvable assetId (some chains' native
-// currencies, e.g. Chiliz/Stable, aren't in the upstream SLIP44-by-symbol
-// table used to build one), so this can't key off the assetId at all. It
-// uses the transfer's own chainId instead, matching the same locally
-// bundled icon the asset list uses for natives.
+// Most custom networks' native assets never get a resolvable assetId, so
+// this resolves via chainId instead, like the asset list does.
 const getNativeAssetImageSrc = (chainId?: string): string | undefined =>
   chainId
     ? CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP]

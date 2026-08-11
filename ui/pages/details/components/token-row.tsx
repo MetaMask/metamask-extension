@@ -23,8 +23,7 @@ export function TokenRow({
   token: TokenAmount;
   showNetworkBadge?: boolean;
   // The transfer's own chainId, used to resolve a native asset's icon when
-  // it has no assetId (some chains' native currencies, e.g. Chiliz/Stable,
-  // never get one — see activity-list-item-avatar.tsx).
+  // it has no assetId - see activity-list-item-avatar.tsx.
   chainId?: CaipChainId;
 }) {
   const { formatToken } = useFormatters();
