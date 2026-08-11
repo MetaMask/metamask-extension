@@ -56,7 +56,6 @@ import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 export default function useSubmitBridgeTransaction(
   inputPrimaryDenominationOverride?: InputPrimaryDenomination,
 ) {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHardwareWalletSigningPage = Boolean(
     matchPath(
@@ -64,8 +63,11 @@ export default function useSubmitBridgeTransaction(
       pathname,
     ),
   );
-  const { navigateToBridgePage, navigateToHwSigningPage } =
-    useBridgeNavigation();
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToDefaultRoute,
+  } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -262,10 +264,7 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    navigate(DEFAULT_ROUTE, {
-      state: { stayOnHomePage: true },
-      replace: true,
-    });
+    await navigateToDefaultRoute();
   };
 
   return {
