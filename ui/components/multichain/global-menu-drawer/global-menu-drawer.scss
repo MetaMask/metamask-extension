@@ -1,0 +1,106 @@
+// Serves as a clip stencil and backdrop for the drawer
+.global-menu-drawer {
+  // Reset browser defaults
+  box-sizing: border-box;
+  border: none;
+  padding: 0;
+  background: transparent;
+  width: min(400px, 100%);
+  height: 100%;
+  max-height: 100%;
+  margin-block: 0;
+  margin-inline-start: auto;
+  margin-inline-end: max(0px, calc((100vw - var(--width-max)) / 2));
+
+  // Clipping box
+  overflow: clip;
+  translate: none;
+  transition-property: display, overlay;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+  transition-behavior: allow-discrete;
+
+  // Fullscreen still has logo, so we offset
+  &--fullscreen {
+    @media screen and (min-width: 576px) {
+      --top-offset: 91px; // 75px header + 16px margin block
+
+      top: var(--top-offset);
+      height: calc(100% - var(--top-offset));
+      max-height: calc(100% - var(--top-offset));
+    }
+  }
+
+  &::backdrop {
+    opacity: 0;
+    transition-property: opacity, display, overlay;
+    transition-duration: var(--global-drawer-open, 300ms);
+    transition-timing-function: linear;
+    transition-behavior: allow-discrete;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+  }
+}
+
+// Drawer slide surface
+.global-menu-drawer__frame {
+  width: 100%;
+  height: 100%;
+  translate: 100% 0;
+  transition-property: translate;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+// Drawer slide animation
+@keyframes slide-in {
+  from {
+    translate: 100% 0;
+  }
+
+  to {
+    translate: 0 0;
+  }
+}
+
+.global-menu-drawer[open] > .global-menu-drawer__frame {
+  translate: 0 0;
+  // When `--global-drawer-open: none` both animation and starting translate
+  // resolve to `none` — restore frame without replaying animation
+  animation: var(
+    --global-drawer-open,
+    slide-in 300ms ease-in-out backwards
+  );
+}
+
+@starting-style {
+  .global-menu-drawer[open] > .global-menu-drawer__frame {
+    translate: var(--global-drawer-open, 100% 0);
+  }
+
+  .global-menu-drawer[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .global-menu-drawer {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-menu-drawer,
+  .global-menu-drawer__frame,
+  .global-menu-drawer::backdrop {
+    transition-duration: 0.01ms;
+  }
+
+  .global-menu-drawer[open] > .global-menu-drawer__frame {
+    animation: none;
+  }
+}
