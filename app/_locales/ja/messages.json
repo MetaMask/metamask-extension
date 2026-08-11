@@ -9099,9 +9099,6 @@
   "select": {
     "message": "選択"
   },
-  "selectAccountToConnect": {
-    "message": "接続するアカウントを選択します"
-  },
   "selectAll": {
     "message": "すべて選択"
   },

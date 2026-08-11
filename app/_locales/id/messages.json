@@ -9103,9 +9103,6 @@
   "select": {
     "message": "Pilih"
   },
-  "selectAccountToConnect": {
-    "message": "Pilih akun yang akan dihubungkan"
-  },
   "selectAll": {
     "message": "Pilih semua"
   },

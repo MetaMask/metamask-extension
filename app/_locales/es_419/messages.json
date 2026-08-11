@@ -9103,9 +9103,6 @@
   "select": {
     "message": "Seleccionar"
   },
-  "selectAccountToConnect": {
-    "message": "Seleccione una cuenta para conectarse"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },

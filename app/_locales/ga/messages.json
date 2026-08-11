@@ -4347,9 +4347,6 @@
   "select": {
     "message": "Roghnaigh"
   },
-  "selectAccountToConnect": {
-    "message": "Roghnaigh cuntas le ceangal"
-  },
   "selectAll": {
     "message": "Roghnaigh gach rud"
   },

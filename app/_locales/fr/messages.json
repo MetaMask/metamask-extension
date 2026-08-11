@@ -9092,9 +9092,6 @@
   "select": {
     "message": "Sélectionner"
   },
-  "selectAccountToConnect": {
-    "message": "Sélectionner un compte à connecter"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },

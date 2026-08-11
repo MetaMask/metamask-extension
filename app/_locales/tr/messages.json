@@ -9103,9 +9103,6 @@
   "select": {
     "message": "Seç"
   },
-  "selectAccountToConnect": {
-    "message": "Bağlamak için bir hesap seç"
-  },
   "selectAll": {
     "message": "Tümünü seç"
   },

@@ -9389,9 +9389,6 @@
   "select": {
     "message": "Select"
   },
-  "selectAccountToConnect": {
-    "message": "Select an account to connect"
-  },
   "selectAccounts": {
     "message": "Select accounts"
   },

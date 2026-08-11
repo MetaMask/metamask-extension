@@ -9092,9 +9092,6 @@
   "select": {
     "message": "选择"
   },
-  "selectAccountToConnect": {
-    "message": "选择要连接的账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
