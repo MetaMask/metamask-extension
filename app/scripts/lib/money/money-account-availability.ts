@@ -11,7 +11,9 @@ import { deriveMoneyAccountAddress } from './get-money-account-address';
 
 const log = createProjectLogger('money-account-availability');
 
-type MoneyAccountAvailabilityActions =
+const serviceName = 'MoneyAccountAvailabilityService';
+
+type MoneyAccountAvailabilityAllowedActions =
   | KeyringControllerWithKeyringUnsafeAction
   | RemoteFeatureFlagControllerGetStateAction;
 
@@ -19,9 +21,31 @@ type MoneyAccountAvailabilityEvents =
   | KeyringControllerUnlockEvent
   | KeyringControllerLockEvent;
 
+/**
+ * The action other clients use to call {@link MoneyAccountAvailabilityService.getAvailability}
+ * directly through the messenger, instead of via a controller wrapper method.
+ */
+export type MoneyAccountAvailabilityServiceGetAvailabilityAction = {
+  type: `${typeof serviceName}:getAvailability`;
+  handler: MoneyAccountAvailabilityService['getAvailability'];
+};
+
+/**
+ * The action other clients use to call {@link MoneyAccountAvailabilityService.getAddress}
+ * directly through the messenger, instead of via a controller wrapper method.
+ */
+export type MoneyAccountAvailabilityServiceGetAddressAction = {
+  type: `${typeof serviceName}:getAddress`;
+  handler: MoneyAccountAvailabilityService['getAddress'];
+};
+
+type MoneyAccountAvailabilityActions =
+  | MoneyAccountAvailabilityServiceGetAvailabilityAction
+  | MoneyAccountAvailabilityServiceGetAddressAction;
+
 export type MoneyAccountAvailabilityMessenger = Messenger<
-  string,
-  MoneyAccountAvailabilityActions,
+  typeof serviceName,
+  MoneyAccountAvailabilityActions | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
 
@@ -51,6 +75,8 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
  * cached, so a locked wallet is retried on the next call.
  */
 export class MoneyAccountAvailabilityService {
+  readonly name: typeof serviceName = serviceName;
+
   readonly #messenger: MoneyAccountAvailabilityMessenger;
 
   #address?: Promise<Hex>;
@@ -68,6 +94,11 @@ export class MoneyAccountAvailabilityService {
     this.#messenger.subscribe('KeyringController:lock', () => {
       this.#address = undefined;
     });
+
+    this.#messenger.registerMethodActionHandlers(this, [
+      'getAvailability',
+      'getAddress',
+    ]);
   }
 
   /**
@@ -81,7 +112,7 @@ export class MoneyAccountAvailabilityService {
         return UNAVAILABLE;
       }
 
-      const address = await this.#getAddress();
+      const address = await this.getAddress();
 
       return { isAvailable: true, address };
     } catch (error) {
@@ -95,24 +126,16 @@ export class MoneyAccountAvailabilityService {
   }
 
   /**
-   * Read the `moneyEnableMoneyAccount` flag.
+   * The money account address, derived from the primary HD seed. Requires an
+   * unlocked wallet, but not the password.
    *
-   * @returns Whether the Money Account feature is enabled.
-   */
-  #isEnabled(): boolean {
-    const { remoteFeatureFlags } = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    return isMoneyAccountEnabled(remoteFeatureFlags);
-  }
-
-  /**
-   * The derived money address, from cache when already resolved.
+   * Cached as a promise until the next unlock, so concurrent callers share
+   * one in-flight derivation; failures are not cached, so a locked wallet is
+   * retried on the next call.
    *
    * @returns The money account address.
    */
-  async #getAddress(): Promise<Hex> {
+  async getAddress(): Promise<Hex> {
     if (!this.#address) {
       const address = deriveMoneyAccountAddress(this.#messenger);
 
@@ -128,5 +151,18 @@ export class MoneyAccountAvailabilityService {
     }
 
     return await this.#address;
+  }
+
+  /**
+   * Read the `moneyEnableMoneyAccount` flag.
+   *
+   * @returns Whether the Money Account feature is enabled.
+   */
+  #isEnabled(): boolean {
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+
+    return isMoneyAccountEnabled(remoteFeatureFlags);
   }
 }

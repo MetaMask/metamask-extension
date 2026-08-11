@@ -244,9 +244,6 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
-import { deriveMoneyAccountAddress } from './lib/money/get-money-account-address';
-import { MoneyAccountAvailabilityService } from './lib/money/money-account-availability';
-import { getMoneyAccountAvailabilityServiceMessenger } from './messenger-client-init/messengers/money-account-availability-service-messenger';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -392,6 +389,7 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
+import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
@@ -684,6 +682,7 @@ export default class MetamaskController extends EventEmitter {
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
       // MoneyAccountApiDataService must be intialized before MoneyAccountBalanceService
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
+      MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
@@ -845,12 +844,6 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
-
-    this.moneyAccountAvailabilityService = new MoneyAccountAvailabilityService({
-      messenger: getMoneyAccountAvailabilityServiceMessenger(
-        this.controllerMessenger,
-      ),
-    });
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -3399,8 +3392,14 @@ export default class MetamaskController extends EventEmitter {
         'PasskeyController:exportAccountsWithPasskey',
       ),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
-      getMoneyAccountAddress: this.getMoneyAccountAddress.bind(this),
-      getMoneyAccountAvailability: this.getMoneyAccountAvailability.bind(this),
+      getMoneyAccountAddress: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MoneyAccountAvailabilityService:getAddress',
+      ),
+      getMoneyAccountAvailability: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MoneyAccountAvailabilityService:getAvailability',
+      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4045,27 +4044,6 @@ export default class MetamaskController extends EventEmitter {
     return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
-  /**
-   * Derives the money account address from the primary HD seed. Requires an
-   * unlocked wallet, but not the password.
-   *
-   * @returns {Promise<string>} The money account address.
-   */
-  async getMoneyAccountAddress() {
-    return deriveMoneyAccountAddress(this.controllerMessenger);
-  }
-
-  /**
-   * Resolves whether this user has a usable Money Account: the feature flag
-   * is on and the address can be derived. The whole Money surface is hidden
-   * when it is not available, so this is the one answer callers need — see
-   * {@link MoneyAccountAvailabilityService}.
-   *
-   * @returns {Promise<import('./lib/money/money-account-availability').MoneyAccountAvailability>} The availability, with the money address when available.
-   */
-  async getMoneyAccountAvailability() {
-    return this.moneyAccountAvailabilityService.getAvailability();
-  }
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================

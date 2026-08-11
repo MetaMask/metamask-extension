@@ -43,9 +43,11 @@ function createMockMessenger({
     }
   });
 
+  const registerMethodActionHandlers = jest.fn();
   const messenger = {
     call,
     subscribe,
+    registerMethodActionHandlers,
   } as unknown as MoneyAccountAvailabilityMessenger;
 
   return {
@@ -108,6 +110,7 @@ describe('MoneyAccountAvailabilityService', () => {
     const messenger = {
       call,
       subscribe: jest.fn(),
+      registerMethodActionHandlers: jest.fn(),
     } as unknown as MoneyAccountAvailabilityMessenger;
     const service = new MoneyAccountAvailabilityService({ messenger });
 

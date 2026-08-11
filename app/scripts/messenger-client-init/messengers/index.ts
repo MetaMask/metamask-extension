@@ -499,6 +499,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getMoneyAccountApiDataServiceMessenger,
     getInitMessenger: noop,
   },
+  MoneyAccountAvailabilityService: {
+    getMessenger: getMoneyAccountAvailabilityServiceMessenger,
+    getInitMessenger: noop,
+  },
   MoneyAccountBalanceService: {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
     getInitMessenger: noop,
