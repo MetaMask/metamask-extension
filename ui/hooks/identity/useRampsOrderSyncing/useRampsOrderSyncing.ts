@@ -15,21 +15,19 @@ import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 export const useShouldDispatchRampsOrderSyncing = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
-  const basicFunctionality: boolean | undefined = useSelector(
-    getUseExternalServices,
-  );
+  const basicFunctionality: boolean | undefined =
+    useSelector(getUseExternalServices);
   const isUnlocked: boolean | undefined = useSelector(getIsUnlocked);
   const isSignedIn = useSelector(selectIsSignedIn);
-  const completedOnboarding: boolean | undefined = useSelector(
-    getCompletedOnboarding,
-  );
+  const completedOnboarding: boolean | undefined =
+    useSelector(getCompletedOnboarding);
   return Boolean(
     basicFunctionality &&
-    isBackupAndSyncEnabled &&
-    isRampsSyncingEnabled &&
-    isUnlocked &&
-    isSignedIn &&
-    completedOnboarding,
+      isBackupAndSyncEnabled &&
+      isRampsSyncingEnabled &&
+      isUnlocked &&
+      isSignedIn &&
+      completedOnboarding,
   );
 };
 
@@ -37,13 +35,10 @@ export const useShouldDispatchRampsOrderSyncing = () => {
 export const useRampsOrderSyncing = () => {
   const shouldDispatchRampsOrderSyncing = useShouldDispatchRampsOrderSyncing();
   const dispatchRampsOrderSyncing = useCallback(() => {
-    const action = async () => {
-      if (!shouldDispatchRampsOrderSyncing) {
-        return;
-      }
-      await syncRampsOrdersWithUserStorage();
-    };
-    action().catch((error) => {
+    if (!shouldDispatchRampsOrderSyncing) {
+      return;
+    }
+    syncRampsOrdersWithUserStorage().catch((error) => {
       log.error(error);
     });
   }, [shouldDispatchRampsOrderSyncing]);

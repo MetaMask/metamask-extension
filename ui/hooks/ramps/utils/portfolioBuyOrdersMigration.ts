@@ -102,9 +102,8 @@ async function withTimeout<Result>(
 let migrationInFlight: Promise<void> | null = null;
 
 /**
- * Opens a background Portfolio tab to upload Buy orders, waits for the done
- * signal, syncs User Storage into RampsController, and marks completion only
- * after sync succeeds.
+ * Opens a background Portfolio tab to upload Buy orders, syncs User Storage
+ * into RampsController, and marks completion only after sync succeeds.
  * @param options
  */
 export async function runPortfolioBuyOrdersMigration(
@@ -163,9 +162,7 @@ async function runPortfolioBuyOrdersMigrationInner(
   }
 
   try {
-    // DEV/testing only: clear stale local Profile Sync sessions before sync.
-    // Never sign out in production — a failed follow-up sign-in would leave
-    // Backup & Sync disrupted during Buy.
+    // Non-prod only: clear stale local sessions. Never sign out in production.
     if (!isProduction()) {
       try {
         await submitRequestToBackground('performSignOut');
@@ -205,9 +202,21 @@ function waitForMigrateDone(
   timeoutMs: number,
 ): Promise<void> {
   return new Promise((resolve) => {
-    const migrationWait = {
-      settled: false,
-      timeoutId: undefined as ReturnType<typeof setTimeout> | undefined,
+    let settled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const finish = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      platform.removeTabUpdatedListener(
+        onUpdated as (...args: unknown[]) => void,
+      );
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      resolve();
     };
 
     function onUpdated(
@@ -225,21 +234,7 @@ function waitForMigrateDone(
       }
     }
 
-    function finish() {
-      if (migrationWait.settled) {
-        return;
-      }
-      migrationWait.settled = true;
-      platform.removeTabUpdatedListener(
-        onUpdated as (...args: unknown[]) => void,
-      );
-      if (migrationWait.timeoutId !== undefined) {
-        clearTimeout(migrationWait.timeoutId);
-      }
-      resolve();
-    }
-
-    migrationWait.timeoutId = setTimeout(finish, timeoutMs);
+    timeoutId = setTimeout(finish, timeoutMs);
     platform.addTabUpdatedListener(onUpdated);
   });
 }
