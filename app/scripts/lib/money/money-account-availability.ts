@@ -1,4 +1,5 @@
 import type {
+  KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
   KeyringControllerWithKeyringUnsafeAction,
 } from '@metamask/keyring-controller';
@@ -14,10 +15,14 @@ type MoneyAccountAvailabilityActions =
   | KeyringControllerWithKeyringUnsafeAction
   | RemoteFeatureFlagControllerGetStateAction;
 
+type MoneyAccountAvailabilityEvents =
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent;
+
 export type MoneyAccountAvailabilityMessenger = Messenger<
   string,
   MoneyAccountAvailabilityActions,
-  KeyringControllerUnlockEvent
+  MoneyAccountAvailabilityEvents
 >;
 
 /**
@@ -54,8 +59,13 @@ export class MoneyAccountAvailabilityService {
     this.#messenger = messenger;
 
     // An unlock can follow a vault restore, which changes the primary seed and
-    // therefore the derived address, so the cached value is dropped.
+    // therefore the derived address, so the cached value is dropped. A lock
+    // also drops it, so a re-derivation re-checks that the wallet is unlocked
+    // rather than serving a stale address from before the lock.
     this.#messenger.subscribe('KeyringController:unlock', () => {
+      this.#address = undefined;
+    });
+    this.#messenger.subscribe('KeyringController:lock', () => {
       this.#address = undefined;
     });
   }
@@ -66,18 +76,19 @@ export class MoneyAccountAvailabilityService {
    * @returns The availability, with the money address when available.
    */
   async getAvailability(): Promise<MoneyAccountAvailability> {
-    if (!this.#isEnabled()) {
-      return UNAVAILABLE;
-    }
-
     try {
+      if (!this.#isEnabled()) {
+        return UNAVAILABLE;
+      }
+
       const address = await this.#getAddress();
 
       return { isAvailable: true, address };
     } catch (error) {
-      // A locked wallet lands here. It is not evidence that the user has no
-      // money account, so the surface is hidden without the answer being
-      // cached.
+      // A locked wallet, or a transient failure reading the feature flag or
+      // deriving the address, lands here. None of these are evidence that
+      // the user has no money account, so the surface is hidden without the
+      // answer being cached.
       log('Failed to resolve money account availability', error);
       return UNAVAILABLE;
     }
@@ -107,7 +118,12 @@ export class MoneyAccountAvailabilityService {
 
       this.#address = address;
       address.catch(() => {
-        this.#address = undefined;
+        // Only clear the cache if it still points at this derivation. A lock
+        // or unlock in between may have already replaced it with a newer,
+        // possibly successful, one.
+        if (this.#address === address) {
+          this.#address = undefined;
+        }
       });
     }
 

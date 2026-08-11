@@ -207,6 +207,7 @@ import { getConfigRegistryApiServiceMessenger } from './config-registry-api-serv
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
+import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -282,6 +283,7 @@ export { getGeolocationControllerMessenger } from './geolocation-controller-mess
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
+export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';

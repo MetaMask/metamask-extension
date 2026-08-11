@@ -31,10 +31,16 @@ function createMockMessenger({
     throw new Error(`Unexpected action: ${action}`);
   });
 
-  const subscribers: (() => void)[] = [];
+  const unlockSubscribers: (() => void)[] = [];
+  const lockSubscribers: (() => void)[] = [];
   const subscribe = jest.fn((event: string, handler: () => void) => {
-    expect(event).toBe('KeyringController:unlock');
-    subscribers.push(handler);
+    if (event === 'KeyringController:unlock') {
+      unlockSubscribers.push(handler);
+    } else if (event === 'KeyringController:lock') {
+      lockSubscribers.push(handler);
+    } else {
+      throw new Error(`Unexpected event: ${event}`);
+    }
   });
 
   const messenger = {
@@ -45,7 +51,8 @@ function createMockMessenger({
   return {
     messenger,
     call,
-    publishUnlock: () => subscribers.forEach((handler) => handler()),
+    publishUnlock: () => unlockSubscribers.forEach((handler) => handler()),
+    publishLock: () => lockSubscribers.forEach((handler) => handler()),
   };
 }
 
@@ -161,6 +168,46 @@ describe('MoneyAccountAvailabilityService', () => {
     expect(await service.getAvailability()).toStrictEqual({
       isAvailable: true,
       address: restoredAddress,
+    });
+    expect(deriveMoneyAccountAddressMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('drops the cached address on lock so a locked wallet is not served a stale address', async () => {
+    const { service, publishLock } = createService();
+
+    await service.getAvailability();
+    publishLock();
+
+    await service.getAvailability();
+
+    expect(deriveMoneyAccountAddressMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not clear a newer cached derivation when an older, superseded one rejects', async () => {
+    const { service, publishUnlock } = createService();
+
+    let rejectFirst: (error: Error) => void = () => undefined;
+    deriveMoneyAccountAddressMock.mockReturnValueOnce(
+      new Promise((_resolve, reject) => {
+        rejectFirst = reject;
+      }),
+    );
+
+    const firstCall = service.getAvailability();
+
+    // Unlock clears the cache and starts a second, successful derivation.
+    publishUnlock();
+    deriveMoneyAccountAddressMock.mockResolvedValueOnce(MONEY_ADDRESS);
+    const secondCall = service.getAvailability();
+
+    // The first (now superseded) derivation finally rejects.
+    rejectFirst(new Error('wallet was locked'));
+
+    await Promise.all([firstCall, secondCall]);
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
     });
     expect(deriveMoneyAccountAddressMock).toHaveBeenCalledTimes(2);
   });

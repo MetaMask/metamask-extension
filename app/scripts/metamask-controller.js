@@ -246,6 +246,7 @@ import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import { deriveMoneyAccountAddress } from './lib/money/get-money-account-address';
 import { MoneyAccountAvailabilityService } from './lib/money/money-account-availability';
+import { getMoneyAccountAvailabilityServiceMessenger } from './messenger-client-init/messengers/money-account-availability-service-messenger';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -846,7 +847,9 @@ export default class MetamaskController extends EventEmitter {
     this.geolocationController = messengerClientsByName.GeolocationController;
 
     this.moneyAccountAvailabilityService = new MoneyAccountAvailabilityService({
-      messenger: this.controllerMessenger,
+      messenger: getMoneyAccountAvailabilityServiceMessenger(
+        this.controllerMessenger,
+      ),
     });
 
     // Record installation info if this is the first time the extension is running.
