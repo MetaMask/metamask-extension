@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { useSelector, shallowEqual } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   FeatureId,
   formatChainIdToCaip,
@@ -40,7 +39,6 @@ import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsNetworkManagementEnabled } from '../../../selectors/multichain/feature-flags';
-import { SWAP_ASSETS_PATH } from '../../../helpers/constants/routes';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
@@ -49,6 +47,7 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 import { SelectedAssetButton } from './components/bridge-asset-picker/selected-asset-button';
 import { BridgeAssetPicker } from './components/bridge-asset-picker';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 export const BridgeInputGroup = ({
   header,
@@ -72,7 +71,13 @@ export const BridgeInputGroup = ({
   setIsAssetPickerOpen,
   tokenSecurityData,
 }: {
+  /**
+   * @deprecated - use the new URLSearchParams(search).get('field') === 'dest' instead
+   */
   isAssetPickerOpen: boolean;
+  /**
+   * @deprecated - navigate to the bridge asset picker page instead
+   */
   setIsAssetPickerOpen: (isOpen: boolean) => void;
   secondaryDisplay?: string;
   amountInputPrefix?: React.ReactNode;
@@ -100,7 +105,7 @@ export const BridgeInputGroup = ({
 >) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { navigateToBridgeAssetPickerPage } = useBridgeNavigation();
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
 
   const { isInsufficientBalance, isEstimatedReturnLow } = useSelector(
@@ -344,7 +349,7 @@ export const BridgeInputGroup = ({
             );
             setIsAssetPickerOpen(true);
             if (isNetworkManagementEnabled) {
-              navigate(SWAP_ASSETS_PATH);
+              navigateToBridgeAssetPickerPage(isDestination ? 'dest' : 'src');
             }
           }}
           asset={selectedButtonAsset}

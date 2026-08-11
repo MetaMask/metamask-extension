@@ -29,6 +29,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
+  SWAP_ASSETS_PATH,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getBridgeState } from '../../ducks/bridge/selectors';
@@ -273,6 +274,20 @@ export const useBridgeNavigation = () => {
   );
 
   /**
+   * Navigates to the bridge asset picker page.
+   */
+  const navigateToBridgeAssetPickerPage = useCallback(
+    (field: 'src' | 'dest') => {
+      navigate(`${SWAP_ASSETS_PATH}?field=${field}`, {
+        state: {
+          ...state,
+        },
+      });
+    },
+    [navigate, state, bridgeState],
+  );
+
+  /**
    * Navigates to the hw transaction signing page.
    */
   const navigateToHwSigningPage = useCallback(
@@ -334,6 +349,9 @@ export const useBridgeNavigation = () => {
     resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
+    navigateToBridgeAssetPickerPage,
+    isDestinationAssetPickerPage:
+      new URLSearchParams(search).get('field') === 'dest',
     navigateToHwSigningPage,
     isHardwareWalletSigningPage: Boolean(
       matchPath(

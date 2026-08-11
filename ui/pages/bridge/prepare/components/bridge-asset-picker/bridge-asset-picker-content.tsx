@@ -236,11 +236,11 @@ export const BridgeAssetPickerContent = forwardRef<
                 return;
               }
               closeFromMarketCloseRef.current = false;
-              handleClose();
               onAssetChange(asset);
               if (selectedChainId === asset.chainId) {
                 setPersistedChainId(selectedChainId);
               }
+              handleClose();
             }}
             {...assetListProps}
           />
