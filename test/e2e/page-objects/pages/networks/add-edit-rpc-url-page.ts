@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -63,8 +62,9 @@ class AddEditRpcUrlPage {
         shouldBeEnabled ? 'enabled' : 'disabled'
       }`,
     );
-    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
-    assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
+    await this.driver.waitForSelector(this.addRpcUrlButton, {
+      state: shouldBeEnabled ? 'enabled' : 'disabled',
+    });
   }
 
   async checkErrorMessageFailedToFetchChainIdIsDisplayed(): Promise<void> {
