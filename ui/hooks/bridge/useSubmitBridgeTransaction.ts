@@ -252,7 +252,7 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    await navigateToDefaultRoute();
+    await navigateToDefaultRoute({ replace: true }, false);
   };
 
   return {

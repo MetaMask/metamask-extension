@@ -45,9 +45,9 @@ import { CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/
 import type { BridgeNetwork, BridgeToken } from '../../../ducks/bridge/types';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { SelectedAssetButton } from './components/bridge-asset-picker/selected-asset-button';
 import { BridgeAssetPicker } from './components/bridge-asset-picker';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 export const BridgeInputGroup = ({
   header,

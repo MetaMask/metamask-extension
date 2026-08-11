@@ -150,9 +150,14 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) => {
+    (
+      to: To = { pathname },
+      options: { replace?: boolean } = {},
+      stayOnHomePage = false,
+    ) => {
       navigate(to, {
         state: clearedBridgeState(state, stayOnHomePage),
+        ...options,
       });
     },
     [navigate, state, pathname],
@@ -284,7 +289,7 @@ export const useBridgeNavigation = () => {
         },
       });
     },
-    [navigate, state, bridgeState],
+    [navigate, state],
   );
 
   /**
@@ -319,17 +324,20 @@ export const useBridgeNavigation = () => {
     });
   }, [navigate, state]);
 
-  const navigateToDefaultRoute = useCallback(async () => {
-    dispatch(resetBridgeController());
-    const isFromTransactionShield = new URLSearchParams(search || '').get(
-      BridgeQueryParams.IsFromTransactionShield,
-    );
-    if (isFromTransactionShield) {
-      resetLocationState(TRANSACTION_SHIELD_ROUTE);
-    } else {
-      resetLocationState(DEFAULT_ROUTE, true);
-    }
-  }, [dispatch, search, resetLocationState]);
+  const navigateToDefaultRoute = useCallback(
+    async (options: { replace?: boolean } = {}, resetController = true) => {
+      resetController && dispatch(resetBridgeController());
+      const isFromTransactionShield = new URLSearchParams(search || '').get(
+        BridgeQueryParams.IsFromTransactionShield,
+      );
+      if (isFromTransactionShield) {
+        resetLocationState(TRANSACTION_SHIELD_ROUTE, options);
+      } else {
+        resetLocationState(DEFAULT_ROUTE, options, true);
+      }
+    },
+    [dispatch, search, resetLocationState],
+  );
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(

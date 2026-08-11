@@ -30,14 +30,14 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { setFromToken, setToToken } from '../../../ducks/bridge/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useDispatch } from '../../../store/hooks';
 
+import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import {
   BridgeAssetPickerContent,
   type BridgeAssetPickerContentHandle,
 } from './components/bridge-asset-picker/bridge-asset-picker-content';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 
 /**
  * Full-screen version of the bridge asset picker. It is shown instead of the
