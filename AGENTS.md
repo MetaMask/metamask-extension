@@ -1751,3 +1751,20 @@ This section captures non-obvious, durable caveats for running this repo inside 
 ### E2E tests
 
 - Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.
+
+---
+
+## Learned User Preferences
+
+- (none yet)
+
+## Learned Workspace Facts
+
+- E2E mockttp mock server port **8000 is hardcoded** in `test/e2e/helpers.js` with no env override. If port 8000 is occupied, E2E fails immediately with "Failed to set up mock server" — free the port before running E2E.
+- `yarn build:test` **exits 0 even when webpack compilation fails** (e.g. "compiled with 5 errors"). Do not rely on exit code; grep the build output for `compiled with` to detect failures.
+- The default `tokens.api.cx.metamask.io/v3/assets` mock in `mock-e2e.js` only knows mainnet and localhost native ETH. For any other chain's native asset, supply a test-specific mock with metadata (name, symbol, decimals) or the UI renders 0 balance and no token list entry. Applies to ALL custom networks.
+- `unifiedEvmAccountsApiBalances.mainnetAdditionalBalances` only seeds ERC-20 balances for chain 1 (mainnet). For non-mainnet ERC-20 balances, use fixture-seeded `AssetsController` state instead.
+- The `nativeAssetIdentifiers` type requires **literal template strings**, not interpolated values — interpolated strings widen to `string` and fail `tsc`. Spell out CAIP IDs as literals.
+- `withEnabledNetworks` **replaces** the enabled-networks map entirely (not a merge), while `withNetworkEnablementController` merges. When enabling a custom network via `withEnabledNetworks`, include every network you want enabled, not just the new one.
+- `withNetworkRpcUrlOnLocalhost` **throws** if the target chain is not already in the default fixture. For chains absent from the default fixture (e.g. XDC), use a dedicated `withNetworkControllerOn<X>()` builder that injects the config.
+- Two `always()` handlers on the same URL in mockttp cause the first to match every time and silently drop the second. When mocking the same endpoint for multiple assets, combine them into a single handler.
