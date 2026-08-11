@@ -329,7 +329,7 @@ export const MultichainAccountList = ({
             }
             privacyMode={privacyMode}
             showDefaultAddress={showDefaultAddress}
-            walletName={
+            subtitle={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
                 : undefined

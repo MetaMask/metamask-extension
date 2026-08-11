@@ -132,7 +132,7 @@ const SingleAccountCell = ({
     accountId={accountGroupId}
     accountName={accountName}
     balance=""
-    walletName={balance}
+    subtitle={balance}
     disableHoverEffect
     onClick={onEdit}
     endAccessory={

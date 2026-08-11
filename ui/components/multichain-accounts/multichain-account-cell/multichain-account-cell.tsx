@@ -65,7 +65,7 @@ export type MultichainAccountCellProps = {
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
-  walletName?: string;
+  subtitle?: string;
   disableHoverEffect?: boolean;
   connectionStatus?:
     | typeof STATUS_CONNECTED
@@ -83,7 +83,7 @@ export const MultichainAccountCell = ({
   startAccessory,
   endAccessory,
   selected = false,
-  walletName,
+  subtitle,
   disableHoverEffect = false,
   connectionStatus,
   privacyMode = false,
@@ -142,7 +142,7 @@ export const MultichainAccountCell = ({
           >
             {accountName}
           </Text>
-          {walletName && (
+          {subtitle && (
             <Text
               className="multichain-account-cell__account-name"
               color={TextColor.TextAlternative}
@@ -150,7 +150,7 @@ export const MultichainAccountCell = ({
               fontWeight={FontWeight.Medium}
               ellipsis
             >
-              {walletName}
+              {subtitle}
             </Text>
           )}
           {showDefaultAddress && (
