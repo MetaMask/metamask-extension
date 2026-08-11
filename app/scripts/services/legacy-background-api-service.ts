@@ -358,9 +358,8 @@ import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   LatticeKeyringV2,
@@ -2900,7 +2899,7 @@ export class LegacyBackgroundApiService {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+    return isDmkFeatureEnabled(merged)
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }
