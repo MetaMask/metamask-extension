@@ -151,12 +151,7 @@ export const DiscoverAssetRow = ({
       currentCurrency,
     );
     return `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
-  }, [
-    asset.aggregatedUsdVolume,
-    asset.marketCap,
-    currentCurrency,
-    t,
-  ]);
+  }, [asset.aggregatedUsdVolume, asset.marketCap, currentCurrency, t]);
 
   const price = getAssetPrice(asset.price);
   const formattedPrice =
