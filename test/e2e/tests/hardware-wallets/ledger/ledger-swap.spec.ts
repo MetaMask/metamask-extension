@@ -14,8 +14,6 @@ import {
 } from './fixtures';
 
 describe('Ledger Swap', function (this: Suite) {
-  this.timeout(160000);
-
   it('swaps ETH to DAI', async function () {
     await withFixtures(
       getLedgerSwapFixtures(this.test?.fullTitle()),

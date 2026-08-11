@@ -12,9 +12,9 @@ class HardwareWalletSignaturesPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 30000): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.pageRoot, { timeout });
+      await this.driver.waitForSelector(this.pageRoot);
     } catch (e) {
       console.log(
         'Timeout while waiting for hardware wallet signatures page to be loaded',
@@ -25,12 +25,9 @@ class HardwareWalletSignaturesPage {
     console.log('Hardware wallet signatures page is loaded');
   }
 
-  async waitForPageToClose(timeout: number = 60000): Promise<void> {
+  async waitForPageToClose(): Promise<void> {
     console.log('Waiting for hardware wallet signatures page to close');
-    // Prefer assertElementNotPresent over isElementPresent polling: the driver
-    // docs note isElementPresent is flaky for disappearances, and it only
-    // accepts a locator (a second timeout arg would be ignored).
-    await this.driver.assertElementNotPresent(this.pageRoot, { timeout });
+    await this.driver.assertElementNotPresent(this.pageRoot);
     console.log('Hardware wallet signatures page closed');
   }
 }
