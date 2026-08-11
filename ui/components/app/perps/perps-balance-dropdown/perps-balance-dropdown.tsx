@@ -30,8 +30,10 @@ import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsWithdrawMultiSigModal } from '../perps-withdraw-multi-sig-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
 import { useOnClickOutside } from '../hooks/useClickOutside';
+import { usePerpsWithdrawMultiSigCheck } from '../hooks/usePerpsWithdrawMultiSigCheck';
 import { getPrivacyAwareColor } from '../utils';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
@@ -84,9 +86,11 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
+  const { checkIsMultiSigAccount } = usePerpsWithdrawMultiSigCheck();
   const { privacyMode } = useSelector(getPreferences);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const [isMultiSigModalOpen, setIsMultiSigModalOpen] = useState(false);
 
   // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
   const isPureBlack = usePureBlack();
@@ -135,8 +139,18 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   }, [gate, isEligible, onAddFunds]);
 
   const handleWithdraw = useCallback(() => {
-    invokePerpsBalanceAction(onWithdraw);
-  }, [onWithdraw]);
+    invokePerpsBalanceAction(async () => {
+      // MetaMask cannot sign for HyperLiquid multi-sig accounts, so block the
+      // withdraw flow up front instead of failing after submission. The
+      // status is pre-fetched on mount, so this usually resolves instantly.
+      if (await checkIsMultiSigAccount()) {
+        setIsMultiSigModalOpen(true);
+        return;
+      }
+
+      await onWithdraw?.();
+    });
+  }, [checkIsMultiSigAccount, onWithdraw]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -283,6 +297,10 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
+      />
+      <PerpsWithdrawMultiSigModal
+        isOpen={isMultiSigModalOpen}
+        onClose={() => setIsMultiSigModalOpen(false)}
       />
     </Box>
   );

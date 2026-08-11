@@ -61,6 +61,13 @@ jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+const mockCheckIsMultiSigAccount = jest.fn(async () => false);
+jest.mock('../hooks/usePerpsWithdrawMultiSigCheck', () => ({
+  usePerpsWithdrawMultiSigCheck: () => ({
+    checkIsMultiSigAccount: mockCheckIsMultiSigAccount,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -169,7 +176,7 @@ describe('PerpsBalanceDropdown', () => {
     expect(onAddFunds).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onWithdraw when Withdraw button is clicked', () => {
+  it('calls onWithdraw when Withdraw button is clicked', async () => {
     const onWithdraw = jest.fn();
     renderWithProvider(
       <PerpsBalanceDropdown onWithdraw={onWithdraw} />,
@@ -179,7 +186,9 @@ describe('PerpsBalanceDropdown', () => {
     fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
     fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
 
-    expect(onWithdraw).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(onWithdraw).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('logs when onWithdraw returns a rejected promise', async () => {

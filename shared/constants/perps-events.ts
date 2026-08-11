@@ -74,6 +74,11 @@ export const PERPS_EVENT_VALUE = {
      * increase_exposure.
      */
     FLIP_POSITION: 'flip_position',
+    /**
+     * Extension-only: shown when a HyperLiquid multi-sig account is blocked
+     * from withdrawing, since MetaMask cannot sign multi-sig actions.
+     */
+    MULTI_SIG_BLOCK_NOTIF: 'multi_sig_block_notif',
   },
   BUTTON_LOCATION: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION,

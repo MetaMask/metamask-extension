@@ -330,6 +330,7 @@ function AlertMessage() {
       variant={TextVariant.bodySm}
       color={TextColor.errorDefault}
       textAlign={TextAlign.Center}
+      marginBottom={2}
     >
       {alertMessage}
     </Text>
