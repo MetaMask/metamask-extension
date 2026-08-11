@@ -72,6 +72,7 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'RegExp',
   // globals sentry needs to function
   '__SENTRY__',
+  '_sentryWrappedDepth',
   'appState',
   'extra',
   'stateHooks',

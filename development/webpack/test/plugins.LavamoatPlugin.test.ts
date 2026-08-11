@@ -71,6 +71,10 @@ describe('LavamoatPlugin', () => {
         exceptions.includes('addEventListener'),
         'Sentry must be able to register service worker event listeners',
       );
+      assert.ok(
+        exceptions.includes('_sentryWrappedDepth'),
+        'Sentry must be able to track wrapped function depth',
+      );
       assert.ok(inlineLockdown.test('service-worker.js'));
     });
 
