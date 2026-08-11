@@ -25,7 +25,7 @@ import {
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
-  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/shasta\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
+  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -251,7 +251,6 @@ async function mockTronFixtureApis(
     // replays successful broadcasts as confirmed history.
     ...fixtureHistoryEndpoints,
     ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
-    await mockTestnetJsonRpc(mockServer),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),
   ];
 }
@@ -286,18 +285,6 @@ async function mockFixtureTransactionHistory(
   }
 
   return endpoints;
-}
-
-// Mocks the testnet JSON-RPC endpoints used by TronWeb when initialising a
-// Shasta or Nile provider. Returns an empty successful response for any
-// request so the snap can proceed without real network access in CI.
-async function mockTestnetJsonRpc(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
-    .forPost(/^https:\/\/(shasta|nile)\.api\.trongrid\.io\/jsonrpc$/u)
-    .always()
-    .thenJson(200, { jsonrpc: '2.0', id: 1, result: null });
 }
 
 async function mockWildcardTronAccountApis(
@@ -514,7 +501,7 @@ function getUniqueAssets(accounts: TronFixtureAccount[]): TronFixtureAsset[] {
 
 function tronProviderUrl(path: string): RegExp {
   return new RegExp(
-    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://shasta\\.api\\.trongrid\\.io|https://shasta\\.trongrid\\.io|https://nile\\.api\\.trongrid\\.io|https://nile\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
+    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://nile\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
     'u',
   );
 }
