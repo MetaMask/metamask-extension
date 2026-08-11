@@ -22,7 +22,6 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { ApprovalControllerState } from '@metamask/approval-controller';
 import type { BridgeControllerState } from '@metamask/bridge-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
-import type { EnsControllerState } from '@metamask/ens-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -179,8 +178,6 @@ export type ControllerStatePropertiesEnumerated = {
   allDeFiPositionsV2: DeFiPositionsControllerV2State['allDeFiPositionsV2'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
-  ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
-  ensEntries: EnsControllerState['ensEntries'];
   gasFeeEstimatesByChainId?: GasFeeState['gasFeeEstimatesByChainId'];
   gasFeeEstimates: GasFeeState['gasFeeEstimates'];
   estimatedGasFeeTimeBounds: GasFeeState['estimatedGasFeeTimeBounds'];
@@ -356,8 +353,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
   DeFiPositionsControllerV2State &
-  EncryptionPublicKeyControllerState &
-  EnsControllerState & {
+  EncryptionPublicKeyControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
     [P in keyof GasFeeState]: GasFeeState[P];
   } & KeyringControllerState &

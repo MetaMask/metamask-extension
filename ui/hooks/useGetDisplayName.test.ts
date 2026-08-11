@@ -8,7 +8,6 @@ type MockState = {
     accounts: { address: string }[];
   }[];
   tokenList: Record<string, { name?: string }>;
-  metamask: { ensResolutionsByAddress: Record<string, string> };
 };
 
 // Declared before jest.mock factories so eslint no-use-before-define is happy.
@@ -42,7 +41,6 @@ function setState(overrides: Partial<MockState> = {}) {
     addressBook: [],
     accountGroups: [],
     tokenList: {},
-    metamask: { ensResolutionsByAddress: {} },
     ...overrides,
   };
 }
@@ -92,18 +90,6 @@ describe('useGetDisplayName', () => {
     const { result } = renderHook(() => useGetDisplayName());
 
     expect(result.current(mockAddress)).toBe('Wrapped Ether');
-  });
-
-  it('falls back to the decoded ENS name', () => {
-    setState({
-      metamask: {
-        ensResolutionsByAddress: { [mockAddress]: 'xn--e1afmkfd.eth' },
-      },
-    });
-
-    const { result } = renderHook(() => useGetDisplayName());
-
-    expect(result.current(mockAddress)).toBe('пример.eth');
   });
 
   it('returns the contact name for a non-EVM address', () => {

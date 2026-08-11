@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
-import { toUnicode } from 'punycode/punycode.js';
 import type { AddressBookEntry } from '@metamask/address-book-controller';
 import type { TokenListMap } from '@metamask/assets-controllers';
 import {
@@ -10,7 +9,6 @@ import {
 } from '../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../helpers/utils/util';
 import { getCompleteAddressBook, getTokenList } from '../selectors';
-import { EMPTY_OBJECT as emptyObject } from '../selectors/shared';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
 import type { AccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree.types';
 
@@ -45,19 +43,12 @@ const selectContactNameByAddress = createSelector(
   },
 );
 
-const selectEnsResolutions = (state: {
-  metamask?: { ensResolutionsByAddress?: Record<string, string> };
-}) =>
-  state.metamask?.ensResolutionsByAddress ??
-  (emptyObject as Record<string, string>);
-
 /**
  * Returns a callback that resolves an address to a display name.
  */
 export function useGetDisplayName() {
   const accountNames = useSelector(selectAccountNameByAddress);
   const contactNames = useSelector(selectContactNameByAddress);
-  const ensResolutions = useSelector(selectEnsResolutions);
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   return useCallback(
@@ -68,18 +59,16 @@ export function useGetDisplayName() {
 
       // Non-EVM addresses must not go through hex helpers
       const key = address.toLowerCase();
-      const ensResolution = ensResolutions[address] || ensResolutions[key];
 
       return (
         accountNames.get(key) ||
         contactNames.get(key) ||
         tokenList[key]?.name ||
-        (ensResolution ? toUnicode(ensResolution) : undefined) ||
         shortenAddress(
           isValidHexAddress(address) ? toChecksumHexAddress(address) : address,
         )
       );
     },
-    [accountNames, contactNames, tokenList, ensResolutions],
+    [accountNames, contactNames, tokenList],
   );
 }
