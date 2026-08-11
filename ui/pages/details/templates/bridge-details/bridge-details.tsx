@@ -112,7 +112,11 @@ export function BridgeDetails({
           {sourceToken && (
             <div>
               <p className="text-alternative mb-1">{t('youSent')}</p>
-              <TokenRow token={sourceToken} showNetworkBadge={showFromTo} />
+              <TokenRow
+                token={sourceToken}
+                showNetworkBadge={showFromTo}
+                chainId={sourceChainId}
+              />
             </div>
           )}
           {destinationToken && (
@@ -121,6 +125,7 @@ export function BridgeDetails({
               <TokenRow
                 token={destinationToken}
                 showNetworkBadge={showFromTo}
+                chainId={destinationChainId as CaipChainId | undefined}
               />
             </div>
           )}

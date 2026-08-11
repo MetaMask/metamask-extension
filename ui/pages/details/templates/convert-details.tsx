@@ -82,6 +82,7 @@ export function ConvertDetails({ item }: Props) {
             { label: t('youSent'), token: sentToken },
             { label: t('youReceived'), token: item.data.destinationToken },
           ]}
+          chainId={item.chainId}
         />
 
         <MetadataSection item={item} />

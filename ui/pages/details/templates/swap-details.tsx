@@ -34,6 +34,7 @@ export function SwapDetails({
             { label: t('youSent'), token: item.data.sourceToken },
             { label: t('youReceived'), token: item.data.destinationToken },
           ]}
+          chainId={item.chainId}
         />
         <MetadataSection item={item} />
         <Section>

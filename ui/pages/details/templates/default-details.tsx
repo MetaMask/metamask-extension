@@ -15,6 +15,7 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
               token: 'token' in item.data ? item.data.token : undefined,
             },
           ]}
+          chainId={item.chainId}
         />
         <MetadataSection item={item} />
         <Section>

@@ -62,11 +62,18 @@ jest.mock('../../components/shared', () => ({
 }));
 
 jest.mock('../../components/token-row', () => ({
-  TokenRow: ({ token }: { token?: { symbol?: string; assetId?: string } }) => (
+  TokenRow: ({
+    token,
+    chainId,
+  }: {
+    token?: { symbol?: string; assetId?: string };
+    chainId?: string;
+  }) => (
     <div
       data-testid="token-row"
       data-symbol={token?.symbol ?? ''}
       data-asset-id={token?.assetId ?? ''}
+      data-chain-id={chainId ?? ''}
     />
   ),
 }));
@@ -235,6 +242,29 @@ describe('BridgeDetails', () => {
       'data-dest-symbol',
       'DAI',
     );
+  });
+
+  it('passes each leg its own chainId rather than sharing the source chain', () => {
+    mockUseHistoryTokens.mockReturnValue({
+      sourceToken: sourceTokenEth,
+      destinationToken: destinationTokenDai,
+    });
+
+    const { getAllByTestId } = render(
+      <BridgeDetails
+        item={buildItem({ from: '0xfrom', sourceToken: sourceTokenEth })}
+      />,
+    );
+
+    const rows = getAllByTestId('token-row');
+    const sourceRow = rows.find(
+      (row) => row.getAttribute('data-symbol') === 'ETH',
+    );
+    const destinationRow = rows.find(
+      (row) => row.getAttribute('data-symbol') === 'DAI',
+    );
+    expect(sourceRow).toHaveAttribute('data-chain-id', 'eip155:1');
+    expect(destinationRow).toHaveAttribute('data-chain-id', 'eip155:137');
   });
 
   it('prefers destination data already present on the item over bridge history', () => {

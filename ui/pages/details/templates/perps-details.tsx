@@ -78,6 +78,7 @@ export function PerpsDetails({
             { label: t('youReceived'), token: receivedToken },
           ]}
           showBadge
+          chainId={chainId}
         />
 
         <Section>

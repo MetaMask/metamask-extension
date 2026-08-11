@@ -27,6 +27,7 @@ export function NftDetails({
               ? { token: item.data.token }
               : { label: paymentLabel, token: amountToken },
           ]}
+          chainId={item.chainId}
         />
         <MetadataSection
           item={item}
