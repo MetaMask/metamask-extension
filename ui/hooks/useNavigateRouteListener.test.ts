@@ -56,9 +56,10 @@ describe('useNavigateRouteListener', () => {
       });
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/cross-chain/swaps/prepare-bridge-page?to=eip155:1/slip44:60',
-    );
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155:1/slip44:60',
+    });
   });
 
   it('defers navigation until unlocked', () => {
@@ -77,7 +78,10 @@ describe('useNavigateRouteListener', () => {
     mockGetIsUnlocked.mockReturnValue(true);
     rerender();
 
-    expect(mockNavigate).toHaveBeenCalledWith('/asset/eip155:1/slip44:60');
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/asset/eip155:1/slip44:60',
+      search: '',
+    });
   });
 
   it('ignores messages without a valid path', () => {
