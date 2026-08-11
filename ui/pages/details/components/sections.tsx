@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CaipChainId } from '@metamask/utils';
 import type {
   ActivityListItem,
   TokenAmount,
@@ -16,9 +17,11 @@ import { TokenRow } from './token-row';
 export function TokensSection({
   tokens,
   showBadge,
+  chainId,
 }: {
   tokens: { label?: string; token?: TokenAmount }[];
   showBadge?: boolean;
+  chainId?: CaipChainId;
 }) {
   const visibleTokens = tokens.flatMap(({ label, token }) =>
     token ? [{ label, token }] : [],
@@ -33,7 +36,7 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenRow token={token} showNetworkBadge={showBadge} />
+          <TokenRow token={token} showNetworkBadge={showBadge} chainId={chainId} />
         </div>
       ))}
     </div>

@@ -13,7 +13,10 @@ export function SendDetails({
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        <TokensSection tokens={[{ token: item.data.token }]} />
+        <TokensSection
+          tokens={[{ token: item.data.token }]}
+          chainId={item.chainId}
+        />
         <MetadataSection
           item={item}
           addressRows={{ from: item.data.from, to: item.data.to }}
