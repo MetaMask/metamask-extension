@@ -26007,7 +26007,7 @@ authors: undefined
 ******************************
 
 @metamask/institutional-wallet-snap
-1.5.0 <https://github.com/MetaMask/snap-institutional-wallet>
+2.0.0 <https://github.com/MetaMask/snap-institutional-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
