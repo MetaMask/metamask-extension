@@ -53,6 +53,15 @@ const SECURITY_ALERT_RESPONSE_ERROR = {
   reason: BlockaidReason.errored,
 };
 
+export const CONFIRMATION_WAIT_TIMEOUT = 60_000;
+
+export class SecurityAlertTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SecurityAlertTimeoutError';
+  }
+}
+
 type PPOMRequest = JsonRpcRequest & {
   delegationMock?: Hex;
   origin?: string;
@@ -101,11 +110,22 @@ export async function validateRequestWithPPOM({
   } catch (error: unknown) {
     log('Error', error);
 
-    await updateSecurityResponse(
-      request.method,
-      securityAlertId,
-      handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
-    );
+    if (error instanceof SecurityAlertTimeoutError) {
+      // The confirmation never appeared (e.g. it was rejected while PPOM was
+      // still validating), so there is nothing left to update and waiting for
+      // it again would only time out a second time.
+      return;
+    }
+
+    try {
+      await updateSecurityResponse(
+        request.method,
+        securityAlertId,
+        handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
+      );
+    } catch (updateError: unknown) {
+      log('Error updating security alert response after failure', updateError);
+    }
   }
 }
 
@@ -371,7 +391,7 @@ async function waitForTransactionMetadata(
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const transactionMeta =
       transactionController.state.transactions.find(transactionFilter);
 
@@ -380,12 +400,27 @@ async function waitForTransactionMetadata(
       return;
     }
 
-    const callback = (event: TransactionMeta) => {
+    const timeoutId = setTimeout(() => {
+      messenger.unsubscribe(
+        'TransactionController:unapprovedTransactionAdded',
+        callback,
+      );
+
+      reject(
+        new SecurityAlertTimeoutError(
+          `Timed out waiting for transaction with security alert ID: ${securityAlertId}`,
+        ),
+      );
+    }, CONFIRMATION_WAIT_TIMEOUT);
+
+    function callback(event: TransactionMeta) {
       if (!transactionFilter(event)) {
         return;
       }
 
       log('Found transaction metadata', event);
+
+      clearTimeout(timeoutId);
 
       messenger.unsubscribe(
         'TransactionController:unapprovedTransactionAdded',
@@ -393,7 +428,7 @@ async function waitForTransactionMetadata(
       );
 
       resolve(event);
-    };
+    }
 
     log('Waiting for transaction metadata', securityAlertId);
 
@@ -415,7 +450,7 @@ async function waitForSignatureRequest(
         request.securityAlertResponse?.securityAlertId === securityAlertId,
     );
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const signatureRequest = signatureFilter(signatureController.state);
 
     if (signatureRequest) {
@@ -423,7 +458,17 @@ async function waitForSignatureRequest(
       return;
     }
 
-    const callback = (state: SignatureControllerState) => {
+    const timeoutId = setTimeout(() => {
+      messenger.unsubscribe('SignatureController:stateChange', callback);
+
+      reject(
+        new SecurityAlertTimeoutError(
+          `Timed out waiting for signature request with security alert ID: ${securityAlertId}`,
+        ),
+      );
+    }, CONFIRMATION_WAIT_TIMEOUT);
+
+    function callback(state: SignatureControllerState) {
       const request = signatureFilter(state);
 
       if (!request) {
@@ -432,10 +477,12 @@ async function waitForSignatureRequest(
 
       log('Found signature request', request);
 
+      clearTimeout(timeoutId);
+
       messenger.unsubscribe('SignatureController:stateChange', callback);
 
       resolve(request);
-    };
+    }
 
     log('Waiting for signature request', securityAlertId);
 
