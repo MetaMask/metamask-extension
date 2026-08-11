@@ -175,10 +175,7 @@ describe('Popular Networks', function (this: Suite) {
         );
         await addEditRpcUrlPage.fillAddRpcNameInput('testName');
         await addEditRpcUrlPage.checkErrorMessageFailedToFetchChainIdIsDisplayed();
-        assert.equal(
-          await addEditRpcUrlPage.checkAddRpcUrlButtonIsEnabled(),
-          false,
-        );
+        await addEditRpcUrlPage.checkAddRpcUrlButtonIsEnabled(false);
       },
     );
   });
