@@ -36,7 +36,11 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenRow token={token} showNetworkBadge={showBadge} chainId={chainId} />
+          <TokenRow
+            token={token}
+            showNetworkBadge={showBadge}
+            chainId={chainId}
+          />
         </div>
       ))}
     </div>

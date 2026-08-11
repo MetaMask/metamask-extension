@@ -13,10 +13,7 @@ const usdcToken = {
 // upstream mapper never resolved an assetId for it.
 const nativeTokenWithoutAssetId = { isNative: true };
 
-function renderAvatar(
-  tokens: ActivityListItemAvatarTokens,
-  chainId?: string,
-) {
+function renderAvatar(tokens: ActivityListItemAvatarTokens, chainId?: string) {
   return render(<ActivityListItemAvatar tokens={tokens} chainId={chainId} />);
 }
 

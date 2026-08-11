@@ -126,7 +126,9 @@ export const ActivityListItemAvatar = (
 
   if (tokens.length > 1) {
     const [from, to] = tokens;
-    return <ActivityDualTokenAvatar from={from} to={to} chainId={props.chainId} />;
+    return (
+      <ActivityDualTokenAvatar from={from} to={to} chainId={props.chainId} />
+    );
   }
 
   return <ActivityTokenAvatar token={tokens[0]} chainId={props.chainId} />;
