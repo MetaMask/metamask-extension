@@ -3399,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "您确定要断开连接吗？您可能会失去网站功能。"
   },
-  "disconnectAllDescriptionText": {
-    "message": "如果您断开与此网站的连接，则需要重新连接您的账户和网络才能再次使用此网站。"
-  },
   "disconnectAllSites": {
     "message": "断开所有连接"
   },

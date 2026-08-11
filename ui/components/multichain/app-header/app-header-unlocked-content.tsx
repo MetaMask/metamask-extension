@@ -240,7 +240,6 @@ export const AppHeaderUnlockedContent = ({
           />
         </Box>
         <GlobalMenuDrawerWithList
-          anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           onClose={closeAccountOptionsMenu}
         />
