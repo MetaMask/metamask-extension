@@ -12,7 +12,10 @@ jest.mock('../../../../hooks/perps/stream', () => ({
 }));
 
 jest.mock('../../../../selectors/perps-controller', () => ({
-  selectProLayoutPreferences: () => ({ orderBookPosition: 'left', orderFormPosition: 'right' }),
+  selectProLayoutPreferences: () => ({
+    orderBookPosition: 'left',
+    orderFormPosition: 'right',
+  }),
 }));
 
 jest.mock('../../../../store/background-connection', () => ({

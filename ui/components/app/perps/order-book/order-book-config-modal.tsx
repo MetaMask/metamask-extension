@@ -48,7 +48,6 @@ const PILL_SELECTED_CLASS = 'bg-transparent border-muted';
 const PILL_UNSELECTED_CLASS =
   'bg-muted border-transparent hover:bg-muted-hover';
 
-
 type PillProps = {
   label: string;
   icon?: React.ReactNode;
