@@ -61,21 +61,21 @@ describe('AuthenticationControllerInit', () => {
         getAppVersion: expect.any(Function),
       },
       config: {
-        env: Env.DEV,
+        env: Env.PRD,
       },
     });
   });
 
   it('clears persisted sessions minted for a different OIDC env', () => {
-    const prdJwt = `aaa.${Buffer.from(
-      JSON.stringify({ iss: 'https://oidc.api.cx.metamask.io' }),
+    const devJwt = `aaa.${Buffer.from(
+      JSON.stringify({ iss: 'https://oidc.dev-api.cx.metamask.io' }),
     ).toString('base64url')}.bbb`;
     const requestMock = buildInitRequestMock();
     requestMock.persistedState.AuthenticationController = {
       isSignedIn: true,
       srpSessionData: {
         'entropy-1': {
-          token: { accessToken: prdJwt, expiresIn: 3600, obtainedAt: 1 },
+          token: { accessToken: devJwt, expiresIn: 3600, obtainedAt: 1 },
           profile: {
             identifierId: 'id',
             profileId: 'profile',
@@ -94,7 +94,7 @@ describe('AuthenticationControllerInit', () => {
           isSignedIn: false,
           srpSessionData: undefined,
         }),
-        config: { env: Env.DEV },
+        config: { env: Env.PRD },
       }),
     );
   });

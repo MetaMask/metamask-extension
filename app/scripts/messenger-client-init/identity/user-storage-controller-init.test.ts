@@ -62,7 +62,7 @@ describe('UserStorageControllerInit', () => {
           onContactDeleted: expect.any(Function),
           onContactSyncErroneousSituation: expect.any(Function),
         },
-        env: Env.DEV,
+        env: Env.PRD,
       },
     });
   });

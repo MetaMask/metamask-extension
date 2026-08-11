@@ -39,7 +39,7 @@ describe('ConfigRegistryApiServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       fetch: expect.any(Function),
-      env: SDK.Env.DEV,
+      env: SDK.Env.PRD,
     });
   });
 });

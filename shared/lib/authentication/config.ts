@@ -11,11 +11,9 @@ export function isForceAuthMatchBuild() {
 }
 
 export function loadAuthenticationConfig(): Env {
-  // Local/test builds use DEV Profile Sync for staging on-ramp OIDC.
-  if (
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
-  ) {
+  // Local webpack (`yarn start`) uses DEV Profile Sync for staging on-ramp.
+  // Keep `testing`/E2E on PRD so mocks at authentication.api.cx.metamask.io match.
+  if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
     return Env.DEV;
   }
 
