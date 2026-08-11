@@ -21,6 +21,10 @@ import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -74,6 +78,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
         getSeedlessOnboardingControllerInstanceOptions({
           initMessenger: seedlessOnboardingControllerInitMessenger,
         }),
+      shieldApiService: getShieldApiServiceInstanceOptions(),
+      shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),

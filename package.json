@@ -468,7 +468,7 @@
     "@metamask/seedless-onboarding-controller": "^10.1.1",
     "@metamask/selected-network-controller": "^26.1.4",
     "@metamask/sentinel-api-service": "^1.0.0",
-    "@metamask/shield-controller": "^5.1.2",
+    "@metamask/shield-controller": "^6.0.0",
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A25.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-25.0.0-3afc599382.patch",
     "@metamask/snap-account-service": "^2.1.2",

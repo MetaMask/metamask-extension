@@ -324,7 +324,6 @@ import {
   getSendBundleSupportedChains,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
-import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
@@ -654,7 +653,6 @@ export default class MetamaskController extends EventEmitter {
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
-      ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
       SnapsNameProvider: SnapsNameProviderInit,
       EnsController: EnsControllerInit,
@@ -806,7 +804,7 @@ export default class MetamaskController extends EventEmitter {
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
       messengerClientsByName.NetworkEnablementController;
-    this.shieldController = messengerClientsByName.ShieldController;
+    this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;
     this.ensController = messengerClientsByName.EnsController;
@@ -1401,6 +1399,7 @@ export default class MetamaskController extends EventEmitter {
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
       DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
+      ShieldController: this.shieldController,
       ClaimsController: this.claimsController,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,

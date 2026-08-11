@@ -19,6 +19,10 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsControllerInstanceOptions } from './instance-options/claims-controller';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -39,6 +43,14 @@ jest.mock('./instance-options/connectivity-controller', () => ({
 }));
 jest.mock('./instance-options/claims-controller', () => ({
   getClaimsControllerInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/shield-controller', () => ({
+  getShieldApiServiceInstanceOptions: jest.fn(
+    () => 'shield-api-service-options',
+  ),
+  getShieldControllerInstanceOptions: jest.fn(
+    () => 'shield-controller-options',
+  ),
 }));
 jest.mock('./instance-options/gas-fee-controller', () => ({
   getGasFeeControllerInstanceOptions: jest.fn(
@@ -145,6 +157,8 @@ describe('initializeWallet', () => {
         },
         passkeyController: 'passkey-options',
         seedlessOnboardingController: 'seedless-onboarding-options',
+        shieldApiService: 'shield-api-service-options',
+        shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
         transactionController: 'transaction-controller-options',
@@ -177,6 +191,8 @@ describe('initializeWallet', () => {
       showApprovalRequest,
     });
     expect(getClaimsControllerInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
       messenger,
       platform,

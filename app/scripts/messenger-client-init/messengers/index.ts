@@ -84,10 +84,6 @@ import {
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
 import {
-  getShieldControllerInitMessenger,
-  getShieldControllerMessenger,
-} from './shield/shield-controller-messenger';
-import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
@@ -551,10 +547,6 @@ export const MESSENGER_FACTORIES = {
   SentinelApiService: {
     getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
-  },
-  ShieldController: {
-    getMessenger: getShieldControllerMessenger,
-    getInitMessenger: getShieldControllerInitMessenger,
   },
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
