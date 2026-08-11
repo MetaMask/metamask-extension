@@ -1,11 +1,58 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import type {
+  ActivityListItem,
+  TokenAmount,
+} from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import { getFallbackNativeAssetId } from '../../../shared/lib/asset-utils';
 import {
   parseApprovalTransactionData,
   parseStandardTokenTransactionData,
 } from '../../../shared/lib/transaction.utils';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
+
+// Token-bearing fields across the ActivityItem union (shared/lib/activity/types.ts).
+const TOKEN_FIELDS = [
+  'token',
+  'sourceToken',
+  'destinationToken',
+  'paymentToken',
+] as const;
+
+/**
+ * Backfills a missing native `assetId` using the activity's `chainId`. The
+ * upstream mapper resolves native `assetId` via a SLIP44-by-symbol lookup
+ * that misses many custom networks, even though `assetType: 'native'` is
+ * still set correctly.
+ *
+ * @param activity - The activity item to backfill.
+ * @returns The activity, patched (or the same reference if unchanged).
+ */
+function enrichNativeAssetIds(activity: ActivityListItem): ActivityListItem {
+  const data = activity.data as Record<string, TokenAmount | undefined>;
+  let changed = false;
+  const patchedData: Record<string, TokenAmount> = {};
+
+  for (const field of TOKEN_FIELDS) {
+    const token = data[field];
+    if (token && !token.assetId && token.assetType === 'native') {
+      const assetId = getFallbackNativeAssetId(activity.chainId);
+      if (assetId) {
+        patchedData[field] = { ...token, assetId };
+        changed = true;
+      }
+    }
+  }
+
+  if (!changed) {
+    return activity;
+  }
+
+  return {
+    ...activity,
+    data: { ...activity.data, ...patchedData },
+  } as ActivityListItem;
+}
 
 const TOKEN_TRANSFER_TYPES = new Set<TransactionType>([
   TransactionType.tokenMethodTransfer,
@@ -121,5 +168,6 @@ export function enrichLocalActivity(
   next = enrichTokenTransferActivity(next, transactionGroup);
   next = enrichApprovalActivity(next, transactionGroup);
   next = enrichLocalMusdClaimActivity(next, transactionGroup);
+  next = enrichNativeAssetIds(next);
   return next;
 }
