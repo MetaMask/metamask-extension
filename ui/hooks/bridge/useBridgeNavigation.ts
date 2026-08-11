@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  matchPath,
   type NavigateOptions,
   type To,
   useLocation,
@@ -334,6 +335,12 @@ export const useBridgeNavigation = () => {
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToHwSigningPage,
+    isHardwareWalletSigningPage: Boolean(
+      matchPath(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        pathname,
+      ),
+    ),
     navigateToActivityPage,
     navigateToDefaultRoute,
   };

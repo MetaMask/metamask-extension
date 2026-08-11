@@ -8,7 +8,6 @@ import type {
   InputPrimaryDenomination,
   QuoteResponse,
 } from '@metamask/bridge-controller';
-import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -35,11 +34,6 @@ import {
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  HARDWARE_WALLET_SIGNATURES_ROUTE,
-} from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
@@ -56,17 +50,11 @@ import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 export default function useSubmitBridgeTransaction(
   inputPrimaryDenominationOverride?: InputPrimaryDenomination,
 ) {
-  const { pathname } = useLocation();
-  const isHardwareWalletSigningPage = Boolean(
-    matchPath(
-      `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
-      pathname,
-    ),
-  );
   const {
     navigateToBridgePage,
     navigateToHwSigningPage,
     navigateToDefaultRoute,
+    isHardwareWalletSigningPage,
   } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
