@@ -847,10 +847,23 @@ export class PlaywrightDriver {
   }
 
   async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
+    rawLocator: RawLocator,
+    contentToPaste: string,
   ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+    // Selenium writes to the system clipboard (`navigator.clipboard.writeText`)
+    // and sends a Cmd/Ctrl+V chord. The async clipboard API needs
+    // browser-specific permission setup in Playwright (Chromium
+    // `grantPermissions`, Firefox prefs), so mirror the *effect* of a paste
+    // instead: focus the field and insert the full string as a single `input`
+    // event — what a paste produces for controlled React inputs — without
+    // per-character key events or touching the system clipboard.
+    //
+    // Caveat: `insertText` does not dispatch a `paste` ClipboardEvent. If a
+    // migrated spec ever exercises an `onPaste` handler (e.g. SRP word
+    // splitting), this needs a real clipboard-backed implementation.
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+    await this.page.keyboard.insertText(contentToPaste);
   }
 
   async holdMouseDownOnElement(

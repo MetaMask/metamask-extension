@@ -82,6 +82,17 @@ export async function launchMetaMaskChromeExtension(
     '--disable-features=Translate',
     '--disable-component-update',
     '--disable-dev-shm-usage',
+    // CRITICAL: trust mockttp's self-signed MITM certificate browser-wide.
+    // Playwright's `ignoreHTTPSErrors: true` below only applies to targets
+    // Playwright attaches to (pages/frames) — it does NOT cover the MV3
+    // extension service worker, so without this flag every HTTPS fetch from
+    // the background (remote feature flags, accounts/price/token APIs, ...)
+    // fails its TLS handshake against the proxy and the extension silently
+    // runs without backend data (e.g. remote feature flags never load and
+    // the UI falls back to pre-redesign variants). Selenium's
+    // `acceptInsecureCerts` capability is browser-wide, which is why the
+    // Selenium path doesn't need this.
+    '--ignore-certificate-errors',
     ...(options.extraArgs ?? []),
   ];
 

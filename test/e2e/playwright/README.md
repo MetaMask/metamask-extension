@@ -95,7 +95,7 @@ Locally (no `GITHUB_ACTION`) it skips all of the above and runs every discovered
 
 - **Driver shim**: [`test/e2e/webdriver/driver-playwright.ts`](../webdriver/driver-playwright.ts) — `PlaywrightDriver` + `PlaywrightElement`.
 - **Factory**: [`test/e2e/webdriver/build-playwright-driver.ts`](../webdriver/build-playwright-driver.ts) — dispatches between Chrome/Firefox harnesses.
-- **Chrome harness**: [`shared/chrome-extension-harness.ts`](./shared/chrome-extension-harness.ts) — `launchPersistentContext` + `--load-extension` + deterministic extension-ID derivation.
+- **Chrome harness**: [`shared/chrome-extension-harness.ts`](./shared/chrome-extension-harness.ts) — `launchPersistentContext` + `--load-extension` + deterministic extension-ID derivation. Launches with `--ignore-certificate-errors`: mockttp answers HTTPS with a self-signed MITM certificate, and Playwright's `ignoreHTTPSErrors` only covers attached targets (pages) — not the MV3 service worker — so without the browser-wide flag every background fetch (remote feature flags, accounts/price APIs, ...) fails its TLS handshake and the extension silently runs without backend data.
 - **Firefox harness**: [`shared/firefox-extension-harness.ts`](./shared/firefox-extension-harness.ts) — Playwright Firefox `omni.ja` patch + RDP install + UUID lookup.
 - **withFixtures branch**: [`test/e2e/helpers.js`](../helpers.js) — `driverType` from [`E2E_DRIVER`](../constants.ts) (`SELENIUM` default, `PLAYWRIGHT` for migrated specs).
 
