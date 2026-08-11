@@ -133,6 +133,14 @@ export function usePerpsLiveMarketData(
     streamManager.markets.refresh();
   }, [streamManager]);
 
+  const [prevAutoSubscribe, setPrevAutoSubscribe] = useState(autoSubscribe);
+  if (autoSubscribe !== prevAutoSubscribe) {
+    setPrevAutoSubscribe(autoSubscribe);
+    if (!autoSubscribe) {
+      setIsInitialLoading(false);
+    }
+  }
+
   useEffect(() => {
     // If still initializing stream manager, stay in loading state
     if (isInitializing || !streamManager) {
@@ -140,18 +148,7 @@ export function usePerpsLiveMarketData(
     }
 
     if (!autoSubscribe) {
-      setIsInitialLoading(false);
       return;
-    }
-
-    // Check if we have cached data immediately
-    if (streamManager.markets.hasCachedData()) {
-      const cached = streamManager.markets.getCachedData();
-      setMarkets(cached);
-      if (!hasReceivedData.current) {
-        hasReceivedData.current = true;
-        setIsInitialLoading(false);
-      }
     }
 
     // Subscribe - callback fires immediately with cached data (if any)

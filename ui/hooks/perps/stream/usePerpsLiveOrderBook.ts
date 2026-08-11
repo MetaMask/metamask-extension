@@ -74,6 +74,12 @@ const getOrderBookAggregatedStatusChannel = (sm: PerpsStreamManager) =>
 let nextOrderBookAggregatedSubscriptionGeneration = 0;
 
 /**
+ * Cache of subscription ids by activation key so StrictMode double-render does
+ * not allocate two generations for the same activation.
+ */
+const subscriptionIdsByActivationKey = new Map<string, string>();
+
+/**
  * Allocate a never-reused generation for one aggregated order-book activation.
  *
  * @returns Next monotonic generation value.
@@ -88,6 +94,33 @@ export function allocateOrderBookAggregatedSubscriptionGeneration(): number {
  */
 export function resetOrderBookAggregatedSubscriptionGenerationForTests(): void {
   nextOrderBookAggregatedSubscriptionGeneration = 0;
+  subscriptionIdsByActivationKey.clear();
+}
+
+function getOrCreateAggregatedSubscriptionId({
+  activationKey,
+  symbol,
+  nSigFigs,
+  mantissa,
+}: {
+  activationKey: string;
+  symbol: string;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+}): string {
+  const existing = subscriptionIdsByActivationKey.get(activationKey);
+  if (existing) {
+    return existing;
+  }
+
+  const subscriptionId = buildOrderBookAggregatedSubscriptionId({
+    symbol,
+    nSigFigs,
+    mantissa,
+    generation: allocateOrderBookAggregatedSubscriptionGeneration(),
+  });
+  subscriptionIdsByActivationKey.set(activationKey, subscriptionId);
+  return subscriptionId;
 }
 
 /**
@@ -177,52 +210,59 @@ export function usePerpsLiveOrderBook(
   // (grouping, reconnect, or a fresh open after close).
   const resetKey = isAggregated ? subscriptionId : activeSymbol;
 
-  // Allocate + register before paint; deregister on unmount / identity change so
+  const [prevActivationKey, setPrevActivationKey] = useState(activationKey);
+  const [prevIsAggregated, setPrevIsAggregated] = useState(isAggregated);
+
+  // Allocate subscription identity during render when activation inputs change.
+  // Ids are memoized by activationKey so StrictMode double-render does not
+  // consume two generations for one activation.
+  if (!isAggregated && (prevIsAggregated || aggregatedSubscription !== null)) {
+    setPrevIsAggregated(isAggregated);
+    setPrevActivationKey(activationKey);
+    setAggregatedSubscription(null);
+  } else if (isAggregated && activationKey !== prevActivationKey) {
+    setPrevActivationKey(activationKey);
+    setPrevIsAggregated(isAggregated);
+    if (activationKey && activeSymbol) {
+      setAggregatedSubscription({
+        activationKey,
+        subscriptionId: getOrCreateAggregatedSubscriptionId({
+          activationKey,
+          symbol: activeSymbol,
+          nSigFigs,
+          mantissa,
+        }),
+      });
+    } else {
+      setAggregatedSubscription(null);
+    }
+  } else if (isAggregated !== prevIsAggregated) {
+    setPrevIsAggregated(isAggregated);
+  }
+
+  // Register before paint; deregister on unmount / identity change so
   // a closed panel rejects late packets until the next activation registers.
   useLayoutEffect(() => {
-    if (!isAggregated) {
-      setAggregatedSubscription(null);
-      return undefined;
-    }
-    if (!streamManager) {
+    if (!isAggregated || !streamManager) {
       return undefined;
     }
 
-    const nextSubscriptionId =
-      activationKey && activeSymbol
-        ? buildOrderBookAggregatedSubscriptionId({
-            symbol: activeSymbol,
-            nSigFigs,
-            mantissa,
-            generation: allocateOrderBookAggregatedSubscriptionGeneration(),
-          })
-        : undefined;
-
-    setAggregatedSubscription(
-      activationKey && nextSubscriptionId
-        ? { activationKey, subscriptionId: nextSubscriptionId }
-        : null,
-    );
     streamManager.setActiveOrderBookAggregatedSubscriptionId(
-      nextSubscriptionId ?? null,
+      subscriptionId ?? null,
     );
 
     return () => {
       // Null the identity and drop cached rows/status in the same commit so a
       // late packet cannot repopulate the cache between clear and deregister.
       // Page-level clears are unnecessary once this owns both.
+      if (activationKey) {
+        subscriptionIdsByActivationKey.delete(activationKey);
+      }
       streamManager.setActiveOrderBookAggregatedSubscriptionId(null);
       streamManager.orderBookAggregated.clearCache();
       streamManager.orderBookAggregatedStatus.clearCache();
     };
-  }, [
-    isAggregated,
-    streamManager,
-    activationKey,
-    activeSymbol,
-    nSigFigs,
-    mantissa,
-  ]);
+  }, [isAggregated, streamManager, subscriptionId, activationKey]);
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,

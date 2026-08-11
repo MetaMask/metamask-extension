@@ -89,8 +89,13 @@ export const PerpsSlippageConfigModal = ({
   const [selectedBps, setSelectedBps] = useState(currentValueBps);
   const [isCustomMode, setIsCustomMode] = useState(false);
   const [draftValue, setDraftValue] = useState('');
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevCurrentValueBps, setPrevCurrentValueBps] =
+    useState(currentValueBps);
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || currentValueBps !== prevCurrentValueBps) {
+    setPrevIsOpen(isOpen);
+    setPrevCurrentValueBps(currentValueBps);
     if (isOpen) {
       const startsAsCustom = !matchesPreset(currentValueBps);
       setSelectedBps(currentValueBps);
@@ -99,7 +104,7 @@ export const PerpsSlippageConfigModal = ({
         startsAsCustom ? bpsToPercent(currentValueBps).toString() : '',
       );
     }
-  }, [isOpen, currentValueBps]);
+  }
 
   useEffect(() => {
     if (isOpen && isCustomMode) {

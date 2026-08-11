@@ -70,25 +70,34 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
       selectedAddress !== null && streamManager.isInitialized(selectedAddress),
   );
   const [error, setError] = useState<Error | null>(null);
+  const [prevSelectedAddress, setPrevSelectedAddress] =
+    useState(selectedAddress);
 
-  useEffect(() => {
+  if (selectedAddress !== prevSelectedAddress) {
+    setPrevSelectedAddress(selectedAddress);
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
+    } else if (streamManager.isInitialized(selectedAddress)) {
+      setIsReady(true);
+      setError(null);
+    } else {
+      setIsReady(false);
+      setError(null);
+    }
+  }
+
+  useEffect(() => {
+    if (!selectedAddress) {
       return undefined;
     }
 
     // Already initialized by a previous call
     if (streamManager.isInitialized(selectedAddress)) {
-      setIsReady(true);
-      setError(null);
       return undefined;
     }
 
     let cancelled = false;
-
-    setIsReady(false);
-    setError(null);
 
     // initForAddress deduplicates: multiple hooks sharing this singleton
     // only trigger a single perpsInit RPC + channel reset round-trip.

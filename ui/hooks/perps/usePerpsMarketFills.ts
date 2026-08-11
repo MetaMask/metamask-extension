@@ -59,19 +59,28 @@ export function usePerpsMarketFills({
   // behind fillsCacheKey, suppressing stale-env live fills until REST confirms
   // we're on the new scope.
   const [currentScopeKey, setCurrentScopeKey] = useState(fillsCacheKey);
+  const [prevFillsCacheKey, setPrevFillsCacheKey] = useState(fillsCacheKey);
 
-  useEffect(() => {
+  if (fillsCacheKey !== prevFillsCacheKey) {
+    setPrevFillsCacheKey(fillsCacheKey);
     const cached = peekWarmFills(fillsCacheKey);
     if (cached !== undefined) {
       setRestFills(cached);
       setCurrentScopeKey(fillsCacheKey);
       setIsRestLoading(false);
+    } else {
+      setRestFills([]);
+      setIsRestLoading(true);
+    }
+  }
+
+  useEffect(() => {
+    const cached = peekWarmFills(fillsCacheKey);
+    if (cached !== undefined) {
       return undefined;
     }
 
     let cancelled = false;
-    setRestFills([]);
-    setIsRestLoading(true);
 
     fetchFillsForCacheKey(fillsCacheKey)
       .then((result) => {

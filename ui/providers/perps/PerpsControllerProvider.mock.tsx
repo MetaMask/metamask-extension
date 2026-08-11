@@ -65,6 +65,15 @@ export function PerpsControllerProvider({
     providedController ?? null,
   );
   const [error, setError] = useState<Error | null>(null);
+  const [prevProvidedController, setPrevProvidedController] =
+    useState(providedController);
+
+  if (providedController !== prevProvidedController) {
+    setPrevProvidedController(providedController);
+    if (providedController) {
+      setController(providedController);
+    }
+  }
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -72,7 +81,6 @@ export function PerpsControllerProvider({
   useEffect(() => {
     // If a controller was provided, skip initialization
     if (providedController) {
-      setController(providedController);
       return;
     }
 

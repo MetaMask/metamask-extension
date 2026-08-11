@@ -97,11 +97,40 @@ export function usePerpsMetamaskFeeDiscountBips(
   const [discountBips, setDiscountBips] = useState<number | undefined>(
     undefined,
   );
+  const discountKey = `${isVipProgramEnabled}|${selectedAddress ?? ''}|${currentChainId}|${baseFeeBips}`;
+  const [prevDiscountKey, setPrevDiscountKey] = useState(discountKey);
+
+  if (discountKey !== prevDiscountKey) {
+    setPrevDiscountKey(discountKey);
+
+    if (!isVipProgramEnabled || !selectedAddress) {
+      setDiscountBips(undefined);
+    } else {
+      const caipAccountId = formatAccountToCaipAccountId(
+        selectedAddress,
+        currentChainId,
+      );
+      if (!caipAccountId) {
+        setDiscountBips(undefined);
+      } else {
+        const now = Date.now();
+        if (
+          feeDiscountCache?.caipAccountId === caipAccountId &&
+          now - feeDiscountCache.timestamp < FEE_DISCOUNT_CACHE_TTL_MS
+        ) {
+          setDiscountBips(feeDiscountCache.discountBips);
+        } else {
+          // Clear the previous account's discount immediately so downstream memos
+          // don't apply a stale discount while the new fetch is in flight.
+          setDiscountBips(undefined);
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
     if (!isVipProgramEnabled || !selectedAddress) {
-      setDiscountBips(undefined);
       return undefined;
     }
 
@@ -110,7 +139,6 @@ export function usePerpsMetamaskFeeDiscountBips(
       currentChainId,
     );
     if (!caipAccountId) {
-      setDiscountBips(undefined);
       return undefined;
     }
 
@@ -119,13 +147,8 @@ export function usePerpsMetamaskFeeDiscountBips(
       feeDiscountCache?.caipAccountId === caipAccountId &&
       now - feeDiscountCache.timestamp < FEE_DISCOUNT_CACHE_TTL_MS
     ) {
-      setDiscountBips(feeDiscountCache.discountBips);
       return undefined;
     }
-
-    // Clear the previous account's discount immediately so downstream memos
-    // don't apply a stale discount while the new fetch is in flight.
-    setDiscountBips(undefined);
 
     submitRequestToBackground<number | null>(
       'rewardsGetPerpsDiscountForAccount',
