@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getAccountGroupNameByInternalAccount,
@@ -18,10 +18,6 @@ import type { DestinationAccount } from '../prepare/types';
  * destination account picker modal and its setter.
  */
 export const useDestinationAccount = () => {
-  const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<DestinationAccount | null>(null);
-  const [isDestinationAccountPickerOpen, setIsDestinationAccountPickerOpen] =
-    useState(false);
   const toChain = useSelector(getToChain);
 
   // For bridges, use the appropriate account type for the destination chain
@@ -50,22 +46,40 @@ export const useDestinationAccount = () => {
       : null,
   );
 
-  useEffect(() => {
-    if (defaultInternalDestinationAccount) {
-      setSelectedDestinationAccount({
-        ...defaultInternalDestinationAccount,
-        walletName: walletName ?? '',
-        isExternal: false,
-        displayName: displayName ?? '',
-      });
-      setIsDestinationAccountPickerOpen(false);
-    } else {
-      // Open account picker when bridging between non-EVM and EVM chains and there is no matching account (edge case)
-      // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
-      setSelectedDestinationAccount(null);
-      setIsDestinationAccountPickerOpen(true);
-    }
-  }, [defaultInternalDestinationAccount, displayName, walletName]);
+  const buildDestinationAccount = (): DestinationAccount | null =>
+    defaultInternalDestinationAccount
+      ? {
+          ...defaultInternalDestinationAccount,
+          walletName: walletName ?? '',
+          isExternal: false,
+          displayName: displayName ?? '',
+        }
+      : null;
+
+  const [selectedDestinationAccount, setSelectedDestinationAccount] =
+    useState<DestinationAccount | null>(buildDestinationAccount);
+  const [isDestinationAccountPickerOpen, setIsDestinationAccountPickerOpen] =
+    useState(() => !defaultInternalDestinationAccount);
+
+  const [
+    prevDefaultInternalDestinationAccount,
+    setPrevDefaultInternalDestinationAccount,
+  ] = useState(defaultInternalDestinationAccount);
+  const [prevDisplayName, setPrevDisplayName] = useState(displayName);
+  const [prevWalletName, setPrevWalletName] = useState(walletName);
+
+  if (
+    defaultInternalDestinationAccount !==
+      prevDefaultInternalDestinationAccount ||
+    displayName !== prevDisplayName ||
+    walletName !== prevWalletName
+  ) {
+    setPrevDefaultInternalDestinationAccount(defaultInternalDestinationAccount);
+    setPrevDisplayName(displayName);
+    setPrevWalletName(walletName);
+    setSelectedDestinationAccount(buildDestinationAccount());
+    setIsDestinationAccountPickerOpen(!defaultInternalDestinationAccount);
+  }
 
   return {
     selectedDestinationAccount,

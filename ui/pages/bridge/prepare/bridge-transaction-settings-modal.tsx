@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import {
@@ -66,11 +66,21 @@ export const BridgeTransactionSettingsModal = ({
   const isRWASwap = useSelector(getIsRWASwap);
   const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
-  const [slippageValue, setSlippageValue] = useState<number | undefined>(
-    undefined,
+  const [slippageValue, setSlippageValue] = useState<number | undefined>(() =>
+    isOpen ? slippage : undefined,
   );
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevSlippage, setPrevSlippage] = useState(slippage);
+  const [prevIsDirty, setPrevIsDirty] = useState(isDirty);
+  if (
+    isOpen !== prevIsOpen ||
+    slippage !== prevSlippage ||
+    isDirty !== prevIsDirty
+  ) {
+    setPrevIsOpen(isOpen);
+    setPrevSlippage(slippage);
+    setPrevIsDirty(isDirty);
     if (!isOpen) {
       setIsDirty(false);
     } else if (!isDirty) {
@@ -78,7 +88,7 @@ export const BridgeTransactionSettingsModal = ({
       setInputValue('');
       setShowCustomInput(false);
     }
-  }, [isOpen, isDirty, slippage]);
+  }
 
   const selectSlippageOption = (value: number | undefined) => {
     setSlippageValue(value);

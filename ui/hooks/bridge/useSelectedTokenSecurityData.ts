@@ -81,8 +81,18 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
-  useEffect(() => {
+  const assetIdsKey = assetIds.join('|');
+  const [prevFetchKey, setPrevFetchKey] = useState(
+    `${useExternalServices}:${assetIdsKey}`,
+  );
+  const fetchKey = `${useExternalServices}:${assetIdsKey}`;
+
+  if (fetchKey !== prevFetchKey) {
+    setPrevFetchKey(fetchKey);
     setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
+  }
+
+  useEffect(() => {
     if (!useExternalServices || assetIds.length === 0) {
       return undefined;
     }

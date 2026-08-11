@@ -86,12 +86,18 @@ export const isStockRWAToken = (token?: RWATokenLike): boolean =>
 export function useRWAToken() {
   const isRWAEnabled = useSelector(getIsRWATokensEnabled);
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const [prevIsRWAEnabled, setPrevIsRWAEnabled] = useState(isRWAEnabled);
+  if (isRWAEnabled !== prevIsRWAEnabled) {
+    setPrevIsRWAEnabled(isRWAEnabled);
+    if (isRWAEnabled) {
+      setNowMs(Date.now());
+    }
+  }
 
   useEffect(() => {
     if (!isRWAEnabled) {
       return undefined;
     }
-    setNowMs(Date.now());
     const id = setInterval(() => setNowMs(Date.now()), RWA_TIME_TICK_MS);
     return () => clearInterval(id);
   }, [isRWAEnabled]);

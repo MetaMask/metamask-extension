@@ -136,21 +136,27 @@ export const useTokenSearchResults = ({
     return filteredAssetsToInclude.map(({ assetId }) => assetId).join('|');
   }, [filteredAssetsToInclude]);
 
-  useEffect(() => {
-    if (!jwt) {
-      return;
-    }
-    // Reset state on search query change
-    abortControllerRef.current.abort('Search query changed');
-    setSearchResultsWithBalance([]);
+  const searchResetKey = `${searchQuery}|${stableMinimalAssetsString}|${Array.from(chainIds).join(',')}|${jwt ?? ''}`;
+  const [prevSearchResetKey, setPrevSearchResetKey] = useState(searchResetKey);
+
+  if (searchResetKey !== prevSearchResetKey) {
+    setPrevSearchResetKey(searchResetKey);
+    // Reset state on search query / filter change
+    setSearchResultsWithBalance(
+      jwt && searchQuery.length > 0 ? filteredAssetsToInclude : [],
+    );
     setSearchResultCursor(undefined);
     setHasMoreResults(false);
-    if (searchQuery.length > 0) {
-      setIsSearchResultsLoading(true);
-      setSearchResultsWithBalance(filteredAssetsToInclude);
-      // Debounce the initial fetch until the user stops typing
-      debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
+    setIsSearchResultsLoading(Boolean(jwt && searchQuery.length > 0));
+  }
+
+  useEffect(() => {
+    if (!jwt || searchQuery.length === 0) {
+      return;
     }
+    abortControllerRef.current.abort('Search query changed');
+    // Debounce the initial fetch until the user stops typing
+    debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
   }, [searchQuery, stableMinimalAssetsString, chainIds, jwt]);
 
   useEffect(() => {

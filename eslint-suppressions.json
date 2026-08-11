@@ -176,7 +176,7 @@
   },
   "ui/hooks/bridge/usePrefillFromSearchQuery.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 5
+      "count": 1
     }
   },
   "ui/hooks/bridge/useQuoteFetchEvents.ts": {

@@ -85,14 +85,16 @@ export const BridgeAlertModal = ({
    */
   const handleContinue = useCallback(async () => {
     const nextAlertIndex = activeAlertIndex + 1;
-    setActiveAlertIndex(nextAlertIndex);
     if (
       nextAlertIndex === alerts.length &&
       shouldShowSubmitCTA &&
       activeQuote
     ) {
       await submitBridgeTransaction(activeQuote);
+      onClose();
+      return;
     }
+    setActiveAlertIndex(nextAlertIndex);
   }, [
     activeQuote,
     submitBridgeTransaction,
@@ -100,15 +102,38 @@ export const BridgeAlertModal = ({
     setActiveAlertIndex,
     shouldShowSubmitCTA,
     alerts.length,
+    onClose,
   ]);
 
-  // Reset the active alert index when the modal visibility changes
-  useEffect(() => {
+  // Reset alert index when the modal opens. Do not call onClose whenever
+  // isModalOpen is false — that races with alert/quote settling and clears
+  // parent isOpen before the modal can appear (and inline onClose in deps OOMs).
+  const [prevIsModalOpen, setPrevIsModalOpen] = useState(isModalOpen);
+  if (isModalOpen && !prevIsModalOpen) {
+    setPrevIsModalOpen(true);
     setActiveAlertIndex(0);
-    if (!isModalOpen) {
+  } else if (!isModalOpen && prevIsModalOpen) {
+    setPrevIsModalOpen(false);
+  }
+
+  // If the submit modal was open and the quote becomes unusable, close it.
+  useEffect(() => {
+    if (
+      isOpen &&
+      !isModalOpen &&
+      shouldShowSubmitCTA &&
+      (isQuoteExpired || isStockMarketClosed)
+    ) {
       onClose();
     }
-  }, [isModalOpen]);
+    // Omit onClose: parents pass inline lambdas.
+  }, [
+    isOpen,
+    isModalOpen,
+    shouldShowSubmitCTA,
+    isQuoteExpired,
+    isStockMarketClosed,
+  ]);
 
   return activeAlert ? (
     <Modal

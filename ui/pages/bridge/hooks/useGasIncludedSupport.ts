@@ -36,6 +36,11 @@ export const useGasIncludedSupport = () => {
 
   // Fetch sentinel flags for src chain; cancel in-flight work on chain change
   const [networkFlags, setNetworkFlags] = useState<NetworkFlags | undefined>();
+  const [prevHexChainId, setPrevHexChainId] = useState(hexChainId);
+  if (hexChainId !== prevHexChainId) {
+    setPrevHexChainId(hexChainId);
+    setNetworkFlags(undefined);
+  }
 
   useEffect(() => {
     let isCancelled = false;
@@ -60,7 +65,6 @@ export const useGasIncludedSupport = () => {
       }
     };
 
-    setNetworkFlags(undefined);
     fetchNetworkFlags();
 
     return () => {
