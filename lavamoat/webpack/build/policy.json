@@ -2624,6 +2624,8 @@
     },
     "sass-loader": {
       "builtin": {
+        "node:path": true,
+        "node:url": true,
         "path": true,
         "url": true,
         "util": true
@@ -2634,7 +2636,6 @@
         "process.platform": true
       },
       "packages": {
-        "webpack>neo-async": true,
         "sass-embedded": true
       }
     },

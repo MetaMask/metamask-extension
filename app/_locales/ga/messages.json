@@ -1562,9 +1562,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "An bhfuil tú cinnte gur mian leat dícheangal? D’fhéadfá feidhmiúlacht an tsuímh a chailleadh."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Má dhícheanglaíonn tú ón suíomh seo, beidh ort do chuntais agus do líonraí a athcheangal le go mbeidh tú in ann an suíomh seo a úsáid arís."
-  },
   "disconnectMessage": {
     "message": "Déanfaidh sé seo tú a dhícheangal ón suíomh seo"
   },

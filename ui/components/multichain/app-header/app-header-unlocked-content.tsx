@@ -101,6 +101,14 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
 
   const handleOpenDiscoverSearch = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          interaction_type: 'opened',
+        })
+        .build(),
+    );
     transitionForward(() =>
       navigate(DISCOVER_SEARCH_ROUTE, {
         state: {
@@ -108,7 +116,7 @@ export const AppHeaderUnlockedContent = ({
         },
       }),
     );
-  }, [navigate]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -232,7 +240,6 @@ export const AppHeaderUnlockedContent = ({
           />
         </Box>
         <GlobalMenuDrawerWithList
-          anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           onClose={closeAccountOptionsMenu}
         />
