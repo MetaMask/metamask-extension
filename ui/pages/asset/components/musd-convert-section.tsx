@@ -142,7 +142,6 @@ export function MusdConvertSection() {
           chainId: token.chainId as Hex,
         },
         entryPoint: 'asset_overview',
-        skipEducation: false,
       });
     },
     [isFlowEnabled, isGeoBlocked, startConversionFlow],
