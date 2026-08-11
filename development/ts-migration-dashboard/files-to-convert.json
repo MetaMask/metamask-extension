@@ -280,7 +280,6 @@
   "test/e2e/send-eth-with-private-key-test/send-eth-with-private-key.js",
   "test/e2e/send-eth-with-private-key-test/web3js.js",
   "test/e2e/snaps/enums.js",
-  "test/e2e/tests/metrics/swaps.spec.js",
   "test/e2e/tests/phishing-controller/helpers.js",
   "test/e2e/tests/phishing-controller/mocks.js",
   "test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js",

@@ -79,7 +79,7 @@ export const DiscoverNoResultsState = ({
       className="flex h-full flex-col items-center gap-4 px-4 pt-[60px] text-center"
       data-testid="discover-search-no-results"
     >
-      <Box className="flex flex-col items-center gap-[18px]">
+      <Box className="flex w-full min-w-0 flex-col items-center gap-[18px]">
         <img
           src={activityIcon}
           alt=""
@@ -88,11 +88,11 @@ export const DiscoverNoResultsState = ({
           aria-hidden="true"
           data-testid="discover-search-no-results-illustration"
         />
-        <Box className="flex w-full max-w-full flex-col items-center gap-1 overflow-hidden">
+        <Box className="flex w-full max-w-full flex-col items-center gap-1">
           <Text
             variant={TextVariant.BodyMd}
             textAlign={TextAlign.Center}
-            className="max-w-full truncate"
+            className="w-full max-w-[320px] whitespace-normal break-words"
           >
             {t('discoverSearchNoResultsFor', [query])}
           </Text>
