@@ -1,3 +1,9 @@
+// Structural React Compiler bail: useAsyncCallback forwards a caller-supplied
+// DependencyList into useCallback (not an array literal). Disposition tracked
+// in MetaMask/MetaMask-planning#7541 — until that lands, keep the opt-out rather
+// than mirroring deps into a version counter (unsafe with unstable elements).
+'use no memo';
+
 import {
   useState,
   useEffect,
@@ -76,31 +82,13 @@ export function createErrorResult(error: Error): ResultError {
 }
 
 /**
- * Shallow-compare two React dependency lists (Object.is per element).
- *
- * @param left - Previous dependency list
- * @param right - Next dependency list
- * @returns True when both lists are the same length and every element matches
- */
-function areDepsEqual(left: DependencyList, right: DependencyList): boolean {
-  if (left.length !== right.length) {
-    return false;
-  }
-  for (let i = 0; i < left.length; i++) {
-    if (!Object.is(left[i], right[i])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
  * Hook that provides a callback for manual execution of an async function,
  * along with state management for the operation.
  *
  * @param asyncFn - The async function to execute
  * @param deps - Dependencies that trigger recreation of the callback
  */
+// react-compiler-bailout: UseMemo — deps forwarded from caller, not a literal (#7541)
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAsyncCallback<T>(
@@ -111,26 +99,14 @@ export function useAsyncCallback<T>(
 
   // Track component mount state
   const isMounted = useRef(true);
-  const asyncFnRef = useRef(asyncFn);
 
+  // Re-arm on mount so a StrictMode remount doesn't leave the ref stuck false.
   useEffect(() => {
-    asyncFnRef.current = asyncFn;
-  });
-
-  // Update ref when component unmounts
-  useEffect(() => {
+    isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
   }, []);
-
-  // Mirror deps into a version so useCallback can use an array literal.
-  const [prevDeps, setPrevDeps] = useState(deps);
-  const [depsVersion, setDepsVersion] = useState(0);
-  if (!areDepsEqual(prevDeps, deps)) {
-    setPrevDeps(deps);
-    setDepsVersion((version) => version + 1);
-  }
 
   const execute = useCallback(async () => {
     if (!isMounted.current) {
@@ -138,7 +114,7 @@ export function useAsyncCallback<T>(
     }
     setResult(RESULT_PENDING);
     try {
-      const value = await asyncFnRef.current();
+      const value = await asyncFn();
       if (isMounted.current) {
         setResult(createSuccessResult(value));
       }
@@ -147,7 +123,8 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-  }, [depsVersion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
+  }, deps);
 
   return [execute, result];
 }
