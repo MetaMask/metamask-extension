@@ -24,12 +24,10 @@ class ConnectAccountConfirmation {
 
   driver: Driver;
 
-  private readonly originHeader = (origin: string) => {
-    return {
-      tag: 'h2',
-      text: origin,
-    };
-  };
+  private readonly originHeader = (origin: string) => ({
+    tag: 'h3',
+    text: origin,
+  });
 
   constructor(driver: Driver) {
     this.driver = driver;
