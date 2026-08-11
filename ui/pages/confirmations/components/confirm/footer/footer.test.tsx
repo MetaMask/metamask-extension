@@ -73,6 +73,16 @@ jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
 }));
+jest.mock(
+  '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaireMetrics',
+  () => ({
+    useScamQuestionnaireMetrics: () => ({
+      trackViewed: jest.fn(),
+      trackContactSupport: jest.fn(),
+      trackCompleted: jest.fn(),
+    }),
+  }),
+);
 
 const mockOnTransactionConfirm = jest.fn();
 const ensureDeviceReadyMock = jest.fn();

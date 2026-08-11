@@ -1,12 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConnectAccountConfirmation {
-  private readonly accountListItem = (accountName: string) => {
-    return {
-      css: '.multichain-account-cell__account-name',
-      text: accountName,
-    };
-  };
+  private readonly accountListItem = (accountName: string) => ({
+    testId: `multichain-account-cell-name-${accountName}`,
+  });
 
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
@@ -33,17 +30,11 @@ class ConnectAccountConfirmation {
     tag: 'button',
   };
 
-  private readonly editPermissionsButton = '[data-testid="edit"]';
-
   private readonly originHeader = (origin: string) => {
     return {
       tag: 'h2',
       text: origin,
     };
-  };
-
-  private readonly permissionsTab = {
-    testId: 'permissions-tab',
   };
 
   constructor(driver: Driver) {
@@ -66,19 +57,11 @@ class ConnectAccountConfirmation {
   async checkPageIsLoaded({
     origin = '127.0.0.1',
   }: { origin?: string } = {}): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.connectAccountConfirmationTitle,
-        this.connectAccountConfirmationButton,
-        this.originHeader(origin),
-      ]);
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for Connect Account confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
+    await this.driver.waitForMultipleSelectors([
+      this.connectAccountConfirmationTitle,
+      this.connectAccountConfirmationButton,
+      this.originHeader(origin),
+    ]);
     console.log(`Connect Account confirmation page is loaded`);
   }
 
@@ -87,10 +70,6 @@ class ConnectAccountConfirmation {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.connectAccountConfirmationButton,
     );
-  }
-
-  async goToPermissionsTab(): Promise<void> {
-    await this.driver.clickElement(this.permissionsTab);
   }
 
   async isConfirmButtonEnabled(): Promise<boolean> {
@@ -109,14 +88,6 @@ class ConnectAccountConfirmation {
   async openEditAccountsModal(): Promise<void> {
     console.log('Open edit accounts modal');
     await this.driver.clickElement(this.editAccountButton);
-  }
-
-  async openEditNetworksModal(): Promise<void> {
-    console.log('Open edit networks modal');
-    const editButtons = await this.driver.findElements(
-      this.editPermissionsButton,
-    );
-    await editButtons[1].click();
   }
 }
 

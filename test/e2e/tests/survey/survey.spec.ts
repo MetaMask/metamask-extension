@@ -7,30 +7,10 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 
 async function mockSurveys(mockServer: MockttpServer) {
+  const surveyUrl = `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_ANALYTICS_ID}/surveys`;
+
   await mockServer
-    .forGet(
-      `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_ANALYTICS_ID}/surveys`,
-    )
-    // We need to mock this request twice because of a bug on the wallet side (#33604)
-    .twice()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          userId: '0x123',
-          surveys: {
-            url: 'https://example.com',
-            description: `Test survey ${1}`,
-            cta: 'Take survey',
-            id: 1,
-          },
-        },
-      };
-    });
-  await mockServer
-    .forGet(
-      `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_ANALYTICS_ID}/surveys`,
-    )
+    .forGet(surveyUrl)
     .once()
     .thenCallback(() => {
       return {
@@ -39,13 +19,28 @@ async function mockSurveys(mockServer: MockttpServer) {
           userId: '0x123',
           surveys: {
             url: 'https://example.com',
-            description: `Test survey ${2}`,
+            description: 'Test survey 1',
             cta: 'Take survey',
-            id: 2,
+            id: 1,
           },
         },
       };
     });
+
+  await mockServer.forGet(surveyUrl).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        userId: '0x123',
+        surveys: {
+          url: 'https://example.com',
+          description: 'Test survey 2',
+          cta: 'Take survey',
+          id: 2,
+        },
+      },
+    };
+  });
 }
 
 describe('Test Survey', function () {

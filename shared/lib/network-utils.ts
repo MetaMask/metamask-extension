@@ -1,10 +1,6 @@
 import { escapeRegExp } from 'lodash';
 import { BUILT_IN_CUSTOM_NETWORKS_RPC } from '@metamask/controller-utils';
-import {
-  CHAIN_SPEC_URL,
-  FEATURED_RPCS,
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-} from '../constants/network';
+import { CHAIN_SPEC_URL, FEATURED_RPCS } from '../constants/network';
 import { type CachedFetchStorageEntry } from './fetch-with-cache';
 import { getStorageItem } from './storage-helpers';
 
@@ -74,18 +70,6 @@ export function getIsMetaMaskInfuraEndpointUrl(
     `^https://[^.]+\\.infura\\.io/v3/(?:\\{infuraProjectId\\}|${escapeRegExp(infuraProjectId)})$`,
     'u',
   ).test(endpointUrl);
-}
-
-/**
- * Determines whether the given RPC endpoint URL matches a known Quicknode URL.
- *
- * @param endpointUrl - The URL of the RPC endpoint.
- * @returns True if the URL is a Quicknode URL, false otherwise.
- */
-export function getIsQuicknodeEndpointUrl(endpointUrl: string): boolean {
-  return Object.values(QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME)
-    .map((getUrl) => getUrl())
-    .includes(endpointUrl);
 }
 
 /**

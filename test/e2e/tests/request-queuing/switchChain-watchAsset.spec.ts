@@ -1,10 +1,10 @@
 import { Suite } from 'mocha';
-import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { DAPP_HOST_ADDRESS, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import { confirmConnectAndUpdateSiteNetworks } from '../../page-objects/flows/connect.flow';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
@@ -45,24 +45,12 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         await testDapp.checkPageIsLoaded();
         await testDapp.clickConnectAccountButton();
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        // Disconnect Localhost 8545. By Default, this was the globally selected network
-        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
-          driver,
-        );
-        await reviewPermissionsConfirmation.clickDisconnectNetwork(
-          'Localhost 8545',
-        );
-        await reviewPermissionsConfirmation.clickConnectMoreChainsButton();
-        await connectAccountConfirmation.confirmConnect();
+        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
+          {
+            networkName: 'Localhost 8545',
+            shouldBeSelected: false,
+          },
+        ]);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
@@ -80,6 +68,9 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
         await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
 
         // Switch back to test dapp

@@ -66,6 +66,7 @@ describe('Add wallet', function () {
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           '$',
         );
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
