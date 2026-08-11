@@ -8,8 +8,6 @@ import {
   Box,
   BoxBackgroundColor,
   ButtonIcon,
-  Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
@@ -17,30 +15,27 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import {
-  PolymorphicRef,
-  Tag,
-} from '../../../../../components/component-library';
-import { StockBadge } from '../../../../../components/app/assets/stock-badge/stock-badge';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { PolymorphicRef, Tag } from '../../../components/component-library';
+import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { type BridgeToken } from '../../../ducks/bridge/types';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../../../shared/constants/bridge';
+} from '../../../../shared/constants/bridge';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
-} from '../../../../../helpers/constants/design-system';
-import { useBridgeNavigation } from '../../../../../hooks/bridge/useBridgeNavigation';
-import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Column, Row } from '../../../layout';
-import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
-import { useRWAToken } from '../../../hooks/useRWAToken';
+} from '../../../helpers/constants/design-system';
+import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { ACCOUNT_TYPE_LABELS } from '../../../components/app/assets/constants';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Column, Row } from '../layout';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { useRWAToken } from '../hooks/useRWAToken';
 import { AssetBanner } from './asset-banner';
 
 export const BridgeAsset = React.forwardRef(

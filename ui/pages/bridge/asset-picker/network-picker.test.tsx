@@ -1,17 +1,17 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
-import configureStore from '../../../../../store/store';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import configureStore from '../../../store/store';
 import { NetworkPicker } from './network-picker';
 
 const mockUseABTest = jest.fn();
 const mockUseChainValueOrder = jest.fn();
 
-jest.mock('../../../../../hooks/useABTest', () => ({
+jest.mock('../../../hooks/useABTest', () => ({
   useABTest: (...args: unknown[]) => mockUseABTest(...args),
 }));
 
-jest.mock('../../../hooks/useChainValueOrder', () => ({
+jest.mock('../hooks/useChainValueOrder', () => ({
   useChainValueOrder: (...args: unknown[]) => mockUseChainValueOrder(...args),
 }));
 

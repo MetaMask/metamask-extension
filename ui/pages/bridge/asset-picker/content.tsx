@@ -21,14 +21,14 @@ import {
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
-import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
-import { useRWAToken } from '../../../hooks/useRWAToken';
+import { getIsNetworkManagementEnabled } from '../../../selectors/multichain/feature-flags';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { type BridgeAppState } from '../../../ducks/bridge/selectors';
+import { type BridgeToken } from '../../../ducks/bridge/types';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
+import { useRWAToken } from '../hooks/useRWAToken';
 import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
 
@@ -138,6 +138,7 @@ export const BridgeAssetPickerContent = forwardRef<
             : persistedChainId,
         );
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     const handleClose = useCallback(() => {

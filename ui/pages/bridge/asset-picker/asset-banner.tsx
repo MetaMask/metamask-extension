@@ -5,18 +5,18 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { type BridgeToken } from '../../../ducks/bridge/types';
 import {
   IconSize as IconSizeLegacy,
   Tag,
-} from '../../../../../components/component-library';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../components/component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   FontWeight,
   TextColor,
-} from '../../../../../helpers/constants/design-system';
-import { useAssetSecurityData } from '../../../hooks/useAssetSecurityData';
+} from '../../../helpers/constants/design-system';
+import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
 
 type AssetBannerProps = {
   asset: BridgeToken;

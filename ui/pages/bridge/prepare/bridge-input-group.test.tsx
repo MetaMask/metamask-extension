@@ -29,8 +29,9 @@ import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import BridgeAssetPickerPage from '../asset-picker';
 import { BridgeInputGroup } from './bridge-input-group';
-import BridgeAssetPickerPage from './bridge-asset-picker-page';
 
 /** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
 const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
@@ -146,7 +147,7 @@ const InputGroup = ({
     <BridgeInputGroup
       header={'Swap'}
       token={getFromToken(mockState)}
-      onAssetChange={(asset) => {
+      onAssetChange={(asset: BridgeToken) => {
         actions.setFromToken(asset);
       }}
       networks={getFromChains(mockState)}

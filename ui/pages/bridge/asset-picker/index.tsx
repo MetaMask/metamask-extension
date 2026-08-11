@@ -32,12 +32,13 @@ import { setFromToken, setToToken } from '../../../ducks/bridge/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useDispatch } from '../../../store/hooks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
 import {
   BridgeAssetPickerContent,
   type BridgeAssetPickerContentHandle,
-} from './components/bridge-asset-picker/bridge-asset-picker-content';
+} from './content';
 
 /**
  * Full-screen version of the bridge asset picker. It is shown instead of the
@@ -125,7 +126,7 @@ const BridgeAssetPickerPage = () => {
           chains={networks}
           disabledChainId={disabledChainId}
           isDestination={isDestination}
-          onAssetChange={async (asset) => {
+          onAssetChange={async (asset: BridgeToken) => {
             await ensureNetworkEnabled(asset.chainId);
             dispatch(isDestination ? setToToken(asset) : setFromToken(asset));
           }}
