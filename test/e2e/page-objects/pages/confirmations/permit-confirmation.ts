@@ -2,6 +2,17 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 import Confirmation from './confirmation';
 
+export type PermitInfoValues = {
+  contractPetName: string;
+  deadline: string;
+  nonce: string;
+  origin: string;
+  ownerName: string;
+  primaryType: string;
+  spenderAddress: string;
+  value: string;
+};
+
 export default class PermitConfirmation extends Confirmation {
   private readonly addressName = (text: string): RawLocator => ({
     css: '.name__name',
@@ -61,6 +72,23 @@ export default class PermitConfirmation extends Confirmation {
 
   async checkDescription(description: string) {
     await this.driver.waitForSelector(this.confirmDescription(description));
+  }
+
+  /**
+   * Assert Permit confirmation details from caller-provided expected values.
+   *
+   * @param info - Expected origin, addresses, and data-tree field values.
+   */
+  async checkInfoValues(info: PermitInfoValues): Promise<void> {
+    await this.clickCollapseSectionButton();
+    await this.checkOrigin(info.origin);
+    await this.checkAddressValue(info.contractPetName);
+    await this.checkPrimaryType(info.primaryType);
+    await this.checkAddressName(info.ownerName);
+    await this.checkAddressValue(info.spenderAddress);
+    await this.checkDataTreeField('value', info.value);
+    await this.checkDataTreeField('nonce', info.nonce);
+    await this.checkDataTreeField('deadline', info.deadline);
   }
 
   async checkOrigin(origin: string) {

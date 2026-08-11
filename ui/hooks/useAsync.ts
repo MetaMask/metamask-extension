@@ -100,7 +100,7 @@ export function useAsyncCallback<T>(
   // Track component mount state
   const isMounted = useRef(true);
 
-  // Re-arm on mount so a StrictMode remount doesn't leave the ref stuck false.
+  // Re-arm on mount so a StrictMode remount doesn't leave the ref stuck false
   useEffect(() => {
     isMounted.current = true;
     return () => {

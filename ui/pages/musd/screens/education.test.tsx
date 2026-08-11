@@ -211,7 +211,6 @@ describe('MusdEducationScreen', () => {
     expect(mockDispatch).toHaveBeenCalled();
     expect(mockStartConversionFlow).toHaveBeenCalledWith({
       preferredToken: mockDefaultPaymentToken,
-      skipEducation: true,
     });
   });
 
@@ -414,7 +413,6 @@ describe('MusdEducationScreen', () => {
       expect(mockDispatch).toHaveBeenCalled();
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         preferredToken: mockDefaultPaymentToken,
-        skipEducation: true,
         entryPoint: 'deeplink',
       });
       expect(mockGoToBuy).not.toHaveBeenCalled();
@@ -435,7 +433,6 @@ describe('MusdEducationScreen', () => {
       expect(mockDispatch).toHaveBeenCalled();
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         preferredToken: mockDefaultPaymentToken,
-        skipEducation: true,
         entryPoint: 'deeplink',
       });
       expect(mockGoToBuy).not.toHaveBeenCalled();

@@ -1,8 +1,15 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { TrendingAsset } from '@metamask/assets-controllers';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -22,10 +29,13 @@ import { isCaipAssetType } from '@metamask/utils';
 
 import { MarketRow } from '../../components/app/perps/market-row';
 import { Tab, Tabs } from '../../components/ui/tabs';
+import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { DISCOVER_SEARCH_PREVIEW_COUNT } from '../../hooks/discover-search/constants';
 import { getDiscoverViewMoreAction } from '../../hooks/discover-search/get-discover-view-more-action';
 import { useDiscoverSearch } from '../../hooks/discover-search/useDiscoverSearch';
@@ -33,6 +43,7 @@ import type {
   DiscoverSearchSectionId,
   DiscoverSearchTab,
 } from '../../hooks/discover-search/types';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
@@ -59,6 +70,16 @@ const EmptyState = ({ message }: { message: string }) => (
     </Text>
   </Box>
 );
+
+const DiscoverSearchErrorState = () => {
+  const t = useI18nContext();
+
+  return (
+    <Box data-testid="discover-search-error">
+      <EmptyState message={t('somethingWentWrong')} />
+    </Box>
+  );
+};
 
 type DiscoverSearchEmptyStateProps = {
   noResultsMessage: string;
@@ -92,6 +113,26 @@ const DiscoverSearchSectionDivider = () => (
 const SEARCH_QUERY_PARAM = 'q';
 const SEARCH_TAB_PARAM = 'tab';
 const DEFAULT_DISCOVER_SEARCH_TAB: DiscoverSearchTab = 'all';
+const DISCOVER_SEARCH_ROW_HEIGHT = 72;
+
+type ExploreSearchTabName = 'all' | 'tokens' | 'perps' | 'stocks';
+
+type ExploreSearchSectionName = Exclude<ExploreSearchTabName, 'all'>;
+
+type PendingTabSwitch = {
+  tab: DiscoverSearchTab;
+  previousTab: DiscoverSearchTab;
+  searchQuery: string;
+  comesFromViewAllTap: boolean;
+};
+
+const getExploreSearchTabName = (
+  tab: DiscoverSearchTab,
+): ExploreSearchTabName => (tab === 'crypto' ? 'tokens' : tab);
+
+const getExploreSearchSectionName = (
+  section: DiscoverSearchSectionId,
+): ExploreSearchSectionName => (section === 'crypto' ? 'tokens' : section);
 
 const isDiscoverSearchTab = (
   value: string | null,
@@ -144,9 +185,14 @@ const getNextDiscoverSearchParams = (
 export const DiscoverSearchPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { createEventBuilder, trackEvent } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const trackedSearchKey = useRef<string | null>(null);
+  const pendingTabSwitch = useRef<PendingTabSwitch | null>(null);
+  const hasTrackedScroll = useRef(false);
+  const isLoadingNextPageRef = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState(
     () => searchParams.get(SEARCH_QUERY_PARAM) ?? '',
@@ -159,10 +205,57 @@ export const DiscoverSearchPage = () => {
     crypto: cryptoSection,
     perps,
     stocks,
+    isDebouncing,
   } = useDiscoverSearch({
     query: searchQuery,
     activeTab,
   });
+
+  const getSectionResultCount = useCallback(
+    (section: DiscoverSearchSectionId) => {
+      let searchSection;
+      switch (section) {
+        case 'crypto':
+          searchSection = cryptoSection;
+          break;
+        case 'perps':
+          searchSection = perps;
+          break;
+        case 'stocks':
+          searchSection = stocks;
+          break;
+        default:
+          throw new Error('Unknown Discover Search section');
+      }
+      return searchSection.totalCount ?? searchSection.items.length;
+    },
+    [cryptoSection, perps, stocks],
+  );
+
+  const getResultCount = useCallback(
+    (tab: DiscoverSearchTab) => {
+      if (tab === 'all') {
+        return (
+          getSectionResultCount('crypto') +
+          (isPerpsAvailable ? getSectionResultCount('perps') : 0) +
+          getSectionResultCount('stocks')
+        );
+      }
+      return getSectionResultCount(tab);
+    },
+    [getSectionResultCount, isPerpsAvailable],
+  );
+
+  const trackExploreSearchEvent = useCallback(
+    (properties: Record<string, Json | undefined>) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+          .addProperties(properties)
+          .build(),
+      ).catch(() => undefined);
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   const handleBack = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -185,6 +278,7 @@ export const DiscoverSearchPage = () => {
 
   const updateSearchQuery = useCallback(
     (nextQuery: string) => {
+      pendingTabSwitch.current = null;
       setSearchQuery(nextQuery);
       updateRouteSearchParams({ query: nextQuery });
     },
@@ -203,36 +297,121 @@ export const DiscoverSearchPage = () => {
   );
 
   const updateActiveTab = useCallback(
-    (tab: DiscoverSearchTab) => {
+    (tab: DiscoverSearchTab, comesFromViewAllTap = false) => {
+      if (tab === activeTab) {
+        return;
+      }
+      pendingTabSwitch.current = {
+        tab,
+        previousTab: activeTab,
+        searchQuery,
+        comesFromViewAllTap,
+      };
       setActiveTab(tab);
       updateRouteSearchParams({ tab });
     },
-    [updateRouteSearchParams],
+    [activeTab, searchQuery, updateRouteSearchParams],
   );
 
   const handleAssetPress = useCallback(
-    (asset: TrendingAsset) => {
+    (
+      asset: TrendingAsset,
+      section: DiscoverSearchSectionId,
+      position: number,
+    ) => {
+      trackExploreSearchEvent({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'result_clicked',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        search_query: searchQuery,
+        ...(activeTab === 'all'
+          ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              section_name: getExploreSearchSectionName(section),
+            }
+          : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        tab_name: getExploreSearchTabName(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        item_clicked: asset.assetId,
+        position,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_count: getResultCount(activeTab),
+      });
       if (isCaipAssetType(asset.assetId)) {
         navigate(buildAssetRoutePath(asset.assetId));
       }
     },
-    [navigate],
+    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
   );
 
   const handlePerpsPress = useCallback(
-    (market: PerpsMarketData) => {
+    (market: PerpsMarketData, position: number) => {
+      trackExploreSearchEvent({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'result_clicked',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        search_query: searchQuery,
+        ...(activeTab === 'all'
+          ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              section_name: 'perps',
+            }
+          : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        tab_name: getExploreSearchTabName(activeTab),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        item_clicked: market.symbol,
+        position,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_count: getResultCount(activeTab),
+      });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate],
+    [activeTab, getResultCount, navigate, searchQuery, trackExploreSearchEvent],
   );
 
   const handleViewAll = useCallback(
     (tab: DiscoverSearchTab) => {
-      updateActiveTab(tab);
+      updateActiveTab(tab, true);
     },
     [updateActiveTab],
+  );
+
+  const handleTabContentScroll = useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      if (activeTab !== 'crypto' && activeTab !== 'stocks') {
+        return;
+      }
+
+      const section = activeTab === 'crypto' ? cryptoSection : stocks;
+      const { currentTarget } = event;
+      const distanceToBottom =
+        currentTarget.scrollHeight -
+        currentTarget.scrollTop -
+        currentTarget.clientHeight;
+
+      if (
+        distanceToBottom > 200 ||
+        !section.hasNextPage ||
+        section.isFetchingNextPage ||
+        !section.fetchNextPage ||
+        isLoadingNextPageRef.current
+      ) {
+        return;
+      }
+
+      isLoadingNextPageRef.current = true;
+      section
+        .fetchNextPage()
+        .catch(() => undefined)
+        .finally(() => {
+          isLoadingNextPageRef.current = false;
+        });
+    },
+    [activeTab, cryptoSection, stocks],
   );
 
   const getSectionViewAllLabel = useCallback(
@@ -287,6 +466,129 @@ export const DiscoverSearchPage = () => {
     (isPerpsAvailable && perps.isLoading) ||
     stocks.isLoading;
 
+  let activeTabIsLoading: boolean;
+  switch (activeTab) {
+    case 'all':
+      activeTabIsLoading = allLoading;
+      break;
+    case 'crypto':
+      activeTabIsLoading = cryptoSection.isLoading;
+      break;
+    case 'perps':
+      activeTabIsLoading = perps.isLoading;
+      break;
+    case 'stocks':
+      activeTabIsLoading = stocks.isLoading;
+      break;
+    default:
+      throw new Error('Unknown Discover Search tab');
+  }
+
+  useEffect(() => {
+    const pendingSwitch = pendingTabSwitch.current;
+    if (
+      !pendingSwitch ||
+      pendingSwitch.tab !== activeTab ||
+      pendingSwitch.searchQuery !== searchQuery ||
+      isDebouncing ||
+      activeTabIsLoading
+    ) {
+      return;
+    }
+
+    trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      interaction_type: 'tab_switched',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      search_query: pendingSwitch.searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      tab_name: getExploreSearchTabName(pendingSwitch.tab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      previous_tab: getExploreSearchTabName(pendingSwitch.previousTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      comes_from_view_all_tap: pendingSwitch.comesFromViewAllTap || undefined,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_count: getResultCount(pendingSwitch.tab),
+    });
+    pendingTabSwitch.current = null;
+  }, [
+    activeTab,
+    activeTabIsLoading,
+    getResultCount,
+    isDebouncing,
+    searchQuery,
+    trackExploreSearchEvent,
+  ]);
+
+  useEffect(() => {
+    if (!trimmedSearchQuery) {
+      trackedSearchKey.current = null;
+      return;
+    }
+    const searchKey = `${activeTab}:${trimmedSearchQuery}`;
+    if (
+      isDebouncing ||
+      activeTabIsLoading ||
+      trackedSearchKey.current === searchKey
+    ) {
+      return;
+    }
+    trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      interaction_type: 'searched',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      search_query: searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      tab_name: getExploreSearchTabName(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_count: getResultCount(activeTab),
+    });
+    trackedSearchKey.current = searchKey;
+  }, [
+    activeTab,
+    activeTabIsLoading,
+    getResultCount,
+    isDebouncing,
+    searchQuery,
+    trackExploreSearchEvent,
+    trimmedSearchQuery,
+  ]);
+
+  useEffect(() => {
+    hasTrackedScroll.current = false;
+  }, [activeTab, trimmedSearchQuery]);
+
+  const handleResultsScroll = useCallback(() => {
+    if (!trimmedSearchQuery || hasTrackedScroll.current) {
+      return;
+    }
+    hasTrackedScroll.current = true;
+    trackExploreSearchEvent({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      interaction_type: 'scrolled',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      search_query: searchQuery,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      tab_name: getExploreSearchTabName(activeTab),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_count: getResultCount(activeTab),
+    });
+  }, [
+    activeTab,
+    getResultCount,
+    searchQuery,
+    trackExploreSearchEvent,
+    trimmedSearchQuery,
+  ]);
+
+  const handleResultsContainerScroll = useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      handleResultsScroll();
+      handleTabContentScroll(event);
+    },
+    [handleResultsScroll, handleTabContentScroll],
+  );
+
   const hasAnyPreview =
     previewCrypto.length > 0 ||
     (isPerpsAvailable && previewPerps.length > 0) ||
@@ -294,6 +596,9 @@ export const DiscoverSearchPage = () => {
 
   const showAllLoading = allLoading && !hasAnyPreview;
   const showAllEmpty = !allLoading && !hasAnyPreview;
+  const hasAllError = Boolean(
+    cryptoSection.error || stocks.error || (isPerpsAvailable && perps.error),
+  );
   const showCryptoPreview = previewCrypto.length > 0 || cryptoSection.isLoading;
   const showPerpsPreview =
     isPerpsAvailable && (previewPerps.length > 0 || perps.isLoading);
@@ -336,11 +641,16 @@ export const DiscoverSearchPage = () => {
   const renderAssetList = (
     items: TrendingAsset[],
     isLoading: boolean,
+    error: Error | null | undefined,
     testIdPrefix: string,
+    section: DiscoverSearchSectionId,
   ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix={testIdPrefix} />;
     }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
+    }
     if (items.length === 0) {
       return (
         <DiscoverSearchEmptyState
@@ -349,20 +659,35 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
-    return items.map((asset) => (
-      <DiscoverAssetRow
-        key={asset.assetId}
-        asset={asset}
-        onPress={handleAssetPress}
-        data-testid={`${testIdPrefix}-${asset.assetId}`}
+    return (
+      <VirtualizedList
+        data={items}
+        estimatedItemSize={DISCOVER_SEARCH_ROW_HEIGHT}
+        overscan={10}
+        keyExtractor={(asset) => asset.assetId}
+        enableScrollMargin
+        renderItem={({ item: asset, index }) => (
+          <DiscoverAssetRow
+            asset={asset}
+            onPress={() => handleAssetPress(asset, section, index)}
+            data-testid={`${testIdPrefix}-${asset.assetId}`}
+          />
+        )}
       />
-    ));
+    );
   };
 
-  const renderPerpsList = (items: PerpsMarketData[], isLoading: boolean) => {
+  const renderPerpsList = (
+    items: PerpsMarketData[],
+    isLoading: boolean,
+    error: Error | null | undefined,
+  ) => {
     if (isLoading && items.length === 0) {
       return <DiscoverSearchSectionSkeleton testIdPrefix="discover-perps" />;
     }
+    if (error && items.length === 0) {
+      return <DiscoverSearchErrorState />;
+    }
     if (items.length === 0) {
       return (
         <DiscoverSearchEmptyState
@@ -371,23 +696,42 @@ export const DiscoverSearchPage = () => {
         />
       );
     }
-    return items.map((market) => (
-      <MarketRow
-        key={market.symbol}
-        market={market}
-        onPress={handlePerpsPress}
-        displayMetric="volume"
-        data-testid={`discover-perps-row-${market.symbol.replaceAll(':', '-')}`}
+    return (
+      <VirtualizedList
+        data={items}
+        estimatedItemSize={DISCOVER_SEARCH_ROW_HEIGHT}
+        overscan={10}
+        keyExtractor={(market) => market.symbol}
+        enableScrollMargin
+        renderItem={({ item: market, index }) => (
+          <MarketRow
+            market={market}
+            onPress={() => handlePerpsPress(market, index)}
+            displayMetric="volume"
+            data-testid={`discover-perps-row-${market.symbol.replaceAll(':', '-')}`}
+          />
+        )}
       />
-    ));
+    );
   };
+
+  const renderScrollableTabContent = (content: React.ReactNode) => (
+    <ScrollContainer
+      className="h-full min-h-0 overflow-y-auto overscroll-contain pb-6"
+      onScroll={handleResultsContainerScroll}
+    >
+      {content}
+    </ScrollContainer>
+  );
 
   const allTabContent = (() => {
     if (showAllLoading) {
       return renderAllTabSkeleton();
     }
     if (showAllEmpty) {
-      return (
+      return hasAllError ? (
+        <DiscoverSearchErrorState />
+      ) : (
         <DiscoverSearchEmptyState
           noResultsMessage={noResultsMessage}
           query={trimmedSearchQuery}
@@ -412,7 +756,9 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewCrypto,
               cryptoSection.isLoading,
+              cryptoSection.error,
               'discover-crypto-preview',
+              'crypto',
             )}
           </>
         ) : null}
@@ -426,12 +772,12 @@ export const DiscoverSearchPage = () => {
               viewAllLabel={getSectionViewAllLabel(
                 'perps',
                 perps.items.length,
-                undefined,
+                perps.totalCount,
                 perps.isLoading,
               )}
               data-testid="discover-section-perps"
             />
-            {renderPerpsList(previewPerps, perps.isLoading)}
+            {renderPerpsList(previewPerps, perps.isLoading, perps.error)}
           </>
         ) : null}
 
@@ -454,7 +800,9 @@ export const DiscoverSearchPage = () => {
             {renderAssetList(
               previewStocks,
               stocks.isLoading,
+              stocks.error,
               'discover-stocks-preview',
+              'stocks',
             )}
           </>
         ) : null}
@@ -511,11 +859,11 @@ export const DiscoverSearchPage = () => {
         flexDirection={BoxFlexDirection.Column}
         tabListProps={{ className: 'px-4 pb-4 shrink-0' }}
         tabContentProps={{
-          className: 'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6',
+          className: 'min-h-0 flex-1',
         }}
       >
         <Tab name={t('all')} tabKey="all" data-testid="discover-tab-all">
-          {allTabContent}
+          {renderScrollableTabContent(allTabContent)}
         </Tab>
 
         <Tab
@@ -523,10 +871,14 @@ export const DiscoverSearchPage = () => {
           tabKey="crypto"
           data-testid="discover-tab-crypto"
         >
-          {renderAssetList(
-            cryptoSection.items,
-            cryptoSection.isLoading,
-            'discover-crypto',
+          {renderScrollableTabContent(
+            renderAssetList(
+              cryptoSection.items,
+              cryptoSection.isLoading,
+              cryptoSection.error,
+              'discover-crypto',
+              'crypto',
+            ),
           )}
         </Tab>
 
@@ -536,16 +888,26 @@ export const DiscoverSearchPage = () => {
             tabKey="perps"
             data-testid="discover-tab-perps"
           >
-            {renderPerpsList(perps.items, perps.isLoading)}
+            {renderScrollableTabContent(
+              renderPerpsList(perps.items, perps.isLoading, perps.error),
+            )}
           </Tab>
         ) : null}
 
         <Tab
-          name={t('tokenStock')}
+          name={t('perpsFilterStocks')}
           tabKey="stocks"
           data-testid="discover-tab-stocks"
         >
-          {renderAssetList(stocks.items, stocks.isLoading, 'discover-stocks')}
+          {renderScrollableTabContent(
+            renderAssetList(
+              stocks.items,
+              stocks.isLoading,
+              stocks.error,
+              'discover-stocks',
+              'stocks',
+            ),
+          )}
         </Tab>
       </Tabs>
     </Box>
