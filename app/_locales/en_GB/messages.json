@@ -890,6 +890,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Predictions withdrawal"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Buy failed"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Buy failed"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Sell failed"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Sell failed"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "From: $1",
     "description": "$1 is the shortened sender address"
@@ -3459,17 +3503,17 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllDescriptionText": {
-    "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
-  },
   "disconnectAllSites": {
-    "message": "Disconnect All"
+    "message": "Disconnect all"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "If you disconnect from all sites, you'll need to reconnect your accounts and networks to use them again."
+    "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
     "message": "Some dapps couldn't be disconnected. Please try again."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
@@ -3479,6 +3523,13 @@
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
+  },
+  "disconnectQuestion": {
+    "message": "Disconnect?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
@@ -5128,6 +5179,9 @@
   "manage": {
     "message": "Manage"
   },
+  "manageConnectedAccounts": {
+    "message": "Manage connected accounts"
+  },
   "manageDefaultSettings": {
     "message": "Manage default settings"
   },
@@ -5476,10 +5530,6 @@
     "message": "Convert your stablecoins to mUSD and earn\nup to a $1% annualized bonus that you can\nclaim daily. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Powered by Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Convert your stablecoins to mUSD and get a $1% annualized bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5515,10 +5565,6 @@
     "message": "Claimable bonus details",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Bonus details",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD conversion fees include network costs and may include provider fees. No MetaMask fee applies when you convert to mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5543,10 +5589,6 @@
   "musdConvert": {
     "message": "Convert"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Convert and get $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5560,10 +5602,6 @@
   },
   "musdEducationNotNow": {
     "message": "Not now"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Get $1% mUSD bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Get mUSD"
@@ -8233,6 +8271,80 @@
     "message": "on $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Bank transfer details"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Buy again"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Fees"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Paid with",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 fee",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "View on $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Something went wrong with your order.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Buy failed",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Your order is being processed.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Buy in progress",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Something went wrong with your order.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Sell failed",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Your order is being processed.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Sell in progress",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Your funds are on the way.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Sell successful",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Your crypto is on the way.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Buy successful",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "Other options"
   },
@@ -9258,6 +9370,9 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
+  "selectAccounts": {
+    "message": "Select accounts"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -10040,6 +10155,12 @@
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
+  "showTickerWidget": {
+    "message": "Show web widget on X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Displays a MetaMask widget with token details when you’re browsing X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask now opens in the side panel by default. $1 any time from the menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10140,6 +10261,10 @@
   },
   "singleNetwork": {
     "message": "1 network"
+  },
+  "sitePermissionsBanner": {
+    "message": "$1 can see your connected accounts and suggest transactions.",
+    "description": "$1 is the site hostname"
   },
   "sites": {
     "message": "Sites"

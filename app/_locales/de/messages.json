@@ -3402,9 +3402,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sind Sie sicher, dass Sie die Verbindung trennen möchten? Sie könnten die Seitenfunktionalität verlieren."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Falls Sie die Verbindung zu dieser Seite trennen, müssen Sie Ihre Konten und Netzwerke bei einer weiteren Nutzung dieser Website erneut verbinden."
-  },
   "disconnectAllSites": {
     "message": "Alle trennen"
   },
@@ -5391,10 +5388,6 @@
     "message": "Tauschen Sie Ihre Stablecoins in mUSD um und sichern Sie sich\neinen jährlichen Bonus von bis zu $1 %, den Sie täglich \neinfordern können. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Unterstützt von Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Tauschen Sie Ihre Stablecoins in mUSD um und erhalten Sie einen jährlichen Bonus von $1 %.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5430,10 +5423,6 @@
     "message": "Details zum anrechenbaren Bonus",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Bonusdetails",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Die Gebühren für die mUSD-Konvertierung beinhalten Netzwerkkosten und können Anbietergebühren beinhalten. Bei der Konvertierung in mUSD fällt keine MetaMask-Gebühr an.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5458,10 +5447,6 @@
   "musdConvert": {
     "message": "Konvertieren"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Konvertieren und $1 % erhalten",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Verdienen Sie einen Bonus von $1 %",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5475,10 +5460,6 @@
   },
   "musdEducationNotNow": {
     "message": "Nicht jetzt"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Erhalten Sie {$1 % mUSD-Bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD erhalten"
