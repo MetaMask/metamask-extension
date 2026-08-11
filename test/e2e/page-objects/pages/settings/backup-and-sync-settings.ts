@@ -23,10 +23,10 @@ class BackupAndSyncSettings {
   private readonly contactSyncToggle =
     '[data-testid="contact-syncing-toggle-container"]';
 
+  private readonly driver: Driver;
+
   private readonly rampsSyncToggle =
     '[data-testid="ramps-syncing-toggle-container"]';
-
-  private readonly driver: Driver;
 
   private readonly settingsPage = {
     testId: 'parent-selector-settings-page',
