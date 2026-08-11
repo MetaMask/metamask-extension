@@ -67,8 +67,12 @@ export default function useTokenExchangeRate(
     (contractExchangeRates[tokenAddress] ||
       (cacheKey ? exchangeRates[cacheKey] : undefined));
 
+  // FAILED only blocks when Redux has no rate yet, so a later TokenRatesController
+  // update is not hidden by a prior local fetch failure.
   const isUnavailable =
-    cacheKey && (exchangeRates[cacheKey] as ExchangeRate) === FAILED;
+    cacheKey &&
+    exchangeRates[cacheKey] === FAILED &&
+    !(tokenAddress && contractExchangeRates[tokenAddress]);
 
   useEffect(() => {
     if (
