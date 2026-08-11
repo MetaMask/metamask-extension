@@ -97,7 +97,7 @@ describe('useScamQuestionnaireMetrics', () => {
       metrics.trackContactSupport(ANSWERS);
 
       expect(firedEvent(trackEvent)).toMatchObject({
-        name: MetaMetricsEventName.ScamQuestionnaireContactSupport as string,
+        name: MetaMetricsEventName.ScamQuestionnaireSupportContacted as string,
         properties: {
           category: MetaMetricsEventCategory.Confirmations,
           q1_answer: 'q1_yes',
