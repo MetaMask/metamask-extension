@@ -145,7 +145,6 @@ describe('GlobalMenuDrawer', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-
   it('calls onClose when the dialog is dismissed', async () => {
     const onClose = jest.fn();
     const { getByTestId } = renderWithProvider(
