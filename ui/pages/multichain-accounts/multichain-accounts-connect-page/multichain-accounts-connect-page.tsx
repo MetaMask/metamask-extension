@@ -20,6 +20,8 @@ import {
   AvatarBaseSize,
   AvatarFavicon,
   AvatarFaviconSize,
+  AvatarGroup,
+  AvatarGroupVariant,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -77,9 +79,8 @@ import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { ConnectionPermissionsList } from '../../../components/app/connection-permissions-list/connection-permissions-list';
-import { AvatarGroup } from '../../../components/multichain/avatar-group';
-import { AvatarType } from '../../../components/multichain/avatar-group/avatar-group.types';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { getAvatarType } from '../../../components/app/preferred-avatar/preferred-avatar';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -150,8 +151,10 @@ const MultiAccountRow = ({
   onEdit,
   accountsCountLabel,
 }: MultiAccountRowProps) => {
+  const avatarVariant = useSelector(getAvatarType);
   const avatarMembers = seedAddresses.map((address) => ({
-    avatarValue: address,
+    address,
+    variant: avatarVariant,
   }));
 
   return (
@@ -169,9 +172,8 @@ const MultiAccountRow = ({
         gap={3}
       >
         <AvatarGroup
-          members={avatarMembers}
-          avatarType={AvatarType.ACCOUNT}
-          limit={3}
+          avatarPropsArr={avatarMembers}
+          variant={AvatarGroupVariant.Account}
         />
         <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {accountsCountLabel}
