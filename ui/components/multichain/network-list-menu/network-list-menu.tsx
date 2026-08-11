@@ -289,12 +289,19 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
   );
+  const [prevNonTestNetworks, setPrevNonTestNetworks] =
+    useState(nonTestNetworks);
+  const [prevOrderedNetworksList, setPrevOrderedNetworksList] =
+    useState(orderedNetworksList);
 
-  useEffect(
-    () =>
-      setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList)),
-    [nonTestNetworks, orderedNetworksList],
-  );
+  if (
+    nonTestNetworks !== prevNonTestNetworks ||
+    orderedNetworksList !== prevOrderedNetworksList
+  ) {
+    setPrevNonTestNetworks(nonTestNetworks);
+    setPrevOrderedNetworksList(orderedNetworksList);
+    setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList));
+  }
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled

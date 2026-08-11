@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -144,7 +144,15 @@ export const AssetPickerModalNetwork = ({
   });
 
   // Reset checkedChainIds if selectedChainIds change in parent component
-  useEffect(() => {
+  const networksListKey = networksList?.map(({ chainId }) => chainId).join('|');
+  const selectedChainIdsKey = selectedChainIds?.join('|');
+  const [prevNetworksSyncKey, setPrevNetworksSyncKey] = useState(
+    `${networksListKey ?? ''}:${selectedChainIdsKey ?? ''}`,
+  );
+  const networksSyncKey = `${networksListKey ?? ''}:${selectedChainIdsKey ?? ''}`;
+
+  if (networksSyncKey !== prevNetworksSyncKey) {
+    setPrevNetworksSyncKey(networksSyncKey);
     if (networksList) {
       const updatedState: Record<string, boolean> = {};
 
@@ -156,7 +164,7 @@ export const AssetPickerModalNetwork = ({
 
       setCheckedChainIds(updatedState);
     }
-  }, [networksList, selectedChainIds]);
+  }
 
   const handleToggleNetwork = useCallback((chainId: string) => {
     setCheckedChainIds((prev) => ({

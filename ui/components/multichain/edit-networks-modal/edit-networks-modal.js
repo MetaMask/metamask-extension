@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -52,13 +52,15 @@ export const EditNetworksModal = ({
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
+  // TODO: Fix the source of this prop value to be the same array instance each render
+  const defaultSelectedChainIdsKey = JSON.stringify(defaultSelectedChainIds);
+  const [prevDefaultSelectedChainIdsKey, setPrevDefaultSelectedChainIdsKey] =
+    useState(defaultSelectedChainIdsKey);
 
-  useEffect(() => {
+  if (defaultSelectedChainIdsKey !== prevDefaultSelectedChainIdsKey) {
+    setPrevDefaultSelectedChainIdsKey(defaultSelectedChainIdsKey);
     setSelectedChainIds(defaultSelectedChainIds);
-  }, [
-    // TODO: Fix the source of this prop value to be the same array instance each render
-    JSON.stringify(defaultSelectedChainIds),
-  ]);
+  }
 
   const selectAll = () => {
     const allNetworksChainIds = allNetworks.map(
