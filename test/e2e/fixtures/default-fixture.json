@@ -987,7 +987,7 @@
       "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"]
+      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
@@ -1171,7 +1171,8 @@
         "stxMigrationBatchStatus": "sentinel on",
         "stxMigrationCancel": "sentinel on",
         "stxMigrationGetFees": "sentinel on",
-        "stxMigrationSubmitTransactions": "sentinel on"
+        "stxMigrationSubmitTransactions": "sentinel on",
+        "swapsSWAPS4827AbtestChainValueOrder": "control"
       },
       "localOverrides": {},
       "remoteFeatureFlags": {
