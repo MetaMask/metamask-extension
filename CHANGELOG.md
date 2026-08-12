@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.44.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.44.0 (#45463)
+
 ### Added
 
 - Added Discover Search for crypto assets, perpetual markets, and stocks behind a feature flag (#45037)
