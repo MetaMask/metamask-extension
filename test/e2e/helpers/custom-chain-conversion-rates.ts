@@ -115,6 +115,18 @@ export const CHAIN_CONFIGS: ChainConfig[] = [
     clientId: 'rootstock-local',
     localNodeOptions: [{ type: 'anvil', options: { chainId: 30 } }],
   },
+  {
+    name: 'HyperEVM',
+    chainIdHex: CHAIN_IDS.HYPE,
+    chainIdDecimal: 999,
+    nativeSymbol: 'HYPE',
+    nativeAssetId: 'eip155:999/slip44:2457',
+    uiNativeAssetId: 'eip155:999/slip44:2457',
+    caipChainId: 'eip155:999',
+    blockExplorerUrl: 'https://hyperevmscan.io/',
+    clientId: 'hyperevm-local',
+    localNodeOptions: [{ type: 'anvil', options: { chainId: 999 } }],
+  },
 ];
 
 /**
