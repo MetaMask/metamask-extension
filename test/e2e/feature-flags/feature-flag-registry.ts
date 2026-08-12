@@ -1164,8 +1164,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             },
           },
           enableMoneyAccountTransactions: {
-            perpsDeposit: true,
-            perpsWithdraw: true,
+            perpsDeposit: false,
+            perpsWithdraw: false,
           },
         },
       },
@@ -1193,8 +1193,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             },
           },
           enableMoneyAccountTransactions: {
-            perpsDeposit: true,
-            perpsWithdraw: true,
+            perpsDeposit: false,
+            perpsWithdraw: false,
           },
         },
       },
