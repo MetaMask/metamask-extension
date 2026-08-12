@@ -20,10 +20,7 @@ import { getTransactionDetails } from '../helpers/anvil-transaction';
 import { mockSimulationApi } from '../mocks/simulation';
 import { mockTrustSignal } from '../mocks/trust-signals';
 import { SENDER_ADDRESS_MOCK } from '../../simulation-details/types';
-import {
-  getMockAssetsPrice,
-  mockSpotPrices,
-} from '../../tokens/utils/mocks';
+import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
 
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
