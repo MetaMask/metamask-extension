@@ -3787,54 +3787,46 @@ describe('LegacyBackgroundApiService', () => {
     });
 
     it('serializes the change through the shared seedless operation mutex', async () => {
-      const seedlessOperationMutex = new Mutex();
-      const runExclusiveSpy = jest.spyOn(
-        seedlessOperationMutex,
-        'runExclusive',
-      );
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-            params,
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          params,
+        );
 
-          expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
-          // The lock is released once the delegated call resolves.
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
     });
 
     it('releases the mutex even when the passkey controller throws', async () => {
-      const seedlessOperationMutex = new Mutex();
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
       const error = new Error('verification failed');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockRejectedValue(error),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-              params,
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).rejects.toThrow(error);
 
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
     });
   });
 
@@ -3909,33 +3901,31 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the seedless operation mutex after a successful change', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePassword',
-            'new-password',
-            'old-password',
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePassword',
+          'new-password',
+          'old-password',
+        );
 
-          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(acquireSpy).toHaveBeenCalledTimes(1);
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
 
     it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
@@ -4061,36 +4051,34 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the lock and rethrows when the keyring password change fails', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          const error = new Error('keyring change failed');
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('keyring change failed');
 
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockRejectedValue(error),
-          );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePassword',
-              'new-password',
-              'old-password',
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
 
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
   });
 
@@ -7191,7 +7179,6 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
-    seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

@@ -93,10 +93,6 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-import type {
-  PasskeyAuthenticationResponse,
-  PasskeyAuthenticationOptions,
-} from '@metamask/passkey-controller';
 import {
   toHardwareWalletError,
   isTrezorDesktopConnectionMissingError,
@@ -430,8 +426,7 @@ export function decodeSeedPhraseFromBackground(
 type SeedPhraseBackgroundMethod =
   | 'createNewVaultAndGetSeedPhrase'
   | 'unlockAndGetSeedPhrase'
-  | 'getSeedPhrase'
-  | 'exportSeedPhraseWithPasskey';
+  | 'getSeedPhrase';
 
 /**
  * Fetches and decodes a seed phrase from a background RPC method.
@@ -1210,15 +1205,6 @@ export function submitPassword(password: string): Promise<void> {
 }
 
 /**
- * Generates passkey authentication options.
- *
- * @returns Passkey authentication options.
- */
-export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
-}
-
-/**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
  * @param password - The password.
@@ -1260,31 +1246,6 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await getSeedPhrase(password, keyringId);
       return seedPhrase;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
- * Returns the Secret Recovery Phrase using a verified passkey assertion instead
- * of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
- * @returns The decoded seed phrase.
- */
-export function getSeedPhraseWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  keyringId?: string,
-): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return fetchSeedPhraseFromBackground('exportSeedPhraseWithPasskey', [
-        authenticationResponse,
-        keyringId,
-      ]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -3947,31 +3908,6 @@ export function exportAccounts(
         }
       }),
     );
-  };
-}
-
-/**
- * Reveals the private keys of multiple accounts using a single verified passkey
- * assertion instead of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param addresses - The addresses whose private keys should be revealed.
- * @returns The private keys as hex strings, in the same order as `addresses`.
- */
-export function exportAccountsWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  addresses: string[],
-): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return await submitRequestToBackground<string[]>(
-        'exportAccountsWithPasskey',
-        [authenticationResponse, addresses],
-      );
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
   };
 }
 

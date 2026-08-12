@@ -149,7 +149,6 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
-    background.generatePasskeyAuthenticationOptions = sinon.stub();
     // Vault / seedless methods live on LegacyBackgroundApiService and are only
     // exposed via getApi(); stub them here for tests that use the controller
     // stub instance as the background connection directly.
@@ -339,26 +338,6 @@ describe('Actions', () => {
       expect(
         changePasswordStub.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
-    });
-  });
-
-  describe('passkey background requests', () => {
-    afterEach(() => {
-      sinon.restore();
-      jest.restoreAllMocks();
-    });
-
-    it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
-      const opts = { challenge: 'AQ', allowCredentials: [] };
-      background.generatePasskeyAuthenticationOptions.resolves(opts);
-      setBackgroundConnection(background);
-
-      const result = await actions.generatePasskeyAuthenticationOptions();
-
-      expect(result).toStrictEqual(opts);
-      expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
-        true,
-      );
     });
   });
 
@@ -736,132 +715,6 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(actions.requestRevealSeedWords()),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#getSeedPhraseWithPasskey', () => {
-    const authenticationResponse = {
-      id: 'cred',
-      rawId: 'cred',
-      response: {
-        authenticatorData: 'auth',
-        clientDataJSON: 'e30',
-        signature: 'sig',
-      },
-      type: 'public-key',
-    };
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('forwards the authentication response and keyring id and decodes the seed phrase', async () => {
-      const store = mockStore();
-
-      const exportSeedPhraseWithPasskey = sinon
-        .stub()
-        .resolves(toSerializedSeedPhraseBuffer('test seed'));
-
-      background.getApi.returns({ exportSeedPhraseWithPasskey });
-      setBackgroundConnection(background.getApi());
-
-      const seedPhrase = await store.dispatch(
-        actions.getSeedPhraseWithPasskey(authenticationResponse, 'keyring-id'),
-      );
-
-      expect(
-        exportSeedPhraseWithPasskey.calledOnceWith(
-          authenticationResponse,
-          'keyring-id',
-        ),
-      ).toBe(true);
-      expect(seedPhrase).toStrictEqual('test seed');
-    });
-
-    it('hides the loading indication and rethrows when the background errors', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        exportSeedPhraseWithPasskey: sinon.stub().rejects(new Error('error')),
-      });
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.getSeedPhraseWithPasskey(authenticationResponse),
-        ),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#exportAccountsWithPasskey', () => {
-    const authenticationResponse = {
-      id: 'cred',
-      rawId: 'cred',
-      response: {
-        authenticatorData: 'auth',
-        clientDataJSON: 'e30',
-        signature: 'sig',
-      },
-      type: 'public-key',
-    };
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('forwards the authentication response and addresses and returns the private keys', async () => {
-      const store = mockStore();
-
-      const testPrivKeys = ['priv-key-one', 'priv-key-two'];
-      const exportAccountsWithPasskey = sinon.stub().resolves(testPrivKeys);
-
-      background.getApi.returns({ exportAccountsWithPasskey });
-      setBackgroundConnection(background.getApi());
-
-      const addresses = ['0xAddressOne', '0xAddressTwo'];
-      const privateKeys = await store.dispatch(
-        actions.exportAccountsWithPasskey(authenticationResponse, addresses),
-      );
-
-      expect(
-        exportAccountsWithPasskey.calledOnceWith(
-          authenticationResponse,
-          addresses,
-        ),
-      ).toBe(true);
-      expect(privateKeys).toStrictEqual(testPrivKeys);
-    });
-
-    it('hides the loading indication and rethrows when the background errors', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        exportAccountsWithPasskey: sinon.stub().rejects(new Error('error')),
-      });
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddress',
-          ]),
-        ),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
