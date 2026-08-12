@@ -82,17 +82,52 @@ describe('IndexedDBStore', () => {
       );
     });
 
-    it('rejects on transaction error with non-serializable value', async () => {
+    it('rejects and rolls back all writes when a value is not serializable', async () => {
       await db.open(dbName, dbVersion);
       const values = {
+        validKey: 'valid value',
         // Functions are not serializable, so this will ensure an error:
-        key: () => {
+        invalidKey: () => {
           return undefined;
         },
       };
       // don't matter exactly what the error
       // is, we just need to ensure that it does propagate errors.
       await expect(db.set(values)).rejects.toThrow('could not be cloned');
+      await expect(db.get(['validKey', 'invalidKey'])).resolves.toStrictEqual([
+        undefined,
+        undefined,
+      ]);
+    });
+
+    it('rejects when the transaction is aborted', async () => {
+      await db.open(dbName, dbVersion);
+      const originalTransaction = IDBDatabase.prototype.transaction;
+      const transactionSpy = jest
+        .spyOn(IDBDatabase.prototype, 'transaction')
+        .mockImplementation(function (
+          this: IDBDatabase,
+          storeNames: string | string[],
+          mode?: IDBTransactionMode,
+          options?: IDBTransactionOptions,
+        ) {
+          const transaction = originalTransaction.call(
+            this,
+            storeNames,
+            mode,
+            options,
+          );
+          queueMicrotask(() => transaction.abort());
+          return transaction;
+        });
+
+      try {
+        await expect(db.set({ key: 'value' })).rejects.toMatchObject({
+          name: 'AbortError',
+        });
+      } finally {
+        transactionSpy.mockRestore();
+      }
     });
   });
 

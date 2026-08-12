@@ -74,7 +74,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
         }),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
-      storageService: getStorageServiceInstanceOptions({ state }),
+      storageService: getStorageServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
         initMessenger: transactionControllerInitMessenger,
         getFlatState,

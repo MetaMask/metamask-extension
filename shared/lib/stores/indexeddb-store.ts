@@ -6,7 +6,16 @@
 function transactionPromise(tx: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
+    tx.onerror = () => {
+      if (tx.error) {
+        reject(tx.error);
+      }
+    };
+    tx.onabort = () =>
+      reject(
+        tx.error ??
+          new DOMException('IndexedDB transaction aborted.', 'AbortError'),
+      );
   });
 }
 
@@ -29,7 +38,7 @@ export class IndexedDBStore {
     }
     await new Promise<void>((resolve, reject) => {
       const request = indexedDB.open(name, version);
-      request.onupgradeneeded = async () => {
+      request.onupgradeneeded = () => {
         const db = request.result;
         // Default migration: create the 'store' object store if it doesn't exist
         if (!db.objectStoreNames.contains('store')) {
@@ -58,10 +67,19 @@ export class IndexedDBStore {
     const keys = Object.keys(values);
     const tx = this.#db.transaction('store', 'readwrite');
     const store = tx.objectStore('store');
-    for (const key of keys) {
-      store.put(values[key], key);
+    const completion = transactionPromise(tx);
+
+    try {
+      for (const key of keys) {
+        store.put(values[key], key);
+      }
+    } catch (error) {
+      tx.abort();
+      await completion.catch(() => undefined);
+      throw error;
     }
-    await transactionPromise(tx);
+
+    await completion;
   }
 
   /**

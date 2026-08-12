@@ -198,7 +198,7 @@ describe('initializeWallet', () => {
       messenger,
       state,
     });
-    expect(getStorageServiceInstanceOptions).toHaveBeenCalledWith({ state });
+    expect(getStorageServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getTransactionControllerInitMessenger).toHaveBeenCalledWith(
       messenger,
     );
