@@ -15,6 +15,15 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      ref:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          Branch, tag or SHA to build. Defaults to the calling workflow's own
+          ref, which is what every per-commit caller wants. A scheduled workflow
+          has no meaningful ref of its own — on `schedule` it resolves to the
+          default branch — so it must name what it is building.
       bundle-analyzer:
         type: boolean
         default: false
@@ -85,6 +94,7 @@ jobs:
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
+          ref: ${{ inputs.ref }}
 
       # Webpack uses TypeScript, but lavamoat node can only run JavaScript, so we need a transpilation step before building.
       - name: Run tsc
