@@ -171,8 +171,17 @@ export class PerpsTab extends PerpsPositionsBase {
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab);
+    console.log('Navigate to Perps home');
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavPerpsButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavPerpsButton);
+    } else {
+      await this.driver.waitForSelector(this.accountOverviewPerpsTab);
+      await this.driver.clickElement(this.accountOverviewPerpsTab);
+    }
     await this.checkPageIsLoaded();
   }
 
