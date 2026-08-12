@@ -125,21 +125,17 @@ export const useAmountValidation = () => {
   }, [isNonEvmSendType, validateAmountAsync]);
 
   // Non-EVM: debounce to avoid a snap RPC call on every keystroke.
-  useEffect(() => {
-    if (isNonEvmSendType) {
-      debouncedSnapValidation();
-      return () => debouncedSnapValidation.cancel();
-    }
-    return undefined;
-  }, [isNonEvmSendType, debouncedSnapValidation, validateAmountAsync]);
-
+  // Also tracks mount state so async validation can't set state after unmount.
   useEffect(() => {
     unmountedRef.current = false;
+    if (isNonEvmSendType) {
+      debouncedSnapValidation();
+    }
     return () => {
       unmountedRef.current = true;
       debouncedSnapValidation.cancel();
     };
-  }, [debouncedSnapValidation]);
+  }, [isNonEvmSendType, debouncedSnapValidation]);
 
   return { amountError, validateNonEvmAmountAsync };
 };
