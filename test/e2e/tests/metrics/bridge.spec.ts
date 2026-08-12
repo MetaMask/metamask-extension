@@ -32,7 +32,6 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures({
         title: this.test?.fullTitle(),
         featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
-        withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, {
@@ -51,6 +50,7 @@ describe('Bridge tests', function (this: Suite) {
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
           expectedActivityAmount: '+0.01567',
+          openPickersWithDebounce: true,
         });
 
         const inputChangesCount1 = await checkInputChangedEvents(
@@ -71,7 +71,9 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         console.log('Entering 2nd Swap quote');
-        await bridgePage.enterBridgeQuote(quote);
+        await bridgePage.enterBridgeQuote(quote, {
+          openPickersWithDebounce: true,
+        });
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
 
@@ -233,35 +235,12 @@ describe('Bridge tests', function (this: Suite) {
           }) => req.properties.token_standard === 'NONE',
         ];
 
-        const transactionAddedAnonEvents = findEventsByName(
-          EventTypes.TransactionAddedAnon,
-        );
-        assert.ok(transactionAddedAnonEvents.length === 2);
-
-        assert.ok(
-          assertInAnyOrder(transactionAddedAnonEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
         const transactionAddedEvents = findEventsByName(
           EventTypes.TransactionAdded,
         );
         assert.ok(transactionAddedEvents.length === 2);
         assert.ok(
           assertInAnyOrder(transactionAddedEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
-        const transactionSubmittedAnonEvents = findEventsByName(
-          EventTypes.TransactionSubmittedAnon,
-        );
-        assert.ok(transactionSubmittedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionSubmittedAnonEvents, [
             assetTypeCheck1,
             assetTypeCheck2,
           ]),
@@ -278,34 +257,12 @@ describe('Bridge tests', function (this: Suite) {
           ]),
         );
 
-        const transactionApprovedAnonEvents = findEventsByName(
-          EventTypes.TransactionApprovedAnon,
-        );
-        assert.ok(transactionApprovedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionApprovedAnonEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
         const transactionApprovedEvents = findEventsByName(
           EventTypes.TransactionApproved,
         );
         assert.ok(transactionApprovedEvents.length === 2);
         assert.ok(
           assertInAnyOrder(transactionApprovedEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
-        const transactionFinalizedAnonEvents = findEventsByName(
-          EventTypes.TransactionFinalizedAnon,
-        );
-        assert.ok(transactionFinalizedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionFinalizedAnonEvents, [
             assetTypeCheck1,
             assetTypeCheck2,
           ]),

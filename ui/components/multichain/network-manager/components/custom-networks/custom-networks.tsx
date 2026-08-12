@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -38,6 +38,7 @@ import {
   getShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
@@ -89,8 +90,13 @@ export const CustomNetworks = React.memo(() => {
 
       const isEnabled = Boolean(enabledNetworksByNamespace[convertedChainId]);
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
+      const {
+        onDelete,
+        onDeleteMenuLabel,
+        onEdit,
+        onDiscoverClick,
+        onRpcSelect,
+      } = getItemCallbacks(network);
 
       const rpcEndpoint =
         network.isEvm && hasMultiRpcOptions(network)
@@ -108,6 +114,7 @@ export const CustomNetworks = React.memo(() => {
           rpcEndpoint={rpcEndpoint}
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}
+          deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           selected={isEnabled}

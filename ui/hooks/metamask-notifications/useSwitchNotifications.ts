@@ -1,8 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
-  setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
   disableAccounts,
   enableAccounts,
@@ -12,35 +11,8 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-
-export function useSwitchFeatureAnnouncementsChange(): {
-  onChange: (state: boolean) => Promise<void>;
-  error: null | string;
-} {
-  const dispatch = useDispatch();
-
-  const [error, setError] = useState<null | string>(null);
-
-  const onChange = useCallback(
-    async (state: boolean) => {
-      setError(null);
-
-      try {
-        await dispatch(setFeatureAnnouncementsEnabled(state));
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        setError(errorMessage);
-      }
-    },
-    [dispatch],
-  );
-
-  return {
-    onChange,
-    error,
-  };
-}
+import { useDispatch } from '../../store/hooks';
+import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
 
@@ -67,8 +39,10 @@ export function useSwitchAccountNotificationsChange(): {
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
         setError(errorMessage);
+        throw e;
+      } finally {
+        dispatch(hideLoadingIndication());
       }
-      dispatch(hideLoadingIndication());
     },
     [dispatch],
   );
@@ -77,6 +51,26 @@ export function useSwitchAccountNotificationsChange(): {
     onChange,
     error,
   };
+}
+
+/**
+ * `checkAccountsPresence` preserves the casing of the addresses it was called
+ * with. Wallet-activity UI lookups always use lowercase keys, so normalize
+ * here — otherwise misses fall through to (possibly stale) preferences and can
+ * incorrectly show every account as selected after a single toggle.
+ *
+ * @param data - Account presence map keyed by address
+ * @returns Presence map with lowercased address keys
+ */
+function normalizeAccountPresenceData(
+  data: UseSwitchAccountNotificationsData | null | undefined,
+): UseSwitchAccountNotificationsData {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).map(([address, enabled]) => [
+      address.toLowerCase(),
+      enabled,
+    ]),
+  );
 }
 
 function useRefetchAccountSettings() {
@@ -88,7 +82,13 @@ function useRefetchAccountSettings() {
         checkAccountsPresence(accounts),
       )) as unknown as UseSwitchAccountNotificationsData;
 
-      return result;
+      // Preserve empty/undefined results (same as pre-normalize behavior) so
+      // callers and tests don't get an extra state update from `{}`.
+      if (!result || Object.keys(result).length === 0) {
+        return result;
+      }
+
+      return normalizeAccountPresenceData(result);
     } catch {
       return {};
     }
@@ -111,9 +111,9 @@ export function useAccountSettingsProps(accounts: string[]) {
   );
   const isEnabled = useSelector(selectIsMetamaskNotificationsEnabled);
   const fetchAccountSettings = useRefetchAccountSettings();
-  const [data, setData] = useState<UseSwitchAccountNotificationsData>({});
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useSafeState<UseSwitchAccountNotificationsData>({});
+  const [loading, setLoading] = useSafeState<boolean>(false);
+  const [error, setError] = useSafeState<string | null>(null);
 
   // Memoize the accounts array to avoid unnecessary re-fetching
   const jsonAccounts = useMemo(() => JSON.stringify(accounts), [accounts]);

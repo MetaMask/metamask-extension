@@ -31,19 +31,47 @@ import {
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
-import {
-  MetaMetricsEventCategory,
-  type MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../analytics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
 import { isBenignDisconnectError } from './perps-error-utils';
+
+const TERMINAL_API_URLS = {
+  dev: 'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+  uat: 'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+  prd: 'https://terminal.api.cx.metamask.io/v1/perpetuals',
+} as const;
+
+function getTerminalApiUrl(): string {
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  ) {
+    return TERMINAL_API_URLS.dev;
+  }
+
+  // Beta builds target UAT for all non-dev/testing environments.
+  if (isBeta()) {
+    return TERMINAL_API_URLS.uat;
+  }
+
+  if (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
+  ) {
+    return TERMINAL_API_URLS.prd;
+  }
+
+  return TERMINAL_API_URLS.uat;
+}
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
  */
 export type InfrastructureDeps = {
-  trackEvent: (payload: MetaMetricsEventPayload) => void;
   getStorageItem: (key: string) => Promise<{
     result?: unknown;
     error?: Error;
@@ -69,6 +97,14 @@ export type InfrastructureDeps = {
     caipAccountId: `${string}:${string}:${string}`,
     baseFeeBips: number,
   ) => Promise<number | null>;
+  /**
+   * Merges controller-stored UTM attribution into event properties before
+   * MetaMetrics emission. Optional so unit tests can omit it;
+   * production wiring supplies PerpsController.mergeAttributionContext.
+   */
+  mergeAttributionContext?: (
+    properties?: PerpsAnalyticsProperties,
+  ) => PerpsAnalyticsProperties;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -138,25 +174,45 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
+function createMetrics(
+  mergeAttributionContext?: InfrastructureDeps['mergeAttributionContext'],
+): PerpsMetrics {
   return {
-    // isEnabled always true: the MetaMetricsController.trackEvent messenger action is a
-    // no-op when the user has not opted into analytics, so consent filtering is
-    // enforced at that layer rather than here. Mobile delegates this check to
+    // isEnabled always true: AnalyticsController.trackEvent is a no-op when the
+    // user has not opted into analytics, so consent filtering is enforced at
+    // that layer rather than here. Mobile delegates this check to
     // analytics.isEnabled() directly because it uses a different analytics stack.
     isEnabled: () => true,
     trackPerpsEvent: (
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
-      deps.trackEvent({
-        event,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
-      });
+      // Merge stored UTM context into every controller-emitted event so AC3
+      // attribution reaches MetaMetrics (TradingService only attaches
+      // entry/discovery/hlFeeRate from trackingData, not UTM).
+      const attributedProperties = mergeAttributionContext
+        ? mergeAttributionContext(properties)
+        : properties;
+      // NOTE: controller-emitted events (transaction events) are
+      // fired from the background PerpsController singleton, which has no
+      // knowledge of which UI surface (sidepanel/popup/fullscreen) initiated
+      // them. Stamping the real environment_type here is intentionally NOT
+      // done: it cannot be scoped per-request without controller support
+      // (TradingService forwards only entry/discovery/perpDiscovery/hlFeeRate
+      // from trackingData, and a shared background mutable would misattribute
+      // concurrent surfaces). It is deferred to the controller (9.2.2). Note
+      // client-emitted perps events (ScreenViewed, UiInteraction, PerpsError,
+      // TransactionConsidered) already carry the correct environment_type via
+      // useAnalytics, so only background transaction events are affected.
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Perps)
+          .addProperties({
+            ...attributedProperties,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+          })
+          .build(),
+      );
     },
   };
 }
@@ -348,7 +404,7 @@ function createDiskCache(
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
- * @param deps - Platform hooks (e.g. MetaMetrics `trackEvent`).
+ * @param deps - Platform hooks (storage, rewards, Sentry).
  * @returns PerpsPlatformDependencies object ready for PerpsController
  */
 export function createPerpsInfrastructure(
@@ -357,7 +413,7 @@ export function createPerpsInfrastructure(
   return {
     logger: createLogger(deps),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(deps),
+    metrics: createMetrics(deps.mergeAttributionContext),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
@@ -365,6 +421,7 @@ export function createPerpsInfrastructure(
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
     diskCache: createDiskCache(deps),
+    terminalApiUrl: getTerminalApiUrl(),
     rewards: {
       // The perps package only passes `caipAccountId`; the rewards controller
       // additionally needs the perps MetaMask builder base fee in bips so it

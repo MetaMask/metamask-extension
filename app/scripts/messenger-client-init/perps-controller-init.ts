@@ -1,11 +1,11 @@
 import {
+  PERPS_ERROR_CODES,
   PerpsController,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
-import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
@@ -51,12 +51,11 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const storageNamespace = 'PerpsController';
-  const trackEvent = (payload: MetaMetricsEventPayload) => {
-    controllerMessenger.call('MetaMetricsController:trackEvent', payload);
-  };
   let isDisconnecting = false;
+  // Ref so metrics can close over the controller after construction
+  // (trackPerpsEvent runs only after init; infrastructure is created first).
+  const messengerClientRef: { current?: PerpsController } = {};
   const infrastructure = createPerpsInfrastructure({
-    trackEvent,
     getStorageItem: (key: string) =>
       controllerMessenger.call(
         `${STORAGE_SERVICE_NAME}:getItem`,
@@ -83,6 +82,10 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         caipAccountId,
         baseFeeBips,
       ),
+    mergeAttributionContext: (properties) =>
+      messengerClientRef.current
+        ? messengerClientRef.current.mergeAttributionContext(properties)
+        : (properties ?? {}),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -92,8 +95,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const messengerClient = new PerpsController({
-    // TODO: Remove cast once @metamask/perps-controller adds
-    // MetaMetricsController:trackEvent to its allowed-actions union.
+    // TODO: Remove cast once @metamask/perps-controller updates its allowed-actions union.
     // The extension messenger is a superset of the package messenger type;
     // the cast is safe until the package type catches up.
     messenger: controllerMessenger as PackagePerpsControllerMessenger,
@@ -114,6 +116,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
+  messengerClientRef.current = messengerClient;
 
   const api = getApi(
     messengerClient,
@@ -196,7 +199,8 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket'
   | 'perpsReconnect'
-  | 'perpsGetConnectionState';
+  | 'perpsGetConnectionState'
+  | 'perpsSetAttributionContext';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -317,6 +321,53 @@ function guardWrite<TArgs extends unknown[], TResult>(
   return withAutoInit(controller, fn, isPreSendInitError);
 }
 
+/**
+ * Guard for `cancelOrder`, which additionally recovers from an unhydrated
+ * symbol → asset map.
+ *
+ * The HyperLiquid provider validates the order symbol against that map *before*
+ * it prepares the exchange client, so `ORDER_UNKNOWN_COIN` is returned without
+ * anything reaching the socket. It means the map has not been (re)built yet —
+ * a service worker restart, a provider re-init, or an undiscovered HIP-3 dex —
+ * rather than that the market is invalid. `init()` rebuilds the map, so a
+ * single retry is both safe and usually sufficient.
+ *
+ * The provider returns this as a failed result instead of throwing, so the
+ * check is on the resolved value rather than in `withAutoInit`.
+ * @param controller
+ * @param fn
+ */
+function guardCancelOrder<
+  TArgs extends unknown[],
+  TResult extends { success: boolean; error?: string },
+>(controller: PerpsController, fn: (...args: TArgs) => Promise<TResult>) {
+  const guarded = guardWrite(controller, fn);
+
+  return async (...args: TArgs): Promise<TResult> => {
+    const result = await guarded(...args);
+
+    if (
+      result?.success === false &&
+      result.error === PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN
+    ) {
+      // The retry sits on top of an already-resolved failure, so a throwing
+      // `init()` must not turn a resolved result into a rejection for the
+      // caller. Fall back to the original result instead. The retried cancel is
+      // deliberately outside this guard: a throw from it is the real failure and
+      // must reach the caller rather than be masked by `ORDER_UNKNOWN_COIN`.
+      try {
+        await controller.init();
+      } catch {
+        return result;
+      }
+
+      return await fn(...args);
+    }
+
+    return result;
+  };
+}
+
 function getApi(
   messengerClient: PerpsController,
   onDisconnectStart: () => void,
@@ -353,7 +404,10 @@ function getApi(
       messengerClient.closePositions.bind(messengerClient),
     ),
     perpsEditOrder: write(messengerClient.editOrder.bind(messengerClient)),
-    perpsCancelOrder: write(messengerClient.cancelOrder.bind(messengerClient)),
+    perpsCancelOrder: guardCancelOrder(
+      messengerClient,
+      messengerClient.cancelOrder.bind(messengerClient),
+    ),
     perpsCancelOrders: write(
       messengerClient.cancelOrders.bind(messengerClient),
     ),
@@ -517,5 +571,13 @@ function getApi(
     perpsReconnect: messengerClient.reconnect.bind(messengerClient),
     perpsGetConnectionState: () =>
       messengerClient.getWebSocketConnectionState(),
+
+    // -- Analytics attribution --
+    // Only the setter is exposed: the UI writes the UTM context here, and the
+    // merge back into controller-emitted events happens through the
+    // `mergeAttributionContext` closure passed to createPerpsInfrastructure
+    // above, not through a background action.
+    perpsSetAttributionContext:
+      messengerClient.setAttributionContext.bind(messengerClient),
   };
 }

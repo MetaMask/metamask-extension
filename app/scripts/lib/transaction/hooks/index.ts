@@ -26,7 +26,7 @@ import {
   submitSmartTransactionHook,
 } from '../../smart-transaction/smart-transactions';
 import { MessengerClientFlatState } from '../../../messenger-client-init/controller-list';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getTransactionById } from '../util';
 import { isSendBundleSupported } from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';

@@ -125,17 +125,3 @@ export function extractExpiryTimestampFromRules(
   }
   return timestamp;
 }
-
-/**
- * Extracts the expiry timestamp from the rules and converts it to a readable date.
- *
- * @param rules - The rules to extract the expiry from.
- * @returns The expiry timestamp in a readable date format.
- */
-export const extractExpiryToReadableDate = (rules: Rule[]): string => {
-  const timestamp = extractExpiryTimestampFromRules(rules);
-  if (timestamp === null) {
-    return '';
-  }
-  return convertTimestampToReadableDate(timestamp);
-};

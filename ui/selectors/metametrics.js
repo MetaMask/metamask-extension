@@ -10,24 +10,9 @@ export const getDataCollectionForMarketing = (state) =>
 export const getOptedIn = (state) => state.metamask.optedIn === true;
 
 // return true once the user has completed the metrics participation prompt (yes or no)
+// Backed by AnalyticsController.consentDecisionMade.
 export const getCompletedMetaMetricsOnboarding = (state) =>
-  state.metamask.completedMetaMetricsOnboarding === true;
-
-/**
- * @param state
- * @deprecated Use `getCompletedMetaMetricsOnboarding` and `getOptedIn` instead.
- * @returns {boolean | null} `null` until onboarding is completed, then the opt-in value.
- */
-export const getParticipateInMetaMetrics = (state) => {
-  if (!getCompletedMetaMetricsOnboarding(state)) {
-    return null;
-  }
-  return getOptedIn(state);
-};
-
-/** @deprecated Use `getCompletedMetaMetricsOnboarding` instead. */
-export const getIsParticipateInMetaMetricsSet =
-  getCompletedMetaMetricsOnboarding;
+  state.metamask.consentDecisionMade === true;
 
 export const getPna25Acknowledged = (state) => state.metamask.pna25Acknowledged;
 

@@ -15,6 +15,21 @@ const backgroundConnectionMock = new Proxy(
 
 describe('SecurityAndPasswordTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+  const createStore = (
+    remoteFeatureFlags = {},
+    isBasicFunctionalityConsolidatedEnabled = false,
+  ) =>
+    configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags,
+        preferences: {
+          ...mockState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled,
+        },
+      },
+    });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,6 +47,18 @@ describe('SecurityAndPasswordTab', () => {
     expect(
       screen.getByTestId('security-phishing-detection-toggle'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('auto-lock-button')).toBeInTheDocument();
+  });
+
+  it('hides phishing detection when consolidated Basic Functionality is enabled', () => {
+    renderWithProvider(
+      <SecurityAndPasswordTab />,
+      createStore({ extensionBasicFunctionalityToggle: true }, true),
+    );
+
+    expect(
+      screen.queryByTestId('security-phishing-detection-toggle'),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('auto-lock-button')).toBeInTheDocument();
   });
 });

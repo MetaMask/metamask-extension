@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
@@ -28,11 +28,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
-          manifestFlags: {
-            remoteFeatureFlags: {
-              extensionUxTokenManagementFilter: false,
-            },
-          },
         },
         async ({
           driver,

@@ -35,12 +35,12 @@ import {
 } from '../../../../components/component-library';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePrevious } from '../../../../hooks/usePrevious';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { loadingOpacity } from '../../util';
+import { finiteFallback, loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
-import { AssetChartLoading } from './asset-chart-loading';
 import AssetChartPrice from './asset-chart-price';
 
 Chart.register(
@@ -157,6 +157,8 @@ const AssetChart = ({
 
   const {
     loading,
+    isFetching,
+    isPlaceholderData,
     data: {
       prices,
       metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
@@ -168,20 +170,51 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
-  // The cases below are intentionally mutually exclusive, in order to flatten the render logic
-  const shouldShowChartLoading = loading && prices.length === 0;
+  const prevIsPlaceholderData = usePrevious(isPlaceholderData);
+  const wasPlaceholderData = prevIsPlaceholderData && !isPlaceholderData;
+
+  // The cases below are not mutually exclusive
   const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
-  const shouldShowChartMuted = loading && prices.length > 0;
-  const shouldShowChart = !loading && prices.length > 0;
+  const shouldShowChartMuted =
+    isFetching && prices.length > 0 && !isPlaceholderData;
+
+  const animation =
+    isPlaceholderData || wasPlaceholderData
+      ? {
+          x: false,
+          y: {
+            from: (ctx: { chart: { scales: { y: { bottom: number } } } }) =>
+              ctx.chart.scales.y.bottom,
+            duration: 400,
+          },
+        }
+      : {
+          x: { type: 'number', duration: 400 },
+          y: { type: 'number', duration: 400 },
+        };
 
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-    scales: {
-      x: { min: xMin, max: xMax, display: false, type: 'linear' },
-      y: { min: yMin, max: yMax, display: false },
+    transitions: {
+      active: { animation },
+      default: { animation },
+      resize: { animation: { duration: 0 } },
     },
-  } as const;
+    scales: {
+      x: {
+        min: finiteFallback(xMin, undefined),
+        max: finiteFallback(xMax, undefined),
+        display: false,
+        type: 'linear',
+      },
+      y: {
+        min: isPlaceholderData ? 0 : finiteFallback(yMin, 0),
+        max: isPlaceholderData ? 1 : finiteFallback(yMax, 1),
+        display: false,
+      },
+    },
+  } as ChartOptions<'line'>;
 
   const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
@@ -200,11 +233,15 @@ const AssetChart = ({
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
       <AssetChartPrice
         ref={priceRef}
-        loading={loading}
+        loading={loading || isPlaceholderData}
         currency={currency}
         price={currentPrice}
         date={Date.now()}
-        comparePrice={prices?.[0]?.y}
+        comparePrice={
+          isPlaceholderData || shouldShowChartEmptyState
+            ? undefined
+            : prices?.[0]?.y
+        }
         asset={asset}
       />
 
@@ -219,12 +256,11 @@ const AssetChart = ({
         }
         flexDirection={BoxFlexDirection.Column}
       >
-        {shouldShowChartLoading && <AssetChartLoading />}
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
-        {(shouldShowChart || shouldShowChartMuted) && (
+        {!shouldShowChartEmptyState && (
           <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
             <ChartTooltip
-              point={maxPricePoint}
+              point={isPlaceholderData ? undefined : maxPricePoint}
               xMin={xMin}
               xMax={xMax}
               currency={currency}
@@ -241,9 +277,11 @@ const AssetChart = ({
                 ref={chartRef}
                 data={{ datasets: [{ data: prices }] }}
                 options={options}
-                updateMode="none"
                 // Update the price display on chart hover
                 onMouseMove={(event) => {
+                  if (isPlaceholderData) {
+                    return;
+                  }
                   const data = chartRef?.current?.data?.datasets?.[0]?.data;
                   if (data) {
                     const target = event.target as HTMLElement;
@@ -275,8 +313,9 @@ const AssetChart = ({
                 }}
               />
             </Box>
+
             <ChartTooltip
-              point={minPricePoint}
+              point={isPlaceholderData ? undefined : minPricePoint}
               xMin={xMin}
               xMax={xMax}
               currency={currency}

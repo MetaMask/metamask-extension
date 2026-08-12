@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,10 +12,7 @@ import { I18nContext } from '../../ui/contexts/i18n';
 import { MetaMetricsContext } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import {
-  LegacyRouteMessengerProvider,
-  RouteMessengerContext,
-} from '../../ui/contexts/route-messenger';
+import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
 import { MetaMaskTestReduxProvider } from './redux-test-provider';
 import { createMockUIMessenger } from './mock-ui-messenger';
@@ -41,28 +37,21 @@ const createMockMetaMetricsContext = (
  * @param {object} [props.en]
  * @param {import('react').ReactNode} [props.children]
  */
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
   currentLocale: PropTypes.string,
   current: PropTypes.object,
   en: PropTypes.object,
-};
-
-I18nProvider.defaultProps = {
-  children: undefined,
+  children: PropTypes.node,
 };
 
 /**
@@ -128,7 +117,7 @@ export function createProviderWrapper(
   function Wrapper({ children }) {
     const content = routeMessenger ? (
       <RouteMessengerContext.Provider value={routeMessenger}>
-        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
+        {children}
       </RouteMessengerContext.Provider>
     ) : (
       children
@@ -216,7 +205,7 @@ export function renderHookWithProvider(
  * @template {(...args: any) => any} Hook
  * @template {Parameters<Hook>} HookParams
  * @template {ReturnType<Hook>} HookReturn
- * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
+ * @template {import('@testing-library/react').RenderHookResult<HookReturn, HookParams>} RenderHookResult
  * @param {Hook} hook - The hook to be rendered.
  * @param [state] - The initial state for the store.
  * @param [pathname] - The initial pathname for the history.

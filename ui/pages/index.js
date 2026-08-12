@@ -17,24 +17,45 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
+import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
+import { AppPureBlackProvider } from '../contexts/pure-black/pure-black-provider';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
+
+const isStrictModeEnabled =
+  process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
+
+/**
+ * Dev-only StrictMode in the app shell. Individual unit tests that need to
+ * exercise double-mount behavior can import `test/jest/strict-mode.js` helpers.
+ */
+
+function withStrictMode(children) {
+  return isStrictModeEnabled ? (
+    <React.StrictMode>{children}</React.StrictMode>
+  ) : (
+    children
+  );
+}
 
 function AppProviders() {
   return (
     <MetaMetricsProvider>
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
+          <RampsBootstrap />
           <AssetPollingProvider>
             <MetamaskIdentityProvider>
               <MetamaskNotificationsProvider>
                 <HardwareWalletErrorProvider>
                   <ShieldSubscriptionProvider>
                     <RiveWasmProvider>
-                      <Routes />
+                      <AppPureBlackProvider>
+                        <Routes />
+                      </AppPureBlackProvider>
                     </RiveWasmProvider>
                   </ShieldSubscriptionProvider>
                 </HardwareWalletErrorProvider>
@@ -102,7 +123,7 @@ class Index extends PureComponent {
     return (
       <Provider store={store}>
         <UIMessengerProvider value={uiMessenger}>
-          <RouterProvider router={router} />
+          {withStrictMode(<RouterProvider router={router} />)}
         </UIMessengerProvider>
       </Provider>
     );

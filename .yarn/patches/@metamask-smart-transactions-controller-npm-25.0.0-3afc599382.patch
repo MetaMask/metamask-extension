@@ -1,0 +1,24 @@
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index 6e2f2c9b7653662de038e16bc4a9af4baf98f1f4..0adcf007d9473851821d2bed8522ada4745bfecd 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -7,6 +7,7 @@ exports.SENTINEL_API_BASE_URL_MAP = {
+     1: 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
+     56: 'https://tx-sentinel-bsc-mainnet.api.cx.metamask.io',
+     137: 'https://tx-sentinel-polygon-mainnet.api.cx.metamask.io',
++    4663: 'https://tx-sentinel-robinhood-mainnet.api.cx.metamask.io',
+     8453: 'https://tx-sentinel-base-mainnet.api.cx.metamask.io',
+     42161: 'https://tx-sentinel-arbitrum-mainnet.api.cx.metamask.io',
+     59144: 'https://tx-sentinel-linea-mainnet.api.cx.metamask.io',
+diff --git a/dist/constants.mjs b/dist/constants.mjs
+index 3d615196ef851a2ed20e5637f19b36bb00b32423..eb7e5aa3ea6b93ad2503522a81d8cff41433db0d 100644
+--- a/dist/constants.mjs
++++ b/dist/constants.mjs
+@@ -4,6 +4,7 @@ export const SENTINEL_API_BASE_URL_MAP = {
+     1: 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
+     56: 'https://tx-sentinel-bsc-mainnet.api.cx.metamask.io',
+     137: 'https://tx-sentinel-polygon-mainnet.api.cx.metamask.io',
++    4663: 'https://tx-sentinel-robinhood-mainnet.api.cx.metamask.io',
+     8453: 'https://tx-sentinel-base-mainnet.api.cx.metamask.io',
+     42161: 'https://tx-sentinel-arbitrum-mainnet.api.cx.metamask.io',
+     59144: 'https://tx-sentinel-linea-mainnet.api.cx.metamask.io',

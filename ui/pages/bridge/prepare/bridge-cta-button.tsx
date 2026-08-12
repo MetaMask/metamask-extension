@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { InputPrimaryDenomination } from '@metamask/bridge-controller';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import {
   getFromAmount,
@@ -26,10 +27,10 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -37,12 +38,14 @@ export const BridgeCTAButton = ({
   onOpenRecipientModal,
   onOpenAlertModals,
   onOpenMarketClosedModal,
+  inputPrimaryDenomination,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal: () => void;
   onOpenAlertModals?: () => void;
   onOpenMarketClosedModal: () => void;
+  inputPrimaryDenomination?: InputPrimaryDenomination;
 }) => {
   const t = useI18nContext();
 
@@ -52,8 +55,9 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const { submitBridgeTransaction, isSubmitting } =
-    useSubmitBridgeTransaction();
+  const { submitBridgeTransaction, isSubmitting } = useSubmitBridgeTransaction(
+    inputPrimaryDenomination,
+  );
 
   const {
     isNoQuotesAvailable,
@@ -73,7 +77,7 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent } = useAnalytics();
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();

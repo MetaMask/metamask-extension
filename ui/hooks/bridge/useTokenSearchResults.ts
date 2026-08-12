@@ -106,7 +106,7 @@ export const useTokenSearchResults = ({
   );
 
   const debouncedFetchSearchResults = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/use-memo
     debounce(
       (query: string, assets: BridgeToken[]) =>
         fetchSearchResults(query, assets),
@@ -151,7 +151,7 @@ export const useTokenSearchResults = ({
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
-  }, [searchQuery, stableMinimalAssetsString, jwt]);
+  }, [searchQuery, stableMinimalAssetsString, chainIds, jwt]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;

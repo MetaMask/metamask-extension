@@ -206,7 +206,7 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  it('returns null when no display token available', () => {
+  it('renders skeleton when no display token available', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
@@ -215,9 +215,9 @@ describe('PayWithRow', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
 
     const store = mockStore(getMockState());
-    const { container } = renderWithProvider(<PayWithRow />, store);
+    renderWithProvider(<PayWithRow />, store);
 
-    expect(container.firstChild).toBeNull();
+    expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
   });
 
   it('falls back to first required token when no pay token', () => {
@@ -246,50 +246,60 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  describe('perpsWithdraw fallback behaviour', () => {
-    beforeEach(() => {
-      useTransactionPayTokenMock.mockReturnValue({
-        payToken: undefined,
-        setPayToken: jest.fn(),
-        isNative: false,
+  [TransactionType.perpsWithdraw, TransactionType.moneyAccountDeposit].forEach(
+    (transactionType) => {
+      describe(`${transactionType} fallback behaviour`, () => {
+        beforeEach(() => {
+          useTransactionPayTokenMock.mockReturnValue({
+            payToken: undefined,
+            setPayToken: jest.fn(),
+            isNative: false,
+          });
+          useTransactionPayRequiredTokensMock.mockReturnValue([
+            MOCK_REQUIRED_TOKEN,
+          ]);
+          useConfirmContextMock.mockReturnValue({
+            currentConfirmation: {
+              id: 'test-id',
+              type: transactionType,
+              chainId: CHAIN_ID_MOCK,
+              txParams: { from: FROM_ADDRESS_MOCK },
+            },
+          } as never);
+        });
+
+        it('renders the skeleton (not the required token) until payToken resolves', () => {
+          const store = mockStore(getMockState());
+          renderWithProvider(<PayWithRow />, store);
+
+          expect(
+            screen.getByTestId('pay-with-row-skeleton'),
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByTestId('pay-with-symbol'),
+          ).not.toBeInTheDocument();
+        });
+
+        it('renders the resolved payToken once it is set', () => {
+          useTransactionPayTokenMock.mockReturnValue({
+            payToken: MOCK_PAY_TOKEN,
+            setPayToken: jest.fn(),
+            isNative: true,
+          });
+
+          const store = mockStore(getMockState());
+          renderWithProvider(<PayWithRow />, store);
+
+          expect(
+            screen.queryByTestId('pay-with-row-skeleton'),
+          ).not.toBeInTheDocument();
+          expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+            'ETH',
+          );
+        });
       });
-      useTransactionPayRequiredTokensMock.mockReturnValue([
-        MOCK_REQUIRED_TOKEN,
-      ]);
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: {
-          id: 'test-id',
-          type: TransactionType.perpsWithdraw,
-          chainId: CHAIN_ID_MOCK,
-          txParams: { from: FROM_ADDRESS_MOCK },
-        },
-      } as never);
-    });
-
-    it('renders the skeleton (not the required token) until payToken resolves', () => {
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
-      expect(screen.queryByTestId('pay-with-symbol')).not.toBeInTheDocument();
-    });
-
-    it('renders the resolved payToken once it is set', () => {
-      useTransactionPayTokenMock.mockReturnValue({
-        payToken: MOCK_PAY_TOKEN,
-        setPayToken: jest.fn(),
-        isNative: true,
-      });
-
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(
-        screen.queryByTestId('pay-with-row-skeleton'),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
-    });
-  });
+    },
+  );
 
   describe('Default variant (inline row with pill selector)', () => {
     it('renders row with symbol in pill', () => {
@@ -315,6 +325,33 @@ describe('PayWithRow', () => {
       renderWithProvider(<PayWithRow />, store);
 
       expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('USD balance', () => {
+    it('renders the parenthesized balance in the default inline row', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+        '($150.00)',
+      );
+    });
+
+    it('does not render the balance for a perps withdraw', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'test-id',
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_ID_MOCK,
+          txParams: { from: FROM_ADDRESS_MOCK },
+        },
+      } as never);
+
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
     });
   });
 });

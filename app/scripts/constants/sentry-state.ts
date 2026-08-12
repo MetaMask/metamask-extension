@@ -43,8 +43,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AnalyticsController: {
     analyticsId: true,
+    consentDecisionMade: true,
     eventQueue: false,
     optedIn: true,
+    preConsentEventQueue: false,
   },
   AnnouncementController: {
     announcements: false,
@@ -145,6 +147,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,
@@ -152,6 +155,12 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   ComplianceController: {
     walletComplianceStatusMap: false,
     lastCheckedAt: false,
+  },
+  ConfigRegistryController: {
+    configs: false,
+    etag: true,
+    lastFetched: true,
+    version: true,
   },
   CronjobController: {
     events: false,
@@ -199,8 +208,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    completedMetaMetricsOnboarding: true,
-    eventsBeforeMetricsOptIn: false,
     tracesBeforeMetricsOptIn: false,
     fragments: false,
     traits: false,
@@ -229,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
@@ -286,11 +294,21 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RampsController: {
+    userRegion: false,
+    countries: false,
+    providers: false,
+    tokens: false,
+    paymentMethods: false,
+    requests: false,
+    nativeProviders: false,
+    orders: false,
+    providerAutoSelected: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,

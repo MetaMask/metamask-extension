@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
@@ -13,6 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.
@@ -28,7 +28,6 @@ export function useNavigateOnQrScanComplete(): void {
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,
   );
-  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
   const prevQrScanRequestRef = useRef(activeQrCodeScanRequest);
 
   useEffect(() => {
@@ -47,8 +46,7 @@ export function useNavigateOnQrScanComplete(): void {
       isQrScanCleared &&
       lastQrScanCompletedSuccessfully === true
     ) {
-      const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
-      navigate(to, {
+      navigate(DEFAULT_ROUTE, {
         replace: true,
         state: { stayOnHomePage: true },
       });
@@ -70,6 +68,5 @@ export function useNavigateOnQrScanComplete(): void {
     dispatch,
     lastQrScanCompletedSuccessfully,
     navigate,
-    toastEnabled,
   ]);
 }

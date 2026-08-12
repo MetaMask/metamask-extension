@@ -131,6 +131,10 @@ const mockBaseState = {
 };
 
 describe('useHistoricalPrices', () => {
+  const neverResolvingPricesFetch = new Promise<{ prices: [number, number][] }>(
+    () => undefined,
+  );
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockPricesFetch.mockResolvedValue({ prices: [] });
@@ -152,17 +156,32 @@ describe('useHistoricalPrices', () => {
       },
     };
 
-    it('returns loading true and default data initially', () => {
+    it('returns placeholder data initially while fetching', () => {
+      mockPricesFetch.mockReturnValue(neverResolvingPricesFetch);
+
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,
       );
 
       expect(result.current).toEqual({
-        loading: true,
+        loading: false,
+        isFetching: true,
+        isFetchedAfterMount: false,
+        isPlaceholderData: true,
         data: {
-          prices: [],
-          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+          prices: [
+            { x: expect.any(Number), y: 0 },
+            { x: expect.any(Number), y: 0 },
+          ],
+          metadata: {
+            minPricePoint: { x: expect.any(Number), y: 0 },
+            maxPricePoint: { x: expect.any(Number), y: 0 },
+            xMin: expect.any(Number),
+            xMax: expect.any(Number),
+            yMin: 0,
+            yMax: 0,
+          },
         },
       });
 
@@ -178,11 +197,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -226,11 +248,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
@@ -238,6 +263,38 @@ describe('useHistoricalPrices', () => {
       });
 
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe('when no CAIP asset id can be derived', () => {
+    const currency = 'usd';
+    const timeRange = 'P7D';
+    const state = {
+      ...mockBaseState,
+      metamask: {
+        ...mockBaseState.metamask,
+        internalAccounts: {
+          ...mockBaseState.metamask.internalAccounts,
+          selectedAccount: '81b1ead4-334c-4921-9adf-282fde539752',
+        },
+      },
+    };
+
+    it('does not fetch when the chain id cannot be parsed', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useHistoricalPrices({
+            // @ts-expect-error intentionally malformed chain id
+            chainId: 'garbage',
+            address: '0x458036e7Bc0612e9b207640Dc07Ca7711346AAE5',
+            currency,
+            timeRange,
+          }),
+        state,
+      );
+
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
+      expect(mockPricesFetch).not.toHaveBeenCalled();
     });
   });
 
@@ -257,17 +314,32 @@ describe('useHistoricalPrices', () => {
       },
     };
 
-    it('returns loading true and default data initially', () => {
+    it('returns placeholder data initially while fetching', () => {
+      mockPricesFetch.mockReturnValue(neverResolvingPricesFetch);
+
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         state,
       );
 
       expect(result.current).toEqual({
-        loading: true,
+        loading: false,
+        isFetching: true,
+        isFetchedAfterMount: false,
+        isPlaceholderData: true,
         data: {
-          prices: [],
-          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+          prices: [
+            { x: expect.any(Number), y: 0 },
+            { x: expect.any(Number), y: 0 },
+          ],
+          metadata: {
+            minPricePoint: { x: expect.any(Number), y: 0 },
+            maxPricePoint: { x: expect.any(Number), y: 0 },
+            xMin: expect.any(Number),
+            xMax: expect.any(Number),
+            yMin: 0,
+            yMax: 0,
+          },
         },
       });
 
@@ -283,11 +355,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
@@ -327,11 +402,14 @@ describe('useHistoricalPrices', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false);
+        expect(result.current.isPlaceholderData).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
+        isFetching: false,
+        isFetchedAfterMount: true,
+        isPlaceholderData: false,
         data: {
           prices: [],
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,

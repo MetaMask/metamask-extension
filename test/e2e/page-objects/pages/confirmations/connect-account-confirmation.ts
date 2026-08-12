@@ -1,14 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConnectAccountConfirmation {
-  driver: Driver;
-
-  private readonly accountListItem = (accountName: string) => {
-    return {
-      css: '.multichain-account-cell__account-name',
-      text: accountName,
-    };
-  };
+  private readonly accountListItem = (accountName: string) => ({
+    testId: `multichain-account-cell-name-${accountName}`,
+  });
 
   private readonly cancelConnectButton = {
     testId: 'cancel-btn',
@@ -28,12 +23,12 @@ class ConnectAccountConfirmation {
     tag: 'p',
   };
 
+  driver: Driver;
+
   private readonly editAccountButton = {
     text: 'Edit accounts',
     tag: 'button',
   };
-
-  private readonly editPermissionsButton = '[data-testid="edit"]';
 
   private readonly originHeader = (origin: string) => {
     return {
@@ -42,31 +37,8 @@ class ConnectAccountConfirmation {
     };
   };
 
-  private readonly permissionsTab = {
-    testId: 'permissions-tab',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded({
-    origin = '127.0.0.1',
-  }: { origin?: string } = {}): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.connectAccountConfirmationTitle,
-        this.connectAccountConfirmationButton,
-        this.originHeader(origin),
-      ]);
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for Connect Account confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
-    console.log(`Connect Account confirmation page is loaded`);
   }
 
   async cancelConnect(): Promise<void> {
@@ -76,28 +48,28 @@ class ConnectAccountConfirmation {
     );
   }
 
+  async checkForAccountsInPermissionList(accounts: string[]): Promise<void> {
+    for (const account of accounts) {
+      await this.driver.waitForSelector(this.accountListItem(account));
+    }
+  }
+
+  async checkPageIsLoaded({
+    origin = '127.0.0.1',
+  }: { origin?: string } = {}): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.connectAccountConfirmationTitle,
+      this.connectAccountConfirmationButton,
+      this.originHeader(origin),
+    ]);
+    console.log(`Connect Account confirmation page is loaded`);
+  }
+
   async confirmConnect(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
     await this.driver.clickElementAndWaitForWindowToClose(
       this.connectAccountConfirmationButton,
     );
-  }
-
-  async goToPermissionsTab(): Promise<void> {
-    await this.driver.clickElement(this.permissionsTab);
-  }
-
-  async openEditAccountsModal(): Promise<void> {
-    console.log('Open edit accounts modal');
-    await this.driver.clickElement(this.editAccountButton);
-  }
-
-  async openEditNetworksModal(): Promise<void> {
-    console.log('Open edit networks modal');
-    const editButtons = await this.driver.findElements(
-      this.editPermissionsButton,
-    );
-    await editButtons[1].click();
   }
 
   async isConfirmButtonEnabled(): Promise<boolean> {
@@ -113,10 +85,9 @@ class ConnectAccountConfirmation {
     return true;
   }
 
-  async checkForAccountsInPermissionList(accounts: string[]): Promise<void> {
-    for (const account of accounts) {
-      await this.driver.waitForSelector(this.accountListItem(account));
-    }
+  async openEditAccountsModal(): Promise<void> {
+    console.log('Open edit accounts modal');
+    await this.driver.clickElement(this.editAccountButton);
   }
 }
 

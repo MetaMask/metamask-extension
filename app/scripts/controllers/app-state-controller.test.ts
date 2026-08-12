@@ -461,6 +461,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setPerpsTabBadgeSeen', () => {
+    it('updates whether the Perps tab New badge has been seen', async () => {
+      await withController(({ controller }) => {
+        controller.setPerpsTabBadgeSeen(true);
+
+        expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -846,6 +856,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -933,6 +944,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1010,6 +1022,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1096,6 +1109,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1186,7 +1200,7 @@ describe('AppStateController', () => {
       );
     });
 
-    it('sets lastQrScanCompletedSuccessfully to false when cancelQrCodeScan is called', async () => {
+    it('rejects with UserCancelled when cancelQrCodeScan is called without an error', async () => {
       await withController(
         { state: {} },
         async ({ controller, appStateMessenger }) => {
@@ -1202,7 +1216,61 @@ describe('AppStateController', () => {
 
           expect(controller.state.activeQrCodeScanRequest).toBeNull();
           expect(controller.state.lastQrScanCompletedSuccessfully).toBe(false);
-          await expect(scanPromise).rejects.toThrow('Scan cancelled');
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Scan cancelled',
+            code: 2001,
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a string', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan('Camera permission denied');
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Camera permission denied',
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a serialized hardware wallet error', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan({
+            name: 'HardwareWalletError',
+            message: 'Camera permission blocked by the browser',
+            code: 7301,
+            severity: 'Error',
+            category: 'Configuration',
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            code: 7301,
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
         },
       );
     });
@@ -1294,6 +1362,7 @@ async function withController<ReturnValue>(
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'LegacyBackgroundApiService:setLocked',
     ],
     events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
@@ -1309,14 +1378,16 @@ async function withController<ReturnValue>(
 
   rootMessenger.registerActionHandler(
     'ApprovalController:addRequest',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
+  );
+
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setLocked',
+    jest.fn(),
   );
 
   return fn({
     controller: new AppStateController({
-      onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
       state,

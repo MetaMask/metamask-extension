@@ -31,7 +31,6 @@ import {
   AppStateControllerSetPendingRedirectRouteAction,
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller-method-action-types';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import {
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
@@ -75,7 +74,6 @@ type AllowedActions =
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction
-  | MetaMetricsControllerTrackEventAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription

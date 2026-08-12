@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
   TransactionMeta,
@@ -115,18 +115,16 @@ describe('MusdClaimInfo', () => {
     });
     const mockStore = configureMockStore()(state);
 
-    let result: ReturnType<typeof renderWithConfirmContextProvider>;
-    await act(async () => {
-      result = renderWithConfirmContextProvider(<MusdClaimInfo />, mockStore);
+    renderWithConfirmContextProvider(<MusdClaimInfo />, mockStore);
 
-      // Hero heading is rendered
-      expect(result.getByTestId('musd-claim-heading-amount')).toBeDefined();
-
-      // Details section is rendered
-      expect(result.getByTestId('musd-claim-details-section')).toBeDefined();
-
-      // Gas fee section is rendered
-      expect(result.getByTestId('gas-fee-section')).toBeDefined();
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('musd-claim-heading-amount'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('musd-claim-details-section'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('gas-fee-section')).toBeInTheDocument();
     });
   });
 });

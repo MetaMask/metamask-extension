@@ -6,7 +6,7 @@ import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
-  enableNotificationsThroughGlobalMenu,
+  goToNotificationsList,
   clickNotificationItemAndDetailsPage,
   navigateToNotificationSettingsAndClickDisable,
 } from '../../page-objects/flows/notifications.flow';
@@ -64,8 +64,10 @@ describe('Notification List - View Items and Details', function () {
         },
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
-        await enableNotificationsThroughGlobalMenu(driver, false);
+        await login(driver);
+        // Notifications are enabled by default in the fixture, so we navigate
+        // straight to the notifications list.
+        await goToNotificationsList(driver);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
           driver,

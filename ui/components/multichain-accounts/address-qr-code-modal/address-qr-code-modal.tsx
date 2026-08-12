@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useMemo,
   useState,
   useRef,
@@ -39,8 +38,8 @@ import {
 import type { ModalProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -79,7 +78,7 @@ export const AddressQRCodeModal = ({
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [addressCopied, setAddressCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);
@@ -144,8 +143,9 @@ export const AddressQRCodeModal = ({
       explorerInfo.addressUrl,
       'Address QR Code Modal',
       trackEvent,
+      createEventBuilder,
     );
-  }, [explorerInfo, trackEvent]);
+  }, [createEventBuilder, explorerInfo, trackEvent]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

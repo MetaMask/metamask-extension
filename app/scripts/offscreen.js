@@ -55,8 +55,8 @@ export async function createOffscreen() {
         // start the SocketBackgroundToMocha.
         if (process.env.IN_TEST && msg.webdriverPresent) {
           const { getSocketBackgroundToMocha } =
-            // Use `require` to make it easier to exclude this test code from the Browserify build.
-            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+            // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+            // eslint-disable-next-line n/global-require
             require('../../test/e2e/background-socket/socket-background-to-mocha');
           getSocketBackgroundToMocha();
         }

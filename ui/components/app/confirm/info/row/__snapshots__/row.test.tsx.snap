@@ -116,15 +116,27 @@ exports[`ConfirmInfoRowSkeleton should match snapshot 1`] = `
         style="flex-shrink: 0;"
       >
         <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-          style="margin-top: 3px; margin-bottom: 3px; height: 18px; width: 80px;"
-        />
+          aria-hidden="true"
+          class="relative overflow-hidden rounded"
+          style="height: 18px; width: 80px; margin-top: 3px; margin-bottom: 3px;"
+        >
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+          />
+        </div>
       </div>
     </div>
     <div
-      class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-      style="margin-top: 3px; margin-bottom: 3px; height: 18px; width: 80px;"
-    />
+      aria-hidden="true"
+      class="relative overflow-hidden rounded"
+      style="height: 18px; width: 80px; margin-top: 3px; margin-bottom: 3px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+      />
+    </div>
   </div>
 </div>
 `;

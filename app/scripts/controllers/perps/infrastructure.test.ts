@@ -10,18 +10,34 @@ import {
   type InfrastructureDeps,
 } from './infrastructure';
 
-jest.mock('@metamask/perps-controller', () => ({
-  formatPerpsFiat: jest.fn((value: number) =>
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value),
-  ),
-  formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
-  PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
-}));
+const mockTrackEvent = jest.fn();
+
+jest.mock('../analytics', () => {
+  const actual = jest.requireActual('../analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
+
+jest.mock('@metamask/perps-controller', () => {
+  const stub = jest.requireActual(
+    '../../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...stub,
+    formatPerpsFiat: jest.fn((value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value),
+    ),
+    formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+    PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+  };
+});
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -42,7 +58,6 @@ function setupSentryScope() {
 }
 
 describe('createPerpsInfrastructure', () => {
-  const mockTrackEvent = jest.fn();
   const mockGetStorageItem = jest.fn();
   const mockSetStorageItem = jest.fn();
   const mockRemoveStorageItem = jest.fn();
@@ -52,7 +67,6 @@ describe('createPerpsInfrastructure', () => {
     overrides?: Partial<InfrastructureDeps>,
   ): InfrastructureDeps {
     return {
-      trackEvent: mockTrackEvent,
       getStorageItem: mockGetStorageItem,
       setStorageItem: mockSetStorageItem,
       removeStorageItem: mockRemoveStorageItem,
@@ -88,6 +102,98 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.cacheInvalidator).toBeDefined();
     expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
+    expect(infrastructure.terminalApiUrl).toBeDefined();
+  });
+
+  describe('terminalApiUrl', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('returns dev URL for development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns dev URL for testing environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'testing';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for beta build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'beta';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for release-candidate environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'release-candidate';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for staging environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for pull-request environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'pull-request';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for flask build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'flask';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for experimental build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'experimental';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
   });
 
   describe('metrics', () => {
@@ -100,15 +206,48 @@ describe('createPerpsInfrastructure', () => {
       });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: PerpsAnalyticsEvent.ScreenViewed,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-            PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: PerpsAnalyticsEvent.ScreenViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          }),
+        }),
+      );
+    });
+
+    it('merges attribution context into trackPerpsEvent properties when provided', () => {
+      const mergeAttributionContext = jest.fn(
+        (properties?: Record<string, unknown>) => ({
+          ...properties,
+          [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+        }),
+      );
+      const infrastructure = createPerpsInfrastructure(
+        getDeps({ mergeAttributionContext }),
+      );
+
+      infrastructure.metrics.trackPerpsEvent(
+        PerpsAnalyticsEvent.TradeTransaction,
+        {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
         },
+      );
+
+      expect(mergeAttributionContext).toHaveBeenCalledWith({
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
       });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+          }),
+        }),
+      );
     });
 
     it('reports metrics as enabled', () => {

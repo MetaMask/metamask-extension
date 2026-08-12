@@ -13,6 +13,7 @@ import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
+  mockTokenMetadataApis,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -29,9 +30,17 @@ describe('Token List', function () {
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+          balance: '1',
+        },
+      ],
+    },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };
@@ -42,6 +51,9 @@ describe('Token List', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
@@ -53,7 +65,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
 
         await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -83,6 +94,9 @@ describe('Token List', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': marketDataNative,
             [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
@@ -105,8 +119,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(chainId, tokenAddress, symbol);
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
