@@ -63,4 +63,34 @@ describe('Account overview', function () {
       },
     );
   });
+
+  it('opens the network picker from the overview', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.waitForSelector('.multichain-network-list-menu');
+        await driver.delay(2000);
+
+        const networkItems = await driver.findElements(
+          '.multichain-network-list-item',
+        );
+        assert.equal(networkItems.length > 0, true);
+
+        await driver.fill(
+          '[data-testid="network-redesign-modal-search-input"]',
+          'Linea',
+        );
+        await driver.press(
+          '[data-testid="network-redesign-modal-search-input"]',
+          driver.Key.ENTER,
+        );
+      },
+    );
+  });
 });

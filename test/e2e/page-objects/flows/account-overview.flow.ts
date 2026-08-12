@@ -34,3 +34,24 @@ export async function openActivityTab(driver: Driver): Promise<void> {
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
 }
+
+const nftTabSelector = '[data-testid="account-overview__nfts-tab"]';
+
+const nftGridLocator = { css: '.nft-items__wrapper' };
+
+const importNftLink = { text: 'Import NFT', tag: 'button' };
+
+/**
+ * Opens the NFT tab and starts the import NFT flow.
+ *
+ * @param driver - The webdriver instance.
+ */
+export async function openNftTabAndImport(driver: Driver): Promise<void> {
+  await driver.clickElement(nftTabSelector);
+  await driver.waitForSelector(nftGridLocator);
+  await driver.delay(2500);
+  await driver.clickElement(importNftLink);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+}

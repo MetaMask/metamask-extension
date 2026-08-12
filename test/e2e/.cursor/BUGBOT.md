@@ -1,59 +1,66 @@
 # E2E Page Object Model rules
 
-These rules apply to every changed file under `test/e2e/`. Report each match as a review comment. Page Object Model violations are treated as defects in this repo because they cause flaky tests and expensive rewrites, so do not skip them for being style or test-only code.
+These rules apply to changed files under `test/e2e/`. Page Object Model violations are defects in this repository: they produce flaky tests and force expensive rewrites. Report every match, even when the surrounding code is otherwise correct.
 
-## Locators must not appear in flow files
+## Locators in flow files
 
-Flag any locator in `test/e2e/page-objects/flows/**`: a `data-testid` or CSS string, a `{ css }` or `{ text, tag }` object, or a constant named `*Button`, `*Input`, `*Link`, `*Selector`, `*Locator`, `*TestId`.
+For files matching `test/e2e/page-objects/flows/**/*.{ts,js}`:
+If a changed line contains `/data-testid|\{\s*css\s*:|\{\s*text\s*:.*tag\s*:|(const|let)\s+\w*(Button|Input|Link|Selector|Locator|TestId)\s*(:|=)/`, then:
 
-Do not flag flows that only call page object methods or other flows, or that use `driver.navigate()` and window-switching helpers.
+- Add a blocking Bug titled "Locator defined in a flow file"
+- Body: "Locators must live in page object classes, not in flows. Move this locator into a page object under `test/e2e/page-objects/pages/` and call that page object method from the flow."
+- Do not report when the line only calls a page object method, another flow, `driver.navigate()`, or a window-switching helper.
 
-Comment: locators must live in page object classes. Move the locator into a page object under `test/e2e/page-objects/pages/` and call that method from the flow.
+## Flows built on a single page object
 
-## Flows must use more than one page object
+For files matching `test/e2e/page-objects/flows/**/*.{ts,js}`:
+If a changed exported function instantiates exactly one page object type (`/new\s+\w+Page\s*\(/` matched once for a single type) and calls no other flow, then:
 
-Flag any exported function in `test/e2e/page-objects/flows/**` whose body instantiates exactly one page object type and calls no other flow.
+- Add a blocking Bug titled "Flow uses a single page object"
+- Body: "Flows exist for workflows that span more than one page object. Move this method onto the page object class it already uses."
+- Do not report when the function instantiates two or more distinct page objects, or combines a page object with a call to another flow.
 
-Do not flag functions that instantiate two or more distinct page objects, or that combine a page object with a call to another flow.
+## UI helper functions in spec files
 
-Comment: flows are for workflows spanning more than one page object. Move this method onto the page object class it uses.
+For files matching `test/e2e/**/*.spec.{ts,js}`:
+If a changed function declared at module or `describe` scope has a body containing `/driver\.(clickElement|findElement|waitForSelector|fill|delay)|new\s+\w+Page\s*\(/`, then:
 
-## Specs must not define UI helper functions
+- Add a blocking Bug titled "UI helper function defined in a spec"
+- Body: "Specs must not define helpers that perform UI actions. Move the steps into a page object method, or into a flow when more than one page object is involved."
+- Do not report pure data helpers such as fixtures, mock JSON, expected values, and constants.
 
-Flag any function declared in `test/e2e/**/*.spec.{ts,js}` at module or `describe` scope whose body performs UI actions: calls `driver.clickElement`, `driver.findElement`, `driver.waitForSelector`, `driver.fill`, or `driver.delay`; instantiates a page object; or uses a locator.
+## Direct element interaction in specs
 
-Do not flag pure data helpers such as fixtures, mock JSON, expected values, and constants.
+For files matching `test/e2e/**/*.spec.{ts,js}`:
+If a changed line contains `/driver\.(clickElement|clickElementSafe|clickElementAndWaitToDisappear|clickElementAndWaitForWindowToClose|findElement|findElements|waitForSelector|waitForElementNotPresent|fill|press|isElementPresent|isElementPresentAndVisible)\s*\(/`, then:
 
-Comment: move the steps into a page object method, or into a flow when more than one page object is needed.
+- Add a blocking Bug titled "Spec interacts with elements directly"
+- Body: "Specs must not interact with page elements directly. Call a page object method or a flow, and keep locators inside page objects."
+- Do not report `driver.navigate()`, window and tab helpers, fixture setup, or request mocking.
 
-## Specs must not interact with elements directly
+## Hardcoded delays
 
-Flag any direct element interaction in `test/e2e/**/*.spec.{ts,js}`: `driver.clickElement`, `clickElementSafe`, `clickElementAndWaitToDisappear`, `clickElementAndWaitForWindowToClose`, `findElement`, `findElements`, `waitForSelector`, `waitForElementNotPresent`, `fill`, `press`, `isElementPresent`, `isElementPresentAndVisible`, or any inline locator.
+For files matching `test/e2e/**/*.{ts,js}`:
+If a changed line contains `/driver\.delay\s*\(|setTimeout\s*\(\s*resolve/`, then:
 
-Do not flag `driver.navigate()`, window and tab helpers, fixture setup, or request mocking.
+- Add a non-blocking Bug titled "Hardcoded delay in an E2E test"
+- Body: "Wait for a condition instead of a fixed delay: use `waitForSelector`, `waitForElementNotPresent`, or `driver.wait`. If a fixed delay is unavoidable, add a comment explaining why."
+- Do not report when a comment within the three preceding lines explains why a condition wait is impossible, and do not report files under `test/e2e/webdriver/`.
 
-Comment: call a page object method or a flow, and keep locators inside page objects.
+## Page objects invoking other page objects
 
-## Hardcoded delays must be replaced by condition waits
+For files matching `test/e2e/page-objects/pages/**/*.{ts,js}`:
+If a changed line imports another page class or contains `/new\s+\w+(Page|Navbar|Modal)\s*\(\s*this\.driver\s*\)/`, then:
 
-Flag `driver.delay(` and `new Promise((resolve) => setTimeout(resolve, ...))` in specs, page objects, and flows.
+- Add a blocking Bug titled "Page object invokes another page object"
+- Body: "Page objects must stay independent to avoid circular references and hidden workflows. Move multi-page steps into a flow under `test/e2e/page-objects/flows/`."
+- Do not report imports of types, enums, constants, or non-page helpers, and do not report `extends` of a shared base page.
 
-Do not flag a delay whose preceding comment within three lines explains why a condition wait is not possible, and do not flag delays in `test/e2e/webdriver/` framework code.
+## try/catch in page objects and flows
 
-Comment: wait for a condition instead (`waitForSelector`, `waitForElementNotPresent`, `driver.wait`). If a fixed delay is unavoidable, add a comment explaining why.
+For files matching `test/e2e/page-objects/**/*.{ts,js}`:
+If a changed line contains `/\btry\s*\{/` or `/\}\s*catch\s*\(/`, then:
 
-## Page objects must not invoke other page objects
-
-Flag any file under `test/e2e/page-objects/pages/**` that imports another page class or instantiates one with `new OtherPage(this.driver)`.
-
-Do not flag imports of types, enums, constants, or non-page helpers, and do not flag `extends` of a shared base page.
-
-Comment: page objects must stay independent to avoid circular references. Move multi-page steps into a flow under `test/e2e/page-objects/flows/`.
-
-## Page objects and flows must not use try/catch
-
-Flag every `try`/`catch` in `test/e2e/page-objects/**`, including catch blocks that only log or rethrow.
-
-Do not flag `try`/`catch` inside `driver.wait` polling callbacks that return `false`, or framework helpers in `test/e2e/webdriver/`.
-
-Comment: let failures surface. Use driver wait helpers and `check*` methods with clear error messages.
+- Add a non-blocking Bug titled "try/catch in a page object or flow"
+- Body: "Do not swallow failures in page objects or flows. Let the error surface, and use driver wait helpers and `check*` methods with clear error messages."
+- Do not report `try`/`catch` inside a `driver.wait` polling callback that returns `false`, or framework helpers under `test/e2e/webdriver/`.

@@ -41,6 +41,22 @@ class AccountOverviewPage {
       await this.driver.delay(2000);
     }
   }
+
+  /**
+   * Locks the wallet and confirms the homepage is gone.
+   */
+  async lockWalletFromOverview(): Promise<void> {
+    const headerNavbar = new HeaderNavbar(this.driver);
+    await headerNavbar.lockMetaMask();
+
+    try {
+      const homePage = new HomePage(this.driver);
+      await homePage.checkPageIsLoaded();
+      await this.driver.delay(3000);
+    } catch (error) {
+      console.log('Homepage was already dismissed', error);
+    }
+  }
 }
 
 export default AccountOverviewPage;
