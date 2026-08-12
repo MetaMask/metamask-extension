@@ -10,7 +10,6 @@ import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -133,7 +132,9 @@ describe('PayWithRow', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
-  const getFieldAlertsMock = jest.fn(() => []);
+  const getFieldAlertsMock = jest.fn(
+    (_field?: string | undefined): { key: string }[] => [],
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -229,9 +230,9 @@ describe('PayWithRow', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    getFieldAlertsMock.mockImplementation((field) =>
-      field === RowAlertKey.PayWith ? [{ key: AlertsName.AccountNoFunds }] : [],
-    );
+    getFieldAlertsMock.mockReturnValue([
+      { key: AlertsName.AccountNoFunds },
+    ]);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
