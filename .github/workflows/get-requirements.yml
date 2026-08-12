@@ -652,11 +652,12 @@ jobs:
       # identical results, so running them is pointless. This absorbs the
       # inline builds-from-run == github.run_id gate from main.yml.
       #
-      # Pinned to the head SHA because the lookup is not deterministic: the
-      # workflow-run listing behind it intermittently returns a stale page, so
-      # an unchanged commit can require benchmarks on one attempt and skip them
-      # on the next. Left unpinned that is a gate bypass, since a skipped job
-      # counts as passing in ci-status-gate.yml.
+      # The decision is pinned to the head SHA as a commit status, because the
+      # lookup behind it is not deterministic: the workflow-run listing it
+      # depends on intermittently returns a stale page, so an unchanged commit
+      # can require benchmarks on one attempt and skip them on the next. Left
+      # unpinned that is a gate bypass, since a skipped job counts as passing
+      # in ci-status-gate.yml.
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Skip on cross-repo PRs — benchmarks need secrets not available to external contributors.
