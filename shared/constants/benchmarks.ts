@@ -224,16 +224,20 @@ export type BenchmarkMockMode =
   (typeof BENCHMARK_MOCK_MODE)[keyof typeof BENCHMARK_MOCK_MODE];
 
 /**
- * Resolves the network population for a run from its branch name.
+ * Resolves the network population for a run.
  *
- * `main` and `release/*` exercise real servers (introduced by #39587 to keep
- * a real-world signal on the trunk); every other ref — PRs, local dev — runs
- * against the mock suite for determinism.
+ * An explicit `override` decides it. Failing that, the branch heuristic
+ * applies: `main` and `release/*` exercise real servers (introduced by #39587
+ * to keep a real-world signal on the trunk); every other ref — PRs, local
+ * dev — runs against the mock suite for determinism.
  *
- * Pure function of the branch name so both the benchmark harness and the
- * quality gate can derive the same answer without sharing runtime state.
+ * Pure function of its inputs so both the benchmark harness and the quality
+ * gate can derive the same answer without sharing runtime state.
  *
  * @param branch - Branch name, e.g. `process.env.GITHUB_REF_NAME`.
+ * @param override - Explicit population, `mocked` or `live`, e.g.
+ * `process.env.BENCHMARK_MOCK_MODE`. Any other value, including the empty
+ * string an unset workflow input expands to, falls through to the branch.
  */
 export function resolveBenchmarkMockMode(
   branch: string | undefined,
