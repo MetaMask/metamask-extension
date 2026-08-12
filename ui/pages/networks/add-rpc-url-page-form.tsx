@@ -40,7 +40,9 @@ export const AddRpcUrlPageForm = ({
   const [name, setName] = useState('');
   const [rpcValidationError, setRpcValidationError] = useState<string>();
   const [isValidatingRpcUrl, setIsValidatingRpcUrl] = useState(false);
+  const [validatedUrl, setValidatedUrl] = useState<string>();
   const validationRequestIdRef = useRef(0);
+  const latestUrlRef = useRef(url);
   const debouncedUrl = useDebouncedValue(url);
 
   const getUrlError = (nextUrl: string) => {
@@ -60,7 +62,9 @@ export const AddRpcUrlPageForm = ({
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextUrl = event.target.value;
     setUrl(nextUrl);
+    latestUrlRef.current = nextUrl;
     setRpcValidationError(undefined);
+    setValidatedUrl(undefined);
   };
 
   useEffect(() => {
@@ -70,24 +74,31 @@ export const AddRpcUrlPageForm = ({
     const debouncedUrlError = getUrlError(debouncedUrl);
 
     if (!trimmedUrl || debouncedUrlError) {
+      setValidatedUrl(undefined);
       setIsValidatingRpcUrl(false);
       return;
     }
 
     setIsValidatingRpcUrl(true);
+    const isCurrentValidation = () =>
+      validationRequestIdRef.current === requestId &&
+      latestUrlRef.current.trim() === trimmedUrl;
+
     jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
       .then(() => {
-        if (validationRequestIdRef.current === requestId) {
+        if (isCurrentValidation()) {
           setRpcValidationError(undefined);
+          setValidatedUrl(trimmedUrl);
         }
       })
       .catch(() => {
-        if (validationRequestIdRef.current === requestId) {
+        if (isCurrentValidation()) {
           setRpcValidationError(t('failedToFetchChainId'));
+          setValidatedUrl(undefined);
         }
       })
       .finally(() => {
-        if (validationRequestIdRef.current === requestId) {
+        if (isCurrentValidation()) {
           setIsValidatingRpcUrl(false);
         }
       });
@@ -95,7 +106,10 @@ export const AddRpcUrlPageForm = ({
 
   const error = urlError ?? rpcValidationError;
   const isSubmitDisabled =
-    !url.trim() || url !== debouncedUrl || Boolean(error) || isValidatingRpcUrl;
+    !url.trim() ||
+    validatedUrl !== url.trim() ||
+    Boolean(error) ||
+    isValidatingRpcUrl;
   const handleSubmit = () => {
     if (isSubmitDisabled) {
       return;
