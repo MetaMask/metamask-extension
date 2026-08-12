@@ -340,18 +340,23 @@ function getPreferredToken({
     return undefined;
   }
 
-  const candidates: Asset[] = [];
-  for (const preferred of preferredTokensFromFlags) {
-    const matchingToken = tokens.find(
-      (token) =>
-        token.address?.toLowerCase() === preferred.address.toLowerCase() &&
-        String(token.chainId)?.toLowerCase() ===
-          preferred.chainId.toLowerCase(),
-    );
-    if (matchingToken) {
-      candidates.push(matchingToken);
-    }
-  }
+  const candidates = preferredTokensFromFlags.reduce<Asset[]>(
+    (result, preferred) => {
+      const matchingToken = tokens.find(
+        (token) =>
+          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferred.chainId.toLowerCase(),
+      );
+
+      if (matchingToken) {
+        result.push(matchingToken);
+      }
+
+      return result;
+    },
+    [],
+  );
 
   // Post-quote withdraws: first held preferred token (no fiat floor).
   if (isPostQuoteWithdraw && candidates.length) {
