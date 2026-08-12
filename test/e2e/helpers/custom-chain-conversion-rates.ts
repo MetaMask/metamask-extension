@@ -156,7 +156,9 @@ export const CHAIN_CONFIGS: ChainConfig[] = [
  * @param config - The chain to build a fixture for.
  * @returns A `FixtureBuilderV2` for further chaining.
  */
-export function getCustomChainFixtureBuilder(config: ChainConfig): FixtureBuilderV2 {
+export function getCustomChainFixtureBuilder(
+  config: ChainConfig,
+): FixtureBuilderV2 {
   return new FixtureBuilderV2()
     .withNetworkControllerOnCustomNetwork({
       chainId: config.chainIdHex,

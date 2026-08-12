@@ -40,8 +40,9 @@ describe('HyperEVM unsupported crypto handling', function () {
       {
         fixtures: getCustomChainFixtureBuilder(HYPE_CONFIG).build(),
         localNodeOptions: HYPE_CONFIG.localNodeOptions,
-        testSpecificMock: (mockServer: Parameters<typeof mockChainConversionRateApis>[0]) =>
-          mockChainConversionRateApis(mockServer, HYPE_CONFIG),
+        testSpecificMock: (
+          mockServer: Parameters<typeof mockChainConversionRateApis>[0],
+        ) => mockChainConversionRateApis(mockServer, HYPE_CONFIG),
         title: this.test?.fullTitle(),
         // The "unsupported cryptocurrencies" console error is expected
         // since the test verifies the UI handles it gracefully.

@@ -37,12 +37,7 @@ CHAIN_CONFIGS.forEach((config) => {
             mockChainConversionRateApis(mockServer, config),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-        }: {
-          driver: Driver;
-          localNodes?: Anvil[];
-        }) => {
+        async ({ driver }: { driver: Driver; localNodes?: Anvil[] }) => {
           // Login without balance validation — the homepage overview shows
           // "25 ETH" by default, but these chains have different native
           // symbols. The Tokens tab is verified below instead.
