@@ -208,11 +208,11 @@ describe('MultichainAccountCell', () => {
     expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
   });
 
-  it('hides balance value when privacy mode is enabled with balancePosition below-name', () => {
+  it('hides balance value when privacy mode is enabled with balancePosition subtitle', () => {
     const props = {
       ...defaultProps,
       privacyMode: true,
-      balancePosition: 'below-name' as const,
+      balancePosition: 'subtitle' as const,
     };
 
     renderWithProvider(<MultichainAccountCell {...props} />, store);
