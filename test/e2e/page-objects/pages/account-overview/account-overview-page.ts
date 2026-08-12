@@ -1,12 +1,8 @@
-/**
- * BUGBOT PROBE ONLY — intentional POM anti-patterns for MMQA-2248 CI validation.
- * Remove after confirming Bugbot catches these on the PR.
- */
 import { Driver } from '../../../webdriver/driver';
 import HeaderNavbar from '../header-navbar';
 import HomePage from '../home/homepage';
 
-class BugbotProbePage {
+class AccountOverviewPage {
   private readonly driver: Driver;
 
   private readonly nextButton = '[data-testid="page-container-footer-next"]';
@@ -16,8 +12,7 @@ class BugbotProbePage {
   }
 
   /**
-   * 3.8 — page object imports and invokes other page objects
-   * 3.9 — try/catch in a page object
+   * Navigates back to the homepage and opens the account menu.
    */
   async goHomeAndOpenAccountMenu(): Promise<void> {
     try {
@@ -27,9 +22,9 @@ class BugbotProbePage {
       await headerNavbar.openAccountMenu();
       await this.driver.clickElement(this.nextButton);
     } catch (error) {
-      console.log('Probe swallowed error', error);
+      console.log('Could not open the account menu', error);
     }
   }
 }
 
-export default BugbotProbePage;
+export default AccountOverviewPage;

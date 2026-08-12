@@ -39,7 +39,7 @@ Use the rules in the [unit testing guidelines](rules/unit-testing-guidelines/RUL
 - Check for proper imports from the E2E framework
 - Verify Page Object Model pattern is used
 - Ensure tests are written in TypeScript (.spec.ts)
-- **ALWAYS** apply POM anti-pattern detectors in sections **3.3–3.9** for changes under `test/e2e/` (flows, page objects, and specs). These catch issues Bugbot historically missed (selectors in flows, single-page flows, helpers/direct driver use in specs, hardcoded delays, page-object coupling, try/catch in POMs).
+- **ALWAYS** apply the Page Object Model rules in sections **3.3–3.9** to every changed file under `test/e2e/`. Report each match as a review comment, even when the code is otherwise correct: these are maintainability defects that block merge in this repo.
 
 Use the rules in the [e2e-testing-guidelines](rules/e2e-testing-guidelines/RULE.md) to enforce the test quality and bug detection.
 
@@ -108,186 +108,61 @@ When both conditions hold, inspect the fixture builder chain in the same `withFi
   - `📋 Snap E2E tests should use \`.withSnapsPrivacyWarningAlreadyShown()\` on the fixture builder so the snap privacy warning is already dismissed. This avoids extra UI steps and reduces flakiness.`
   - `✅ Add \`.withSnapsPrivacyWarningAlreadyShown()\` to the FixtureBuilderV2 chain, e.g. \`new FixtureBuilderV2().withSnapsPrivacyWarningAlreadyShown().build()\` or chain it with other methods.`
 
-#### 3.3 POM Anti-Pattern: Locators / Selectors in Flow Files
+#### 3.3 Locators in flow files
 
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/page-objects/flows/**/*.{ts,js}` files.
-- Goal: keep all locators in page objects. Flows orchestrate page objects; they must not define or use raw selectors.
+**Flag** any locator in `test/e2e/page-objects/flows/**`: a `data-testid` or CSS string, a `{ css }` / `{ text, tag }` object, or a constant named `*Button`, `*Input`, `*Link`, `*Selector`, `*Locator`, `*TestId` — including locators passed to `driver.clickElement`, `driver.findElement`, `driver.waitForSelector`, or `driver.fill`.
 
-##### Trigger Signals (changed lines only)
+**Do not flag** flows that only call page object methods or other flows, or that use `driver.navigate()` and window-switching helpers.
 
-- Locator-style string or object used with driver APIs in a flow file:
-  - `driver.clickElement(`, `driver.findElement(`, `driver.waitForSelector(`, `driver.clickElementAndWaitForWindowToClose(`, `driver.fill(`, `driver.isElementPresent(`, `driver.isElementPresentAndVisible(`
-  - Arguments that look like locators: `'[data-testid=...'`, `'.css-class'`, `{ css: ... }`, `{ text: ..., tag: ... }`, `` `[data-testid="${...}"]` ``
-- Locator constants / fields defined in a flow file:
-  - `const ...Button =`, `readonly ...Button =`, `private ...Selector =`, or similar names ending in `Button`, `Input`, `Link`, `Selector`, `Locator`, `TestId`
-  - Regex (examples): `data-testid`, `By\.(css|xpath)`, `css:\s*['\"]`
+Severity: HIGH. Comment: "Locators must live in page object classes, not in flow files. Move this locator into a page object under `test/e2e/page-objects/pages/` and call that method from the flow."
 
-##### Compatibility Check Before Reporting
+#### 3.4 Flows that use a single page object
 
-- If the flow only calls page-object methods (no raw locator args to `driver.*`), do not report.
-- If the flow imports another flow and only calls flow/page-object APIs, do not report.
-- Calling `driver.navigate()`, `driver.switchToWindow*`, or similar non-locator driver helpers is allowed and should not be reported under this rule.
+**Flag** any exported function in `test/e2e/page-objects/flows/**` whose body instantiates exactly one page object type (`new SomePage(`) and calls no other flow.
 
-##### Severity and Message
+**Do not flag** functions that instantiate two or more distinct page objects, or that combine a page object with a call to another flow.
 
-- Severity: **HIGH** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Locators/selectors must live in page object classes, not in flow files.`
-  - `✅ Move the locator into the relevant page object under \`test/e2e/page-objects/pages/\`, expose a method on that page object, and call the method from the flow.`
+Severity: HIGH. Comment: "Flows are for workflows that span more than one page object. Move this method onto the page object class it uses."
 
-#### 3.4 POM Anti-Pattern: Flow Used When Only One Page Object Is Needed
+#### 3.5 UI helper functions in spec files
 
-- Analyze only changed lines in the PR diff (inspect the full new/changed flow function when a trigger is found).
-- Scope: `test/e2e/page-objects/flows/**/*.{ts,js}` files.
-- Goal: flows exist to coordinate **two or more** page objects (or page object + another flow). Single-page-object actions belong on that page object.
+**Flag** any function declared in `test/e2e/**/*.spec.{ts,js}` at module or `describe` scope whose body performs UI actions: calls `driver.clickElement`, `driver.findElement`, `driver.waitForSelector`, `driver.fill`, or `driver.delay`; instantiates a page object; or uses a locator.
 
-##### Trigger Signals (changed lines only)
+**Do not flag** pure data helpers (fixtures, mock JSON, expected values, constants) with no UI interaction, or hooks that only call existing flows and page object methods.
 
-- New or modified exported flow function / method in a `*.flow.ts` file.
-- Inside that function body, exactly one page-object construction of the form `new SomePage(` / `new SomePageObject(` (count distinct page-object types instantiated).
+Severity: HIGH. Comment: "Specs must not define helpers that perform UI actions. Move the steps into a page object method, or into a flow when more than one page object is needed."
 
-##### Compatibility Check Before Reporting
+#### 3.6 Specs interacting with elements directly
 
-- If the function instantiates **two or more** distinct page objects, do not report.
-- If the function calls another flow (import from `*.flow`) **and** uses a page object, do not report (cross-page orchestration).
-- If the function only wraps driver window/navigation helpers with no page object, do not report under this rule (may still violate other rules).
-- If the single page object is used together with another flow call that itself covers other pages, do not report.
+**Flag** any direct element interaction in `test/e2e/**/*.spec.{ts,js}`: `driver.clickElement`, `clickElementSafe`, `clickElementAndWaitToDisappear`, `clickElementAndWaitForWindowToClose`, `findElement`, `findElements`, `waitForSelector`, `waitForElementNotPresent`, `fill`, `press`, `isElementPresent`, `isElementPresentAndVisible`, or any inline locator.
 
-##### Severity and Message
+**Do not flag** `driver.navigate()`, window and tab helpers (`getAllWindowHandles`, `switchToWindow*`, `closeWindow`), fixture setup, or request mocking.
 
-- Severity: **HIGH** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Flows should be used when more than one page object is needed. This flow only uses a single page object.`
-  - `✅ Move this method onto that page object class. Reserve flows for multi-page workflows (see contributor-docs POM best practices).`
+Severity: HIGH. Comment: "Specs must not interact with page elements directly. Call a page object method or a flow, and keep locators inside page objects."
 
-#### 3.5 POM Anti-Pattern: Helper Functions With UI Actions in Spec Files
+#### 3.7 Hardcoded delays
 
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/**/*.spec.{ts,js}` files.
-- Goal: specs must only call page-object methods or flows; do not define local helpers that perform UI steps.
+**Flag** `driver.delay(` and `new Promise((resolve) => setTimeout(resolve, ...))` in `test/e2e/**` specs, page objects, and flows.
 
-##### Trigger Signals (changed lines only)
+**Do not flag** a delay whose preceding comment (within three lines) explains why a condition wait is not possible, or delays in `test/e2e/webdriver/` framework code.
 
-- Local helper declared in a spec file:
-  - `async function ...(` / `const ... = async (` / `async (...) =>` at module or describe scope (not inside an `it`/`test` body as a one-liner callback).
-- Helper body performs UI actions, for example:
-  - `driver.clickElement`, `driver.findElement`, `driver.waitForSelector`, `driver.fill`, `driver.delay`
-  - `new SomePage(`, `new SomePageObject(`, or calls into page-object methods
-  - Imports and calls of raw selectors / locators
+Severity: MEDIUM. Comment: "Avoid hardcoded delays; wait for a condition instead (`waitForSelector`, `waitForElementNotPresent`, `driver.wait`). If a fixed delay is unavoidable, add a comment explaining why."
 
-##### Compatibility Check Before Reporting
+#### 3.8 Page objects invoking other page objects
 
-- Pure data helpers (builders, expected values, mock JSON, constants) with **no** driver/page-object UI interaction: do not report.
-- Shared helpers that already live under `test/e2e/page-objects/` or dedicated `*.flow.ts` files: out of scope for this rule.
-- Mocha hooks (`before`/`beforeEach`/`after`/`afterEach`) that only call existing flows/page objects: do not report solely for being a helper; still report if they embed raw locators (see 3.6).
+**Flag** any file under `test/e2e/page-objects/pages/**` that imports another page class or instantiates one with `new OtherPage(this.driver)`.
 
-##### Severity and Message
+**Do not flag** imports of types, enums, constants, or non-page helpers, and do not flag `extends` of a shared base page.
 
-- Severity: **HIGH** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Do not put helper functions that perform test/UI actions in spec files.`
-  - `✅ Move the steps into a page object method, or into a flow if more than one page object is required. Specs should only call page object methods or flows.`
+Severity: HIGH. Comment: "Page objects must stay independent to avoid circular references and hidden workflows. Move multi-page steps into a flow under `test/e2e/page-objects/flows/`."
 
-#### 3.6 POM Anti-Pattern: Specs Interact With Elements Directly
+#### 3.9 try/catch in page objects and flows
 
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/**/*.spec.{ts,js}` files.
-- Goal: tests should only call page-object methods or flows; they must not interact with page elements via the driver.
+**Flag** every `try`/`catch` in `test/e2e/page-objects/**` (pages and flows), including catch blocks that only log or rethrow.
 
-##### Trigger Signals (changed lines only)
+**Do not flag** `try`/`catch` inside `driver.wait` polling callbacks that return `false`, or framework helpers in `test/e2e/webdriver/`.
 
-- In a spec file, direct driver element interaction:
-  - `driver.clickElement(`, `driver.clickElementSafe(`, `driver.clickElementAndWaitToDisappear(`, `driver.clickElementAndWaitForWindowToClose(`, `driver.findElement(`, `driver.findElements(`, `driver.waitForSelector(`, `driver.waitForElementNotPresent(`, `driver.fill(`, `driver.press(`, `driver.isElementPresent(`, `driver.isElementPresentAndVisible(`
-- Inline locators in the spec: `'[data-testid=...'`, `{ css: ... }`, `{ text: ..., tag: ... }`
-
-##### Compatibility Check Before Reporting
-
-- Allowed without reporting:
-  - `driver.navigate(`, window/tab helpers (`getAllWindowHandles`, `switchToWindow*`, `closeWindow`, etc.)
-  - Fixture setup (`withFixtures`, mocking endpoints) that does not click/find UI via locators
-  - Assertions that use page-object `check*` methods
-- If the same change also introduces a proper page-object/flow API and the driver call is clearly temporary scaffolding, still report (prefer fixing before merge).
-
-##### Severity and Message
-
-- Severity: **HIGH** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Specs must not interact with page elements directly.`
-  - `✅ Call a page object method or a flow instead. Keep locators inside page objects under \`test/e2e/page-objects/pages/\`.`
-
-#### 3.7 POM Anti-Pattern: Hardcoded Delays
-
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/**/*.{ts,js}` (specs, page objects, and flows).
-- Goal: prefer wait-for conditions over fixed sleeps to reduce flakiness and runtime.
-
-##### Trigger Signals (changed lines only)
-
-- `driver.delay(`
-- `await new Promise(...setTimeout...`
-- `setTimeout(` used as a wait in async test code
-- Regex: `driver\.delay\s*\(` or `new\s+Promise\s*\(\s*(?:async\s*)?\(?\s*resolve\s*\)?\s*=>\s*setTimeout`
-
-##### Compatibility Check Before Reporting
-
-- If the **immediately preceding comment** (same line or 1–3 lines above) explains why a fixed delay is required and why a condition wait is not possible, do not report.
-- Do not report delays inside framework code under `test/e2e/webdriver/` unless the change newly introduces an unnecessary sleep in a page object/spec/flow.
-
-##### Severity and Message
-
-- Severity: **MEDIUM** (stability), non-blocking.
-- Suggested comment:
-  - `⚠️ Avoid hardcoded delays. Wait for a condition instead (\`waitForSelector\`, \`waitForElementNotPresent\`, \`driver.wait\`, etc.).`
-  - `✅ If a fixed delay is unavoidable, keep it and add a short comment explaining why a condition wait is not possible.`
-
-#### 3.8 POM Anti-Pattern: Page Objects Invoking Other Page Objects
-
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/page-objects/pages/**/*.{ts,js}` files.
-- Goal: page objects stay independent. Cross-page workflows belong in flows.
-
-##### Trigger Signals (changed lines only)
-
-- Import of another page object from `page-objects/pages` (or relative `../` page modules) inside a page object file:
-  - `import X from '../...';` / `import { X } from '../...';` where `X` is a page class
-- Instantiation of another page object: `new OtherPage(this.driver)` / `new OtherPage(driver)` inside a page object class
-
-##### Compatibility Check Before Reporting
-
-- Importing shared types, enums, constants, or non-page helpers: do not report.
-- Base-class / inheritance patterns (`extends SomeBasePage`) in the same feature folder: do not report when it is clearly a shared base, not a second screen collaborator.
-- A page object constructing **itself** recursively: do not report.
-- If the change only moves existing coupling without adding new cross-page calls, still report new/changed coupling lines.
-
-##### Severity and Message
-
-- Severity: **HIGH** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Page objects must not invoke other page objects (avoids circular references and hidden workflows).`
-  - `✅ Move the multi-page steps into a flow under \`test/e2e/page-objects/flows/\` that instantiates the needed page objects.`
-
-#### 3.9 POM Anti-Pattern: `try` / `catch` in Page Objects and Flows
-
-- Analyze only changed lines in the PR diff.
-- Scope: `test/e2e/page-objects/**/*.{ts,js}` (pages and flows).
-- Goal: page objects and flows should fail clearly; do not swallow or rebrand errors with `try`/`catch`.
-
-##### Trigger Signals (changed lines only)
-
-- `try {` / `catch (` introduced in a page object or flow file.
-
-##### Compatibility Check Before Reporting
-
-- Do not report `try`/`catch` in `test/e2e/webdriver/` framework helpers unless the PR is specifically changing page objects/flows.
-- If catch only rethrows without changing control flow meaningfully, still report (prefer removing the try/catch).
-
-##### Severity and Message
-
-- Severity: **MEDIUM** (POM anti-pattern), non-blocking.
-- Suggested comment:
-  - `❌ ANTI-PATTERN: Do not use try/catch in E2E page objects or flows.`
-  - `✅ Let failures surface. Use driver wait helpers and page-object \`check\*\` methods with clear error messages instead of catching errors.`
+Severity: MEDIUM. Comment: "Do not use try/catch in E2E page objects or flows — let failures surface. Use driver wait helpers and `check*` methods with clear error messages."
 
 ### 4. Controller Guidelines
 
