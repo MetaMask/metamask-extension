@@ -57,7 +57,9 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$0.00');
     expect(screen.getByText('Earn up to 4.2% APY')).toBeInTheDocument();
     expect(screen.getByText('How it works')).toBeInTheDocument();
-    expect(screen.getByTestId('money-how-it-works-description')).toHaveTextContent(
+    expect(
+      screen.getByTestId('money-how-it-works-description'),
+    ).toHaveTextContent(
       'Add mUSD and earn up to 4.2% APY. Your balance is dollar-backed and ready to spend, trade, or send anytime.',
     );
     expect(
@@ -65,7 +67,9 @@ describe('MoneyHomePage', () => {
         '4.2% APY',
       ),
     ).toHaveClass('text-success-default');
-    expect(screen.queryByTestId('money-eligible-assets')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-eligible-assets'),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Benefits')).toBeInTheDocument();
     expect(screen.getByText('Auto-earn up to ~4.2% APY')).toBeInTheDocument();
     expect(
@@ -87,10 +91,12 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
-    expect(screen.getByTestId('money-activity-placeholder')).toBeInTheDocument();
-    expect(screen.getAllByTestId('money-activity-placeholder-row')).toHaveLength(
-      3,
-    );
+    expect(
+      screen.getByTestId('money-activity-placeholder'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByTestId('money-activity-placeholder-row'),
+    ).toHaveLength(3);
   });
 
   it('keeps all groundwork actions inert', () => {

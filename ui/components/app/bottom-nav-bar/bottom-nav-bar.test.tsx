@@ -190,10 +190,7 @@ describe('BottomNavBar', () => {
     });
 
     it('marks Money as active on the Money home route', () => {
-      const { getByTestId } = renderBottomNavBar(
-        baseState,
-        MONEY_HOME_ROUTE,
-      );
+      const { getByTestId } = renderBottomNavBar(baseState, MONEY_HOME_ROUTE);
 
       expect(getByTestId('bottom-nav-money')).toHaveAttribute(
         'aria-current',

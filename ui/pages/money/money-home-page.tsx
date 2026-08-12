@@ -29,8 +29,7 @@ import { MoneyActivityPlaceholder } from './components/money-activity-placeholde
 
 const ELIGIBLE_ASSET_SYMBOLS = new Set(['DAI', 'ETH', 'SOL', 'USDC', 'USDT']);
 const MAX_ASSET_PREVIEW_COUNT = 5;
-const MONEY_ONBOARDING_ARTWORK =
-  './images/money-onboarding-stepper-step-1.png';
+const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 
 type ActionCardProps = {
   icon: IconName;
@@ -60,9 +59,7 @@ export function MoneyHomePage() {
   const t = useI18nContext();
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const address = availability.isAvailable
-    ? availability.address
-    : undefined;
+  const address = availability.isAvailable ? availability.address : undefined;
   const { query: balanceQuery, formattedBalance } =
     useMoneyAccountBalance(address);
   const { query: apyQuery, formattedApy } = useMoneyVaultApy(
@@ -182,10 +179,7 @@ export function MoneyHomePage() {
             className="h-[185px] w-full rounded-[14px] object-cover"
           />
           <div>
-            <Text
-              variant={TextVariant.HeadingLg}
-              fontWeight={FontWeight.Bold}
-            >
+            <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
               {apyDisplay
                 ? t('moneyEarnApyTitle', [apyDisplay])
                 : t('moneyEarnTitle')}
@@ -209,10 +203,7 @@ export function MoneyHomePage() {
       <div className="mx-auto mt-3 w-full max-w-[816px]">
         <section className="px-4 py-3">
           <div className="flex items-center gap-1">
-            <Text
-              variant={TextVariant.HeadingMd}
-              fontWeight={FontWeight.Bold}
-            >
+            <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
               {t('moneyHowItWorks')}
             </Text>
             <Icon
