@@ -3,7 +3,9 @@
 ## Status
 
 Steps 1 and 2 are complete: the global blocked list and enrollment route
-migrations are implemented and tested. Work is paused for review before Step 3.
+migrations are implemented and tested. Steps 2.5 and 2.6 consolidate both the
+enrollment transport and WebAuthn ceremony orchestration in a reusable hook.
+Work is paused for review before Step 3.
 
 This plan follows the existing route-messenger patterns used by:
 
@@ -23,8 +25,9 @@ Each passkey migration unit must therefore add all of the following together:
 
 1. A colocated `messenger.ts` describing one real route's capabilities.
 2. Route or feature-subtree wiring with those capabilities.
-3. A typed `useMessenger` call in the consumer.
-4. Tests for the action call and route wiring.
+3. A focused reusable hook when the same messenger actions are called by
+   multiple consumers; otherwise, a typed `useMessenger` call in the consumer.
+4. Tests for the hook/action call and route wiring.
 5. Removal of the corresponding legacy UI wrapper only when all of its callers
    have migrated.
 
@@ -257,19 +260,67 @@ provides a reusable route-level mechanism for future settings migrations.
 `SetupPasskeyContent` and `PasskeyVerification` are shared by multiple routes.
 They must not import one route's capability constant.
 
-Use one of these patterns:
+Put reusable messenger-action hooks under `ui/hooks/passkey/`. Hooks define only
+the minimum `RouteMessenger<...>` action union they need; they do not define or
+grant route capabilities. Every parent route must still explicitly delegate the
+actions used by its hooks.
 
-- Define the minimum `RouteMessenger<...>` type needed by the shared component,
-  then call `useMessenger` inside it. Every parent route must delegate that
-  action.
-- For enrollment, pass typed action callbacks from each route adapter into
-  `SetupPasskeyContent` if direct messenger use would couple the shared
-  component to route concerns.
+Hooks should:
 
-Prefer the first pattern for `PasskeyVerification`, which only needs
-`PasskeyController:generateAuthenticationOptions`. Use the callback-adapter
-pattern for `SetupPasskeyContent` if it keeps onboarding and restore-vault route
-ownership clearer.
+- Wrap repeated action names and parameter-shape conversion.
+- Return stable callbacks using `useCallback`.
+- Preserve controller error propagation.
+- Contain transport-level preparation shared by every caller, such as the PRF
+  support check before generating registration options.
+- Avoid metrics, navigation, toasts, loading presentation, and WebAuthn ceremony
+  sequencing when those differ between product flows.
+
+Do not create one broad `usePasskeyController` hook containing every action.
+Use focused hooks so a component cannot accidentally appear to have
+capabilities its route did not delegate.
+
+### Enrollment hook
+
+Before Step 3, extract the messenger calls currently duplicated by
+`SetupPasskeyContent` and `PasskeyRegisterSubPage` into:
+
+```text
+ui/hooks/passkey/usePasskeyEnrollment.ts
+ui/hooks/passkey/usePasskeyEnrollment.test.ts
+```
+
+The hook should expose stable callbacks equivalent to:
+
+- `generateRegistrationOptions()`
+  - Checks `isPasskeyPRFSupported`.
+  - Calls `PasskeyController:generateRegistrationOptions` with
+    `{ prfAvailable }`.
+- `generatePostRegistrationAuthenticationOptions(registrationResponse)`
+  - Calls the controller with `{ registrationResponse }`.
+- `protectVaultKeyWithPasskey(params)`
+  - Calls the controller with the existing object-shaped registration,
+    authentication, and optional-password parameters.
+
+The components continue to own:
+
+- Enrollment-step UI state.
+- Metrics and Sentry context.
+- `forceUpdateMetamaskState`.
+- Toasts and navigation.
+
+### Future hooks added just in time
+
+Add these only when their migration step begins:
+
+- Step 3: focused authentication-option and passkey-removal hooks.
+- Step 4: unlock hook that calls
+  `LegacyBackgroundApiService:unlockWithPasskey`.
+- Step 5: password-change hook that calls the mutex-protected legacy service.
+- Step 6: private-key export hook.
+- Step 7: JSON-safe seed-phrase export hook.
+
+If a future action has only one caller and a hook adds no meaningful
+abstraction, keep a typed `useMessenger` call in that route instead.
 
 ## Incremental implementation sequence
 
@@ -291,6 +342,37 @@ Review checkpoint: confirm the hard security boundary.
 
 Review checkpoint: validate registration, post-registration authentication,
 PRF selection, state refresh, and metrics.
+
+### 2.5. Refactor enrollment messenger calls into a reusable hook
+
+- Add `usePasskeyEnrollment` and its colocated unit test.
+- Move the three repeated enrollment messenger calls and PRF capability check
+  into the hook.
+- Update `SetupPasskeyContent` and `PasskeyRegisterSubPage` to use the hook.
+- Keep route-local capability declarations unchanged.
+- Keep ceremony sequencing, metrics, Sentry handling, state refresh, toasts,
+  and navigation in the components.
+- Verify the hook uses exact action names and object-shaped parameters.
+- Verify PRF-supported, PRF-unsupported, success, and error propagation cases.
+
+Review checkpoint: confirm the hook removes transport duplication without
+broadening any route's capabilities or changing enrollment behavior.
+
+### 2.6. Consolidate enrollment ceremony orchestration
+
+- Expand `usePasskeyEnrollment` with one `enrollWithPasskey` operation.
+- Move registration, post-registration authentication, vault protection, and
+  WebAuthn ceremony sequencing into the hook.
+- Report `register`, `verify`, and `enroll` stage changes to callers so they
+  retain control of UI state, metrics, and error context.
+- Cancel an active ceremony when the hook unmounts.
+- Mock the enrollment hook—not route messenger internals—in component tests.
+- Keep route capability allowlists explicit and route-local.
+- Keep state refresh, metrics, Sentry reporting, toasts, and navigation in the
+  components.
+
+Review checkpoint: confirm ceremony sequencing has one implementation while
+flow-specific behavior remains in each component.
 
 ### 3. Migrate passkey removal routes
 
@@ -364,6 +446,15 @@ For each migration:
 - Assert errors propagate through the existing UI error handling.
 - Assert loading, metrics, toasts, and navigation remain unchanged.
 
+### Reusable hook tests
+
+- Mock `useMessenger` or use `createMockRouteMessenger`.
+- Assert exact action names and parameter objects.
+- Assert callbacks remain stable across rerenders.
+- Cover shared preparation logic such as PRF support detection.
+- Assert controller errors are not swallowed or translated by transport hooks.
+- Keep route-capability assertions in route tests, not hook tests.
+
 ### Route wiring tests
 
 - Top-level routes: assert `createRouteWithMessenger` receives the correct path,
@@ -404,6 +495,8 @@ Run relevant E2E coverage:
 
 - Every migrated call uses a route-scoped messenger.
 - Every capability declaration is colocated with and wired to a real route.
+- Repeated messenger action calls use focused hooks without owning route
+  capabilities.
 - No route receives passkey actions it does not use.
 - No plaintext vault-key primitive is exposed to the UI.
 - Unlock and password change retain extension orchestration.

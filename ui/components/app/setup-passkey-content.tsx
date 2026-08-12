@@ -40,18 +40,14 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
-  isPasskeyPRFSupported,
 } from '../../../shared/lib/passkey';
 import { captureException } from '../../../shared/lib/sentry';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
-import { useMessenger } from '../../hooks/useMessenger';
-import type { RouteMessenger } from '../../messengers/route-messenger';
+import { usePasskeyEnrollment } from '../../hooks/passkey/usePasskeyEnrollment';
 
 import {
   PasskeyEnrollmentSteps,
@@ -64,13 +60,6 @@ const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1000;
 /** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
   'idle';
-
-type PasskeyEnrollmentMessenger = RouteMessenger<
-  | 'PasskeyController:generateRegistrationOptions'
-  | 'PasskeyController:generatePostRegistrationAuthenticationOptions'
-  | 'PasskeyController:protectVaultKeyWithPasskey',
-  never
->;
 
 export type SetupPasskeyContentProps = {
   readonly onNext: () => void;
@@ -89,7 +78,7 @@ export default function SetupPasskeyContent({
   password,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
-  const messenger = useMessenger<PasskeyEnrollmentMessenger>();
+  const { enrollWithPasskey } = usePasskeyEnrollment();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,
@@ -216,30 +205,15 @@ export default function SetupPasskeyContent({
     );
 
     try {
-      const prfSupported = await isPasskeyPRFSupported();
-      const registrationOptions = await messenger.call(
-        'PasskeyController:generateRegistrationOptions',
-        { prfAvailable: prfSupported !== false },
-      );
-      const registrationResponse =
-        await startPasskeyRegistration(registrationOptions);
-
-      setRegisterStepPhase('success');
-      setVerifyStepPhase('loading');
-
-      currentStep = 'verify';
-      const postRegAuthOptions = await messenger.call(
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        { registrationResponse },
-      );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
-
-      currentStep = 'enroll';
-      await messenger.call('PasskeyController:protectVaultKeyWithPasskey', {
-        registrationResponse,
-        authenticationResponse: postRegAuthenticationResponse,
+      await enrollWithPasskey({
         password,
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepPhase('success');
+            setVerifyStepPhase('loading');
+          }
+        },
       });
 
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
@@ -338,8 +312,8 @@ export default function SetupPasskeyContent({
   }, [
     baseProperties,
     dispatch,
+    enrollWithPasskey,
     goToNextStep,
-    messenger,
     t,
     passkeyMethodLabel,
     trackEvent,

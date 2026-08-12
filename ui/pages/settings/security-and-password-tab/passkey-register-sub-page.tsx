@@ -27,12 +27,8 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
-  cancelPasskeyCeremony,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
-  isPasskeyPRFSupported,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import { captureException } from '../../../../shared/lib/sentry';
@@ -43,7 +39,7 @@ import {
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
-import { useMessenger } from '../../../hooks/useMessenger';
+import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
 
 import {
   MetaMetricsEventCategory,
@@ -57,7 +53,6 @@ import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
 } from '../../../components/app/passkey-enrollment-steps';
-import type { PasskeyRegistrationRouteMessenger } from './messenger';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -79,7 +74,7 @@ export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const messenger = useMessenger<PasskeyRegistrationRouteMessenger>();
+  const { enrollWithPasskey } = usePasskeyEnrollment();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -115,13 +110,6 @@ export default function PasskeyRegisterSubPage() {
       DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
-
-  useEffect(
-    () => () => {
-      cancelPasskeyCeremony();
-    },
-    [],
-  );
 
   useEffect(() => {
     // Only redirect when a passkey already exists before enrollment UI. During
@@ -167,30 +155,16 @@ export default function PasskeyRegisterSubPage() {
     let registrationSucceeded = false;
 
     try {
-      const prfSupported = await isPasskeyPRFSupported();
-      const registrationOptions = await messenger.call(
-        'PasskeyController:generateRegistrationOptions',
-        { prfAvailable: prfSupported !== false },
-      );
-      const registrationResponse =
-        await startPasskeyRegistration(registrationOptions);
-      setRegisterStepStatus('success');
-      setVerifyStepStatus('loading');
-      registrationSucceeded = true;
-
-      currentStep = 'verify';
-      const postRegAuthOptions = await messenger.call(
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        { registrationResponse },
-      );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
-
-      currentStep = 'enroll';
-      await messenger.call('PasskeyController:protectVaultKeyWithPasskey', {
-        registrationResponse,
-        authenticationResponse: postRegAuthenticationResponse,
+      await enrollWithPasskey({
         password: walletPassword,
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepStatus('success');
+            setVerifyStepStatus('loading');
+            registrationSucceeded = true;
+          }
+        },
       });
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepStatus('success');
@@ -296,9 +270,9 @@ export default function PasskeyRegisterSubPage() {
   }, [
     createEventBuilder,
     dispatch,
+    enrollWithPasskey,
     goToSettings,
     isPasskeyRegistered,
-    messenger,
     passkeyMethodLabel,
     t,
     trackEvent,

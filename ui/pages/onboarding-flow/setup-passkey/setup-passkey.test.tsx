@@ -14,58 +14,17 @@ import {
 import configureStore from '../../../store/store';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import {
-  isPasskeyPRFSupported,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
-} from '../../../../shared/lib/passkey';
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import SetupPasskey from './setup-passkey';
 import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './messenger';
 
 const mockTrackEvent = jest.fn();
-const mockGeneratePasskeyRegistrationOptions = jest.fn().mockResolvedValue({
-  rp: { name: 'MetaMask' },
-  user: { id: 'AQ', name: 'MetaMask User', displayName: 'MetaMask' },
-  challenge: 'AQ',
-  pubKeyCredParams: [
-    { alg: -7, type: 'public-key' },
-    { alg: -257, type: 'public-key' },
-  ],
-  authenticatorSelection: {
-    residentKey: 'preferred',
-    userVerification: 'required',
-    authenticatorAttachment: 'platform',
-  },
-  extensions: { prf: { eval: { first: 'AQ' } } },
-});
-const mockGeneratePasskeyPostRegistrationAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({
-    challenge: 'post-reg-challenge',
-    allowCredentials: [],
-  });
-const mockProtectVaultKeyWithPasskey = jest.fn().mockResolvedValue(undefined);
-const mockMessengerCall = jest.fn(
-  (action: string, ...args: unknown[]): Promise<unknown> => {
-    if (action === 'PasskeyController:generateRegistrationOptions') {
-      return mockGeneratePasskeyRegistrationOptions(...args);
-    }
-    if (
-      action ===
-      'PasskeyController:generatePostRegistrationAuthenticationOptions'
-    ) {
-      return mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args);
-    }
-    if (action === 'PasskeyController:protectVaultKeyWithPasskey') {
-      return mockProtectVaultKeyWithPasskey(...args);
-    }
-    throw new Error(`Unexpected messenger action: ${action}`);
-  },
-);
+const mockEnrollWithPasskey = jest.fn();
 
-jest.mock('../../../hooks/useMessenger', () => ({
-  useMessenger: () => ({ call: mockMessengerCall }),
+jest.mock('../../../hooks/passkey/usePasskeyEnrollment', () => ({
+  usePasskeyEnrollment: () => ({
+    enrollWithPasskey: mockEnrollWithPasskey,
+  }),
 }));
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -85,28 +44,6 @@ jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
     '../../../../shared/lib/passkey',
   ),
-  startPasskeyRegistration: jest.fn().mockResolvedValue({
-    id: 'AQ',
-    rawId: 'AQ',
-    type: 'public-key',
-    response: {
-      clientDataJSON: 'e30',
-      attestationObject: 'e30',
-    },
-    clientExtensionResults: {},
-  }),
-  startPasskeyAuthentication: jest.fn().mockResolvedValue({
-    id: 'AQ',
-    rawId: 'AQ',
-    type: 'public-key',
-    response: {
-      clientDataJSON: 'e30',
-      authenticatorData: 'AA',
-      signature: 'AA',
-    },
-    clientExtensionResults: {},
-  }),
-  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -115,18 +52,6 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   ),
   captureException: jest.fn(),
 }));
-
-const mockAuthenticationResponse = {
-  id: 'AQ',
-  rawId: 'AQ',
-  type: 'public-key' as const,
-  response: {
-    clientDataJSON: 'e30',
-    authenticatorData: 'AA',
-    signature: 'AA',
-  },
-  clientExtensionResults: {},
-};
 
 jest.mock('../../../store/actions', () => {
   const actual = jest.requireActual('../../../store/actions');
@@ -173,29 +98,20 @@ const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 describe('SetupPasskey', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
-    mockMessengerCall.mockClear();
-    jest.mocked(startPasskeyRegistration).mockClear();
-    jest.mocked(startPasskeyAuthentication).mockClear();
-    jest.mocked(isPasskeyPRFSupported).mockResolvedValue(true);
-    mockProtectVaultKeyWithPasskey.mockReset();
-    mockProtectVaultKeyWithPasskey.mockResolvedValue(undefined);
-    mockGeneratePasskeyRegistrationOptions.mockClear();
-    mockGeneratePasskeyPostRegistrationAuthenticationOptions.mockClear();
+    mockEnrollWithPasskey.mockReset();
+    mockEnrollWithPasskey.mockImplementation(
+      async ({
+        onStageChange,
+      }: {
+        onStageChange?: (stage: string) => void;
+      }) => {
+        onStageChange?.('register');
+        onStageChange?.('verify');
+        onStageChange?.('enroll');
+      },
+    );
     jest.mocked(forceUpdateMetamaskState).mockReset();
     jest.mocked(forceUpdateMetamaskState).mockResolvedValue(undefined);
-    jest.mocked(startPasskeyRegistration).mockResolvedValue({
-      id: 'AQ',
-      rawId: 'AQ',
-      type: 'public-key',
-      response: {
-        clientDataJSON: 'e30',
-        attestationObject: 'e30',
-      },
-      clientExtensionResults: {},
-    });
-    jest
-      .mocked(startPasskeyAuthentication)
-      .mockResolvedValue(mockAuthenticationResponse);
   });
 
   function renderSetupPasskey(mockStore: ReturnType<typeof buildMockStore>) {
@@ -377,21 +293,6 @@ describe('SetupPasskey', () => {
   });
 
   describe('set up biometrics', () => {
-    it('does not request PRF when the platform does not support it', async () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      jest.mocked(isPasskeyPRFSupported).mockResolvedValue(false);
-      const { getByTestId } = renderSetupPasskey(mockStore);
-
-      fireEvent.click(getByTestId('passkey-set-up-button'));
-
-      await waitFor(() => {
-        expect(mockMessengerCall).toHaveBeenCalledWith(
-          'PasskeyController:generateRegistrationOptions',
-          { prfAvailable: false },
-        );
-      });
-    });
-
     it('shows step checklist while registering and verifying, then navigates', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       jest
@@ -410,39 +311,8 @@ describe('SetupPasskey', () => {
         expect(screen.getByTestId('passkey-setup-steps')).toBeInTheDocument();
       });
       await waitFor(() => {
-        expect(
-          mockGeneratePasskeyPostRegistrationAuthenticationOptions,
-        ).toHaveBeenCalled();
+        expect(mockEnrollWithPasskey).toHaveBeenCalled();
       });
-      await waitFor(() => {
-        expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalled();
-      });
-      expect(mockMessengerCall).toHaveBeenNthCalledWith(
-        1,
-        'PasskeyController:generateRegistrationOptions',
-        { prfAvailable: true },
-      );
-      expect(mockMessengerCall).toHaveBeenNthCalledWith(
-        2,
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        {
-          registrationResponse: expect.objectContaining({
-            type: 'public-key',
-          }),
-        },
-      );
-      expect(mockMessengerCall).toHaveBeenNthCalledWith(
-        3,
-        'PasskeyController:protectVaultKeyWithPasskey',
-        expect.objectContaining({
-          registrationResponse: expect.objectContaining({
-            type: 'public-key',
-          }),
-          authenticationResponse: expect.objectContaining({
-            type: 'public-key',
-          }),
-        }),
-      );
       expect(forceUpdateMetamaskState).toHaveBeenCalled();
       await waitFor(
         () => {
@@ -461,16 +331,14 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderSetupPasskey(mockStore);
 
-      jest
-        .mocked(startPasskeyRegistration)
-        .mockRejectedValueOnce(
-          new DOMException('User cancelled', 'NotAllowedError'),
-        );
+      mockEnrollWithPasskey.mockRejectedValueOnce(
+        new DOMException('User cancelled', 'NotAllowedError'),
+      );
 
       fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
-        expect(startPasskeyRegistration).toHaveBeenCalled();
+        expect(mockEnrollWithPasskey).toHaveBeenCalled();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(
@@ -488,16 +356,22 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderSetupPasskey(mockStore);
 
-      jest
-        .mocked(startPasskeyAuthentication)
-        .mockRejectedValueOnce(
-          new DOMException('User cancelled', 'NotAllowedError'),
-        );
+      mockEnrollWithPasskey.mockImplementationOnce(
+        async ({
+          onStageChange,
+        }: {
+          onStageChange?: (stage: string) => void;
+        }) => {
+          onStageChange?.('register');
+          onStageChange?.('verify');
+          throw new DOMException('User cancelled', 'NotAllowedError');
+        },
+      );
 
       fireEvent.click(getByTestId('passkey-set-up-button'));
 
       await waitFor(() => {
-        expect(startPasskeyRegistration).toHaveBeenCalled();
+        expect(mockEnrollWithPasskey).toHaveBeenCalled();
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       await waitFor(() => {
@@ -525,14 +399,14 @@ describe('SetupPasskey', () => {
         );
       });
 
-      expect(startPasskeyRegistration).not.toHaveBeenCalled();
+      expect(mockEnrollWithPasskey).not.toHaveBeenCalled();
     });
 
     it('shows an inline error when protecting the vault key with the passkey fails', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderSetupPasskey(mockStore);
 
-      mockProtectVaultKeyWithPasskey.mockRejectedValueOnce({
+      mockEnrollWithPasskey.mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
       });
 
@@ -554,7 +428,7 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
       const { getByTestId } = renderSetupPasskey(mockStore);
 
-      mockProtectVaultKeyWithPasskey.mockRejectedValueOnce({
+      mockEnrollWithPasskey.mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
       });
 
