@@ -17,6 +17,7 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'PhishingController:bulkScanTokens',
   'AccountsController:getSelectedAccount',
   'RemoteFeatureFlagController:getState',
+  'PreferencesController:getState',
 ] as const;
 
 const ASSETS_CONTROLLER_DELEGATED_EVENTS = [

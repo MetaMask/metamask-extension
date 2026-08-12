@@ -182,8 +182,10 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 }) => {
   const clientController = () => getMessengerClient('ClientController');
 
-  // Get token detection preference
-  const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
+  // Read the token detection preference on each call so the toggle takes
+  // effect without restarting the controller.
+  const tokenDetectionEnabled = (): boolean =>
+    safeGetTokenDetectionEnabled(initMessenger);
 
   // Basic functionality: when true (useExternalServices), token/price APIs are used; when false, RPC only.
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
@@ -227,7 +229,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
-      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      tokenDetectionEnabled,
       balanceInterval: 30_000,
       detectionInterval: 180_000,
     },

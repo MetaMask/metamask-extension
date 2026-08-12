@@ -60,6 +60,9 @@ export function getAssetsControllerMessenger(
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
       'RemoteFeatureFlagController:getState',
+      // "Autodetect tokens" preference, read on every pipeline run so the
+      // toggle takes effect without restarting the controller
+      'PreferencesController:getState',
     ],
     events: [
       // core#9388: RPC balance refresh on account-group switch / tree updates
