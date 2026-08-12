@@ -135,7 +135,7 @@ const SingleAccountCell = ({
     accountId={accountGroupId}
     accountName={accountName}
     balance={balance}
-    balancePosition="below-name"
+    balancePosition="subtitle"
     disableHoverEffect
     onClick={onEdit}
     privacyMode={privacyMode}
