@@ -9,6 +9,9 @@ export class PerpsPositionsBase extends HomePage {
     testId: 'account-overview__perps-tab',
   };
 
+  protected readonly bottomNavPerpsButton =
+    '[data-testid="bottom-nav-perps"]';
+
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',
   };
