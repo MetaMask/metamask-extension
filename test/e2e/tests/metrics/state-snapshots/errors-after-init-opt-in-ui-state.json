@@ -123,13 +123,7 @@
     "country": "string",
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "object",
-        "conversionRate": 1700,
-        "usdConversionRate": null
-      }
-    },
+    "currencyRates": {},
     "currentAppVersion": "string",
     "currentCurrency": "usd",
     "currentExtensionPopupId": "number",
