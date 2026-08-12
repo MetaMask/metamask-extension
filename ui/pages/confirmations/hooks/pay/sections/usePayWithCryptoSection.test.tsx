@@ -167,7 +167,9 @@ describe('usePayWithCryptoSection', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('clears override then opens other assets', () => {
+  it('opens other assets without clearing override', () => {
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+
     const { result } = renderHook(() =>
       usePayWithCryptoSection({ onClose, onOtherAssetsPress }),
     );
@@ -176,7 +178,7 @@ describe('usePayWithCryptoSection', () => {
       result.current?.rows[1].onPress?.();
     });
 
-    expect(clearOverride).toHaveBeenCalled();
+    expect(clearOverride).not.toHaveBeenCalled();
     expect(onOtherAssetsPress).toHaveBeenCalled();
   });
 });
