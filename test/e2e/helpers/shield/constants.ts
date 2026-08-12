@@ -88,6 +88,7 @@ export const BASE_SHIELD_SUBSCRIPTION_CARD = {
     type: 'card',
     card: { brand: 'visa', displayBrand: 'visa', last4: '4242' },
   },
+  cancelType: 'allowed_at_period_end',
   isEligibleForSupport: true,
 };
 
@@ -117,6 +118,7 @@ export const BASE_SHIELD_SUBSCRIPTION_CRYPTO = {
       payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
     },
   },
+  cancelType: 'allowed_at_period_end',
   isEligibleForSupport: true,
 };
 
