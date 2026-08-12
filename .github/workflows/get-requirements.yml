@@ -652,14 +652,11 @@ jobs:
       # identical results, so running them is pointless. This absorbs the
       # inline builds-from-run == github.run_id gate from main.yml.
       #
-      # The decision is pinned to the head SHA as a commit status, because the
-      # inputs to it drift with the clock: `find-reusable-builds` scans only the
-      # 10 most recent runs on a branch and additionally requires that run's
-      # artifacts to still exist. The same commit can therefore resolve to
-      # "reusable" on one attempt and "not reusable" on the next. Left unpinned
-      # that is a gate bypass, since a skipped job counts as passing in
-      # ci-status-gate.yml — a failing benchmark gate could be cleared by
-      # re-running until the lookup happened to find a base build.
+      # Pinned to the head SHA because the lookup is not deterministic: the
+      # workflow-run listing behind it intermittently returns a stale page, so
+      # an unchanged commit can require benchmarks on one attempt and skip them
+      # on the next. Left unpinned that is a gate bypass, since a skipped job
+      # counts as passing in ci-status-gate.yml.
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Skip on cross-repo PRs — benchmarks need secrets not available to external contributors.
