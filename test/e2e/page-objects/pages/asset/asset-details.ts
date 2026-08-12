@@ -8,7 +8,7 @@ const SECTION_TITLES = [
 ] as const;
 type SectionTitle = (typeof SECTION_TITLES)[number];
 
-class TronAssetDetailsPage {
+class AssetDetailsPage {
   private readonly assetName = '[data-testid="asset-name"]';
 
   private driver: Driver;
@@ -30,9 +30,14 @@ class TronAssetDetailsPage {
   private readonly nativeOverflowSoleAction =
     '[data-testid="coin-overview-default"]';
 
+  private readonly nativeReceiveButton =
+    '[data-testid="coin-overview-default"], [data-testid="coin-overview-more"]';
+
   private readonly nativeSendButton = '[data-testid="coin-overview-send"]';
 
   private readonly nativeSwapButton = '[data-testid="coin-overview-swap"]';
+
+  private readonly page = '[data-testid="parent-selector-asset-details"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
@@ -85,12 +90,9 @@ class TronAssetDetailsPage {
       await this.driver.assertElementNotPresent(this.nativeSwapButton);
     }
     if (options.receive === true) {
-      await this.checkNativeReceiveInOverflowMenu();
+      await this.driver.waitForSelector(this.nativeReceiveButton);
     } else if (options.receive === false) {
-      await this.driver.assertElementNotPresent(
-        this.nativeOverflowReceiveInMenu,
-      );
-      await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
+      await this.driver.assertElementNotPresent(this.nativeReceiveButton);
     }
   }
 
@@ -127,6 +129,12 @@ class TronAssetDetailsPage {
     );
   }
 
+  async checkDailyResourcesSectionIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      this.tronDailyResourcesSection,
+    );
+  }
+
   /**
    * Asserts Receive is available via the batch-sell-enabled More overflow menu.
    * Requires `batchSell: { enabled: true }` in test fixtures.
@@ -139,7 +147,7 @@ class TronAssetDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector({ text: 'Your balance' });
+    await this.driver.waitForSelector(this.page);
   }
 
   async checkPriceChart(): Promise<void> {
@@ -148,6 +156,10 @@ class TronAssetDetailsPage {
 
   async checkSection(name: SectionTitle): Promise<void> {
     await this.driver.waitForSelector({ text: name });
+  }
+
+  async checkStakedBalanceIsAbsent(): Promise<void> {
+    await this.driver.assertElementNotPresent({ text: 'Staked balance' });
   }
 
   async checkTokenActionButtons(): Promise<void> {
@@ -159,4 +171,4 @@ class TronAssetDetailsPage {
   }
 }
 
-export default TronAssetDetailsPage;
+export default AssetDetailsPage;
