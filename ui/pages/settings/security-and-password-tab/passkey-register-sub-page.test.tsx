@@ -10,6 +10,7 @@ import {
 import { SECOND } from '../../../../shared/constants/time';
 import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
+import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './messenger';
 
 jest.mock('../../../components/ui/toast/toast', () => ({
   toast: {
@@ -42,7 +43,28 @@ const mockGeneratePasskeyPostRegistrationAuthenticationOptions = jest
     challenge: 'AQ',
     allowCredentials: [],
   });
+const mockMessengerCall = jest.fn(
+  (action: string, ...args: unknown[]): Promise<unknown> => {
+    if (action === 'PasskeyController:generateRegistrationOptions') {
+      return mockGeneratePasskeyRegistrationOptions(...args);
+    }
+    if (
+      action ===
+      'PasskeyController:generatePostRegistrationAuthenticationOptions'
+    ) {
+      return mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args);
+    }
+    if (action === 'PasskeyController:protectVaultKeyWithPasskey') {
+      return mockProtectVaultKeyWithPasskey(...args);
+    }
+    throw new Error(`Unexpected messenger action: ${action}`);
+  },
+);
 const mockForceUpdateMetamaskState = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/useMessenger', () => ({
+  useMessenger: () => ({ call: mockMessengerCall }),
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -82,6 +104,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -95,12 +118,6 @@ const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  generatePasskeyRegistrationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyRegistrationOptions(...args),
-  generatePasskeyPostRegistrationAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyPostRegistrationAuthenticationOptions(...args),
-  protectVaultKeyWithPasskey: (...args: unknown[]) =>
-    mockProtectVaultKeyWithPasskey(...args),
   forceUpdateMetamaskState: (...args: unknown[]) =>
     mockForceUpdateMetamaskState(...args),
   verifyPassword: (...args: unknown[]) => mockVerifyPassword(...args),
@@ -120,6 +137,18 @@ describe('PasskeyRegisterSubPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockProtectVaultKeyWithPasskey.mockResolvedValue(undefined);
+  });
+
+  it('allows only passkey enrollment actions on the route messenger', () => {
+    expect(PASSKEY_REGISTRATION_ROUTE_CAPABILITIES).toStrictEqual({
+      actions: [
+        'PasskeyController:generateRegistrationOptions',
+        'PasskeyController:generatePostRegistrationAuthenticationOptions',
+        'PasskeyController:protectVaultKeyWithPasskey',
+      ],
+      events: [],
+    });
   });
 
   it('redirects to security when biometrics is already registered', async () => {
@@ -206,17 +235,21 @@ describe('PasskeyRegisterSubPage', () => {
         mockGeneratePasskeyPostRegistrationAuthenticationOptions,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'public-key',
+          registrationResponse: expect.objectContaining({
+            type: 'public-key',
+          }),
         }),
       );
       expect(mockProtectVaultKeyWithPasskey).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'public-key',
+          registrationResponse: expect.objectContaining({
+            type: 'public-key',
+          }),
+          authenticationResponse: expect.objectContaining({
+            type: 'public-key',
+          }),
+          password: 'test-password',
         }),
-        expect.objectContaining({
-          type: 'public-key',
-        }),
-        'test-password',
       );
     });
 

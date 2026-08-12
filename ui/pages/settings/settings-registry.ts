@@ -42,8 +42,13 @@ import {
   getIsQrSyncEnabled,
   getIsPerpsIncludedInBuild,
 } from '../../../shared/lib/environment';
+import type {
+  UIMessengerActions,
+  UIMessengerEvents,
+} from '../../messengers/ui-messenger';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
+import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './security-and-password-tab/messenger';
 
 /**
  * Route definition for a Settings page.
@@ -59,6 +64,11 @@ export type SettingsRouteMeta = {
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
+  /** Background messenger capabilities delegated only while this route is mounted. */
+  messengerCapabilities?: {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+  };
   /**
    * If true, the route's component is mounted by the top-level app router
    * (outside `SettingsLayout`) rather than by the nested Settings router.
@@ -230,6 +240,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
   },
   [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
     labelKey: 'turnOffPasskey',
@@ -468,4 +479,5 @@ export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .map(([path, meta]) => ({
     path,
     component: meta.component,
+    messengerCapabilities: meta.messengerCapabilities,
   }));

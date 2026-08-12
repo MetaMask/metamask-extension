@@ -2,8 +2,8 @@
 
 ## Status
 
-Step 1 is complete: the global PasskeyController UI-messenger blocked list is
-implemented and tested. Work is paused for review before Step 2.
+Steps 1 and 2 are complete: the global blocked list and enrollment route
+migrations are implemented and tested. Work is paused for review before Step 3.
 
 This plan follows the existing route-messenger patterns used by:
 

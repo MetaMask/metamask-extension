@@ -95,9 +95,7 @@ import {
 } from '@metamask/claims-controller';
 import type {
   PasskeyAuthenticationResponse,
-  PasskeyRegistrationOptions,
   PasskeyAuthenticationOptions,
-  PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
 import {
   toHardwareWalletError,
@@ -106,7 +104,6 @@ import {
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -1235,59 +1232,12 @@ export function submitPassword(password: string): Promise<void> {
 }
 
 /**
- * Generates passkey registration options.
- *
- * @returns Passkey registration options.
- */
-export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
-  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
-  ]);
-}
-
-/**
  * Generates passkey authentication options.
  *
  * @returns Passkey authentication options.
  */
 export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
   return submitRequestToBackground('generatePasskeyAuthenticationOptions');
-}
-
-/**
- * Generates passkey authentication options immediately after registration.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- */
-export function generatePasskeyPostRegistrationAuthenticationOptions(
-  registrationResponse: PasskeyRegistrationResponse,
-): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground(
-    'generatePasskeyPostRegistrationAuthenticationOptions',
-    [registrationResponse],
-  );
-}
-
-/**
- * Protects the vault key with a passkey.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
- * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
- */
-export function protectVaultKeyWithPasskey(
-  registrationResponse: PasskeyRegistrationResponse,
-  authenticationResponse: PasskeyAuthenticationResponse,
-  password?: string,
-): Promise<void> {
-  return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    {
-      registrationResponse,
-      authenticationResponse,
-      password,
-    },
-  ]);
 }
 
 /**

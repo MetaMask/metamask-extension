@@ -55,6 +55,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
+import { RouteWithMessenger } from '../../layouts/route-with-messenger';
 import {
   transitionBack,
   transitionForward,
@@ -495,17 +496,31 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 const Settings = () => {
   return (
     <RouterRoutes>
-      {SETTINGS_RENDERABLE_ROUTES.map(({ path, component: Component }) => (
-        <Route
-          key={path}
-          path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
-          element={
-            <SettingsLayout>
-              <Component />
-            </SettingsLayout>
-          }
-        />
-      ))}
+      {SETTINGS_RENDERABLE_ROUTES.map(
+        ({ path, component: Component, messengerCapabilities }) => {
+          const component = <Component />;
+          return (
+            <Route
+              key={path}
+              path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
+              element={
+                <SettingsLayout>
+                  {messengerCapabilities ? (
+                    <RouteWithMessenger
+                      path={path}
+                      capabilities={messengerCapabilities}
+                    >
+                      {component}
+                    </RouteWithMessenger>
+                  ) : (
+                    component
+                  )}
+                </SettingsLayout>
+              }
+            />
+          );
+        },
+      )}
       <Route
         path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
         element={

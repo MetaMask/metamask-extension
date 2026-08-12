@@ -12,6 +12,7 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import RestoreVaultPage from './restore-vault';
+import { RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES } from './restore-vault-messenger';
 
 const mockTrackEvent = jest.fn();
 
@@ -55,6 +56,17 @@ describe('Restore vault Component', () => {
 
   afterEach(() => {
     sinon.restore();
+  });
+
+  it('allows only passkey enrollment actions in the passkey setup subtree', () => {
+    expect(RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES).toStrictEqual({
+      actions: [
+        'PasskeyController:generateRegistrationOptions',
+        'PasskeyController:generatePostRegistrationAuthenticationOptions',
+        'PasskeyController:protectVaultKeyWithPasskey',
+      ],
+      events: [],
+    });
   });
 
   it('renders match snapshot', () => {

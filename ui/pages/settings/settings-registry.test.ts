@@ -74,6 +74,27 @@ describe('settings-registry', () => {
       );
     });
 
+    it('assigns enrollment messenger capabilities to passkey registration', () => {
+      const expectedCapabilities = {
+        actions: [
+          'PasskeyController:generateRegistrationOptions',
+          'PasskeyController:generatePostRegistrationAuthenticationOptions',
+          'PasskeyController:protectVaultKeyWithPasskey',
+        ],
+        events: [],
+      };
+
+      expect(
+        getSettingsRouteMeta(SECURITY_REGISTER_PASSKEY_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual(expectedCapabilities);
+      expect(
+        SETTINGS_RENDERABLE_ROUTES.find(
+          ({ path }) => path === SECURITY_REGISTER_PASSKEY_ROUTE,
+        )?.messengerCapabilities,
+      ).toStrictEqual(expectedCapabilities);
+    });
+
     it('matches dynamic transaction shield claim routes', () => {
       expect(
         getSettingsRouteMeta(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),

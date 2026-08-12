@@ -79,6 +79,7 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
+import { RouteWithMessenger } from '../../layouts/route-with-messenger';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -101,6 +102,7 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 import SetupPasskey from './setup-passkey/setup-passkey';
+import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -471,7 +473,14 @@ export default function OnboardingFlow() {
               />
               <Route
                 path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
-                element={<SetupPasskey />}
+                element={
+                  <RouteWithMessenger
+                    path={ONBOARDING_SETUP_PASSKEY_ROUTE}
+                    capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
+                  >
+                    <SetupPasskey />
+                  </RouteWithMessenger>
+                }
               />
               <Route
                 path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}

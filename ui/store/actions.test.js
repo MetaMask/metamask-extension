@@ -32,7 +32,6 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
-import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -151,14 +150,10 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
-    background.protectVaultKeyWithPasskey = sinon.stub();
     background.removePasskeyWithPasskeyVerification = sinon.stub();
     background.removePasskeyWithPasswordVerification = sinon.stub();
     background.unlockWithPasskey = sinon.stub();
-    background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
-    background.generatePasskeyPostRegistrationAuthenticationOptions =
-      sinon.stub();
     // Vault / seedless methods live on LegacyBackgroundApiService and are only
     // exposed via getApi(); stub them here for tests that use the controller
     // stub instance as the background connection directly.
@@ -511,42 +506,6 @@ describe('Actions', () => {
       ]);
     });
 
-    it('#generatePasskeyRegistrationOptions passes prfAvailable true when PRF support is true', async () => {
-      jest
-        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
-        .mockResolvedValue(true);
-      background.generatePasskeyRegistrationOptions.resolves({
-        rp: { name: 'MM' },
-      });
-      setBackgroundConnection(background);
-
-      await actions.generatePasskeyRegistrationOptions();
-
-      expect(
-        background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: true,
-        }),
-      ).toBe(true);
-    });
-
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
-      jest
-        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
-        .mockResolvedValue(false);
-      background.generatePasskeyRegistrationOptions.resolves({
-        rp: { name: 'MM' },
-      });
-      setBackgroundConnection(background);
-
-      await actions.generatePasskeyRegistrationOptions();
-
-      expect(
-        background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
-        }),
-      ).toBe(true);
-    });
-
     it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
       const opts = { challenge: 'AQ', allowCredentials: [] };
       background.generatePasskeyAuthenticationOptions.resolves(opts);
@@ -558,88 +517,6 @@ describe('Actions', () => {
       expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
         true,
       );
-    });
-
-    it('#generatePasskeyPostRegistrationAuthenticationOptions forwards registration response', async () => {
-      const registrationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          attestationObject: 'e30',
-        },
-        type: 'public-key',
-      };
-      const opts = { challenge: 'post', allowCredentials: [] };
-      background.generatePasskeyPostRegistrationAuthenticationOptions.resolves(
-        opts,
-      );
-      setBackgroundConnection(background);
-
-      const result =
-        await actions.generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
-        );
-
-      expect(result).toStrictEqual(opts);
-      expect(
-        background.generatePasskeyPostRegistrationAuthenticationOptions.calledOnceWith(
-          registrationResponse,
-        ),
-      ).toBe(true);
-    });
-
-    it('#protectVaultKeyWithPasskey forwards registration and authentication responses and optional password', async () => {
-      const registrationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          attestationObject: 'e30',
-        },
-        type: 'public-key',
-      };
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AA',
-        },
-        type: 'public-key',
-      };
-      background.protectVaultKeyWithPasskey.resolves();
-      setBackgroundConnection(background);
-
-      await actions.protectVaultKeyWithPasskey(
-        registrationResponse,
-        authenticationResponse,
-        'secret',
-      );
-
-      expect(
-        background.protectVaultKeyWithPasskey.calledOnceWith({
-          registrationResponse,
-          authenticationResponse,
-          password: 'secret',
-        }),
-      ).toBe(true);
-
-      await actions.protectVaultKeyWithPasskey(
-        registrationResponse,
-        authenticationResponse,
-      );
-
-      expect(
-        background.protectVaultKeyWithPasskey.secondCall.args,
-      ).toStrictEqual([
-        {
-          registrationResponse,
-          authenticationResponse,
-          password: undefined,
-        },
-      ]);
     });
 
     it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
