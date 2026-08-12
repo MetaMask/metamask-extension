@@ -7,7 +7,7 @@ import {
 import { shouldSampleWrappers } from './wrapper-sampling';
 
 const SAMPLED_TRACE_ID = '00000000aaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 0
-const UNSAMPLED_TRACE_ID = 'ffffffffaaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 9999
+const UNSAMPLED_TRACE_ID = 'ffffffffaaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 7295
 
 function mockPersistedState(sentryFlag: unknown) {
   globalThis.stateHooks = {

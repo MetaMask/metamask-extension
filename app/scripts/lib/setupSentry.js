@@ -150,16 +150,11 @@ function getClientOptions() {
     sendClientReports: false,
     tracesSampleRate,
     // Per-transaction sampler: caps high-volume custom transactions (seeded with
-    // the assets-controller spans that breached quota in 13.32.0 — see #43226)
+    // the assets-controller spans that breached quota in 13.32.0 — see #43410)
     // while every other transaction keeps the global `tracesSampleRate`.
-    // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry.
-    //
-    // The sampler is deliberately release-agnostic. Silencing one release is a
-    // selection over the whole fleet, and a build can only ever match its own
-    // version — so that lever lives where the fleet is visible: the remote
-    // `sentry` flag scoped by `clientVersion`, or a Sentry release inbound filter
-    // at ingest (which also drops errors and sessions, so it is the blunter of
-    // the two).
+    // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry, so
+    // this option supersedes the `tracesSampleRate` above rather than
+    // combining with it.
     tracesSampler: createTracesSampler({
       defaultSampleRate: tracesSampleRate,
     }),

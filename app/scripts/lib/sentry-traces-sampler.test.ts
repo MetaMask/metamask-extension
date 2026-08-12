@@ -89,27 +89,6 @@ describe('getTransactionSampleRate', () => {
       ),
     ).toBe(defaultSampleRate);
   });
-
-  it('falls back to the deprecated transactionContext.name when top-level name is absent', () => {
-    expect(
-      getTransactionSampleRate(
-        { transactionContext: { name: 'Dropped Transaction' } },
-        { defaultSampleRate, sampleRateOverrides },
-      ),
-    ).toBe(0);
-  });
-
-  it('prefers the top-level name over the deprecated transactionContext.name', () => {
-    expect(
-      getTransactionSampleRate(
-        {
-          name: 'Unlisted Transaction',
-          transactionContext: { name: 'Dropped Transaction' },
-        },
-        { defaultSampleRate, sampleRateOverrides },
-      ),
-    ).toBe(defaultSampleRate);
-  });
 });
 
 describe('createTracesSampler', () => {
@@ -199,7 +178,7 @@ describe('createTracesSampler', () => {
   });
 });
 
-describe('sample-rate ceiling (release-level throttle)', () => {
+describe('sample-rate ceiling (emergency throttle)', () => {
   const defaultSampleRate = 0.0075;
   const sampleRateOverrides = {
     'Dropped Transaction': 0,

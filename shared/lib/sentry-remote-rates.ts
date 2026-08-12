@@ -8,10 +8,13 @@
  * react to quota pressure or validation step-ups without a build.
  *
  * The compile-time constants remain the fallbacks whenever the flag is
- * absent or malformed. The schema is an extensible object
- * (`sentry: { tracesSampleRate, wrapperSampleRate, ... }`) so later rates
- * (`transactionSampleRates`, `propagationSampleRate`) add keys without a
- * breaking change.
+ * absent or malformed.
+ *
+ * Adding a rate is a two-sided change, not a client-only one. LaunchDarkly
+ * stores this flag's `variationJsonSchema` with `additionalProperties: false`
+ * and enforces it on write, so a new key (`propagationSampleRate`, say) has to
+ * be added to that schema before any value carrying it can be published.
+ * Landing the client half first looks complete and reads nothing.
  */
 
 export type SentryRemoteRates = {
@@ -90,7 +93,8 @@ export function getRemoteTransactionSampleRates():
 /**
  * The remote `tracesSampleRate` override, when a valid one was read at init.
  * Consumed by the `tracesSampler` as both the default rate and a hard ceiling
- * across all transactions (the release-level emergency throttle).
+ * across all transactions. Release scoping, when needed, is resolved by the
+ * controller from the flag's `versions` ladder before the value reaches here.
  *
  * @returns The override, or undefined so callers fall back to the build-time rate.
  */

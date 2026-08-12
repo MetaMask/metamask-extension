@@ -125,8 +125,10 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
 
   it('caps a per-name override above the remote ceiling, through the real SDK', async () => {
     // Isolating the ceiling needs a case where the default rate would ALLOW and
-    // the ceiling BLOCKS. A per-name override of 1 under a ceiling of 0 is the
-    // only such case reachable through `createTracesSampler`, because it feeds
+    // the ceiling BLOCKS. A per-name override of 1 under a ceiling of 0 is one
+    // such case (a positive parent decision under a ceiling of 0 is another,
+    // covered in the unit file), and it is needed because `createTracesSampler`
+    // feeds
     // the remote rate in as BOTH the default and the ceiling — so any assertion
     // resting on the default being 0 passes with the ceiling removed entirely,
     // and tests nothing. Verified by mutation: neutralising the ceiling turns

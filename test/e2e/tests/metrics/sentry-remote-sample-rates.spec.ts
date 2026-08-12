@@ -9,15 +9,18 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
 /**
  * Delivery tests for the `sentry` remote feature flag.
  *
- * These deliberately mock the **client-config API response**, not the
- * controller's persisted state. Seeding `RemoteFeatureFlagController` state
- * directly (over CDP, or via a fixture) puts the value in place before boot,
- * which means the `sentry-install` / `setup-initial-state-hooks` ordering race
- * that `applySentryRemoteRates` guards against cannot occur — a passing arm
- * would then be indistinguishable from a passing arm on unfixed code. Serving
- * the value over HTTP keeps the fetch genuinely asynchronous, so the fetch,
- * the controller's parse and validation, the persistence write and the hook
- * timing are all exercised for real.
+ * Scope: **delivery**. These assert that a value served by the client-config
+ * API arrives in `RemoteFeatureFlagController` state in the shape
+ * `applySentryRemoteRates` expects. They mock the HTTP response rather than
+ * seeding controller state, so the fetch, the controller's parse and its
+ * version-ladder unwrapping all run for real.
+ *
+ * What they do NOT assert: that the delivered value is then applied to the
+ * sampler. No arm observes `applySentryRemoteRates`, the `tracesSampler`, or
+ * an emitted sample rate, so all four pass unchanged on code where the
+ * `sentry-install` / `setup-initial-state-hooks` race is unfixed. That race is
+ * covered by unit tests in `shared/lib/sentry-remote-rates.test.ts`; covering
+ * it here would need an arm asserting an applied rate.
  *
  * The sampler's own precedence arithmetic is covered exhaustively by
  * `app/scripts/lib/sentry-traces-sampler.test.ts`; what cannot be unit-tested
@@ -97,10 +100,11 @@ describe('Sentry remote sample rates', function (this: Suite) {
         await login(driver);
         const uiState = await getCleanAppState(driver);
 
-        // Proves the whole read path, not just that a value can be read back:
-        // the extension fetched over HTTP, the controller parsed and validated
-        // the payload, and it was persisted where `applySentryRemoteRates`
-        // looks for it.
+        // The extension fetched over HTTP and the controller parsed and
+        // validated the payload into state. Note `getCleanAppState` reads
+        // in-memory UI state, not the persisted store `applySentryRemoteRates`
+        // reads from — so this establishes delivery, not that the value is
+        // where the consumer will find it at init.
         assert.deepStrictEqual(
           uiState.metamask.remoteFeatureFlags.sentry,
           sentry,
@@ -193,14 +197,15 @@ describe('Sentry remote sample rates', function (this: Suite) {
     // ever changes, `applySentryRemoteRates` silently receives a shape it does
     // not understand and every rate falls back to its compile-time constant.
     //
-    // The ladder is deliberately bracketed so the assertion discriminates. A
-    // lone rung would be satisfied by almost any selection rule, including
-    // "take the first" or "take the last"; two rungs whose values differ mean
-    // only the correct rule produces the expected answer.
+    // The ladder is bracketed so the assertion discriminates. A lone rung
+    // would be satisfied by almost any selection rule. Two rungs whose values
+    // differ rule out "take the last" and "take the highest"; listing the
+    // unreachable rung FIRST also rules out "take the first", since the keys
+    // are non-integer strings and so iterate in insertion order.
     const ladder = {
       versions: {
-        '0.0.1': { tracesSampleRate: 0.25 },
         '999.0.0': { tracesSampleRate: 0.75 },
+        '0.0.1': { tracesSampleRate: 0.25 },
       },
     };
 

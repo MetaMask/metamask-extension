@@ -20,14 +20,10 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
  */
 export type TransactionSamplingContext = {
   /**
-   * The transaction name (current Sentry field, top-level on `SamplingContext`).
+   * The transaction name. Required on Sentry's own `SamplingContext`; optional
+   * here so the sampler cannot throw on an unexpected call shape.
    */
   name?: string;
-  /**
-   * Deprecated duplicate of `name` on older SDK shapes; read as a fallback for
-   * version drift.
-   */
-  transactionContext?: { name?: string };
   /**
    * Whether the head-of-trace sampling decision was positive.
    */
@@ -63,13 +59,14 @@ type SampleRateOptions = {
  * of parent, so a throttled transaction can't ride in on a sampled parent), with
  * a remote override winning over the build-time one; else inherit the parent
  * decision; else the default. Every non-zero result is capped by
- * `sampleRateCeiling`. Name reads from `name` or `transactionContext.name`.
+ * `sampleRateCeiling`.
  *
  * Deliberately has no notion of releases. Silencing a specific release is a
  * fleet-wide selection over builds, and a build can only ever match itself — so
- * it belongs to whatever sees the fleet: the remote `sentry` flag scoped by
- * `clientVersion` at config-serve time, or a Sentry release inbound filter at
- * ingest. See the removal rationale on #43228.
+ * it belongs elsewhere: the remote `sentry` flag's `versions` ladder, which
+ * `RemoteFeatureFlagController` resolves against the build's own version before
+ * the rates reach this module, or a Sentry release inbound filter at ingest.
+ * The config service does no version selection of its own.
  *
  * @param samplingContext - The (subset of the) Sentry sampling context.
  * @param options - Default rate, per-name overrides, and the ceiling.
@@ -79,7 +76,8 @@ type SampleRateOptions = {
  * @param options.remoteSampleRateOverrides - Remote-flag per-name overrides;
  * win over the build-time ones.
  * @param options.sampleRateCeiling - Hard ceiling capping every non-zero path.
- * @returns A sample rate in the range [0, 1].
+ * @returns A sample rate — in [0, 1] for valid inputs; negative inputs and a
+ * `sampleRateCeiling` above 1 are passed through unclamped.
  */
 export function getTransactionSampleRate(
   samplingContext: TransactionSamplingContext,
@@ -92,12 +90,7 @@ export function getTransactionSampleRate(
 ): number {
   const ceiling = sampleRateCeiling ?? 1;
 
-  const { parentSampled } = samplingContext ?? {};
-  // Prefer the current top-level `name`; fall back to the deprecated-but-still-
-  // populated `transactionContext.name` so the sampler works regardless of which
-  // field a given SDK version sets.
-  const name =
-    samplingContext?.name ?? samplingContext?.transactionContext?.name;
+  const { parentSampled, name } = samplingContext ?? {};
 
   if (name !== undefined) {
     if (
@@ -155,10 +148,8 @@ function parseSampleRateOverridesEnv(
  * per-name overrides once, merging the built-in defaults with the build-time
  * `SENTRY_SAMPLE_RATE_OVERRIDES` env var. The global rate is additionally
  * overridable at runtime by the remote `sentry.tracesSampleRate` feature flag
- * (see sentry-remote-rates.ts), which acts as a hard ceiling across all
- * transactions — the release-level emergency throttle. Targeting a specific
- * release is done by scoping that flag (`clientVersion`), not by anything in
- * this module.
+ * (see sentry-remote-rates.ts), which also acts as the ceiling — see
+ * {@link getTransactionSampleRate} for the precedence and the release note.
  *
  * @param options - Sampler options.
  * @param options.defaultSampleRate - Global fallback rate (the `tracesSampleRate`).
@@ -177,9 +168,9 @@ export function createTracesSampler({
   return (samplingContext) => {
     // Read per call so a remote value applied after `Sentry.init` takes effect
     // without rebuilding the sampler; the read is a cached module field, not a
-    // storage lookup. The remote rate is both the default AND a hard ceiling:
-    // the release-level emergency throttle must cap per-name overrides and
-    // parent-sampled decisions too, or the shed is not guaranteed.
+    // storage lookup. The same value is passed as BOTH default and ceiling, so
+    // those two paths only diverge on a per-name override — which is why the
+    // ceiling has to be isolated with one.
     const remoteRate = getRemoteTracesSampleRate();
     return getTransactionSampleRate(samplingContext, {
       defaultSampleRate: remoteRate ?? defaultSampleRate,
