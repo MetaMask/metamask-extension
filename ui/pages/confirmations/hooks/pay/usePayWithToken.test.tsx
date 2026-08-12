@@ -46,9 +46,12 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));
-jest.mock('../../../multichain-accounts/account-details/account-type-utils', () => ({
-  isHardwareAccount: jest.fn(() => false),
-}));
+jest.mock(
+  '../../../multichain-accounts/account-details/account-type-utils',
+  () => ({
+    isHardwareAccount: jest.fn(() => false),
+  }),
+);
 jest.mock('../../components/modals/pay-with-modal', () => ({
   PayWithModal: ({ isOpen }: { isOpen: boolean }) =>
     isOpen ? <div data-testid="pay-with-modal" /> : null,
@@ -110,8 +113,8 @@ describe('usePayWithToken', () => {
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     isHardwareAccount.mockReturnValue(false);
 
-    useSelectorMock.mockImplementation((selector: (state: unknown) => unknown) =>
-      selector({}),
+    useSelectorMock.mockImplementation(
+      (selector: (state: unknown) => unknown) => selector({}),
     );
   });
 

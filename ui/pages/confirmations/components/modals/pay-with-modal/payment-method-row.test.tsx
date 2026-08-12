@@ -32,7 +32,9 @@ describe('PaymentMethodRow', () => {
     expect(screen.getByTestId('payment-method-row-subtitle')).toHaveTextContent(
       '$7.05 available',
     );
-    expect(screen.getByTestId('payment-method-row-icon-slot')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('payment-method-row-icon-slot'),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('row-icon')).toBeInTheDocument();
   });
 
@@ -58,7 +60,9 @@ describe('PaymentMethodRow', () => {
       testId: 'payment-method-row',
     });
 
-    expect(screen.getByTestId('payment-method-row-checkmark')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('payment-method-row-checkmark'),
+    ).toBeInTheDocument();
   });
 
   it('renders a chevron trailing element', () => {
@@ -67,7 +71,9 @@ describe('PaymentMethodRow', () => {
       testId: 'payment-method-row',
     });
 
-    expect(screen.getByTestId('payment-method-row-chevron')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('payment-method-row-chevron'),
+    ).toBeInTheDocument();
   });
 
   it('renders no trailing element by default', () => {
