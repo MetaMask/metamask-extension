@@ -2,44 +2,39 @@
 
 exports[`Permission List Item render renders correctly 1`] = `
 <div>
-  <div
-    class="mm-box mm-box--width-full mm-box--background-color-background-default"
+  <button
+    class="block w-full hover:bg-background-default-hover"
     data-testid="permission-list-item"
+    type="button"
   >
-    <button
-      class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-      role="button"
-      style="width: 100%; background-color: transparent; padding: 0px;"
+    <div
+      class="flex flex-row items-center justify-between px-4 py-3"
     >
-      <div
-        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full"
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
       >
-        <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
-          style="flex: 1; align-self: center;"
+        sites
+      </p>
+      <div
+        class="flex flex-row gap-1 items-center"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-          >
-            sites
-          </p>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center"
-          style="flex: 1; align-self: center;"
+          1
+        </p>
+        <svg
+          class="inline-block w-4 h-4 text-icon-alternative"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <span
-            class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
-          >
-            1
-          </span>
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
-            style="mask-image: url('./images/icons/arrow-right.svg');"
+          <path
+            d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
           />
-        </div>
+        </svg>
       </div>
-    </button>
-  </div>
+    </div>
+  </button>
 </div>
 `;
