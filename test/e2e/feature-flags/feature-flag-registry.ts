@@ -1278,6 +1278,35 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                 ],
               },
             },
+            moneyAccountWithdraw: {
+              enabled: true,
+              tokens: {
+                '0x38': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x55d398326f99059fF775485246999027B3197955',
+                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                ],
+                '0x89': ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'],
+                '0x8f': ['0xacA92E438df0B2401fF60dA7E4337B687a2435DA'],
+                '0xa4b1': ['0xaf88d065e77c8cC2239327C5EDb3A432268e5831'],
+                '0xe708': [
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                  '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+                ],
+                '0x1': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+                  '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                ],
+                '0x2105': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                ],
+              },
+            },
           },
         },
       },

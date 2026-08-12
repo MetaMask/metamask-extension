@@ -200,6 +200,18 @@ describe('PayWithModal', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders Receive header for money account withdraw', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.moneyAccountWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(screen.getByText(messages.withdrawTo.message)).toBeInTheDocument();
+  });
+
   it('renders Asset component with correct props', () => {
     renderModal({ isOpen: true, onClose: onCloseMock });
 

@@ -10,6 +10,7 @@ import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
+import { useDispatch } from '../../../../store/hooks';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -26,6 +27,13 @@ jest.mock('./useTransactionPayAvailableTokens');
 jest.mock('./useWithdrawTokenFilter');
 jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../../../../selectors', () => ({}));
+jest.mock('../../../../store/actions', () => ({
+  addToken: jest.fn(() => ({ type: 'ADD_TOKEN' })),
+  findNetworkClientIdByChainId: jest.fn(async () => 'network-client-id'),
+}));
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 jest.mock('../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../selectors/feature-flags'),
   selectMinimumRequiredTokenBalance: jest.fn(),
@@ -144,16 +152,21 @@ describe('useAutomaticTransactionPayToken', () => {
     selectMinimumRequiredTokenBalance,
   );
 
-  const setPayTokenMock = jest.fn();
+  const setPayTokenMock = jest.fn(async () => undefined);
+  const dispatchMock = jest.fn(async (action) => action);
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.useRealTimers();
 
+    jest.mocked(useDispatch).mockReturnValue(dispatchMock as never);
+    dispatchMock.mockImplementation(async (action) => action);
+
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: setPayTokenMock,
     });
+    setPayTokenMock.mockResolvedValue(undefined);
 
     useTransactionPayRequiredTokensMock.mockReturnValue([
       {
@@ -297,7 +310,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects preferred token without availability check for perpsWithdraw', () => {
+  it('selects preferred token without availability check for perpsWithdraw', async () => {
     // The user is RECEIVING this token via Relay; they typically have $0
     // wallet balance of it, so the regular `availableTokens` membership check
     // would otherwise fall through to the first balance token.
@@ -314,6 +327,10 @@ describe('useAutomaticTransactionPayToken', () => {
         address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
         chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
       },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
@@ -355,7 +372,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', () => {
+  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', async () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
         address: TOKEN_ADDRESS_1_MOCK,
@@ -382,6 +399,10 @@ describe('useAutomaticTransactionPayToken', () => {
         address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
         chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
       },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
     });
 
     expect(setPayTokenMock).toHaveBeenCalledWith({

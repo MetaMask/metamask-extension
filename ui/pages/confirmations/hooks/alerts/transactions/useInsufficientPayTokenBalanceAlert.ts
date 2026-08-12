@@ -10,7 +10,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
@@ -39,9 +39,9 @@ export function useInsufficientPayTokenBalanceAlert({
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
   const isMax = useTransactionPayIsMaxAmount();
 
-  // Post-quote (perps withdraw): `payToken` is the destination, not the
-  // source — skip input/fees checks; gas check runs against the tx chain.
-  const isPostQuote = isPerpsWithdrawTransaction(currentConfirmation);
+  // Post-quote withdraws: `payToken` is the destination, not the source —
+  // skip input/fees checks; gas check runs against the tx chain.
+  const isPostQuote = isPostQuoteWithdrawTransaction(currentConfirmation);
 
   const sourceChainId = (
     isPostQuote
