@@ -15,7 +15,9 @@ import SitePermissionPage from '../pages/permission/site-permission-page';
  *
  * @param driver - The webdriver instance.
  */
-export const openPermissionsPageFlow = async (driver: Driver): Promise<void> => {
+export const openPermissionsPageFlow = async (
+  driver: Driver,
+): Promise<void> => {
   console.log('Open permissions page flow');
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.clickAllPermissionsButton();
