@@ -1164,8 +1164,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             },
           },
           enableMoneyAccountTransactions: {
-            perpsDeposit: true,
-            perpsWithdraw: true,
+            perpsDeposit: false,
+            perpsWithdraw: false,
           },
         },
       },
@@ -1193,8 +1193,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             },
           },
           enableMoneyAccountTransactions: {
-            perpsDeposit: true,
-            perpsWithdraw: true,
+            perpsDeposit: false,
+            perpsWithdraw: false,
           },
         },
       },
@@ -1277,7 +1277,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_tokens',
     productionDefault: {
-      enabled: false,
+      preferredTokens: {
+        default: [],
+        overrides: {},
+      },
+      blockedTokens: {
+        default: {
+          chainIds: [],
+          tokens: [],
+        },
+        overrides: {},
+      },
+      minimumRequiredTokenBalance: 10,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

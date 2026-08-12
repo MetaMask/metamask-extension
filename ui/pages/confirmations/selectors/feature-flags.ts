@@ -31,6 +31,8 @@ export type PreferredPayToken = {
   name?: string;
 };
 
+const EMPTY_PREFERRED_PAY_TOKENS: PreferredPayToken[] = [];
+
 type PreferredTokensConfig = {
   default?: PreferredPayToken[] | Record<string, PreferredPayToken[]>;
   overrides?: Record<string, PreferredPayToken[]>;
@@ -169,16 +171,25 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
     getIsPayAmountPrefillEnabled({ remoteFeatureFlags }, transactionType),
 );
 
-export const selectPreferredPayToken = createSelector(
+/**
+ * Preferred MM Pay tokens for a transaction type from
+ * `confirmations_pay_tokens.preferredTokens`. Transaction-specific
+ * `overrides[transactionType]` (or a direct `[transactionType]` key) take
+ * precedence over `default`.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectPreferredPayTokens = createSelector(
   [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
-  (flag, transactionType): PreferredPayToken | undefined => {
-    const preferredTokens = getPreferredTokensForTransaction(
-      flag?.preferredTokens,
-      transactionType,
-    );
+  (flag, transactionType): PreferredPayToken[] =>
+    getPreferredTokensForTransaction(flag?.preferredTokens, transactionType) ??
+    EMPTY_PREFERRED_PAY_TOKENS,
+);
 
-    return preferredTokens?.[0];
-  },
+export const selectPreferredPayToken = createSelector(
+  [selectPreferredPayTokens],
+  (preferredTokens): PreferredPayToken | undefined => preferredTokens[0],
 );
 
 /**

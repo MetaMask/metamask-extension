@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
@@ -10,6 +11,7 @@ import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
+import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from '../../../hooks/pay/sections/usePayWithMoneyAccountSection';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
@@ -63,7 +65,32 @@ const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 const mockStore = configureStore([thunk]);
 
-const getMockState = () => ({
+const MOCK_PAY_TOKEN = {
+  address: ADDRESS_MOCK,
+  balanceHuman: '1.5',
+  balanceFiat: '$150.00',
+  balanceRaw: '1500000000000000000',
+  balanceUsd: '150',
+  chainId: CHAIN_ID_MOCK,
+  decimals: 18,
+  symbol: 'ETH',
+} as const;
+
+const MOCK_REQUIRED_TOKEN = {
+  ...MOCK_PAY_TOKEN,
+  allowUnderMinimum: false,
+  amountFiat: '$50.00',
+  amountHuman: '0.5',
+  amountRaw: '500000000000000000',
+  amountUsd: '50',
+  skipIfBalance: false,
+} as const;
+
+const getMockState = ({
+  paymentOverride,
+}: {
+  paymentOverride?: PaymentOverride;
+} = {}) => ({
   metamask: {
     internalAccounts: {
       accounts: {
@@ -108,29 +135,14 @@ const getMockState = () => ({
       },
     },
     multichainNetworkConfigurationsByChainId: {},
+    transactionData: {
+      'test-id': {
+        paymentOverride,
+        paymentToken: MOCK_PAY_TOKEN,
+      },
+    },
   },
 });
-
-const MOCK_PAY_TOKEN = {
-  address: ADDRESS_MOCK,
-  balanceHuman: '1.5',
-  balanceFiat: '$150.00',
-  balanceRaw: '1500000000000000000',
-  balanceUsd: '150',
-  chainId: CHAIN_ID_MOCK,
-  decimals: 18,
-  symbol: 'ETH',
-} as const;
-
-const MOCK_REQUIRED_TOKEN = {
-  ...MOCK_PAY_TOKEN,
-  allowUnderMinimum: false,
-  amountFiat: '$50.00',
-  amountHuman: '0.5',
-  amountRaw: '500000000000000000',
-  amountUsd: '50',
-  skipIfBalance: false,
-} as const;
 
 describe('PayWithRow', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
@@ -357,6 +369,23 @@ describe('PayWithRow', () => {
 
       expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
     });
+  });
+
+  it('renders the Money account icon and dummy balance when selected', () => {
+    const store = mockStore(
+      getMockState({ paymentOverride: PaymentOverride.MoneyAccount }),
+    );
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.getByTestId('pay-with-money-account-icon'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Money account',
+    );
+    expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+      `(${MONEY_ACCOUNT_DUMMY_BALANCE_FIAT})`,
+    );
   });
 });
 

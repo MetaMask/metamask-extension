@@ -69,16 +69,15 @@ export function usePayWithCryptoSection({
   }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
   const handleOtherAssetsPress = useCallback(() => {
-    clearOverride();
     onOtherAssetsPress();
-  }, [clearOverride, onOtherAssetsPress]);
+  }, [onOtherAssetsPress]);
 
   const selectedTokenBalance = useMemo(
     () => fiatFormatter(new BigNumber(payToken?.balanceUsd ?? '0').toNumber()),
     [fiatFormatter, payToken?.balanceUsd],
   );
 
-  return useMemo(() => {
+  return useMemo((): PayWithSectionConfig => {
     const rows: PayWithRowConfig[] = [];
 
     if (payToken) {

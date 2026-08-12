@@ -496,5 +496,35 @@ describe('PayWithModal', () => {
       expect(screen.getByTestId('asset-component')).toBeInTheDocument();
       expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
     });
+
+    it('switches to the asset picker when Other assets is pressed', () => {
+      usePayWithSectionsMock.mockImplementation(({ onOtherAssetsPress }) => ({
+        sections: [
+          {
+            id: 'crypto',
+            title: 'Crypto',
+            testId: 'pay-with-section-crypto',
+            rows: [
+              {
+                id: 'crypto-other-assets',
+                icon: <span />,
+                title: 'Other assets',
+                onPress: () => onOtherAssetsPress(),
+                testId: 'pay-with-crypto-section-other-assets-row',
+              },
+            ],
+          },
+        ],
+      }));
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(
+        screen.getByTestId('pay-with-crypto-section-other-assets-row'),
+      );
+
+      expect(screen.getByTestId('asset-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-sections')).not.toBeInTheDocument();
+    });
   });
 });
