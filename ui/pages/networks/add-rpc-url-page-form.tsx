@@ -64,7 +64,8 @@ export const AddRpcUrlPageForm = ({
   };
 
   useEffect(() => {
-    const requestId = ++validationRequestIdRef.current;
+    validationRequestIdRef.current += 1;
+    const requestId = validationRequestIdRef.current;
     const trimmedUrl = debouncedUrl.trim();
     const debouncedUrlError = getUrlError(debouncedUrl);
 
