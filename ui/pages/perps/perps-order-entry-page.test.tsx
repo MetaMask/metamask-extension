@@ -477,22 +477,23 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('order book layout position', () => {
-    // DOM order is fixed; the panes are reordered visually with flex `order`.
+    // The panes are reordered in the DOM, so document order is also the
+    // keyboard and screen-reader order. Asserting index within the body keeps
+    // these tests on the accessible outcome rather than on a CSS property.
     const readPaneOrder = () => {
       const body = screen.getByTestId('perps-order-body');
-      const orderOf = (el: Element | null) =>
-        Number((el as HTMLElement).style.order);
+      const children = Array.from(body.children);
+      const indexOf = (el: Element | null) =>
+        children.findIndex((child) => child === el || child.contains(el));
 
       return {
-        form: orderOf(body.firstElementChild),
-        divider: orderOf(screen.getByTestId('perps-order-book-resize-handle')),
-        orderBook: orderOf(
-          screen.getByTestId('perps-order-book').parentElement,
-        ),
+        form: indexOf(screen.getByTestId('submit-order-button')),
+        divider: indexOf(screen.getByTestId('perps-order-book-resize-handle')),
+        orderBook: indexOf(screen.getByTestId('perps-order-book')),
       };
     };
 
-    it('places the order book left of the divider and form when orderBookPosition is left', () => {
+    it('places the order book before the divider and form in the DOM when orderBookPosition is left', () => {
       const store = mockStore(createMockStateWithOrderBookPosition('left'));
       renderWithProvider(<PerpsOrderEntryPage />, store);
       fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
@@ -502,7 +503,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(divider).toBeLessThan(form);
     });
 
-    it('places the form left of the divider and order book when orderBookPosition is right', () => {
+    it('places the form before the divider and order book in the DOM when orderBookPosition is right', () => {
       const store = mockStore(createMockStateWithOrderBookPosition('right'));
       renderWithProvider(<PerpsOrderEntryPage />, store);
       fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
@@ -519,6 +520,49 @@ describe('PerpsOrderEntryPage', () => {
 
       const { form, orderBook } = readPaneOrder();
       expect(orderBook).toBeLessThan(form);
+    });
+
+    it('moves the panes without remounting them when the preference changes', () => {
+      let orderBookPosition: 'left' | 'right' = 'right';
+      const base = createMockState();
+      const store = mockStore(() => ({
+        ...base,
+        metamask: {
+          ...base.metamask,
+          proLayoutPreferences: { orderBookPosition },
+        },
+      }));
+
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      const before = readPaneOrder();
+      expect(before.form).toBeLessThan(before.orderBook);
+      const orderBookNode = screen.getByTestId('perps-order-book');
+
+      orderBookPosition = 'left';
+      act(() => {
+        store.dispatch({ type: 'test/layout-preference-changed' });
+      });
+
+      // The panes swapped...
+      const after = readPaneOrder();
+      expect(after.orderBook).toBeLessThan(after.form);
+      // ...but it is the same DOM node, so React moved it rather than
+      // unmounting it. A remount here would discard a part-filled order form.
+      expect(screen.getByTestId('perps-order-book')).toBe(orderBookNode);
+    });
+
+    it('does not reorder with CSS, so overflow stays on the scrollable side', () => {
+      const store = mockStore(createMockStateWithOrderBookPosition('left'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+
+      const body = screen.getByTestId('perps-order-body');
+      expect(body.className).not.toContain('flex-row-reverse');
+      Array.from(body.children).forEach((child) =>
+        expect((child as HTMLElement).style.order).toBe(''),
+      );
     });
   });
 
