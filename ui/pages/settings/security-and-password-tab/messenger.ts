@@ -41,6 +41,7 @@ export type PasskeyTurnOffRouteMessenger = RouteMessengerFromCapabilities<
 export const PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES =
   defineAllowedRouteCapabilities({
     actions: [
+      'PasskeyController:generateAuthenticationOptions',
       'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
       'PasskeyController:removePasskeyWithPasswordVerification',
     ],

@@ -75,6 +75,7 @@ import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPasswordChange } from '../../../hooks/passkey/usePasskeyPasswordChange';
 import { useRemovePasskeyWithPassword } from '../../../hooks/passkey/usePasskeyRemoval';
+import { usePasskeyAuthentication } from '../../../hooks/passkey/usePasskeyAuthentication';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -98,6 +99,7 @@ const ChangePassword = ({
   const dispatch = useDispatch();
   const changePasswordWithPasskey = usePasskeyPasswordChange();
   const removePasskeyWithPassword = useRemovePasskeyWithPassword();
+  const authenticateWithPasskey = usePasskeyAuthentication();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -413,6 +415,7 @@ const ChangePassword = ({
           t,
           showErrorToast: true,
           toastDurationMs: autoHideToastDelay,
+          authenticateWithPasskey,
         });
         setPasskeyAuthenticationResponse(response);
         setIsPasskeyRenewalEnabled(Boolean(response));
@@ -424,6 +427,7 @@ const ChangePassword = ({
       isPasskeyActive,
       isVerifyingPasskey,
       passkeyAuthenticationResponse,
+      authenticateWithPasskey,
       passkeyMethodLabel,
       t,
     ],

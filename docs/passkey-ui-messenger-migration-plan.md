@@ -7,8 +7,9 @@ migrations are implemented and tested. Steps 2.5 and 2.6 consolidate both the
 enrollment transport and WebAuthn ceremony orchestration in a reusable hook.
 Step 3 migrates both passkey-removal settings routes. Step 4 migrates passkey
 unlock across the standard and onboarding unlock routes. Step 5 migrates
-password change and removes the remaining password-removal wrapper. Work is
-paused for review before Step 6.
+password change and removes the remaining password-removal wrapper. Steps 6 and
+7 migrate private-key and seed-phrase export, including a JSON-safe seed export
+adapter. Work is paused for review before Step 8.
 
 This plan follows the existing route-messenger patterns used by:
 
@@ -418,18 +419,28 @@ Review checkpoint: verify mutex-backed delegation and renewal enabled/disabled.
 
 ### 6. Migrate private-key export
 
+- Status: complete.
 - Add route-local capabilities and top-level route wiring.
 - Migrate authentication option generation and account export.
 - Keep loading dispatches or move equivalent loading state into the route hook.
+- `usePasskeyPrivateKeyExport` preserves address ordering and loading
+  dispatches.
 
 Review checkpoint: verify address ordering and secret-handling behavior.
 
 ### 7. Add and migrate the seed-phrase export adapter
 
+- Status: complete.
 - Add a typed background service action that preserves current encoding.
 - Add capabilities to both seed-reveal routes.
 - Migrate the shared verification flow and export calls.
 - Keep the raw PasskeyController export action globally excluded.
+- `LegacyBackgroundApiService:exportSeedPhraseWithPasskey` converts the
+  controller's word-list indices to UTF-8 and returns JSON-safe number arrays.
+- `usePasskeySeedPhraseExport` decodes the bytes for both primary and selected
+  keyrings.
+- `usePasskeyAuthentication` now owns the shared authentication-options and
+  WebAuthn sequence used by export and password-change routes.
 
 Review checkpoint: verify primary and non-primary keyrings and decoding.
 

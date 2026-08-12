@@ -59,8 +59,8 @@ const mockChangePassword = jest
 const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
   return Promise.resolve();
 });
-const mockGeneratePasskeyAuthenticationOptions = jest.fn(() =>
-  Promise.resolve({}),
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  startPasskeyAuthentication({} as never),
 );
 const mockChangePasswordWithPasskeyVerification = jest
   .fn()
@@ -76,6 +76,10 @@ jest.mock('../../../hooks/passkey/usePasskeyPasswordChange', () => ({
 
 jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
   useRemovePasskeyWithPassword: () => mockRemovePasskeyWithPasswordVerification,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
 }));
 
 jest.mock('react-redux', () => {
@@ -115,8 +119,6 @@ jest.mock('../../../store/actions', () => ({
   verifyPassword: (_pwd: string) => {
     return mockVerifyPassword(_pwd);
   },
-  generatePasskeyAuthenticationOptions: () =>
-    mockGeneratePasskeyAuthenticationOptions(),
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
 }));
 
@@ -155,7 +157,6 @@ describe('ChangePassword', () => {
     (startPasskeyAuthentication as jest.Mock).mockResolvedValue({
       id: 'mock-credential',
     });
-    mockGeneratePasskeyAuthenticationOptions.mockResolvedValue({});
   });
 
   async function advanceToChangePasswordStep(
@@ -469,7 +470,7 @@ describe('ChangePassword', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
       await waitFor(() => {
-        expect(mockGeneratePasskeyAuthenticationOptions).toHaveBeenCalled();
+        expect(mockAuthenticateWithPasskey).toHaveBeenCalled();
       });
       await waitFor(() => {
         expect(startPasskeyAuthentication).toHaveBeenCalled();

@@ -3838,6 +3838,38 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('exportSeedPhraseWithPasskey', () => {
+    it('returns JSON-safe UTF-8 bytes while preserving the keyring id', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const mnemonic = new Uint8Array(new Uint16Array([0, 1]).buffer);
+        const exportHandler = jest.fn().mockResolvedValue(mnemonic);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          exportHandler,
+        );
+        const params = {
+          authenticationResponse: {
+            id: 'credential-id',
+          },
+          keyringId: 'keyring-id',
+        } as unknown as Parameters<
+          LegacyBackgroundApiService['exportSeedPhraseWithPasskey']
+        >[0];
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+            params,
+          ),
+        ).resolves.toStrictEqual(Array.from(Buffer.from('abandon ability')));
+        expect(exportHandler).toHaveBeenCalledWith(
+          params.authenticationResponse,
+          'keyring-id',
+        );
+      });
+    });
+  });
+
   describe('changePassword', () => {
     it('changes the keyring password and releases the lock for a non-social login flow', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -7042,6 +7074,7 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'PasskeyController:unlockWithPasskey',
       'PasskeyController:changePasswordWithPasskeyVerification',
+      'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',

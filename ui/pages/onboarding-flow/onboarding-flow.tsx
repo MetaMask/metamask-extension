@@ -104,6 +104,7 @@ import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 import SetupPasskey from './setup-passkey/setup-passkey';
 import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
+import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -486,9 +487,14 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
                 element={
-                  <RevealRecoveryPhrase
-                    setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                  />
+                  <RouteWithMessenger
+                    path={ONBOARDING_REVEAL_SRP_ROUTE}
+                    capabilities={REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES}
+                  >
+                    <RevealRecoveryPhrase
+                      setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                    />
+                  </RouteWithMessenger>
                 }
               />
               <Route

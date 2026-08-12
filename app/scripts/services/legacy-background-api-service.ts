@@ -237,6 +237,7 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -453,6 +454,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -605,6 +607,7 @@ type AllowedActions =
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -2265,6 +2268,27 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+  }
+
+  /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
   }
 
   /**

@@ -122,6 +122,7 @@ describe('settings-registry', () => {
           ?.messengerCapabilities,
       ).toStrictEqual({
         actions: [
+          'PasskeyController:generateAuthenticationOptions',
           'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
           'PasskeyController:removePasskeyWithPasswordVerification',
         ],
