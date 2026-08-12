@@ -23,7 +23,9 @@ describe('Bugbot probe (MMQA-2248)', function () {
         await login(driver);
 
         // 3.6 — spec interacts with elements directly
-        await driver.clickElement('[data-testid="account-options-menu-button"]');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
         // 3.5 — local UI helper from the spec
         await clickAccountMenuHelper(driver);

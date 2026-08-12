@@ -287,7 +287,7 @@ When both conditions hold, inspect the fixture builder chain in the same `withFi
 - Severity: **MEDIUM** (POM anti-pattern), non-blocking.
 - Suggested comment:
   - `❌ ANTI-PATTERN: Do not use try/catch in E2E page objects or flows.`
-  - `✅ Let failures surface. Use driver wait helpers and page-object \`check*\` methods with clear error messages instead of catching errors.`
+  - `✅ Let failures surface. Use driver wait helpers and page-object \`check\*\` methods with clear error messages instead of catching errors.`
 
 ### 4. Controller Guidelines
 

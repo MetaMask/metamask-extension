@@ -24,14 +24,14 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 
 Before adding or reviewing E2E code, load [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) sections **3.3–3.9**. Do **not** introduce:
 
-| Avoid | Prefer |
-| --- | --- |
-| Locators / selectors in `*.flow.ts` | Locators only in page objects |
-| Flow that uses a single page object | Method on that page object |
-| Local UI helpers inside `*.spec.ts` | Page object method or multi-page flow |
-| `driver.clickElement` / locators in specs | Page object or flow calls only |
+| Avoid                                                         | Prefer                                                |
+| ------------------------------------------------------------- | ----------------------------------------------------- |
+| Locators / selectors in `*.flow.ts`                           | Locators only in page objects                         |
+| Flow that uses a single page object                           | Method on that page object                            |
+| Local UI helpers inside `*.spec.ts`                           | Page object method or multi-page flow                 |
+| `driver.clickElement` / locators in specs                     | Page object or flow calls only                        |
 | Hardcoded `driver.delay` / `setTimeout` without justification | Wait for a condition; comment if delay is unavoidable |
-| Page object importing/calling another page object | Flow that owns both page objects |
-| `try` / `catch` in page objects or flows | Let failures surface via waits / `check*` messages |
+| Page object importing/calling another page object             | Flow that owns both page objects                      |
+| `try` / `catch` in page objects or flows                      | Let failures surface via waits / `check*` messages    |
 
 Run `yarn skills` after `yarn install` if `.cursor/rules/e2e-testing-guidelines/` is missing locally.
