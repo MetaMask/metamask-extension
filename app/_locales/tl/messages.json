@@ -3588,9 +3588,6 @@
   "editNonceMessage": {
     "message": "Ito ay isang advanced feature, maingat na gamitin."
   },
-  "editPermissions": {
-    "message": "Mag-edit ng mga pahintulot"
-  },
   "editSpendingCap": {
     "message": "I-edit ang limitasyon sa paggastos"
   },
@@ -6825,9 +6822,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Binibigyan mo ng pahintulot ang gumagastos na gastusin ang ganito karaming token mula sa account mo."
-  },
-  "permittedChainToastUpdate": {
-    "message": "Ang $1 ay may access sa $2."
   },
   "perps": {
     "message": "Perps"

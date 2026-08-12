@@ -26,16 +26,6 @@ const mockAddPermittedAccounts = jest.fn(
   (_origin: string, _addresses: string[]) => () => Promise.resolve(),
 );
 
-jest.mock(
-  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
-  () => ({
-    usePermittedNetworkToast: () => ({
-      dismissPermittedNetworkToast: () => mockDismissPermittedNetworkToast(),
-      showPermittedNetworkToast: jest.fn(),
-    }),
-  }),
-);
-
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   removePermissionsFor: (subjects: Record<string, string[]>) =>

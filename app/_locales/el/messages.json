@@ -3588,9 +3588,6 @@
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
-  "editPermissions": {
-    "message": "Επεξεργασία αδειών"
-  },
   "editSpendingCap": {
     "message": "Επεξεργασία ανώτατου ορίου δαπανών"
   },
@@ -6825,9 +6822,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Δίνετε στον χρήστη την άδεια να ξοδέψει αυτά τα token από τον λογαριασμό σας."
-  },
-  "permittedChainToastUpdate": {
-    "message": "Το $1 έχει πρόσβαση στο $2."
   },
   "perps": {
     "message": "Συμβ.αορ."
