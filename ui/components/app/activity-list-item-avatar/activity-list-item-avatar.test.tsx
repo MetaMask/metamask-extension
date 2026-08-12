@@ -1,17 +1,29 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import {
+  CHILIZ_IMAGE_URL,
+  ETH_TOKEN_IMAGE_URL,
+} from '../../../../shared/constants/network';
+import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import {
   ActivityListItemAvatar,
   type ActivityListItemAvatarTokens,
 } from './activity-list-item-avatar';
 
 const ethTokenAssetId = 'eip155:1/slip44:60';
 const usdcAssetId = 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+// Zero-address CAIP for Chiliz native (what core emits when there is no slip44).
 const chilizNativeAssetId =
   'eip155:88888/erc20:0x0000000000000000000000000000000000000000';
 
 function renderAvatar(tokens: ActivityListItemAvatarTokens) {
   return render(<ActivityListItemAvatar tokens={tokens} />);
+}
+
+function getTokenImage() {
+  return screen
+    .getByTestId('activity-list-item-avatar-token')
+    .querySelector('img');
 }
 
 describe('ActivityListItemAvatar', () => {
@@ -53,41 +65,29 @@ describe('ActivityListItemAvatar', () => {
     ).toBeInTheDocument();
   });
 
-  it('falls back to the local chain native image when a native CDN icon 404s', () => {
+  it('uses the local CHAIN_ID_TOKEN_IMAGE_MAP icon when a native CDN image errors', () => {
     renderAvatar([chilizNativeAssetId]);
 
-    const avatar = screen.getByTestId('activity-list-item-avatar-token');
-    const image = avatar.querySelector('img');
-    expect(image).toBeTruthy();
-    expect(image).toHaveAttribute(
+    const cdnImage = getTokenImage();
+    expect(cdnImage).toHaveAttribute(
       'src',
-      expect.stringContaining('tokenIcons'),
+      getCaipAssetImageUrl(chilizNativeAssetId),
     );
 
-    fireEvent.error(image as HTMLImageElement);
+    // Simulate the CDN 404 (img onError).
+    fireEvent.error(cdnImage as HTMLImageElement);
 
-    const fallbackImage = screen
-      .getByTestId('activity-list-item-avatar-token')
-      .querySelector('img');
-    expect(fallbackImage).toHaveAttribute(
-      'src',
-      expect.stringContaining('chiliz'),
-    );
+    expect(getTokenImage()).toHaveAttribute('src', CHILIZ_IMAGE_URL);
   });
 
-  it('does not fall back to the chain native image for non-native token CDN failures', () => {
+  it('does not swap a broken ERC-20 CDN icon for the chain native local icon', () => {
     renderAvatar([usdcAssetId]);
 
-    const image = screen
-      .getByTestId('activity-list-item-avatar-token')
-      .querySelector('img') as HTMLImageElement;
+    const cdnImage = getTokenImage();
+    fireEvent.error(cdnImage as HTMLImageElement);
 
-    fireEvent.error(image);
-
-    const imageAfter = screen
-      .getByTestId('activity-list-item-avatar-token')
-      .querySelector('img');
-    // AvatarToken may hide the broken CDN img; we must not swap to a local native icon.
-    expect(imageAfter?.getAttribute('src') ?? '').not.toContain('/images/');
+    // AvatarToken may drop the broken <img>. We only care that we did not
+    // replace it with mainnet's local native icon (./images/eth_logo.svg).
+    expect(getTokenImage()?.getAttribute('src')).not.toBe(ETH_TOKEN_IMAGE_URL);
   });
 });
