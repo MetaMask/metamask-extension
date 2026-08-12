@@ -1,29 +1,23 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Text as TextDS, TextVariant as TextVariantDS, FontWeight } from '@metamask/design-system-react';
-import { Content, Header, Page } from '../page';
 import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-  Box,
-} from '../../../component-library';
-import {
-  IconColor,
-  BackgroundColor,
-  TextAlign,
-  TextVariant,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
-  AlignItems,
-} from '../../../../helpers/constants/design-system';
+  TextVariant,
+} from '@metamask/design-system-react';
+import { Content, Header, Page } from '../page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
 import { TabEmptyState } from '../../../ui/tab-empty-state';
@@ -90,18 +84,15 @@ export const GatorPermissionsPage = () => {
   const renderCategoryHeader = (title: string) => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={[2, 4]}
-        marginTop={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        paddingHorizontal={4}
+        className="w-full bg-background-default"
       >
         <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
         >
           {title}
         </Text>
@@ -113,13 +104,11 @@ export const GatorPermissionsPage = () => {
     return (
       <Box
         data-testid="permission-list"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.baseline}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Baseline}
+        paddingVertical={4}
         gap={4}
+        className="w-full bg-background-default"
       >
         {totalSitesConnections > 0 && (
           <>
@@ -150,19 +139,18 @@ export const GatorPermissionsPage = () => {
     if (gatorPermissionsLoading) {
       return (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          height={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           gap={2}
           padding={4}
+          className="h-full"
         >
           <Icon
             name={IconName.Loading}
-            color={IconColor.iconMuted}
+            color={IconColor.IconMuted}
             size={IconSize.Lg}
-            style={{ animation: 'spin 1.2s linear infinite' }}
+            className="animate-spin"
           />
         </Box>
       );
@@ -175,11 +163,10 @@ export const GatorPermissionsPage = () => {
     return (
       <Box
         data-testid="no-connections"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        height={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
         padding={4}
+        className="h-full"
       >
         <TabEmptyState
           icon={
@@ -208,25 +195,25 @@ export const GatorPermissionsPage = () => {
       key="gator-permissions-page"
     >
       <Header
-        backgroundColor={BackgroundColor.backgroundDefault}
+        className="bg-background-default"
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             onClick={handleBack}
             size={ButtonIconSize.Md}
           />
         }
       >
-        <TextDS
-          variant={TextVariantDS.BodyMd}
+        <Text
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           data-testid="gator-permissions-page-title"
         >
           {t('permissions')}
-        </TextDS>
+        </Text>
       </Header>
       <Content padding={0}>{renderPageContent()}</Content>
     </Page>
