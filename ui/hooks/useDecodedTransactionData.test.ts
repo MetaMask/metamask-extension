@@ -1,4 +1,3 @@
-import { waitFor } from '@testing-library/react';
 import {
   TransactionParams,
   TransactionStatus,
@@ -6,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { Hex } from '@metamask/utils';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { decodeTransactionData } from '../store/actions';
 import {

@@ -59,6 +59,7 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
@@ -816,7 +817,7 @@ const PerpsMarketDetailPage = () => {
 
   const handleBackClick = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
-      navigate(-1);
+      navigate(PREVIOUS_ROUTE);
       return;
     }
     navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });

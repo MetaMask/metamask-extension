@@ -12,6 +12,9 @@ import { MessengerClientInitFunction } from './types';
  * @param request.infuraProjectId - The Infura project ID.
  * @param request.getRequestAccountTabIds - A function that returns a record of account tab IDs.
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+ * @param request.getPermittedAccounts - A function that returns the permitted accounts for an origin.
+ * @param request.getTabUrl - A function that returns the current URL of a browser tab.
+ * @param request.updateTabUrl - A function that navigates a browser tab to a URL.
  * @param request.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
  * @param request.requestSafeReload - A function that triggers a safe reload of the extension.
  * @param request.sendUpdate - A function to send updates to the UI.
@@ -27,6 +30,9 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   infuraProjectId,
   getRequestAccountTabIds,
   getOpenMetamaskTabsIds,
+  getPermittedAccounts,
+  getTabUrl,
+  updateTabUrl,
   markNotificationPopupAsAutomaticallyClosed,
   requestSafeReload,
   sendUpdate,
@@ -38,6 +44,9 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    getPermittedAccounts,
+    getTabUrl,
+    updateTabUrl,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,

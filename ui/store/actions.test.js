@@ -138,6 +138,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
@@ -150,6 +151,10 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.protectVaultKeyWithPasskey = sinon.stub();
+    background.removePasskeyWithPasskeyVerification = sinon.stub();
+    background.removePasskeyWithPasswordVerification = sinon.stub();
+    background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
@@ -166,6 +171,16 @@ describe('Actions', () => {
     background.unlockAndGetSeedPhrase = sinon.stub();
     background.importMnemonicToVault = sinon.stub();
     background.discoverAndCreateAccounts = sinon.stub();
+
+    // Hardware wallet methods moved to `LegacyBackgroundApiService`, so they are
+    // no longer stubbed automatically by `createStubInstance(MetaMaskController)`.
+    background.connectHardware = sinon.stub();
+    background.checkHardwareStatus = sinon.stub();
+    background.forgetDevice = sinon.stub();
+    background.getAppNameAndVersion = sinon.stub();
+    background.getLedgerAppConfiguration = sinon.stub();
+    background.getLedgerPublicKey = sinon.stub();
+    background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -366,11 +381,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          undefined,
-        ),
+          options: undefined,
+        }),
       ).toStrictEqual(true);
     });
 
@@ -402,11 +417,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          { renewVaultKeyProtection: false },
-        ),
+          options: { renewVaultKeyProtection: false },
+        }),
       ).toStrictEqual(true);
     });
 
@@ -604,11 +619,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.protectVaultKeyWithPasskey.calledOnceWith(
+        background.protectVaultKeyWithPasskey.calledOnceWith({
           registrationResponse,
           authenticationResponse,
-          'secret',
-        ),
+          password: 'secret',
+        }),
       ).toBe(true);
 
       await actions.protectVaultKeyWithPasskey(
@@ -619,9 +634,11 @@ describe('Actions', () => {
       expect(
         background.protectVaultKeyWithPasskey.secondCall.args,
       ).toStrictEqual([
-        registrationResponse,
-        authenticationResponse,
-        undefined,
+        {
+          registrationResponse,
+          authenticationResponse,
+          password: undefined,
+        },
       ]);
     });
 

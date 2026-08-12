@@ -1,11 +1,15 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  NetworkConfiguration,
+  NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  Provider,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerEnableAllPopularNetworksAction,
@@ -15,16 +19,19 @@ import {
 import {
   add0x,
   bytesToHex,
+  CaipAccountId,
   CaipChainId,
   Hex,
   hexToBytes,
   Json,
   NonEmptyArray,
+  parseCaipAccountId,
 } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   BtcAccountType,
+  isEvmAccountType,
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
@@ -35,11 +42,14 @@ import {
   KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
+  KeyringControllerWithControllerAction,
   KeyringControllerWithKeyringV2Action,
+  KeyringControllerWithKeyringV2UnsafeAction,
   KeyringControllerSetLockedAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSubmitEncryptionKeyAction,
@@ -51,29 +61,64 @@ import {
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+  AccountsControllerListAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import {
+  AccountPage,
+  LedgerKeyring,
+} from '@metamask/eth-ledger-bridge-keyring';
+import LatticeKeyring from 'eth-lattice-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
+import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
+import {
+  TrezorKeyring as TrezorKeyringV2,
+  OneKeyKeyring as OneKeyKeyringV2,
+} from '@metamask/eth-trezor-keyring/v2';
+import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
+import { KeyringType } from '@metamask/keyring-api/v2';
+import { normalize } from '@metamask/eth-sig-util';
 import {
   TransactionContainerType,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionControllerWipeTransactionsAction,
+  type TransactionMeta,
+  type TransactionParams,
 } from '@metamask/transaction-controller';
 import {
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
+} from '@metamask/user-operation-controller';
+import {
+  GetSignatureState,
+  SignatureStateChange,
+} from '@metamask/signature-controller';
+import {
+  AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
+  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
+  TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
   AssetsControllerGetAssetsAction,
+  AssetsControllerGetStateAction,
   AssetsControllerSetSelectedCurrencyAction,
   Caip19AssetId,
 } from '@metamask/assets-controller';
@@ -86,7 +131,9 @@ import {
 } from '@metamask/phishing-controller';
 import {
   ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddAction,
   ApprovalControllerGetStateAction,
+  ApprovalControllerHasRequestAction,
   ApprovalControllerRejectRequestAction,
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
@@ -140,7 +187,12 @@ import {
   SnapInterfaceControllerDeleteInterfaceAction,
 } from '@metamask/snaps-controllers';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC20,
+  ERC721,
+  ERC1155,
+} from '@metamask/controller-utils';
 import {
   MultichainAccountServiceAlignWalletsAction,
   MultichainAccountServiceCreateMultichainAccountWalletAction,
@@ -157,13 +209,20 @@ import {
   AccountTreeControllerSyncWithUserStorageAction,
   AccountTreeControllerSyncWithUserStorageAtLeastOnceAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
+  errorCodes,
+  JsonRpcError,
+  providerErrors,
+  rpcErrors,
+} from '@metamask/rpc-errors';
+import {
+  AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
@@ -175,7 +234,12 @@ import {
   GasFeeControllerEnableNonRPCGasFeeApisAction,
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
-import { cloneDeep } from 'lodash';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerUnlockWithPasskeyAction,
+} from '@metamask/passkey-controller';
+import { cloneDeep, merge } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -186,6 +250,14 @@ import {
 } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
+import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+import {
+  fetchTokenBalance,
+  fetchERC1155Balance,
+} from '../../../shared/lib/token-util';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -194,12 +266,16 @@ import {
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
+import { MINUTE } from '../../../shared/constants/time';
 import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
@@ -211,12 +287,25 @@ import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import {
+  addTransaction as addTransactionToPipeline,
+  type AddTransactionOptions,
+  type AddTransactionRequest,
+} from '../lib/transaction/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
+  PreferencesControllerAddReferralApprovedAccountAction,
+  PreferencesControllerAddReferralDeclinedAccountAction,
+  PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerRemoveReferralDeclinedAccountAction,
+  PreferencesControllerSetAccountsReferralApprovedAction,
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
 } from '../controllers/preferences-controller-method-action-types';
-import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
+import {
+  PreferencesControllerGetStateAction,
+  ReferralStatus,
+} from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
@@ -226,6 +315,14 @@ import {
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import {
+  DefiReferralPartner,
+  DefiReferralPartnerConfig,
+  getPartnerByOrigin,
+} from '../../../shared/constants/defi-referrals';
+import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
+import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMiddleware';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
 import {
@@ -240,20 +337,96 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerAddSignatureSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
   AppStateControllerGetIsWalletResetInProgressAction,
   AppStateControllerSetIsWalletResetInProgressAction,
   AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
+  AppStateControllerSetTrezorModelAction,
 } from '../controllers/app-state-controller-method-action-types';
+import { AppStateControllerGetStateAction } from '../controllers/app-state-controller';
 import { AccountOrderControllerUpdateHiddenAccountsListAction } from '../controllers/account-order-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  LEDGER_LIVE_PATH,
+} from '../../../shared/constants/hardware-wallets';
 import {
   HardwareWalletType,
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
+import {
+  LatticeKeyringV2,
+  LatticeCreateAccountOptions,
+} from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
+
+/**
+ * The union of the V2 hardware keyring wrapper types that
+ * {@link LegacyBackgroundApiService.#withKeyringForDevice} can operate on.
+ */
+type HardwareKeyringV2 =
+  | LedgerKeyringV2
+  | TrezorKeyringV2
+  | OneKeyKeyringV2
+  | QrKeyringV2
+  | LatticeKeyringV2;
+
+/**
+ * Upper bound (ms) on lock-free hardware device reads (address paging,
+ * status/feature probes). Device reads may legitimately wait on user
+ * interaction (PIN or passphrase entry), so the bound is generous; it exists
+ * to fail abandoned requests with an actionable error instead of leaving the
+ * UI waiting forever. See {@link LegacyBackgroundApiService.#withKeyringForDevice}.
+ */
+export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
+
+/**
+ * Token metadata merged from the static token list, the dynamic token list and
+ * the user's tokens, used to decide how a token should be treated.
+ */
+type MergedTokenDetails = {
+  standard?: string;
+  erc20?: boolean;
+  erc721?: boolean;
+  decimals?: number;
+  symbol?: string;
+};
+
+/**
+ * The intermediate token details assembled while resolving a token's standard,
+ * before the final `decimals`/`balance` are normalized to strings.
+ */
+type WorkingTokenDetails = {
+  address?: string;
+  balance?: unknown;
+  standard?: string;
+  decimals?: unknown;
+  symbol?: string;
+  name?: string;
+  tokenURI?: string;
+};
+
+/**
+ * The token standard and details returned to the client.
+ */
+type TokenStandardAndDetails = {
+  address?: string;
+  standard?: string;
+  symbol?: string;
+  name?: string;
+  tokenURI?: string;
+  decimals?: string;
+  balance?: string;
+};
 
 /**
  * The methods that the {@link LegacyBackgroundApiService} exposes to the messenger.
@@ -261,11 +434,17 @@ const serviceName = 'LegacyBackgroundApiService';
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addTransaction',
+  'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
+  'attemptLedgerTransportCreation',
   'captureTestError',
   'changePassword',
+  'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
+  'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
+  'connectHardware',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
@@ -274,16 +453,28 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'forgetDevice',
   'getAccountsBySnapId',
+  'getAppNameAndVersion',
   'getAssets',
   'getCode',
   'getGlobalChainId',
+  'getHdPathForLedgerKeyring',
+  'getLedgerAppConfiguration',
+  'getLedgerMode',
+  'getLedgerPublicKey',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
   'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'getSentinelNetworkFlags',
+  'getTokenStandardAndDetails',
+  'getTokenStandardAndDetailsByChain',
+  'getTokenSymbol',
+  'getTrezorFeatures',
+  'handleDefiReferral',
+  'handleDefiReferralOnPermittedAccountsAdded',
   'importAccountWithStrategy',
   'importMnemonicToVault',
   'isAssetsUnifyStateEnabled',
@@ -317,8 +508,10 @@ const MESSENGER_EXPOSED_METHODS = [
   'syncSeedPhrases',
   'throwTestError',
   'toggleExternalServices',
+  'unlockWithPasskey',
   'unMarkPasswordForgotten',
   'unlockAndGetSeedPhrase',
+  'unlockHardwareWalletAccount',
   'upsertTransactionUIMetricsFragment',
 ] as const;
 
@@ -339,17 +532,29 @@ type AllowedActions =
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
+  | AccountsControllerListAccountsAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerAddAction
   | ApprovalControllerGetStateAction
+  | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | AppStateControllerAddSignatureSecurityAlertResponseAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerGetIsWalletResetInProgressAction
+  | AppStateControllerGetStateAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetTrezorModelAction
+  | AssetsContractControllerGetTokenStandardAndDetailsAction
   | AssetsControllerGetAssetsAction
+  | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
@@ -362,11 +567,14 @@ type AllowedActions =
   | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
+  | KeyringControllerWithControllerAction
   | KeyringControllerWithKeyringV2Action
+  | KeyringControllerWithKeyringV2UnsafeAction
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerUpdateEventFragmentAction
@@ -384,7 +592,9 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
@@ -394,6 +604,8 @@ type AllowedActions =
   | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
   | PermissionControllerRejectPermissionsRequestAction
@@ -401,7 +613,12 @@ type AllowedActions =
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerTestOriginAction
+  | PreferencesControllerAddReferralApprovedAccountAction
+  | PreferencesControllerAddReferralDeclinedAccountAction
+  | PreferencesControllerAddReferralPassedAccountAction
   | PreferencesControllerGetStateAction
+  | PreferencesControllerRemoveReferralDeclinedAccountAction
+  | PreferencesControllerSetAccountsReferralApprovedAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
@@ -421,22 +638,42 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | GetSignatureState
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
+  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TokensControllerGetStateAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateEditableParamsAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | TransactionControllerWipeTransactionsAction
+  | UsePPOMAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction;
+
+/**
+ * The events that the {@link LegacyBackgroundApiService} can subscribe to.
+ *
+ * Consumed by the shared transaction-add pipeline to await the pending
+ * transaction or signature request while running PPOM security validation.
+ */
+type AllowedEvents =
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | SignatureStateChange;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -444,7 +681,7 @@ type AllowedActions =
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -456,6 +693,9 @@ type LegacyBackgroundApiServiceOptions = {
   seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
+  getPermittedAccounts: (origin: string) => Promise<string[]>;
+  getTabUrl: (tabId: number) => Promise<string | undefined>;
+  updateTabUrl: (tabId: number, url: string) => Promise<void>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
@@ -482,6 +722,12 @@ export class LegacyBackgroundApiService {
 
   readonly #getOpenMetamaskTabsIds: () => Record<string, number>;
 
+  readonly #getPermittedAccounts: (origin: string) => Promise<string[]>;
+
+  readonly #getTabUrl: (tabId: number) => Promise<string | undefined>;
+
+  readonly #updateTabUrl: (tabId: number, url: string) => Promise<void>;
+
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
   readonly #requestSafeReload: () => Promise<void>;
@@ -503,6 +749,9 @@ export class LegacyBackgroundApiService {
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+   * @param options.getPermittedAccounts - A function that returns the permitted accounts for an origin.
+   * @param options.getTabUrl - A function that returns the current URL of a browser tab.
+   * @param options.updateTabUrl - A function that navigates a browser tab to a URL.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
@@ -514,6 +763,9 @@ export class LegacyBackgroundApiService {
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    getPermittedAccounts,
+    getTabUrl,
+    updateTabUrl,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
@@ -525,6 +777,9 @@ export class LegacyBackgroundApiService {
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
+    this.#getPermittedAccounts = getPermittedAccounts;
+    this.#getTabUrl = getTabUrl;
+    this.#updateTabUrl = updateTabUrl;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
@@ -818,6 +1073,88 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, without waiting for the
+   * transaction to be published.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The transaction metadata.
+   */
+  async addTransaction(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        false,
+      ),
+    );
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, waiting for the
+   * transaction to be published and returning the final transaction metadata.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The final transaction metadata.
+   */
+  async addTransactionAndWaitForPublish(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        true,
+      ),
+    );
+  }
+
+  /**
+   * Builds the request consumed by the shared transaction-add pipeline from the
+   * messenger, mirroring the former `MetamaskController.getAddTransactionRequest`.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @param waitForSubmit - Whether to wait for the transaction to be published.
+   * @returns The transaction-add request.
+   */
+  #buildAddTransactionRequest(
+    transactionParams: TransactionParams,
+    transactionOptions: Partial<AddTransactionOptions> | undefined,
+    waitForSubmit: boolean,
+  ): AddTransactionRequest {
+    const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
+
+    return {
+      messenger: this.#messenger,
+      internalAccounts: this.#messenger.call('AccountsController:listAccounts'),
+      selectedAccount: this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        transactionParams.from,
+      ) as InternalAccount,
+      networkClientId: networkClientId as string,
+      chainId,
+      transactionParams,
+      transactionOptions: { ...transactionOptions, isInternal: true },
+      securityAlertsEnabled: this.#messenger.call(
+        'PreferencesController:getState',
+      ).securityAlertsEnabled,
+      waitForSubmit,
+    };
+  }
+
+  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -955,6 +1292,381 @@ export class LegacyBackgroundApiService {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  /**
+   * @deprecated Avoid new references to the global network.
+   *
+   * @returns The provider of the currently selected (global) network client.
+   */
+  #getGlobalProvider(): Provider {
+    const { selectedNetworkClientId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    return this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    ).provider;
+  }
+
+  /**
+   * Returns the `TokensController.allTokens` map, reconstructed from the
+   * `AssetsController` state when the assets unify state feature is enabled.
+   *
+   * @returns The `ChainId -> AccountAddress -> Token[]` map.
+   */
+  #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
+    const { allTokens } = this.#messenger.call('TokensController:getState');
+
+    // When the assets unify state feature is disabled, the selector simply
+    // returns `TokensController.allTokens`; the additional slices are only
+    // needed to reconstruct the token list from the (conditionally registered)
+    // AssetsController state when the feature is enabled.
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return allTokens;
+    }
+
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const { assetsInfo, assetsBalance, customAssets } = this.#messenger.call(
+      'AssetsController:getState',
+    );
+
+    const metamask = {
+      allTokens,
+      internalAccounts,
+      remoteFeatureFlags,
+      assetsInfo,
+      assetsBalance,
+      customAssets,
+    };
+
+    return getTokensControllerAllTokens({ metamask });
+  }
+
+  /**
+   * Gets the standard and details for a token on the globally selected network.
+   *
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
+   * `AssetsContractController` when the token cannot be treated as an ERC20.
+   *
+   * @param address - The token contract address.
+   * @param userAddress - The user account address.
+   * @param tokenId - The token ID (for ERC721/ERC1155).
+   * @returns The token standard and details.
+   */
+  async getTokenStandardAndDetails(
+    address: string,
+    userAddress?: string,
+    tokenId?: string,
+  ): Promise<TokenStandardAndDetails> {
+    const currentChainId = this.getGlobalChainId();
+
+    const { tokensChainsCache } = this.#messenger.call(
+      'TokenListController:getState',
+    );
+    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    const allTokens = this.#getAllTokens();
+
+    const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
+
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    } as MergedTokenDetails;
+
+    // boolean to check if the token is an ERC20
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC20) ||
+      tokenDetails.erc20 === true;
+
+    // boolean to check if the token is an NFT
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC721) &&
+      !tokenDetails.erc721;
+
+    // boolean to check if the token is an ERC20 like
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    // boolean to check if the token can be treated as an ERC20
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details: WorkingTokenDetails | undefined;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = userAddress
+          ? await fetchTokenBalance(
+              address,
+              userAddress,
+              this.#getGlobalProvider(),
+            )
+          : undefined;
+
+        details = {
+          address,
+          balance,
+          standard: ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+        log.warn(`Failed to get token balance. Error: ${String(e)}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `AssetsContractController:getTokenStandardAndDetails`
+    if (details === undefined) {
+      try {
+        details = await this.#messenger.call(
+          'AssetsContractController:getTokenStandardAndDetails',
+          address,
+          userAddress,
+          tokenId,
+        );
+      } catch (e) {
+        log.warn(
+          `Failed to get token standard and details. Error: ${String(e)}`,
+        );
+      }
+    }
+
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard ?? '',
+        ERC1155,
+      );
+
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress as string,
+            tokenId as string,
+            this.#getGlobalProvider(),
+          );
+
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
+
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
+      }
+    }
+
+    return {
+      ...details,
+      decimals: (details?.decimals as number | undefined)?.toString(10),
+      balance: (details?.balance as number | undefined)?.toString(10),
+    };
+  }
+
+  /**
+   * Gets the standard and details for a token on a specific chain.
+   *
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
+   * `AssetsContractController` when the token cannot be treated as an ERC20.
+   *
+   * @param address - The token contract address.
+   * @param userAddress - The user account address.
+   * @param tokenId - The token ID (for ERC721/ERC1155).
+   * @param chainId - The chain ID to resolve the token on.
+   * @returns The token standard and details.
+   */
+  async getTokenStandardAndDetailsByChain(
+    address: string,
+    userAddress?: string,
+    tokenId?: string,
+    chainId?: Hex,
+  ): Promise<TokenStandardAndDetails> {
+    const { tokensChainsCache } = this.#messenger.call(
+      'TokenListController:getState',
+    );
+    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
+
+    const allTokens = this.#getAllTokens();
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const tokens =
+      (chainId && allTokens?.[chainId]?.[selectedAccount.address]) || [];
+
+    let staticTokenListDetails = {};
+    if (chainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
+
+    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    } as MergedTokenDetails;
+
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC20) ||
+      tokenDetails.erc20 === true;
+
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard ?? '', ERC721) &&
+      !tokenDetails.erc721;
+
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    // boolean to check if the token can be treated as an ERC20
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details: WorkingTokenDetails | undefined;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        let balance = 0;
+        if (this.getGlobalChainId() === chainId) {
+          balance = await fetchTokenBalance(
+            address,
+            userAddress as string,
+            this.#getGlobalProvider(),
+          );
+        }
+
+        details = {
+          address,
+          balance,
+          standard: ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+        log.warn(`Failed to get token balance. Error: ${String(e)}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `AssetsContractController:getTokenStandardAndDetails`
+    if (details === undefined) {
+      try {
+        const { networkConfigurationsByChainId } = this.#messenger.call(
+          'NetworkController:getState',
+        );
+        const networkClientId =
+          chainId &&
+          networkConfigurationsByChainId?.[chainId]?.rpcEndpoints[
+            networkConfigurationsByChainId?.[chainId]?.defaultRpcEndpointIndex
+          ]?.networkClientId;
+
+        details = await this.#messenger.call(
+          'AssetsContractController:getTokenStandardAndDetails',
+          address,
+          userAddress,
+          tokenId,
+          networkClientId || undefined,
+        );
+      } catch (e) {
+        log.warn(
+          `Failed to get token standard and details. Error: ${String(e)}`,
+        );
+      }
+    }
+
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard ?? '',
+        ERC1155,
+      );
+
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress as string,
+            tokenId as string,
+            this.#getGlobalProvider(),
+          );
+
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
+
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `AssetsContractController:getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
+      }
+    }
+
+    return {
+      ...details,
+      decimals: (details?.decimals as number | undefined)?.toString(10),
+      balance: (details?.balance as number | undefined)?.toString(10),
+    };
+  }
+
+  /**
+   * Gets the symbol of a token via an on-chain lookup through the
+   * `AssetsContractController`.
+   *
+   * @param address - The token contract address.
+   * @returns The token symbol, or `null` if it could not be resolved.
+   */
+  async getTokenSymbol(address: string): Promise<string | null | undefined> {
+    try {
+      const details = await this.#messenger.call(
+        'AssetsContractController:getTokenStandardAndDetails',
+        address,
+      );
+      return details?.symbol;
+    } catch (e) {
+      return null;
+    }
   }
 
   /**
@@ -1521,6 +2233,72 @@ export class LegacyBackgroundApiService {
       }
     }
 
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Changes the wallet password using a verified passkey assertion.
+   *
+   * Delegates the actual password change and vault-key renewal to
+   * `PasskeyController:changePasswordWithPasskeyVerification`, but wraps the call
+   * in the shared `seedlessOperationMutex` so it stays serialized against the
+   * other keyring/seedless operations (password change, SRP backups, keyring
+   * encryption key sync) that mutate the same keyring encryption key and vault.
+   * The PasskeyController has its own internal mutex, which only serializes
+   * passkey operations against each other, so the extension-level lock is still
+   * required to avoid interleaving with those flows.
+   *
+   * @param params - Passkey password-change parameters.
+   * @param params.newPassword - The new wallet password.
+   * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+   * @param params.options - Optional flow controls.
+   * @param params.options.renewVaultKeyProtection - Re-wrap the vault key after the password change.
+   */
+  async changePasswordWithPasskeyVerification(params: {
+    newPassword: string;
+    authenticationResponse: PasskeyAuthenticationResponse;
+    options?: { renewVaultKeyProtection?: boolean };
+  }): Promise<void> {
+    await this.#seedlessOperationMutex.runExclusive(() =>
+      this.#messenger.call(
+        'PasskeyController:changePasswordWithPasskeyVerification',
+        params,
+      ),
+    );
+  }
+
+  /**
+   * Unlocks the vault with a passkey, then runs the post-unlock account
+   * initialization sequence.
+   *
+   * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+   * verifies the authentication assertion and submits the decrypted vault key to
+   * the KeyringController), then performs the awaited post-unlock account init
+   * (accounts / multichain / account-tree) that the controller's keyring-only
+   * unlock does not run.
+   *
+   * @param authenticationResponse - Result of `navigator.credentials.get()`.
+   */
+  async unlockWithPasskey(
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ): Promise<void> {
+    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    await this.#offscreenPromise;
+
+    await this.#messenger.call(
+      'PasskeyController:unlockWithPasskey',
+      authenticationResponse,
+    );
+
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Runs the awaited post-unlock account initialization sequence: refreshes
+   * internal accounts, initializes multichain accounts, refreshes the account
+   * tree, and (asynchronously) resyncs and aligns accounts.
+   */
+  async #initAccountsAfterUnlock(): Promise<void> {
     await this.#messenger.call('AccountsController:updateAccounts');
 
     // Init multichain accounts after creating internal accounts.
@@ -1651,11 +2429,13 @@ export class LegacyBackgroundApiService {
    *
    * @param transactionId - The ID of the transaction to update.
    * @param containerTypes - The container types to apply to the transaction.
+   * @param incrementToggleCount - Whether to increment the toggle interaction metric.
    */
   async applyTransactionContainersExisting(
     transactionId: string,
     containerTypes: TransactionContainerType[],
-  ): Promise<void> {
+    incrementToggleCount = false,
+  ): Promise<{ enforcedSimulationsSlippage?: number }> {
     const { transactions } = await this.#messenger.call(
       'TransactionController:getState',
     );
@@ -1666,19 +2446,27 @@ export class LegacyBackgroundApiService {
       throw new Error(`Transaction with ID ${transactionId} not found.`);
     }
 
-    const { updateTransaction } = await applyTransactionContainers({
-      isApproved: false,
-      messenger:
-        this.#messenger as unknown as TransactionControllerInitMessenger,
-      transactionMeta,
-      types: containerTypes,
-    });
+    if (incrementToggleCount) {
+      this.#incrementTransactionUIMetricsFragmentProperty(
+        transactionId,
+        'enforced_simulation_toggle_count',
+      );
+    }
+
+    const { enforcedSimulationsSlippage, updateTransaction } =
+      await applyTransactionContainers({
+        isApproved: false,
+        messenger:
+          this.#messenger as unknown as TransactionControllerInitMessenger,
+        transactionMeta,
+        types: containerTypes,
+      });
 
     const newTransactionMeta = cloneDeep(transactionMeta);
 
     updateTransaction(newTransactionMeta);
 
-    this.#messenger.call(
+    await this.#messenger.call(
       'TransactionController:updateEditableParams',
       transactionId,
       {
@@ -1693,6 +2481,8 @@ export class LegacyBackgroundApiService {
         value: newTransactionMeta.txParams.value,
       },
     );
+
+    return { enforcedSimulationsSlippage };
   }
 
   /**
@@ -1758,6 +2548,27 @@ export class LegacyBackgroundApiService {
       canDeleteIfAbandoned: true,
       properties: payload.properties ?? {},
       sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
+  /**
+   * Increments a numeric property in a transaction UI metrics fragment.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param property - The metrics property to increment.
+   */
+  #incrementTransactionUIMetricsFragmentProperty(
+    transactionId: string,
+    property: string,
+  ): void {
+    const fragment = this.#getTransactionUIMetricsFragment(transactionId);
+    const currentValue = fragment?.properties?.[property];
+    const nextValue = (typeof currentValue === 'number' ? currentValue : 0) + 1;
+
+    this.upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        [property]: nextValue,
+      },
     });
   }
 
@@ -2022,6 +2833,616 @@ export class LegacyBackgroundApiService {
     } catch (error) {
       if (!(error instanceof PermissionsRequestNotFoundError)) {
         throw error;
+      }
+    }
+  }
+
+  //
+  // Hardware
+  //
+
+  /**
+   * Attempts to create the Ledger transport app.
+   *
+   * @returns Whether the app was created successfully.
+   */
+  async attemptLedgerTransportCreation(): Promise<boolean> {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) => await (keyring as LedgerKeyringV2).attemptMakeApp(),
+    );
+  }
+
+  /**
+   * Gets the app name and version from the Ledger device.
+   *
+   * @returns The app name and version.
+   */
+  async getAppNameAndVersion(): Promise<
+    ReturnType<LedgerKeyringV2['getAppNameAndVersion']>
+  > {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) =>
+        await (keyring as LedgerKeyringV2).getAppNameAndVersion(),
+    );
+  }
+
+  /**
+   * Gets the app configuration from the Ledger device.
+   *
+   * @returns The app configuration.
+   */
+  async getLedgerAppConfiguration(): Promise<
+    ReturnType<LedgerKeyringV2['bridge']['getAppConfiguration']>
+  > {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) =>
+        await (keyring as LedgerKeyringV2).bridge.getAppConfiguration(),
+    );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns The Ledger handler mode.
+   */
+  getLedgerMode(): LedgerHandlerMode {
+    const state = this.#messenger.call('RemoteFeatureFlagController:getState');
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return isDmkFeatureEnabled(merged)
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
+  }
+
+  /**
+   * Fetch account list from a hardware device.
+   *
+   * @param deviceName - The device name to connect.
+   * @param page - The page of accounts to fetch (-1 for previous, 1 for next,
+   * otherwise the first page).
+   * @param hdPath - An optional hd path to set on the device keyring.
+   * @returns The accounts.
+   */
+  async connectHardware(
+    deviceName: string,
+    page: number,
+    hdPath?: string,
+  ): Promise<AccountPage> {
+    // This is the first-time setup path for a hardware wallet; the keyring
+    // may not exist yet, so allow creation here. Every other caller of
+    // `#withKeyringForDevice` operates on an already-paired device.
+    //
+    // Address paging waits on the device (and on user interaction, e.g.
+    // entering a PIN), potentially forever if the device stays locked, so it
+    // runs as a `deviceRead` outside the controller lock.
+    return this.#withKeyringForDevice(
+      { name: deviceName, hdPath, create: true, deviceRead: true },
+      async (keyring) => {
+        const ledgerKeyring = keyring as LedgerKeyringV2;
+        let accounts: AccountPage = [];
+        switch (page) {
+          case -1:
+            accounts = await ledgerKeyring.getPreviousPage();
+            break;
+          case 1:
+            accounts = await ledgerKeyring.getNextPage();
+            break;
+          default:
+            accounts = await ledgerKeyring.getFirstPage();
+        }
+
+        return accounts;
+      },
+    );
+  }
+
+  /**
+   * Check if the device is unlocked.
+   *
+   * @param deviceName - The device name to check.
+   * @param hdPath - An optional hd path to set on the device keyring.
+   * @returns Whether the device is unlocked.
+   */
+  async checkHardwareStatus(
+    deviceName: string,
+    hdPath?: string,
+  ): Promise<boolean> {
+    return this.#withKeyringForDevice(
+      {
+        name: deviceName,
+        hdPath,
+        create: deviceName === HardwareDeviceNames.qr,
+        deviceRead: true,
+      },
+      async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no `isUnlocked()`; pairing is reported via
+          // `getMode()`. The QR V2 wrapper type does not declare it here, so
+          // reach for it via a narrow structural cast.
+          return Boolean(
+            (keyring as unknown as { getMode(): unknown }).getMode(),
+          );
+        }
+        // `isUnlocked` is exposed by the Ledger/Trezor V2 wrappers at runtime;
+        // the wrapper types do not declare it, so reach for it via a narrow
+        // structural cast.
+        return (keyring as unknown as { isUnlocked(): boolean }).isUnlocked();
+      },
+    );
+  }
+
+  /**
+   * Get the hd path currently configured on a Ledger hardware keyring.
+   *
+   * @returns The hd path.
+   */
+  async getHdPathForLedgerKeyring(): Promise<string> {
+    return this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) => {
+        return (keyring as LedgerKeyringV2).hdPath;
+      },
+    );
+  }
+
+  /**
+   * Gets the public key from the Ledger device.
+   *
+   * @param hdPath - The hd path to get the public key for.
+   * @returns The public key.
+   */
+  async getLedgerPublicKey(
+    hdPath: string,
+  ): Promise<ReturnType<LedgerKeyringV2['bridge']['getPublicKey']>> {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
+      async (keyring) =>
+        await (keyring as LedgerKeyringV2).bridge.getPublicKey({ hdPath }),
+    );
+  }
+
+  /**
+   * Gets the features from the Trezor device.
+   *
+   * @returns The features.
+   */
+  async getTrezorFeatures(): Promise<unknown> {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.trezor, deviceRead: true },
+      async (keyring) => {
+        const { bridge } = keyring as TrezorKeyringV2;
+        const bridgeWithFeatures = bridge as unknown as {
+          getFeatures?: () => Promise<unknown>;
+        };
+        if (typeof bridgeWithFeatures.getFeatures !== 'function') {
+          throw new Error('Trezor bridge does not support getFeatures');
+        }
+
+        return await bridgeWithFeatures.getFeatures();
+      },
+    );
+  }
+
+  /**
+   * Forget a hardware device.
+   *
+   * @param deviceName - The device name to forget.
+   * @returns `true` when the device has been forgotten.
+   */
+  async forgetDevice(deviceName: string): Promise<boolean> {
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
+      // remove-handler downstream expects raw addresses.
+      for (const account of await keyring.getAccounts()) {
+        this.onAccountRemoved(account.address);
+      }
+
+      await keyring.forgetDevice();
+
+      return true;
+    });
+  }
+
+  /**
+   * Get hardware account label.
+   *
+   * @param name - The device name.
+   * @param index - The account index.
+   * @param hdPathDescription - An optional hd path description.
+   * @returns The account label.
+   */
+  #getAccountLabel(
+    name: string,
+    index: number,
+    hdPathDescription?: string,
+  ): string {
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      index + 1
+    } ${hdPathDescription || ''}`.trim();
+  }
+
+  /**
+   * Imports an account from a Trezor or Ledger device.
+   *
+   * @param index - The account index to unlock.
+   * @param deviceName - The device name.
+   * @param hdPath - An optional hd path.
+   * @param hdPathDescription - An optional hd path description.
+   * @returns The unlocked account address and the current account list.
+   */
+  async unlockHardwareWalletAccount(
+    index: number,
+    deviceName: string,
+    hdPath?: string,
+    hdPathDescription?: string,
+  ): Promise<{
+    unlockedAccount: string;
+    accounts: ReturnType<AccountsControllerListAccountsAction['handler']>;
+  }> {
+    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+      { name: deviceName, hdPath },
+      async (keyring) => {
+        const { entropySource } = keyring as
+          | LedgerKeyringV2
+          | TrezorKeyringV2
+          | OneKeyKeyringV2
+          | QrKeyringV2
+          | LatticeKeyringV2;
+        // Callers may omit `hdPath` and rely on the keyring's currently
+        // configured base path (the legacy V1 surface implicitly did this
+        // via `keyring.setAccountToUnlock` + `addAccounts`). Fall back to
+        // the keyring's `hdPath` so V2 `createAccounts` builds a valid
+        // derivation path.
+        const effectiveHdPath = hdPath ?? (keyring as LedgerKeyringV2).hdPath;
+        let createdAccount;
+
+        switch (deviceName) {
+          case HardwareDeviceNames.ledger: {
+            // Ledger Live mode uses a per-account hardened third segment;
+            // Legacy and BIP-44 modes are `${hdPath}/${index}`.
+            const derivationPath = (
+              effectiveHdPath === LEDGER_LIVE_PATH
+                ? `m/44'/60'/${index}'/0/0`
+                : `${effectiveHdPath}/${index}`
+            ) as `m/${string}`;
+            [createdAccount] = await (
+              keyring as LedgerKeyringV2
+            ).createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath,
+            });
+            break;
+          }
+          case HardwareDeviceNames.trezor:
+          case HardwareDeviceNames.oneKey: {
+            [createdAccount] = await (
+              keyring as TrezorKeyringV2 | OneKeyKeyringV2
+            ).createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath: `${effectiveHdPath}/${index}` as `m/${string}`,
+            });
+            break;
+          }
+          case HardwareDeviceNames.qr: {
+            // QR devices are HD or Account-mode; legacy `setAccountToUnlock +
+            // addAccounts` worked for both because the inner keyring routed
+            // by mode internally. The V2 wrapper splits the two paths.
+            const qrKeyring = keyring as QrKeyringV2;
+            const isAccountMode = qrKeyring.getMode() === 'account';
+            [createdAccount] = isAccountMode
+              ? await qrKeyring.createAccounts({
+                  type: 'custom',
+                  entropySource,
+                  addressIndex: index,
+                })
+              : await qrKeyring.createAccounts({
+                  type: 'bip44:derive-index',
+                  entropySource,
+                  groupIndex: index,
+                });
+            break;
+          }
+          case HardwareDeviceNames.lattice: {
+            [createdAccount] = await (
+              keyring as LatticeKeyringV2
+            ).createAccounts({
+              type: 'custom',
+              entropySource,
+              addressIndex: index,
+            } as LatticeCreateAccountOptions);
+            break;
+          }
+          default:
+            throw new Error(
+              `LegacyBackgroundApiService:unlockHardwareWalletAccount - Unknown device: ${deviceName}`,
+            );
+        }
+
+        if (!createdAccount) {
+          throw new Error(`No account created for device: ${deviceName}`);
+        }
+
+        return {
+          address: normalize(createdAccount.address) as string,
+          label: this.#getAccountLabel(
+            deviceName === HardwareDeviceNames.qr
+              ? (keyring as QrKeyringV2).getName()
+              : deviceName,
+            index,
+            hdPathDescription,
+          ),
+        };
+      },
+    );
+
+    const accounts = this.#messenger.call('AccountsController:listAccounts');
+
+    const internalAccount = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      unlockedAccount,
+    );
+
+    if (internalAccount) {
+      this.#messenger.call(
+        'AccountsController:setSelectedAccount',
+        internalAccount.id,
+      );
+    } else {
+      throw new Error(`No account found for address: ${unlockedAccount}`);
+    }
+
+    return { unlockedAccount, accounts };
+  }
+
+  /**
+   * Sets the Ledger Live preference to use for Ledger hardware wallet support.
+   *
+   * @param keyring - The Ledger keyring.
+   * @returns The bridge result if available, otherwise `undefined`.
+   * @deprecated This method is deprecated and will be removed in the future.
+   * Only webhid connections are supported in chrome and u2f in firefox.
+   */
+  async #setLedgerTransportPreference(
+    keyring: LedgerKeyringV2,
+  ): Promise<boolean | undefined> {
+    const transportType = window.navigator.hid
+      ? LedgerTransportTypes.webhid
+      : LedgerTransportTypes.u2f;
+
+    // TODO: Expose `updateTransportMethod` directly on the V2 `LedgerKeyring`
+    // wrapper in `@metamask/eth-ledger-bridge-keyring/v2` so callers don't
+    // need to reach through `bridge`. The V2 wrapper currently exposes the
+    // bridge instance but not this top-level method.
+    //
+    // Use `await` (not `.then`/`.catch`) so callers tolerate any bridge whose
+    // `updateTransportMethod` is synchronous (e.g. older test stubs that
+    // returned a raw value before being aligned with the real bridge's
+    // Promise contract).
+    const { bridge } = keyring;
+    if (bridge?.updateTransportMethod) {
+      return await bridge.updateTransportMethod(transportType);
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Runs the given callback with the keyring for the given device.
+   *
+   * @param options - The options for the device.
+   * @param options.name - The device name to select.
+   * @param options.hdPath - An optional hd path to be set on the device
+   * keyring.
+   * @param options.create - Whether to create the keyring if it is missing.
+   * @param options.deviceRead - Set when the callback only reads from the
+   * device (address paging, feature/status probes). Device reads can stall
+   * indefinitely on a locked or unresponsive device, so they are executed on
+   * the lock-free `withKeyringV2Unsafe` path instead of holding the
+   * controller-wide operation mutex for the whole device interaction. To
+   * enforce this, the callback does not receive the full keyring: it receives
+   * a frozen read-only facade (see `restrictKeyringForDeviceRead`) on which
+   * mutating methods do not exist.
+   * @param callback - The callback to execute with the keyring.
+   * @returns The result of the callback.
+   */
+  async #withKeyringForDevice<CallbackResult>(
+    options: {
+      name: string;
+      hdPath?: string;
+      create?: boolean;
+      deviceRead?: boolean;
+    },
+    callback: (keyring: HardwareKeyringV2) => Promise<CallbackResult>,
+  ): Promise<CallbackResult> {
+    let keyringType = null;
+    let v2KeyringType = null;
+    switch (options.name) {
+      case HardwareDeviceNames.trezor:
+        keyringType = TrezorKeyring.type;
+        v2KeyringType = KeyringType.Trezor;
+        break;
+      case HardwareDeviceNames.oneKey:
+        keyringType = OneKeyKeyring.type;
+        v2KeyringType = KeyringType.OneKey;
+        break;
+      case HardwareDeviceNames.ledger:
+        keyringType = LedgerKeyring.type;
+        v2KeyringType = KeyringType.Ledger;
+        break;
+      case HardwareDeviceNames.qr:
+        keyringType = QrKeyring.type;
+        v2KeyringType = KeyringType.Qr;
+        break;
+      case HardwareDeviceNames.lattice:
+        keyringType = LatticeKeyring.type;
+        v2KeyringType = KeyringType.Lattice;
+        break;
+      default:
+        throw new Error(
+          'LegacyBackgroundApiService:#withKeyringForDevice - Unknown device',
+        );
+    }
+
+    // `withKeyringV2` has no `createIfMissing` option. The connect-device
+    // flow and QR reconnect status probe may legitimately create a hardware
+    // keyring; every other caller operates on a keyring that should already
+    // exist, and should let the controller throw `KeyringNotFound` if it
+    // doesn't.
+    // `withController` runs the check-and-create as a mutually exclusive
+    // transaction so a concurrent caller can't slip in between.
+    if (options.create) {
+      await this.#messenger.call(
+        'KeyringController:withController',
+        async (controller) => {
+          const hasKeyring = controller.keyrings.some(
+            (entry) =>
+              (entry as unknown as { type: string }).type === keyringType,
+          );
+          if (!hasKeyring) {
+            await controller.addNewKeyring(keyringType);
+          }
+        },
+      );
+    }
+
+    // The prelude mutates keyring/app state (`setHdPath` resets the paging
+    // state and can clear accounts, the Lattice `network` field feeds the
+    // GridPlus session) and is fast and bounded, so it always runs under the
+    // controller lock where `persistOrRollback` can pick up the changes.
+    const prepareKeyring = async (hardwareKeyring: HardwareKeyringV2) => {
+      // `setHdPath` is only declared on the Ledger V2 wrapper; the legacy QR
+      // keyring also implements it at runtime. Reach for it via a narrow
+      // structural cast and only call it when present.
+      const keyringWithHdPath = hardwareKeyring as unknown as {
+        setHdPath?: (hdPath: string) => void;
+      };
+      if (options.hdPath && keyringWithHdPath.setHdPath) {
+        keyringWithHdPath.setHdPath(options.hdPath);
+      }
+
+      if (options.name === HardwareDeviceNames.ledger) {
+        await this.#setLedgerTransportPreference(
+          hardwareKeyring as LedgerKeyringV2,
+        );
+      }
+
+      if (
+        options.name === HardwareDeviceNames.trezor ||
+        options.name === HardwareDeviceNames.oneKey
+      ) {
+        const model = (
+          hardwareKeyring as TrezorKeyringV2 | OneKeyKeyringV2
+        ).getModel();
+        this.#messenger.call(
+          'AppStateController:setTrezorModel',
+          model ?? null,
+        );
+      }
+
+      if (options.name === HardwareDeviceNames.lattice) {
+        // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
+        // runtime state, so we keep tracking it on every entry. The
+        // GridPlus SDK Client reads it on `_initSession` to target
+        // the right chain.
+        (hardwareKeyring as LatticeKeyringV2).network =
+          getProviderConfig({
+            metamask: this.#messenger.call('NetworkController:getState'),
+          }).type ?? null;
+      }
+    };
+
+    if (!options.deviceRead) {
+      return this.#messenger.call(
+        'KeyringController:withKeyringV2',
+        { type: v2KeyringType },
+        async ({ keyring }) => {
+          const hardwareKeyring = keyring as unknown as HardwareKeyringV2;
+          await prepareKeyring(hardwareKeyring);
+          return await callback(hardwareKeyring);
+        },
+      ) as Promise<CallbackResult>;
+    }
+
+    // Device-read path. The prelude still runs under the lock (short,
+    // mutating), but the device interaction itself runs on the lock-free
+    // path: a locked or unresponsive device makes calls like `getFirstPage`
+    // or `getPublicKey` hang indefinitely, and holding the operation mutex
+    // across that hang deadlocks every other locked keyring operation
+    // (account syncing, account creation, unlocking, ...) until the browser
+    // restarts.
+    //
+    // Trade-off: while the device read is in flight, a concurrent locked
+    // operation that fails (or a lock/unlock cycle) can rebuild the keyring
+    // instances, in which case this read fails or returns data from the
+    // replaced instance. That is intentional: the stale instance is no longer
+    // part of the controller, so its state can never be persisted, and the
+    // caller can simply retry — unlike the previous behavior, where the whole
+    // wallet wedged on the held mutex.
+    await this.#messenger.call(
+      'KeyringController:withKeyringV2',
+      { type: v2KeyringType },
+      async ({ keyring }) =>
+        prepareKeyring(keyring as unknown as HardwareKeyringV2),
+    );
+
+    // The timeout is a UX backstop: without the lock, an abandoned device
+    // read no longer blocks anything else, but the requesting UI would still
+    // wait forever. Note that timing out abandons the in-flight device call
+    // rather than cancelling it; a retry while the device call is still
+    // pending may be rejected by the transport SDK.
+    const deviceReadOperation = this.#messenger.call(
+      'KeyringController:withKeyringV2Unsafe',
+      { type: v2KeyringType },
+      // The facade structurally prevents `deviceRead` callbacks from reaching
+      // mutating keyring methods on the lock-free path.
+      async ({ keyring }) =>
+        await callback(
+          restrictKeyringForDeviceRead(
+            keyring as unknown as HardwareKeyringV2,
+          ) as unknown as HardwareKeyringV2,
+        ),
+    ) as Promise<CallbackResult>;
+
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    let timedOut = false;
+    try {
+      return (await Promise.race([
+        deviceReadOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ])) as CallbackResult;
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // Only for observability: `Promise.race` already subscribes to the
+        // abandoned device read, so a late rejection can never surface as an
+        // unhandled rejection — but without this it would be dropped silently.
+        deviceReadOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware device read failed after timeout for device: ${options.name}`,
+            error,
+          ),
+        );
       }
     }
   }
@@ -2885,5 +4306,379 @@ export class LegacyBackgroundApiService {
     chainId: Hex,
   ): Promise<SentinelNetwork | undefined> {
     return getSentinelNetworkFlags(chainId);
+  }
+
+  /**
+   * Runs when CAIP-25 permitted accounts are extended via the permission
+   * background API. If the origin is a referral partner and the globally
+   * selected account is EVM and included among the newly permitted accounts,
+   * it triggers the DeFi referral flow.
+   *
+   * @param details - Added accounts payload.
+   * @param details.origin - The origin whose permitted accounts were extended.
+   * @param details.newCaipAccountIds - The newly added CAIP-10 account ids.
+   */
+  handleDefiReferralOnPermittedAccountsAdded(details: {
+    origin: string;
+    newCaipAccountIds: CaipAccountId[];
+  }): void {
+    const { origin, newCaipAccountIds } = details;
+
+    const partner = getPartnerByOrigin(origin);
+    if (!partner) {
+      return;
+    }
+
+    const { accounts, selectedAccount: selectedAccountId } =
+      this.#messenger.call('AccountsController:getState').internalAccounts;
+    const selectedAccount = accounts[selectedAccountId];
+    if (!selectedAccount?.address || !isEvmAccountType(selectedAccount.type)) {
+      return;
+    }
+
+    const selectedMatchesNewPermit = newCaipAccountIds.some((caipAccountId) => {
+      try {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return isEqualCaseInsensitive(address, selectedAccount.address);
+      } catch {
+        return false;
+      }
+    });
+
+    if (!selectedMatchesNewPermit) {
+      return;
+    }
+
+    const { appActiveTab } = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    if (
+      !appActiveTab?.id ||
+      typeof appActiveTab.id !== 'number' ||
+      appActiveTab.origin !== origin
+    ) {
+      return;
+    }
+
+    this.handleDefiReferral(
+      partner,
+      appActiveTab.id,
+      ReferralTriggerType.PermittedAccountAdded,
+      {
+        activePermittedAddressOverride: selectedAccount.address,
+      },
+    ).catch((error) => {
+      log.error(
+        `Failed to handle ${partner.name} referral after permitted account added: `,
+        error,
+      );
+    });
+  }
+
+  /**
+   * Handles DeFi referral approval flow for a partner.
+   * Shows approval confirmation screen if needed and manages referral URL redirection.
+   * This can be triggered by connection permission grants or existing connections.
+   *
+   * @param partner - The partner configuration.
+   * @param tabId - The browser tab ID to update.
+   * @param triggerType - The trigger type.
+   * @param options - Optional behavior.
+   * @param options.activePermittedAddressOverride - When set, use this permitted address for referral state instead of the first sorted permitted account.
+   */
+  async handleDefiReferral(
+    partner: DefiReferralPartnerConfig,
+    tabId: number,
+    triggerType: ReferralTriggerType,
+    options: { activePermittedAddressOverride?: string } = {},
+  ): Promise<void> {
+    const { remoteFeatureFlags } = this.#messenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const referralPartnersFlag =
+      remoteFeatureFlags?.extensionUxDefiReferralPartners as
+        | Record<string, boolean>
+        | undefined;
+    const isReferralEnabled = referralPartnersFlag?.[partner.id];
+
+    if (!isReferralEnabled) {
+      return;
+    }
+
+    // Only continue if the partner has permitted accounts
+    const permittedAccounts = await this.#getPermittedAccounts(partner.origin);
+    if (permittedAccounts.length === 0) {
+      return;
+    }
+
+    // Only continue if there is no pending approval
+    const hasPendingApproval = this.#messenger.call(
+      'ApprovalController:hasRequest',
+      {
+        origin: partner.origin,
+        type: partner.approvalType,
+      },
+    );
+
+    if (hasPendingApproval) {
+      return;
+    }
+
+    const { activePermittedAddressOverride } = options;
+    const activePermittedAccount =
+      (activePermittedAddressOverride &&
+        permittedAccounts.find((addr) =>
+          isEqualCaseInsensitive(addr, activePermittedAddressOverride),
+        )) ??
+      permittedAccounts[0];
+
+    const preferencesState = this.#messenger.call(
+      'PreferencesController:getState',
+    );
+    const referralStatusByAccount = preferencesState.referrals[partner.id];
+    const permittedAccountStatus =
+      referralStatusByAccount[activePermittedAccount as Hex];
+    const declinedAccounts = Object.keys(referralStatusByAccount).filter(
+      (account) =>
+        referralStatusByAccount[account as Hex] === ReferralStatus.Declined,
+    );
+
+    // We should show approval screen if the account does not have a status
+    const shouldShowApproval = permittedAccountStatus === undefined;
+
+    // We should redirect to the referral url if the account is approved
+    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
+
+    const checkExistingCodeMap: Partial<
+      Record<DefiReferralPartner, (account: string) => Promise<boolean>>
+    > = {
+      [DefiReferralPartner.GMX]: (account) =>
+        this.#checkGmxHasReferralCode(account),
+      [DefiReferralPartner.Hyperliquid]: preferencesState.useExternalServices
+        ? checkHyperliquidHasReferralCode
+        : undefined,
+    };
+
+    if (shouldShowApproval || shouldRedirect) {
+      const checkExistingCode = checkExistingCodeMap[partner.id];
+      if (checkExistingCode) {
+        const hasExistingCode = await checkExistingCode(activePermittedAccount);
+        if (hasExistingCode) {
+          this.#messenger.call(
+            'PreferencesController:addReferralPassedAccount',
+            partner.id,
+            activePermittedAccount as Hex,
+          );
+          return;
+        }
+      }
+    }
+
+    if (shouldShowApproval) {
+      try {
+        // Track referral viewed event
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ReferralViewed)
+            .addCategory(MetaMetricsEventCategory.Referrals)
+            .addProperties({
+              url: partner.origin,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              trigger_type: triggerType,
+            })
+            .build(),
+        );
+
+        // `shouldShowRequest` is preserved for parity with the previous
+        // MetamaskController implementation; `ApprovalController.add` ignores it
+        // (only `addRequest` reads it), so it is a no-op passed via a widened
+        // object to satisfy the action's option type.
+        const approvalRequest = {
+          origin: partner.origin,
+          type: partner.approvalType,
+          requestData: {
+            selectedAddress: activePermittedAccount,
+            partnerId: partner.id,
+            partnerName: partner.name,
+            learnMoreUrl: partner.learnMoreUrl,
+          },
+          shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
+        };
+        const approvalResponse = (await this.#messenger.call(
+          'ApprovalController:add',
+          approvalRequest,
+        )) as { approved?: boolean } | undefined;
+
+        if (approvalResponse?.approved) {
+          this.#handleDefiReferralApprovedAccount(
+            partner,
+            activePermittedAccount,
+            permittedAccounts,
+            declinedAccounts,
+          );
+          await this.#handleDefiReferralRedirect(
+            partner,
+            tabId,
+            activePermittedAccount,
+          );
+        } else {
+          this.#messenger.call(
+            'PreferencesController:addReferralDeclinedAccount',
+            partner.id,
+            activePermittedAccount as Hex,
+          );
+        }
+
+        // Track referral confirm button clicked event
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ReferralConfirmButtonClicked)
+            .addCategory(MetaMetricsEventCategory.Referrals)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              opt_in: Boolean(approvalResponse?.approved),
+              url: partner.origin,
+            })
+            .build(),
+        );
+      } catch (error) {
+        // Do nothing if the user rejects the request
+        if (
+          (error as { code?: number })?.code ===
+          errorCodes.provider.userRejectedRequest
+        ) {
+          return;
+        }
+        throw error;
+      }
+    }
+
+    if (shouldRedirect) {
+      await this.#handleDefiReferralRedirect(
+        partner,
+        tabId,
+        activePermittedAccount,
+      );
+    }
+  }
+
+  /**
+   * Checks whether the given wallet already has a GMX referral code set on the
+   * Arbitrum ReferralStorage contract. Reconstructs the Arbitrum provider via
+   * the messenger and defaults to `false` when Arbitrum is not configured.
+   *
+   * @param walletAddress - The wallet address to check.
+   * @returns Whether the wallet has a GMX referral code on-chain.
+   */
+  async #checkGmxHasReferralCode(walletAddress: string): Promise<boolean> {
+    try {
+      const networkClientId = this.#messenger.call(
+        'NetworkController:findNetworkClientIdByChainId',
+        CHAIN_IDS.ARBITRUM,
+      );
+      const { provider } = this.#messenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
+      return await checkGmxHasReferralCode(provider, walletAddress);
+    } catch {
+      // If Arbitrum is not configured or the lookup fails, default to false
+      return false;
+    }
+  }
+
+  /**
+   * Handles redirection to the DeFi partner's referral page.
+   *
+   * @param partner - The partner configuration.
+   * @param tabId - The browser tab ID to update.
+   * @param permittedAccount - The permitted account.
+   */
+  async #handleDefiReferralRedirect(
+    partner: DefiReferralPartnerConfig,
+    tabId: number,
+    permittedAccount: string,
+  ): Promise<void> {
+    await this.#updateDefiReferralUrl(partner, tabId);
+    // Mark this account as having been shown the referral page
+    this.#messenger.call(
+      'PreferencesController:addReferralPassedAccount',
+      partner.id,
+      permittedAccount as Hex,
+    );
+  }
+
+  /**
+   * Handles referral states for permitted accounts after user approval.
+   *
+   * @param partner - The partner configuration.
+   * @param activePermittedAccount - The active permitted account.
+   * @param permittedAccounts - The permitted accounts.
+   * @param declinedAccounts - The previously declined permitted accounts.
+   */
+  #handleDefiReferralApprovedAccount(
+    partner: DefiReferralPartnerConfig,
+    activePermittedAccount: string,
+    permittedAccounts: string[],
+    declinedAccounts: string[],
+  ): void {
+    if (declinedAccounts.length === 0) {
+      // If there are no previously declined permitted accounts then
+      // we approve all permitted accounts so that the user is not
+      // shown the approval screen unnecessarily when switching
+      this.#messenger.call(
+        'PreferencesController:setAccountsReferralApproved',
+        partner.id,
+        permittedAccounts as Hex[],
+      );
+    } else {
+      this.#messenger.call(
+        'PreferencesController:addReferralApprovedAccount',
+        partner.id,
+        activePermittedAccount as Hex,
+      );
+      // If there are any previously declined accounts then
+      // we do not approve them, but instead remove them from the declined list
+      // so they have the option to participate again in future
+      permittedAccounts.forEach((account) => {
+        if (declinedAccounts.includes(account)) {
+          this.#messenger.call(
+            'PreferencesController:removeReferralDeclinedAccount',
+            partner.id,
+            account as Hex,
+          );
+        }
+      });
+    }
+  }
+
+  /**
+   * Updates the browser tab URL to the DeFi partner's referral page.
+   *
+   * @param partner - The partner configuration.
+   * @param tabId - The browser tab ID to update.
+   */
+  async #updateDefiReferralUrl(
+    partner: DefiReferralPartnerConfig,
+    tabId: number,
+  ): Promise<void> {
+    try {
+      const url = await this.#getTabUrl(tabId);
+      const currentUrl = new URL(url || '');
+      const referralUrl = new URL(partner.referralUrl);
+
+      // Preserve (or update) existing params and add referral params
+      const mergedParams = new URLSearchParams(currentUrl.search);
+      for (const [key, value] of referralUrl.searchParams) {
+        mergedParams.set(key, value);
+      }
+
+      // Apply merged params to the referral URL
+      referralUrl.search = mergedParams.toString();
+      await this.#updateTabUrl(tabId, referralUrl.toString());
+    } catch (error) {
+      log.error(
+        `Failed to update URL to ${partner.name} referral page: `,
+        error,
+      );
+    }
   }
 }

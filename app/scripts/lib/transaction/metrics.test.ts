@@ -206,7 +206,11 @@ describe('transaction metrics handlers', () => {
   it('merges confirmation metrics into event payload', async () => {
     const request = createRequest();
     (request.getTransactionUIMetricsFragment as jest.Mock).mockReturnValue({
-      properties: { gas_edit_attempted: 'basic' },
+      properties: {
+        gas_edit_attempted: 'basic',
+        enforced_simulations_default_enabled: true,
+        enforced_simulation_toggle_count: 2,
+      },
       sensitiveProperties: { custom_sensitive: 'x' },
     });
 
@@ -214,6 +218,8 @@ describe('transaction metrics handlers', () => {
 
     const payload = trackEventMock.mock.calls[0][0];
     expect(payload.properties.gas_edit_attempted).toBe('basic');
+    expect(payload.properties.enforced_simulations_default_enabled).toBe(true);
+    expect(payload.properties.enforced_simulation_toggle_count).toBe(2);
     expect(payload.sensitiveProperties.custom_sensitive).toBe('x');
   });
 
