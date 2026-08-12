@@ -1257,7 +1257,7 @@ export const TokenManagementPage = () => {
           disabled={payload.isNative || isPending}
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
-          showToggle={!payload.isNative}
+          showToggle
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );

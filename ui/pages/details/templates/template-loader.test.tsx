@@ -30,6 +30,9 @@ jest.mock('./perps-deposit-details', () => ({
 jest.mock('./perps-details', () => ({
   PerpsDetails: () => <div data-testid="perps-details" />,
 }));
+jest.mock('./ramps/ramp-order-details', () => ({
+  RampOrderDetails: () => <div data-testid="ramp-order-details" />,
+}));
 
 const asItem = (type: string): ActivityListItem =>
   ({
@@ -62,6 +65,20 @@ describe('TemplateLoader', () => {
     );
 
     expect(getByTestId('asset-activation-details')).toBeInTheDocument();
+  });
+
+  it('renders the ramp order details for a rampBuy item', () => {
+    const { getByTestId } = render(<TemplateLoader item={asItem('rampBuy')} />);
+
+    expect(getByTestId('ramp-order-details')).toBeInTheDocument();
+  });
+
+  it('renders the ramp order details for a rampSell item', () => {
+    const { getByTestId } = render(
+      <TemplateLoader item={asItem('rampSell')} />,
+    );
+
+    expect(getByTestId('ramp-order-details')).toBeInTheDocument();
   });
 
   it('falls back to the default details for an unknown item type', () => {

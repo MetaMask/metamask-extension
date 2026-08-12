@@ -3402,9 +3402,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Уверены, что хотите отключить? Вы можете потерять доступ к функциям сайта."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Если вы отключитесь от этого сайта, вам придется повторно подключить свои счета и сети, чтобы снова использовать этот сайт."
-  },
   "disconnectAllSites": {
     "message": "Отключить все"
   },
@@ -5391,10 +5388,6 @@
     "message": "Конвертируйте стейблкоины в mUSD и зарабатывайте\nбонус до $1% годовых, который можно\nполучать ежедневно. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "При поддержке Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Конвертируйте свои стейблкоины в mUSD и получите годовой бонус $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5430,10 +5423,6 @@
     "message": "Детали доступного для получения бонуса",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Детали бонуса",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "В стоимость конвертации mUSD входят расходы сети, а также могут входить комиссии поставщика. При обмене на mUSD комиссия MetaMask не взимается.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5458,10 +5447,6 @@
   "musdConvert": {
     "message": "Конвертировать"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Конвертируйте и получите $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Заработайте бонус $1%",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5475,10 +5460,6 @@
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Получите бонус в размере $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Получить mUSD"
