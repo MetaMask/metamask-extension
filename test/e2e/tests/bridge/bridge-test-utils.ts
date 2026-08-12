@@ -845,6 +845,18 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     });
 }
 
+async function mockLineaTransactionDetails(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/59144\/transactions\/0x[0-9a-fA-F]+/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { data: null },
+    }));
+}
+
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
@@ -1765,6 +1777,7 @@ export const getBridgeL2Fixtures = (
           featureFlags,
           STX_LINEA_NETWORK_CONFIG,
         ),
+        await mockLineaTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
         await mockSwapTokensLinea(mockServer),
