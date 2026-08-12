@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { createDeferredPromise } from '@metamask/utils';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import MetaMaskController from '../../metamask-controller';
 import {
   DEEP_LINK_HOST,
@@ -76,6 +77,18 @@ const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
 
 const setId = jest.fn();
 const removeId = jest.fn();
+
+async function handleRequestAndWaitForNavigation(
+  details: browser.WebRequest.OnBeforeRequestDetailsType,
+): Promise<browser.WebRequest.BlockingResponse | undefined> {
+  const response = onBeforeRequest?.(details);
+
+  if (mockIsManifestV3()) {
+    await flushPromises();
+  }
+
+  return response;
+}
 
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
@@ -187,7 +200,7 @@ describe('DeepLinkRouter', () => {
         signature: 'valid',
       } as ParsedDeepLink);
 
-      const responsePromise = onBeforeRequest?.({
+      const response = onBeforeRequest?.({
         tabId: 1,
         url: 'https://link.metamask.io/buy',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -200,7 +213,9 @@ describe('DeepLinkRouter', () => {
 
       loadingPageRedirect.resolve({} as browser.Tabs.Tab);
 
-      await expect(responsePromise).resolves.toEqual({});
+      await flushPromises();
+
+      expect(response).toEqual({});
       expect(browser.tabs.update).toHaveBeenCalledTimes(2);
       expect(browser.tabs.update).toHaveBeenNthCalledWith(2, 1, {
         url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
@@ -241,13 +256,11 @@ describe('DeepLinkRouter', () => {
         parseMock.mockResolvedValue({
           destination: {},
         } as ParsedDeepLink);
-        const response = await onBeforeRequest?.({
+        const response = await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledTimes(
-          mockIsManifestV3() ? 2 : 1,
-        );
+        expect(browser.tabs.update).toHaveBeenCalledTimes(1);
         // Manifest v2 should return a blocking response (cancel the request),
         expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
       },
@@ -263,7 +276,7 @@ describe('DeepLinkRouter', () => {
           signature: signed ? 'valid' : 'invalid',
           destination: {},
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -289,14 +302,14 @@ describe('DeepLinkRouter', () => {
           },
         } as ParsedDeepLink);
 
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: `chrome-extension://extension-id/home.html#/link?${new URLSearchParams(
-            { u: route },
+            { u: route, id: 'test-request-id' },
           ).toString()}`,
         });
       },
@@ -384,7 +397,7 @@ describe('DeepLinkRouter', () => {
         'handles interstitial for $name',
         async ({ parsed, requestDetails, expectedUrl }) => {
           parseMock.mockResolvedValue(parsed);
-          await onBeforeRequest?.(requestDetails);
+          await handleRequestAndWaitForNavigation(requestDetails);
           expect(browser.tabs.update).toHaveBeenCalledWith(
             requestDetails.tabId,
             { url: expectedUrl },
@@ -407,7 +420,7 @@ describe('DeepLinkRouter', () => {
           },
           signature: 'valid',
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -427,7 +440,7 @@ describe('DeepLinkRouter', () => {
           signature: 'invalid',
           destination: {},
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -486,7 +499,7 @@ describe('DeepLinkRouter', () => {
         '$description',
         async (testCase: AssetRouteTestCase) => {
           parseMock.mockResolvedValue(testCase.parsed);
-          await onBeforeRequest?.({
+          await handleRequestAndWaitForNavigation({
             tabId: 1,
             url: testCase.url,
           } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -500,7 +513,7 @@ describe('DeepLinkRouter', () => {
     it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
-      const response = await onBeforeRequest?.({
+      const response = await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -510,7 +523,7 @@ describe('DeepLinkRouter', () => {
 
     it('should reject parsing very long URLs', async () => {
       const url = `https://example.com/${'a'.repeat(5000)}`;
-      const response = await onBeforeRequest?.({
+      const response = await handleRequestAndWaitForNavigation({
         tabId: 1,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -525,7 +538,7 @@ describe('DeepLinkRouter', () => {
       parseMock.mockResolvedValue(false);
       const mockError = jest.fn();
       router.on('error', mockError);
-      const response = await onBeforeRequest?.({
+      const response = await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -553,7 +566,7 @@ describe('DeepLinkRouter', () => {
 
       const error = new Error('Test error');
       (browser.tabs.update as jest.Mock).mockRejectedValue(error);
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -574,7 +587,7 @@ describe('DeepLinkRouter', () => {
           redirectTo: new URL('https://example.com/internal-route'),
         },
       } as ParsedDeepLink);
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
         initiator: 'https://metamask.io',
@@ -597,7 +610,7 @@ describe('DeepLinkRouter', () => {
         },
       } as ParsedDeepLink);
 
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -643,7 +656,7 @@ describe('DeepLinkRouter', () => {
       const tabId = 1;
       const url = `https://example.com/nonexistent-route`;
       parseMock.mockResolvedValue(false);
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);

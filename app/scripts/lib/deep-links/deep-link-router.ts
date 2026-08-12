@@ -186,7 +186,7 @@ export class DeepLinkRouter extends EventEmitter<{
     tabId: number,
     urlStr: string,
     requestOrigin?: string,
-  ): browser.WebRequest.BlockingResponse {
+  ): browser.WebRequest.BlockingResponseOrPromise {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
       return {};
@@ -195,11 +195,11 @@ export class DeepLinkRouter extends EventEmitter<{
     // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
     // MV3 cannot block the request. `navigate` must be invoked without awaiting
     // it so its synchronous prefix starts the extension-owned loading-page
-    // redirect before this handler returns. Do not add work between the length
-    // check above and this call.
-    this.navigate(tabId, urlStr, requestOrigin);
-
+    // redirect before this handler returns. Do not add asynchronous work before
+    // this call.
     if (isManifestV3) {
+      this.navigate(tabId, urlStr, requestOrigin);
+
       // We need to use the redirect API in MV3, because the webRequest API does
       // not support blocking redirects.
       return {};
@@ -210,7 +210,9 @@ export class DeepLinkRouter extends EventEmitter<{
     // request, and then use our `redirectTab` method to complete the redirect.
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
-    return { cancel: true };
+    return this.navigate(tabId, urlStr, requestOrigin).then(() => ({
+      cancel: true,
+    }));
   }
 
   /**
@@ -225,7 +227,7 @@ export class DeepLinkRouter extends EventEmitter<{
     tabId: number,
     urlStr: string,
     requestOrigin?: string,
-  ) {
+  ): Promise<void> {
     let redirectUrl: string | undefined;
     let url: URL | undefined;
     let parsed: ParsedDeepLink | false = false;
@@ -236,19 +238,21 @@ export class DeepLinkRouter extends EventEmitter<{
     try {
       url = new URL(urlStr);
 
-      id = crypto.randomUUID();
-      this.setId(id);
+      if (isManifestV3) {
+        id = crypto.randomUUID();
+        this.setId(id);
 
-      const interstitialPageUrl = this.getInterstitialURL(url, id);
+        const interstitialPageUrl = this.getInterstitialURL(url, id);
 
-      // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
-      // Start the extension-owned redirect before parsing or signature
-      // verification. Do not add awaited work before this call or move it below
-      // `parse`. `redirectTab` must call `browser.tabs.update` before it awaits.
-      interstitialPageRedirect = {
-        promise: this.redirectTab(tabId, interstitialPageUrl),
-        url: interstitialPageUrl,
-      };
+        // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+        // Start the extension-owned redirect before parsing or signature
+        // verification. Do not add awaited work before this call or move it below
+        // `parse`. `redirectTab` must call `browser.tabs.update` before it awaits.
+        interstitialPageRedirect = {
+          promise: this.redirectTab(tabId, interstitialPageUrl),
+          url: interstitialPageUrl,
+        };
+      }
 
       parsed = await parse(url);
       if (parsed) {
@@ -265,9 +269,7 @@ export class DeepLinkRouter extends EventEmitter<{
         });
 
         if (shouldShowInterstitial) {
-          // The loading page is already open with the request id. Once the
-          // pending id is cleared, the UI can render the settled interstitial
-          // state without an extra background-driven redirect.
+          redirectUrl = this.getInterstitialURL(url, id);
         } else if ('redirectTo' in parsed.destination) {
           redirectUrl = parsed.destination.redirectTo.toString();
         } else {
