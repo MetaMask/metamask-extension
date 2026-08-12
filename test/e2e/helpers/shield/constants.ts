@@ -149,6 +149,7 @@ export const SHIELD_PRICING_DATA = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 12,
+          minBillingCyclesForBalance: 1,
         },
         {
           interval: 'year',
@@ -157,6 +158,7 @@ export const SHIELD_PRICING_DATA = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 1,
+          minBillingCyclesForBalance: 1,
         },
       ],
     },
@@ -236,6 +238,7 @@ export const MOCK_CLAIM_1 = {
     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
+  signature: '0x1234',
   attachments: [],
   intercomId: `intercom_${MOCK_CLAIM_ID_1}`,
   status: 'created',
@@ -253,6 +256,7 @@ export const MOCK_CLAIM_2 = {
     '0x55da3eaee9bbefd762a33413b764ee2c025ff4a2cc0a49a05896ceb24c95712f',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
+  signature: '0x1234',
   attachments: [
     {
       originalname: 'test-document.pdf',
@@ -297,6 +301,7 @@ export const MOCK_CLAIM_3 = {
     '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
+  signature: '0x1234',
   attachments: [],
   intercomId: `intercom_${MOCK_CLAIM_ID_3}`,
   status: 'created',
