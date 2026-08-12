@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { PermissionsEmptyState } from './permissions-empty-state';
 
 const store = configureStore(mockState);
@@ -14,7 +15,7 @@ describe('PermissionsEmptyState', () => {
     );
     expect(container).toMatchSnapshot();
     expect(
-      getByText('When you grant permissions, the details will appear here.'),
+      getByText(messages.permissionsPageEmptyDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -29,6 +30,6 @@ describe('PermissionsEmptyState', () => {
 
   it('renders title', () => {
     const { getByText } = renderWithProvider(<PermissionsEmptyState />, store);
-    expect(getByText('Nothing to see here')).toBeInTheDocument();
+    expect(getByText(messages.notificationsPageEmptyTitle.message)).toBeInTheDocument();
   });
 });

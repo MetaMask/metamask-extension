@@ -149,6 +149,7 @@ export const GatorPermissionsPage = () => {
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                   color={TextColor.TextAlternative}
+                  className="pl-4"
                 >
                   {t('dapps')}
                 </Text>
@@ -165,7 +166,7 @@ export const GatorPermissionsPage = () => {
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                   color={TextColor.TextAlternative}
-                  paddingLeft={4}
+                  className="pl-4"
                 >
                   {t('assets')}
                 </Text>
