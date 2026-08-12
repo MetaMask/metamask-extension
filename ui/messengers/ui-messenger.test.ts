@@ -12,6 +12,7 @@ import {
   type UIMessengerActions,
   type UIMessengerEvents,
 } from './ui-messenger';
+import { EXCLUDED_CAPABILITIES as PASSKEY_CONTROLLER_EXCLUDED_CAPABILITIES } from './configs/passkey-controller';
 
 jest.mock('../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
@@ -63,17 +64,25 @@ describe('UIMessenger', () => {
         expect(result).toBe('result');
       });
 
-      it('throws if an excluded action is called', async () => {
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        'KeyringController:addKeyring',
+        ...PASSKEY_CONTROLLER_EXCLUDED_CAPABILITIES.actions,
+      ])('throws if the excluded action "%s" is called', async (action: string) => {
         const delegatee = createDelegatee();
 
         await uiMessenger.delegate({
-          actions: ['KeyringController:addKeyring'],
+          actions: [action],
           messenger: delegatee,
         });
 
-        expect(() => delegatee.call('KeyringController:addKeyring')).toThrow(
-          'The action "KeyringController:addKeyring" has not been exposed to the UI.',
+        const call = delegatee.call as unknown as (
+          actionType: string,
+        ) => unknown;
+        expect(() => call.call(delegatee, action)).toThrow(
+          `The action "${action}" has not been exposed to the UI.`,
         );
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
       });
 
       it('throws if the same action is delegated to the same messenger twice', async () => {
