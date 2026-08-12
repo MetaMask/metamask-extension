@@ -40,7 +40,7 @@ import type {
 } from './historical-comparison';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
-  EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
+  getBenchmarkStatsUrl,
   resolveBaseline,
   buildEntryKey,
   buildCombo,
@@ -1326,7 +1326,14 @@ export async function buildPerformanceBenchmarksSection(
   const pipelineLink = runUrl
     ? `<a href="${runUrl}">${benchmarkRunId}</a>`
     : (benchmarkRunId ?? '');
-  const baselineLogsLink = `<a href="${EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL}">Baseline logs</a>`;
+  // Point at the series this run actually compared against, not always the
+  // live one — otherwise the link contradicts the numbers beside it.
+  const baselineLogsLink = `<a href="${getBenchmarkStatsUrl(
+    resolveBenchmarkMockMode(
+      process.env.GITHUB_REF_NAME,
+      process.env.BENCHMARK_MOCK_MODE,
+    ),
+  )}">Baseline logs</a>`;
   const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   // Plain text only inside <summary> (no block elements like <p>).

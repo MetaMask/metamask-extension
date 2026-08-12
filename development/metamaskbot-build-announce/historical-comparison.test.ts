@@ -455,6 +455,30 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
     );
   });
 
+  it('fetches the mocked series, not the live one, for a mocked run', async () => {
+    // The two populations are written to separate files. Filtering on the
+    // in-file `mockMode` is not enough — a mocked consumer pointed at the live
+    // file finds no matching entries and reports no baseline forever, which
+    // silently defeats publishing the mocked series at all.
+    mockFetch.mockReturnValueOnce(makeOkResponse(mockFile));
+
+    await fetchHistoricalPerformanceDataFromMain(BENCHMARK_MOCK_MODE.MOCKED);
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('stats/main/performance_data_mocked.json'),
+    );
+  });
+
+  it('keeps the live series on the unsuffixed path so the existing history stays continuous', async () => {
+    mockFetch.mockReturnValueOnce(makeOkResponse(mockFile));
+
+    await fetchHistoricalPerformanceDataFromMain(BENCHMARK_MOCK_MODE.LIVE);
+
+    const [url] = mockFetch.mock.calls[0];
+    expect(url).toContain('stats/main/performance_data.json');
+    expect(url).not.toContain('performance_data_mocked.json');
+  });
+
   it('returns null when main has no data', async () => {
     mockFetch.mockReturnValueOnce(makeNotFoundResponse());
 

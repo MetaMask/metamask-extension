@@ -14,7 +14,7 @@ import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
 } from '../../shared/constants/benchmarks';
-import { EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL } from './utils';
+import { getBenchmarkStatsUrl } from './utils';
 
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 
@@ -68,9 +68,7 @@ export async function fetchHistoricalPerformanceDataFromMain(
   mockMode: BenchmarkMockMode,
 ): Promise<HistoricalBaselineResult | null> {
   try {
-    const response = await fetch(
-      EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
-    );
+    const response = await fetch(getBenchmarkStatsUrl(mockMode));
     if (!response.ok) {
       return null;
     }
