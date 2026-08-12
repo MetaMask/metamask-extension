@@ -67,9 +67,7 @@ describe('trackDeepLinkNavigation', () => {
   });
 
   it('tracks with the tab continuity ID when continuity is enabled', () => {
-    const setContinuityIdForTab = jest
-      .fn()
-      .mockReturnValue('continuity-id');
+    const setContinuityIdForTab = jest.fn().mockReturnValue('continuity-id');
     const trackEvent = jest.fn();
 
     trackDeepLinkNavigation({
