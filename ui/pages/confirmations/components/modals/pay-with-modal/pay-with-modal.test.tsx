@@ -452,7 +452,9 @@ describe('PayWithModal', () => {
       expect(
         screen.getByTestId('pay-with-money-account-row'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Money account')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.payWithMoneyAccount.message),
+      ).toBeInTheDocument();
       expect(screen.queryByTestId('asset-component')).not.toBeInTheDocument();
     });
 

@@ -17,7 +17,10 @@ import {
 } from '../../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../../context/confirm';
 import { TokenIcon } from '../../../components/token-icon';
-import type { PayWithSectionConfig } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
+import type {
+  PayWithRowConfig,
+  PayWithSectionConfig,
+} from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
 
@@ -76,7 +79,7 @@ export function usePayWithCryptoSection({
   );
 
   return useMemo(() => {
-    const rows = [];
+    const rows: PayWithRowConfig[] = [];
 
     if (payToken) {
       rows.push({
@@ -109,7 +112,7 @@ export function usePayWithCryptoSection({
       ),
       title: t('payWithOtherAssets'),
       subtitle: t('payWithOtherAssetsDescription'),
-      trailingElement: 'chevron' as const,
+      trailingElement: 'chevron',
       onPress: handleOtherAssetsPress,
       testId: PAY_WITH_CRYPTO_OTHER_ASSETS_ROW_TEST_ID,
     });
