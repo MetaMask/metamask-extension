@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "所有网络"
   },
-  "allPermissions": {
-    "message": "去中心化应用连接"
-  },
   "allPopularNetworks": {
     "message": "所有热门网络"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "客户支持团队"
-  },
-  "dappConnections": {
-    "message": "去中心化应用连接"
   },
   "dappSuggested": {
     "message": "建议的网站"

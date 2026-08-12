@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Text as TextDS, TextVariant as TextVariantDS, FontWeight } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -102,7 +103,7 @@ export const GatorPermissionsPage = () => {
           color={TextColor.textAlternative}
           textAlign={TextAlign.Left}
         >
-          {title.toUpperCase()}
+          {title}
         </Text>
       </Box>
     );
@@ -122,10 +123,10 @@ export const GatorPermissionsPage = () => {
       >
         {totalSitesConnections > 0 && (
           <>
-            {renderCategoryHeader(t('sites'))}
+            {renderCategoryHeader(t('dapps'))}
             <PermissionListItem
               total={totalSitesConnections}
-              permissionGroupName={t('sites')}
+              permissionGroupName={t('connections')}
               onClick={() => handlePermissionGroupNameClick('sites')}
             />
           </>
@@ -219,14 +220,13 @@ export const GatorPermissionsPage = () => {
           />
         }
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
+        <TextDS
+          variant={TextVariantDS.BodyMd}
+          fontWeight={FontWeight.Medium}
           data-testid="gator-permissions-page-title"
         >
-          {t('dappConnections')}
-        </Text>
+          {t('permissions')}
+        </TextDS>
       </Header>
       <Content padding={0}>{renderPageContent()}</Content>
     </Page>

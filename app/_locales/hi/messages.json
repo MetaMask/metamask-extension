@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "सभी नेटवर्क"
   },
-  "allPermissions": {
-    "message": "Dapp कनेक्शन्स"
-  },
   "allPopularNetworks": {
     "message": "सभी लोकप्रिय नेटवर्क"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "ग्राहक सहायता"
-  },
-  "dappConnections": {
-    "message": "Dapp कनेक्शन्स"
   },
   "dappSuggested": {
     "message": "सुझावित साइट"

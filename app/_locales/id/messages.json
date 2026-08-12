@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Semua jaringan"
   },
-  "allPermissions": {
-    "message": "Koneksi dapp"
-  },
   "allPopularNetworks": {
     "message": "Semua jaringan populer"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "dukungan pelanggan"
-  },
-  "dappConnections": {
-    "message": "Koneksi Dapp"
   },
   "dappSuggested": {
     "message": "Situs yang disarankan"

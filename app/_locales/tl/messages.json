@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Lahat ng network"
   },
-  "allPermissions": {
-    "message": "Mga koneksyon ng dapp"
-  },
   "allPopularNetworks": {
     "message": "Lahat ng sikat na network"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
-  },
-  "dappConnections": {
-    "message": "Mga koneksyon ng Dapp"
   },
   "dappSuggested": {
     "message": "Iminungkahing site"

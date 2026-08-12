@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "すべてのネットワーク"
   },
-  "allPermissions": {
-    "message": "DAppの接続"
-  },
   "allPopularNetworks": {
     "message": "すべての人気のネットワーク"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "カスタマーサポート"
-  },
-  "dappConnections": {
-    "message": "DAppの接続"
   },
   "dappSuggested": {
     "message": "おすすめのサイト"

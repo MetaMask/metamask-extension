@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Όλα τα δίκτυα"
   },
-  "allPermissions": {
-    "message": "Συνδέσεις με Dapp"
-  },
   "allPopularNetworks": {
     "message": "Όλα τα δημοφιλή δίκτυα"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "υποστήριξη πελατών"
-  },
-  "dappConnections": {
-    "message": "Συνδέσεις με Dapp"
   },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"

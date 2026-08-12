@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Tất cả mạng"
   },
-  "allPermissions": {
-    "message": "Kết nối Dapp"
-  },
   "allPopularNetworks": {
     "message": "Tất cả mạng phổ biến"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "hỗ trợ khách hàng"
-  },
-  "dappConnections": {
-    "message": "Kết nối Dapp"
   },
   "dappSuggested": {
     "message": "Trang web đề xuất"

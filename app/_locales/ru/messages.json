@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Все сети"
   },
-  "allPermissions": {
-    "message": "Соединения dapp"
-  },
   "allPopularNetworks": {
     "message": "Все популярные сети"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "поддержка пользователя"
-  },
-  "dappConnections": {
-    "message": "Соединения dapp"
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"

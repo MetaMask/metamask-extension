@@ -5,6 +5,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Text as TextDS, TextVariant as TextVariantDS, FontWeight } from '@metamask/design-system-react';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -169,16 +170,14 @@ const PermissionsPage = () => {
           />
         }
       >
-        <Text
+        <TextDS
           as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
+          variant={TextVariantDS.BodyMd}
+          fontWeight={FontWeight.Medium}
           data-testid="permissions-page-title"
         >
-          {isGatorPermissionsRevocationFeatureEnabled()
-            ? t('sites')
-            : t('dappConnections')}
-        </Text>
+          {t('permissions')}
+        </TextDS>
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>

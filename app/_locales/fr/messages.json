@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Tous les réseaux"
   },
-  "allPermissions": {
-    "message": "Connexions aux dapps"
-  },
   "allPopularNetworks": {
     "message": "Tous les réseaux populaires"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "assistance à la clientèle"
-  },
-  "dappConnections": {
-    "message": "Connexions aux dapps"
   },
   "dappSuggested": {
     "message": "Suggéré par le site"

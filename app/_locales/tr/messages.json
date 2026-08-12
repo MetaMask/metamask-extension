@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "Tüm ağlar"
   },
-  "allPermissions": {
-    "message": "Dapp bağlantıları"
-  },
   "allPopularNetworks": {
     "message": "Tüm popüler ağlar"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "müşteri hizmetleri"
-  },
-  "dappConnections": {
-    "message": "Dapp Bağlantıları"
   },
   "dappSuggested": {
     "message": "Önerilen site"

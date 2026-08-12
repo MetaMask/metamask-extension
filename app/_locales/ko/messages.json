@@ -1531,9 +1531,6 @@
   "allNetworks": {
     "message": "모든 네트워크"
   },
-  "allPermissions": {
-    "message": "디앱 연결"
-  },
   "allPopularNetworks": {
     "message": "모든 인기 네트워크"
   },
@@ -3052,9 +3049,6 @@
   },
   "customerSupport": {
     "message": "고객 지원"
-  },
-  "dappConnections": {
-    "message": "디앱 연결"
   },
   "dappSuggested": {
     "message": "사이트 제안"
