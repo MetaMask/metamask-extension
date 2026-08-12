@@ -285,40 +285,14 @@ function getBestToken({
     }
   }
 
-  if (preferredTokensFromFlags.length) {
-    const candidates: Asset[] = [];
-    for (const preferred of preferredTokensFromFlags) {
-      const matchingToken = tokens.find(
-        (token) =>
-          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
-          String(token.chainId)?.toLowerCase() ===
-            preferred.chainId.toLowerCase(),
-      );
-      if (matchingToken) {
-        candidates.push(matchingToken);
-      }
-    }
-
-    // Post-quote withdraws: first held preferred token (no fiat floor).
-    if (isPostQuoteWithdraw && candidates.length) {
-      return {
-        address: candidates[0].address as Hex,
-        chainId: candidates[0].chainId as Hex,
-      };
-    }
-
-    const eligible = candidates
-      .filter(
-        (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
-      )
-      .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
-
-    if (eligible.length) {
-      return {
-        address: eligible[0].address as Hex,
-        chainId: eligible[0].chainId as Hex,
-      };
-    }
+  const preferredFromFlags = getPreferredToken({
+    isPostQuoteWithdraw,
+    minimumRequiredTokenBalance,
+    preferredTokensFromFlags,
+    tokens,
+  });
+  if (preferredFromFlags) {
+    return preferredFromFlags;
   }
 
   if (isPostQuoteWithdrawTokenFilterApplied && tokens.length === 0) {
@@ -349,4 +323,56 @@ function getBestToken({
   }
 
   return targetTokenFallback;
+}
+
+function getPreferredToken({
+  isPostQuoteWithdraw,
+  minimumRequiredTokenBalance,
+  preferredTokensFromFlags,
+  tokens,
+}: {
+  isPostQuoteWithdraw: boolean;
+  minimumRequiredTokenBalance: number;
+  preferredTokensFromFlags: PreferredPayToken[];
+  tokens: Asset[];
+}): { address: Hex; chainId: Hex } | undefined {
+  if (!preferredTokensFromFlags.length) {
+    return undefined;
+  }
+
+  const candidates: Asset[] = [];
+  for (const preferred of preferredTokensFromFlags) {
+    const matchingToken = tokens.find(
+      (token) =>
+        token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+        String(token.chainId)?.toLowerCase() ===
+          preferred.chainId.toLowerCase(),
+    );
+    if (matchingToken) {
+      candidates.push(matchingToken);
+    }
+  }
+
+  // Post-quote withdraws: first held preferred token (no fiat floor).
+  if (isPostQuoteWithdraw && candidates.length) {
+    return {
+      address: candidates[0].address as Hex,
+      chainId: candidates[0].chainId as Hex,
+    };
+  }
+
+  const eligible = candidates
+    .filter(
+      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
+    )
+    .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
+
+  if (!eligible.length) {
+    return undefined;
+  }
+
+  return {
+    address: eligible[0].address as Hex,
+    chainId: eligible[0].chainId as Hex,
+  };
 }
