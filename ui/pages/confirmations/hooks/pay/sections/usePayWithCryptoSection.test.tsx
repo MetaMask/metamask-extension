@@ -1,6 +1,9 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import {
+  PaymentOverride,
+  type TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../useTransactionPayToken';
@@ -52,7 +55,7 @@ const PAY_TOKEN = {
   balanceHuman: '12.5',
   balanceRaw: '12500000',
   decimals: 6,
-};
+} as TransactionPaymentToken;
 
 describe('usePayWithCryptoSection', () => {
   const useSelectorMock = jest.mocked(useSelector);

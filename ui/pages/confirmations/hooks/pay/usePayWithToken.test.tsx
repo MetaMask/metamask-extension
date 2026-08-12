@@ -1,6 +1,9 @@
 import React from 'react';
 import { act, renderHook } from '@testing-library/react';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import {
+  PaymentOverride,
+  type TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import {
   TransactionType,
   type TransactionMeta,
@@ -68,7 +71,7 @@ const PAY_TOKEN = {
   balanceHuman: '25',
   balanceRaw: '25000000',
   decimals: 6,
-};
+} as TransactionPaymentToken;
 
 const ACCOUNT = {
   address: FROM_ADDRESS,
