@@ -200,11 +200,48 @@ TEMP_FILE="${STATS_FILE}.tmp"
 # COMMIT_DATA wraps presets_json and is strictly larger, so it can exceed
 # ARG_MAX too. Read it via --slurpfile from a temp file rather than passing
 # the blob on argv.
+# Keep only the newest RETAINED_COMMITS entries by timestamp.
+#
+# Without this the file grows without bound and eventually cannot be pushed:
+# `stats/main/performance_data.json` reached 99.92 MiB against GitHub's 100 MiB
+# hard limit, leaving 84,667 bytes against a per-publish growth of 180-270 KB.
+# `main` stopped publishing on 2026-07-28 and every push since has been
+# rejected. The release series are 1-5 MiB and were unaffected, which is why
+# the failure looked like nothing was wrong.
+#
+# 100 is chosen against a consumer that reads 5: `aggregateHistoricalData` in
+# development/metamaskbot-build-announce/historical-comparison.ts takes
+# `.slice(0, 5)` of the commits sorted by timestamp. Any value >= 5 preserves
+# current behaviour exactly; 100 leaves 20x headroom for a wider window later
+# and holds the file near 20 MiB.
+#
+# Entries with no timestamp sort last and are dropped first — they are already
+# unusable to the consumer, which filters on `data[hash]?.timestamp`.
+RETAINED_COMMITS="${RETAINED_COMMITS:-100}"
+
 data_file="$(mktemp)"
 printf '%s' "${COMMIT_DATA}" >"${data_file}"
-jq --arg sha "${HEAD_COMMIT_HASH}" --slurpfile data "${data_file}" \
-    '. + {($sha): $data[0]}' "${STATS_FILE}" > "${TEMP_FILE}"
+jq --arg sha "${HEAD_COMMIT_HASH}" \
+   --argjson keep "${RETAINED_COMMITS}" \
+   --slurpfile data "${data_file}" \
+    '(. + {($sha): $data[0]})
+     | to_entries
+     | sort_by(.value.timestamp // 0)
+     | reverse
+     | .[:$keep]
+     | from_entries' "${STATS_FILE}" > "${TEMP_FILE}"
 rm -f "${data_file}"
+
+# A truncation bug that silently emptied the series would be invisible until a
+# baseline went missing weeks later, so refuse to publish a file that lost the
+# entry we just wrote or came back empty.
+written_count="$(jq 'length' "${TEMP_FILE}")"
+if [[ "${written_count}" -eq 0 ]] || ! jq -e --arg sha "${HEAD_COMMIT_HASH}" 'has($sha)' "${TEMP_FILE}" > /dev/null; then
+    echo "Error: retention step produced ${written_count} entries and/or dropped ${HEAD_COMMIT_HASH}" >&2
+    exit 1
+fi
+echo "Retained ${written_count} commit(s) (cap ${RETAINED_COMMITS})" >&2
+
 mv "${TEMP_FILE}" "${STATS_FILE}"
 
 git add "${STATS_FILE}"
