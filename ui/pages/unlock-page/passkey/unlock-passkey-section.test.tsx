@@ -6,14 +6,17 @@ import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import * as actionsModule from '../../../store/actions';
-import * as passkeyCeremony from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
 const mockTrackEvent = jest.fn();
+const mockUnlockWithPasskey = jest.fn();
+
+jest.mock('../usePasskeyUnlock', () => ({
+  usePasskeyUnlock: () => mockUnlockWithPasskey,
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -92,38 +95,19 @@ describe('UnlockPasskeySection', () => {
     passkeyAutoUnlockSuppressed: true,
     mustDeferPasskeyToBrowserTab: false,
     isPasswordInProgress: false,
-    onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
+    onUnlockSuccess: jest.fn().mockResolvedValue(undefined),
     onUsePassword: jest.fn(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUnlockWithPasskey.mockResolvedValue(undefined);
     getEnvironmentTypeMock.mockImplementation((url?: string) => {
       const actual = jest.requireActual<
         typeof import('../../../../shared/lib/environment-type')
       >('../../../../shared/lib/environment-type');
       return actual.getEnvironmentType(url);
     });
-    jest
-      .spyOn(actionsModule, 'generatePasskeyAuthenticationOptions')
-      .mockResolvedValue({
-        challenge: 'AQ',
-        allowCredentials: [{ id: 'AQ', type: 'public-key' }],
-        userVerification: 'required',
-      } as never);
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockResolvedValue({
-        id: 'cred',
-        rawId: 'cred',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AQ',
-        },
-        clientExtensionResults: {},
-      });
   });
 
   afterEach(() => {
@@ -131,9 +115,9 @@ describe('UnlockPasskeySection', () => {
   });
 
   it('renders passkey error banner when authentication fails with a non-silent error', async () => {
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockRejectedValueOnce({ code: PasskeyControllerErrorCode.NotEnrolled });
+    mockUnlockWithPasskey.mockRejectedValueOnce({
+      code: PasskeyControllerErrorCode.NotEnrolled,
+    });
 
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} passkeyAutoUnlockSuppressed />,
@@ -176,9 +160,7 @@ describe('UnlockPasskeySection', () => {
     const ceremonyPromise = new Promise((resolve) => {
       resolveCeremony = resolve;
     });
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockReturnValueOnce(ceremonyPromise as never);
+    mockUnlockWithPasskey.mockReturnValueOnce(ceremonyPromise);
 
     const { unmount, getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} />,
@@ -189,7 +171,7 @@ describe('UnlockPasskeySection', () => {
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
-      expect(passkeyCeremony.startPasskeyAuthentication).toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).toHaveBeenCalled();
     });
 
     unmount();
@@ -213,20 +195,20 @@ describe('UnlockPasskeySection', () => {
   });
 
   it('starts passkey ceremony once on mount when auto unlock is not suppressed', async () => {
-    const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+    const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(
       <UnlockPasskeySection
         {...baseProps}
         passkeyAutoUnlockSuppressed={false}
-        onUnlockWithPasskey={onUnlockWithPasskey}
+        onUnlockSuccess={onUnlockSuccess}
       />,
       mockStore,
       '/unlock',
     );
 
     await waitFor(() => {
-      expect(onUnlockWithPasskey).toHaveBeenCalledTimes(1);
+      expect(onUnlockSuccess).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -236,9 +218,7 @@ describe('UnlockPasskeySection', () => {
     const ceremonyPromise = new Promise((resolve) => {
       resolveCeremony = resolve;
     });
-    jest
-      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
-      .mockReturnValueOnce(ceremonyPromise as never);
+    mockUnlockWithPasskey.mockReturnValueOnce(ceremonyPromise);
 
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} />,
@@ -296,14 +276,14 @@ describe('UnlockPasskeySection', () => {
     });
 
     it('does not start passkey ceremony on mount when auto unlock is not suppressed', async () => {
-      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+      const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
 
       renderWithProvider(
         <UnlockPasskeySection
           {...baseProps}
           passkeyAutoUnlockSuppressed={false}
           mustDeferPasskeyToBrowserTab
-          onUnlockWithPasskey={onUnlockWithPasskey}
+          onUnlockSuccess={onUnlockSuccess}
         />,
         mockStore,
         '/unlock',
@@ -314,18 +294,19 @@ describe('UnlockPasskeySection', () => {
         await Promise.resolve();
       });
 
-      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(onUnlockSuccess).not.toHaveBeenCalled();
       expect(openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
     it('opens extension in browser when primary passkey button is clicked', async () => {
-      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+      const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
 
       const { getByTestId } = renderWithProvider(
         <UnlockPasskeySection
           {...baseProps}
           mustDeferPasskeyToBrowserTab
-          onUnlockWithPasskey={onUnlockWithPasskey}
+          onUnlockSuccess={onUnlockSuccess}
         />,
         mockStore,
         '/unlock',
@@ -334,7 +315,8 @@ describe('UnlockPasskeySection', () => {
       fireEvent.click(getByTestId('unlock-passkey-button'));
 
       expect(openExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
-      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(mockUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(onUnlockSuccess).not.toHaveBeenCalled();
     });
   });
 });

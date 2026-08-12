@@ -5,8 +5,9 @@
 Steps 1 and 2 are complete: the global blocked list and enrollment route
 migrations are implemented and tested. Steps 2.5 and 2.6 consolidate both the
 enrollment transport and WebAuthn ceremony orchestration in a reusable hook.
-Step 3 migrates both passkey-removal settings routes. Work is paused for review
-before Step 4.
+Step 3 migrates both passkey-removal settings routes. Step 4 migrates passkey
+unlock across the standard and onboarding unlock routes. Work is paused for
+review before Step 5.
 
 This plan follows the existing route-messenger patterns used by:
 
@@ -391,10 +392,13 @@ toasts, and metrics.
 ### 4. Migrate unlock
 
 - Add `ui/pages/unlock-page/messenger.ts`.
-- Wire `UNLOCK_ROUTE` with `createRouteWithMessenger`.
-- Migrate option generation and unlock to messenger calls.
+- Wire `UNLOCK_ROUTE` with `createRouteWithMessenger` and wrap the onboarding
+  unlock route with the same narrowly scoped capabilities.
+- Add `usePasskeyUnlock` to own authentication-option generation, WebAuthn,
+  the legacy-service unlock call, loading state, and background-state refresh.
 - Keep the legacy-service action, loading dispatches, state refresh, and
   navigation sequence.
+- Remove the obsolete `tryUnlockMetamaskWithPasskey` Redux thunk.
 
 Review checkpoint: verify account initialization and all unlock surfaces.
 

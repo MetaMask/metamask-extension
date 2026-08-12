@@ -85,6 +85,7 @@ import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
+import { ONBOARDING_UNLOCK_ROUTE_CAPABILITIES } from './unlock-messenger';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -517,10 +518,15 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
                 element={
-                  <Unlock
-                    onSubmit={handleUnlock}
-                    navigateAfterUnlock={handleNavigationAfterUnlock}
-                  />
+                  <RouteWithMessenger
+                    path={ONBOARDING_UNLOCK_ROUTE}
+                    capabilities={ONBOARDING_UNLOCK_ROUTE_CAPABILITIES}
+                  >
+                    <Unlock
+                      onSubmit={handleUnlock}
+                      navigateAfterUnlock={handleNavigationAfterUnlock}
+                    />
+                  </RouteWithMessenger>
                 }
               />
               <Route

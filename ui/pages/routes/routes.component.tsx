@@ -147,6 +147,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
@@ -324,10 +325,11 @@ export const routeConfig = [
       {
         element: <RequireOnboarded />,
         children: [
-          {
+          createRouteWithMessenger({
             path: UNLOCK_ROUTE,
             element: <UnlockPage />,
-          },
+            capabilities: UNLOCK_ROUTE_CAPABILITIES,
+          }),
         ],
       },
       {

@@ -151,7 +151,6 @@ describe('Actions', () => {
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
     background.removePasskeyWithPasswordVerification = sinon.stub();
-    background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     // Vault / seedless methods live on LegacyBackgroundApiService and are only
     // exposed via getApi(); stub them here for tests that use the controller
@@ -446,63 +445,6 @@ describe('Actions', () => {
     afterEach(() => {
       sinon.restore();
       jest.restoreAllMocks();
-    });
-
-    it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
-      const store = mockStore();
-      background.unlockWithPasskey.resolves();
-      setBackgroundConnection(background);
-
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      await store.dispatch(
-        actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
-      );
-
-      expect(
-        background.unlockWithPasskey.calledOnceWith(authenticationResponse),
-      ).toBe(true);
-      expect(store.getActions()).toStrictEqual([
-        { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.HIDE_LOADING },
-      ]);
-    });
-
-    it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
-      const store = mockStore();
-      background.unlockWithPasskey.rejects(new Error('unlock failed'));
-      setBackgroundConnection(background);
-
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      await expect(
-        store.dispatch(
-          actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
-        ),
-      ).rejects.toThrow('unlock failed');
-
-      expect(store.getActions()).toStrictEqual([
-        { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.HIDE_LOADING },
-      ]);
     });
 
     it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {

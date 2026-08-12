@@ -1042,28 +1042,6 @@ export function tryUnlockMetamask(
 }
 
 /**
- * Tries to unlock the metamask with the passkey.
- * @param authenticationResponse - The authentication response from the passkey.
- * @returns A promise that resolves when the unlock is successful or rejected when it fails.
- */
-export function tryUnlockMetamaskWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      await submitRequestToBackground('unlockWithPasskey', [
-        authenticationResponse,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
  * Checks if the seedless onboarding user is authenticated.
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
