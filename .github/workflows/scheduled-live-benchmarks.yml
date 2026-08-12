@@ -43,6 +43,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
+      sha: ${{ steps.pick.outputs.sha }}
     steps:
       - name: Pick the release tag
         id: pick
@@ -52,9 +53,30 @@ jobs:
         with:
           script: |
             const requested = process.env.REQUESTED_TAG;
+            const resolve = async (tag) => {
+              // The stats entry is keyed by commit, so the tag alone is not
+              // enough — a tag can be moved, and an entry filed under a moved
+              // tag would silently describe different code than it claims.
+              const { data: ref } = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${tag}`,
+              });
+              const sha = ref.object.type === 'tag'
+                ? (await github.rest.git.getTag({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    tag_sha: ref.object.sha,
+                  })).data.object.sha
+                : ref.object.sha;
+              core.info(`${tag} -> ${sha}`);
+              core.setOutput('tag', tag);
+              core.setOutput('sha', sha);
+            };
+
             if (requested) {
               core.info(`Using requested tag: ${requested}`);
-              core.setOutput('tag', requested);
+              await resolve(requested);
               return;
             }
 
@@ -66,7 +88,7 @@ jobs:
               repo: context.repo.repo,
             });
             core.info(`Latest published release: ${release.tag_name}`);
-            core.setOutput('tag', release.tag_name);
+            await resolve(release.tag_name);
 
   build-test-webpack:
     needs: resolve-release
@@ -101,6 +123,11 @@ jobs:
     uses: ./.github/workflows/run-benchmarks.yml
     with:
       builds-from-run: ${{ github.run_id }}
+      # On a schedule `github.ref_name` is the default branch and `github.sha`
+      # is its head, so without these the results are stored against `main`
+      # rather than the release they describe.
+      measured-ref: ${{ needs.resolve-release.outputs.tag }}
+      measured-sha: ${{ needs.resolve-release.outputs.sha }}
       # Overrides the branch heuristic in resolveBenchmarkMockMode(). A release
       # *tag* is neither `main` nor `release/*`, so the heuristic alone would
       # resolve `mocked` and measure the wrong population.
