@@ -8,7 +8,16 @@ import { Driver } from '../../../webdriver/driver';
 const QUOTE_READY_TIMEOUT = 30_000;
 
 /**
- * Page object for the Perps Withdraw confirmation flow.
+ * The Perps Withdraw confirmation: quote-backed amount, fees, and confirm.
+ *
+ * Screen: wallet-initiated confirmation layered after
+ * `PerpsWithdrawPage` submit (not a `#/perps/*` route of its own).
+ * Owns: available balance and amount input, pay-with / receive / bridge-time
+ * rows, confirm button enabled/disabled and label, and header back.
+ * Boundaries: the withdraw form before confirmation belongs to
+ * `PerpsWithdrawPage`. This object starts once the confirmation header is
+ * shown and the quote can settle.
+ * Related: `PerpsWithdrawPage` (how tests get here).
  *
  * @see ui/pages/confirmations/components/confirm/info/perps-withdraw-info/perps-withdraw-info.tsx
  */

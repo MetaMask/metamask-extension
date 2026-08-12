@@ -2,6 +2,24 @@ import { strict as assert } from 'assert';
 import { AuthConnection } from '../../../../../shared/constants/onboarding';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Welcome / login entry for onboarding: create or import a wallet, with SRP
+ * and social-login options.
+ *
+ * Screen: `#/onboarding/welcome` (and the root `#/onboarding` switch that
+ * redirects here).
+ * Owns: create/import CTAs, SRP and social login option buttons, and the
+ * Terms of Use / Privacy Notice footer links on the login options panel.
+ * Boundaries: stops once a path is chosen. Does not fill password, SRP, or
+ * metrics; those belong to the next page objects in the flow.
+ * Related: create path → `OnboardingPasswordPage` then `SetupPasskeyPage` /
+ * `SecureWalletPage`; import path → `OnboardingSrpPage` then password;
+ * `flows/onboarding.flow.ts` for full journeys.
+ *
+ * @see ui/pages/onboarding-flow/welcome/welcome.tsx
+ * @see ui/pages/onboarding-flow/welcome/welcome-login.tsx
+ * @see ui/pages/onboarding-flow/welcome/login-options.tsx
+ */
 class StartOnboardingPage {
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';

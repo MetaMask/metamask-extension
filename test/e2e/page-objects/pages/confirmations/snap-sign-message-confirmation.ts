@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-message confirmation (snap custom UI footer).
+ *
+ * Screen: snap confirmation dialog with "Sign message" header (not
+ * redesigned MetaMask personal-sign `#/confirmation`).
+ * Owns: header/footer loaded checks, displayed snap address, and
+ * confirm/cancel snap footer buttons (window close on action).
+ * Boundaries: MetaMask personal-sign is `PersonalSignConfirmation`. Snap
+ * sign-in / sign-transaction / sign-and-send variants are separate classes.
+ * Related: `SnapSignInConfirmation`, `SnapSignTransactionConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapSignMessageConfirmation {
   private addressTestId = 'snap-ui-address';
 
