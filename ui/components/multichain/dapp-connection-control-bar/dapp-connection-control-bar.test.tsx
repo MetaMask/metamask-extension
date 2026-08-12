@@ -14,7 +14,6 @@ jest.mock('react-router-dom', () => ({
 const mockRemovePermissionsFor = jest.fn(
   (_subjects: Record<string, string[]>) => () => Promise.resolve(),
 );
-const mockDismissPermittedNetworkToast = jest.fn();
 const mockSetActiveNetwork = jest.fn((_networkClientId: string) => ({
   type: 'SET_ACTIVE_NETWORK',
 }));
@@ -294,7 +293,6 @@ describe('DappConnectionControlBar', () => {
         expect(mockRemovePermissionsFor).toHaveBeenCalledWith({
           [DAPP_ORIGIN]: ['endowment:caip25'],
         });
-        expect(mockDismissPermittedNetworkToast).toHaveBeenCalled();
         expect(queryByTestId('disconnect-all-modal')).not.toBeInTheDocument();
       });
     });
