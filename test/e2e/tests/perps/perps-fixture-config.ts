@@ -7,6 +7,7 @@ import {
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
 import { formatUnits } from '../../../../shared/lib/unit';
+import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import {
   MOCK_ETH_OPEN_LONG_FILL,
   MOCK_ETH_LIMIT_ORDER,
@@ -105,6 +106,12 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   // is on in production (registry value), so it stays registered; tests that
   // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
   perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
+  // Pin the bottom-nav-bar A/B test to control. The production default is a
+  // percentage rollout (threshold array), which otherwise buckets each E2E
+  // run randomly and hides account-overview__perps-tab / __activity-tab in
+  // favor of bottom-nav-perps / bottom-nav-activity when a run lands in
+  // treatment, causing flaky TimeoutErrors on those selectors.
+  [BOTTOM_NAV_AB_TEST_KEY]: 'control',
 };
 
 /**
@@ -120,6 +127,8 @@ export const PERPS_ELIGIBLE_FLAG = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+    [BOTTOM_NAV_AB_TEST_KEY]:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
   },
 };
 
@@ -147,6 +156,10 @@ const PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG = {
     confirmations_pay_post_quote:
       PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags
         .confirmations_pay_post_quote,
+    [BOTTOM_NAV_AB_TEST_KEY]:
+      PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags[
+        BOTTOM_NAV_AB_TEST_KEY
+      ],
   },
 };
 
@@ -164,6 +177,8 @@ const PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS = {
     PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
+  // See PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS for why this is pinned.
+  [BOTTOM_NAV_AB_TEST_KEY]: 'control',
 };
 
 const PERPS_GEO_BLOCKED_FLAG = {
@@ -175,6 +190,8 @@ const PERPS_GEO_BLOCKED_FLAG = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
       PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+    [BOTTOM_NAV_AB_TEST_KEY]:
+      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
   },
 };
 
@@ -224,6 +241,7 @@ export function getPerpsGeoBlockConfig(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay: { name: 'empty' },
         perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
+        [BOTTOM_NAV_AB_TEST_KEY]: 'control',
       });
       await server
         .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -284,6 +302,7 @@ async function mockEligibleFeatureFlags(
     // market submit disabled without order-book estimates.
     perpsSlippageConfig2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
+    [BOTTOM_NAV_AB_TEST_KEY]: 'control',
     ...overrides,
   });
   await server
