@@ -3,10 +3,17 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
-import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import {
+  getTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
-import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
+import {
+  selectMinimumRequiredTokenBalance,
+  selectPreferredPayTokens,
+  type PreferredPayToken,
+} from '../../selectors/feature-flags';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -36,6 +43,8 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
+  const transactionType = getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -44,6 +53,10 @@ export function useAutomaticTransactionPayToken({
     isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
     isTokenAllowed: isPostQuoteWithdrawTokenAllowed,
   } = usePostQuoteWithdrawTokenFilter();
+
+  const preferredTokensFromFlags = useSelector((state) =>
+    selectPreferredPayTokens(state, transactionType),
+  );
 
   const tokens = useMemo(
     () =>
@@ -81,9 +94,10 @@ export function useAutomaticTransactionPayToken({
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
         minimumRequiredTokenBalance,
+        preferredToken,
+        preferredTokensFromFlags,
         targetToken,
         tokens: tokensWithBalance,
-        preferredToken,
       }),
     [
       isHardwareWallet,
@@ -92,6 +106,7 @@ export function useAutomaticTransactionPayToken({
       isPostQuoteWithdrawTokenAllowed,
       minimumRequiredTokenBalance,
       preferredToken,
+      preferredTokensFromFlags,
       targetToken,
       tokensWithBalance,
     ],
@@ -218,6 +233,7 @@ function getBestToken({
   isPostQuoteWithdrawTokenAllowed,
   minimumRequiredTokenBalance,
   preferredToken,
+  preferredTokensFromFlags,
   targetToken,
   tokens,
 }: {
@@ -230,6 +246,7 @@ function getBestToken({
   ) => boolean;
   minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
+  preferredTokensFromFlags: PreferredPayToken[];
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
@@ -272,6 +289,16 @@ function getBestToken({
     }
   }
 
+  const preferredFromFlags = getPreferredToken({
+    isPostQuoteWithdraw,
+    minimumRequiredTokenBalance,
+    preferredTokensFromFlags,
+    tokens,
+  });
+  if (preferredFromFlags) {
+    return preferredFromFlags;
+  }
+
   if (isPostQuoteWithdrawTokenFilterApplied && tokens.length === 0) {
     return undefined;
   }
@@ -300,4 +327,61 @@ function getBestToken({
   }
 
   return targetTokenFallback;
+}
+
+function getPreferredToken({
+  isPostQuoteWithdraw,
+  minimumRequiredTokenBalance,
+  preferredTokensFromFlags,
+  tokens,
+}: {
+  isPostQuoteWithdraw: boolean;
+  minimumRequiredTokenBalance: number;
+  preferredTokensFromFlags: PreferredPayToken[];
+  tokens: Asset[];
+}): { address: Hex; chainId: Hex } | undefined {
+  if (!preferredTokensFromFlags.length) {
+    return undefined;
+  }
+
+  const candidates = preferredTokensFromFlags.reduce<Asset[]>(
+    (result, preferred) => {
+      const matchingToken = tokens.find(
+        (token) =>
+          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferred.chainId.toLowerCase(),
+      );
+
+      if (matchingToken) {
+        result.push(matchingToken);
+      }
+
+      return result;
+    },
+    [],
+  );
+
+  // Post-quote withdraws: first held preferred token (no fiat floor).
+  if (isPostQuoteWithdraw && candidates.length) {
+    return {
+      address: candidates[0].address as Hex,
+      chainId: candidates[0].chainId as Hex,
+    };
+  }
+
+  const eligible = candidates
+    .filter(
+      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
+    )
+    .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
+
+  if (!eligible.length) {
+    return undefined;
+  }
+
+  return {
+    address: eligible[0].address as Hex,
+    chainId: eligible[0].chainId as Hex,
+  };
 }
