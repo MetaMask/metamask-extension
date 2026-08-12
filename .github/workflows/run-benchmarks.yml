@@ -17,9 +17,10 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
-    # No continue-on-error: each leg gates its own metrics (gate step below), so a
-    # metric breach fails just that leg and only that leg is re-run to re-measure.
-    # The `quality-gate` job separately evaluates all legs together.
+    # `quality-gate` is the only check that blocks the PR, so this leg is
+    # continue-on-error. It still gates its own metrics below, which turns just
+    # this leg red on a breach and lets only this leg be re-run to re-measure.
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -117,27 +118,20 @@ jobs:
 
       # compare-benchmarks.ts evaluates each result file independently, so
       # pointing --current at this leg's single-file dir gates exactly this leg.
-      # A breach fails the leg, so it can be re-run in isolation. Honors the
-      # skip-benchmark-gate label; runs only when the benchmark produced a result.
+      # A breach fails the leg, so it can be re-run in isolation. Runs only when
+      # the benchmark produced a result.
       - name: Gate this benchmark leg
-        if: ${{ github.event_name == 'pull_request' && steps.run-benchmark.outcome == 'success' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          if gh api "repos/$REPO/issues/$PR_NUMBER/labels" --jq '.[].name' | grep -qx 'skip-benchmark-gate'; then
-            echo "skip-benchmark-gate label present — skipping per-leg gate"
-            exit 0
-          fi
-          yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        if: ${{ steps.run-benchmark.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
-    # Not continue-on-error: this job gates its own metrics below so a breach
-    # fails it and it can be re-run in isolation (see the matrix `benchmarks` job).
+    # continue-on-error for the same reason as the matrix `benchmarks` job: it
+    # gates its own metrics below so a breach turns it red and it can be re-run in
+    # isolation, while `quality-gate` remains the only check that blocks the PR.
+    continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -214,20 +208,11 @@ jobs:
           if-no-files-found: ignore
 
       # Gate this job against its own page-load result file so a breach fails it
-      # and it can be re-run in isolation. Same rationale/label handling as the
-      # matrix `benchmarks` job's per-leg gate.
+      # and it can be re-run in isolation. Same rationale as the matrix
+      # `benchmarks` job's per-leg gate.
       - name: Gate this benchmark leg
-        if: ${{ github.event_name == 'pull_request' && steps.run-page-load.outcome == 'success' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          if gh api "repos/$REPO/issues/$PR_NUMBER/labels" --jq '.[].name' | grep -qx 'skip-benchmark-gate'; then
-            echo "skip-benchmark-gate label present — skipping per-leg gate"
-            exit 0
-          fi
-          yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        if: ${{ steps.run-page-load.outcome == 'success' }}
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
   # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
