@@ -45,6 +45,36 @@ export function hasTransactionType(
   );
 }
 
+/**
+ * Returns the effective transaction type for feature-flag lookups.
+ *
+ * For batch transactions created via `addTransactionBatch`, the top-level
+ * `type` is `batch` while the meaningful type (e.g. `moneyAccountDeposit`)
+ * lives on a nested transaction. Prefer the first nested type when present.
+ *
+ * Mirrors `getTransactionType` from metamask-mobile.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The nested type when available, otherwise the top-level type.
+ */
+export function getTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  if (!transactionMeta) {
+    return undefined;
+  }
+
+  const { nestedTransactions, type } = transactionMeta;
+  if (nestedTransactions?.length) {
+    const nestedType = nestedTransactions.find((tx) => tx.type)?.type;
+    if (nestedType) {
+      return nestedType;
+    }
+  }
+
+  return type;
+}
+
 export const POST_QUOTE_WITHDRAW_TRANSACTION_TYPES = [
   TransactionType.perpsWithdraw,
 ] as const;
