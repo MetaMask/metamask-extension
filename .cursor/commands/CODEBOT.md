@@ -756,13 +756,17 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 - [ ] No `any` types
 - [ ] Using `withFixtures` for proper setup/cleanup
 
-**Deprecated Pattern Detection:** See `.cursor/BUGBOT.md` for regex patterns used to detect anti-patterns.
+**Deprecated Pattern Detection:** See `.cursor/BUGBOT.md` sections **3.1–3.9** for regex patterns used to detect anti-patterns.
 
 **HIGH Priority Checks (includes deprecated patterns):**
 
-- [ ] ⚠️ No `driver.delay()` usage — **Deprecated**, use page object wait methods instead
-- [ ] ⚠️ Prefer `FixtureBuilderV2` in new/updated specs when required methods are supported
-- [ ] Using page objects for page interactions (not raw driver calls)
+- [ ] ⚠️ No `driver.delay()` / hardcoded sleeps without a justifying comment — **Deprecated**, wait for a condition instead (BUGBOT 3.7)
+- [ ] ⚠️ Prefer `FixtureBuilderV2` in new/updated specs when required methods are supported (BUGBOT 3.1)
+- [ ] ❌ No locators/selectors in `*.flow.ts` — keep them in page objects (BUGBOT 3.3)
+- [ ] ❌ No single-page-object flows — move the method onto that page object (BUGBOT 3.4)
+- [ ] ❌ No UI helper functions inside `*.spec.ts` — use page objects or flows (BUGBOT 3.5)
+- [ ] ❌ No raw `driver.clickElement` / locator usage in specs — call page objects or flows (BUGBOT 3.6)
+- [ ] ❌ Page objects must not import/invoke other page objects — use a flow (BUGBOT 3.8)
 - [ ] Using fixtures to set up state (not UI interactions for setup)
 - [ ] Explicit assertions with clear error messages
 - [ ] External requests are mocked when appropriate
@@ -775,11 +779,12 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 - [ ] Tests are independent (no dependencies between tests)
 - [ ] Detailed logging in page object methods
 - [ ] Page objects are TypeScript
-- [ ] Page objects don't reference each other (no circular dependencies)
+- [ ] ❌ No `try`/`catch` in page objects or flows (BUGBOT 3.9)
+- [ ] Snap specs using FixtureBuilderV2 include `.withSnapsPrivacyWarningAlreadyShown()` (BUGBOT 3.2)
 
 **Deprecated Patterns (E2E):**
 
-See `.cursor/BUGBOT.md` for the complete list of E2E anti-patterns with regex detection patterns.
+See `.cursor/BUGBOT.md` sections **3.1–3.9** for the complete list of E2E anti-patterns with detection patterns.
 
 **Report Format for Deprecated Patterns:**
 
@@ -1027,10 +1032,15 @@ Before generating final report, perform these checks internally. **These checks 
 | Multiple useSelector calls                                    | Combine into single selector                                                   | `.cursor/rules/front-end-performance-state-management/RULE.md`                                    |
 | Identity function selector                                    | Always transform data in selector                                              | `.cursor/rules/front-end-performance-state-management/RULE.md`                                    |
 | Cascading useEffect chains                                    | Combine effects or compute during render                                       | `.cursor/rules/front-end-performance-hooks-effects/RULE.md`                                       |
-| **E2E:** `driver.delay()` usage                               | ⚠️ **Deprecated:** Use page object wait methods instead                        | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Timing and Waits")                               |
+| **E2E:** `driver.delay()` usage                               | ⚠️ **Deprecated:** Use page object wait methods instead                        | `.cursor/BUGBOT.md` §3.7 / e2e-testing-guidelines ("Timing and Waits")                             |
 | **E2E:** CSS class locator                                    | Use `data-testid` attribute                                                    | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Element Locators")                               |
-| **E2E:** Raw driver calls                                     | Use page object methods                                                        | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Page Object Model")                              |
-| **E2E:** Legacy `FixtureBuilder` used for V2-compatible setup | Use `FixtureBuilderV2` (legacy only if required methods are unavailable in V2) | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Controlling State")                              |
+| **E2E:** Raw driver calls in specs                            | Use page object methods or flows                                               | `.cursor/BUGBOT.md` §3.6                                                                          |
+| **E2E:** Locators in flow files                               | Move locators to page objects                                                  | `.cursor/BUGBOT.md` §3.3                                                                          |
+| **E2E:** Single-page-object flow                              | Move method onto that page object                                              | `.cursor/BUGBOT.md` §3.4                                                                          |
+| **E2E:** UI helpers in spec files                             | Use page object methods or flows                                               | `.cursor/BUGBOT.md` §3.5                                                                          |
+| **E2E:** Page object calls another page object                | Use a flow                                                                     | `.cursor/BUGBOT.md` §3.8                                                                          |
+| **E2E:** `try`/`catch` in page objects or flows               | Let failures surface via waits / `check*`                                      | `.cursor/BUGBOT.md` §3.9                                                                          |
+| **E2E:** Legacy `FixtureBuilder` used for V2-compatible setup | Use `FixtureBuilderV2` (legacy only if required methods are unavailable in V2) | `.cursor/BUGBOT.md` §3.1                                                                          |
 
 **Note:** For detailed examples and comprehensive guidelines, see the referenced rule files in `.cursor/rules/`.
 
@@ -1052,6 +1062,7 @@ CODEBOT automatically:
 - `.cursor/rules/coding-guidelines/RULE.md` - General coding standards
 - `.cursor/rules/unit-testing-guidelines/RULE.md` - Unit test patterns and best practices
 - `.cursor/rules/e2e-testing-guidelines/RULE.md` - E2E test patterns, page objects, and deprecated patterns
+- `.cursor/BUGBOT.md` - E2E deprecated / POM anti-pattern detectors (sections 3.1–3.9)
 - `.cursor/rules/controller-guidelines/RULE.md` - Controller architecture patterns
 - `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
 - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
