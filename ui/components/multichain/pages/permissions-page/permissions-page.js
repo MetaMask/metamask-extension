@@ -30,9 +30,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
-  REVIEW_PERMISSIONS,
   GATOR_PERMISSIONS,
+  REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
   getConnectedSitesListWithNetworkInfo,
@@ -60,7 +59,9 @@ const PermissionsPage = () => {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+      runCloseTransition(() => navigate(-1));
+    } else if (fromPath) {
+      navigate(-1);
     } else {
       navigate(
         isGatorPermissionsRevocationFeatureEnabled()
@@ -156,10 +157,9 @@ const PermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={Color.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
           />
         }

@@ -176,7 +176,6 @@ export const ReviewGatorPermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={IconColor.IconDefault}
             onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Md}
