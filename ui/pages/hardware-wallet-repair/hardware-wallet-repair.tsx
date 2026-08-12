@@ -51,7 +51,7 @@ import {
  */
 function getRepairConnectErrorMessage(
   err: unknown,
-  t: (key: string) => string,
+  t: (key: string, substitutions?: string[]) => string,
 ): string {
   if (
     getHardwareWalletErrorCode(err) ===
@@ -68,7 +68,10 @@ function getRepairConnectErrorMessage(
 }
 
 export const HardwareWalletRepair: React.FC = () => {
-  const t = useI18nContext();
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
   const { search } = useLocation();
   const {
     ensureDeviceReady,
