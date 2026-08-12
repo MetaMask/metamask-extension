@@ -128,6 +128,10 @@ jobs:
       # rather than the release they describe.
       measured-ref: ${{ needs.resolve-release.outputs.tag }}
       measured-sha: ${{ needs.resolve-release.outputs.sha }}
+      # One series across all releases, not one file per tag. Entries are keyed
+      # by the release commit and carry `releaseTag`, so the file reads
+      # release-over-release and the retention cap in #45451 applies to it.
+      series-name: scheduled-live
       # Overrides the branch heuristic in resolveBenchmarkMockMode(). A release
       # *tag* is neither `main` nor `release/*`, so the heuristic alone would
       # resolve `mocked` and measure the wrong population.

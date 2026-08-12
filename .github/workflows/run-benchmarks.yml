@@ -20,6 +20,16 @@ on:
         type: string
         default: ''
         description: Commit SHA of `measured-ref`. Required alongside it.
+      series-name:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          Series to file results under, when it is not the branch. A scheduled
+          run measures a different release each time; filing under the tag would
+          produce one file per release holding a single datapoint, which is not
+          a series and which no retention cap can trim. The tag is recorded per
+          entry instead.
       benchmark-mock-mode:
         required: false
         type: string
@@ -348,7 +358,8 @@ jobs:
     env:
       HEAD_COMMIT_HASH: ${{ inputs.measured-sha || github.sha }}
       OWNER: ${{ github.repository_owner }}
-      BRANCH_NAME: ${{ inputs.measured-ref || github.ref_name }}
+      BRANCH_NAME: ${{ inputs.series-name || inputs.measured-ref || github.ref_name }}
+      RELEASE_TAG: ${{ inputs.measured-ref }}
       BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout repository

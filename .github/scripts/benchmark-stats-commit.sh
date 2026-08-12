@@ -159,10 +159,14 @@ assemble_performance_data() {
 
     # presets_json can exceed ARG_MAX; pass it via stdin instead of as a jq argument
     # (a too-large argv makes the kernel fail to exec jq with "Argument list too long").
+    # `releaseTag` is empty for per-commit runs and carries the measured tag for
+    # scheduled ones, so a single series can be read release-over-release.
     printf '%s' "${presets_json}" | jq \
         --argjson timestamp "$(date +%s000)" \
         --arg mockMode "${mock_mode}" \
-        '{ timestamp: $timestamp, mockMode: $mockMode, presets: . }'
+        --arg releaseTag "${RELEASE_TAG:-}" \
+        '{ timestamp: $timestamp, mockMode: $mockMode, presets: . }
+         + (if $releaseTag == "" then {} else { releaseTag: $releaseTag } end)'
 }
 
 # Resolve stats file and assemble data
