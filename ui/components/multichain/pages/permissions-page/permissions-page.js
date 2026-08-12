@@ -5,11 +5,6 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  Text as TextDS,
-  TextVariant as TextVariantDS,
-  FontWeight,
-} from '@metamask/design-system-react';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -167,15 +162,9 @@ const PermissionsPage = () => {
             data-testid="permissions-page-back"
           />
         }
+        textProps={{ 'data-testid': 'permissions-page-title' }}
       >
-        <TextDS
-          as="span"
-          variant={TextVariantDS.BodyMd}
-          fontWeight={FontWeight.Medium}
-          data-testid="permissions-page-title"
-        >
-          {t('permissions')}
-        </TextDS>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>

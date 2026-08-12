@@ -33,14 +33,9 @@ exports[`All Connections render renders correctly 1`] = `
         >
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
+            data-testid="permissions-page-title"
           >
-            <p
-              as="span"
-              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-              data-testid="permissions-page-title"
-            >
-              Permissions
-            </p>
+            Permissions
           </p>
         </div>
       </div>
