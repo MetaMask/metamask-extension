@@ -36,9 +36,10 @@ type SampleRateOptions = {
    */
   defaultSampleRate: number;
   /**
-   * Per-name overrides, e.g. {@link DEFAULT_TRANSACTION_SAMPLE_RATES}.
+   * Per-name overrides, e.g. {@link DEFAULT_TRANSACTION_SAMPLE_RATES}. Read-only
+   * because callers may pass the frozen constant itself rather than a copy.
    */
-  sampleRateOverrides: Record<string, number>;
+  sampleRateOverrides: Readonly<Record<string, number>>;
   /**
    * Per-name overrides from the remote `sentry.transactionSampleRates` flag;
    * consulted before {@link sampleRateOverrides} so a remote value wins over
@@ -160,10 +161,19 @@ export function createTracesSampler({
 }: {
   defaultSampleRate: number;
 }): (samplingContext: TransactionSamplingContext) => number {
-  const sampleRateOverrides: Record<string, number> = {
-    ...DEFAULT_TRANSACTION_SAMPLE_RATES,
-    ...parseSampleRateOverridesEnv(process.env.SENTRY_SAMPLE_RATE_OVERRIDES),
-  };
+  // Do not collapse to an unconditional call or spread. When unset the env var
+  // inlines to a falsy literal (`builds.yml` defaults it to `null`), so this
+  // branch and the unexported `parseSampleRateOverridesEnv` drop out of the
+  // build entirely.
+  const sampleRateOverrides: Readonly<Record<string, number>> = process.env
+    .SENTRY_SAMPLE_RATE_OVERRIDES
+    ? {
+        ...DEFAULT_TRANSACTION_SAMPLE_RATES,
+        ...parseSampleRateOverridesEnv(
+          process.env.SENTRY_SAMPLE_RATE_OVERRIDES,
+        ),
+      }
+    : DEFAULT_TRANSACTION_SAMPLE_RATES;
 
   return (samplingContext) => {
     // Read per call so a remote value applied after `Sentry.init` takes effect
