@@ -303,8 +303,7 @@ describe('DappBarNetworkSelectorPopover', () => {
       expect(mockAddPermittedChain).not.toHaveBeenCalled();
     });
 
-    it('does not surface the permitted-network toast', () => {
-    });
+    it('does not surface the permitted-network toast', () => {});
 
     it('activates the selected network client', () => {
       expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
