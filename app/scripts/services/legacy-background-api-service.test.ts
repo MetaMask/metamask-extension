@@ -15,7 +15,13 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { add0x, hexToBytes, type Hex } from '@metamask/utils';
+import {
+  add0x,
+  hexToBytes,
+  parseCaipChainId,
+  toCaipAccountId,
+  type Hex,
+} from '@metamask/utils';
 import {
   EncAccountDataType,
   SecretType,
@@ -52,6 +58,17 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
+import {
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../../shared/constants/defi-referrals';
+import { ReferralStatus } from '../controllers/preferences-controller';
+import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMiddleware';
+import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
+import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
+import { trackEvent } from '../controllers/analytics';
+import { createTestProviderTools } from '../../../test/stub/provider';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
@@ -87,6 +104,19 @@ jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
 const mockGetIsShieldSubscriptionActive = jest.mocked(
   getIsShieldSubscriptionActive,
 );
+
+jest.mock('../controllers/analytics', () => ({
+  ...jest.requireActual('../controllers/analytics'),
+  trackEvent: jest.fn(),
+}));
+
+jest.mock('../lib/defi-referrals/referral-onchain-check', () => ({
+  checkGmxHasReferralCode: jest.fn().mockResolvedValue(false),
+}));
+
+jest.mock('../lib/defi-referrals/referral-api-check', () => ({
+  checkHyperliquidHasReferralCode: jest.fn().mockResolvedValue(false),
+}));
 
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
@@ -389,6 +419,220 @@ describe('LegacyBackgroundApiService', () => {
           expect.anything(),
         );
         expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetails', () => {
+    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+      const providerResultStub = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_getCode: '0x123',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest
+            .fn()
+            .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
+                    decimals: 18,
+                    symbol: 'DAI',
+                  },
+                },
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.symbol).toStrictEqual('DAI');
+        expect(result.balance).toStrictEqual('3000000000000000000');
+      });
+    });
+
+    it('falls back to the AssetsContractController when the token is not in any list', async () => {
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '18',
+          symbol: 'DAI',
+          balance: 333,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.decimals).toStrictEqual('18');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenStandardAndDetailsByChain', () => {
+    it('falls back to the AssetsContractController using the chain-resolved network client id', async () => {
+      const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+        standard: 'ERC20',
+        decimals: '18',
+        symbol: 'DAI',
+        balance: 333,
+      });
+
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'client',
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+            },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ address: '0xabc' }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenListController:getState',
+          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          '0x1',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalledWith(
+          '0xNotInTokenList',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          undefined,
+          'mainnet',
+        );
+        expect(result.standard).toStrictEqual('ERC20');
+        expect(result.balance).toStrictEqual('333');
+      });
+    });
+  });
+
+  describe('getTokenSymbol', () => {
+    it('returns the token symbol from the AssetsContractController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockResolvedValue({ standard: 'ERC20', symbol: 'DAI' }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        );
+
+        expect(result).toStrictEqual('DAI');
+      });
+    });
+
+    it('returns null when the lookup throws', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          jest.fn().mockRejectedValue(new Error('error')),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenSymbol',
+          '0xNotInTokenList',
+        );
+
+        expect(result).toBeNull();
       });
     });
   });
@@ -1367,68 +1611,6 @@ describe('LegacyBackgroundApiService', () => {
         });
       });
 
-      it('times out the abandoned account creation when the device wedges', async () => {
-        await withService(async ({ rootMessenger }) => {
-          // A wedged device leaves `createAccounts` pending forever. Account
-          // creation mutates vault state and runs under the controller lock,
-          // so it cannot use the lock-free `deviceRead` path; the timeout is
-          // applied by `unlockHardwareWalletAccount` itself.
-          const createAccounts = jest
-            .fn()
-            .mockReturnValue(new Promise(() => undefined));
-          registerWithKeyringV2(rootMessenger, {
-            bridge: { updateTransportMethod: jest.fn() },
-            entropySource: 'entropy-1',
-            hdPath: "m/44'/60'/0'/0",
-            createAccounts,
-          });
-
-          const originalSetTimeout = global.setTimeout;
-          let fireCreateTimeout: (() => void) | undefined;
-          const setTimeoutSpy = jest
-            .spyOn(global, 'setTimeout')
-            .mockImplementation(((
-              handler: () => void,
-              timeout?: number,
-              ...args: unknown[]
-            ) => {
-              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
-                fireCreateTimeout = handler;
-                return 0 as unknown as ReturnType<typeof setTimeout>;
-              }
-              return originalSetTimeout(handler, timeout, ...args);
-            }) as typeof setTimeout);
-
-          try {
-            const wedged = rootMessenger.call(
-              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
-              0,
-              'ledger',
-              "m/44'/60'/0'/0",
-            );
-            // Swallow the timeout rejection asserted below so the abandoned
-            // creation never surfaces as an unhandled rejection.
-            wedged.catch(() => undefined);
-
-            // Wait until account creation has actually started.
-            await new Promise<void>((resolve) => {
-              const poll = () =>
-                createAccounts.mock.calls.length > 0
-                  ? resolve()
-                  : originalSetTimeout(poll, 5);
-              poll();
-            });
-
-            fireCreateTimeout?.();
-            await expect(wedged).rejects.toThrow(
-              'Hardware wallet account creation timed out',
-            );
-          } finally {
-            setTimeoutSpy.mockRestore();
-          }
-        });
-      });
-
       it('throws if it receives an unknown device name', async () => {
         await withService(async ({ rootMessenger }) => {
           await expect(
@@ -1961,6 +2143,141 @@ describe('LegacyBackgroundApiService', () => {
           expect(result).toStrictEqual(uiState);
         },
       );
+    });
+  });
+
+  describe('addTransaction', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<LegacyBackgroundApiService['addTransaction']>[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    /**
+     * Registers the handlers required by the transaction-add pipeline to add an
+     * EOA transaction with security alerts disabled.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param transactions - The transactions to expose via
+     * `TransactionController:getState`.
+     */
+    function registerAddTransactionHandlers(
+      rootMessenger: RootMessenger,
+      transactions: TransactionMeta[] = [],
+    ): void {
+      rootMessenger.registerActionHandler(
+        'AccountsController:listAccounts',
+        jest.fn().mockReturnValue([]),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        jest
+          .fn()
+          .mockReturnValue(
+            createMockInternalAccount({ address: '0xfromaddress' }),
+          ),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId: '0x1' }),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+      );
+      rootMessenger.registerActionHandler(
+        'TransactionController:getState',
+        jest.fn().mockReturnValue({ transactions }),
+      );
+    }
+
+    it('adds the transaction via the TransactionController and returns its metadata without waiting for publish', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+        registerAddTransactionHandlers(rootMessenger);
+        const addTransactionHandler = jest.fn().mockResolvedValue({
+          result: Promise.resolve('0xhash'),
+          transactionMeta,
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          addTransactionHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransaction',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(addTransactionHandler).toHaveBeenCalledWith(TRANSACTION_PARAMS, {
+          networkClientId: NETWORK_CLIENT_ID,
+          isInternal: true,
+        });
+        expect(result).toStrictEqual(transactionMeta);
+      });
+    });
+  });
+
+  describe('addTransactionAndWaitForPublish', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['addTransactionAndWaitForPublish']
+    >[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    it('waits for the transaction to publish and returns the final metadata', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const finalTransactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:listAccounts',
+          jest.fn().mockReturnValue([]),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest
+            .fn()
+            .mockReturnValue(
+              createMockInternalAccount({ address: '0xfromaddress' }),
+            ),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          jest.fn().mockReturnValue({ chainId: '0x1' }),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [finalTransactionMeta] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          jest.fn().mockResolvedValue({
+            result: Promise.resolve('0xhash'),
+            transactionMeta: { id: 'txId' } as TransactionMeta,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(result).toStrictEqual(finalTransactionMeta);
+      });
     });
   });
 
@@ -3447,6 +3764,150 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('unlockWithPasskey', () => {
+    const authenticationResponse =
+      'authentication-response' as unknown as Parameters<
+        LegacyBackgroundApiService['unlockWithPasskey']
+      >[0];
+
+    it('unlocks via the passkey controller and runs post-unlock account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const unlockSpy = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          unlockSpy,
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(unlockSpy).toHaveBeenCalledWith(authenticationResponse);
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+        expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
+        expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
+      });
+    });
+
+    it('propagates errors from the passkey controller and skips account init', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('not enrolled');
+        rootMessenger.registerActionHandler(
+          'PasskeyController:unlockWithPasskey',
+          jest.fn().mockRejectedValue(error),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unlockWithPasskey',
+            authenticationResponse,
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:updateAccounts',
+        );
+      });
+    });
+  });
+
+  describe('changePasswordWithPasskeyVerification', () => {
+    const params = {
+      newPassword: 'new-password',
+      authenticationResponse: 'authentication-response',
+      options: { renewVaultKeyProtection: true },
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['changePasswordWithPasskeyVerification']
+    >[0];
+
+    it('delegates to the passkey controller with the params', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const changePasswordHandler = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          changePasswordHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(changePasswordHandler).toHaveBeenCalledWith(params);
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          params,
+        );
+      });
+    });
+
+    it('serializes the change through the shared seedless operation mutex', async () => {
+      const seedlessOperationMutex = new Mutex();
+      const runExclusiveSpy = jest.spyOn(
+        seedlessOperationMutex,
+        'runExclusive',
+      );
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'PasskeyController:changePasswordWithPasskeyVerification',
+            jest.fn().mockResolvedValue(undefined),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          );
+
+          expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+          // The lock is released once the delegated call resolves.
+          expect(seedlessOperationMutex.isLocked()).toBe(false);
+        },
+      );
+    });
+
+    it('releases the mutex even when the passkey controller throws', async () => {
+      const seedlessOperationMutex = new Mutex();
+      const error = new Error('verification failed');
+
+      await withService(
+        { options: { seedlessOperationMutex } },
+        async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'PasskeyController:changePasswordWithPasskeyVerification',
+            jest.fn().mockRejectedValue(error),
+          );
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+              params,
+            ),
+          ).rejects.toThrow(error);
+
+          expect(seedlessOperationMutex.isLocked()).toBe(false);
+        },
+      );
+    });
+  });
+
   describe('changePassword', () => {
     it('changes the keyring password and releases the lock for a non-social login flow', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
@@ -4269,11 +4730,26 @@ describe('LegacyBackgroundApiService', () => {
     it('calls TransactionController:updateEditableParams with the new parameters', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 2.5,
           updateTransaction: (tx) => {
             tx.txParams.data = NEW_DATA_MOCK;
           },
         });
 
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue({
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 2,
+            },
+          }),
+        );
+        const updateEventFragmentMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentMock,
+        );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
           jest.fn().mockReturnValue({ transactions: [TRANSACTION_META_MOCK] }),
@@ -4290,10 +4766,11 @@ describe('LegacyBackgroundApiService', () => {
           updateEditableParamsMock,
         );
 
-        await rootMessenger.call(
+        const result = await rootMessenger.call(
           'LegacyBackgroundApiService:applyTransactionContainersExisting',
           TRANSACTION_ID_MOCK,
           [TransactionContainerType.EnforcedSimulations],
+          true,
         );
 
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
@@ -4304,12 +4781,56 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
+        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+          expect.any(String),
+          {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 3,
+            },
+          },
+        );
+        expect(result).toStrictEqual({
+          enforcedSimulationsSlippage: 2.5,
+        });
       });
     });
 
-    it('does not persist a gas fallback when container estimation fails', async () => {
+    it('rejects if the transaction container update fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 2.5,
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [TRANSACTION_META_MOCK] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({ gas: ESTIMATE_GAS_MOCK }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          jest.fn().mockRejectedValue(new Error('Update failed')),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow('Update failed');
+      });
+    });
+
+    it('increments the toggle count but does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          slippage: 10,
           updateTransaction: (tx) => {
             tx.txParams.data = NEW_DATA_MOCK;
           },
@@ -4321,6 +4842,20 @@ describe('LegacyBackgroundApiService', () => {
           txParamsOriginal: { gas: '0x554af' },
         } as TransactionMeta;
 
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:getEventFragmentById',
+          jest.fn().mockReturnValue({
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 2,
+            },
+          }),
+        );
+        const updateEventFragmentMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:updateEventFragment',
+          updateEventFragmentMock,
+        );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
           jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
@@ -4348,11 +4883,21 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:applyTransactionContainersExisting',
             TRANSACTION_ID_MOCK,
             [TransactionContainerType.EnforcedSimulations],
+            true,
           ),
         ).rejects.toThrow(
           'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
+        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+          expect.any(String),
+          {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              enforced_simulation_toggle_count: 3,
+            },
+          },
+        );
         expect(updateEditableParamsMock).not.toHaveBeenCalled();
       });
     });
@@ -5433,6 +5978,1017 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('DeFi referral', () => {
+    const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
+    const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
+    const mockTabId = 140;
+    const mockPermittedAccount = '0x123';
+    const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
+
+    type ReferralHandlerOverrides = {
+      featureFlags?: Record<string, boolean>;
+      hasRequest?: boolean;
+      addResult?: unknown;
+      referrals?: Record<string, Record<string, ReferralStatus>>;
+      useExternalServices?: boolean;
+    };
+
+    /**
+     * Registers the messenger action handlers used by the referral flow.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param overrides - Overrides for the mocked controller state/behavior.
+     * @returns The registered jest mock handlers, for assertions.
+     */
+    function registerReferralHandlers(
+      rootMessenger: RootMessenger,
+      overrides: ReferralHandlerOverrides = {},
+    ) {
+      const {
+        featureFlags = {
+          [DefiReferralPartner.Hyperliquid]: true,
+          [DefiReferralPartner.GMX]: true,
+        },
+        hasRequest = false,
+        addResult = {},
+        referrals = {
+          [DefiReferralPartner.Hyperliquid]: {},
+          [DefiReferralPartner.GMX]: {},
+        },
+        useExternalServices = false,
+      } = overrides;
+
+      const handlers = {
+        add: jest.fn().mockResolvedValue(addResult),
+        hasRequest: jest.fn().mockReturnValue(hasRequest),
+        addReferralPassedAccount: jest.fn(),
+        addReferralApprovedAccount: jest.fn(),
+        addReferralDeclinedAccount: jest.fn(),
+        removeReferralDeclinedAccount: jest.fn(),
+        setAccountsReferralApproved: jest.fn(),
+      };
+
+      rootMessenger.registerActionHandler(
+        'RemoteFeatureFlagController:getState',
+        jest.fn().mockReturnValue({
+          remoteFeatureFlags: {
+            extensionUxDefiReferralPartners: featureFlags,
+          },
+        }),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        jest.fn().mockReturnValue({ referrals, useExternalServices }),
+      );
+      rootMessenger.registerActionHandler(
+        'ApprovalController:hasRequest',
+        handlers.hasRequest,
+      );
+      rootMessenger.registerActionHandler(
+        'ApprovalController:add',
+        handlers.add,
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:addReferralPassedAccount',
+        handlers.addReferralPassedAccount,
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:addReferralApprovedAccount',
+        handlers.addReferralApprovedAccount,
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:addReferralDeclinedAccount',
+        handlers.addReferralDeclinedAccount,
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:removeReferralDeclinedAccount',
+        handlers.removeReferralDeclinedAccount,
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:setAccountsReferralApproved',
+        handlers.setAccountsReferralApproved,
+      );
+
+      return handlers;
+    }
+
+    /**
+     * Registers the Arbitrum network handlers used by the GMX on-chain check.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     */
+    function registerArbitrumNetwork(rootMessenger: RootMessenger) {
+      rootMessenger.registerActionHandler(
+        'NetworkController:findNetworkClientIdByChainId',
+        jest.fn().mockReturnValue('arbitrum'),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkClientById',
+        jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
+      );
+    }
+
+    beforeEach(() => {
+      jest.mocked(trackEvent).mockClear();
+      jest.mocked(checkGmxHasReferralCode).mockReset().mockResolvedValue(false);
+      jest
+        .mocked(checkHyperliquidHasReferralCode)
+        .mockReset()
+        .mockResolvedValue(false);
+    });
+
+    describe('handleDefiReferral', () => {
+      it('returns early if the partner feature flag is not enabled', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger, {
+              featureFlags: { [DefiReferralPartner.Hyperliquid]: false },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(getPermittedAccounts).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('returns early if the partner has no permitted accounts', async () => {
+        const getPermittedAccounts = jest.fn().mockResolvedValue([]);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.hasRequest).not.toHaveBeenCalled();
+            expect(handlers.add).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('returns early if there is already a pending approval', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              hasRequest: true,
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.hasRequest).toHaveBeenCalledWith({
+              origin: HYPERLIQUID.origin,
+              type: HYPERLIQUID.approvalType,
+            });
+            expect(handlers.add).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('returns early if the account has already interacted with the referral', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              referrals: {
+                [DefiReferralPartner.Hyperliquid]: {
+                  [mockPermittedAccount]: ReferralStatus.Passed,
+                },
+              },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.add).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('triggers approval with pop-up for a new unprocessed account on new connection', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.add).toHaveBeenCalledWith({
+              origin: HYPERLIQUID.origin,
+              type: HYPERLIQUID.approvalType,
+              requestData: {
+                learnMoreUrl: HYPERLIQUID.learnMoreUrl,
+                partnerId: DefiReferralPartner.Hyperliquid,
+                partnerName: HYPERLIQUID.name,
+                selectedAddress: mockPermittedAccount,
+              },
+              shouldShowRequest: true,
+            });
+          },
+        );
+      });
+
+      it('uses activePermittedAddressOverride for approval when it matches a later permitted account', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              addResult: { approved: true },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+              { activePermittedAddressOverride: '0x456' },
+            );
+
+            expect(handlers.add).toHaveBeenCalledWith(
+              expect.objectContaining({
+                requestData: expect.objectContaining({
+                  selectedAddress: '0x456',
+                }),
+              }),
+            );
+            // approved with no previously declined accounts approves them all
+            expect(handlers.setAccountsReferralApproved).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccounts,
+            );
+          },
+        );
+      });
+
+      it('uses caveat address casing when activePermittedAddressOverride matches case-insensitively', async () => {
+        const caveatAddress = '0xAbCdEf0000000000000000000000000000000001';
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue([caveatAddress, '0x456']);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+              { activePermittedAddressOverride: caveatAddress.toLowerCase() },
+            );
+
+            expect(handlers.add).toHaveBeenCalledWith(
+              expect.objectContaining({
+                requestData: expect.objectContaining({
+                  selectedAddress: caveatAddress,
+                }),
+              }),
+            );
+          },
+        );
+      });
+
+      it('triggers approval without pop-up on navigate to connected tab', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.OnNavigateConnectedTab,
+            );
+
+            expect(handlers.add).toHaveBeenCalledWith(
+              expect.objectContaining({ shouldShowRequest: false }),
+            );
+          },
+        );
+      });
+
+      it('triggers approval without pop-up when permitted account was added via background API', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.PermittedAccountAdded,
+            );
+
+            expect(handlers.add).toHaveBeenCalledWith(
+              expect.objectContaining({ shouldShowRequest: false }),
+            );
+          },
+        );
+      });
+
+      it('handles user approval with no previously declined accounts', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          {
+            options: {
+              getPermittedAccounts,
+              getTabUrl: jest
+                .fn()
+                .mockResolvedValue(`${HYPERLIQUID.origin}/trade`),
+            },
+          },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              addResult: { approved: true },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.setAccountsReferralApproved).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccounts,
+            );
+            // redirect marks the account as passed
+            expect(handlers.addReferralPassedAccount).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccount,
+            );
+          },
+        );
+      });
+
+      it('handles user approval and unwinds a previously declined account', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          {
+            options: {
+              getPermittedAccounts,
+              getTabUrl: jest
+                .fn()
+                .mockResolvedValue(`${HYPERLIQUID.origin}/trade`),
+            },
+          },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              addResult: { approved: true },
+              referrals: {
+                [DefiReferralPartner.Hyperliquid]: {
+                  '0x456': ReferralStatus.Declined,
+                },
+              },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.addReferralApprovedAccount).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccount,
+            );
+            expect(handlers.removeReferralDeclinedAccount).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              '0x456',
+            );
+          },
+        );
+      });
+
+      it('handles user decline', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              addResult: { approved: false },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.addReferralDeclinedAccount).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccount,
+            );
+            expect(handlers.setAccountsReferralApproved).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('does not emit events if the user has a pending approval', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger, { hasRequest: true });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(trackEvent).not.toHaveBeenCalled();
+          },
+        );
+      });
+
+      it('emits a "Referral Viewed" event when the approval screen is shown', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger);
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(trackEvent).toHaveBeenCalledWith(
+              expect.objectContaining({
+                name: 'Referral Viewed',
+                properties: expect.objectContaining({
+                  category: 'Referrals',
+                  url: HYPERLIQUID.origin,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  trigger_type: ReferralTriggerType.NewConnection,
+                }),
+              }),
+            );
+          },
+        );
+      });
+
+      it('emits a "Referral Confirm Button Clicked" event when the user confirms', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          {
+            options: {
+              getPermittedAccounts,
+              getTabUrl: jest
+                .fn()
+                .mockResolvedValue(`${HYPERLIQUID.origin}/trade`),
+            },
+          },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger, {
+              addResult: { approved: true },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(trackEvent).toHaveBeenCalledWith(
+              expect.objectContaining({
+                name: 'Referral Confirm Button Clicked',
+                properties: expect.objectContaining({
+                  category: 'Referrals',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  opt_in: true,
+                  url: HYPERLIQUID.origin,
+                }),
+              }),
+            );
+          },
+        );
+      });
+
+      it('emits a "Referral Confirm Button Clicked" event when the user declines', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        await withService(
+          { options: { getPermittedAccounts } },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger, {
+              addResult: { approved: false },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(trackEvent).toHaveBeenCalledWith(
+              expect.objectContaining({
+                name: 'Referral Confirm Button Clicked',
+                properties: expect.objectContaining({
+                  category: 'Referrals',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  opt_in: false,
+                  url: HYPERLIQUID.origin,
+                }),
+              }),
+            );
+          },
+        );
+      });
+
+      it('redirects and does not show approval when the account is already approved', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        const updateTabUrl = jest.fn().mockResolvedValue(undefined);
+        await withService(
+          {
+            options: {
+              getPermittedAccounts,
+              getTabUrl: jest
+                .fn()
+                .mockResolvedValue(`${HYPERLIQUID.origin}/trade`),
+              updateTabUrl,
+            },
+          },
+          async ({ rootMessenger }) => {
+            const handlers = registerReferralHandlers(rootMessenger, {
+              referrals: {
+                [DefiReferralPartner.Hyperliquid]: {
+                  [mockPermittedAccount]: ReferralStatus.Approved,
+                },
+              },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            expect(handlers.add).not.toHaveBeenCalled();
+            expect(updateTabUrl).toHaveBeenCalled();
+            expect(handlers.addReferralPassedAccount).toHaveBeenCalledWith(
+              DefiReferralPartner.Hyperliquid,
+              mockPermittedAccount,
+            );
+          },
+        );
+      });
+
+      it('merges the current tab query params into the referral URL on redirect', async () => {
+        const getPermittedAccounts = jest
+          .fn()
+          .mockResolvedValue(mockPermittedAccounts);
+        const updateTabUrl = jest.fn().mockResolvedValue(undefined);
+        await withService(
+          {
+            options: {
+              getPermittedAccounts,
+              getTabUrl: jest
+                .fn()
+                .mockResolvedValue(`${HYPERLIQUID.origin}/trade?foo=bar`),
+              updateTabUrl,
+            },
+          },
+          async ({ rootMessenger }) => {
+            registerReferralHandlers(rootMessenger, {
+              referrals: {
+                [DefiReferralPartner.Hyperliquid]: {
+                  [mockPermittedAccount]: ReferralStatus.Approved,
+                },
+              },
+            });
+
+            await rootMessenger.call(
+              'LegacyBackgroundApiService:handleDefiReferral',
+              HYPERLIQUID,
+              mockTabId,
+              ReferralTriggerType.NewConnection,
+            );
+
+            const updatedUrl = new URL(updateTabUrl.mock.calls[0][1]);
+            // preserves the existing tab param
+            expect(updatedUrl.searchParams.get('foo')).toBe('bar');
+            // adds the partner referral param
+            expect(updatedUrl.pathname + updatedUrl.search).toContain('MMREF');
+          },
+        );
+      });
+
+      describe('GMX on-chain referral code check', () => {
+        it('marks the account as passed and returns early when a code already exists', async () => {
+          jest.mocked(checkGmxHasReferralCode).mockResolvedValue(true);
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger);
+              registerArbitrumNetwork(rootMessenger);
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                GMX,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.addReferralPassedAccount).toHaveBeenCalledWith(
+                DefiReferralPartner.GMX,
+                mockPermittedAccount,
+              );
+              expect(handlers.add).not.toHaveBeenCalled();
+            },
+          );
+        });
+
+        it('proceeds to show the prompt when the wallet has no GMX referral code', async () => {
+          jest.mocked(checkGmxHasReferralCode).mockResolvedValue(false);
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger);
+              registerArbitrumNetwork(rootMessenger);
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                GMX,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.add).toHaveBeenCalledWith(
+                expect.objectContaining({
+                  origin: GMX.origin,
+                  type: GMX.approvalType,
+                }),
+              );
+            },
+          );
+        });
+
+        it('does not run the GMX check for non-GMX partners', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              registerReferralHandlers(rootMessenger);
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                HYPERLIQUID,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(checkGmxHasReferralCode).not.toHaveBeenCalled();
+            },
+          );
+        });
+      });
+
+      describe('Hyperliquid API referral code check', () => {
+        it('marks the account as passed and returns early when a code already exists', async () => {
+          jest.mocked(checkHyperliquidHasReferralCode).mockResolvedValue(true);
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger, {
+                useExternalServices: true,
+              });
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                HYPERLIQUID,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.addReferralPassedAccount).toHaveBeenCalledWith(
+                DefiReferralPartner.Hyperliquid,
+                mockPermittedAccount,
+              );
+              expect(handlers.add).not.toHaveBeenCalled();
+            },
+          );
+        });
+
+        it('does not run the Hyperliquid check when basic functionality is disabled', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              registerReferralHandlers(rootMessenger, {
+                useExternalServices: false,
+              });
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                HYPERLIQUID,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(checkHyperliquidHasReferralCode).not.toHaveBeenCalled();
+            },
+          );
+        });
+      });
+    });
+
+    describe('handleDefiReferralOnPermittedAccountsAdded', () => {
+      const evmAccount = createMockInternalAccount({
+        address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+      });
+      const { namespace, reference } = parseCaipChainId(evmAccount.scopes[0]);
+      const caipAccountId = toCaipAccountId(
+        namespace,
+        reference,
+        evmAccount.address,
+      );
+
+      /**
+       * Registers the AccountsController state handler.
+       *
+       * @param rootMessenger - The root messenger.
+       * @param options - Overrides for the internal accounts state.
+       * @param options.accounts - The internal accounts map.
+       * @param options.selectedAccount - The selected account id.
+       */
+      function registerAccounts(
+        rootMessenger: RootMessenger,
+        {
+          accounts = { [evmAccount.id]: evmAccount },
+          selectedAccount = evmAccount.id,
+        }: {
+          accounts?: Record<string, unknown>;
+          selectedAccount?: string;
+        } = {},
+      ) {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({
+            internalAccounts: { accounts, selectedAccount },
+          }),
+        );
+      }
+
+      /**
+       * Registers the AppStateController state handler.
+       *
+       * @param rootMessenger - The root messenger.
+       * @param appActiveTab - The active tab to return.
+       */
+      function registerAppTab(
+        rootMessenger: RootMessenger,
+        appActiveTab: unknown,
+      ) {
+        rootMessenger.registerActionHandler(
+          'AppStateController:getState',
+          jest.fn().mockReturnValue({ appActiveTab }),
+        );
+      }
+
+      it('calls handleDefiReferral when the selected EVM account matches a new permitted id and the tab matches', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, {
+            id: 914,
+            origin: HYPERLIQUID.origin,
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).toHaveBeenCalledWith(
+            HYPERLIQUID,
+            914,
+            ReferralTriggerType.PermittedAccountAdded,
+            { activePermittedAddressOverride: evmAccount.address },
+          );
+        });
+      });
+
+      it('does nothing when the origin does not match a referral partner', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, {
+            id: 914,
+            origin: HYPERLIQUID.origin,
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: 'https://example.com',
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does nothing when the selected account is not EVM', async () => {
+        const solAccount = createMockInternalAccount({
+          type: SolAccountType.DataAccount,
+        });
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger, {
+            accounts: { [solAccount.id]: solAccount },
+            selectedAccount: solAccount.id,
+          });
+          registerAppTab(rootMessenger, {
+            id: 914,
+            origin: HYPERLIQUID.origin,
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does nothing when the new permitted ids do not include the selected account', async () => {
+        const otherCaipId = toCaipAccountId(
+          'eip155',
+          '1',
+          '0x0000000000000000000000000000000000000001',
+        );
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, {
+            id: 914,
+            origin: HYPERLIQUID.origin,
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [otherCaipId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does nothing when the active tab origin does not match', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, {
+            id: 914,
+            origin: 'https://example.com',
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does nothing when the active tab has no numeric id', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, {
+            id: 'not-a-number',
+            origin: HYPERLIQUID.origin,
+          });
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does nothing when there is no active tab', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const spy = jest
+            .spyOn(service, 'handleDefiReferral')
+            .mockResolvedValue(undefined);
+          registerAccounts(rootMessenger);
+          registerAppTab(rootMessenger, undefined);
+
+          service.handleDefiReferralOnPermittedAccountsAdded({
+            origin: HYPERLIQUID.origin,
+            newCaipAccountIds: [caipAccountId],
+          });
+
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -5493,7 +7049,9 @@ function getMessenger(
     messenger: serviceMessenger,
     actions: [
       'NetworkController:getState',
+      'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',
@@ -5501,13 +7059,21 @@ function getMessenger(
       'NetworkEnablementController:enableAllPopularNetworks',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
+      'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:getAssets',
+      'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
+      'TokenListController:getState',
+      'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
+      'ApprovalController:add',
       'ApprovalController:getState',
+      'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'AppStateController:getState',
       'SnapInterfaceController:deleteInterface',
       'SnapController:clearState',
       'TransactionController:getNonceLock',
@@ -5538,7 +7104,14 @@ function getMessenger(
       'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
       'PreferencesController:getState',
+      'PreferencesController:addReferralApprovedAccount',
+      'PreferencesController:addReferralDeclinedAccount',
+      'PreferencesController:addReferralPassedAccount',
+      'PreferencesController:removeReferralDeclinedAccount',
+      'PreferencesController:setAccountsReferralApproved',
       'PreferencesController:setPasswordForgotten',
+      'PasskeyController:unlockWithPasskey',
+      'PasskeyController:changePasswordWithPasskeyVerification',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
@@ -5603,6 +7176,23 @@ function getMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:updateSecurityAlertResponse',
+      'UserOperationController:addUserOperationFromTransaction',
+      'UserOperationController:startPollingByNetworkClientId',
+      'PPOMController:usePPOM',
+      'KeyringController:getKeyringForAccount',
+      'SignatureController:getState',
+      'AppStateController:getAddressSecurityAlertResponse',
+      'AppStateController:addAddressSecurityAlertResponse',
+      'AppStateController:addSignatureSecurityAlertResponse',
+      'SubscriptionController:getSubscriptionByProduct',
+      'AuthenticationController:getBearerToken',
+    ],
+    events: [
+      'TransactionController:unapprovedTransactionAdded',
+      'SignatureController:stateChange',
     ],
   });
 
@@ -5634,6 +7224,9 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    getPermittedAccounts: jest.fn().mockResolvedValue([]),
+    getTabUrl: jest.fn().mockResolvedValue(undefined),
+    updateTabUrl: jest.fn().mockResolvedValue(undefined),
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),

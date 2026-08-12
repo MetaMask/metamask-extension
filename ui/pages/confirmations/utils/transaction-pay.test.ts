@@ -10,13 +10,13 @@ import {
   getTokenTransferData,
   getTokenAddress,
   getAvailableTokens,
+  isTokenBlocked,
 } from './transaction-pay';
 
 const CHAIN_ID_MOCK = '0x1' as Hex;
 const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
 const TOKEN_ADDRESS_2_MOCK =
   '0xabcdef1234567890abcdef1234567890abcdef12' as Hex;
-const NATIVE_ADDRESS_MOCK = '0x0000000000000000000000000000000000000000' as Hex;
 const TOKEN_TRANSFER_DATA_MOCK =
   '0xa9059cbb0000000000000000000000001234567890abcdef1234567890abcdef123456780000000000000000000000000000000000000000000000000de0b6b3a7640000' as Hex;
 
@@ -265,19 +265,40 @@ describe('transaction-pay utils', () => {
       expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
     });
 
-    it('marks token as enabled when native token has balance', () => {
+    it('marks blocked tokens as disabled and sorts them last', () => {
       const tokens = [
         createMockAsset({ address: TOKEN_ADDRESS_MOCK }),
-        createMockAsset({
-          address: NATIVE_ADDRESS_MOCK,
-          balance: '1000000000000000000',
-        }),
+        createMockAsset({ address: TOKEN_ADDRESS_2_MOCK }),
       ];
 
-      const result = getAvailableTokens({ tokens });
+      const result = getAvailableTokens({
+        tokens,
+        blockedTokens: {
+          chainIds: [],
+          tokens: [{ address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK }],
+        },
+      });
 
-      const erc20Token = result.find((t) => t.address === TOKEN_ADDRESS_MOCK);
-      expect(erc20Token?.disabled).toBe(false);
+      expect(result[0].address).toBe(TOKEN_ADDRESS_2_MOCK);
+      expect(result[0].disabled).toBe(false);
+      expect(result[1].address).toBe(TOKEN_ADDRESS_MOCK);
+      expect(result[1].disabled).toBe(true);
+    });
+
+    it('marks all tokens on a blocked chain as disabled', () => {
+      const tokens = [
+        createMockAsset({ address: TOKEN_ADDRESS_MOCK, chainId: '0xa4b1' }),
+      ];
+
+      const result = getAvailableTokens({
+        tokens,
+        blockedTokens: {
+          chainIds: ['0xa4b1'],
+          tokens: [],
+        },
+      });
+
+      expect(result[0].disabled).toBe(true);
     });
 
     it('marks selected token with isSelected true', () => {
@@ -343,6 +364,69 @@ describe('transaction-pay utils', () => {
       const result = getAvailableTokens({ payToken, tokens });
 
       expect(result).toHaveLength(0);
+    });
+  });
+
+  describe('isTokenBlocked', () => {
+    it('returns false when no blocklist is provided', () => {
+      expect(
+        isTokenBlocked({ address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK }),
+      ).toBe(false);
+    });
+
+    it('returns true when the token chain is blocked', () => {
+      expect(
+        isTokenBlocked(
+          { address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK },
+          { chainIds: [CHAIN_ID_MOCK], tokens: [] },
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true when the token address and chain are blocked', () => {
+      expect(
+        isTokenBlocked(
+          { address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK },
+          {
+            chainIds: [],
+            tokens: [{ address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK }],
+          },
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when the token is not in the blocklist', () => {
+      expect(
+        isTokenBlocked(
+          { address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK },
+          {
+            chainIds: ['0xa4b1'],
+            tokens: [{ address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_MOCK }],
+          },
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the token is missing an address or chain id', () => {
+      expect(
+        isTokenBlocked(
+          { address: TOKEN_ADDRESS_MOCK },
+          {
+            chainIds: [],
+            tokens: [{ address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK }],
+          },
+        ),
+      ).toBe(false);
+
+      expect(
+        isTokenBlocked(
+          { chainId: CHAIN_ID_MOCK },
+          {
+            chainIds: [],
+            tokens: [{ address: TOKEN_ADDRESS_MOCK, chainId: CHAIN_ID_MOCK }],
+          },
+        ),
+      ).toBe(false);
     });
   });
 });

@@ -22,7 +22,10 @@ describe('getDeFiPositionsControllerV2Messenger', () => {
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        actions: ['AccountTreeController:getAccountsFromSelectedAccountGroup'],
+        actions: [
+          'AccountTreeController:getAccountsFromSelectedAccountGroup',
+          'RemoteFeatureFlagController:getState',
+        ],
       }),
     );
   });

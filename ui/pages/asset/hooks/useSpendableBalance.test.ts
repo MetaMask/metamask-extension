@@ -1,6 +1,6 @@
 import { XlmScope } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import * as stellarAssetsSelectors from '../../../selectors/stellar-assets';
 import { useSpendableBalance } from './useSpendableBalance';

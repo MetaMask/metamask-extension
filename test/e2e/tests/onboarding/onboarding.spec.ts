@@ -10,7 +10,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -313,7 +313,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
-        const tokensTab = new TokensTab(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
@@ -328,7 +328,7 @@ describe('MetaMask onboarding', function () {
         }
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.checkNetworkFilterText(networkName);
+        await networkFilter.checkLabelIs(networkName);
       },
     );
   });

@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import type { RefObject } from 'react';
 import { useOnClickOutside } from './useClickOutside';
 

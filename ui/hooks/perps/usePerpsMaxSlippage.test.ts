@@ -1,5 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { PERPS_SLIPPAGE_DEFAULT_BPS } from '../../components/app/perps/constants/slippageConfig';
 import { usePerpsMaxSlippage } from './usePerpsMaxSlippage';

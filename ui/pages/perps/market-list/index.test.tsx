@@ -12,6 +12,7 @@ import {
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
@@ -159,7 +160,7 @@ describe('MarketListView', () => {
       const backButton = screen.getByTestId('back-button');
       fireEvent.click(backButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
     it('renders market rows that are clickable', async () => {

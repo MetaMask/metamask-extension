@@ -1,7 +1,7 @@
+import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { renderHook } from '@testing-library/react-hooks';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import { useConvertToFiat } from './useConvertToFiat';
 
