@@ -3402,9 +3402,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "¿Está seguro de que se quiere desconectar? Podría perder la funcionalidad del sitio."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Si se desconecta de este sitio, tendrá que volver a conectar sus cuentas y redes para volver a utilizarlo."
-  },
   "disconnectAllSites": {
     "message": "Desconectar todo"
   },

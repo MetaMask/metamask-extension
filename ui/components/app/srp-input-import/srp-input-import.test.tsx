@@ -25,6 +25,9 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 
 const mockClipboardReadText = jest.fn().mockResolvedValue('some mock text');
 
+const COLLIDING_24_WORD_SRP =
+  'tumble heart quit undo right legal salute lizard tape unveil art lava filter fee snack fragile duck impact oven come cram tourist casino sort';
+
 Object.defineProperty(navigator, 'clipboard', {
   value: {
     readText: mockClipboardReadText,
@@ -43,6 +46,53 @@ describe('SrpInputImport', () => {
       <SrpInputImport onChange={jest.fn()} />,
     );
     expect(getByTestId('srp-input-import__srp-note')).toBeInTheDocument();
+  });
+
+  it('allows entry to continue when a valid SRP is a prefix of a longer SRP', async () => {
+    const onChange = jest.fn();
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <SrpInputImport onChange={onChange} />,
+    );
+    const words = COLLIDING_24_WORD_SRP.split(' ');
+    const firstTwelveWords = words.slice(0, 12).join(' ');
+
+    const initialInput = getByTestId('srp-input-import__srp-note');
+    fireEvent.change(initialInput, { target: { value: words[0] } });
+    fireEvent.keyDown(initialInput, { key: ' ' });
+
+    for (let index = 1; index < 12; index += 1) {
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
+      if (index < 11) {
+        fireEvent.keyDown(input, { key: ' ' });
+      }
+    }
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(firstTwelveWords);
+    });
+
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-11'), { key: ' ' });
+
+    expect(getByTestId('import-srp__srp-word-12')).toBeInTheDocument();
+    expect(onChange).toHaveBeenLastCalledWith('');
+
+    for (let index = 12; index < words.length; index += 1) {
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
+      if (index < words.length - 1) {
+        fireEvent.keyDown(input, { key: ' ' });
+      }
+    }
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(COLLIDING_24_WORD_SRP);
+    });
+
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-23'), { key: ' ' });
+
+    expect(getByTestId('import-srp__srp-word-23')).toBeInTheDocument();
+    expect(queryByTestId('import-srp__srp-word-24')).not.toBeInTheDocument();
   });
 
   it('should ask for explicit permission to read the clipboard in firefox', async () => {

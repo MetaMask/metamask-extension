@@ -90,6 +90,7 @@ jobs:
           EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
           EXTENSION_ID_FLASK: ${{ vars.EXTENSION_ID_FLASK }}
           PUBLISHER_ID_PROD: ${{ vars.PUBLISHER_ID }}
+          PUBLISHER_ID_FLASK: ${{ vars.PUBLISHER_ID_FLASK }}
         run: |
           set -euo pipefail
           GITHUB_REF="${{ github.ref }}"
@@ -114,7 +115,7 @@ jobs:
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
             EXTENSION_ID="${EXTENSION_ID_FLASK}"
-            PUBLISHER_ID="${PUBLISHER_ID_PROD}"
+            PUBLISHER_ID="${PUBLISHER_ID_FLASK}"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
