@@ -319,7 +319,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     await waitFor(() => {
       expect(result.current.location.search).toBe('');
-      expect(getFromToken(store?.getState())).toMatchInlineSnapshot(`
+      expect(getFromToken(store?.getState() as never)).toMatchInlineSnapshot(`
         {
           "accountType": undefined,
           "assetId": "eip155:59144/slip44:60",
