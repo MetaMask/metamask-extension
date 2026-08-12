@@ -9980,9 +9980,6 @@
   "singleNetwork": {
     "message": "네트워크 1개"
   },
-  "sites": {
-    "message": "사이트"
-  },
   "siweIssued": {
     "message": "발급됨"
   },

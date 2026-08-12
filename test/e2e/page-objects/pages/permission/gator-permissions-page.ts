@@ -2,7 +2,7 @@ import { Driver } from '../../../webdriver/driver';
 
 /**
  * Represents the Gator Permissions page.
- * This page shows permission categories (Sites and Assets) when Gator Permissions feature is enabled.
+ * This page shows permission categories (Connections and Assets) when Gator Permissions feature is enabled.
  */
 class GatorPermissionsPage {
   private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
@@ -10,12 +10,12 @@ class GatorPermissionsPage {
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
 
+  private readonly connectionsButton = { text: 'Connections', tag: 'p' };
+
   private driver: Driver;
 
   private readonly gatorPermissionsPage =
     '[data-testid="gator-permissions-page"]';
-
-  private readonly sitesButton = { text: 'Sites', tag: 'p' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -54,11 +54,11 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Click on Sites to navigate to Sites Permissions page
+   * Click on Connections to navigate to Permissions page
    */
   async clickSites(): Promise<void> {
-    console.log('Click Sites on Gator Permissions page');
-    await this.driver.clickElement(this.sitesButton);
+    console.log('Click Connections on Gator Permissions page');
+    await this.driver.clickElement(this.connectionsButton);
   }
 
   /**

@@ -10266,9 +10266,6 @@
     "message": "$1 can see your connected accounts and suggest transactions.",
     "description": "$1 is the site hostname"
   },
-  "sites": {
-    "message": "Sites"
-  },
   "siweIssued": {
     "message": "Issued"
   },

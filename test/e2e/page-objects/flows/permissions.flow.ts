@@ -8,17 +8,17 @@ import SitePermissionPage from '../pages/permission/site-permission-page';
 
 export type OpenPermissionsPageOptions = {
   /**
-   * If true, stops at Gator Permissions Page without clicking "Sites".
+   * If true, stops at Gator Permissions Page without clicking "Connections".
    * Only relevant for Flask builds with Gator flow.
    */
   skipSitesNavigation?: boolean;
 };
 
 /**
- * Opens the Permissions Page (Sites/Connections page).
+ * Opens the Permissions Page (Connections page).
  * Handles both flows:
- * - Regular: Click "All Permissions" → Permissions Page
- * - Gator (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+ * - Regular: Click "Permissions" → Permissions Page
+ * - Gator (Flask): Click "Permissions" → Gator Permissions Page → Click "Connections" → Permissions Page
  *
  * @param driver - The webdriver instance.
  * @param options - Optional configuration.
@@ -36,7 +36,7 @@ export const openPermissionsPageFlow = async (
 
   if (isGatorPage && !options?.skipSitesNavigation) {
     console.log(
-      'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
+      'Detected Gator Permissions Page, clicking "Connections" to navigate to Permissions Page',
     );
     await gatorPermissionsPage.clickSites();
   }
