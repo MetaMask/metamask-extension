@@ -28,10 +28,14 @@ export const getRemoteFeatureFlags = createSelector(
   (manifestFlags, stateFlags) => merge({}, stateFlags, manifestFlags),
 );
 
+// Stable reference for the empty case so the selector does not return a fresh
+// object each call (which would break referential equality and cause redundant
+// rerenders / useSelector stability warnings).
+const EMPTY_THRESHOLD_GROUPS: Record<string, string> = {};
+
 /**
- * Gets the selected threshold group name per feature flag, which
- * remote-feature-flag-controller v5 stores separately from the flag value for
- * threshold and A/B flags.
+ * Gets the selected threshold group name per feature flag, stored separately
+ * from the flag value for threshold and A/B flags.
  *
  * @param state - The MetaMask state object
  * @returns A map of feature flag name to its selected threshold group name
@@ -39,5 +43,5 @@ export const getRemoteFeatureFlags = createSelector(
 export function getFeatureFlagThresholdGroups(
   state: RemoteFeatureFlagsState,
 ): Record<string, string> {
-  return state.metamask.featureFlagThresholdGroups ?? {};
+  return state.metamask.featureFlagThresholdGroups ?? EMPTY_THRESHOLD_GROUPS;
 }

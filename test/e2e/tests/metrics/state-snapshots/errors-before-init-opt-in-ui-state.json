@@ -310,10 +310,7 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupA",
-          "value": "valueA"
-        }
+        "feature3": "valueA"
       },
       "thresholdCache": "object"
     },
