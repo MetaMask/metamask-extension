@@ -32,15 +32,11 @@ class HomePage {
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
+  private readonly backupSecretRecoveryPhraseButton =
+    '[data-testid="backup-srp-toast"] button';
 
-  private readonly backupSecretRecoveryPhraseNotification = {
-    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
-    css: '.home-notification__text',
-  };
+  private readonly backupSecretRecoveryPhraseNotification =
+    '[data-testid="backup-srp-toast"]';
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
@@ -53,6 +49,9 @@ class HomePage {
   };
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
+  private readonly bottomNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -533,7 +532,16 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
+    await this.checkPageIsLoaded();
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavActivityButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavActivityButton);
+    } else {
+      await this.driver.clickElement(this.activityTab);
+    }
   }
 
   async goToBackupSRPPage(): Promise<void> {

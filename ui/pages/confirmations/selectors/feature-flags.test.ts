@@ -10,6 +10,7 @@ import {
   selectMinimumRequiredTokenBalance,
   selectPayQuoteConfig,
   selectPreferredPayToken,
+  selectPreferredPayTokens,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -250,6 +251,55 @@ describe('Confirmations Pay Feature Flags', () => {
         enabled: false,
         tokens: undefined,
       });
+    });
+  });
+
+  describe('selectPreferredPayTokens', () => {
+    it('returns all transaction override tokens from the resolved config', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+          overrides: {
+            perpsWithdraw: [
+              {
+                address: '0x1111111111111111111111111111111111111111',
+                chainId: '0x1',
+                name: 'mUSD',
+              },
+              {
+                address: '0x2222222222222222222222222222222222222222',
+                chainId: '0xa4b1',
+                name: 'USDC',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual([
+        {
+          address: '0x1111111111111111111111111111111111111111',
+          chainId: '0x1',
+          name: 'mUSD',
+        },
+        {
+          address: '0x2222222222222222222222222222222222222222',
+          chainId: '0xa4b1',
+          name: 'USDC',
+        },
+      ]);
+    });
+
+    it('returns an empty array when no preferred tokens are configured', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual(
+        [],
+      );
     });
   });
 
