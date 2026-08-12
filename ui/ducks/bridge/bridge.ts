@@ -123,11 +123,13 @@ const bridgeSlice = createSlice({
       const newFromToken = toBridgeToken(payload);
       state.isSrcAssetPickerOpen = false;
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
-      if (assetIdsMatch(state.toToken?.assetId, newFromToken?.assetId)) {
+      if (
+        state.toToken?.assetId &&
+        newFromToken?.assetId &&
+        newFromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
+      ) {
         state.toToken = currentFromToken;
-      }
-      if (!assetIdsMatch(previousFromAssetId, newFromToken?.assetId)) {
-        state.fromTokenInputValue = initialState.fromTokenInputValue;
       }
       state.fromToken = newFromToken;
       state.fromTokenBalance = initialState.fromTokenBalance;
@@ -280,7 +282,8 @@ const bridgeSlice = createSlice({
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
       if (
         state.fromToken
-          ? assetIdsMatch(action.meta.arg.assetId, state.fromToken.assetId)
+          ? action.meta.arg.assetId.toLowerCase() ===
+            state.fromToken.assetId.toLowerCase()
           : true
       ) {
         state.fromTokenBalance =

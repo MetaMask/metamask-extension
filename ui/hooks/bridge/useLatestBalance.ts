@@ -5,7 +5,6 @@ import { setEvmBalances } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useDispatch } from '../../store/hooks';
-import { assetIdsMatch } from '../../ducks/bridge/utils';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -26,7 +25,7 @@ export const useLatestBalance = () => {
   useEffect(() => {
     if (
       isCrossChain(fromToken.chainId, currentChainId) ||
-      (token && !assetIdsMatch(token.assetId, fromToken.assetId))
+      (token && token.assetId.toLowerCase() !== fromToken.assetId.toLowerCase())
     ) {
       return;
     }

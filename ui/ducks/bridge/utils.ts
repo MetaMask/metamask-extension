@@ -241,7 +241,10 @@ export const getDefaultToToken = (
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
   // If commonPair is defined and is not the same as the fromToken, return it
-  if (commonPair && !assetIdsMatch(fromAssetId, commonPair.assetId)) {
+  if (
+    commonPair &&
+    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
+  ) {
     return toBridgeToken(commonPair);
   }
 

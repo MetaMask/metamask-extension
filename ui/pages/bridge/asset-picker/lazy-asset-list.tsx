@@ -10,7 +10,6 @@ import { Column } from '../layout';
 import { useInitialBridgeTokens } from '../../../hooks/bridge/useInitialBridgeTokens';
 import { usePopularTokens } from '../../../hooks/bridge/usePopularTokens';
 import { filterOutArcNativeAsset } from '../../../components/app/assets/enablement/arc';
-import { assetIdsMatch } from '../../../ducks/bridge/utils';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -151,7 +150,9 @@ export const BridgeAssetList = ({
               onClick={() => {
                 onAssetChange(token);
               }}
-              selected={assetIdsMatch(selectedAssetId, token?.assetId)}
+              selected={
+                selectedAssetId.toLowerCase() === token?.assetId?.toLowerCase()
+              }
               isDestination={isDestination}
             />
           );

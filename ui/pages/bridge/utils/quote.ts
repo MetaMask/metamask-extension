@@ -9,7 +9,6 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { assetIdsMatch } from '../../../ducks/bridge/utils';
 
 export const formatTokenAmount = (
   locale: string,
@@ -197,9 +196,9 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    return !assetIdsMatch(
-      activeQuote.quote.dest.asset.assetId,
-      toToken.assetId,
+    return (
+      activeQuote.quote.dest.asset.assetId.toLowerCase() !==
+      toToken.assetId.toLowerCase()
     );
   }
 
