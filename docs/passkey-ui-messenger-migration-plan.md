@@ -5,7 +5,8 @@
 Steps 1 and 2 are complete: the global blocked list and enrollment route
 migrations are implemented and tested. Steps 2.5 and 2.6 consolidate both the
 enrollment transport and WebAuthn ceremony orchestration in a reusable hook.
-Work is paused for review before Step 3.
+Step 3 migrates both passkey-removal settings routes. Work is paused for review
+before Step 4.
 
 This plan follows the existing route-messenger patterns used by:
 
@@ -379,7 +380,10 @@ flow-specific behavior remains in each component.
 - Migrate passkey-verified removal on the main security page.
 - Migrate password-verified removal on the turn-off subpage.
 - Preserve `forceUpdateMetamaskState` and existing pending-state UX.
-- Remove the two legacy removal wrappers after both routes are migrated.
+- Remove the passkey-verified legacy wrapper after its final caller migrates.
+- Keep the password-verified legacy wrapper temporarily because the
+  change-password flow still uses it; remove it in Step 5 after that caller
+  migrates.
 
 Review checkpoint: validate successful removal, fallback to password, errors,
 toasts, and metrics.

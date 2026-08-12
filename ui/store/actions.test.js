@@ -150,7 +150,6 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
-    background.removePasskeyWithPasskeyVerification = sinon.stub();
     background.removePasskeyWithPasswordVerification = sinon.stub();
     background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
@@ -517,31 +516,6 @@ describe('Actions', () => {
       expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
         true,
       );
-    });
-
-    it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-      background.removePasskeyWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await actions.removePasskeyWithPasskeyVerification(
-        authenticationResponse,
-      );
-
-      expect(
-        background.removePasskeyWithPasskeyVerification.calledOnceWith(
-          authenticationResponse,
-        ),
-      ).toBe(true);
     });
 
     it('#removePasskeyWithPasswordVerification forwards the password', async () => {

@@ -48,7 +48,11 @@ import type {
 } from '../../messengers/ui-messenger';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
-import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './security-and-password-tab/messenger';
+import {
+  PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
+  PASSKEY_SECURITY_ROUTE_CAPABILITIES,
+  PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
+} from './security-and-password-tab/messenger';
 
 /**
  * Route definition for a Settings page.
@@ -211,6 +215,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityKey,
+    messengerCapabilities: PASSKEY_SECURITY_ROUTE_CAPABILITIES,
   },
   [AUTO_LOCK_ROUTE]: {
     labelKey: 'autoLock',
@@ -248,6 +253,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
   },
 
   // --- Privacy tab ---

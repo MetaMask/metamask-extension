@@ -8,6 +8,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PRIVACY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
@@ -93,6 +94,26 @@ describe('settings-registry', () => {
           ({ path }) => path === SECURITY_REGISTER_PASSKEY_ROUTE,
         )?.messengerCapabilities,
       ).toStrictEqual(expectedCapabilities);
+    });
+
+    it('assigns removal messenger capabilities to passkey settings routes', () => {
+      expect(
+        getSettingsRouteMeta(SECURITY_AND_PASSWORD_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: [
+          'PasskeyController:generateAuthenticationOptions',
+          'PasskeyController:removePasskeyWithPasskeyVerification',
+        ],
+        events: [],
+      });
+      expect(
+        getSettingsRouteMeta(SECURITY_TURN_OFF_PASSKEY_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: ['PasskeyController:removePasskeyWithPasswordVerification'],
+        events: [],
+      });
     });
 
     it('matches dynamic transaction shield claim routes', () => {

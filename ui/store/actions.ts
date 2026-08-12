@@ -1241,19 +1241,6 @@ export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthentic
 }
 
 /**
- * Removes the passkey from the vault using the passkey authentication response.
- *
- * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
- */
-export function removePasskeyWithPasskeyVerification(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): Promise<void> {
-  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
-    authenticationResponse,
-  ]);
-}
-
-/**
  * Removes the passkey from the vault using the wallet password.
  *
  * @param password - The wallet password.
