@@ -1,26 +1,44 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
-  private readonly driver: Driver;
-
   private readonly aboutViewButton =
     '[data-testid="settings-tab-item-about-us"]';
-
-  private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
 
   private readonly assetsSettingsButton =
     '[data-testid="settings-tab-item-assets"]';
 
+  private readonly autoLockOptionQuarterMinute =
+    '[data-testid="auto-lock-option-0.25"]';
+
+  private readonly autoLockOptionsList =
+    '[data-testid="auto-lock-options-list"]';
+
+  private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
+
   private readonly backButton = {
-    testId: 'settings-header-back-button',
+    testId: 'page-header-back-button',
   };
 
-  private readonly developerToolsSettingsButton =
-    '[data-testid="settings-tab-item-developer-tools"]';
+  private readonly backupAndSyncSettingsButton =
+    '[data-testid="settings-tab-item-backup-and-sync"]';
 
   /** Full internal developer options (crash, remote flags, etc.); see `debug-tab.tsx`. */
   private readonly debugSettingsButton =
     '[data-testid="settings-tab-item-debug"]';
+
+  private readonly deleteActivityAndNonceConfirmButton =
+    '[data-testid="delete-activity-and-nonce-data-button"]';
+
+  private readonly deleteActivityAndNonceModal =
+    '[data-testid="delete-activity-and-nonce-data-modal"]';
+
+  private readonly developerOptionsDeleteActivityAndNonceData =
+    '[data-testid="developer-options-delete-activity-and-nonce-data"]';
+
+  private readonly developerToolsSettingsButton =
+    '[data-testid="settings-tab-item-developer-tools"]';
+
+  private readonly driver: Driver;
 
   private readonly experimentalSettingsButton =
     '[data-testid="settings-tab-item-experimental"]';
@@ -29,81 +47,64 @@ class SettingsPage {
     text: 'No matching results found.',
   };
 
-  private readonly privacySettingsButton =
-    '[data-testid="settings-tab-item-privacy"]';
-
-  private readonly securityAndPasswordSettingsButton =
-    '[data-testid="settings-tab-item-security-and-password"]';
-
-  private readonly searchResultItem =
-    '[data-testid="settings-search-result-item"]';
-
-  private readonly searchSettingsInput =
-    '[data-testid="settings-header-search-input"]';
-
-  private readonly searchButton =
-    '[data-testid="settings-header-search-button"]';
-
-  private readonly settingsPageFullscreenRoot =
-    '[data-testid="settings-tab-bar-grouped"]';
-
   private readonly notificationsSettingsButton =
     '[data-testid="settings-tab-item-notifications"]';
-
-  private readonly backupAndSyncSettingsButton =
-    '[data-testid="settings-tab-item-backup-and-sync"]';
-
-  private readonly syncAccountsSettingsButton =
-    '[data-testid="settings-tab-item-sync-accounts"]';
-
-  private readonly showNativeTokenAsMainBalanceToggleLabel = {
-    xpath:
-      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
-  };
-
-  private readonly showFiatOnTestnetsToggleLabel = {
-    xpath:
-      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
-  };
-
-  private readonly transactionsSettingsButton =
-    '[data-testid="settings-tab-item-transactions"]';
-
-  private readonly transactionShieldButton =
-    '[data-testid="settings-tab-item-transaction-shield"]';
 
   private readonly preinstalledExampleSnapSidebarItem = {
     text: 'Preinstalled Example Snap',
     tag: 'p',
   } as const;
 
-  private readonly autoLockOptionsList =
-    '[data-testid="auto-lock-options-list"]';
+  private readonly privacySettingsButton =
+    '[data-testid="settings-tab-item-privacy"]';
 
-  private readonly autoLockOptionQuarterMinute =
-    '[data-testid="auto-lock-option-0.25"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
-  private readonly developerOptionsDeleteActivityAndNonceData =
-    '[data-testid="developer-options-delete-activity-and-nonce-data"]';
+  private readonly searchResultItem =
+    '[data-testid="settings-search-result-item"]';
 
-  private readonly deleteActivityAndNonceModal =
-    '[data-testid="delete-activity-and-nonce-data-modal"]';
+  private readonly searchSettingsInput =
+    '[data-testid="page-header-search-input"]';
 
-  private readonly deleteActivityAndNonceConfirmButton =
-    '[data-testid="delete-activity-and-nonce-data-button"]';
+  private readonly securityAndPasswordSettingsButton =
+    '[data-testid="settings-tab-item-security-and-password"]';
+
+  private readonly settingsPageFullscreenRoot =
+    '[data-testid="settings-tab-bar-grouped"]';
+
+  private readonly showFiatOnTestnetsToggleLabel = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
+  };
+
+  private readonly showNativeTokenAsMainBalanceToggleLabel = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
+  };
+
+  private readonly syncAccountsSettingsButton =
+    '[data-testid="settings-tab-item-sync-accounts"]';
+
+  private readonly transactionShieldButton =
+    '[data-testid="settings-tab-item-transaction-shield"]';
+
+  private readonly transactionsSettingsButton =
+    '[data-testid="settings-tab-item-transactions"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
+  async checkNoMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Checking no matching results found message is displayed on settings page',
+    );
+    await this.driver.waitForSelector(this.noMatchingResultsFoundMessage);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
     await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
-  }
-
-  async isOnSettingsPage(): Promise<boolean> {
-    const currentUrl = await this.driver.getCurrentUrl();
-    return currentUrl.includes('settings');
   }
 
   /**
@@ -113,6 +114,12 @@ class SettingsPage {
    */
   async clickBackButton(): Promise<void> {
     await this.driver.clickElementSafe(this.backButton);
+  }
+
+  async clickDeveloperOptionsDeleteActivityAndNonceData(): Promise<void> {
+    await this.driver.clickElement(
+      this.developerOptionsDeleteActivityAndNonceData,
+    );
   }
 
   /**
@@ -134,17 +141,23 @@ class SettingsPage {
     }
   }
 
-  async waitForTransactionShieldButtonReady(): Promise<void> {
-    console.log('Waiting for Transaction Shield button to be ready');
-    await this.driver.findClickableElement(this.transactionShieldButton);
-    await this.driver.waitForElementToStopMoving(this.transactionShieldButton);
-    console.log('Transaction Shield button is ready');
+  async confirmDeleteActivityAndNonceModal(): Promise<void> {
+    await this.driver.waitForSelector(this.deleteActivityAndNonceModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.deleteActivityAndNonceConfirmButton,
+    );
   }
 
-  async goToTransactionShieldPage(): Promise<void> {
-    console.log('Navigating to Transaction Shield page');
-    await this.waitForTransactionShieldButtonReady();
-    await this.driver.clickElement(this.transactionShieldButton);
+  async fillSearchSettingsInput(text: string): Promise<void> {
+    console.log(`Filling search settings input with ${text}`);
+    await this.openSearch();
+    await this.driver.waitForSelector(this.searchSettingsInput);
+    await this.driver.fill(this.searchSettingsInput, text);
+  }
+
+  async goToAboutPage(): Promise<void> {
+    console.log('Navigating to About page');
+    await this.driver.clickElement(this.aboutViewButton);
   }
 
   /**
@@ -156,11 +169,89 @@ class SettingsPage {
     await this.goToDeveloperOptions();
   }
 
-  async fillSearchSettingsInput(text: string): Promise<void> {
-    console.log(`Filling search settings input with ${text}`);
-    await this.openSearch();
-    await this.driver.waitForSelector(this.searchSettingsInput);
-    await this.driver.fill(this.searchSettingsInput, text);
+  async goToAssetsSettings(): Promise<void> {
+    console.log('Navigating to Assets Settings page');
+    await this.driver.clickElement(this.assetsSettingsButton);
+  }
+
+  async goToAutoLockSettings(): Promise<void> {
+    console.log('Navigating to Auto-lock settings page');
+    await this.driver.clickElement(this.autoLockSettingsButton);
+  }
+
+  async goToBackupAndSyncSettings(): Promise<void> {
+    console.log('Navigating to Backup & Sync Settings page');
+    await this.driver.clickElement(this.backupAndSyncSettingsButton);
+  }
+
+  /**
+   * Opens the Debug tab, which embeds the legacy developer options page (crash
+   * generator, remote feature flags display, etc.).
+   */
+  async goToDebugSettings(): Promise<void> {
+    console.log('Navigating to Debug settings page');
+    await this.driver.clickElement(this.debugSettingsButton);
+  }
+
+  /**
+   * Opens the Developer Tools tab (fiat on testnets, clear activity, etc.).
+   */
+  async goToDeveloperOptions(): Promise<void> {
+    console.log('Navigating to Developer Tools page');
+    await this.driver.clickElement(this.developerToolsSettingsButton);
+  }
+
+  async goToExperimentalSettings(): Promise<void> {
+    console.log('Navigating to Experimental Settings page');
+    await this.driver.clickElement(this.experimentalSettingsButton);
+  }
+
+  async goToNotificationsSettings(): Promise<void> {
+    console.log('Navigating to Notifications Settings page');
+    await this.driver.clickElement(this.notificationsSettingsButton);
+  }
+
+  async goToPreInstalledExample(): Promise<void> {
+    console.log('Navigating to Preinstalled Example Snap settings page');
+    await this.driver.clickElement(this.preinstalledExampleSnapSidebarItem);
+  }
+
+  async goToPrivacySettings(): Promise<void> {
+    console.log('Navigating to Privacy Settings page');
+    await this.driver.clickElement(this.privacySettingsButton);
+  }
+
+  async goToSearchResultPage(page: string): Promise<void> {
+    console.log(`Navigating to ${page} settings page from search results`);
+    await this.driver.clickElement({
+      css: this.searchResultItem,
+      text: page,
+    });
+  }
+
+  async goToSecurityAndPasswordSettings(): Promise<void> {
+    console.log('Navigating to Security and password page');
+    await this.driver.clickElement(this.securityAndPasswordSettingsButton);
+  }
+
+  async goToSyncAccountsSettings(): Promise<void> {
+    await this.driver.clickElement(this.syncAccountsSettingsButton);
+  }
+
+  async goToTransactionShieldPage(): Promise<void> {
+    console.log('Navigating to Transaction Shield page');
+    await this.waitForTransactionShieldButtonReady();
+    await this.driver.clickElement(this.transactionShieldButton);
+  }
+
+  async goToTransactionsSettings(): Promise<void> {
+    console.log('Navigating to Transactions Settings page');
+    await this.driver.clickElement(this.transactionsSettingsButton);
+  }
+
+  async isOnSettingsPage(): Promise<boolean> {
+    const currentUrl = await this.driver.getCurrentUrl();
+    return currentUrl.includes('settings');
   }
 
   async openSearch(): Promise<void> {
@@ -170,36 +261,8 @@ class SettingsPage {
     console.log('Search input is opened');
   }
 
-  async toggleShowFiatOnTestnets(): Promise<void> {
-    console.log('Toggling Show Fiat on Testnets setting');
-    await this.driver.waitForSelector(this.showFiatOnTestnetsToggleLabel);
-    await this.driver.clickElement(this.showFiatOnTestnetsToggleLabel);
-  }
-
-  async goToPreInstalledExample(): Promise<void> {
-    console.log('Navigating to Preinstalled Example Snap settings page');
-    await this.driver.clickElement(this.preinstalledExampleSnapSidebarItem);
-  }
-
-  async waitForAutoLockOptionsList(): Promise<void> {
-    await this.driver.waitForSelector(this.autoLockOptionsList);
-  }
-
   async selectQuarterMinuteAutoLockOption(): Promise<void> {
     await this.driver.clickElement(this.autoLockOptionQuarterMinute);
-  }
-
-  async clickDeveloperOptionsDeleteActivityAndNonceData(): Promise<void> {
-    await this.driver.clickElement(
-      this.developerOptionsDeleteActivityAndNonceData,
-    );
-  }
-
-  async confirmDeleteActivityAndNonceModal(): Promise<void> {
-    await this.driver.waitForSelector(this.deleteActivityAndNonceModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.deleteActivityAndNonceConfirmButton,
-    );
   }
 
   async toggleBalanceSetting(): Promise<void> {
@@ -213,85 +276,21 @@ class SettingsPage {
     );
   }
 
-  async goToAboutPage(): Promise<void> {
-    console.log('Navigating to About page');
-    await this.driver.clickElement(this.aboutViewButton);
+  async toggleShowFiatOnTestnets(): Promise<void> {
+    console.log('Toggling Show Fiat on Testnets setting');
+    await this.driver.waitForSelector(this.showFiatOnTestnetsToggleLabel);
+    await this.driver.clickElement(this.showFiatOnTestnetsToggleLabel);
   }
 
-  async goToAssetsSettings(): Promise<void> {
-    console.log('Navigating to Assets Settings page');
-    await this.driver.clickElement(this.assetsSettingsButton);
+  async waitForAutoLockOptionsList(): Promise<void> {
+    await this.driver.waitForSelector(this.autoLockOptionsList);
   }
 
-  async goToAutoLockSettings(): Promise<void> {
-    console.log('Navigating to Auto-lock settings page');
-    await this.driver.clickElement(this.autoLockSettingsButton);
-  }
-
-  /**
-   * Opens the Developer Tools tab (fiat on testnets, clear activity, etc.).
-   */
-  async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Developer Tools page');
-    await this.driver.clickElement(this.developerToolsSettingsButton);
-  }
-
-  /**
-   * Opens the Debug tab, which embeds the legacy developer options page (crash
-   * generator, remote feature flags display, etc.).
-   */
-  async goToDebugSettings(): Promise<void> {
-    console.log('Navigating to Debug settings page');
-    await this.driver.clickElement(this.debugSettingsButton);
-  }
-
-  async goToSecurityAndPasswordSettings(): Promise<void> {
-    console.log('Navigating to Security and password page');
-    await this.driver.clickElement(this.securityAndPasswordSettingsButton);
-  }
-
-  async goToExperimentalSettings(): Promise<void> {
-    console.log('Navigating to Experimental Settings page');
-    await this.driver.clickElement(this.experimentalSettingsButton);
-  }
-
-  async goToPrivacySettings(): Promise<void> {
-    console.log('Navigating to Privacy Settings page');
-    await this.driver.clickElement(this.privacySettingsButton);
-  }
-
-  async goToNotificationsSettings(): Promise<void> {
-    console.log('Navigating to Notifications Settings page');
-    await this.driver.clickElement(this.notificationsSettingsButton);
-  }
-
-  async goToBackupAndSyncSettings(): Promise<void> {
-    console.log('Navigating to Backup & Sync Settings page');
-    await this.driver.clickElement(this.backupAndSyncSettingsButton);
-  }
-
-  async goToSyncAccountsSettings(): Promise<void> {
-    await this.driver.clickElement(this.syncAccountsSettingsButton);
-  }
-
-  async goToTransactionsSettings(): Promise<void> {
-    console.log('Navigating to Transactions Settings page');
-    await this.driver.clickElement(this.transactionsSettingsButton);
-  }
-
-  async goToSearchResultPage(page: string): Promise<void> {
-    console.log(`Navigating to ${page} settings page from search results`);
-    await this.driver.clickElement({
-      css: this.searchResultItem,
-      text: page,
-    });
-  }
-
-  async checkNoMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
-    console.log(
-      'Checking no matching results found message is displayed on settings page',
-    );
-    await this.driver.waitForSelector(this.noMatchingResultsFoundMessage);
+  async waitForTransactionShieldButtonReady(): Promise<void> {
+    console.log('Waiting for Transaction Shield button to be ready');
+    await this.driver.findClickableElement(this.transactionShieldButton);
+    await this.driver.waitForElementToStopMoving(this.transactionShieldButton);
+    console.log('Transaction Shield button is ready');
   }
 }
 

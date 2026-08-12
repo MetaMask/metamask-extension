@@ -2,14 +2,13 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -18,6 +17,7 @@ import Alerts from '../../components/app/alerts';
 
 import {
   ASSET_DETAILS_ROUTE,
+  ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -41,6 +41,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -183,6 +184,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -203,7 +207,12 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const SecurityTrustPage = mmLazy(
+  () => import('../asset/security-trust/index.ts'),
+);
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -393,6 +402,10 @@ export const routeConfig = [
         element: <Confirm />,
       },
       {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
+      },
+      {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
         element: <ConfirmAddSuggestedTokenPage />,
       },
@@ -415,6 +428,10 @@ export const routeConfig = [
       {
         path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
+      },
+      {
+        path: ASSET_SECURITY_TRUST_ROUTE,
+        element: <SecurityTrustPage />,
       },
       {
         path: ASSET_DETAILS_ROUTE,

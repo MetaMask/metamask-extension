@@ -113,7 +113,7 @@ export default function SnapInstall({
       height={BlockSize.Full}
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       {(isLoading || hasError) && !isOriginSnap ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
@@ -191,7 +191,7 @@ export default function SnapInstall({
             </Text>
             <Box
               display={Display.Flex}
-              backgroundColor={BackgroundColor.backgroundDefault}
+              backgroundColor={BackgroundColor.backgroundMuted}
               paddingLeft={4}
               paddingRight={4}
               paddingTop={2}
@@ -228,7 +228,7 @@ export default function SnapInstall({
         display={Display.Flex}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <PageContainerFooter
           cancelButtonType="default"

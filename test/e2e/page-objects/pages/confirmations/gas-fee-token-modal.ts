@@ -1,10 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 export default class GasFeeTokenModal {
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
   protected driver: Driver;
 
   private readonly listItem = (symbol: string) =>
@@ -21,6 +17,10 @@ export default class GasFeeTokenModal {
 
   private readonly listItemSymbol =
     '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
 
   async checkAmountFiat(symbol: string, amountFiat: string): Promise<void> {
     await this.driver.findElement({

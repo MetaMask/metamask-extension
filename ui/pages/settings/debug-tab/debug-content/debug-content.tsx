@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -33,6 +33,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
+import { useDispatch } from '../../../../store/hooks';
 import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';

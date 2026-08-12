@@ -20,7 +20,7 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { selectMarketRates } from '../../../selectors/activity';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
-import { useAppSelector } from '../../../store/store';
+import { useAppSelector } from '../../../store/hooks';
 
 function resolveHexChainId(
   chainIdForFiat: Hex | CaipChainId | undefined,

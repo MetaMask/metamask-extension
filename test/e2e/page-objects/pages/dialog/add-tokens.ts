@@ -1,9 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AddTokensModal {
-  protected driver: Driver;
-
   private addTokenButton = { text: 'Add token', tag: 'button' };
+
+  protected driver: Driver;
 
   private tokenListItem = '.confirm-add-suggested-token__token-list-item';
 
@@ -27,6 +27,10 @@ class AddTokensModal {
     console.log('Add tokens dialog was loaded');
   }
 
+  async confirmAddTokens() {
+    await this.driver.clickElementAndWaitForWindowToClose(this.addTokenButton);
+  }
+
   /**
    * Waits for the specified number of suggested tokens to appear.
    *
@@ -40,10 +44,6 @@ class AddTokensModal {
       },
       { timeout: 10000, interval: 100 },
     );
-  }
-
-  async confirmAddTokens() {
-    await this.driver.clickElementAndWaitForWindowToClose(this.addTokenButton);
   }
 }
 

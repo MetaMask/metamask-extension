@@ -24,13 +24,16 @@ export async function applyTransactionContainers({
   updateTransaction: (transaction: TransactionMeta) => void;
 }> {
   const { txParamsOriginal } = transactionMeta;
+  const hasEnforcedSimulations = types.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
   const finalMetadata = cloneDeep(transactionMeta);
 
   if (txParamsOriginal) {
     finalMetadata.txParams = cloneDeep(txParamsOriginal);
   }
 
-  if (types.includes(TransactionContainerType.EnforcedSimulations)) {
+  if (hasEnforcedSimulations) {
     const { updateTransaction } = await enforceSimulations({
       messenger,
       transactionMeta: finalMetadata,
@@ -40,29 +43,44 @@ export async function applyTransactionContainers({
     updateTransaction(finalMetadata);
   }
 
-  let newGas: Hex | undefined;
+  const originalGas = finalMetadata.txParams.gas;
+  const estimationParams = cloneDeep(finalMetadata.txParams);
+  delete estimationParams.gas;
+  delete estimationParams.gasLimit;
 
-  if (!isApproved) {
-    const { gas } = await messenger.call(
-      'TransactionController:estimateGas',
-      finalMetadata.txParams,
-      finalMetadata.networkClientId,
-      {
-        ignoreDelegationSignatures: true,
-      },
+  const { gas, simulationFails } = isApproved
+    ? await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        finalMetadata.networkClientId,
+      )
+    : await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        finalMetadata.networkClientId,
+        {
+          ignoreDelegationSignatures: true,
+        },
+      );
+
+  log('Estimated gas', gas);
+
+  if (simulationFails && hasEnforcedSimulations && !isApproved) {
+    throw new Error(
+      `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
     );
-
-    log('Estimated gas', gas);
-
-    newGas = gas as Hex;
   }
+
+  const newGas = simulationFails
+    ? (originalGas as Hex | undefined)
+    : (gas as Hex);
 
   return {
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.containerTypes = types;
 
       // Only update the fields modified by container wrapping.
-      // Preserves gas fees, nonce, gasLimit, chainId,
+      // Preserves gas fees, nonce, chainId,
       // and other fields set by the approval flow.
       transaction.txParams.data = finalMetadata.txParams.data;
       transaction.txParams.to = finalMetadata.txParams.to;
@@ -79,6 +97,10 @@ export async function applyTransactionContainers({
 
       if (newGas) {
         transaction.txParams.gas = newGas;
+
+        if (isApproved) {
+          transaction.txParams.gasLimit = newGas;
+        }
       }
     },
   };

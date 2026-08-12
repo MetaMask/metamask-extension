@@ -223,6 +223,10 @@ const RULE_2_BASELINE: Record<string, number> = {
   // Snap SDK Field props (label, error) are external input data, not i18n-rendered by the component under test.
   // Hardcoded to avoid tying Snap test fixtures to MetaMask locale files.
   'ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts': 2,
+  // Perps market-row hardcodes 'N/A' for missing metrics — not locale-rendered.
+  'ui/components/app/perps/market-row/market-row.test.tsx': 2,
+  // Account details tab label is hardcoded as "Type" — not locale-rendered.
+  'ui/components/multichain/account-details/account-details-display.test.tsx': 2,
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {

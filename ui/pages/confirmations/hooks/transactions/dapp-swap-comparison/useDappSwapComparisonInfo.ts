@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLate
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
-const getGasFromQuote = (quote: QuoteResponse) => {
+const getGasFromQuote = (quote: QuoteResponseV1) => {
   const { approval, trade } = quote;
   const approvalGas =
     (approval as TxData)?.effectiveGas ?? (approval as TxData)?.gasLimit ?? 0;

@@ -56,7 +56,11 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
         () => useSwitchAccountNotificationsChange(),
         {},
       );
-      await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      try {
+        await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      } catch {
+        // onChange rethrows after setting error state — expected here
+      }
       return hook.result.current.error;
     };
 
@@ -126,6 +130,43 @@ describe('useAccountSettingsProps() tests', () => {
         '0x1',
         '0x2',
       ]);
+    });
+  });
+
+  it('lowercases the address keys returned by the presence check', async () => {
+    const mocks = arrangeMocks();
+    const mixedCaseAddress = '0xAbCdEf0000000000000000000000000000000001';
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.resolve({
+        [mixedCaseAddress]: true,
+      })) as unknown as ReturnType<typeof ActionsModule.checkAccountsPresence>);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps([mixedCaseAddress]),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.data).toStrictEqual({
+        [mixedCaseAddress.toLowerCase()]: true,
+      });
+    });
+  });
+
+  it('preserves an empty presence result without normalizing', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.resolve({})) as unknown as ReturnType<
+      typeof ActionsModule.checkAccountsPresence
+    >);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps(['0x1']),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.data).toStrictEqual({});
     });
   });
 });

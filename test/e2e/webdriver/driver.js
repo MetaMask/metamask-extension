@@ -204,6 +204,136 @@ class Driver {
   }
 
   /**
+   * Opens a Chrome DevTools Protocol (CDP) connection attached to the
+   * extension's service worker target.
+   *
+   * The returned connection implements `Symbol.asyncDispose`, so callers
+   * should use `await using` to guarantee the CDP session is detached — no
+   * manual cleanup required. Dispose is best-effort and swallows detach
+   * errors.
+   *
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<import('selenium-webdriver/devtools/CDPConnection').CdpConnection & AsyncDisposable>} The attached CDP
+   * connection (with `sessionId` set to the attached service worker session).
+   * Disposing it detaches from the target.
+   * @throws {Error} If the service worker target cannot be resolved within
+   * `timeout`, or if attaching to the resolved target fails.
+   */
+  async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
+    const cdpConnection = await this.driver.createCDPConnection('browser');
+    let attachedSessionId = null;
+    let targetInfo;
+
+    try {
+      await this.waitUntil(
+        async () => {
+          const { result } = await cdpConnection.send('Target.getTargets');
+          const targetInfos = result?.targetInfos ?? [];
+          targetInfo = targetInfos.find(
+            (info) =>
+              info.type === 'service_worker' &&
+              typeof info.url === 'string' &&
+              info.url.startsWith(this.extensionUrl),
+          );
+          return Boolean(targetInfo);
+        },
+        { interval: 250, timeout },
+      );
+    } catch (error) {
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const knownTargets = result?.targetInfos ?? [];
+
+      const errorMessage =
+        error instanceof Error && error.message ? `${error.message}. ` : '';
+
+      throw new Error(
+        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${JSON.stringify(knownTargets, null, 2)}`,
+      );
+    }
+
+    const { result: attachResult } = await cdpConnection.send(
+      'Target.attachToTarget',
+      {
+        targetId: targetInfo.targetId,
+        flatten: true,
+      },
+    );
+
+    attachedSessionId = attachResult?.sessionId ?? null;
+    if (!attachedSessionId) {
+      throw new Error(
+        `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+      );
+    }
+
+    cdpConnection.sessionId = attachedSessionId;
+
+    cdpConnection[Symbol.asyncDispose] = async () => {
+      if (!attachedSessionId) {
+        return;
+      }
+
+      cdpConnection.sessionId = null;
+      try {
+        await cdpConnection.send('Target.detachFromTarget', {
+          sessionId: attachedSessionId,
+        });
+      } catch (_) {
+        // Best-effort cleanup.
+      }
+    };
+
+    return cdpConnection;
+  }
+
+  /**
+   * Evaluates a script inside the extension's service worker context.
+   *
+   * The `script` is wrapped in an `async` IIFE and evaluated with
+   * `Runtime.evaluate` (`awaitPromise: true`, `returnByValue: true`), so
+   * `await` and returning a serializable value both work. Use `return` inside
+   * `script` to surface a value. Exceptions raised in the service worker are
+   * rethrown here with the remote description.
+   *
+   * @param {string} script - Body of the async IIFE to evaluate in the
+   * service worker. Any value must be returned explicitly (e.g. `'return true;'`).
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<unknown>} The `returnByValue` result of the evaluation,
+   * or `undefined` if the script returned nothing.
+   * @throws {Error} If the service worker target cannot be resolved or
+   * attached to within `timeout`, or if the evaluated script throws.
+   */
+  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+    await using cdpConnection = await this.#createServiceWorkerConnection({
+      timeout,
+    });
+
+    await cdpConnection.send('Runtime.enable');
+
+    const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+      expression: `(async () => {\n${script}\n})()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+
+    const evaluationResult = evaluationResponse?.result ?? {};
+    if (evaluationResult.exceptionDetails) {
+      const { description } = evaluationResult.exceptionDetails.exception ?? {};
+      throw new Error(
+        description ??
+          evaluationResult.exceptionDetails.text ??
+          'Runtime evaluation failed in extension service worker',
+      );
+    }
+
+    return evaluationResult.result?.value;
+  }
+
+  /**
    * In web automation testing, locators are crucial commands that guide the framework to identify
    * and select HTML elements on a webpage for interaction. They play a vital role in executing various
    * actions such as clicking buttons, filling text, or retrieving data from web pages.

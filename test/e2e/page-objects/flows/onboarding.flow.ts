@@ -18,7 +18,7 @@ import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 

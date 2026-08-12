@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -45,6 +45,7 @@ import { TraceName } from '../../../../shared/lib/trace';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 

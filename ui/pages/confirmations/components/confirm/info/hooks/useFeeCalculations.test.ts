@@ -3,7 +3,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { merge } from 'lodash';
 
 import {
@@ -248,7 +248,7 @@ describe('useFeeCalculations', () => {
 
   it('returns the correct estimate if quoted swap is displayed in info', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
-      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
       isQuotedSwapDisplayedInInfo: true,

@@ -2,7 +2,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   ChainId,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   QuoteStreamCompleteReason,
   SortOrder,
   formatChainIdToCaip,
@@ -156,7 +156,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.BTC,
           srcTokenAmount,
         },
-        quotes: btcQuote ? ([btcQuote] as unknown as QuoteResponse[]) : [],
+        quotes: btcQuote ? ([btcQuote] as unknown as QuoteResponseV1[]) : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -250,7 +250,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.TRON,
           srcTokenAmount,
         },
-        quotes: tronQuote ? ([tronQuote] as unknown as QuoteResponse[]) : [],
+        quotes: tronQuote ? ([tronQuote] as unknown as QuoteResponseV1[]) : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -1084,7 +1084,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteResponse;
+      } = recommendedQuote as QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1178,7 +1178,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteResponse;
+      } = recommendedQuote as QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1262,7 +1262,7 @@ describe('Bridge selectors', () => {
         },
       ];
       result.sortedQuotes.forEach(
-        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+        (quote: QuoteMetadata & QuoteResponseV1, idx: number) => {
           expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
         },
       );
@@ -1275,7 +1275,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      } = recommendedQuote as QuoteMetadata & QuoteResponseV1;
       expect({
         quote,
         approval,
@@ -1345,7 +1345,7 @@ describe('Bridge selectors', () => {
       );
       expect(sortedQuotes).toHaveLength(2);
       sortedQuotes.forEach(
-        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+        (quote: QuoteMetadata & QuoteResponseV1, idx: number) => {
           expect(
             quoteMetadataKeys.every((k) =>
               Object.keys(quote ?? {}).includes(k),
@@ -1369,10 +1369,10 @@ describe('Bridge selectors', () => {
               estimatedProcessingTimeInSeconds: 1,
               quote: {
                 ...(mockBridgeQuotesNativeErc20[0]
-                  .quote as unknown as QuoteResponse['quote']),
+                  .quote as unknown as QuoteResponseV1['quote']),
                 requestId: 'fastestQuote',
               },
-            } as unknown as QuoteResponse,
+            } as unknown as QuoteResponseV1,
           ],
         },
       });
@@ -1455,7 +1455,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1559,7 +1559,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1664,7 +1664,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect({
         quote,
         approval,
@@ -1800,7 +1800,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -2241,10 +2241,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
@@ -2270,13 +2270,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalMaxNetworkFee.amount,
-      ).toStrictEqual('0.00100011265800784');
-      expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
@@ -2286,7 +2283,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2297,7 +2294,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2308,7 +2305,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('1');
       expect(result.isNetworkFeeUnavailable).toBe(false);
     });
@@ -2371,19 +2368,20 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount
+          ?.valueInCurrency,
       ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('2.52453437697629012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.toTokenAmount
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('14.90773022');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('12.38319584302370988');
       expect(result.isEstimatedReturnLow).toBe(true);
     });
@@ -2448,15 +2446,16 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount
+          ?.valueInCurrency,
       ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('2.52453437697629012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('20.69242252302370988');
       expect(result.isEstimatedReturnLow).toBe(false);
     });
@@ -2552,7 +2551,7 @@ describe('Bridge selectors', () => {
       },
     );
 
-    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+    it('should treat gas-sponsored quotes as non-gasless for hardware wallets', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -2562,6 +2561,15 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
+          quotes: (
+            mockBridgeQuotesNativeErc20 as unknown as QuoteResponseV1[]
+          ).map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasSponsored: true,
+            },
+          })),
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
         metamaskStateOverrides: {
@@ -2572,7 +2580,7 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.isInsufficientGasForQuote).toStrictEqual(true);
     });
 
     it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
@@ -2844,8 +2852,8 @@ describe('Bridge selectors', () => {
       );
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual('1e-8');
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+      ).toStrictEqual('0.00000001');
       expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
         '0.99996999',
       );
@@ -4306,12 +4314,14 @@ describe('Bridge selectors', () => {
     it('returns undefined when sentAmount.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            sentAmount: { ...quote.sentAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();
@@ -4320,13 +4330,19 @@ describe('Bridge selectors', () => {
     it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            toTokenAmount: { ...quote.toTokenAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.toTokenAmount
+          ?.valueInCurrency,
+      ).toBeUndefined();
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();
     });

@@ -27,11 +27,17 @@ const TRANSACTION_META_MOCK = {
 
 describe('Container Utils', () => {
   const enforceSimulationsMock = jest.mocked(enforceSimulations);
+  const estimateGasMock = jest.fn();
   const getTransactionControllerStateMock = jest.fn();
   let messenger: TransactionControllerInitMessenger;
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    estimateGasMock.mockResolvedValue({
+      gas: ESTIMATE_GAS_MOCK,
+      simulationFails: undefined,
+    });
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
@@ -44,7 +50,7 @@ describe('Container Utils', () => {
 
     baseMessenger.registerActionHandler(
       'TransactionController:estimateGas',
-      async () => ({ gas: ESTIMATE_GAS_MOCK, simulationFails: { debug: {} } }),
+      estimateGasMock,
     );
 
     baseMessenger.registerActionHandler(
@@ -96,7 +102,7 @@ describe('Container Utils', () => {
       expect(transactionToUpdate.txParams.data).toBe(NEW_DATA_MOCK);
     });
 
-    it('updates gas if not approved', async () => {
+    it('updates gas from a successful preview estimate', async () => {
       const { updateTransaction } = await applyTransactionContainers({
         isApproved: false,
         messenger,
@@ -108,6 +114,88 @@ describe('Container Utils', () => {
       updateTransaction(transactionToUpdate);
 
       expect(transactionToUpdate.txParams.gas).toBe(ESTIMATE_GAS_MOCK);
+      expect(estimateGasMock).toHaveBeenCalledWith(
+        expect.objectContaining({ data: NEW_DATA_MOCK }),
+        undefined,
+        { ignoreDelegationSignatures: true },
+      );
+    });
+
+    it('rejects preview when the estimate uses a failure fallback', async () => {
+      estimateGasMock.mockResolvedValue({
+        gas: '0x29b92700',
+        simulationFails: {
+          reason: 'No simulated gas returned',
+          debug: { blockGasLimit: '0x77359400' },
+        },
+      });
+
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x29b92700' },
+        txParamsOriginal: { gas: '0x554af' },
+      } as TransactionMeta;
+
+      await expect(
+        applyTransactionContainers({
+          isApproved: false,
+          messenger,
+          transactionMeta,
+          types: [TransactionContainerType.EnforcedSimulations],
+        }),
+      ).rejects.toThrow(
+        'Failed to estimate gas for transaction containers: No simulated gas returned',
+      );
+    });
+
+    it('re-estimates gas with the real signature when approved', async () => {
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x123', gasLimit: '0x123' },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: true,
+        messenger,
+        transactionMeta,
+        types: [TransactionContainerType.EnforcedSimulations],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.txParams.gas).toBe(ESTIMATE_GAS_MOCK);
+      expect(transactionToUpdate.txParams.gasLimit).toBe(ESTIMATE_GAS_MOCK);
+      expect(estimateGasMock).toHaveBeenCalledWith(
+        expect.objectContaining({ data: NEW_DATA_MOCK }),
+        undefined,
+      );
+      expect(estimateGasMock.mock.calls[0][0]).not.toHaveProperty('gas');
+      expect(estimateGasMock.mock.calls[0][0]).not.toHaveProperty('gasLimit');
+    });
+
+    it('preserves the original gas when the real-signature estimate fails', async () => {
+      estimateGasMock.mockResolvedValue({
+        gas: '0x29b92700',
+        simulationFails: {
+          reason: 'Failed to estimate signed wrapped transaction',
+          debug: { blockGasLimit: '0x77359400' },
+        },
+      });
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: true,
+        messenger,
+        transactionMeta: TRANSACTION_META_MOCK,
+        types: [TransactionContainerType.EnforcedSimulations],
+      });
+
+      const transactionToUpdate = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.containerTypes).toStrictEqual([
+        TransactionContainerType.EnforcedSimulations,
+      ]);
     });
 
     it('updates container types', async () => {

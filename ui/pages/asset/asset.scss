@@ -62,6 +62,14 @@
   border-top: 1px solid var(--color-border-muted);
 }
 
+.security-trust__section-divider {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 0;
+  border: 0;
+  border-top: 1px solid var(--color-border-muted);
+}
+
 .asset-page__details-heading {
   padding-bottom: 8px;
 }

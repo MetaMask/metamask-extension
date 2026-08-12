@@ -128,7 +128,7 @@ jest.mock('../../../../../components/component-library', () => ({
     Close: 'close',
   },
   IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
-  AvatarNetworkSize: { Sm: 'sm' },
+  AvatarNetworkSize: { Sm: 'sm', Xl: 'xl' },
 }));
 jest.mock('../../../../../components/multichain', () => ({
   NetworkListItem: ({

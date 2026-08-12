@@ -41,7 +41,7 @@ import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeToken
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
