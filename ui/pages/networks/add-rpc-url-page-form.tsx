@@ -94,10 +94,7 @@ export const AddRpcUrlPageForm = ({
 
   const error = urlError ?? rpcValidationError;
   const isSubmitDisabled =
-    !url.trim() ||
-    url !== debouncedUrl ||
-    Boolean(error) ||
-    isValidatingRpcUrl;
+    !url.trim() || url !== debouncedUrl || Boolean(error) || isValidatingRpcUrl;
   const handleSubmit = () => {
     if (isSubmitDisabled) {
       return;
