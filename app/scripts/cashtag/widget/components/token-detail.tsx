@@ -91,7 +91,9 @@ export function TokenDetail({
             {data.price === null ? '—' : formatUsd(data.price)}
           </div>
           <div className="flex gap-1 text-s-body-sm font-medium">
-            {data.change24hPercent !== null ? (
+            {data.change24hPercent === null ? (
+              <span className="text-alternative">—</span>
+            ) : (
               <span
                 className={
                   positive ? 'text-success-default' : 'text-error-default'
@@ -101,8 +103,6 @@ export function TokenDetail({
                   ? formatPercent(data.change24hPercent)
                   : `${formatSignedUsd(priceChangeUsd)} (${formatPercent(data.change24hPercent)})`}
               </span>
-            ) : (
-              <span className="text-alternative">—</span>
             )}
             <span className="text-alternative">Today</span>
           </div>

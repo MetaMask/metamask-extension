@@ -97,6 +97,8 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       return;
     }
 
+    // Chart canvas API needs concrete colors; prefer CSS vars when present.
+    /* eslint-disable @metamask/design-tokens/color-no-hex */
     const lineColor = positive
       ? readCssColor(container, '--color-success-default', '#28a745')
       : readCssColor(container, '--color-error-default', '#d73a49');
@@ -115,6 +117,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       '--color-border-default',
       '#848c96',
     );
+    /* eslint-enable @metamask/design-tokens/color-no-hex */
 
     const chart = createChart(container, {
       width: container.clientWidth,

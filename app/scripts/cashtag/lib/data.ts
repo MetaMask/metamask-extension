@@ -3,7 +3,8 @@ import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import type { AssetData, ResolvedTicker } from './types';
 
 const tokenSearchUrl = 'https://token.api.cx.metamask.io/tokens/search';
-const historicalPricesUrl = 'https://price.api.cx.metamask.io/v3/historical-prices';
+const historicalPricesUrl =
+  'https://price.api.cx.metamask.io/v3/historical-prices';
 const iconBase = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
 
 type SearchHit = {

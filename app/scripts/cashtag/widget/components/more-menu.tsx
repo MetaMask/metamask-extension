@@ -8,55 +8,49 @@ type Props = {
 const menuId = 'mm-cashtag-more-menu';
 const menuAnchor = '--cashtag-menu-anchor';
 
-function BanIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M5.2 14.8L14.8 5.2" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
+const BanIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M5.2 14.8L14.8 5.2" stroke="currentColor" strokeWidth="1.5" />
+  </svg>
+);
 
-function FlagIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M5 3.5v13M5 4.5h8.5l-1.5 3.5 1.5 3.5H5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+const FlagIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M5 3.5v13M5 4.5h8.5l-1.5 3.5 1.5 3.5H5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
-function MoreIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle cx="10" cy="4.5" r="1.4" fill="currentColor" />
-      <circle cx="10" cy="10" r="1.4" fill="currentColor" />
-      <circle cx="10" cy="15.5" r="1.4" fill="currentColor" />
-    </svg>
-  );
-}
+const MoreIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="4.5" r="1.4" fill="currentColor" />
+    <circle cx="10" cy="10" r="1.4" fill="currentColor" />
+    <circle cx="10" cy="15.5" r="1.4" fill="currentColor" />
+  </svg>
+);
 
 export function MoreMenu({ onDisable, onFlag }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);

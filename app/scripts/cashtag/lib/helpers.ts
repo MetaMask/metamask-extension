@@ -61,7 +61,7 @@ export function formatUsd(amount: number) {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-    maximumFractionDigits: amount >= 1000 ? 2 : amount >= 1 ? 2 : 4,
+    maximumFractionDigits: amount >= 1 ? 2 : 4,
   }).format(amount);
 }
 
