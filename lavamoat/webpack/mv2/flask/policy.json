@@ -2190,17 +2190,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "uuid": true
-      }
-    },
-    "@metamask/wallet>@metamask/remote-feature-flag-controller": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }
@@ -2678,7 +2669,7 @@
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
         "@metamask/passkey-controller": true,
-        "@metamask/wallet>@metamask/remote-feature-flag-controller": true,
+        "@metamask/remote-feature-flag-controller": true,
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/shield-controller": true,
         "@metamask/storage-service": true,
