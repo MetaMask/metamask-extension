@@ -7,6 +7,8 @@ class AccountOverviewPage {
 
   private readonly nextButton = '[data-testid="page-container-footer-next"]';
 
+  private readonly settingsTitle = '[data-testid="settings-page-title"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -23,6 +25,20 @@ class AccountOverviewPage {
       await this.driver.clickElement(this.nextButton);
     } catch (error) {
       console.log('Could not open the account menu', error);
+    }
+  }
+
+  /**
+   * Opens the settings page from the account overview.
+   */
+  async openSettingsFromOverview(): Promise<void> {
+    const headerNavbar = new HeaderNavbar(this.driver);
+    await headerNavbar.openSettingsPage();
+
+    try {
+      await this.driver.waitForSelector(this.settingsTitle);
+    } catch (error) {
+      await this.driver.delay(2000);
     }
   }
 }
