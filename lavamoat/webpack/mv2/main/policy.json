@@ -1037,11 +1037,6 @@
       }
     },
     "@metamask/claims-controller": {
-      "packages": {
-        "@metamask/claims-controller>@metamask/controller-utils": true
-      }
-    },
-    "@metamask/wallet>@metamask/claims-controller": {
       "globals": {
         "fetch": true
       },
@@ -2661,7 +2656,7 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/wallet>@metamask/claims-controller": true,
+        "@metamask/claims-controller": true,
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
