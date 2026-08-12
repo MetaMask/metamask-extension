@@ -85,9 +85,7 @@ export const GatorPermissionsPage = () => {
             />
           }
         >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {t('permissions')}
-          </Text>
+          {t('permissions')}
         </Header>
         <Content padding={0}>
           <Box
@@ -124,14 +122,9 @@ export const GatorPermissionsPage = () => {
             size={ButtonIconSize.Md}
           />
         }
+        textProps={{ 'data-testid': 'gator-permissions-page-title' }}
       >
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          data-testid="gator-permissions-page-title"
-        >
-          {t('permissions')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         {hasPermissions ? (

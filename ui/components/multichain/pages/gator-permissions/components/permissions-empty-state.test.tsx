@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../../app/_locales/en/messages.json';
 import { PermissionsEmptyState } from './permissions-empty-state';
 

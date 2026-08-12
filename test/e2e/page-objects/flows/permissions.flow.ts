@@ -11,7 +11,7 @@ import SitePermissionPage from '../pages/permission/site-permission-page';
  * Handles both flows:
  * - Regular: Click "Permissions" → Permissions Page
  * - Gator (Flask): Click "Permissions" → Gator Permissions Page → Click "Connections" → Permissions Page
- *   (If only dapp connections exist without gator permissions, auto-redirects to Permissions Page)
+ * (If only dapp connections exist without gator permissions, auto-redirects to Permissions Page)
  *
  * @param driver - The webdriver instance.
  */
