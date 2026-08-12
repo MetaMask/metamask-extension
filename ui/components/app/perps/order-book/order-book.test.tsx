@@ -257,6 +257,92 @@ describe('PerpsOrderBook', () => {
       ).toHaveTextContent('$2,967');
     });
 
+    // The depth bar fills away from the outer edge of the window, so it is
+    // anchored to whichever side the panel itself is pinned to.
+    const depthBarOf = (rowTestId: string) =>
+      screen
+        .getByTestId(rowTestId)
+        .querySelector('[aria-hidden="true"]') as HTMLElement;
+
+    it('grows depth bars from the right when the order book is on the right', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      const bar = depthBarOf('perps-order-book-bid-row-0');
+      expect(bar.className).toContain('right-0');
+      expect(bar.className).not.toContain('left-0');
+    });
+
+    it('grows depth bars from the left when the order book is on the left', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      const bar = depthBarOf('perps-order-book-bid-row-0');
+      expect(bar.className).toContain('left-0');
+      expect(bar.className).not.toContain('right-0');
+    });
+
+    it('anchors ask and bid depth bars to the same side', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(depthBarOf('perps-order-book-ask-row-0').className).toContain(
+        'left-0',
+      );
+      expect(depthBarOf('perps-order-book-bid-row-0').className).toContain(
+        'left-0',
+      );
+    });
+
+    // Columns mirror with the panel so the value stays on the outer edge, at the
+    // end the depth bar grows from.
+    const rowCellOrder = (rowTestId: string) =>
+      Array.from(
+        screen
+          .getByTestId(rowTestId)
+          .querySelectorAll('[data-testid$="-price"], [data-testid$="-value"]'),
+      ).map((cell) => cell.getAttribute('data-testid')?.split('-').pop());
+
+    const headerOrder = () =>
+      Array.from(
+        (
+          screen.getByText(messages.perpsOrderBookPrice.message)
+            .parentElement as HTMLElement
+        ).children,
+      ).map((child) => child.textContent);
+
+    it('renders price then value when the order book is on the right', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      expect(rowCellOrder('perps-order-book-bid-row-0')).toStrictEqual([
+        'price',
+        'value',
+      ]);
+      expect(headerOrder()).toStrictEqual([
+        messages.perpsOrderBookPrice.message,
+        `${messages.perpsOrderBookTotal.message} (USD)`,
+      ]);
+    });
+
+    it('renders value then price when the order book is on the left', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(rowCellOrder('perps-order-book-bid-row-0')).toStrictEqual([
+        'value',
+        'price',
+      ]);
+      expect(headerOrder()).toStrictEqual([
+        `${messages.perpsOrderBookTotal.message} (USD)`,
+        messages.perpsOrderBookPrice.message,
+      ]);
+    });
+
+    it('keeps the ask rows mirrored in step with the bid rows', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(rowCellOrder('perps-order-book-ask-row-0')).toStrictEqual([
+        'value',
+        'price',
+      ]);
+    });
+
     it('renders the compact spread row with a percentage', () => {
       renderOrderBook({ marketPrice: 73776 });
 
