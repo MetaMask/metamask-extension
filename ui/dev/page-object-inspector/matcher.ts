@@ -80,27 +80,161 @@ function cssFor(selector: Selector): string | null {
     return dynamicCssFromChunks(selector.chunks, selector.kind);
   }
 
-  return selector.kind === 'testId'
-    ? `[data-testid="${selector.value}"]`
-    : selector.value ?? null;
+  if (selector.kind === 'testId') {
+    return `[data-testid="${selector.value}"]`;
+  }
+
+  if (selector.kind === 'css' || selector.kind === 'cssText') {
+    return selector.value ?? null;
+  }
+
+  return null;
 }
 
 /**
- * Finds the elements a selector matches.
+ * Checks whether an element's text content contains the expected text.
+ *
+ * @param element - The DOM element to check.
+ * @param text - The expected text substring.
+ * @returns True when the element's text content includes the text.
+ */
+function elementContainsText(element: Element, text: string): boolean {
+  const content = element.textContent?.trim() ?? '';
+  return content.includes(text);
+}
+
+/**
+ * Finds elements matching a tagText selector: querySelectorAll(tag) filtered
+ * by text content.
+ *
+ * @param root - The document to search.
+ * @param selector - The tagText selector.
+ * @returns Matched elements, or null when the selector cannot be executed.
+ */
+function findByTagText(root: Document, selector: Selector): Element[] | null {
+  if (!selector.value || !selector.text) {
+    return null;
+  }
+
+  return Array.from(root.querySelectorAll(selector.value)).filter(
+    (element) =>
+      !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`) &&
+      elementContainsText(element, selector.text as string),
+  );
+}
+
+/**
+ * Finds elements matching a cssText selector: querySelectorAll(css) filtered
+ * by text content.
+ *
+ * @param root - The document to search.
+ * @param selector - The cssText selector.
+ * @returns Matched elements, or null when the selector cannot be executed.
+ */
+function findByCssText(root: Document, selector: Selector): Element[] | null {
+  const css = selector.value;
+  if (!css || !selector.text) {
+    return null;
+  }
+
+  try {
+    return Array.from(root.querySelectorAll(css)).filter(
+      (element) =>
+        !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`) &&
+        elementContainsText(element, selector.text as string),
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Finds elements matching a text-only selector by walking all elements and
+ * filtering by text content.
+ *
+ * @param root - The document to search.
+ * @param selector - The text selector.
+ * @returns Matched elements, or null when the selector cannot be executed.
+ */
+function findByText(root: Document, selector: Selector): Element[] | null {
+  if (!selector.text) {
+    return null;
+  }
+
+  const {text} = selector;
+  return Array.from(root.querySelectorAll('*')).filter(
+    (element) =>
+      !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`) &&
+      element.children.length === 0 &&
+      elementContainsText(element, text),
+  );
+}
+
+/**
+ * Finds elements matching an XPath selector using document.evaluate.
+ *
+ * @param root - The document to search.
+ * @param selector - The xpath selector.
+ * @returns Matched elements, or null when the selector cannot be executed.
+ */
+function findByXpath(root: Document, selector: Selector): Element[] | null {
+  if (!selector.value) {
+    return null;
+  }
+
+  try {
+    const result = root.evaluate(
+      selector.value,
+      root,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null,
+    );
+
+    const elements: Element[] = [];
+    for (let i = 0; i < result.snapshotLength; i++) {
+      const node = result.snapshotItem(i);
+      if (
+        node instanceof Element &&
+        !node.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`)
+      ) {
+        elements.push(node);
+      }
+    }
+    return elements;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Finds the elements a selector matches, dispatching to the appropriate
+ * matching strategy based on selector kind.
  *
  * @param root - The document to search.
  * @param selector - The selector to run.
  * @returns The matched elements, or null when the selector cannot be executed.
  */
 function findElements(root: Document, selector: Selector): Element[] | null {
-  const css = cssFor(selector);
-  if (css === null) {
-    return null;
+  switch (selector.kind) {
+    case 'tagText':
+      return findByTagText(root, selector);
+    case 'text':
+      return findByText(root, selector);
+    case 'xpath':
+      return findByXpath(root, selector);
+    case 'cssText':
+      return findByCssText(root, selector);
+    default: {
+      const css = cssFor(selector);
+      if (css === null) {
+        return null;
+      }
+      return Array.from(root.querySelectorAll(css)).filter(
+        (element) => !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`),
+      );
+    }
   }
-
-  return Array.from(root.querySelectorAll(css)).filter(
-    (element) => !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`),
-  );
 }
 
 /**

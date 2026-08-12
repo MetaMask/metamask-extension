@@ -1,6 +1,6 @@
 import { buildIndex, toRuntimeIndex } from './build-index';
 
-describe('buildIndex selector filtering', () => {
+describe('buildIndex includes all selector kinds', () => {
   function kindsFor(sourceText: string) {
     return buildIndex({
       files: [{ relativePath: 'pages/a.ts', sourceText }],
@@ -41,46 +41,46 @@ describe('buildIndex selector filtering', () => {
     ).toStrictEqual(['kept']);
   });
 
-  it('drops a css selector with no test id', () => {
+  it('keeps a css selector with no test id', () => {
     expect(
       kindsFor(`class A {
-        private readonly dropped = '.mm-button-primary';
+        private readonly btn = '.mm-button-primary';
       }`),
-    ).toStrictEqual([]);
+    ).toStrictEqual(['btn']);
   });
 
-  it('drops selectors that depend on matching text', () => {
+  it('keeps selectors that depend on matching text', () => {
     expect(
       kindsFor(`class A {
         private readonly a = { tag: 'h6', text: 'Token imported' };
         private readonly b = { css: '[data-testid="x"]', text: 'Confirm' };
         private readonly c = { text: 'Cancel' };
       }`),
-    ).toStrictEqual([]);
+    ).toStrictEqual(['a', 'b', 'c']);
   });
 
-  it('drops xpath selectors', () => {
+  it('keeps xpath selectors', () => {
     expect(
       kindsFor(`class A {
-        private readonly dropped = { xpath: '//*[@data-testid="x"]' };
+        private readonly xp = { xpath: '//*[@data-testid="x"]' };
       }`),
-    ).toStrictEqual([]);
+    ).toStrictEqual(['xp']);
   });
 
-  it('counts only the kept selectors in the summary', () => {
+  it('counts all selectors in the summary', () => {
     const index = buildIndex({
       files: [
         {
           relativePath: 'pages/a.ts',
           sourceText: `class A {
-            private readonly kept = '[data-testid="submit"]';
-            private readonly dropped = '.mm-button';
+            private readonly a = '[data-testid="submit"]';
+            private readonly b = '.mm-button';
           }`,
         },
       ],
     });
 
-    expect(index.summary.selectors).toBe(1);
+    expect(index.summary.selectors).toBe(2);
   });
 });
 
@@ -242,7 +242,6 @@ describe('buildIndex', () => {
           sourceText: `class A {
             private readonly a = '[data-testid="a"]';
             private readonly b = '[data-testid="b"]';
-            private readonly any = (n: string) => \`[data-testid="\${n}"]\`;
           }`,
         },
       ],
@@ -252,7 +251,7 @@ describe('buildIndex', () => {
       files: 1,
       pageObjects: 1,
       selectors: 2,
-      unresolved: 1,
+      unresolved: 0,
       overlaps: 0,
     });
   });

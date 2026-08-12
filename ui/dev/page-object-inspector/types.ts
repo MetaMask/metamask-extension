@@ -7,21 +7,39 @@
  */
 
 /**
- * The index only carries selectors anchored on a `data-testid`, so the
- * text-based and XPath kinds the extractor understands never reach the
- * browser.
+ * All selector kinds the extractor understands. The runtime index now carries
+ * every kind so the inspector can flag non-testId locators as needing
+ * migration.
  */
-export type SelectorKind = 'css' | 'testId';
+export type SelectorKind =
+  | 'css'
+  | 'testId'
+  | 'cssText'
+  | 'tagText'
+  | 'text'
+  | 'xpath';
 
 export type Selector = {
   id: string;
   kind: SelectorKind;
   value?: string;
+  text?: string;
   chunks?: string[];
   params?: string[];
   propertyName: string;
   line: number;
   isDynamic: boolean;
+};
+
+export type PinnedElement = {
+  ownerClassName: string;
+  relativePath: string;
+  selector: Selector;
+  conflictingClassNames: string[];
+  /** True when the element has a data-testid but no PO covers it. */
+  isUncovered: boolean;
+  /** The raw data-testid value when the element is uncovered. */
+  uncoveredTestId?: string;
 };
 
 export type PageObject = {

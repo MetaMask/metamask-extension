@@ -3,18 +3,49 @@
     {
       "className": "TxToastNotification",
       "relativePath": "components/tx-toast-notification.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "TxToastNotification.closeButton",
+          "kind": "css",
+          "propertyName": "closeButton",
+          "line": 8,
+          "value": "[aria-label=\"Close\"]"
+        },
+        {
+          "id": "TxToastNotification.transactionConfirmedText",
+          "kind": "tagText",
+          "propertyName": "transactionConfirmedText",
+          "line": 12,
+          "value": "p",
+          "text": "Transaction confirmed"
+        }
+      ]
     },
     {
       "className": "AccountListPage",
       "relativePath": "pages/account-list-page.ts",
       "selectors": [
         {
+          "id": "AccountListPage.accountDetailsTab",
+          "kind": "tagText",
+          "propertyName": "accountDetailsTab",
+          "line": 7,
+          "value": "button",
+          "text": "Account details"
+        },
+        {
           "id": "AccountListPage.accountListBalance",
           "kind": "css",
           "propertyName": "accountListBalance",
           "line": 12,
           "value": "[data-testid=\"first-currency-display\"]"
+        },
+        {
+          "id": "AccountListPage.accountListItem",
+          "kind": "css",
+          "propertyName": "accountListItem",
+          "line": 15,
+          "value": ".multichain-account-menu-popover__list--menu-item"
         },
         {
           "id": "AccountListPage.accountMenuButton",
@@ -45,6 +76,14 @@
           "value": "[data-testid=\"choose-wallet-type-hardware-wallet\"]"
         },
         {
+          "id": "AccountListPage.addingAccountMessage",
+          "kind": "tagText",
+          "propertyName": "addingAccountMessage",
+          "line": 29,
+          "value": "p",
+          "text": "Adding account..."
+        },
+        {
           "id": "AccountListPage.addMultichainAccountButton",
           "kind": "css",
           "propertyName": "addMultichainAccountButton",
@@ -66,6 +105,22 @@
           "value": "[data-testid=\"choose-wallet-type-snap-account\"]"
         },
         {
+          "id": "AccountListPage.addWalletButtonReady",
+          "kind": "tagText",
+          "propertyName": "addWalletButtonReady",
+          "line": 43,
+          "value": "p",
+          "text": "Add wallet"
+        },
+        {
+          "id": "AccountListPage.addWalletButtonSyncing",
+          "kind": "tagText",
+          "propertyName": "addWalletButtonSyncing",
+          "line": 48,
+          "value": "p",
+          "text": "Syncing..."
+        },
+        {
           "id": "AccountListPage.chooseWalletTypeBackButton",
           "kind": "css",
           "propertyName": "chooseWalletTypeBackButton",
@@ -78,6 +133,35 @@
           "propertyName": "chooseWalletTypeWatchEthereumAccountButton",
           "line": 55,
           "value": "[data-testid=\"choose-wallet-type-watch-ethereum-account\"]"
+        },
+        {
+          "id": "AccountListPage.closeAccountModalButton",
+          "kind": "css",
+          "propertyName": "closeAccountModalButton",
+          "line": 58,
+          "value": "header button[aria-label=\"Close\"]"
+        },
+        {
+          "id": "AccountListPage.closeMultichainAccountsPageButton",
+          "kind": "css",
+          "propertyName": "closeMultichainAccountsPageButton",
+          "line": 61,
+          "value": ".multichain-page-header button[aria-label=\"Back\"]"
+        },
+        {
+          "id": "AccountListPage.currentSelectedAccount",
+          "kind": "css",
+          "propertyName": "currentSelectedAccount",
+          "line": 64,
+          "value": ".multichain-account-list-item--selected"
+        },
+        {
+          "id": "AccountListPage.exportSrpButton",
+          "kind": "tagText",
+          "propertyName": "exportSrpButton",
+          "line": 69,
+          "value": "button",
+          "text": "Show Secret Recovery Phrase"
         },
         {
           "id": "AccountListPage.hiddenAccountOptionsMenuButton",
@@ -108,6 +192,13 @@
           "value": "[data-testid=\"import-account-confirm-button\"]"
         },
         {
+          "id": "AccountListPage.importAccountDropdownOption",
+          "kind": "css",
+          "propertyName": "importAccountDropdownOption",
+          "line": 86,
+          "value": ".dropdown__select"
+        },
+        {
           "id": "AccountListPage.importAccountFromMultichainWalletModalButton",
           "kind": "css",
           "propertyName": "importAccountFromMultichainWalletModalButton",
@@ -120,6 +211,36 @@
           "propertyName": "importAccountJsonFileInput",
           "line": 91,
           "value": "input[data-testid=\"file-input\"]"
+        },
+        {
+          "id": "AccountListPage.importAccountJsonFileOption",
+          "kind": "tagText",
+          "propertyName": "importAccountJsonFileOption",
+          "line": 94,
+          "value": "option",
+          "text": "JSON File"
+        },
+        {
+          "id": "AccountListPage.importAccountJsonPasswordInput",
+          "kind": "css",
+          "propertyName": "importAccountJsonPasswordInput",
+          "line": 99,
+          "value": "input[id=\"json-password-box\"]"
+        },
+        {
+          "id": "AccountListPage.importAccountPrivateKeyInput",
+          "kind": "css",
+          "propertyName": "importAccountPrivateKeyInput",
+          "line": 102,
+          "value": "#private-key-box"
+        },
+        {
+          "id": "AccountListPage.importSrpConfirmButton",
+          "kind": "tagText",
+          "propertyName": "importSrpConfirmButton",
+          "line": 104,
+          "value": "span",
+          "text": "Continue"
         },
         {
           "id": "AccountListPage.importSrpInput",
@@ -136,11 +257,65 @@
           "value": "[data-testid=\"choose-wallet-type-import-wallet\"]"
         },
         {
+          "id": "AccountListPage.multichainAccountListItem",
+          "kind": "css",
+          "propertyName": "multichainAccountListItem",
+          "line": 115,
+          "value": ".multichain-account-cell"
+        },
+        {
           "id": "AccountListPage.multichainAccountListSearch",
           "kind": "testId",
           "propertyName": "multichainAccountListSearch",
           "line": 117,
           "value": "multichain-account-list-search"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuAddresses",
+          "kind": "tagText",
+          "propertyName": "multichainAccountMenuAddresses",
+          "line": 121,
+          "value": "p",
+          "text": "Addresses"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuDetails",
+          "kind": "tagText",
+          "propertyName": "multichainAccountMenuDetails",
+          "line": 126,
+          "value": "p",
+          "text": "Account details"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuHide",
+          "kind": "tagText",
+          "propertyName": "multichainAccountMenuHide",
+          "line": 131,
+          "value": "p",
+          "text": "Hide account"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuItem",
+          "kind": "css",
+          "propertyName": "multichainAccountMenuItem",
+          "line": 136,
+          "value": ".multichain-account-cell-menu-item"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuPin",
+          "kind": "tagText",
+          "propertyName": "multichainAccountMenuPin",
+          "line": 139,
+          "value": "p",
+          "text": "Pin to top"
+        },
+        {
+          "id": "AccountListPage.multichainAccountMenuRename",
+          "kind": "tagText",
+          "propertyName": "multichainAccountMenuRename",
+          "line": 144,
+          "value": "p",
+          "text": "Rename"
         },
         {
           "id": "AccountListPage.multichainAccountNameInput",
@@ -200,6 +375,30 @@
           "value": "[data-testid=\"account-list-menu-remove\"]"
         },
         {
+          "id": "AccountListPage.removeAccountConfirmButton",
+          "kind": "tagText",
+          "propertyName": "removeAccountConfirmButton",
+          "line": 177,
+          "value": "button",
+          "text": "Remove"
+        },
+        {
+          "id": "AccountListPage.removeAccountMessage",
+          "kind": "tagText",
+          "propertyName": "removeAccountMessage",
+          "line": 182,
+          "value": "div",
+          "text": "Remove account?"
+        },
+        {
+          "id": "AccountListPage.removeAccountNevermindButton",
+          "kind": "tagText",
+          "propertyName": "removeAccountNevermindButton",
+          "line": 187,
+          "value": "button",
+          "text": "Nevermind"
+        },
+        {
           "id": "AccountListPage.unhideAccountButton",
           "kind": "css",
           "propertyName": "unhideAccountButton",
@@ -214,11 +413,50 @@
           "value": "[data-testid=\"multichain-account-menu-item-unpin\"]"
         },
         {
+          "id": "AccountListPage.viewAccountOnExplorerButton",
+          "kind": "tagText",
+          "propertyName": "viewAccountOnExplorerButton",
+          "line": 198,
+          "value": "p",
+          "text": "View on explorer"
+        },
+        {
+          "id": "AccountListPage.walletDetailsButton",
+          "kind": "tagText",
+          "propertyName": "walletDetailsButton",
+          "line": 203,
+          "value": "button",
+          "text": "Details"
+        },
+        {
           "id": "AccountListPage.walletHeader",
           "kind": "css",
           "propertyName": "walletHeader",
           "line": 208,
           "value": "[data-testid=\"multichain-account-tree-wallet-header\"]"
+        },
+        {
+          "id": "AccountListPage.watchAccountAddressInput",
+          "kind": "css",
+          "propertyName": "watchAccountAddressInput",
+          "line": 211,
+          "value": "input#address-input[type=\"text\"]"
+        },
+        {
+          "id": "AccountListPage.watchAccountConfirmButton",
+          "kind": "tagText",
+          "propertyName": "watchAccountConfirmButton",
+          "line": 214,
+          "value": "button",
+          "text": "Watch account"
+        },
+        {
+          "id": "AccountListPage.watchAccountModalTitle",
+          "kind": "tagText",
+          "propertyName": "watchAccountModalTitle",
+          "line": 219,
+          "value": "h4",
+          "text": "Watch any Ethereum account"
         }
       ]
     },
@@ -232,6 +470,14 @@
           "propertyName": "assetPickerButton",
           "line": 6,
           "value": "[data-testid=\"asset-picker-button\"]"
+        },
+        {
+          "id": "AssetPicker.nftTab",
+          "kind": "cssText",
+          "propertyName": "nftTab",
+          "line": 10,
+          "value": "button",
+          "text": "NFTs"
         },
         {
           "id": "AssetPicker.noNftInfo",
@@ -536,6 +782,20 @@
           "value": "[data-testid=\"bridge-asset-picker-search-input\"]"
         },
         {
+          "id": "BridgeQuotePage.backButton",
+          "kind": "css",
+          "propertyName": "backButton",
+          "line": 25,
+          "value": "[aria-label=\"Back\"]"
+        },
+        {
+          "id": "BridgeQuotePage.closeButton",
+          "kind": "css",
+          "propertyName": "closeButton",
+          "line": 27,
+          "value": "[aria-label=\"Close\"]"
+        },
+        {
           "id": "BridgeQuotePage.confirmButton",
           "kind": "css",
           "propertyName": "confirmButton",
@@ -563,6 +823,14 @@
           "value": "[data-testid=\"bridge-destination-button\"]"
         },
         {
+          "id": "BridgeQuotePage.fetchingQuotesLabel",
+          "kind": "tagText",
+          "propertyName": "fetchingQuotesLabel",
+          "line": 40,
+          "value": "p",
+          "text": "Fetching quotes..."
+        },
+        {
           "id": "BridgeQuotePage.gasIncludedIndicator",
           "kind": "css",
           "propertyName": "gasIncludedIndicator",
@@ -575,6 +843,21 @@
           "propertyName": "gasSponsoredIndicator",
           "line": 47,
           "value": "[data-testid=\"network-fees-sponsored\"]"
+        },
+        {
+          "id": "BridgeQuotePage.insufficientFundsButton",
+          "kind": "cssText",
+          "propertyName": "insufficientFundsButton",
+          "line": 49,
+          "value": "[data-testid=\"bridge-cta-button\"]",
+          "text": "Insufficient funds"
+        },
+        {
+          "id": "BridgeQuotePage.maxButton",
+          "kind": "text",
+          "propertyName": "maxButton",
+          "line": 54,
+          "text": "Max"
         },
         {
           "id": "BridgeQuotePage.moreETHneededForGas",
@@ -610,6 +893,14 @@
           "propertyName": "priceImpactQuoteCardButton",
           "line": 67,
           "value": "[data-testid=\"price-impact-warning-button\"]"
+        },
+        {
+          "id": "BridgeQuotePage.rwaGeoRestrictedMessage",
+          "kind": "cssText",
+          "propertyName": "rwaGeoRestrictedMessage",
+          "line": 70,
+          "value": "[data-testid=\"bridge-no-quotes\"]",
+          "text": "This swap isn't available in your region."
         },
         {
           "id": "BridgeQuotePage.slippageCustomButton",
@@ -734,6 +1025,14 @@
       "relativePath": "pages/confirmations/add-token-confirmations.ts",
       "selectors": [
         {
+          "id": "AddTokenConfirmation.addTokenConfirmationTitle",
+          "kind": "cssText",
+          "propertyName": "addTokenConfirmationTitle",
+          "line": 4,
+          "value": ".page-container__title",
+          "text": "Add suggested tokens"
+        },
+        {
           "id": "AddTokenConfirmation.confirmAddTokenButton",
           "kind": "css",
           "propertyName": "confirmAddTokenButton",
@@ -772,6 +1071,14 @@
           "propertyName": "confirmAlertButton",
           "line": 4,
           "value": "[data-testid=\"alert-modal-button\"]"
+        },
+        {
+          "id": "AlertModal.insufficientFundsAlert",
+          "kind": "cssText",
+          "propertyName": "insufficientFundsAlert",
+          "line": 8,
+          "value": "[data-testid=\"alert-modal__selected-alert\"]",
+          "text": "You do not have enough ETH in your account to pay for network fees."
         }
       ]
     },
@@ -805,18 +1112,41 @@
     {
       "className": "BitcoinDappConfirmation",
       "relativePath": "pages/confirmations/bitcoin-dapp-confirmation.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "BitcoinDappConfirmation.approveButton",
+          "kind": "text",
+          "propertyName": "approveButton",
+          "line": 8,
+          "text": "Approve"
+        }
+      ]
     },
     {
       "className": "Confirmation",
       "relativePath": "pages/confirmations/confirmation.ts",
       "selectors": [
         {
+          "id": "Confirmation.accountAddressDetails",
+          "kind": "tagText",
+          "propertyName": "accountAddressDetails",
+          "line": 6,
+          "value": "p",
+          "text": "Account address"
+        },
+        {
           "id": "Confirmation.addressDisplaySelector",
           "kind": "css",
           "propertyName": "addressDisplaySelector",
           "line": 11,
           "value": "[data-testid=\"recipient-address\"] [data-testid=\"confirm-info-row-display-name\"]"
+        },
+        {
+          "id": "Confirmation.confirmationHeadingTitle",
+          "kind": "text",
+          "propertyName": "confirmationHeadingTitle",
+          "line": 14,
+          "text": "Confirmation Dialog"
         },
         {
           "id": "Confirmation.footerCancelButton",
@@ -833,6 +1163,34 @@
           "value": "[data-testid=\"confirm-footer-button\"]"
         },
         {
+          "id": "Confirmation.formComboFieldInputSelector",
+          "kind": "css",
+          "propertyName": "formComboFieldInputSelector",
+          "line": 24,
+          "value": ".form-combo-field input"
+        },
+        {
+          "id": "Confirmation.formComboFieldOptionPrimarySelector",
+          "kind": "css",
+          "propertyName": "formComboFieldOptionPrimarySelector",
+          "line": 26,
+          "value": ".form-combo-field__option-primary"
+        },
+        {
+          "id": "Confirmation.formComboFieldOptionSecondarySelector",
+          "kind": "css",
+          "propertyName": "formComboFieldOptionSecondarySelector",
+          "line": 29,
+          "value": ".form-combo-field__option-secondary"
+        },
+        {
+          "id": "Confirmation.formComboFieldSelector",
+          "kind": "css",
+          "propertyName": "formComboFieldSelector",
+          "line": 32,
+          "value": ".form-combo-field"
+        },
+        {
           "id": "Confirmation.headerAccountDetailsButton",
           "kind": "css",
           "propertyName": "headerAccountDetailsButton",
@@ -845,6 +1203,13 @@
           "propertyName": "inlineAlertButton",
           "line": 37,
           "value": "[data-testid=\"inline-alert\"]"
+        },
+        {
+          "id": "Confirmation.nameSelector",
+          "kind": "css",
+          "propertyName": "nameSelector",
+          "line": 39,
+          "value": ".name"
         },
         {
           "id": "Confirmation.navigationTitle",
@@ -873,6 +1238,21 @@
           "propertyName": "rejectAllButton",
           "line": 48,
           "value": "[data-testid=\"confirm-nav__reject-all\"]"
+        },
+        {
+          "id": "Confirmation.saveButtonSelector",
+          "kind": "tagText",
+          "propertyName": "saveButtonSelector",
+          "line": 50,
+          "value": "button",
+          "text": "Save"
+        },
+        {
+          "id": "Confirmation.scrollToBottomButton",
+          "kind": "css",
+          "propertyName": "scrollToBottomButton",
+          "line": 52,
+          "value": ".confirm-scroll-to-bottom__button"
         },
         {
           "id": "Confirmation.sectionCollapseButton",
@@ -922,6 +1302,30 @@
           "value": "confirm-btn"
         },
         {
+          "id": "ConnectAccountConfirmation.connectAccountConfirmationButton",
+          "kind": "tagText",
+          "propertyName": "connectAccountConfirmationButton",
+          "line": 16,
+          "value": "button",
+          "text": "Connect"
+        },
+        {
+          "id": "ConnectAccountConfirmation.connectAccountConfirmationTitle",
+          "kind": "tagText",
+          "propertyName": "connectAccountConfirmationTitle",
+          "line": 21,
+          "value": "p",
+          "text": "Connect this website with MetaMask"
+        },
+        {
+          "id": "ConnectAccountConfirmation.editAccountButton",
+          "kind": "tagText",
+          "propertyName": "editAccountButton",
+          "line": 28,
+          "value": "button",
+          "text": "Edit accounts"
+        },
+        {
           "id": "ConnectAccountConfirmation.editPermissionsButton",
           "kind": "css",
           "propertyName": "editPermissionsButton",
@@ -940,7 +1344,46 @@
     {
       "className": "DecryptMessageConfirmation",
       "relativePath": "pages/confirmations/decrypt-message-confirmation.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "DecryptMessageConfirmation.accountBalanceValue",
+          "kind": "css",
+          "propertyName": "accountBalanceValue",
+          "line": 4,
+          "value": ".request-decrypt-message__balance-value"
+        },
+        {
+          "id": "DecryptMessageConfirmation.confirmDecryptMessageButton",
+          "kind": "tagText",
+          "propertyName": "confirmDecryptMessageButton",
+          "line": 7,
+          "value": "button",
+          "text": "Decrypt"
+        },
+        {
+          "id": "DecryptMessageConfirmation.decryptedMessage",
+          "kind": "css",
+          "propertyName": "decryptedMessage",
+          "line": 12,
+          "value": ".request-decrypt-message__message-text"
+        },
+        {
+          "id": "DecryptMessageConfirmation.decryptMessageButton",
+          "kind": "tagText",
+          "propertyName": "decryptMessageButton",
+          "line": 14,
+          "value": "div",
+          "text": "Decrypt message"
+        },
+        {
+          "id": "DecryptMessageConfirmation.decryptMessageConfirmationTitle",
+          "kind": "cssText",
+          "propertyName": "decryptMessageConfirmationTitle",
+          "line": 19,
+          "value": ".request-decrypt-message__header__text",
+          "text": "Decrypt request"
+        }
+      ]
     },
     {
       "className": "ContractDeploymentConfirmation",
@@ -966,11 +1409,91 @@
           "value": "[data-testid=\"edit-spending-cap-icon\"]"
         },
         {
+          "id": "ERC20ApproveTransactionConfirmation.estimatedChangesSection",
+          "kind": "cssText",
+          "propertyName": "estimatedChangesSection",
+          "line": 12,
+          "value": "p",
+          "textExpression": "tEn('simulationDetailsTitle')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.interactingWithSection",
+          "kind": "cssText",
+          "propertyName": "interactingWithSection",
+          "line": 17,
+          "value": "p",
+          "textExpression": "tEn('interactingWith')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.methodSection",
+          "kind": "cssText",
+          "propertyName": "methodSection",
+          "line": 22,
+          "value": "p",
+          "textExpression": "tEn('methodData')"
+        },
+        {
           "id": "ERC20ApproveTransactionConfirmation.nftTokenValue",
           "kind": "css",
           "propertyName": "nftTokenValue",
           "line": 27,
           "value": "[data-testid=\"simulation-token-value\"]"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.requestFromSection",
+          "kind": "cssText",
+          "propertyName": "requestFromSection",
+          "line": 30,
+          "value": "p",
+          "textExpression": "tEn('requestFrom')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.revokeTitle",
+          "kind": "cssText",
+          "propertyName": "revokeTitle",
+          "line": 35,
+          "value": "h2",
+          "textExpression": "tEn('confirmTitleRevokeApproveTransaction')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.spenderSection",
+          "kind": "cssText",
+          "propertyName": "spenderSection",
+          "line": 40,
+          "value": "p",
+          "textExpression": "tEn('spender')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.spendingCapPermissionDescription",
+          "kind": "cssText",
+          "propertyName": "spendingCapPermissionDescription",
+          "line": 45,
+          "value": "p",
+          "textExpression": "tEn('confirmTitleDescERC20ApproveTransaction')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.spendingCapRequestTitle",
+          "kind": "cssText",
+          "propertyName": "spendingCapRequestTitle",
+          "line": 50,
+          "value": "h2",
+          "textExpression": "tEn('confirmTitlePermitTokens')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.spendingCapSection",
+          "kind": "cssText",
+          "propertyName": "spendingCapSection",
+          "line": 55,
+          "value": "p",
+          "textExpression": "tEn('spendingCap')"
+        },
+        {
+          "id": "ERC20ApproveTransactionConfirmation.withdrawSection",
+          "kind": "cssText",
+          "propertyName": "withdrawSection",
+          "line": 60,
+          "value": "p",
+          "textExpression": "tEn('simulationApproveHeading')"
         }
       ]
     },
@@ -1000,11 +1523,26 @@
           "value": "[data-testid=\"gas-fee-modal-cancel-button\"]"
         },
         {
+          "id": "GasFeeModal.editGasFeeModalTitle",
+          "kind": "tagText",
+          "propertyName": "editGasFeeModalTitle",
+          "line": 21,
+          "value": "h4",
+          "text": "Edit gas fee"
+        },
+        {
           "id": "GasFeeModal.estimatesModal",
           "kind": "css",
           "propertyName": "estimatesModal",
           "line": 23,
           "value": "[data-testid=\"gas-fee-estimates-modal\"]"
+        },
+        {
+          "id": "GasFeeModal.gasLimitInput",
+          "kind": "css",
+          "propertyName": "gasLimitInput",
+          "line": 26,
+          "value": "[id=\"gas-input\"]"
         },
         {
           "id": "GasFeeModal.gasOptionAdvanced",
@@ -1040,6 +1578,27 @@
           "propertyName": "gasOptionSiteSuggested",
           "line": 39,
           "value": "[data-testid=\"gas-option-site_suggested\"]"
+        },
+        {
+          "id": "GasFeeModal.gasPriceInput",
+          "kind": "css",
+          "propertyName": "gasPriceInput",
+          "line": 42,
+          "value": "[id=\"gas-price-input\"]"
+        },
+        {
+          "id": "GasFeeModal.maxBaseFeeInput",
+          "kind": "css",
+          "propertyName": "maxBaseFeeInput",
+          "line": 44,
+          "value": "[id=\"max-base-fee-input\"]"
+        },
+        {
+          "id": "GasFeeModal.priorityFeeInput",
+          "kind": "css",
+          "propertyName": "priorityFeeInput",
+          "line": 46,
+          "value": "[id=\"priority-fee-input\"]"
         },
         {
           "id": "GasFeeModal.saveButton",
@@ -1100,12 +1659,58 @@
     {
       "className": "GetEncryptionKeyConfirmation",
       "relativePath": "pages/confirmations/get-encryption-key-confirmation.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "GetEncryptionKeyConfirmation.accountBalanceValue",
+          "kind": "css",
+          "propertyName": "accountBalanceValue",
+          "line": 4,
+          "value": ".request-encryption-public-key__balance-value"
+        },
+        {
+          "id": "GetEncryptionKeyConfirmation.cancelEncryptionKeyButton",
+          "kind": "tagText",
+          "propertyName": "cancelEncryptionKeyButton",
+          "line": 7,
+          "value": "button",
+          "text": "Cancel"
+        },
+        {
+          "id": "GetEncryptionKeyConfirmation.getEncryptionKeyConfirmationTitle",
+          "kind": "cssText",
+          "propertyName": "getEncryptionKeyConfirmationTitle",
+          "line": 14,
+          "value": ".request-encryption-public-key__header__text",
+          "text": "Request encryption public key"
+        },
+        {
+          "id": "GetEncryptionKeyConfirmation.provideEncryptionKeyButton",
+          "kind": "tagText",
+          "propertyName": "provideEncryptionKeyButton",
+          "line": 19,
+          "value": "button",
+          "text": "Provide"
+        }
+      ]
     },
     {
       "className": "PermitConfirmation",
       "relativePath": "pages/confirmations/permit-confirmation.ts",
       "selectors": [
+        {
+          "id": "PermitConfirmation.addressName",
+          "kind": "css",
+          "propertyName": "addressName",
+          "line": 6,
+          "value": ".name__name"
+        },
+        {
+          "id": "PermitConfirmation.addressValue",
+          "kind": "css",
+          "propertyName": "addressValue",
+          "line": 11,
+          "value": ".name__value"
+        },
         {
           "id": "PermitConfirmation.confirmDescription",
           "kind": "testId",
@@ -1196,6 +1801,19 @@
           "value": "wallet-initiated-header-back-button"
         },
         {
+          "id": "PerpsWithdrawConfirmation.headerTitle",
+          "kind": "xpath",
+          "propertyName": "headerTitle",
+          "line": 35,
+          "chunks": [
+            "//*[@data-testid='wallet-initiated-header-back-button']/following-sibling::*[normalize-space(.)='",
+            "']"
+          ],
+          "params": [
+            "tEn(\n      'perpsWithdrawFundsTitle',\n    )"
+          ]
+        },
+        {
           "id": "PerpsWithdrawConfirmation.payWithRow",
           "kind": "testId",
           "propertyName": "payWithRow",
@@ -1223,6 +1841,20 @@
       "relativePath": "pages/confirmations/personal-sign-confirmation.ts",
       "selectors": [
         {
+          "id": "PersonalSignConfirmation.messageSelector",
+          "kind": "text",
+          "propertyName": "messageSelector",
+          "line": 7,
+          "text": "Example `personal_sign` message"
+        },
+        {
+          "id": "PersonalSignConfirmation.originSelector",
+          "kind": "text",
+          "propertyName": "originSelector",
+          "line": 11,
+          "textExpression": "DAPP_HOST_ADDRESS"
+        },
+        {
           "id": "PersonalSignConfirmation.signatureHeadingTitle",
           "kind": "testId",
           "propertyName": "signatureHeadingTitle",
@@ -1242,6 +1874,20 @@
           "propertyName": "signinMessageTitle",
           "line": 23,
           "value": "confirm-title-description"
+        },
+        {
+          "id": "PersonalSignConfirmation.signinMessageUrl",
+          "kind": "text",
+          "propertyName": "signinMessageUrl",
+          "line": 28,
+          "text": "https://127.0.0.1:8080"
+        },
+        {
+          "id": "PersonalSignConfirmation.siweMessage",
+          "kind": "text",
+          "propertyName": "siweMessage",
+          "line": 32,
+          "text": "I accept the MetaMask Terms of Service: https://community.metamask.io/tos"
         }
       ]
     },
@@ -1269,6 +1915,22 @@
           "propertyName": "connectMoreChainsButton",
           "line": 10,
           "value": "[data-testid=\"connect-more-chains-button\"]"
+        },
+        {
+          "id": "ReviewPermissionsConfirmation.reviewPermissionsConfirmationTitle",
+          "kind": "tagText",
+          "propertyName": "reviewPermissionsConfirmationTitle",
+          "line": 15,
+          "value": "h3",
+          "text": "Review permissions"
+        },
+        {
+          "id": "ReviewPermissionsConfirmation.useEnabledNetworksMessage",
+          "kind": "tagText",
+          "propertyName": "useEnabledNetworksMessage",
+          "line": 20,
+          "value": "p",
+          "text": "Use your enabled networks"
         }
       ]
     },
@@ -1343,6 +2005,13 @@
       "relativePath": "pages/confirmations/snap-sign-in-confirmation.ts",
       "selectors": [
         {
+          "id": "SnapSignInConfirmation.addressTestId",
+          "kind": "css",
+          "propertyName": "addressTestId",
+          "line": 4,
+          "value": "snap-ui-address"
+        },
+        {
           "id": "SnapSignInConfirmation.cancelButton",
           "kind": "testId",
           "propertyName": "cancelButton",
@@ -1355,6 +2024,14 @@
           "propertyName": "confirmButton",
           "line": 11,
           "value": "confirm-sign-in-confirm-snap-footer-button"
+        },
+        {
+          "id": "SnapSignInConfirmation.header",
+          "kind": "tagText",
+          "propertyName": "header",
+          "line": 18,
+          "value": "h2",
+          "text": "Sign-in request"
         }
       ]
     },
@@ -1362,6 +2039,13 @@
       "className": "SnapSignMessageConfirmation",
       "relativePath": "pages/confirmations/snap-sign-message-confirmation.ts",
       "selectors": [
+        {
+          "id": "SnapSignMessageConfirmation.addressTestId",
+          "kind": "css",
+          "propertyName": "addressTestId",
+          "line": 4,
+          "value": "snap-ui-address"
+        },
         {
           "id": "SnapSignMessageConfirmation.cancelButton",
           "kind": "testId",
@@ -1375,6 +2059,14 @@
           "propertyName": "confirmButton",
           "line": 11,
           "value": "confirm-sign-message-confirm-snap-footer-button"
+        },
+        {
+          "id": "SnapSignMessageConfirmation.header",
+          "kind": "tagText",
+          "propertyName": "header",
+          "line": 18,
+          "value": "h2",
+          "text": "Sign message"
         }
       ]
     },
@@ -1382,6 +2074,13 @@
       "className": "SnapSignTransactionConfirmation",
       "relativePath": "pages/confirmations/snap-sign-transaction-confirmation.ts",
       "selectors": [
+        {
+          "id": "SnapSignTransactionConfirmation.addressTestId",
+          "kind": "css",
+          "propertyName": "addressTestId",
+          "line": 4,
+          "value": "snap-ui-address"
+        },
         {
           "id": "SnapSignTransactionConfirmation.cancelButton",
           "kind": "testId",
@@ -1395,6 +2094,21 @@
           "propertyName": "confirmButton",
           "line": 11,
           "value": "confirm-sign-transaction-confirm-snap-footer-button"
+        },
+        {
+          "id": "SnapSignTransactionConfirmation.header",
+          "kind": "tagText",
+          "propertyName": "header",
+          "line": 18,
+          "value": "h2",
+          "text": "Sign transaction"
+        },
+        {
+          "id": "SnapSignTransactionConfirmation.insufficientFundsBanner",
+          "kind": "text",
+          "propertyName": "insufficientFundsBanner",
+          "line": 23,
+          "text": "Insufficient funds"
         }
       ]
     },
@@ -1402,6 +2116,13 @@
       "className": "SnapTransactionConfirmation",
       "relativePath": "pages/confirmations/snap-transaction-confirmation.ts",
       "selectors": [
+        {
+          "id": "SnapTransactionConfirmation.addressTestId",
+          "kind": "css",
+          "propertyName": "addressTestId",
+          "line": 4,
+          "value": "snap-ui-address"
+        },
         {
           "id": "SnapTransactionConfirmation.cancelButton",
           "kind": "testId",
@@ -1415,6 +2136,22 @@
           "propertyName": "confirmButton",
           "line": 11,
           "value": "confirm-sign-and-send-transaction-confirm-snap-footer-button"
+        },
+        {
+          "id": "SnapTransactionConfirmation.header",
+          "kind": "tagText",
+          "propertyName": "header",
+          "line": 18,
+          "value": "h2",
+          "text": "Transaction request"
+        },
+        {
+          "id": "SnapTransactionConfirmation.securityAlertsError",
+          "kind": "tagText",
+          "propertyName": "securityAlertsError",
+          "line": 23,
+          "value": "p",
+          "text": "Because of an error, we couldn't check for security alerts."
         }
       ]
     },
@@ -1422,6 +2159,13 @@
       "className": "SpeedUpAndCancelModal",
       "relativePath": "pages/confirmations/speed-up-and-cancel-modal.ts",
       "selectors": [
+        {
+          "id": "SpeedUpAndCancelModal.cancelTransactionTitle",
+          "kind": "text",
+          "propertyName": "cancelTransactionTitle",
+          "line": 9,
+          "text": "Cancel transaction"
+        },
         {
           "id": "SpeedUpAndCancelModal.confirmButton",
           "kind": "css",
@@ -1442,6 +2186,20 @@
           "propertyName": "speedRow",
           "line": 21,
           "value": "[data-testid=\"gas-fee-details-speed\"]"
+        },
+        {
+          "id": "SpeedUpAndCancelModal.speedUpTransactionTitle",
+          "kind": "text",
+          "propertyName": "speedUpTransactionTitle",
+          "line": 24,
+          "text": "Speed up transaction"
+        },
+        {
+          "id": "SpeedUpAndCancelModal.tenPercentText",
+          "kind": "text",
+          "propertyName": "tenPercentText",
+          "line": 28,
+          "text": "10% increase"
         }
       ]
     },
@@ -1462,6 +2220,13 @@
           "propertyName": "cancelButton",
           "line": 6,
           "value": "confirmation-cancel-button"
+        },
+        {
+          "id": "SwitchNetworkConfirmation.switchNetworkMessage",
+          "kind": "text",
+          "propertyName": "switchNetworkMessage",
+          "line": 10,
+          "text": "Allow this site to switch the network"
         }
       ]
     },
@@ -1477,11 +2242,43 @@
           "value": "[data-testid=\"confirm-footer-button\"]"
         },
         {
+          "id": "TokenTransferTransactionConfirmation.interactingWithParagraph",
+          "kind": "cssText",
+          "propertyName": "interactingWithParagraph",
+          "line": 8,
+          "value": "p",
+          "textExpression": "tEn('interactingWith')"
+        },
+        {
           "id": "TokenTransferTransactionConfirmation.networkFee",
           "kind": "css",
           "propertyName": "networkFee",
           "line": 13,
           "value": "[data-testid=\"first-gas-field\"]"
+        },
+        {
+          "id": "TokenTransferTransactionConfirmation.networkFeeParagraph",
+          "kind": "cssText",
+          "propertyName": "networkFeeParagraph",
+          "line": 15,
+          "value": "p",
+          "textExpression": "tEn('networkFee')"
+        },
+        {
+          "id": "TokenTransferTransactionConfirmation.networkParagraph",
+          "kind": "cssText",
+          "propertyName": "networkParagraph",
+          "line": 20,
+          "value": "p",
+          "textExpression": "tEn('transactionFlowNetwork')"
+        },
+        {
+          "id": "TokenTransferTransactionConfirmation.networkTextElement",
+          "kind": "cssText",
+          "propertyName": "networkTextElement",
+          "line": 25,
+          "value": "p",
+          "textExpression": "networkText"
         }
       ]
     },
@@ -1532,6 +2329,14 @@
           "value": "[data-testid=\"advanced-gas-fee-edit\"]"
         },
         {
+          "id": "TransactionConfirmation.advancedGasSet",
+          "kind": "tagText",
+          "propertyName": "advancedGasSet",
+          "line": 26,
+          "value": "p",
+          "text": "Advanced"
+        },
+        {
           "id": "TransactionConfirmation.alertBanner",
           "kind": "css",
           "propertyName": "alertBanner",
@@ -1551,6 +2356,13 @@
           "propertyName": "customNonceInput",
           "line": 34,
           "value": "[data-testid=\"custom-nonce-input\"]"
+        },
+        {
+          "id": "TransactionConfirmation.dappInitiatedHeadingTitle",
+          "kind": "text",
+          "propertyName": "dappInitiatedHeadingTitle",
+          "line": 37,
+          "textExpression": "tEn('confirmTitleSending')"
         },
         {
           "id": "TransactionConfirmation.editGasFeeIcon",
@@ -1595,6 +2407,20 @@
           "value": "[data-testid=\"native-currency\"]"
         },
         {
+          "id": "TransactionConfirmation.gasFeeCloseToastMessage",
+          "kind": "css",
+          "propertyName": "gasFeeCloseToastMessage",
+          "line": 72,
+          "value": ".toast-container button[aria-label=\"Close\"]"
+        },
+        {
+          "id": "TransactionConfirmation.gasFeeEstimate",
+          "kind": "text",
+          "propertyName": "gasFeeEstimate",
+          "line": 75,
+          "textExpression": "amount"
+        },
+        {
           "id": "TransactionConfirmation.gasFeeFiatText",
           "kind": "css",
           "propertyName": "gasFeeFiatText",
@@ -1637,6 +2463,13 @@
           "value": "[data-testid=\"selected-gas-fee-token\"]"
         },
         {
+          "id": "TransactionConfirmation.gasInputs",
+          "kind": "css",
+          "propertyName": "gasInputs",
+          "line": 95,
+          "value": "input[type=\"number\"]"
+        },
+        {
           "id": "TransactionConfirmation.gasLimitInput",
           "kind": "css",
           "propertyName": "gasLimitInput",
@@ -1672,11 +2505,51 @@
           "value": "[data-testid=\"paid-by-meta-mask\"]"
         },
         {
+          "id": "TransactionConfirmation.recipientAddressDisplay",
+          "kind": "cssText",
+          "propertyName": "recipientAddressDisplay",
+          "line": 127,
+          "value": "[data-testid=\"recipient-address\"]",
+          "textExpression": "address"
+        },
+        {
+          "id": "TransactionConfirmation.reviewAlertButton",
+          "kind": "tagText",
+          "propertyName": "reviewAlertButton",
+          "line": 132,
+          "value": "button",
+          "text": "Review alert"
+        },
+        {
+          "id": "TransactionConfirmation.saveButton",
+          "kind": "tagText",
+          "propertyName": "saveButton",
+          "line": 137,
+          "value": "button",
+          "text": "Save"
+        },
+        {
+          "id": "TransactionConfirmation.sendAmountFiat",
+          "kind": "cssText",
+          "propertyName": "sendAmountFiat",
+          "line": 139,
+          "value": ".text-alternative",
+          "textExpression": "amount"
+        },
+        {
           "id": "TransactionConfirmation.senderAccount",
           "kind": "css",
           "propertyName": "senderAccount",
           "line": 144,
           "value": "[data-testid=\"sender-address\"]"
+        },
+        {
+          "id": "TransactionConfirmation.shieldFooterCoverageIndicator",
+          "kind": "cssText",
+          "propertyName": "shieldFooterCoverageIndicator",
+          "line": 146,
+          "value": "[data-alert-key=\"shieldFooterCoverageIndicator\"]",
+          "textExpression": "status"
         },
         {
           "id": "TransactionConfirmation.simulationDetailsLayout",
@@ -1712,6 +2585,13 @@
           "propertyName": "walletInitiatedBackButton",
           "line": 165,
           "value": "[data-testid=\"wallet-initiated-header-back-button\"]"
+        },
+        {
+          "id": "TransactionConfirmation.walletInitiatedHeadingTitle",
+          "kind": "text",
+          "propertyName": "walletInitiatedHeadingTitle",
+          "line": 168,
+          "textExpression": "tEn('confirmTitleSending')"
         }
       ]
     },
@@ -1750,7 +2630,44 @@
     {
       "className": "CriticalErrorPage",
       "relativePath": "pages/critical-error-page.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "CriticalErrorPage.errorMessage",
+          "kind": "css",
+          "propertyName": "errorMessage",
+          "line": 8,
+          "value": ".critical-error__details"
+        },
+        {
+          "id": "CriticalErrorPage.errorPageTitle",
+          "kind": "cssText",
+          "propertyName": "errorPageTitle",
+          "line": 11,
+          "value": "h1",
+          "text": "MetaMask had trouble starting."
+        },
+        {
+          "id": "CriticalErrorPage.reinstallMetamaskLink",
+          "kind": "css",
+          "propertyName": "reinstallMetamaskLink",
+          "line": 16,
+          "value": "#critical-error-reinstall-link"
+        },
+        {
+          "id": "CriticalErrorPage.restoreAccountsLink",
+          "kind": "css",
+          "propertyName": "restoreAccountsLink",
+          "line": 18,
+          "value": "#critical-error-restore-link"
+        },
+        {
+          "id": "CriticalErrorPage.troubleStartingDescription",
+          "kind": "css",
+          "propertyName": "troubleStartingDescription",
+          "line": 20,
+          "value": "This error could be intermittent, so try restarting the extension."
+        }
+      ]
     },
     {
       "className": "DebugOptions",
@@ -1894,6 +2811,20 @@
           "value": "[data-testid=\"multichain-address-row-address\"]"
         },
         {
+          "id": "AccountDetailsModal.accountQrCodeImage",
+          "kind": "css",
+          "propertyName": "accountQrCodeImage",
+          "line": 10,
+          "value": ".qr-code__wrapper"
+        },
+        {
+          "id": "AccountDetailsModal.closeAccountModalButton",
+          "kind": "css",
+          "propertyName": "closeAccountModalButton",
+          "line": 12,
+          "value": "header button[aria-label=\"Close\"]"
+        },
+        {
           "id": "AccountDetailsModal.copyAddressButton",
           "kind": "css",
           "propertyName": "copyAddressButton",
@@ -1927,6 +2858,14 @@
           "propertyName": "saveAccountLabelButton",
           "line": 28,
           "value": "[data-testid=\"save-account-label-input\"]"
+        },
+        {
+          "id": "AccountDetailsModal.showPrivateKeyButton",
+          "kind": "cssText",
+          "propertyName": "showPrivateKeyButton",
+          "line": 31,
+          "value": "button",
+          "text": "Show private key"
         }
       ]
     },
@@ -1935,11 +2874,35 @@
       "relativePath": "pages/dialog/add-edit-network.ts",
       "selectors": [
         {
+          "id": "AddEditNetworkModal.addExplorerUrlButton",
+          "kind": "tagText",
+          "propertyName": "addExplorerUrlButton",
+          "line": 5,
+          "value": "button",
+          "text": "Add a block explorer URL"
+        },
+        {
           "id": "AddEditNetworkModal.addExplorerUrlInput",
           "kind": "testId",
           "propertyName": "addExplorerUrlInput",
           "line": 10,
           "value": "explorer-url-input"
+        },
+        {
+          "id": "AddEditNetworkModal.addExplorerUrlTitle",
+          "kind": "tagText",
+          "propertyName": "addExplorerUrlTitle",
+          "line": 14,
+          "value": "p",
+          "text": "Add a block explorer URL"
+        },
+        {
+          "id": "AddEditNetworkModal.addRpcUrlButton",
+          "kind": "tagText",
+          "propertyName": "addRpcUrlButton",
+          "line": 19,
+          "value": "button",
+          "text": "Add RPC URL"
         },
         {
           "id": "AddEditNetworkModal.backButton",
@@ -1961,6 +2924,21 @@
           "propertyName": "chainIdInputField",
           "line": 29,
           "value": "network-form-chain-id"
+        },
+        {
+          "id": "AddEditNetworkModal.confirmAddExplorerUrlButton",
+          "kind": "tagText",
+          "propertyName": "confirmAddExplorerUrlButton",
+          "line": 33,
+          "value": "button",
+          "text": "Add URL"
+        },
+        {
+          "id": "AddEditNetworkModal.currencySymbolInputField",
+          "kind": "css",
+          "propertyName": "currencySymbolInputField",
+          "line": 38,
+          "value": "#nativeCurrency"
         },
         {
           "id": "AddEditNetworkModal.currencySymbolWarning",
@@ -2023,18 +3001,51 @@
           "propertyName": "addRpcUrlInput",
           "line": 13,
           "value": "rpc-url-input-test"
+        },
+        {
+          "id": "AddNetworkRpcUrlModal.errorMessageInvalidUrl",
+          "kind": "tagText",
+          "propertyName": "errorMessageInvalidUrl",
+          "line": 19,
+          "value": "p",
+          "text": "URLs require the appropriate HTTP/HTTPS prefix."
         }
       ]
     },
     {
       "className": "AddRpcProviderDialog",
       "relativePath": "pages/dialog/add-rpc-provider.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "AddRpcProviderDialog.addRpcProviderButton",
+          "kind": "tagText",
+          "propertyName": "addRpcProviderButton",
+          "line": 4,
+          "value": "button",
+          "text": "Approve"
+        }
+      ]
     },
     {
       "className": "AddTokensModal",
       "relativePath": "pages/dialog/add-tokens.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "AddTokensModal.addTokenButton",
+          "kind": "tagText",
+          "propertyName": "addTokenButton",
+          "line": 4,
+          "value": "button",
+          "text": "Add token"
+        },
+        {
+          "id": "AddTokensModal.tokenListItem",
+          "kind": "css",
+          "propertyName": "tokenListItem",
+          "line": 8,
+          "value": ".confirm-add-suggested-token__token-list-item"
+        }
+      ]
     },
     {
       "className": "ConfirmAlertModal",
@@ -2067,13 +3078,38 @@
           "propertyName": "alertModalSubmitButton",
           "line": 12,
           "value": "[data-testid=\"confirm-alert-modal-submit-button\"]"
+        },
+        {
+          "id": "ConfirmAlertModal.networkDisplayLocator",
+          "kind": "cssText",
+          "propertyName": "networkDisplayLocator",
+          "line": 17,
+          "value": "p",
+          "text": ""
         }
       ]
     },
     {
       "className": "CreateContractModal",
       "relativePath": "pages/dialog/create-contract.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "CreateContractModal.cancelButton",
+          "kind": "tagText",
+          "propertyName": "cancelButton",
+          "line": 4,
+          "value": "button",
+          "text": "Cancel"
+        },
+        {
+          "id": "CreateContractModal.confirmButtton",
+          "kind": "tagText",
+          "propertyName": "confirmButtton",
+          "line": 6,
+          "value": "button",
+          "text": "Confirm"
+        }
+      ]
     },
     {
       "className": "DappBarNetworkSelectorPopover",
@@ -2098,12 +3134,43 @@
     {
       "className": "DappConnectionsNetworkModal",
       "relativePath": "pages/dialog/dapp-connections-network-modal.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "DappConnectionsNetworkModal.dappAddCustomNetworkButton",
+          "kind": "tagText",
+          "propertyName": "dappAddCustomNetworkButton",
+          "line": 5,
+          "value": "button",
+          "text": "Add a custom network"
+        },
+        {
+          "id": "DappConnectionsNetworkModal.dappNetworksHeader",
+          "kind": "tagText",
+          "propertyName": "dappNetworksHeader",
+          "line": 10,
+          "value": "h4",
+          "text": "Manage networks"
+        }
+      ]
     },
     {
       "className": "EditConnectedAccountsModal",
       "relativePath": "pages/dialog/edit-connected-accounts-modal.ts",
       "selectors": [
+        {
+          "id": "EditConnectedAccountsModal.accountCell",
+          "kind": "css",
+          "propertyName": "accountCell",
+          "line": 4,
+          "value": ".multichain-account-cell"
+        },
+        {
+          "id": "EditConnectedAccountsModal.accountCheckbox",
+          "kind": "css",
+          "propertyName": "accountCheckbox",
+          "line": 6,
+          "value": "input[type=\"checkbox\"]"
+        },
         {
           "id": "EditConnectedAccountsModal.accountName",
           "kind": "testId",
@@ -2137,13 +3204,52 @@
           "propertyName": "connectAccountsButton",
           "line": 21,
           "value": "connect-more-accounts-button"
+        },
+        {
+          "id": "EditConnectedAccountsModal.editAccountsModalTitle",
+          "kind": "tagText",
+          "propertyName": "editAccountsModalTitle",
+          "line": 27,
+          "value": "h4",
+          "text": "Edit accounts"
         }
       ]
     },
     {
       "className": "NetworkPermissionSelectModal",
       "relativePath": "pages/dialog/network-permission-select-modal.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "NetworkPermissionSelectModal.checkBox",
+          "kind": "css",
+          "propertyName": "checkBox",
+          "line": 6,
+          "value": "input[type=\"checkbox\"]"
+        },
+        {
+          "id": "NetworkPermissionSelectModal.confirmEditButton",
+          "kind": "tagText",
+          "propertyName": "confirmEditButton",
+          "line": 8,
+          "value": "button",
+          "text": "Update"
+        },
+        {
+          "id": "NetworkPermissionSelectModal.editNetworksModalTitle",
+          "kind": "tagText",
+          "propertyName": "editNetworksModalTitle",
+          "line": 15,
+          "value": "h4",
+          "text": "Edit networks"
+        },
+        {
+          "id": "NetworkPermissionSelectModal.networkListItems",
+          "kind": "css",
+          "propertyName": "networkListItems",
+          "line": 20,
+          "value": ".multichain-network-list-item"
+        }
+      ]
     },
     {
       "className": "NetworkSwitchAlertModal",
@@ -2169,6 +3275,22 @@
       "className": "NetworkSwitchModalConfirmation",
       "relativePath": "pages/dialog/network-switch-modal-confirmation.ts",
       "selectors": [
+        {
+          "id": "NetworkSwitchModalConfirmation.addNetworkMessage",
+          "kind": "tagText",
+          "propertyName": "addNetworkMessage",
+          "line": 4,
+          "value": "h3",
+          "text": "Want to add this network?"
+        },
+        {
+          "id": "NetworkSwitchModalConfirmation.seeDetailsButton",
+          "kind": "tagText",
+          "propertyName": "seeDetailsButton",
+          "line": 11,
+          "value": "a",
+          "text": "See details"
+        },
         {
           "id": "NetworkSwitchModalConfirmation.submitButton",
           "kind": "css",
@@ -2245,6 +3367,13 @@
           "value": "network-list-item-options-discover"
         },
         {
+          "id": "SelectNetwork.drawerOverlay",
+          "kind": "css",
+          "propertyName": "drawerOverlay",
+          "line": 29,
+          "value": "div[class*=\"bg-[var(--color-overlay-default)]\"]"
+        },
+        {
           "id": "SelectNetwork.editNetworkButton",
           "kind": "css",
           "propertyName": "editNetworkButton",
@@ -2257,6 +3386,13 @@
           "propertyName": "networksPageSuccessToast",
           "line": 37,
           "value": "networks-page-network-success-toast"
+        },
+        {
+          "id": "SelectNetwork.rpcUrlItem",
+          "kind": "css",
+          "propertyName": "rpcUrlItem",
+          "line": 41,
+          "value": ".select-rpc-url__item"
         },
         {
           "id": "SelectNetwork.searchButton",
@@ -2273,11 +3409,35 @@
           "value": "[data-testid=\"page-header-search-input\"]"
         },
         {
+          "id": "SelectNetwork.selectNetworkMessage",
+          "kind": "tagText",
+          "propertyName": "selectNetworkMessage",
+          "line": 47,
+          "value": "p",
+          "text": "Manage networks"
+        },
+        {
+          "id": "SelectNetwork.selectRpcMessage",
+          "kind": "tagText",
+          "propertyName": "selectRpcMessage",
+          "line": 52,
+          "value": "p",
+          "text": "Select RPC URL"
+        },
+        {
           "id": "SelectNetwork.showTestNetworksToggle",
           "kind": "css",
           "propertyName": "showTestNetworksToggle",
           "line": 57,
           "value": "label.toggle-button:has([data-testid=\"networks-page-show-test-networks\"])"
+        },
+        {
+          "id": "SelectNetwork.yourNetworksMessage",
+          "kind": "tagText",
+          "propertyName": "yourNetworksMessage",
+          "line": 60,
+          "value": "h4",
+          "text": "Your networks"
         }
       ]
     },
@@ -2291,6 +3451,20 @@
           "propertyName": "buttonConfirm",
           "line": 4,
           "value": "[data-testid=\"snap-install-warning-modal-confirm\"]"
+        },
+        {
+          "id": "SnapInstallWarning.checkBoxPermission",
+          "kind": "css",
+          "propertyName": "checkBoxPermission",
+          "line": 7,
+          "value": ".mm-checkbox__input"
+        },
+        {
+          "id": "SnapInstallWarning.permissionConnect",
+          "kind": "css",
+          "propertyName": "permissionConnect",
+          "line": 11,
+          "value": ".permissions-connect"
         }
       ]
     },
@@ -2299,11 +3473,51 @@
       "relativePath": "pages/dialog/snap-install.ts",
       "selectors": [
         {
+          "id": "SnapInstall.addToMetaMaskHeader",
+          "kind": "tagText",
+          "propertyName": "addToMetaMaskHeader",
+          "line": 5,
+          "value": "h3",
+          "text": "Add to MetaMask"
+        },
+        {
           "id": "SnapInstall.approveButton",
           "kind": "css",
           "propertyName": "approveButton",
           "line": 10,
           "value": "[data-testid=\"confirmation-submit-button\"]"
+        },
+        {
+          "id": "SnapInstall.closeButton",
+          "kind": "tagText",
+          "propertyName": "closeButton",
+          "line": 12,
+          "value": "button",
+          "text": "Close"
+        },
+        {
+          "id": "SnapInstall.confirmationDialogBoldUrl",
+          "kind": "tagText",
+          "propertyName": "confirmationDialogBoldUrl",
+          "line": 17,
+          "value": "b",
+          "text": "snaps.metamask.io"
+        },
+        {
+          "id": "SnapInstall.confirmationDialogLinkText",
+          "kind": "tagText",
+          "propertyName": "confirmationDialogLinkText",
+          "line": 22,
+          "value": "span",
+          "text": "That"
+        },
+        {
+          "id": "SnapInstall.confirmButton",
+          "kind": "tagText",
+          "propertyName": "confirmButton",
+          "line": 24,
+          "value": "button",
+          "text": "Confirm"
         },
         {
           "id": "SnapInstall.confirmFooterButton",
@@ -2313,11 +3527,85 @@
           "value": "[data-testid=\"confirm-footer-button\"]"
         },
         {
+          "id": "SnapInstall.connectButton",
+          "kind": "tagText",
+          "propertyName": "connectButton",
+          "line": 32,
+          "value": "button",
+          "text": "Connect"
+        },
+        {
+          "id": "SnapInstall.connectionRequestHeader",
+          "kind": "tagText",
+          "propertyName": "connectionRequestHeader",
+          "line": 37,
+          "value": "h3",
+          "text": "Connection request"
+        },
+        {
+          "id": "SnapInstall.customDialogInput",
+          "kind": "css",
+          "propertyName": "customDialogInput",
+          "line": 42,
+          "value": "#custom-input"
+        },
+        {
+          "id": "SnapInstall.dialogApproveButton",
+          "kind": "tagText",
+          "propertyName": "dialogApproveButton",
+          "line": 44,
+          "value": "button",
+          "text": "Approve"
+        },
+        {
+          "id": "SnapInstall.lifeCycleHookMessageElement",
+          "kind": "css",
+          "propertyName": "lifeCycleHookMessageElement",
+          "line": 48,
+          "value": ".snap-ui-renderer__panel"
+        },
+        {
           "id": "SnapInstall.nextPageButton",
           "kind": "css",
           "propertyName": "nextPageButton",
           "line": 50,
           "value": "[data-testid=\"page-container-footer-next\"]"
+        },
+        {
+          "id": "SnapInstall.okButton",
+          "kind": "tagText",
+          "propertyName": "okButton",
+          "line": 53,
+          "value": "button",
+          "text": "OK"
+        },
+        {
+          "id": "SnapInstall.pageFooter",
+          "kind": "css",
+          "propertyName": "pageFooter",
+          "line": 58,
+          "value": ".page-container__footer"
+        },
+        {
+          "id": "SnapInstall.permissionConnect",
+          "kind": "css",
+          "propertyName": "permissionConnect",
+          "line": 60,
+          "value": ".permissions-connect"
+        },
+        {
+          "id": "SnapInstall.promptInput",
+          "kind": "css",
+          "propertyName": "promptInput",
+          "line": 62,
+          "value": ".mm-input"
+        },
+        {
+          "id": "SnapInstall.scrollDownButton",
+          "kind": "css",
+          "propertyName": "scrollDownButton",
+          "line": 64,
+          "value": "[aria-label=\"Scroll down\"]"
         },
         {
           "id": "SnapInstall.snapInstallScrollArea",
@@ -2339,6 +3627,14 @@
           "propertyName": "snapUpdateScrollArea",
           "line": 71,
           "value": "[data-testid=\"snap-update-scroll\"]"
+        },
+        {
+          "id": "SnapInstall.visitSiteLink",
+          "kind": "tagText",
+          "propertyName": "visitSiteLink",
+          "line": 73,
+          "value": "a",
+          "text": "Visit site"
         }
       ]
     },
@@ -2352,11 +3648,26 @@
       "relativePath": "pages/dialog/snap-txinsight.ts",
       "selectors": [
         {
+          "id": "SnapTxInsights.insightTitle",
+          "kind": "tagText",
+          "propertyName": "insightTitle",
+          "line": 6,
+          "value": "span",
+          "text": "Insights Example Snap"
+        },
+        {
           "id": "SnapTxInsights.transactionAddress",
           "kind": "css",
           "propertyName": "transactionAddress",
           "line": 11,
           "value": "[data-testid=\"snap-ui-address\"]"
+        },
+        {
+          "id": "SnapTxInsights.transactionType",
+          "kind": "css",
+          "propertyName": "transactionType",
+          "line": 13,
+          "value": ".snap-ui-renderer__text"
         }
       ]
     },
@@ -2384,6 +3695,14 @@
           "propertyName": "termsOfUseCheckbox",
           "line": 14,
           "value": "terms-of-use-checkbox"
+        },
+        {
+          "id": "TermsOfUseUpdateModal.termsOfUseModalTitle",
+          "kind": "tagText",
+          "propertyName": "termsOfUseModalTitle",
+          "line": 18,
+          "value": "h3",
+          "text": "Review our Terms of Use"
         }
       ]
     },
@@ -2509,6 +3828,14 @@
           "value": "[data-testid=\"hardware-connect-close-btn\"]"
         },
         {
+          "id": "ConnectHardwareWalletPage.connectHardwareWalletPageTitle",
+          "kind": "tagText",
+          "propertyName": "connectHardwareWalletPageTitle",
+          "line": 11,
+          "value": "h4",
+          "text": "Connect a hardware wallet"
+        },
+        {
           "id": "ConnectHardwareWalletPage.connectLatticeButton",
           "kind": "css",
           "propertyName": "connectLatticeButton",
@@ -2543,6 +3870,13 @@
       "relativePath": "pages/hardware-wallet/select-hardware-wallet-account-page.ts",
       "selectors": [
         {
+          "id": "SelectHardwareWalletAccountPage.accountCheckbox",
+          "kind": "css",
+          "propertyName": "accountCheckbox",
+          "line": 8,
+          "value": ".hw-account-list__item__checkbox"
+        },
+        {
           "id": "SelectHardwareWalletAccountPage.cancelButton",
           "kind": "testId",
           "propertyName": "cancelButton",
@@ -2555,6 +3889,14 @@
           "propertyName": "forgetDeviceButton",
           "line": 16,
           "value": "[data-testid=\"hardware-forget-device-button\"]"
+        },
+        {
+          "id": "SelectHardwareWalletAccountPage.selectAccountPageTitle",
+          "kind": "tagText",
+          "propertyName": "selectAccountPageTitle",
+          "line": 19,
+          "value": "h3",
+          "text": "Select an account"
         },
         {
           "id": "SelectHardwareWalletAccountPage.unlockButton",
@@ -2570,11 +3912,34 @@
       "relativePath": "pages/header-navbar.ts",
       "selectors": [
         {
+          "id": "HeaderNavbar.accountDetailsTab",
+          "kind": "tagText",
+          "propertyName": "accountDetailsTab",
+          "line": 5,
+          "value": "button",
+          "text": "Details"
+        },
+        {
+          "id": "HeaderNavbar.accountListPage",
+          "kind": "css",
+          "propertyName": "accountListPage",
+          "line": 7,
+          "value": ".account-list-page"
+        },
+        {
           "id": "HeaderNavbar.accountMenuButton",
           "kind": "css",
           "propertyName": "accountMenuButton",
           "line": 9,
           "value": "[data-testid=\"account-menu-icon\"]"
+        },
+        {
+          "id": "HeaderNavbar.accountSnapButton",
+          "kind": "tagText",
+          "propertyName": "accountSnapButton",
+          "line": 11,
+          "value": "div",
+          "text": "Snaps"
         },
         {
           "id": "HeaderNavbar.allPermissionsButton",
@@ -2589,6 +3954,13 @@
           "propertyName": "contactsButton",
           "line": 16,
           "value": "[data-testid=\"global-menu-contacts\"]"
+        },
+        {
+          "id": "HeaderNavbar.copyAddressButton",
+          "kind": "css",
+          "propertyName": "copyAddressButton",
+          "line": 18,
+          "value": "[aria-label=\"Copy address\"]"
         },
         {
           "id": "HeaderNavbar.dappConnectionControlBar",
@@ -2638,6 +4010,13 @@
           "propertyName": "networkAddressesLink",
           "line": 37,
           "value": "[data-testid=\"networks-subtitle-test-id\"]"
+        },
+        {
+          "id": "HeaderNavbar.networkPicker",
+          "kind": "css",
+          "propertyName": "networkPicker",
+          "line": 43,
+          "value": ".mm-picker-network"
         },
         {
           "id": "HeaderNavbar.notificationCountOption",
@@ -2701,6 +4080,13 @@
           "value": "[data-testid=\"home-network-filter-all-default\"]"
         },
         {
+          "id": "HomeNetworkFilter.modalCloseButton",
+          "kind": "css",
+          "propertyName": "modalCloseButton",
+          "line": 11,
+          "value": "header button[aria-label=\"Close\"]"
+        },
+        {
           "id": "HomeNetworkFilter.networksToggle",
           "kind": "css",
           "propertyName": "networksToggle",
@@ -2728,6 +4114,27 @@
           "value": "[data-testid=\"transaction-details-back-button\"]"
         },
         {
+          "id": "ActivityTab.baseFeeLabel",
+          "kind": "xpath",
+          "propertyName": "baseFeeLabel",
+          "line": 11,
+          "value": "//div[contains(text(), 'Base fee')]"
+        },
+        {
+          "id": "ActivityTab.bridgeTransactionCompleted",
+          "kind": "css",
+          "propertyName": "bridgeTransactionCompleted",
+          "line": 15,
+          "value": "[data-tx-status=\"confirmed\"]"
+        },
+        {
+          "id": "ActivityTab.bridgeTransactionPending",
+          "kind": "css",
+          "propertyName": "bridgeTransactionPending",
+          "line": 17,
+          "value": "[data-tx-status=\"pending\"]"
+        },
+        {
           "id": "ActivityTab.cancelTransactionButton",
           "kind": "css",
           "propertyName": "cancelTransactionButton",
@@ -2742,6 +4149,13 @@
           "value": "[data-testid=\"activity-list-item\"]"
         },
         {
+          "id": "ActivityTab.confirmedTransactions",
+          "kind": "css",
+          "propertyName": "confirmedTransactions",
+          "line": 23,
+          "value": "[data-tx-status=\"confirmed\"]"
+        },
+        {
           "id": "ActivityTab.copyTransactionHashButton",
           "kind": "testId",
           "propertyName": "copyTransactionHashButton",
@@ -2749,11 +4163,32 @@
           "value": "transaction-id"
         },
         {
+          "id": "ActivityTab.failedTransactions",
+          "kind": "css",
+          "propertyName": "failedTransactions",
+          "line": 29,
+          "value": "[data-tx-status=\"failed\"]"
+        },
+        {
+          "id": "ActivityTab.feeValues",
+          "kind": "css",
+          "propertyName": "feeValues",
+          "line": 31,
+          "value": ".currency-display-component__text"
+        },
+        {
           "id": "ActivityTab.gasPrice",
           "kind": "css",
           "propertyName": "gasPrice",
           "line": 33,
           "value": "[data-testid=\"transaction-breakdown__gas-price\"]"
+        },
+        {
+          "id": "ActivityTab.pendingTransactionItems",
+          "kind": "css",
+          "propertyName": "pendingTransactionItems",
+          "line": 36,
+          "value": "[data-tx-status=\"submitted\"], [data-tx-status=\"approved\"], [data-tx-status=\"unapproved\"], [data-tx-status=\"pending\"]"
         },
         {
           "id": "ActivityTab.popoverClose",
@@ -2768,6 +4203,13 @@
           "propertyName": "speedupInlineButton",
           "line": 41,
           "value": "[data-testid=\"speed-up-button\"]"
+        },
+        {
+          "id": "ActivityTab.tooltip",
+          "kind": "css",
+          "propertyName": "tooltip",
+          "line": 43,
+          "value": ".tippy-tooltip-content"
         },
         {
           "id": "ActivityTab.transactionAmountsInActivity",
@@ -2946,6 +4388,30 @@
           "value": "account-overview__activity-tab"
         },
         {
+          "id": "HomePage.backupRemindMeLaterButton",
+          "kind": "tagText",
+          "propertyName": "backupRemindMeLaterButton",
+          "line": 30,
+          "value": "button",
+          "text": "Remind me later"
+        },
+        {
+          "id": "HomePage.backupSecretRecoveryPhraseButton",
+          "kind": "cssText",
+          "propertyName": "backupSecretRecoveryPhraseButton",
+          "line": 35,
+          "value": ".home-notification__accept-button",
+          "text": "Back up now"
+        },
+        {
+          "id": "HomePage.backupSecretRecoveryPhraseNotification",
+          "kind": "cssText",
+          "propertyName": "backupSecretRecoveryPhraseNotification",
+          "line": 40,
+          "value": ".home-notification__text",
+          "text": "Back up your Secret Recovery Phrase to keep your wallet and funds secure."
+        },
+        {
           "id": "HomePage.balance",
           "kind": "css",
           "propertyName": "balance",
@@ -2953,11 +4419,49 @@
           "value": "[data-testid$=\"overview__primary-currency\"]"
         },
         {
+          "id": "HomePage.basicFunctionalityOffWarningMessage",
+          "kind": "cssText",
+          "propertyName": "basicFunctionalityOffWarningMessage",
+          "line": 50,
+          "value": ".mm-banner-base",
+          "text": "Basic functionality is off"
+        },
+        {
+          "id": "HomePage.bitcoinAccountIcon",
+          "kind": "css",
+          "propertyName": "bitcoinAccountIcon",
+          "line": 55,
+          "value": "img[src=\"./images/bitcoin-logo.svg\"]"
+        },
+        {
           "id": "HomePage.bridgeButton",
           "kind": "css",
           "propertyName": "bridgeButton",
           "line": 57,
           "value": "[data-testid=\"eth-overview-bridge\"]"
+        },
+        {
+          "id": "HomePage.buySellButton",
+          "kind": "cssText",
+          "propertyName": "buySellButton",
+          "line": 60,
+          "value": "button",
+          "text": "Buy"
+        },
+        {
+          "id": "HomePage.closeSurveyToastBannerButton",
+          "kind": "css",
+          "propertyName": "closeSurveyToastBannerButton",
+          "line": 62,
+          "value": ".toast-container button[aria-label=\"Close\"]"
+        },
+        {
+          "id": "HomePage.closeUseNetworkNotificationModalButton",
+          "kind": "tagText",
+          "propertyName": "closeUseNetworkNotificationModalButton",
+          "line": 65,
+          "value": "h6",
+          "text": "Got it"
         },
         {
           "id": "HomePage.connectionsRemovedModal",
@@ -2995,11 +4499,39 @@
           "value": "[data-testid=\"coin-overview-balance-empty-state\"]"
         },
         {
+          "id": "HomePage.fundYourWalletBanner",
+          "kind": "text",
+          "propertyName": "fundYourWalletBanner",
+          "line": 87,
+          "text": "Fund your wallet"
+        },
+        {
+          "id": "HomePage.loadingOverlay",
+          "kind": "text",
+          "propertyName": "loadingOverlay",
+          "line": 93,
+          "text": "Connecting to Localhost 8545"
+        },
+        {
           "id": "HomePage.nftTab",
           "kind": "testId",
           "propertyName": "nftTab",
           "line": 97,
           "value": "account-overview__nfts-tab"
+        },
+        {
+          "id": "HomePage.overviewBalanceSection",
+          "kind": "css",
+          "propertyName": "overviewBalanceSection",
+          "line": 101,
+          "value": ".wallet-overview__balance"
+        },
+        {
+          "id": "HomePage.popoverBackground",
+          "kind": "css",
+          "propertyName": "popoverBackground",
+          "line": 103,
+          "value": ".popover-bg"
         },
         {
           "id": "HomePage.portfolioLink",
@@ -3016,11 +4548,27 @@
           "value": "account-value-and-suffix"
         },
         {
+          "id": "HomePage.receiveButton",
+          "kind": "cssText",
+          "propertyName": "receiveButton",
+          "line": 111,
+          "value": "button",
+          "text": "Receive"
+        },
+        {
           "id": "HomePage.revealSrpPasswordInput",
           "kind": "css",
           "propertyName": "revealSrpPasswordInput",
           "line": 113,
           "value": "[data-testid=\"input-password\"]"
+        },
+        {
+          "id": "HomePage.sendButton",
+          "kind": "cssText",
+          "propertyName": "sendButton",
+          "line": 115,
+          "value": "button",
+          "text": "Send"
         },
         {
           "id": "HomePage.shieldEntryModal",
@@ -3044,11 +4592,25 @@
           "value": "[data-testid=\"shield-entry-modal-close-button\"]"
         },
         {
+          "id": "HomePage.solanaAccountIcon",
+          "kind": "css",
+          "propertyName": "solanaAccountIcon",
+          "line": 125,
+          "value": "img[src=\"./images/solana-logo.svg\"]"
+        },
+        {
           "id": "HomePage.srpAddedToast",
           "kind": "css",
           "propertyName": "srpAddedToast",
           "line": 127,
           "value": "[data-testid=\"new-srp-added-toast\"]"
+        },
+        {
+          "id": "HomePage.srpAddedToastCloseButton",
+          "kind": "css",
+          "propertyName": "srpAddedToastCloseButton",
+          "line": 129,
+          "value": ".toast-container button[aria-label=\"Close\"]"
         },
         {
           "id": "HomePage.storageErrorToast",
@@ -3058,11 +4620,27 @@
           "value": "[data-testid=\"storage-error-toast\"]"
         },
         {
+          "id": "HomePage.storageErrorToastBackupButton",
+          "kind": "tagText",
+          "propertyName": "storageErrorToastBackupButton",
+          "line": 134,
+          "value": "span",
+          "text": "Back up Secret Recovery Phrase"
+        },
+        {
           "id": "HomePage.surveyToast",
           "kind": "css",
           "propertyName": "surveyToast",
           "line": 139,
           "value": "[data-testid=\"survey-toast\"]"
+        },
+        {
+          "id": "HomePage.swapButton",
+          "kind": "cssText",
+          "propertyName": "swapButton",
+          "line": 141,
+          "value": "button",
+          "text": "Swap"
         },
         {
           "id": "HomePage.tokensTab",
@@ -3092,11 +4670,34 @@
           "value": "[data-testid=\"import-nfts-modal-import-button\"]"
         },
         {
+          "id": "NftsTab.importNftAddressInput",
+          "kind": "css",
+          "propertyName": "importNftAddressInput",
+          "line": 10,
+          "value": "#address"
+        },
+        {
           "id": "NftsTab.importNftButton",
           "kind": "css",
           "propertyName": "importNftButton",
           "line": 12,
           "value": "[data-testid=\"import-nfts__button\"]"
+        },
+        {
+          "id": "NftsTab.importNftErrorMessageByText",
+          "kind": "tagText",
+          "propertyName": "importNftErrorMessageByText",
+          "line": 14,
+          "value": "p",
+          "textExpression": "errorMessage"
+        },
+        {
+          "id": "NftsTab.importNftModalTitle",
+          "kind": "tagText",
+          "propertyName": "importNftModalTitle",
+          "line": 19,
+          "value": "h4",
+          "text": "Import NFT"
         },
         {
           "id": "NftsTab.importNftNetworkDropdown",
@@ -3113,11 +4714,26 @@
           "value": "[data-testid=\"network-list-item-0x539\"]"
         },
         {
+          "id": "NftsTab.importNftTokenIdInput",
+          "kind": "css",
+          "propertyName": "importNftTokenIdInput",
+          "line": 27,
+          "value": "#token-id"
+        },
+        {
           "id": "NftsTab.nftIconOnActivityList",
           "kind": "css",
           "propertyName": "nftIconOnActivityList",
           "line": 29,
           "value": "[data-testid=\"nft-item\"]"
+        },
+        {
+          "id": "NftsTab.nftNameByText",
+          "kind": "tagText",
+          "propertyName": "nftNameByText",
+          "line": 31,
+          "value": "p",
+          "textExpression": "nftName"
         },
         {
           "id": "NftsTab.noNftInfo",
@@ -3326,6 +4942,14 @@
           "value": "[data-testid=\"import-tokens-modal-import-button\"]"
         },
         {
+          "id": "TokensTab.confirmImportTokenMessage",
+          "kind": "tagText",
+          "propertyName": "confirmImportTokenMessage",
+          "line": 40,
+          "value": "p",
+          "text": "Would you like to import this token?"
+        },
+        {
           "id": "TokensTab.currentNetworkOption",
           "kind": "css",
           "propertyName": "currentNetworkOption",
@@ -3396,6 +5020,22 @@
           "value": "[data-testid=\"hide-token-confirmation__hide\"]"
         },
         {
+          "id": "TokensTab.hideTokenConfirmationModalTitle",
+          "kind": "cssText",
+          "propertyName": "hideTokenConfirmationModalTitle",
+          "line": 76,
+          "value": ".hide-token-confirmation__title",
+          "text": "Hide token"
+        },
+        {
+          "id": "TokensTab.importTokenModalTitle",
+          "kind": "tagText",
+          "propertyName": "importTokenModalTitle",
+          "line": 81,
+          "value": "h4",
+          "text": "Import tokens"
+        },
+        {
           "id": "TokensTab.importTokensButton",
           "kind": "css",
           "propertyName": "importTokensButton",
@@ -3450,6 +5090,14 @@
           "propertyName": "networksToggle",
           "line": 112,
           "value": "[data-testid=\"sort-by-networks\"]"
+        },
+        {
+          "id": "TokensTab.noPriceAvailableMessage",
+          "kind": "cssText",
+          "propertyName": "noPriceAvailableMessage",
+          "line": 114,
+          "value": "[data-testid=\"multichain-token-list-item-secondary-value\"]",
+          "text": "—"
         },
         {
           "id": "TokensTab.priceChart",
@@ -3515,6 +5163,13 @@
           "value": "[data-testid=\"test-import-tokens-drop-down-custom-import\"]"
         },
         {
+          "id": "TokensTab.tokenConfirmListItem",
+          "kind": "css",
+          "propertyName": "tokenConfirmListItem",
+          "line": 146,
+          "value": ".import-tokens-modal__confirm-token-list-item-wrapper"
+        },
+        {
           "id": "TokensTab.tokenDecimalsInput",
           "kind": "css",
           "propertyName": "tokenDecimalsInput",
@@ -3522,11 +5177,34 @@
           "value": "[data-testid=\"import-tokens-modal-custom-decimals\"]"
         },
         {
+          "id": "TokensTab.tokenDecimalsTitle",
+          "kind": "cssText",
+          "propertyName": "tokenDecimalsTitle",
+          "line": 152,
+          "value": ".mm-label",
+          "text": "Token decimal"
+        },
+        {
           "id": "TokensTab.tokenFiatAmount",
           "kind": "css",
           "propertyName": "tokenFiatAmount",
           "line": 157,
           "value": "[data-testid=\"multichain-token-list-item-secondary-value\"]"
+        },
+        {
+          "id": "TokensTab.tokenImportedMessageCloseButton",
+          "kind": "css",
+          "propertyName": "tokenImportedMessageCloseButton",
+          "line": 160,
+          "value": ".actionable-message__message button[aria-label=\"Close\"]"
+        },
+        {
+          "id": "TokensTab.tokenImportedSuccessMessage",
+          "kind": "tagText",
+          "propertyName": "tokenImportedSuccessMessage",
+          "line": 163,
+          "value": "h6",
+          "text": "Token imported"
         },
         {
           "id": "TokensTab.tokenIncreaseDecreaseValue",
@@ -3599,11 +5277,40 @@
           "value": "[data-testid=\"asset-list-control-bar-action-button\"]"
         },
         {
+          "id": "TokensTab.tokenSearchInput",
+          "kind": "css",
+          "propertyName": "tokenSearchInput",
+          "line": 198,
+          "value": "input[placeholder=\"Search tokens\"]"
+        },
+        {
+          "id": "TokensTab.tokenSearchResults",
+          "kind": "css",
+          "propertyName": "tokenSearchResults",
+          "line": 200,
+          "value": ".token-list__token_component"
+        },
+        {
+          "id": "TokensTab.tokenSearchSelected",
+          "kind": "css",
+          "propertyName": "tokenSearchSelected",
+          "line": 202,
+          "value": ".token-list__tokens-container .mm-checkbox__input--checked"
+        },
+        {
           "id": "TokensTab.tokenSymbolInput",
           "kind": "css",
           "propertyName": "tokenSymbolInput",
           "line": 205,
           "value": "[data-testid=\"import-tokens-modal-custom-symbol\"]"
+        },
+        {
+          "id": "TokensTab.tokenSymbolTitle",
+          "kind": "cssText",
+          "propertyName": "tokenSymbolTitle",
+          "line": 208,
+          "value": ".mm-label",
+          "text": "Token symbol"
         }
       ]
     },
@@ -3714,6 +5421,21 @@
           "value": "[data-testid=\"account-address\"]"
         },
         {
+          "id": "AccountAddressModal.backButton",
+          "kind": "css",
+          "propertyName": "backButton",
+          "line": 6,
+          "value": "[aria-label=\"Close\"]"
+        },
+        {
+          "id": "AccountAddressModal.viewOnEtherscanButton",
+          "kind": "cssText",
+          "propertyName": "viewOnEtherscanButton",
+          "line": 10,
+          "value": "button",
+          "text": "View on Etherscan"
+        },
+        {
           "id": "AccountAddressModal.viewOnEtherscanLink",
           "kind": "css",
           "propertyName": "viewOnEtherscanLink",
@@ -3732,6 +5454,14 @@
           "propertyName": "accountAddress",
           "line": 5,
           "value": "[data-testid=\"multichain-address-row-address\"]"
+        },
+        {
+          "id": "AddressListModal.addressCopiedMessage",
+          "kind": "cssText",
+          "propertyName": "addressCopiedMessage",
+          "line": 8,
+          "value": "[data-testid=\"multichain-address-row-address\"]",
+          "text": "Address copied"
         },
         {
           "id": "AddressListModal.addressRow",
@@ -3803,11 +5533,32 @@
       "relativePath": "pages/multichain/multichain-account-details-page.ts",
       "selectors": [
         {
+          "id": "MultichainAccountDetailsPage.accountAddressRow",
+          "kind": "css",
+          "propertyName": "accountAddressRow",
+          "line": 7,
+          "value": ".multichain-account-details__row:nth-of-type(2)"
+        },
+        {
           "id": "MultichainAccountDetailsPage.accountAvatar",
           "kind": "css",
           "propertyName": "accountAvatar",
           "line": 13,
           "value": "[data-testid=\"avatar\"]"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.accountNameHeader",
+          "kind": "css",
+          "propertyName": "accountNameHeader",
+          "line": 15,
+          "value": ".multichain-page-header"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.accountNameInput",
+          "kind": "css",
+          "propertyName": "accountNameInput",
+          "line": 17,
+          "value": "input[placeholder*=\"Account\"]"
         },
         {
           "id": "MultichainAccountDetailsPage.accountNameRow",
@@ -3831,6 +5582,13 @@
           "value": "[data-testid=\"account-details-row-value-address\"]"
         },
         {
+          "id": "MultichainAccountDetailsPage.backButton",
+          "kind": "css",
+          "propertyName": "backButton",
+          "line": 32,
+          "value": "[aria-label=\"Back\"]"
+        },
+        {
           "id": "MultichainAccountDetailsPage.confirmAccountNameButton",
           "kind": "css",
           "propertyName": "confirmAccountNameButton",
@@ -3843,6 +5601,13 @@
           "propertyName": "copyAddressButton",
           "line": 37,
           "value": "[data-testid=\"address-copy-button-text\"]"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.editAccountNameButton",
+          "kind": "css",
+          "propertyName": "editAccountNameButton",
+          "line": 43,
+          "value": "[aria-label=\"Edit\"]"
         },
         {
           "id": "MultichainAccountDetailsPage.errorMessage",
@@ -3873,11 +5638,56 @@
           "value": "[data-testid=\"loading-spinner\"]"
         },
         {
+          "id": "MultichainAccountDetailsPage.networksRow",
+          "kind": "text",
+          "propertyName": "networksRow",
+          "line": 55,
+          "text": "Networks"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.privateKeyRow",
+          "kind": "text",
+          "propertyName": "privateKeyRow",
+          "line": 57,
+          "text": "Private key"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.qrCodeImage",
+          "kind": "css",
+          "propertyName": "qrCodeImage",
+          "line": 60,
+          "value": ".qr-code"
+        },
+        {
           "id": "MultichainAccountDetailsPage.removeAccountButton",
           "kind": "css",
           "propertyName": "removeAccountButton",
           "line": 63,
           "value": "[data-testid=\"account-details-row-remove-account\"]"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.removeAccountCancelButton",
+          "kind": "cssText",
+          "propertyName": "removeAccountCancelButton",
+          "line": 66,
+          "value": ".mm-modal-footer__button",
+          "text": "Cancel"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.removeAccountConfirmButton",
+          "kind": "cssText",
+          "propertyName": "removeAccountConfirmButton",
+          "line": 71,
+          "value": ".mm-modal-footer__button",
+          "text": "Remove"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.removeAccountModalHeader",
+          "kind": "tagText",
+          "propertyName": "removeAccountModalHeader",
+          "line": 76,
+          "value": "h4",
+          "text": "Remove account"
         },
         {
           "id": "MultichainAccountDetailsPage.secretRecoveryPhraseRow",
@@ -3899,6 +5709,14 @@
           "propertyName": "showSrpButton",
           "line": 88,
           "value": "[data-testid=\"account-show-srp-button\"]"
+        },
+        {
+          "id": "MultichainAccountDetailsPage.viewOnEtherscanButton",
+          "kind": "tagText",
+          "propertyName": "viewOnEtherscanButton",
+          "line": 90,
+          "value": "button",
+          "text": "View on explorer"
         },
         {
           "id": "MultichainAccountDetailsPage.walletNavigationButton",
@@ -3952,6 +5770,45 @@
       "className": "NetworkManager",
       "relativePath": "pages/network-manager.ts",
       "selectors": [
+        {
+          "id": "NetworkManager.addCustomNetworkButton",
+          "kind": "tagText",
+          "propertyName": "addCustomNetworkButton",
+          "line": 16,
+          "value": "button",
+          "text": "Add custom network"
+        },
+        {
+          "id": "NetworkManager.allPopularNetworksLabel",
+          "kind": "tagText",
+          "propertyName": "allPopularNetworksLabel",
+          "line": 21,
+          "value": "p",
+          "text": "All popular networks"
+        },
+        {
+          "id": "NetworkManager.deselectedNetworkListItem",
+          "kind": "css",
+          "propertyName": "deselectedNetworkListItem",
+          "line": 26,
+          "chunks": [
+            ":is(",
+            ".multichain-network-list-item--deselected, ",
+            " .multichain-network-list-item--deselected)"
+          ],
+          "params": [
+            "selector",
+            "selector"
+          ]
+        },
+        {
+          "id": "NetworkManager.multichainNetworkListItemByName",
+          "kind": "cssText",
+          "propertyName": "multichainNetworkListItemByName",
+          "line": 31,
+          "value": ".multichain-network-list-item",
+          "textExpression": "networkName"
+        },
         {
           "id": "NetworkManager.networkItemDeleteOption",
           "kind": "css",
@@ -4012,6 +5869,28 @@
           "propertyName": "networkPopupDeleteButton",
           "line": 55,
           "value": "[data-testid=\"confirm-delete-network-modal-delete-button\"]"
+        },
+        {
+          "id": "NetworkManager.selectedNetworkListItem",
+          "kind": "css",
+          "propertyName": "selectedNetworkListItem",
+          "line": 58,
+          "chunks": [
+            ":is(",
+            ".multichain-network-list-item--selected, ",
+            " .multichain-network-list-item--selected)"
+          ],
+          "params": [
+            "selector",
+            "selector"
+          ]
+        },
+        {
+          "id": "NetworkManager.tabList",
+          "kind": "css",
+          "propertyName": "tabList",
+          "line": 61,
+          "value": ".network-manager__tab-list"
         }
       ]
     },
@@ -4019,6 +5898,14 @@
       "className": "NFTDetailsPage",
       "relativePath": "pages/nft-details-page.ts",
       "selectors": [
+        {
+          "id": "NFTDetailsPage.confirmShowNftImageButton",
+          "kind": "tagText",
+          "propertyName": "confirmShowNftImageButton",
+          "line": 4,
+          "value": "button",
+          "text": "Confirm"
+        },
         {
           "id": "NFTDetailsPage.nftBackButton",
           "kind": "css",
@@ -4034,6 +5921,21 @@
           "value": "[data-testid=\"nft-default-image\"]"
         },
         {
+          "id": "NFTDetailsPage.nftDetailsAddress",
+          "kind": "css",
+          "propertyName": "nftDetailsAddress",
+          "line": 15,
+          "value": ".nft-details__addressButton"
+        },
+        {
+          "id": "NFTDetailsPage.nftDetailsAddressByText",
+          "kind": "cssText",
+          "propertyName": "nftDetailsAddressByText",
+          "line": 17,
+          "value": ".nft-details__addressButton",
+          "textExpression": "address"
+        },
+        {
           "id": "NFTDetailsPage.nftDetailsDescription",
           "kind": "css",
           "propertyName": "nftDetailsDescription",
@@ -4041,11 +5943,34 @@
           "value": "[data-testid=\"nft-details__description\"]"
         },
         {
+          "id": "NFTDetailsPage.nftDetailsDescriptionByText",
+          "kind": "cssText",
+          "propertyName": "nftDetailsDescriptionByText",
+          "line": 25,
+          "value": "[data-testid=\"nft-details__description\"]",
+          "textExpression": "description"
+        },
+        {
           "id": "NFTDetailsPage.nftDetailsName",
           "kind": "css",
           "propertyName": "nftDetailsName",
           "line": 30,
           "value": "[data-testid=\"nft-details__name\"]"
+        },
+        {
+          "id": "NFTDetailsPage.nftDetailsNameByText",
+          "kind": "cssText",
+          "propertyName": "nftDetailsNameByText",
+          "line": 32,
+          "value": "[data-testid=\"nft-details__name\"]",
+          "textExpression": "name"
+        },
+        {
+          "id": "NFTDetailsPage.nftImageContainer",
+          "kind": "css",
+          "propertyName": "nftImageContainer",
+          "line": 37,
+          "value": ".nft-item__container"
         },
         {
           "id": "NFTDetailsPage.nftItemButton",
@@ -4088,6 +6013,22 @@
           "propertyName": "removeNftSuccessToast",
           "line": 49,
           "value": "[data-testid=\"nft-remove-success-toast\"]"
+        },
+        {
+          "id": "NFTDetailsPage.showNftImageButton",
+          "kind": "tagText",
+          "propertyName": "showNftImageButton",
+          "line": 52,
+          "value": "button",
+          "text": "Show"
+        },
+        {
+          "id": "NFTDetailsPage.showNftImageMessage",
+          "kind": "tagText",
+          "propertyName": "showNftImageMessage",
+          "line": 57,
+          "value": "header",
+          "text": "Show NFT"
         }
       ]
     },
@@ -4157,11 +6098,26 @@
           ]
         },
         {
+          "id": "NotificationsListPage.notificationsListPageTitle",
+          "kind": "tagText",
+          "propertyName": "notificationsListPageTitle",
+          "line": 9,
+          "value": "p",
+          "text": "Notifications"
+        },
+        {
           "id": "NotificationsListPage.notificationsSettingsButton",
           "kind": "css",
           "propertyName": "notificationsSettingsButton",
           "line": 14,
           "value": "[data-testid=\"notifications-settings-button\"]"
+        },
+        {
+          "id": "NotificationsListPage.snapsNotificationMessage",
+          "kind": "css",
+          "propertyName": "snapsNotificationMessage",
+          "line": 17,
+          "value": ".snap-notifications__item__details__message"
         }
       ]
     },
@@ -4177,6 +6133,22 @@
           "value": "[data-testid=\"download-app-continue\"]"
         },
         {
+          "id": "OnboardingCompletePage.downloadAppTitle",
+          "kind": "tagText",
+          "propertyName": "downloadAppTitle",
+          "line": 7,
+          "value": "h2",
+          "text": "Scan QR code and download the app"
+        },
+        {
+          "id": "OnboardingCompletePage.keepSrpSafeMessage",
+          "kind": "tagText",
+          "propertyName": "keepSrpSafeMessage",
+          "line": 14,
+          "value": "h2",
+          "text": "Keep your Secret Recovery Phrase safe!"
+        },
+        {
           "id": "OnboardingCompletePage.manageDefaultSettingsButton",
           "kind": "css",
           "propertyName": "manageDefaultSettingsButton",
@@ -4189,6 +6161,21 @@
           "propertyName": "onboardingCompleteDoneButton",
           "line": 22,
           "value": "[data-testid=\"onboarding-complete-done\"]"
+        },
+        {
+          "id": "OnboardingCompletePage.remindMeLaterButton",
+          "kind": "tagText",
+          "propertyName": "remindMeLaterButton",
+          "line": 25,
+          "value": "h2",
+          "text": "We’ll remind you later"
+        },
+        {
+          "id": "OnboardingCompletePage.walletReadyMessage",
+          "kind": "text",
+          "propertyName": "walletReadyMessage",
+          "line": 30,
+          "text": "Your wallet is ready!"
         }
       ]
     },
@@ -4225,6 +6212,14 @@
           "value": "[data-testid=\"metametrics-data-collection-checkbox\"][data-checked=\"true\"]"
         },
         {
+          "id": "OnboardingMetricsPage.metametricsMessage",
+          "kind": "tagText",
+          "propertyName": "metametricsMessage",
+          "line": 17,
+          "value": "h2",
+          "text": "Help improve MetaMask"
+        },
+        {
           "id": "OnboardingMetricsPage.participateChecked",
           "kind": "css",
           "propertyName": "participateChecked",
@@ -4259,6 +6254,14 @@
           "value": "[data-testid=\"create-password-submit\"]"
         },
         {
+          "id": "OnboardingPasswordPage.createPasswordMessage",
+          "kind": "tagText",
+          "propertyName": "createPasswordMessage",
+          "line": 12,
+          "value": "h2",
+          "text": "MetaMask password"
+        },
+        {
           "id": "OnboardingPasswordPage.incorrectPasswordWarningMessage",
           "kind": "testId",
           "propertyName": "incorrectPasswordWarningMessage",
@@ -4286,6 +6289,22 @@
       "relativePath": "pages/onboarding/onboarding-privacy-settings-page.ts",
       "selectors": [
         {
+          "id": "OnboardingPrivacySettingsPage.addCustomNetworkButton",
+          "kind": "tagText",
+          "propertyName": "addCustomNetworkButton",
+          "line": 5,
+          "value": "p",
+          "text": "Add a network"
+        },
+        {
+          "id": "OnboardingPrivacySettingsPage.addRpcUrlButton",
+          "kind": "tagText",
+          "propertyName": "addRpcUrlButton",
+          "line": 10,
+          "value": "button",
+          "text": "Add RPC URL"
+        },
+        {
           "id": "OnboardingPrivacySettingsPage.addRpcUrlDropDown",
           "kind": "css",
           "propertyName": "addRpcUrlDropDown",
@@ -4293,11 +6312,26 @@
           "value": "[data-testid=\"test-add-rpc-drop-down\"]"
         },
         {
+          "id": "OnboardingPrivacySettingsPage.assetsPrivacyToggle",
+          "kind": "css",
+          "propertyName": "assetsPrivacyToggle",
+          "line": 18,
+          "value": ".toggle-button.toggle-button--on"
+        },
+        {
           "id": "OnboardingPrivacySettingsPage.assetsSettings",
           "kind": "css",
           "propertyName": "assetsSettings",
           "line": 20,
           "value": "[data-testid=\"category-item-Assets\"]"
+        },
+        {
+          "id": "OnboardingPrivacySettingsPage.assetsSettingsMessage",
+          "kind": "tagText",
+          "propertyName": "assetsSettingsMessage",
+          "line": 22,
+          "value": "h2",
+          "text": "Assets"
         },
         {
           "id": "OnboardingPrivacySettingsPage.basicFunctionalityCheckbox",
@@ -4328,6 +6362,14 @@
           "value": "[data-testid=\"basic-configuration-modal-toggle-button\"]"
         },
         {
+          "id": "OnboardingPrivacySettingsPage.basicFunctionalityTurnOffMessage",
+          "kind": "tagText",
+          "propertyName": "basicFunctionalityTurnOffMessage",
+          "line": 37,
+          "value": "h4",
+          "text": "Turn off basic functionality"
+        },
+        {
           "id": "OnboardingPrivacySettingsPage.categoryBackButton",
           "kind": "css",
           "propertyName": "categoryBackButton",
@@ -4342,6 +6384,22 @@
           "value": "[data-testid=\"network-form-chain-id\"]"
         },
         {
+          "id": "OnboardingPrivacySettingsPage.confirmAddCustomNetworkButton",
+          "kind": "tagText",
+          "propertyName": "confirmAddCustomNetworkButton",
+          "line": 46,
+          "value": "button",
+          "text": "Save"
+        },
+        {
+          "id": "OnboardingPrivacySettingsPage.confirmAddRpcUrlButton",
+          "kind": "tagText",
+          "propertyName": "confirmAddRpcUrlButton",
+          "line": 51,
+          "value": "button",
+          "text": "Add URL"
+        },
+        {
           "id": "OnboardingPrivacySettingsPage.currencySymbolInput",
           "kind": "css",
           "propertyName": "currencySymbolInput",
@@ -4354,6 +6412,14 @@
           "propertyName": "generalSettings",
           "line": 61,
           "value": "[data-testid=\"category-item-General\"]"
+        },
+        {
+          "id": "OnboardingPrivacySettingsPage.generalSettingsMessage",
+          "kind": "tagText",
+          "propertyName": "generalSettingsMessage",
+          "line": 63,
+          "value": "h2",
+          "text": "General"
         },
         {
           "id": "OnboardingPrivacySettingsPage.networkNameInput",
@@ -4390,6 +6456,22 @@
       "relativePath": "pages/onboarding/onboarding-srp-page.ts",
       "selectors": [
         {
+          "id": "OnboardingSrpPage.clearAllButton",
+          "kind": "tagText",
+          "propertyName": "clearAllButton",
+          "line": 6,
+          "value": "span",
+          "text": "Clear all"
+        },
+        {
+          "id": "OnboardingSrpPage.importDescription",
+          "kind": "tagText",
+          "propertyName": "importDescription",
+          "line": 13,
+          "value": "p",
+          "text": "Enter your Secret Recovery Phrase"
+        },
+        {
           "id": "OnboardingSrpPage.srpConfirmButton",
           "kind": "css",
           "propertyName": "srpConfirmButton",
@@ -4409,6 +6491,14 @@
           "propertyName": "srpIndividualWord",
           "line": 23,
           "value": "[data-testid=\"import-srp__srp-word-0\"]"
+        },
+        {
+          "id": "OnboardingSrpPage.srpMessage",
+          "kind": "tagText",
+          "propertyName": "srpMessage",
+          "line": 25,
+          "value": "h2",
+          "text": "Import a wallet"
         },
         {
           "id": "OnboardingSrpPage.srpWord0",
@@ -4438,11 +6528,34 @@
           "value": "[data-testid=\"recovery-phrase-confirm\"]"
         },
         {
+          "id": "SecureWalletPage.confirmSecretRecoveryPhraseMessage",
+          "kind": "tagText",
+          "propertyName": "confirmSecretRecoveryPhraseMessage",
+          "line": 10,
+          "value": "h2",
+          "text": "Confirm your Secret Recovery Phrase"
+        },
+        {
           "id": "SecureWalletPage.confirmSrpConfirmButton",
           "kind": "css",
           "propertyName": "confirmSrpConfirmButton",
           "line": 15,
           "value": "[data-testid=\"confirm-srp-modal-button\"]"
+        },
+        {
+          "id": "SecureWalletPage.confirmSrpSuccessMessage",
+          "kind": "tagText",
+          "propertyName": "confirmSrpSuccessMessage",
+          "line": 18,
+          "value": "h3",
+          "text": "Perfect"
+        },
+        {
+          "id": "SecureWalletPage.passwordInput",
+          "kind": "css",
+          "propertyName": "passwordInput",
+          "line": 25,
+          "value": "#account-details-authenticate"
         },
         {
           "id": "SecureWalletPage.recoveryPhraseChips",
@@ -4471,6 +6584,14 @@
           "propertyName": "secureWalletRecommendedButton",
           "line": 36,
           "value": "[data-testid=\"recovery-phrase-remind-later\"]"
+        },
+        {
+          "id": "SecureWalletPage.writeDownSecretRecoveryPhraseMessage",
+          "kind": "tagText",
+          "propertyName": "writeDownSecretRecoveryPhraseMessage",
+          "line": 39,
+          "value": "h2",
+          "text": "Save your Secret Recovery Phrase"
         }
       ]
     },
@@ -4595,6 +6716,20 @@
           "propertyName": "onboardingLoginFooterTermsOfUseLink",
           "line": 41,
           "value": "[data-testid=\"onboarding-login-footer-terms-of-use\"]"
+        },
+        {
+          "id": "StartOnboardingPage.privacyNoticeUrl",
+          "kind": "css",
+          "propertyName": "privacyNoticeUrl",
+          "line": 44,
+          "value": "https://consensys.io/privacy-notice"
+        },
+        {
+          "id": "StartOnboardingPage.termsOfUseUrl",
+          "kind": "css",
+          "propertyName": "termsOfUseUrl",
+          "line": 46,
+          "value": "https://consensys.io/terms-of-use"
         }
       ]
     },
@@ -4602,6 +6737,14 @@
       "className": "GatorPermissionsPage",
       "relativePath": "pages/permission/gator-permissions-page.ts",
       "selectors": [
+        {
+          "id": "GatorPermissionsPage.assetsButton",
+          "kind": "tagText",
+          "propertyName": "assetsButton",
+          "line": 8,
+          "value": "p",
+          "text": "Token transfer"
+        },
         {
           "id": "GatorPermissionsPage.backButton",
           "kind": "css",
@@ -4615,6 +6758,14 @@
           "propertyName": "gatorPermissionsPage",
           "line": 15,
           "value": "[data-testid=\"gator-permissions-page\"]"
+        },
+        {
+          "id": "GatorPermissionsPage.sitesButton",
+          "kind": "tagText",
+          "propertyName": "sitesButton",
+          "line": 18,
+          "value": "p",
+          "text": "Sites"
         }
       ]
     },
@@ -4671,6 +6822,21 @@
           "value": "[data-testid=\"connect-more-chains-button\"]"
         },
         {
+          "id": "SitePermissionPage.connectedAccountsInfo",
+          "kind": "tagText",
+          "propertyName": "connectedAccountsInfo",
+          "line": 16,
+          "value": "p",
+          "text": "See your accounts and suggest transactions"
+        },
+        {
+          "id": "SitePermissionPage.disconnectButton",
+          "kind": "css",
+          "propertyName": "disconnectButton",
+          "line": 21,
+          "value": "[data-test-id=\"disconnect-all\"]"
+        },
+        {
           "id": "SitePermissionPage.disconnectConfirmMessage",
           "kind": "css",
           "propertyName": "disconnectConfirmMessage",
@@ -4678,11 +6844,43 @@
           "value": "[data-testid=\"no-connection-description\"]"
         },
         {
+          "id": "SitePermissionPage.disconnectModalTitle",
+          "kind": "tagText",
+          "propertyName": "disconnectModalTitle",
+          "line": 26,
+          "value": "h4",
+          "text": "Disconnect"
+        },
+        {
+          "id": "SitePermissionPage.editAccountsModalTitle",
+          "kind": "tagText",
+          "propertyName": "editAccountsModalTitle",
+          "line": 33,
+          "value": "h4",
+          "text": "Edit accounts"
+        },
+        {
           "id": "SitePermissionPage.editButton",
           "kind": "css",
           "propertyName": "editButton",
           "line": 38,
           "value": "[data-testid=\"edit\"]"
+        },
+        {
+          "id": "SitePermissionPage.editNetworksModalTitle",
+          "kind": "tagText",
+          "propertyName": "editNetworksModalTitle",
+          "line": 40,
+          "value": "h4",
+          "text": "Edit networks"
+        },
+        {
+          "id": "SitePermissionPage.enabledNetworksInfo",
+          "kind": "tagText",
+          "propertyName": "enabledNetworksInfo",
+          "line": 45,
+          "value": "p",
+          "text": "Use your enabled networks"
         }
       ]
     },
@@ -4703,6 +6901,13 @@
           "propertyName": "activityPage",
           "line": 21,
           "value": "perps-activity-page"
+        },
+        {
+          "id": "PerpsActivityPage.anyTransactionCard",
+          "kind": "xpath",
+          "propertyName": "anyTransactionCard",
+          "line": 23,
+          "value": "//*[@data-testid='perps-activity-page']//*[starts-with(@data-testid,'transaction-card-')]"
         },
         {
           "id": "PerpsActivityPage.filterButton",
@@ -4758,6 +6963,13 @@
           "propertyName": "closeAmountSliderInCloseModal",
           "line": 25,
           "value": "[data-testid=\"perps-close-position-modal\"] [data-testid^=\"close-amount-slider-pct-\"]"
+        },
+        {
+          "id": "PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix",
+          "kind": "css",
+          "propertyName": "closeAmountSliderPctTestIdPrefix",
+          "line": 34,
+          "value": "close-amount-slider-pct-"
         },
         {
           "id": "PerpsMarketDetailPage.closeCtaButton",
@@ -4935,6 +7147,13 @@
           "value": "order-entry"
         },
         {
+          "id": "PerpsMarketDetailPage.perpsClosePositionModalTestId",
+          "kind": "css",
+          "propertyName": "perpsClosePositionModalTestId",
+          "line": 119,
+          "value": "perps-close-position-modal"
+        },
+        {
           "id": "PerpsMarketDetailPage.perpsToastCloseButton",
           "kind": "css",
           "propertyName": "perpsToastCloseButton",
@@ -5026,6 +7245,20 @@
           "value": "perps-update-tpsl-estimated-tp-pnl-row"
         },
         {
+          "id": "PerpsMarketDetailPage.tpslModalSlPriceInputLocator",
+          "kind": "xpath",
+          "propertyName": "tpslModalSlPriceInputLocator",
+          "line": 181,
+          "value": "(//*[@data-testid=\"perps-update-tpsl-modal\"]//input[contains(@class,\"mm-text-field__input\")])[3]"
+        },
+        {
+          "id": "PerpsMarketDetailPage.tpslModalTpPriceInputLocator",
+          "kind": "xpath",
+          "propertyName": "tpslModalTpPriceInputLocator",
+          "line": 185,
+          "value": "(//*[@data-testid=\"perps-update-tpsl-modal\"]//input[contains(@class,\"mm-text-field__input\")])[1]"
+        },
+        {
           "id": "PerpsMarketDetailPage.updateTpslModal",
           "kind": "testId",
           "propertyName": "updateTpslModal",
@@ -5081,6 +7314,13 @@
           "value": "market-list-view"
         },
         {
+          "id": "PerpsMarketListPage.marketRow",
+          "kind": "xpath",
+          "propertyName": "marketRow",
+          "line": 29,
+          "value": "//*[starts-with(@data-testid,'market-row-')]"
+        },
+        {
           "id": "PerpsMarketListPage.perpsToastCloseButton",
           "kind": "css",
           "propertyName": "perpsToastCloseButton",
@@ -5134,6 +7374,13 @@
           "propertyName": "amountInputFieldInput",
           "line": 14,
           "value": "[data-testid=\"amount-input-field\"] input"
+        },
+        {
+          "id": "PerpsOrderEntryPage.autoCloseToggleLabel",
+          "kind": "xpath",
+          "propertyName": "autoCloseToggleLabel",
+          "line": 18,
+          "value": "//label[contains(@class,'toggle-button')][.//input[@data-testid='auto-close-toggle']]"
         },
         {
           "id": "PerpsOrderEntryPage.backButton",
@@ -5350,11 +7597,46 @@
       "relativePath": "pages/phishing-warning-page.ts",
       "selectors": [
         {
+          "id": "PhishingWarningPage.backToSafetyButton",
+          "kind": "text",
+          "propertyName": "backToSafetyButton",
+          "line": 5,
+          "text": "Back to safety"
+        },
+        {
+          "id": "PhishingWarningPage.iframeSelector",
+          "kind": "css",
+          "propertyName": "iframeSelector",
+          "line": 11,
+          "value": "iframe"
+        },
+        {
+          "id": "PhishingWarningPage.openWarningInNewTabLink",
+          "kind": "css",
+          "propertyName": "openWarningInNewTabLink",
+          "line": 13,
+          "value": "#open-self-in-new-tab"
+        },
+        {
+          "id": "PhishingWarningPage.phishingWarningPageTitle",
+          "kind": "text",
+          "propertyName": "phishingWarningPageTitle",
+          "line": 15,
+          "text": "This website might be harmful"
+        },
+        {
           "id": "PhishingWarningPage.proceedAnywayButton",
           "kind": "testId",
           "propertyName": "proceedAnywayButton",
           "line": 19,
           "value": "unsafe-continue-loaded"
+        },
+        {
+          "id": "PhishingWarningPage.reportDetectionProblemLink",
+          "kind": "text",
+          "propertyName": "reportDetectionProblemLink",
+          "line": 23,
+          "text": "report a detection problem."
         }
       ]
     },
@@ -5422,6 +7704,13 @@
           "value": "send-amount-input"
         },
         {
+          "id": "SendPage.amountRequiredError",
+          "kind": "text",
+          "propertyName": "amountRequiredError",
+          "line": 10,
+          "text": "Required"
+        },
+        {
           "id": "SendPage.continueButton",
           "kind": "testId",
           "propertyName": "continueButton",
@@ -5436,11 +7725,70 @@
           "value": "[data-testid=\"send-continue-button\"]:not([disabled])"
         },
         {
+          "id": "SendPage.continueButtonError",
+          "kind": "cssText",
+          "propertyName": "continueButtonError",
+          "line": 19,
+          "value": "[data-testid=\"send-continue-button\"]",
+          "textExpression": "errorText"
+        },
+        {
+          "id": "SendPage.header",
+          "kind": "tagText",
+          "propertyName": "header",
+          "line": 26,
+          "value": "h4",
+          "text": "Send"
+        },
+        {
+          "id": "SendPage.hexDataInput",
+          "kind": "css",
+          "propertyName": "hexDataInput",
+          "line": 31,
+          "value": "[placeholder=\"Enter hex data (optional)\"]"
+        },
+        {
           "id": "SendPage.inputRecipient",
           "kind": "testId",
           "propertyName": "inputRecipient",
           "line": 33,
           "value": "recipient-address-input"
+        },
+        {
+          "id": "SendPage.insufficientBalanceToCoverFeesError",
+          "kind": "text",
+          "propertyName": "insufficientBalanceToCoverFeesError",
+          "line": 37,
+          "text": "Insufficient balance to cover fees"
+        },
+        {
+          "id": "SendPage.insufficientFundsError",
+          "kind": "text",
+          "propertyName": "insufficientFundsError",
+          "line": 41,
+          "text": "Insufficient funds"
+        },
+        {
+          "id": "SendPage.insufficientFundsErrorDetailed",
+          "kind": "text",
+          "propertyName": "insufficientFundsErrorDetailed",
+          "line": 45,
+          "text": "Insufficient funds"
+        },
+        {
+          "id": "SendPage.invalidAddressError",
+          "kind": "text",
+          "propertyName": "invalidAddressError",
+          "line": 49,
+          "text": "Invalid address"
+        },
+        {
+          "id": "SendPage.maxButton",
+          "kind": "tagText",
+          "propertyName": "maxButton",
+          "line": 53,
+          "value": "button",
+          "text": "Max"
         },
         {
           "id": "SendPage.networkPicker",
@@ -5450,6 +7798,13 @@
           "value": "send-network-filter-toggle"
         },
         {
+          "id": "SendPage.recipientClassRendered",
+          "kind": "css",
+          "propertyName": "recipientClassRendered",
+          "line": 68,
+          "value": ".break-all"
+        },
+        {
           "id": "SendPage.recipientModalButton",
           "kind": "testId",
           "propertyName": "recipientModalButton",
@@ -5457,18 +7812,72 @@
           "value": "open-recipient-modal-btn"
         },
         {
+          "id": "SendPage.recipientValidationError",
+          "kind": "cssText",
+          "propertyName": "recipientValidationError",
+          "line": 74,
+          "value": ".mm-help-text",
+          "textExpression": "errorText"
+        },
+        {
           "id": "SendPage.sendAlertAcknowledgeButton",
           "kind": "css",
           "propertyName": "sendAlertAcknowledgeButton",
           "line": 79,
           "value": "[data-testid=\"send-alert-modal-acknowledge-button\"]"
+        },
+        {
+          "id": "SendPage.solanaNetwork",
+          "kind": "text",
+          "propertyName": "solanaNetwork",
+          "line": 82,
+          "text": "Solana"
+        },
+        {
+          "id": "SendPage.transactionError",
+          "kind": "text",
+          "propertyName": "transactionError",
+          "line": 92,
+          "text": "Transaction error. Exception thrown in contract code."
         }
       ]
     },
     {
       "className": "ConfirmSolanaTxPage",
       "relativePath": "pages/send/solana-confirm-tx-page.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "ConfirmSolanaTxPage.cancelButton",
+          "kind": "tagText",
+          "propertyName": "cancelButton",
+          "line": 4,
+          "value": "span",
+          "text": "Cancel"
+        },
+        {
+          "id": "ConfirmSolanaTxPage.confirmButton",
+          "kind": "tagText",
+          "propertyName": "confirmButton",
+          "line": 9,
+          "value": "span",
+          "text": "Confirm"
+        },
+        {
+          "id": "ConfirmSolanaTxPage.sendButton",
+          "kind": "tagText",
+          "propertyName": "sendButton",
+          "line": 16,
+          "value": "span",
+          "text": "Send"
+        },
+        {
+          "id": "ConfirmSolanaTxPage.toAddressInput",
+          "kind": "css",
+          "propertyName": "toAddressInput",
+          "line": 21,
+          "value": "#send-to"
+        }
+      ]
     },
     {
       "className": "SendSolanaPage",
@@ -5482,23 +7891,91 @@
           "value": "send-cancel-button-snap-footer-button"
         },
         {
+          "id": "SendSolanaPage.clearToAddressField",
+          "kind": "css",
+          "propertyName": "clearToAddressField",
+          "line": 14,
+          "value": "#send-clear-button"
+        },
+        {
           "id": "SendSolanaPage.continueButton",
           "kind": "testId",
           "propertyName": "continueButton",
           "line": 16,
           "value": "send-submit-button-snap-footer-button"
+        },
+        {
+          "id": "SendSolanaPage.sendAmountInput",
+          "kind": "css",
+          "propertyName": "sendAmountInput",
+          "line": 23,
+          "value": "#send-amount-input"
+        },
+        {
+          "id": "SendSolanaPage.swapCurrencyButton",
+          "kind": "css",
+          "propertyName": "swapCurrencyButton",
+          "line": 25,
+          "value": "#send-swap-currency"
+        },
+        {
+          "id": "SendSolanaPage.toAddressInput",
+          "kind": "css",
+          "propertyName": "toAddressInput",
+          "line": 27,
+          "value": "#send-to"
+        },
+        {
+          "id": "SendSolanaPage.toAddressRequiredValidation",
+          "kind": "tagText",
+          "propertyName": "toAddressRequiredValidation",
+          "line": 29,
+          "value": "p",
+          "text": "To address is required"
         }
       ]
     },
     {
       "className": "SolanaTxresultPage",
       "relativePath": "pages/send/solana-tx-result-page.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "SolanaTxresultPage.closeButton",
+          "kind": "tagText",
+          "propertyName": "closeButton",
+          "line": 4,
+          "value": "span",
+          "text": "Close"
+        },
+        {
+          "id": "SolanaTxresultPage.viewTransactionLink",
+          "kind": "tagText",
+          "propertyName": "viewTransactionLink",
+          "line": 11,
+          "value": "span",
+          "text": "View transaction"
+        }
+      ]
     },
     {
       "className": "AboutPage",
       "relativePath": "pages/settings/about-page.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "AboutPage.metaMaskLogo",
+          "kind": "css",
+          "propertyName": "metaMaskLogo",
+          "line": 6,
+          "value": ".info-tab__logo"
+        },
+        {
+          "id": "AboutPage.metaMaskVersionNumber",
+          "kind": "css",
+          "propertyName": "metaMaskVersionNumber",
+          "line": 8,
+          "value": ".info-tab__version-number"
+        }
+      ]
     },
     {
       "className": "AdvancedSettings",
@@ -5512,11 +7989,42 @@
           "value": "auto-lockout-button"
         },
         {
+          "id": "AdvancedSettings.autoLockoutTimeHelperText",
+          "kind": "css",
+          "propertyName": "autoLockoutTimeHelperText",
+          "line": 9,
+          "value": "#autoTimeout-helper-text"
+        },
+        {
           "id": "AdvancedSettings.autoLockoutTimeInput",
           "kind": "testId",
           "propertyName": "autoLockoutTimeInput",
           "line": 11,
           "value": "auto-lockout-time"
+        },
+        {
+          "id": "AdvancedSettings.clearActivityMessage",
+          "kind": "cssText",
+          "propertyName": "clearActivityMessage",
+          "line": 15,
+          "value": ".modal-content__title",
+          "text": "Clear activity and nonce data?"
+        },
+        {
+          "id": "AdvancedSettings.clearActivityTabDataButton",
+          "kind": "tagText",
+          "propertyName": "clearActivityTabDataButton",
+          "line": 20,
+          "value": "button",
+          "text": "Clear activity tab data"
+        },
+        {
+          "id": "AdvancedSettings.confirmClearActivityButton",
+          "kind": "tagText",
+          "propertyName": "confirmClearActivityButton",
+          "line": 25,
+          "value": "button",
+          "text": "Clear"
         },
         {
           "id": "AdvancedSettings.downloadDataButton",
@@ -5538,6 +8046,13 @@
           "propertyName": "hexDataToggle",
           "line": 37,
           "value": "transactions-show-hex-data-toggle"
+        },
+        {
+          "id": "AdvancedSettings.showConversionOnTestnetsToggle",
+          "kind": "xpath",
+          "propertyName": "showConversionOnTestnetsToggle",
+          "line": 41,
+          "value": "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]"
         },
         {
           "id": "AdvancedSettings.showTestnetsToggle",
@@ -5620,6 +8135,14 @@
           "value": "[data-testid=\"change-password-input\"]"
         },
         {
+          "id": "ChangePasswordPage.passwordChangedWarning",
+          "kind": "cssText",
+          "propertyName": "passwordChangedWarning",
+          "line": 17,
+          "value": "p",
+          "text": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
+        },
+        {
           "id": "ChangePasswordPage.passwordTerms",
           "kind": "css",
           "propertyName": "passwordTerms",
@@ -5689,6 +8212,20 @@
           "value": "contacts-page"
         },
         {
+          "id": "ContactsSettings.createContactAddressInput",
+          "kind": "css",
+          "propertyName": "createContactAddressInput",
+          "line": 27,
+          "value": "#contact-address"
+        },
+        {
+          "id": "ContactsSettings.createContactNicknameInput",
+          "kind": "css",
+          "propertyName": "createContactNicknameInput",
+          "line": 29,
+          "value": "#contact-nickname"
+        },
+        {
           "id": "ContactsSettings.deleteContactButton",
           "kind": "testId",
           "propertyName": "deleteContactButton",
@@ -5703,11 +8240,32 @@
           "value": "delete-contact-confirm-button"
         },
         {
+          "id": "ContactsSettings.editContactAddressInput",
+          "kind": "css",
+          "propertyName": "editContactAddressInput",
+          "line": 41,
+          "value": "#edit-contact-address"
+        },
+        {
           "id": "ContactsSettings.editContactButton",
           "kind": "testId",
           "propertyName": "editContactButton",
           "line": 43,
           "value": "view-contact-edit-button"
+        },
+        {
+          "id": "ContactsSettings.editContactMemoInput",
+          "kind": "css",
+          "propertyName": "editContactMemoInput",
+          "line": 47,
+          "value": "#edit-contact-memo"
+        },
+        {
+          "id": "ContactsSettings.editContactNicknameInput",
+          "kind": "css",
+          "propertyName": "editContactNicknameInput",
+          "line": 49,
+          "value": "#edit-contact-nickname"
         },
         {
           "id": "ContactsSettings.networkSelector",
@@ -5728,6 +8286,14 @@
           "propertyName": "addAccountSnapToggle",
           "line": 5,
           "value": "[data-testid=\"add-account-snap-toggle-div\"]"
+        },
+        {
+          "id": "ExperimentalSettings.experimentalPageTitle",
+          "kind": "tagText",
+          "propertyName": "experimentalPageTitle",
+          "line": 10,
+          "value": "p",
+          "text": "Enable \"Add account Snap (Beta)\""
         },
         {
           "id": "ExperimentalSettings.watchAccountToggle",
@@ -5783,6 +8349,13 @@
           "propertyName": "notificationsPerTypesSection",
           "line": 42,
           "value": "[data-testid=\"notifications-settings-per-types\"]"
+        },
+        {
+          "id": "NotificationsSettingsPage.notificationToggleOff",
+          "kind": "css",
+          "propertyName": "notificationToggleOff",
+          "line": 45,
+          "value": ".toggle-button--off.notifications-settings-box__toggle"
         },
         {
           "id": "NotificationsSettingsPage.sectionButton",
@@ -5878,6 +8451,20 @@
           "value": "label.toggle-button:has([data-testid='toggle-zero-balance-button'])"
         },
         {
+          "id": "PreferencesAndDisplaySettings.loadingOverlay",
+          "kind": "css",
+          "propertyName": "loadingOverlay",
+          "line": 37,
+          "value": ".loading-overlay"
+        },
+        {
+          "id": "PreferencesAndDisplaySettings.loadingOverlaySpinner",
+          "kind": "css",
+          "propertyName": "loadingOverlaySpinner",
+          "line": 39,
+          "value": ".loading-overlay__spinner"
+        },
+        {
           "id": "PreferencesAndDisplaySettings.localeSelectList",
           "kind": "css",
           "propertyName": "localeSelectList",
@@ -5924,6 +8511,35 @@
           "propertyName": "settingsDropdown",
           "line": 6,
           "value": "[data-testid=\"snaps-dropdown\"]"
+        },
+        {
+          "id": "PreinstalledExampleSettings.settingsPageTitle",
+          "kind": "tagText",
+          "propertyName": "settingsPageTitle",
+          "line": 8,
+          "value": "p",
+          "text": "Preferences and display"
+        },
+        {
+          "id": "PreinstalledExampleSettings.snapRenderPanel",
+          "kind": "css",
+          "propertyName": "snapRenderPanel",
+          "line": 13,
+          "value": ".snap-ui-renderer__panel"
+        },
+        {
+          "id": "PreinstalledExampleSettings.toggleButton",
+          "kind": "css",
+          "propertyName": "toggleButton",
+          "line": 15,
+          "value": ".toggle-button"
+        },
+        {
+          "id": "PreinstalledExampleSettings.toggleButtonOn",
+          "kind": "css",
+          "propertyName": "toggleButtonOn",
+          "line": 17,
+          "value": ".toggle-button--on"
         }
       ]
     },
@@ -5967,6 +8583,14 @@
           "value": "[data-testid=\"change-password-button\"]"
         },
         {
+          "id": "PrivacySettings.closeRevealSrpDialogButton",
+          "kind": "tagText",
+          "propertyName": "closeRevealSrpDialogButton",
+          "line": 21,
+          "value": "button",
+          "textExpression": "tEn('close')"
+        },
+        {
           "id": "PrivacySettings.confirmDeleteMetaMetricsDataButton",
           "kind": "css",
           "propertyName": "confirmDeleteMetaMetricsDataButton",
@@ -6000,6 +8624,14 @@
           "propertyName": "deleteMetaMetricsDataButton",
           "line": 37,
           "value": "[data-testid=\"delete-metametrics-data-button\"]"
+        },
+        {
+          "id": "PrivacySettings.deleteMetaMetricsModalTitle",
+          "kind": "tagText",
+          "propertyName": "deleteMetaMetricsModalTitle",
+          "line": 40,
+          "value": "h4",
+          "text": "Delete MetaMetrics data?"
         },
         {
           "id": "PrivacySettings.displayedSrpText",
@@ -6049,6 +8681,14 @@
           "propertyName": "exportYourDataModalDownloadButton",
           "line": 65,
           "value": "[data-testid=\"export-your-data-modal-download-button\"]"
+        },
+        {
+          "id": "PrivacySettings.holdToRevealSRPButton",
+          "kind": "tagText",
+          "propertyName": "holdToRevealSRPButton",
+          "line": 68,
+          "value": "span",
+          "textExpression": "tEn('holdToRevealSRP')"
         },
         {
           "id": "PrivacySettings.ipfsGatewayToggle",
@@ -6135,6 +8775,13 @@
           "value": "[data-testid=\"password-change-toast-success\"]"
         },
         {
+          "id": "PrivacySettings.privacySettingsLoadedMarker",
+          "kind": "xpath",
+          "propertyName": "privacySettingsLoadedMarker",
+          "line": 109,
+          "value": "//label[contains(@class,'toggle-button')][.//*[@data-testid='basic-functionality-toggle']]"
+        },
+        {
           "id": "PrivacySettings.privacyTabButton",
           "kind": "css",
           "propertyName": "privacyTabButton",
@@ -6184,6 +8831,14 @@
           "value": "[data-testid=\"reveal-seed-quiz-get-started\"]"
         },
         {
+          "id": "PrivacySettings.revealSrpQuizModalTitle",
+          "kind": "tagText",
+          "propertyName": "revealSrpQuizModalTitle",
+          "line": 132,
+          "value": "h4",
+          "text": "Reveal Secret Recovery Phrase"
+        },
+        {
           "id": "PrivacySettings.revealSrpQuizQuestionOne",
           "kind": "css",
           "propertyName": "revealSrpQuizQuestionOne",
@@ -6219,6 +8874,29 @@
           "value": "[data-testid=\"srp-quiz-wrong-answer\"]"
         },
         {
+          "id": "PrivacySettings.revealSrpQuizWrongAnswerMessageOne",
+          "kind": "tagText",
+          "propertyName": "revealSrpQuizWrongAnswerMessageOne",
+          "line": 152,
+          "value": "h2",
+          "text": "Wrong! No one can help get your Secret Recovery Phrase back"
+        },
+        {
+          "id": "PrivacySettings.revealSrpQuizWrongAnswerMessageTwo",
+          "kind": "tagText",
+          "propertyName": "revealSrpQuizWrongAnswerMessageTwo",
+          "line": 157,
+          "value": "h2",
+          "text": "Nope! Never share your Secret Recovery Phrase with anyone, ever"
+        },
+        {
+          "id": "PrivacySettings.revealSrpWrongPasswordMessage",
+          "kind": "css",
+          "propertyName": "revealSrpWrongPasswordMessage",
+          "line": 162,
+          "value": ".mm-help-text"
+        },
+        {
           "id": "PrivacySettings.securityAndPasswordSettingsLoadedMarker",
           "kind": "css",
           "propertyName": "securityAndPasswordSettingsLoadedMarker",
@@ -6231,6 +8909,21 @@
           "propertyName": "selectSrpContainer",
           "line": 167,
           "value": "[data-testid=\"select-srp-container\"]"
+        },
+        {
+          "id": "PrivacySettings.selectSrpContainerItem",
+          "kind": "css",
+          "propertyName": "selectSrpContainerItem",
+          "line": 169,
+          "value": ".select-srp__container"
+        },
+        {
+          "id": "PrivacySettings.selectSrpContainerItemByIndex",
+          "kind": "cssText",
+          "propertyName": "selectSrpContainerItemByIndex",
+          "line": 171,
+          "value": ".select-srp__container",
+          "textExpression": "Secret Recovery Phrase …"
         },
         {
           "id": "PrivacySettings.settingsTransactionsTab",
@@ -6357,6 +9050,13 @@
           "value": "[data-testid=\"settings-tab-item-experimental\"]"
         },
         {
+          "id": "SettingsPage.noMatchingResultsFoundMessage",
+          "kind": "text",
+          "propertyName": "noMatchingResultsFoundMessage",
+          "line": 46,
+          "text": "No matching results found."
+        },
+        {
           "id": "SettingsPage.notificationsSettingsButton",
           "kind": "css",
           "propertyName": "notificationsSettingsButton",
@@ -6406,6 +9106,20 @@
           "value": "[data-testid=\"settings-tab-bar-grouped\"]"
         },
         {
+          "id": "SettingsPage.showFiatOnTestnetsToggleLabel",
+          "kind": "xpath",
+          "propertyName": "showFiatOnTestnetsToggleLabel",
+          "line": 75,
+          "value": "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]"
+        },
+        {
+          "id": "SettingsPage.showNativeTokenAsMainBalanceToggleLabel",
+          "kind": "xpath",
+          "propertyName": "showNativeTokenAsMainBalanceToggleLabel",
+          "line": 80,
+          "value": "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]"
+        },
+        {
           "id": "SettingsPage.syncAccountsSettingsButton",
           "kind": "css",
           "propertyName": "syncAccountsSettingsButton",
@@ -6440,6 +9154,21 @@
           "value": "[data-testid=\"account-selector-button\"]"
         },
         {
+          "id": "ShieldClaimPage.accountSelectorItem",
+          "kind": "css",
+          "propertyName": "accountSelectorItem",
+          "line": 9,
+          "value": ".account-selector-modal__account"
+        },
+        {
+          "id": "ShieldClaimPage.accountSelectorItemByName",
+          "kind": "cssText",
+          "propertyName": "accountSelectorItemByName",
+          "line": 11,
+          "value": ".account-selector-modal__account",
+          "textExpression": "accountName"
+        },
+        {
           "id": "ShieldClaimPage.backButton",
           "kind": "css",
           "propertyName": "backButton",
@@ -6452,6 +9181,14 @@
           "propertyName": "claimErrorToast",
           "line": 18,
           "value": "[data-testid=\"claim-submit-toast-error\"]"
+        },
+        {
+          "id": "ShieldClaimPage.claimSuccessToast",
+          "kind": "tagText",
+          "propertyName": "claimSuccessToast",
+          "line": 20,
+          "value": "p",
+          "text": "Claim submission received"
         },
         {
           "id": "ShieldClaimPage.deleteDraftButton",
@@ -6557,6 +9294,22 @@
       "relativePath": "pages/settings/shield/shield-claims-list-page.ts",
       "selectors": [
         {
+          "id": "ShieldClaimsListPage.activeClaimsHeading",
+          "kind": "tagText",
+          "propertyName": "activeClaimsHeading",
+          "line": 4,
+          "value": "h4",
+          "text": "Active claims"
+        },
+        {
+          "id": "ShieldClaimsListPage.claimHistoryButton",
+          "kind": "tagText",
+          "propertyName": "claimHistoryButton",
+          "line": 9,
+          "value": "button",
+          "text": "Claim history"
+        },
+        {
           "id": "ShieldClaimsListPage.claimItem",
           "kind": "css",
           "propertyName": "claimItem",
@@ -6568,6 +9321,22 @@
           "params": [
             "claimId"
           ]
+        },
+        {
+          "id": "ShieldClaimsListPage.claimsButton",
+          "kind": "tagText",
+          "propertyName": "claimsButton",
+          "line": 17,
+          "value": "button",
+          "text": "Claims"
+        },
+        {
+          "id": "ShieldClaimsListPage.completedClaimsHeading",
+          "kind": "tagText",
+          "propertyName": "completedClaimsHeading",
+          "line": 22,
+          "value": "h4",
+          "text": "Completed claims"
         },
         {
           "id": "ShieldClaimsListPage.draftClaimItem",
@@ -6605,11 +9374,35 @@
           "value": "[data-testid=\"claims-list-empty-new-claim-button\"]"
         },
         {
+          "id": "ShieldClaimsListPage.noCompletedClaimsHeading",
+          "kind": "tagText",
+          "propertyName": "noCompletedClaimsHeading",
+          "line": 42,
+          "value": "h4",
+          "text": "No completed claims"
+        },
+        {
+          "id": "ShieldClaimsListPage.noOpenClaimsHeading",
+          "kind": "tagText",
+          "propertyName": "noOpenClaimsHeading",
+          "line": 47,
+          "value": "h4",
+          "text": "No open claims"
+        },
+        {
           "id": "ShieldClaimsListPage.pageContainer",
           "kind": "css",
           "propertyName": "pageContainer",
           "line": 52,
           "value": "[data-testid=\"claims-list-page\"]"
+        },
+        {
+          "id": "ShieldClaimsListPage.rejectedClaimsHeading",
+          "kind": "tagText",
+          "propertyName": "rejectedClaimsHeading",
+          "line": 54,
+          "value": "h4",
+          "text": "Rejected claims"
         },
         {
           "id": "ShieldClaimsListPage.submitClaimButton",
@@ -6716,11 +9509,33 @@
           "value": "[data-testid=\"shield-detail-next-billing\"]"
         },
         {
+          "id": "ShieldDetailPage.notificationShieldBanner",
+          "kind": "css",
+          "propertyName": "notificationShieldBanner",
+          "line": 55,
+          "value": ".transaction-shield-page__notification-banner"
+        },
+        {
+          "id": "ShieldDetailPage.notificationShieldBannerElement",
+          "kind": "css",
+          "propertyName": "notificationShieldBannerElement",
+          "line": 58,
+          "value": ".transaction-shield-page__notification-banner"
+        },
+        {
           "id": "ShieldDetailPage.pageContainer",
           "kind": "css",
           "propertyName": "pageContainer",
           "line": 63,
           "value": "[data-testid=\"transaction-shield-page\"]"
+        },
+        {
+          "id": "ShieldDetailPage.pageTitle",
+          "kind": "tagText",
+          "propertyName": "pageTitle",
+          "line": 65,
+          "value": "h4",
+          "text": "Transaction Shield"
         },
         {
           "id": "ShieldDetailPage.pausedTag",
@@ -6832,6 +9647,30 @@
           "propertyName": "continueButton",
           "line": 10,
           "value": "[data-testid=\"shield-plan-continue-button\"]"
+        },
+        {
+          "id": "ShieldPlanPage.shieldPlanPageAnnualPlan",
+          "kind": "tagText",
+          "propertyName": "shieldPlanPageAnnualPlan",
+          "line": 20,
+          "value": "p",
+          "text": "Annual"
+        },
+        {
+          "id": "ShieldPlanPage.shieldPlanPageMonthlyPlan",
+          "kind": "tagText",
+          "propertyName": "shieldPlanPageMonthlyPlan",
+          "line": 25,
+          "value": "p",
+          "text": "Monthly"
+        },
+        {
+          "id": "ShieldPlanPage.shieldPlanPageTitle",
+          "kind": "tagText",
+          "propertyName": "shieldPlanPageTitle",
+          "line": 30,
+          "value": "h4",
+          "text": "Choose your plan"
         }
       ]
     },
@@ -6902,6 +9741,13 @@
           "value": "[data-testid=\"qr-sync-loading\"]"
         },
         {
+          "id": "SyncAccountsSettingsPage.otpExpiredMessage",
+          "kind": "text",
+          "propertyName": "otpExpiredMessage",
+          "line": 22,
+          "text": "Verification code expired"
+        },
+        {
           "id": "SyncAccountsSettingsPage.otpFirstInput",
           "kind": "css",
           "propertyName": "otpFirstInput",
@@ -6937,6 +9783,13 @@
           "value": "[data-testid=\"qr-sync-qr-code\"]"
         },
         {
+          "id": "SyncAccountsSettingsPage.qrExpiredMessage",
+          "kind": "text",
+          "propertyName": "qrExpiredMessage",
+          "line": 35,
+          "text": "QR code expired"
+        },
+        {
           "id": "SyncAccountsSettingsPage.qrSyncWalletRowId",
           "kind": "css",
           "propertyName": "qrSyncWalletRowId",
@@ -6948,6 +9801,13 @@
           "params": [
             "walletId"
           ]
+        },
+        {
+          "id": "SyncAccountsSettingsPage.sessionExpiredErrorMessage",
+          "kind": "text",
+          "propertyName": "sessionExpiredErrorMessage",
+          "line": 40,
+          "text": "This sync session expired. Start again to generate a new QR code."
         },
         {
           "id": "SyncAccountsSettingsPage.startWithNewQrCodeButton",
@@ -7012,6 +9872,14 @@
       "relativePath": "pages/snap-account-abstraction-keyring-page.ts",
       "selectors": [
         {
+          "id": "SnapAccountAbstractionKeyringPage.addAccountButton",
+          "kind": "tagText",
+          "propertyName": "addAccountButton",
+          "line": 5,
+          "value": "button",
+          "text": "Add account"
+        },
+        {
           "id": "SnapAccountAbstractionKeyringPage.bundlerUrlInput",
           "kind": "css",
           "propertyName": "bundlerUrlInput",
@@ -7031,6 +9899,50 @@
           "propertyName": "chainIdSelect",
           "line": 14,
           "value": "[data-testid=\"chain-select\"]"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.connectButton",
+          "kind": "css",
+          "propertyName": "connectButton",
+          "line": 16,
+          "value": "#connectButton"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.createAccountButton",
+          "kind": "tagText",
+          "propertyName": "createAccountButton",
+          "line": 18,
+          "value": "button",
+          "text": "Create Account"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.createAccountLink",
+          "kind": "text",
+          "propertyName": "createAccountLink",
+          "line": 23,
+          "text": "Create account"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.createAccountPrivateKeyInput",
+          "kind": "css",
+          "propertyName": "createAccountPrivateKeyInput",
+          "line": 27,
+          "value": "#create-account-private-key"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.createAccountSaltInput",
+          "kind": "css",
+          "propertyName": "createAccountSaltInput",
+          "line": 29,
+          "value": "#create-account-salt"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.createButton",
+          "kind": "tagText",
+          "propertyName": "createButton",
+          "line": 31,
+          "value": "button",
+          "text": "Create"
         },
         {
           "id": "SnapAccountAbstractionKeyringPage.customVerifyingPaymasterAddressInput",
@@ -7054,6 +9966,22 @@
           "value": "[data-testid=\"entryPoint\"]"
         },
         {
+          "id": "SnapAccountAbstractionKeyringPage.okButton",
+          "kind": "tagText",
+          "propertyName": "okButton",
+          "line": 46,
+          "value": "button",
+          "text": "Ok"
+        },
+        {
+          "id": "SnapAccountAbstractionKeyringPage.setChainConfigButton",
+          "kind": "tagText",
+          "propertyName": "setChainConfigButton",
+          "line": 51,
+          "value": "button",
+          "text": "Set Chain Config"
+        },
+        {
           "id": "SnapAccountAbstractionKeyringPage.simpleAccountFactoryInput",
           "kind": "css",
           "propertyName": "simpleAccountFactoryInput",
@@ -7067,6 +9995,82 @@
       "relativePath": "pages/snap-list-page.ts",
       "selectors": [
         {
+          "id": "SnapListPage.backButton",
+          "kind": "css",
+          "propertyName": "backButton",
+          "line": 4,
+          "value": "button[aria-label=\"Back\"]"
+        },
+        {
+          "id": "SnapListPage.closeModalButton",
+          "kind": "css",
+          "propertyName": "closeModalButton",
+          "line": 6,
+          "value": "button[aria-label=\"Close\"]"
+        },
+        {
+          "id": "SnapListPage.continueRemoveSnapButton",
+          "kind": "tagText",
+          "propertyName": "continueRemoveSnapButton",
+          "line": 8,
+          "value": "button",
+          "text": "Continue"
+        },
+        {
+          "id": "SnapListPage.continueRemoveSnapModalMessage",
+          "kind": "tagText",
+          "propertyName": "continueRemoveSnapModalMessage",
+          "line": 13,
+          "value": "p",
+          "text": "Removing this Snap removes these accounts from MetaMask"
+        },
+        {
+          "id": "SnapListPage.descriptionWebpack",
+          "kind": "tagText",
+          "propertyName": "descriptionWebpack",
+          "line": 18,
+          "value": "p",
+          "text": "Description from Webpack Plugin Example Snap"
+        },
+        {
+          "id": "SnapListPage.homePageSnap",
+          "kind": "tagText",
+          "propertyName": "homePageSnap",
+          "line": 25,
+          "value": "p",
+          "text": "Home Page Example Snap"
+        },
+        {
+          "id": "SnapListPage.homePageTitle",
+          "kind": "tagText",
+          "propertyName": "homePageTitle",
+          "line": 30,
+          "value": "p",
+          "text": "Welcome to my Snap home page!"
+        },
+        {
+          "id": "SnapListPage.noSnapInstalledMessage",
+          "kind": "tagText",
+          "propertyName": "noSnapInstalledMessage",
+          "line": 35,
+          "value": "p",
+          "text": "You don't have any snaps installed."
+        },
+        {
+          "id": "SnapListPage.noSnapsInstalledContainer",
+          "kind": "css",
+          "propertyName": "noSnapsInstalledContainer",
+          "line": 40,
+          "value": ".mm-box"
+        },
+        {
+          "id": "SnapListPage.popoverRemoveSnapButton",
+          "kind": "css",
+          "propertyName": "popoverRemoveSnapButton",
+          "line": 42,
+          "value": "#popoverRemoveSnapButton"
+        },
+        {
           "id": "SnapListPage.removeSnapButton",
           "kind": "css",
           "propertyName": "removeSnapButton",
@@ -7079,6 +10083,52 @@
           "propertyName": "removeSnapConfirmationInput",
           "line": 46,
           "value": "[data-testid=\"remove-snap-confirmation-input\"]"
+        },
+        {
+          "id": "SnapListPage.removeSnapConfirmButton",
+          "kind": "tagText",
+          "propertyName": "removeSnapConfirmButton",
+          "line": 49,
+          "value": "button",
+          "text": "Remove Snap"
+        },
+        {
+          "id": "SnapListPage.revokePermissionOption",
+          "kind": "tagText",
+          "propertyName": "revokePermissionOption",
+          "line": 54,
+          "value": "p",
+          "text": "Revoke permission"
+        },
+        {
+          "id": "SnapListPage.snapEnabledToggle",
+          "kind": "css",
+          "propertyName": "snapEnabledToggle",
+          "line": 59,
+          "value": ".toggle-button > div"
+        },
+        {
+          "id": "SnapListPage.snapListItem",
+          "kind": "css",
+          "propertyName": "snapListItem",
+          "line": 62,
+          "value": ".snap-list-item"
+        },
+        {
+          "id": "SnapListPage.updateSnapButton",
+          "kind": "tagText",
+          "propertyName": "updateSnapButton",
+          "line": 64,
+          "value": "button",
+          "text": "Update"
+        },
+        {
+          "id": "SnapListPage.webpackPluginSnap",
+          "kind": "tagText",
+          "propertyName": "webpackPluginSnap",
+          "line": 70,
+          "value": "p",
+          "text": "Webpack Plugin Example Snap"
         }
       ]
     },
@@ -7086,6 +10136,53 @@
       "className": "SnapSimpleKeyringPage",
       "relativePath": "pages/snap-simple-keyring-page.ts",
       "selectors": [
+        {
+          "id": "SnapSimpleKeyringPage.accountCreatedMessage",
+          "kind": "tagText",
+          "propertyName": "accountCreatedMessage",
+          "line": 8,
+          "value": "h3",
+          "text": "Account created"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.addtoMetamaskMessage",
+          "kind": "tagText",
+          "propertyName": "addtoMetamaskMessage",
+          "line": 13,
+          "value": "h3",
+          "text": "Add to MetaMask"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.approveRequestButton",
+          "kind": "tagText",
+          "propertyName": "approveRequestButton",
+          "line": 18,
+          "value": "button",
+          "text": "Approve Request"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.approveRequestIdInput",
+          "kind": "css",
+          "propertyName": "approveRequestIdInput",
+          "line": 23,
+          "value": "#approve-request-request-id"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.approveRequestSection",
+          "kind": "tagText",
+          "propertyName": "approveRequestSection",
+          "line": 25,
+          "value": "div",
+          "text": "Approve request"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.confirmAddtoMetamask",
+          "kind": "tagText",
+          "propertyName": "confirmAddtoMetamask",
+          "line": 30,
+          "value": "button",
+          "text": "Confirm"
+        },
         {
           "id": "SnapSimpleKeyringPage.confirmationCancelButton",
           "kind": "css",
@@ -7101,11 +10198,159 @@
           "value": "[data-testid=\"confirmation-submit-button\"]"
         },
         {
+          "id": "SnapSimpleKeyringPage.confirmCompleteButton",
+          "kind": "tagText",
+          "propertyName": "confirmCompleteButton",
+          "line": 41,
+          "value": "button",
+          "text": "OK"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.confirmConnectionButton",
+          "kind": "tagText",
+          "propertyName": "confirmConnectionButton",
+          "line": 46,
+          "value": "button",
+          "text": "Connect"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.connectButton",
+          "kind": "css",
+          "propertyName": "connectButton",
+          "line": 51,
+          "value": "#connectButton"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.createAccountButton",
+          "kind": "tagText",
+          "propertyName": "createAccountButton",
+          "line": 53,
+          "value": "button",
+          "text": "Create Account"
+        },
+        {
           "id": "SnapSimpleKeyringPage.createAccountMessage",
           "kind": "css",
           "propertyName": "createAccountMessage",
           "line": 58,
           "value": "[data-testid=\"create-snap-account-content-title\"]"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.createAccountSection",
+          "kind": "tagText",
+          "propertyName": "createAccountSection",
+          "line": 61,
+          "value": "div",
+          "text": "Create account"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.errorRequestMessage",
+          "kind": "tagText",
+          "propertyName": "errorRequestMessage",
+          "line": 68,
+          "value": "p",
+          "text": "Error request"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.importAccountButton",
+          "kind": "tagText",
+          "propertyName": "importAccountButton",
+          "line": 73,
+          "value": "button",
+          "text": "Import Account"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.importAccountPrivateKeyInput",
+          "kind": "css",
+          "propertyName": "importAccountPrivateKeyInput",
+          "line": 78,
+          "value": "#import-account-private-key"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.importAccountSection",
+          "kind": "tagText",
+          "propertyName": "importAccountSection",
+          "line": 80,
+          "value": "div",
+          "text": "Import account"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.installationCompleteMessage",
+          "kind": "tagText",
+          "propertyName": "installationCompleteMessage",
+          "line": 85,
+          "value": "h2",
+          "text": "Installation complete"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.listRequestsButton",
+          "kind": "tagText",
+          "propertyName": "listRequestsButton",
+          "line": 90,
+          "value": "button",
+          "text": "List Requests"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.listRequestsSection",
+          "kind": "tagText",
+          "propertyName": "listRequestsSection",
+          "line": 95,
+          "value": "div",
+          "text": "List requests"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.newAccountMessage",
+          "kind": "tagText",
+          "propertyName": "newAccountMessage",
+          "line": 100,
+          "value": "div",
+          "text": "\"address\":"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.pageTitle",
+          "kind": "tagText",
+          "propertyName": "pageTitle",
+          "line": 105,
+          "value": "p",
+          "text": "Snap Simple Keyring"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.rejectRequestButton",
+          "kind": "tagText",
+          "propertyName": "rejectRequestButton",
+          "line": 110,
+          "value": "button",
+          "text": "Reject Request"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.rejectRequestIdInput",
+          "kind": "css",
+          "propertyName": "rejectRequestIdInput",
+          "line": 115,
+          "value": "#reject-request-request-id"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.rejectRequestSection",
+          "kind": "tagText",
+          "propertyName": "rejectRequestSection",
+          "line": 117,
+          "value": "div",
+          "text": "Reject request"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.requestMessage",
+          "kind": "tagText",
+          "propertyName": "requestMessage",
+          "line": 122,
+          "value": "div",
+          "text": "\"scope\":"
+        },
+        {
+          "id": "SnapSimpleKeyringPage.snapConnectedMessage",
+          "kind": "css",
+          "propertyName": "snapConnectedMessage",
+          "line": 127,
+          "value": "#snapConnected"
         },
         {
           "id": "SnapSimpleKeyringPage.snapInstallScrollButton",
@@ -7142,6 +10387,13 @@
           "value": "[data-testid=\"awaiting-swap-main-description\"]"
         },
         {
+          "id": "SwapPage.bannerBase",
+          "kind": "css",
+          "propertyName": "bannerBase",
+          "line": 41,
+          "value": ".mm-banner-base"
+        },
+        {
           "id": "SwapPage.bridgeAsset",
           "kind": "css",
           "propertyName": "bridgeAsset",
@@ -7163,11 +10415,50 @@
           "value": "[data-testid=\"bridge-source-button\"]"
         },
         {
+          "id": "SwapPage.closeButton",
+          "kind": "tagText",
+          "propertyName": "closeButton",
+          "line": 50,
+          "value": "button",
+          "text": "Close"
+        },
+        {
+          "id": "SwapPage.closeQuotesButton",
+          "kind": "css",
+          "propertyName": "closeQuotesButton",
+          "line": 55,
+          "value": "header button"
+        },
+        {
+          "id": "SwapPage.gasIncludedLabel",
+          "kind": "tagText",
+          "propertyName": "gasIncludedLabel",
+          "line": 59,
+          "value": "p",
+          "text": "Included"
+        },
+        {
           "id": "SwapPage.importTokensButton",
           "kind": "css",
           "propertyName": "importTokensButton",
           "line": 64,
           "value": "[data-testid=\"import-tokens-import-button\"]"
+        },
+        {
+          "id": "SwapPage.insufficientFundsButton",
+          "kind": "cssText",
+          "propertyName": "insufficientFundsButton",
+          "line": 67,
+          "value": "[data-testid=\"bridge-cta-button\"]",
+          "text": "Insufficient funds"
+        },
+        {
+          "id": "SwapPage.maxButton",
+          "kind": "tagText",
+          "propertyName": "maxButton",
+          "line": 72,
+          "value": "button",
+          "text": "Max"
         },
         {
           "id": "SwapPage.minimumReceived",
@@ -7177,11 +10468,48 @@
           "value": "[data-testid=\"minimum-received\"]"
         },
         {
+          "id": "SwapPage.moreQuotesButton",
+          "kind": "css",
+          "propertyName": "moreQuotesButton",
+          "line": 79,
+          "value": "[aria-label=\"More quotes\"]"
+        },
+        {
           "id": "SwapPage.networkFees",
           "kind": "css",
           "propertyName": "networkFees",
           "line": 81,
           "value": "[data-testid=\"network-fees\"]"
+        },
+        {
+          "id": "SwapPage.noQuotesAvailableMessage",
+          "kind": "tagText",
+          "propertyName": "noQuotesAvailableMessage",
+          "line": 83,
+          "value": "p",
+          "text": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option"
+        },
+        {
+          "id": "SwapPage.quotesModal",
+          "kind": "css",
+          "propertyName": "quotesModal",
+          "line": 88,
+          "value": ".quotes-modal"
+        },
+        {
+          "id": "SwapPage.quotesModalRow",
+          "kind": "css",
+          "propertyName": "quotesModalRow",
+          "line": 90,
+          "value": ".quotes-modal [style*=\"position: relative\"]"
+        },
+        {
+          "id": "SwapPage.rateMessage",
+          "kind": "tagText",
+          "propertyName": "rateMessage",
+          "line": 93,
+          "value": "p",
+          "text": "Includes 0.875% MetaMask fee"
         },
         {
           "id": "SwapPage.reviewFromAmount",
@@ -7212,11 +10540,27 @@
           "value": "[data-testid=\"bridge-cta-button\"]"
         },
         {
+          "id": "SwapPage.swapButton",
+          "kind": "cssText",
+          "propertyName": "swapButton",
+          "line": 106,
+          "value": "[data-testid=\"bridge-cta-button\"]",
+          "text": "Swap"
+        },
+        {
           "id": "SwapPage.swapsBannerTitle",
           "kind": "css",
           "propertyName": "swapsBannerTitle",
           "line": 111,
           "value": "[data-testid=\"swaps-banner-title\"]"
+        },
+        {
+          "id": "SwapPage.transactionCompleteHeader",
+          "kind": "tagText",
+          "propertyName": "transactionCompleteHeader",
+          "line": 113,
+          "value": "h4",
+          "text": "Your transaction is complete"
         },
         {
           "id": "SwapPage.transactionHeader",
@@ -7238,6 +10582,14 @@
           "propertyName": "transactionStatusHeader",
           "line": 123,
           "value": "[data-testid=\"swap-smart-transaction-status-header\"]"
+        },
+        {
+          "id": "SwapPage.viewActivityButton",
+          "kind": "tagText",
+          "propertyName": "viewActivityButton",
+          "line": 126,
+          "value": "button",
+          "text": "View activity"
         }
       ]
     },
@@ -7249,7 +10601,15 @@
     {
       "className": "TestDappIndividualRequest",
       "relativePath": "pages/test-dapp-individual-request.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "TestDappIndividualRequest.result",
+          "kind": "css",
+          "propertyName": "result",
+          "line": 8,
+          "value": "main"
+        }
+      ]
     },
     {
       "className": "TestDappMmConnect",
@@ -7430,33 +10790,460 @@
       "relativePath": "pages/test-dapp-multichain.ts",
       "selectors": [
         {
+          "id": "TestDappMultichain.connectExternallyConnectableButton",
+          "kind": "tagText",
+          "propertyName": "connectExternallyConnectableButton",
+          "line": 20,
+          "value": "button",
+          "text": "Connect"
+        },
+        {
+          "id": "TestDappMultichain.dappTitle",
+          "kind": "tagText",
+          "propertyName": "dappTitle",
+          "line": 25,
+          "value": "h1",
+          "text": "MetaMask MultiChain API Test Dapp"
+        },
+        {
+          "id": "TestDappMultichain.extensionIdInput",
+          "kind": "css",
+          "propertyName": "extensionIdInput",
+          "line": 32,
+          "value": "[placeholder=\"Enter extension ID\"]"
+        },
+        {
+          "id": "TestDappMultichain.firstSessionMethodResult",
+          "kind": "css",
+          "propertyName": "firstSessionMethodResult",
+          "line": 34,
+          "value": "#session-method-result-0"
+        },
+        {
           "id": "TestDappMultichain.invokeAllMethodsButton",
           "kind": "testId",
           "propertyName": "invokeAllMethodsButton",
           "line": 36,
           "value": "invoke-all-methods-button"
+        },
+        {
+          "id": "TestDappMultichain.resultSummary",
+          "kind": "css",
+          "propertyName": "resultSummary",
+          "line": 40,
+          "value": ".result-summary"
+        },
+        {
+          "id": "TestDappMultichain.scopeCheckboxByName",
+          "kind": "css",
+          "propertyName": "scopeCheckboxByName",
+          "line": 42,
+          "chunks": [
+            "input[name=\"",
+            "\"]"
+          ],
+          "params": [
+            "scope"
+          ]
+        },
+        {
+          "id": "TestDappMultichain.walletCreateSessionButton",
+          "kind": "css",
+          "propertyName": "walletCreateSessionButton",
+          "line": 49,
+          "value": "#create-session-btn"
+        },
+        {
+          "id": "TestDappMultichain.walletGetSessionButton",
+          "kind": "css",
+          "propertyName": "walletGetSessionButton",
+          "line": 51,
+          "value": "#get-session-btn"
+        },
+        {
+          "id": "TestDappMultichain.walletNotifyResult",
+          "kind": "css",
+          "propertyName": "walletNotifyResult",
+          "line": 53,
+          "value": "#wallet-notify-container"
+        },
+        {
+          "id": "TestDappMultichain.walletRevokeSessionButton",
+          "kind": "css",
+          "propertyName": "walletRevokeSessionButton",
+          "line": 55,
+          "value": "#revoke-session-btn"
         }
       ]
     },
     {
       "className": "TestDappSendEthWithPrivateKey",
       "relativePath": "pages/test-dapp-send-eth-with-private-key.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "TestDappSendEthWithPrivateKey.addressInput",
+          "kind": "css",
+          "propertyName": "addressInput",
+          "line": 5,
+          "value": "#address"
+        },
+        {
+          "id": "TestDappSendEthWithPrivateKey.sendEthWithPrivateKeyButton",
+          "kind": "css",
+          "propertyName": "sendEthWithPrivateKeyButton",
+          "line": 9,
+          "value": "#send"
+        },
+        {
+          "id": "TestDappSendEthWithPrivateKey.successMessage",
+          "kind": "cssText",
+          "propertyName": "successMessage",
+          "line": 11,
+          "value": "#success",
+          "text": "Success"
+        }
+      ]
     },
     {
       "className": "TestDappSolana",
       "relativePath": "pages/test-dapp-solana.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "TestDappSolana.solanaChainDisplay",
+          "kind": "cssText",
+          "propertyName": "solanaChainDisplay",
+          "line": 34,
+          "value": "div",
+          "text": "solana:devnet"
+        },
+        {
+          "id": "TestDappSolana.walletButtonSelector",
+          "kind": "css",
+          "propertyName": "walletButtonSelector",
+          "line": 44,
+          "value": ".wallet-adapter-modal-list .wallet-adapter-button"
+        },
+        {
+          "id": "TestDappSolana.walletModalSelector",
+          "kind": "css",
+          "propertyName": "walletModalSelector",
+          "line": 47,
+          "value": ".wallet-adapter-modal-list"
+        }
+      ]
     },
     {
       "className": "TestDappTron",
       "relativePath": "pages/test-dapp-tron.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "TestDappTron.disconnectButtonDropdownItemSelector",
+          "kind": "cssText",
+          "propertyName": "disconnectButtonDropdownItemSelector",
+          "line": 16,
+          "value": ".adapter-dropdown-list-item",
+          "text": "Disconnect"
+        },
+        {
+          "id": "TestDappTron.metamaskButtonSelector",
+          "kind": "cssText",
+          "propertyName": "metamaskButtonSelector",
+          "line": 38,
+          "value": ".adapter-react-button",
+          "text": "MetaMask"
+        },
+        {
+          "id": "TestDappTron.tronChainDisplay",
+          "kind": "cssText",
+          "propertyName": "tronChainDisplay",
+          "line": 45,
+          "value": "option",
+          "text": "Mainnet"
+        },
+        {
+          "id": "TestDappTron.walletModalSelector",
+          "kind": "css",
+          "propertyName": "walletModalSelector",
+          "line": 54,
+          "value": ".adapter-modal-wrapper"
+        }
+      ]
     },
     {
       "className": "TestDapp",
       "relativePath": "pages/test-dapp.ts",
       "selectors": [
+        {
+          "id": "TestDapp.addNetworkButton",
+          "kind": "css",
+          "propertyName": "addNetworkButton",
+          "line": 22,
+          "value": "#addEthereumChain"
+        },
+        {
+          "id": "TestDapp.addTokensToWalletButton",
+          "kind": "tagText",
+          "propertyName": "addTokensToWalletButton",
+          "line": 24,
+          "value": "button",
+          "text": "Add Token(s) to Wallet"
+        },
+        {
+          "id": "TestDapp.approveTokensButton",
+          "kind": "css",
+          "propertyName": "approveTokensButton",
+          "line": 29,
+          "value": "#approveTokens"
+        },
+        {
+          "id": "TestDapp.approveTokensButtonWithoutGas",
+          "kind": "css",
+          "propertyName": "approveTokensButtonWithoutGas",
+          "line": 31,
+          "value": "#approveTokensWithoutGas"
+        },
+        {
+          "id": "TestDapp.connectAccountButton",
+          "kind": "css",
+          "propertyName": "connectAccountButton",
+          "line": 33,
+          "value": "#connectButton"
+        },
+        {
+          "id": "TestDapp.connectDappButton",
+          "kind": "tagText",
+          "propertyName": "connectDappButton",
+          "line": 35,
+          "value": "button",
+          "text": "Connect"
+        },
+        {
+          "id": "TestDapp.connectedAccount",
+          "kind": "css",
+          "propertyName": "connectedAccount",
+          "line": 40,
+          "value": "#accounts"
+        },
+        {
+          "id": "TestDapp.connectedNetwork",
+          "kind": "cssText",
+          "propertyName": "connectedNetwork",
+          "line": 42,
+          "value": "#chainId",
+          "textExpression": "networkId"
+        },
+        {
+          "id": "TestDapp.decryptButton",
+          "kind": "css",
+          "propertyName": "decryptButton",
+          "line": 47,
+          "value": "#decryptButton"
+        },
+        {
+          "id": "TestDapp.decryptedMessage",
+          "kind": "css",
+          "propertyName": "decryptedMessage",
+          "line": 49,
+          "value": "#cleartextDisplay"
+        },
+        {
+          "id": "TestDapp.depositPiggyBankContractButton",
+          "kind": "css",
+          "propertyName": "depositPiggyBankContractButton",
+          "line": 51,
+          "value": "#depositButton"
+        },
+        {
+          "id": "TestDapp.eip5792SendCallsError",
+          "kind": "css",
+          "propertyName": "eip5792SendCallsError",
+          "line": 55,
+          "value": "#eip5792SendCallsError"
+        },
+        {
+          "id": "TestDapp.eip747ContractAddressInput",
+          "kind": "css",
+          "propertyName": "eip747ContractAddressInput",
+          "line": 57,
+          "value": "#eip747ContractAddress"
+        },
+        {
+          "id": "TestDapp.encryptButton",
+          "kind": "css",
+          "propertyName": "encryptButton",
+          "line": 59,
+          "value": "#encryptButton"
+        },
+        {
+          "id": "TestDapp.encryptedMessage",
+          "kind": "css",
+          "propertyName": "encryptedMessage",
+          "line": 61,
+          "value": "#ciphertextDisplay"
+        },
+        {
+          "id": "TestDapp.encryptMessageInput",
+          "kind": "css",
+          "propertyName": "encryptMessageInput",
+          "line": 63,
+          "value": "#encryptMessageInput"
+        },
+        {
+          "id": "TestDapp.erc1155DeployButton",
+          "kind": "css",
+          "propertyName": "erc1155DeployButton",
+          "line": 65,
+          "value": "#deployERC1155Button"
+        },
+        {
+          "id": "TestDapp.erc1155MintButton",
+          "kind": "css",
+          "propertyName": "erc1155MintButton",
+          "line": 67,
+          "value": "#batchMintButton"
+        },
+        {
+          "id": "TestDapp.erc1155RevokeSetApprovalForAllButton",
+          "kind": "css",
+          "propertyName": "erc1155RevokeSetApprovalForAllButton",
+          "line": 69,
+          "value": "#revokeERC1155Button"
+        },
+        {
+          "id": "TestDapp.erc1155SetApprovalForAllButton",
+          "kind": "css",
+          "propertyName": "erc1155SetApprovalForAllButton",
+          "line": 72,
+          "value": "#setApprovalForAllERC1155Button"
+        },
+        {
+          "id": "TestDapp.erc1155TokenAmountInput",
+          "kind": "css",
+          "propertyName": "erc1155TokenAmountInput",
+          "line": 75,
+          "value": "#batchMintIdAmounts"
+        },
+        {
+          "id": "TestDapp.erc1155TokenIDInput",
+          "kind": "css",
+          "propertyName": "erc1155TokenIDInput",
+          "line": 77,
+          "value": "#batchMintTokenIds"
+        },
+        {
+          "id": "TestDapp.erc1155WatchButton",
+          "kind": "css",
+          "propertyName": "erc1155WatchButton",
+          "line": 79,
+          "value": "#watchAssetButton"
+        },
+        {
+          "id": "TestDapp.erc20CreateTokenButton",
+          "kind": "css",
+          "propertyName": "erc20CreateTokenButton",
+          "line": 81,
+          "value": "#createToken"
+        },
+        {
+          "id": "TestDapp.erc20IncreaseTokensAllowanceButton",
+          "kind": "css",
+          "propertyName": "erc20IncreaseTokensAllowanceButton",
+          "line": 83,
+          "value": "#increaseTokenAllowance"
+        },
+        {
+          "id": "TestDapp.erc20TokenAddresses",
+          "kind": "css",
+          "propertyName": "erc20TokenAddresses",
+          "line": 86,
+          "value": "#erc20TokenAddresses"
+        },
+        {
+          "id": "TestDapp.erc20TokenTransferButton",
+          "kind": "css",
+          "propertyName": "erc20TokenTransferButton",
+          "line": 88,
+          "value": "#transferTokens"
+        },
+        {
+          "id": "TestDapp.erc20WatchAssetButton",
+          "kind": "css",
+          "propertyName": "erc20WatchAssetButton",
+          "line": 90,
+          "value": "#watchAssets"
+        },
+        {
+          "id": "TestDapp.erc721ApproveButton",
+          "kind": "css",
+          "propertyName": "erc721ApproveButton",
+          "line": 92,
+          "value": "#approveButton"
+        },
+        {
+          "id": "TestDapp.erc721DeployButton",
+          "kind": "css",
+          "propertyName": "erc721DeployButton",
+          "line": 94,
+          "value": "#deployNFTsButton"
+        },
+        {
+          "id": "TestDapp.erc721MintButton",
+          "kind": "css",
+          "propertyName": "erc721MintButton",
+          "line": 96,
+          "value": "#mintButton"
+        },
+        {
+          "id": "TestDapp.erc721RevokeSetApprovalForAllButton",
+          "kind": "css",
+          "propertyName": "erc721RevokeSetApprovalForAllButton",
+          "line": 98,
+          "value": "#revokeButton"
+        },
+        {
+          "id": "TestDapp.erc721SetApprovalForAllButton",
+          "kind": "css",
+          "propertyName": "erc721SetApprovalForAllButton",
+          "line": 100,
+          "value": "#setApprovalForAllButton"
+        },
+        {
+          "id": "TestDapp.erc721TokenAddresses",
+          "kind": "css",
+          "propertyName": "erc721TokenAddresses",
+          "line": 102,
+          "value": "#erc721TokenAddresses"
+        },
+        {
+          "id": "TestDapp.erc721TokenAddressesWithText",
+          "kind": "cssText",
+          "propertyName": "erc721TokenAddressesWithText",
+          "line": 104,
+          "value": "#erc721TokenAddresses",
+          "textExpression": "value"
+        },
+        {
+          "id": "TestDapp.erc721TransferFromButton",
+          "kind": "css",
+          "propertyName": "erc721TransferFromButton",
+          "line": 109,
+          "value": "#transferFromButton"
+        },
+        {
+          "id": "TestDapp.ethSignButton",
+          "kind": "css",
+          "propertyName": "ethSignButton",
+          "line": 111,
+          "value": "#ethSign"
+        },
+        {
+          "id": "TestDapp.ethSignErrorMessage",
+          "kind": "cssText",
+          "propertyName": "ethSignErrorMessage",
+          "line": 113,
+          "value": "#ethSign",
+          "text": "Error: The method \"eth_sign\" does not exist / is not available."
+        },
         {
           "id": "TestDapp.ethSubscribeResponse",
           "kind": "css",
@@ -7465,11 +11252,495 @@
           "value": "[data-testid=\"eth-subscribe-response\"]"
         },
         {
+          "id": "TestDapp.getAccountsButton",
+          "kind": "css",
+          "propertyName": "getAccountsButton",
+          "line": 121,
+          "value": "#getAccounts"
+        },
+        {
+          "id": "TestDapp.getAccountsResult",
+          "kind": "css",
+          "propertyName": "getAccountsResult",
+          "line": 123,
+          "value": "#getAccountsResult"
+        },
+        {
+          "id": "TestDapp.getEncryptionKeyButton",
+          "kind": "css",
+          "propertyName": "getEncryptionKeyButton",
+          "line": 125,
+          "value": "#getEncryptionKeyButton"
+        },
+        {
+          "id": "TestDapp.getEncryptionKeyResult",
+          "kind": "css",
+          "propertyName": "getEncryptionKeyResult",
+          "line": 127,
+          "value": "#encryptionKeyDisplay"
+        },
+        {
+          "id": "TestDapp.getPermissionsButton",
+          "kind": "css",
+          "propertyName": "getPermissionsButton",
+          "line": 129,
+          "value": "#getPermissions"
+        },
+        {
+          "id": "TestDapp.getPermissionsResult",
+          "kind": "css",
+          "propertyName": "getPermissionsResult",
+          "line": 131,
+          "value": "#permissionsResult"
+        },
+        {
+          "id": "TestDapp.maliciousApprovalButton",
+          "kind": "css",
+          "propertyName": "maliciousApprovalButton",
+          "line": 133,
+          "value": "#maliciousApprovalButton"
+        },
+        {
+          "id": "TestDapp.maliciousContractInteractionButton",
+          "kind": "css",
+          "propertyName": "maliciousContractInteractionButton",
+          "line": 135,
+          "value": "#maliciousContractInteractionButton"
+        },
+        {
+          "id": "TestDapp.maliciousERC20TransferButton",
+          "kind": "css",
+          "propertyName": "maliciousERC20TransferButton",
+          "line": 138,
+          "value": "#maliciousERC20TransferButton"
+        },
+        {
+          "id": "TestDapp.maliciousEthTransferButton",
+          "kind": "css",
+          "propertyName": "maliciousEthTransferButton",
+          "line": 141,
+          "value": "#maliciousRawEthButton"
+        },
+        {
+          "id": "TestDapp.maliciousPermitButton",
+          "kind": "css",
+          "propertyName": "maliciousPermitButton",
+          "line": 143,
+          "value": "#maliciousPermit"
+        },
+        {
+          "id": "TestDapp.maliciousTradeOrderButton",
+          "kind": "css",
+          "propertyName": "maliciousTradeOrderButton",
+          "line": 145,
+          "value": "#maliciousTradeOrder"
+        },
+        {
+          "id": "TestDapp.mmlogo",
+          "kind": "css",
+          "propertyName": "mmlogo",
+          "line": 147,
+          "value": "#mm-logo"
+        },
+        {
+          "id": "TestDapp.networkHost",
+          "kind": "cssText",
+          "propertyName": "networkHost",
+          "line": 149,
+          "value": "p",
+          "textExpression": "host"
+        },
+        {
           "id": "TestDapp.networkSelector",
           "kind": "testId",
           "propertyName": "networkSelector",
           "line": 154,
           "value": "chainId"
+        },
+        {
+          "id": "TestDapp.personalSignButton",
+          "kind": "css",
+          "propertyName": "personalSignButton",
+          "line": 159,
+          "value": "#personalSign"
+        },
+        {
+          "id": "TestDapp.personalSignResult",
+          "kind": "css",
+          "propertyName": "personalSignResult",
+          "line": 161,
+          "value": "#personalSignVerifyECRecoverResult"
+        },
+        {
+          "id": "TestDapp.personalSignSigUtilResultSelector",
+          "kind": "css",
+          "propertyName": "personalSignSigUtilResultSelector",
+          "line": 163,
+          "value": "#personalSignVerifySigUtilResult"
+        },
+        {
+          "id": "TestDapp.personalSignSigUtilResultSelectorWithText",
+          "kind": "cssText",
+          "propertyName": "personalSignSigUtilResultSelectorWithText",
+          "line": 166,
+          "value": "#personalSignVerifySigUtilResult",
+          "textExpression": "publicKey"
+        },
+        {
+          "id": "TestDapp.personalSignVerifyButton",
+          "kind": "css",
+          "propertyName": "personalSignVerifyButton",
+          "line": 173,
+          "value": "#personalSignVerify"
+        },
+        {
+          "id": "TestDapp.piggyBankContract",
+          "kind": "css",
+          "propertyName": "piggyBankContract",
+          "line": 175,
+          "value": "#deployButton"
+        },
+        {
+          "id": "TestDapp.provider",
+          "kind": "css",
+          "propertyName": "provider",
+          "line": 177,
+          "value": "#provider"
+        },
+        {
+          "id": "TestDapp.revokePermissionButton",
+          "kind": "css",
+          "propertyName": "revokePermissionButton",
+          "line": 179,
+          "value": "#revokeAccountsPermission"
+        },
+        {
+          "id": "TestDapp.sendCallsButton",
+          "kind": "css",
+          "propertyName": "sendCallsButton",
+          "line": 181,
+          "value": "#eip5792SendCallsButton"
+        },
+        {
+          "id": "TestDapp.sign721PermitButton",
+          "kind": "css",
+          "propertyName": "sign721PermitButton",
+          "line": 183,
+          "value": "#sign721Permit"
+        },
+        {
+          "id": "TestDapp.sign721PermitResult",
+          "kind": "css",
+          "propertyName": "sign721PermitResult",
+          "line": 185,
+          "value": "#sign721PermitResult"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultR",
+          "kind": "css",
+          "propertyName": "sign721PermitResultR",
+          "line": 187,
+          "value": "#sign721PermitResultR"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultRWithText",
+          "kind": "cssText",
+          "propertyName": "sign721PermitResultRWithText",
+          "line": 189,
+          "value": "#sign721PermitResultR",
+          "textExpression": "r: …"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultS",
+          "kind": "css",
+          "propertyName": "sign721PermitResultS",
+          "line": 194,
+          "value": "#sign721PermitResultS"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultSWithText",
+          "kind": "cssText",
+          "propertyName": "sign721PermitResultSWithText",
+          "line": 196,
+          "value": "#sign721PermitResultS",
+          "textExpression": "s: …"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultV",
+          "kind": "css",
+          "propertyName": "sign721PermitResultV",
+          "line": 201,
+          "value": "#sign721PermitResultV"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultVWithText",
+          "kind": "cssText",
+          "propertyName": "sign721PermitResultVWithText",
+          "line": 203,
+          "value": "#sign721PermitResultV",
+          "textExpression": "v: …"
+        },
+        {
+          "id": "TestDapp.sign721PermitResultWithText",
+          "kind": "cssText",
+          "propertyName": "sign721PermitResultWithText",
+          "line": 208,
+          "value": "#sign721PermitResult",
+          "textExpression": "expectedSignature"
+        },
+        {
+          "id": "TestDapp.sign721PermitVerifyButton",
+          "kind": "css",
+          "propertyName": "sign721PermitVerifyButton",
+          "line": 215,
+          "value": "#sign721PermitVerify"
+        },
+        {
+          "id": "TestDapp.sign721PermitVerifyResult",
+          "kind": "css",
+          "propertyName": "sign721PermitVerifyResult",
+          "line": 217,
+          "value": "#sign721PermitVerifyResult"
+        },
+        {
+          "id": "TestDapp.signPermitButton",
+          "kind": "css",
+          "propertyName": "signPermitButton",
+          "line": 219,
+          "value": "#signPermit"
+        },
+        {
+          "id": "TestDapp.signPermitResult",
+          "kind": "css",
+          "propertyName": "signPermitResult",
+          "line": 221,
+          "value": "#signPermitResult"
+        },
+        {
+          "id": "TestDapp.signPermitResultR",
+          "kind": "css",
+          "propertyName": "signPermitResultR",
+          "line": 223,
+          "value": "#signPermitResultR"
+        },
+        {
+          "id": "TestDapp.signPermitResultRWithText",
+          "kind": "cssText",
+          "propertyName": "signPermitResultRWithText",
+          "line": 225,
+          "value": "#signPermitResultR",
+          "textExpression": "r: …"
+        },
+        {
+          "id": "TestDapp.signPermitResultS",
+          "kind": "css",
+          "propertyName": "signPermitResultS",
+          "line": 230,
+          "value": "#signPermitResultS"
+        },
+        {
+          "id": "TestDapp.signPermitResultSWithText",
+          "kind": "cssText",
+          "propertyName": "signPermitResultSWithText",
+          "line": 232,
+          "value": "#signPermitResultS",
+          "textExpression": "s: …"
+        },
+        {
+          "id": "TestDapp.signPermitResultV",
+          "kind": "css",
+          "propertyName": "signPermitResultV",
+          "line": 237,
+          "value": "#signPermitResultV"
+        },
+        {
+          "id": "TestDapp.signPermitResultVWithText",
+          "kind": "cssText",
+          "propertyName": "signPermitResultVWithText",
+          "line": 239,
+          "value": "#signPermitResultV",
+          "textExpression": "v: …"
+        },
+        {
+          "id": "TestDapp.signPermitResultWithText",
+          "kind": "cssText",
+          "propertyName": "signPermitResultWithText",
+          "line": 244,
+          "value": "#signPermitResult",
+          "textExpression": "expectedSignature"
+        },
+        {
+          "id": "TestDapp.signPermitSignatureRequestMessage",
+          "kind": "tagText",
+          "propertyName": "signPermitSignatureRequestMessage",
+          "line": 249,
+          "value": "p",
+          "text": "Permit"
+        },
+        {
+          "id": "TestDapp.signPermitVerifyButton",
+          "kind": "css",
+          "propertyName": "signPermitVerifyButton",
+          "line": 254,
+          "value": "#signPermitVerify"
+        },
+        {
+          "id": "TestDapp.signPermitVerifyResult",
+          "kind": "css",
+          "propertyName": "signPermitVerifyResult",
+          "line": 256,
+          "value": "#signPermitVerifyResult"
+        },
+        {
+          "id": "TestDapp.signSiweBadDomainButton",
+          "kind": "css",
+          "propertyName": "signSiweBadDomainButton",
+          "line": 258,
+          "value": "#siweBadDomain"
+        },
+        {
+          "id": "TestDapp.signSiweButton",
+          "kind": "css",
+          "propertyName": "signSiweButton",
+          "line": 260,
+          "value": "#siwe"
+        },
+        {
+          "id": "TestDapp.signSiweVerifyResult",
+          "kind": "css",
+          "propertyName": "signSiweVerifyResult",
+          "line": 262,
+          "value": "#siweResult"
+        },
+        {
+          "id": "TestDapp.signTypedDataButton",
+          "kind": "css",
+          "propertyName": "signTypedDataButton",
+          "line": 264,
+          "value": "#signTypedData"
+        },
+        {
+          "id": "TestDapp.signTypedDataResult",
+          "kind": "css",
+          "propertyName": "signTypedDataResult",
+          "line": 266,
+          "value": "#signTypedDataResult"
+        },
+        {
+          "id": "TestDapp.signTypedDataResultWithText",
+          "kind": "cssText",
+          "propertyName": "signTypedDataResultWithText",
+          "line": 268,
+          "value": "#signTypedDataResult",
+          "textExpression": "result.toLowerCase()"
+        },
+        {
+          "id": "TestDapp.signTypedDataV3Button",
+          "kind": "css",
+          "propertyName": "signTypedDataV3Button",
+          "line": 273,
+          "value": "#signTypedDataV3"
+        },
+        {
+          "id": "TestDapp.signTypedDataV3Result",
+          "kind": "css",
+          "propertyName": "signTypedDataV3Result",
+          "line": 275,
+          "value": "#signTypedDataV3Result"
+        },
+        {
+          "id": "TestDapp.signTypedDataV3ResultWithText",
+          "kind": "cssText",
+          "propertyName": "signTypedDataV3ResultWithText",
+          "line": 277,
+          "value": "#signTypedDataV3Result",
+          "textExpression": "result.toLowerCase()"
+        },
+        {
+          "id": "TestDapp.signTypedDataV3VerifyButton",
+          "kind": "css",
+          "propertyName": "signTypedDataV3VerifyButton",
+          "line": 282,
+          "value": "#signTypedDataV3Verify"
+        },
+        {
+          "id": "TestDapp.signTypedDataV3VerifyResult",
+          "kind": "css",
+          "propertyName": "signTypedDataV3VerifyResult",
+          "line": 284,
+          "value": "#signTypedDataV3VerifyResult"
+        },
+        {
+          "id": "TestDapp.signTypedDataV4Button",
+          "kind": "css",
+          "propertyName": "signTypedDataV4Button",
+          "line": 286,
+          "value": "#signTypedDataV4"
+        },
+        {
+          "id": "TestDapp.signTypedDataV4Result",
+          "kind": "css",
+          "propertyName": "signTypedDataV4Result",
+          "line": 288,
+          "value": "#signTypedDataV4Result"
+        },
+        {
+          "id": "TestDapp.signTypedDataV4ResultWithText",
+          "kind": "cssText",
+          "propertyName": "signTypedDataV4ResultWithText",
+          "line": 290,
+          "value": "#signTypedDataV4Result",
+          "textExpression": "result.toLowerCase()"
+        },
+        {
+          "id": "TestDapp.signTypedDataV4VerifyButton",
+          "kind": "css",
+          "propertyName": "signTypedDataV4VerifyButton",
+          "line": 295,
+          "value": "#signTypedDataV4Verify"
+        },
+        {
+          "id": "TestDapp.signTypedDataV4VerifyResult",
+          "kind": "css",
+          "propertyName": "signTypedDataV4VerifyResult",
+          "line": 297,
+          "value": "#signTypedDataV4VerifyResult"
+        },
+        {
+          "id": "TestDapp.signTypedDataVerifyButton",
+          "kind": "css",
+          "propertyName": "signTypedDataVerifyButton",
+          "line": 299,
+          "value": "#signTypedDataVerify"
+        },
+        {
+          "id": "TestDapp.signTypedDataVerifyResult",
+          "kind": "css",
+          "propertyName": "signTypedDataVerifyResult",
+          "line": 301,
+          "value": "#signTypedDataVerifyResult"
+        },
+        {
+          "id": "TestDapp.simpleSendButton",
+          "kind": "css",
+          "propertyName": "simpleSendButton",
+          "line": 303,
+          "value": "#sendButton"
+        },
+        {
+          "id": "TestDapp.transferTokensWithoutGasButton",
+          "kind": "css",
+          "propertyName": "transferTokensWithoutGasButton",
+          "line": 305,
+          "value": "#transferTokensWithoutGas"
+        },
+        {
+          "id": "TestDapp.userRejectedRequestMessage",
+          "kind": "tagText",
+          "propertyName": "userRejectedRequestMessage",
+          "line": 307,
+          "value": "*",
+          "text": "Error: User rejected the request."
         }
       ]
     },
@@ -7483,6 +11754,13 @@
           "propertyName": "installedSnapsHeader",
           "line": 193,
           "value": "[data-testid=\"InstalledSnaps\"]"
+        },
+        {
+          "id": "TestSnaps.networkUrlInput",
+          "kind": "css",
+          "propertyName": "networkUrlInput",
+          "line": 195,
+          "value": "#fetchUrl"
         }
       ]
     },
@@ -7580,6 +11858,13 @@
           "value": "[data-testid=\"asset-options__button\"]"
         },
         {
+          "id": "TokenOverviewPage.backButton",
+          "kind": "css",
+          "propertyName": "backButton",
+          "line": 6,
+          "value": ".asset-page__back-button"
+        },
+        {
           "id": "TokenOverviewPage.moreButton",
           "kind": "css",
           "propertyName": "moreButton",
@@ -7592,6 +11877,30 @@
           "propertyName": "receiveButton",
           "line": 12,
           "value": "[data-testid=\"coin-overview-receive\"]"
+        },
+        {
+          "id": "TokenOverviewPage.sendButton",
+          "kind": "cssText",
+          "propertyName": "sendButton",
+          "line": 14,
+          "value": ".icon-button",
+          "text": "Send"
+        },
+        {
+          "id": "TokenOverviewPage.swapButton",
+          "kind": "cssText",
+          "propertyName": "swapButton",
+          "line": 19,
+          "value": ".icon-button",
+          "text": "Swap"
+        },
+        {
+          "id": "TokenOverviewPage.viewAssetInExplorerButton",
+          "kind": "tagText",
+          "propertyName": "viewAssetInExplorerButton",
+          "line": 24,
+          "value": "div",
+          "text": "View Asset in explorer"
         }
       ]
     },
@@ -7635,6 +11944,13 @@
           "value": "transaction-breakdown-row-title"
         },
         {
+          "id": "TransactionDetailsPage.explorerTestId",
+          "kind": "css",
+          "propertyName": "explorerTestId",
+          "line": 31,
+          "value": "transaction-details-block-explorer"
+        },
+        {
           "id": "TransactionDetailsPage.hashId",
           "kind": "testId",
           "propertyName": "hashId",
@@ -7657,6 +11973,14 @@
             "explorerUrl",
             "txHash"
           ]
+        },
+        {
+          "id": "TransactionDetailsPage.status",
+          "kind": "cssText",
+          "propertyName": "status",
+          "line": 40,
+          "value": "[data-testid^=\"transaction-details-status-\"]",
+          "textExpression": "status"
         },
         {
           "id": "TransactionDetailsPage.statusByTestId",
@@ -7683,7 +12007,51 @@
     {
       "className": "VaultDecryptorPage",
       "relativePath": "pages/vault-decryptor-page.ts",
-      "selectors": []
+      "selectors": [
+        {
+          "id": "VaultDecryptorPage.decryptButton",
+          "kind": "tagText",
+          "propertyName": "decryptButton",
+          "line": 5,
+          "value": "button",
+          "text": "Decrypt"
+        },
+        {
+          "id": "VaultDecryptorPage.fileInput",
+          "kind": "css",
+          "propertyName": "fileInput",
+          "line": 12,
+          "value": "#fileinput"
+        },
+        {
+          "id": "VaultDecryptorPage.passwordInput",
+          "kind": "css",
+          "propertyName": "passwordInput",
+          "line": 14,
+          "value": "#passwordinput"
+        },
+        {
+          "id": "VaultDecryptorPage.radioFileInput",
+          "kind": "css",
+          "propertyName": "radioFileInput",
+          "line": 16,
+          "value": "#radio-fileinput"
+        },
+        {
+          "id": "VaultDecryptorPage.radioTextInput",
+          "kind": "css",
+          "propertyName": "radioTextInput",
+          "line": 18,
+          "value": "#radio-textinput"
+        },
+        {
+          "id": "VaultDecryptorPage.textInput",
+          "kind": "css",
+          "propertyName": "textInput",
+          "line": 20,
+          "value": "#textinput"
+        }
+      ]
     },
     {
       "className": "VaultRecoveryPage",
@@ -7700,6 +12068,43 @@
           "propertyName": "accountItems",
           "line": 4,
           "value": "[data-testid^=\"wallet-details-account-item-\"]"
+        },
+        {
+          "id": "WalletDetailsPage.accountTypeModal",
+          "kind": "css",
+          "propertyName": "accountTypeModal",
+          "line": 7,
+          "value": ".multichain-account-menu-popover"
+        },
+        {
+          "id": "WalletDetailsPage.addAccountButton",
+          "kind": "css",
+          "propertyName": "addAccountButton",
+          "line": 9,
+          "value": ".wallet-details-page__add-account-button"
+        },
+        {
+          "id": "WalletDetailsPage.ethereumAccountOption",
+          "kind": "tagText",
+          "propertyName": "ethereumAccountOption",
+          "line": 14,
+          "value": "button",
+          "text": "Ethereum account"
+        },
+        {
+          "id": "WalletDetailsPage.solanaAccountOption",
+          "kind": "tagText",
+          "propertyName": "solanaAccountOption",
+          "line": 19,
+          "value": "button",
+          "text": "Solana account"
+        },
+        {
+          "id": "WalletDetailsPage.walletDetailsPage",
+          "kind": "css",
+          "propertyName": "walletDetailsPage",
+          "line": 24,
+          "value": ".wallet-details-page"
         }
       ]
     }

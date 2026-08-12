@@ -25,49 +25,12 @@ export type PageObjectIndex = {
   summary: IndexSummary;
 };
 
-type ExtractedSelector = PageObject['selectors'][number];
-
-/**
- * Decides whether a selector is precise enough to be worth indexing.
- *
- * Only selectors anchored on a `data-testid` are kept. Everything else —
- * bare CSS classes, and anything matched by its visible text — resolves
- * ambiguously in a live wallet: class names are shared across unrelated
- * components, and text matching depends on locale and on which element in a
- * nest actually holds the string. Including them made the overlay claim
- * elements their page object does not really own.
- *
- * @param selector - The extracted selector.
- * @returns True when the selector is anchored on a test id.
- */
-function isTestIdAnchored(selector: ExtractedSelector): boolean {
-  // Text matching is imprecise regardless of how the element is located.
-  if (selector.text !== undefined || selector.textExpression !== undefined) {
-    return false;
-  }
-
-  if (selector.kind === 'testId') {
-    return true;
-  }
-
-  // XPath is left out entirely: it cannot be evaluated with the same
-  // querySelector path the overlay uses for everything else.
-  if (selector.kind !== 'css') {
-    return false;
-  }
-
-  const pattern = selector.chunks
-    ? selector.chunks.join('')
-    : selector.value ?? '';
-
-  return pattern.includes('data-testid');
-}
-
 export type RuntimeSelector = {
   id: string;
   kind: PageObject['selectors'][number]['kind'];
   value?: string;
   text?: string;
+  textExpression?: string;
   chunks?: string[];
   params?: string[];
   propertyName: string;
@@ -112,6 +75,9 @@ export function toRuntimeIndex(index: PageObjectIndex): RuntimePageObjectIndex {
           if (selector.text !== undefined) {
             runtime.text = selector.text;
           }
+          if (selector.textExpression !== undefined) {
+            runtime.textExpression = selector.textExpression;
+          }
           if (selector.chunks !== undefined) {
             runtime.chunks = selector.chunks;
             runtime.params = selector.params;
@@ -140,12 +106,7 @@ export function buildIndex({ files }: { files: SourceFile[] }): PageObjectIndex 
 
   for (const file of files) {
     const result = extractFromSource(file);
-    pageObjects.push(
-      ...result.pageObjects.map((pageObject) => ({
-        ...pageObject,
-        selectors: pageObject.selectors.filter(isTestIdAnchored),
-      })),
-    );
+    pageObjects.push(...result.pageObjects);
     unresolved.push(...result.unresolved);
   }
 
