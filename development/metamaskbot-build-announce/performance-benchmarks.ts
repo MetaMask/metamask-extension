@@ -1243,7 +1243,10 @@ export async function buildPerformanceBenchmarksSection(
     // same source the harness reads keeps that agreement a property of this call
     // rather than of the trigger config.
     fetchHistoricalPerformanceDataFromMain(
-      resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME),
+      resolveBenchmarkMockMode(
+        process.env.GITHUB_REF_NAME,
+        process.env.BENCHMARK_MOCK_MODE,
+      ),
     ),
   ]);
 

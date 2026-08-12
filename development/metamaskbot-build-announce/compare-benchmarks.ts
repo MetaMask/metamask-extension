@@ -472,7 +472,10 @@ async function main(): Promise<void> {
 
   // Same branch-derived value the benchmark harness used to decide whether to
   // mock, so the gate evaluates the population that was actually measured.
-  const mockMode = resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME);
+  const mockMode = resolveBenchmarkMockMode(
+    process.env.GITHUB_REF_NAME,
+    process.env.BENCHMARK_MOCK_MODE,
+  );
   const baseline = await loadBaseline(mockMode);
 
   const result = runComparison(benchmarks, baseline, mockMode);

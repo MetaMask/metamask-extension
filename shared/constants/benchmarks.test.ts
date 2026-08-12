@@ -5,6 +5,36 @@ describe('resolveBenchmarkMockMode', () => {
     expect(resolveBenchmarkMockMode('main')).toBe(BENCHMARK_MOCK_MODE.LIVE);
   });
 
+  it('lets an explicit override beat the branch heuristic on main', () => {
+    // The per-commit path relies on this: main measures mocked so the gate
+    // compares one population, and the scheduled drift job passes `live`.
+    expect(resolveBenchmarkMockMode('main', 'mocked')).toBe(
+      BENCHMARK_MOCK_MODE.MOCKED,
+    );
+    expect(resolveBenchmarkMockMode('release/13.44.0', 'mocked')).toBe(
+      BENCHMARK_MOCK_MODE.MOCKED,
+    );
+  });
+
+  it('lets an explicit override beat the branch heuristic on a PR ref', () => {
+    expect(resolveBenchmarkMockMode('45147/merge', 'live')).toBe(
+      BENCHMARK_MOCK_MODE.LIVE,
+    );
+  });
+
+  it('falls back to the branch heuristic when the override is absent or unrecognised', () => {
+    // An empty string is what an unset workflow input expands to, and a typo
+    // must not silently pick a population — both fall through to the branch.
+    for (const override of [undefined, '', 'MOCKED', 'mock', 'true']) {
+      expect(resolveBenchmarkMockMode('main', override)).toBe(
+        BENCHMARK_MOCK_MODE.LIVE,
+      );
+      expect(resolveBenchmarkMockMode('45147/merge', override)).toBe(
+        BENCHMARK_MOCK_MODE.MOCKED,
+      );
+    }
+  });
+
   it('treats release branches as the live population', () => {
     expect(resolveBenchmarkMockMode('release/13.42.0')).toBe(
       BENCHMARK_MOCK_MODE.LIVE,

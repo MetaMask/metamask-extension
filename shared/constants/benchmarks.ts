@@ -237,7 +237,19 @@ export type BenchmarkMockMode =
  */
 export function resolveBenchmarkMockMode(
   branch: string | undefined,
+  override?: string | undefined,
 ): BenchmarkMockMode {
+  // An explicit override wins over the branch heuristic. The per-commit path
+  // sets it to `mocked` on every branch including main, so the series the gate
+  // compares against is one population throughout; the scheduled drift job sets
+  // it to `live`. The branch heuristic remains the fallback for local runs and
+  // for any caller that does not set it.
+  if (override === BENCHMARK_MOCK_MODE.MOCKED) {
+    return BENCHMARK_MOCK_MODE.MOCKED;
+  }
+  if (override === BENCHMARK_MOCK_MODE.LIVE) {
+    return BENCHMARK_MOCK_MODE.LIVE;
+  }
   const name = branch ?? '';
   const isMainOrRelease = name === 'main' || name.startsWith('release/');
   return isMainOrRelease

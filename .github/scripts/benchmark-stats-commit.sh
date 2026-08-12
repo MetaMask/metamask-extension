@@ -34,6 +34,23 @@ CLONE_DIR="temp-benchmark-stats"
 RAW_BRANCH="${BRANCH_NAME:-main}"
 SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
+# Mirrors resolveBenchmarkMockMode() in shared/constants/benchmarks.ts, including
+# its precedence: an explicit BENCHMARK_MOCK_MODE wins over the branch heuristic.
+# The two must agree — the harness stamps the mode it measured under and this
+# stamps the mode the entry is filed under, and a disagreement silently files a
+# live measurement in the mocked series.
+resolve_mock_mode() {
+    case "${BENCHMARK_MOCK_MODE:-}" in
+        mocked) echo 'mocked'; return ;;
+        live)   echo 'live';   return ;;
+    esac
+    if [[ "${RAW_BRANCH}" == "main" || "${RAW_BRANCH}" == release/* ]]; then
+        echo 'live'
+    else
+        echo 'mocked'
+    fi
+}
+
 # Assemble the commit data based on mode
 assemble_performance_data() {
     local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
@@ -137,10 +154,8 @@ assemble_performance_data() {
     # `live` run carries upstream latency that a `mocked` run does not, so
     # blending them yields deltas that describe the internet rather than the
     # commit. Mirrors resolveBenchmarkMockMode() in shared/constants/benchmarks.ts.
-    local mock_mode='mocked'
-    if [[ "${RAW_BRANCH}" == "main" || "${RAW_BRANCH}" == release/* ]]; then
-        mock_mode='live'
-    fi
+    local mock_mode
+    mock_mode="$(resolve_mock_mode)"
 
     # presets_json can exceed ARG_MAX; pass it via stdin instead of as a jq argument
     # (a too-large argv makes the kernel fail to exec jq with "Argument list too long").
@@ -153,7 +168,16 @@ assemble_performance_data() {
 # Resolve stats file and assemble data
 case "${DATA_TYPE}" in
     performance)
-        STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
+        # Separate file per population. Keying only by branch would put both
+        # series in one file now that main publishes mocked as well as live, and
+        # the consumer's filter would then be the only thing keeping them apart —
+        # one unstamped entry and a mocked baseline silently absorbs live latency.
+        # `live` keeps the historical path so the existing series is continuous.
+        if [[ "$(resolve_mock_mode)" == 'mocked' ]]; then
+            STATS_FILE="stats/${SAFE_BRANCH}/performance_data_mocked.json"
+        else
+            STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
+        fi
         COMMIT_MESSAGE="Adding performance benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
         echo "Mode: performance (branch: ${RAW_BRANCH})"
         echo "Assembling benchmark data from directory..."

@@ -19,7 +19,10 @@ import {
  * @returns The mock mode for the current branch.
  */
 export function getBenchmarkMockMode(): BenchmarkMockMode {
-  return resolveBenchmarkMockMode(process.env.GITHUB_REF_NAME);
+  return resolveBenchmarkMockMode(
+    process.env.GITHUB_REF_NAME,
+    process.env.BENCHMARK_MOCK_MODE,
+  );
 }
 
 /**
