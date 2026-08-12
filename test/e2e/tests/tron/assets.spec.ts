@@ -2,7 +2,10 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  selectAllNetworksFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-details';
@@ -54,7 +57,7 @@ function tronAssetsTestConfig(
 
 async function landOnTronHome(driver: Driver): Promise<void> {
   await login(driver, { validateBalance: false });
-  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+  await switchToNetworkFromNetworkSelect(driver, 'Tron');
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list.
   await driver.refresh();
@@ -195,7 +198,7 @@ describe('Tron - Assets', function (this: Suite) {
             await landOnTronHome(driver);
             const tokensTab = new TokensTab(driver);
             await waitForTronAssetList(tokensTab);
-            await tokensTab.selectAllNetworksInNetworkFilter();
+            await selectAllNetworksFromNetworkSelect(driver);
             await tokensTab.checkTokenExistsInList('Tron');
             await tokensTab.checkTokenExistsInList('Tether');
             await tokensTab.checkTokenExistsInList('Ethereum');
@@ -213,7 +216,6 @@ describe('Tron - Assets', function (this: Suite) {
             await landOnTronHome(driver);
             const tokensTab = new TokensTab(driver);
             await waitForTronAssetList(tokensTab);
-            await tokensTab.selectOnlyTronInNetworkFilter();
             await tokensTab.checkOnlyAssetsArePresent([
               'Tron',
               'GasFreeTransferSolution',

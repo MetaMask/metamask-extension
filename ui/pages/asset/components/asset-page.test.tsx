@@ -113,6 +113,14 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useTokenSecurityData', () => ({
+  useTokenSecurityData: jest.fn(() => ({
+    securityData: null,
+    isLoading: false,
+    error: null,
+  })),
+}));
+
 const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -710,7 +718,7 @@ describe('AssetPage', () => {
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
     });
 
-    it('hides bonus section when Merkl claiming is off but shows position and convert', () => {
+    it('hides bonus section when Merkl claiming is off but shows position', () => {
       const { queryByTestId } = renderWithProvider(
         <AssetPage asset={musdToken} optionsButton={null} />,
         configureMockStore([thunk])({
@@ -725,11 +733,11 @@ describe('AssetPage', () => {
       );
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
     });
 
-    it('renders position, bonus, and convert when flow and Merkl claiming are on', () => {
+    it('renders position and bonus, but never the convert section, when flow and Merkl claiming are on', () => {
       const { queryByTestId } = renderWithProvider(
         <AssetPage asset={musdToken} optionsButton={null} />,
         configureMockStore([thunk])({
@@ -742,7 +750,7 @@ describe('AssetPage', () => {
       );
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).toBeInTheDocument();
+      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-bonus-section')).toBeInTheDocument();
     });
   });

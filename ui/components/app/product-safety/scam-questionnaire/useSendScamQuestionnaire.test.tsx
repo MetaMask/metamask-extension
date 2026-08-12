@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import {

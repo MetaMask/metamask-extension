@@ -97,6 +97,14 @@ export type InfrastructureDeps = {
     caipAccountId: `${string}:${string}:${string}`,
     baseFeeBips: number,
   ) => Promise<number | null>;
+  /**
+   * Merges controller-stored UTM attribution into event properties before
+   * MetaMetrics emission. Optional so unit tests can omit it;
+   * production wiring supplies PerpsController.mergeAttributionContext.
+   */
+  mergeAttributionContext?: (
+    properties?: PerpsAnalyticsProperties,
+  ) => PerpsAnalyticsProperties;
 };
 
 const debugLog = createProjectLogger('perps');
@@ -166,7 +174,9 @@ function createDebugLogger(): PerpsDebugLogger {
   return { log: debugLog };
 }
 
-function createMetrics(): PerpsMetrics {
+function createMetrics(
+  mergeAttributionContext?: InfrastructureDeps['mergeAttributionContext'],
+): PerpsMetrics {
   return {
     // isEnabled always true: AnalyticsController.trackEvent is a no-op when the
     // user has not opted into analytics, so consent filtering is enforced at
@@ -177,11 +187,28 @@ function createMetrics(): PerpsMetrics {
       event: PerpsAnalyticsEvent,
       properties: PerpsAnalyticsProperties,
     ) => {
+      // Merge stored UTM context into every controller-emitted event so AC3
+      // attribution reaches MetaMetrics (TradingService only attaches
+      // entry/discovery/hlFeeRate from trackingData, not UTM).
+      const attributedProperties = mergeAttributionContext
+        ? mergeAttributionContext(properties)
+        : properties;
+      // NOTE: controller-emitted events (transaction events) are
+      // fired from the background PerpsController singleton, which has no
+      // knowledge of which UI surface (sidepanel/popup/fullscreen) initiated
+      // them. Stamping the real environment_type here is intentionally NOT
+      // done: it cannot be scoped per-request without controller support
+      // (TradingService forwards only entry/discovery/perpDiscovery/hlFeeRate
+      // from trackingData, and a shared background mutable would misattribute
+      // concurrent surfaces). It is deferred to the controller (9.2.2). Note
+      // client-emitted perps events (ScreenViewed, UiInteraction, PerpsError,
+      // TransactionConsidered) already carry the correct environment_type via
+      // useAnalytics, so only background transaction events are affected.
       trackEvent(
         createEventBuilder(event)
           .addCategory(MetaMetricsEventCategory.Perps)
           .addProperties({
-            ...properties,
+            ...attributedProperties,
             [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
           })
           .build(),
@@ -386,7 +413,7 @@ export function createPerpsInfrastructure(
   return {
     logger: createLogger(deps),
     debugLogger: createDebugLogger(),
-    metrics: createMetrics(),
+    metrics: createMetrics(deps.mergeAttributionContext),
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),

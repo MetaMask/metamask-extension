@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
@@ -19,7 +13,6 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-
 import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
@@ -30,6 +23,9 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Text as TextDS,
+  TextColor as TextColorDS,
+  TextVariant as TextVariantDS,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
@@ -64,7 +60,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
-import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
@@ -84,7 +79,7 @@ import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
 } from '../../../helpers/utils/caip25-permissions';
-import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
+import { getDefaultConnectChainIds } from '../../../helpers/utils/connect-default-chains';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
@@ -135,7 +130,6 @@ export const MultichainAccountsConnectPage = ({
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
-  const [activeTab, setActiveTab] = useState('accounts');
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -170,16 +164,30 @@ export const MultichainAccountsConnectPage = ({
   const isSolanaWalletStandardRequest =
     requestedScopes.length === 1 &&
     requestedScopes[0] === MultichainNetworks.SOLANA &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.SolanaAccountChangedNotifications
-    ];
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.SolanaAccountChangedNotifications
+      ],
+    );
 
   const isTronWalletAdapterRequest =
     requestedScopes.length === 1 &&
     requestedScopes[0] === MultichainNetworks.TRON &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.TronAccountChangedNotifications
-    ];
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.TronAccountChangedNotifications
+      ],
+    );
+
+  // Requests carrying the `eip1193-compatible` session property come from
+  // EIP-1193 compatibility layers (e.g. `@metamask/connect-evm`) that route
+  // legacy-style dapp connections through the Multichain API. They should get
+  // the same all-networks pre-selection as legacy EIP-1193 requests.
+  const isEip1193CompatibleRequest = Boolean(
+    requestedCaip25CaveatValue.sessionProperties?.[
+      KnownSessionProperties.Eip1193Compatible
+    ],
+  );
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
@@ -237,7 +245,7 @@ export const MultichainAccountsConnectPage = ({
     [networkConfigurationsByCaipChainId],
   );
 
-  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
+  const globallySelectedNetwork = useSelector(getMultichainNetwork);
 
   const alreadyConnectedCaipChainIds = useMemo(
     () => getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue),
@@ -255,92 +263,35 @@ export const MultichainAccountsConnectPage = ({
     [requestedCaip25CaveatValue],
   );
 
-  const requestedAndAlreadyConnectedCaipChainIdsOrDefault = useMemo(() => {
-    const allNetworksList = [
-      ...nonTestNetworkConfigurations,
-      ...testNetworkConfigurations,
-    ].map(({ caipChainId }) => caipChainId);
-
-    // If globally selected network is a test network, include that in the default selected networks for connection request
-    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
-    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-      (network: { caipChainId: CaipChainId }) =>
-        network.caipChainId === currentlySelectedNetworkChainId,
-    );
-
-    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
-          ({ caipChainId }) => caipChainId,
-        )
-      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
-    // If the request is an EIP-1193 request (with no specific chains requested), a Solana wallet standard or a tronWallet library request , return the default selected network list
-    if (
-      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
-      isSolanaWalletStandardRequest ||
-      isTronWalletAdapterRequest
-    ) {
-      return defaultSelectedNetworkList;
-    }
-
-    const walletRequest =
-      requestedCaipChainIds.filter(
-        (caipChainId) =>
-          parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Wallet,
-      ).length > 0;
-
-    let additionalChains: CaipChainId[] = [];
-    if (walletRequest && isEip1193Request) {
-      additionalChains = nonTestNetworkConfigurations
-        .map(({ caipChainId }) => caipChainId)
-        .filter((caipChainId) =>
-          requestedNamespacesWithoutWallet.includes(
-            parseCaipChainId(caipChainId).namespace,
-          ),
-        );
-    }
-
-    const supportedRequestedCaipChainIds = Array.from(
-      new Set([
-        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
-          allNetworksList.includes(requestedCaipChainId as CaipChainId),
-        ),
-        ...additionalChains,
-      ]),
-    );
-
-    // if we have specifically requested chains, return the supported requested chains plus the already connected chains
-    if (supportedRequestedCaipChainIds.length > 0) {
-      return Array.from(
-        new Set([
-          ...supportedRequestedCaipChainIds,
-          ...alreadyConnectedCaipChainIds,
-        ]),
-      );
-    }
-
-    if (requestedNamespaces.length > 0) {
-      return Array.from(
-        new Set(
-          defaultSelectedNetworkList.filter((caipChainId) => {
-            const { namespace } = parseCaipChainId(caipChainId);
-            return requestedNamespaces.includes(namespace);
-          }),
-        ),
-      );
-    }
-
-    return defaultSelectedNetworkList;
-  }, [
-    nonTestNetworkConfigurations,
-    testNetworkConfigurations,
-    requestedCaipChainIds,
-    isEip1193Request,
-    currentlySelectedNetwork.chainId,
-    requestedNamespaces,
-    requestedNamespacesWithoutWallet,
-    alreadyConnectedCaipChainIds,
-  ]);
+  const defaultConnectChainIds = useMemo(
+    () =>
+      getDefaultConnectChainIds({
+        nonTestNetworkConfigurations,
+        testNetworkConfigurations,
+        globallySelectedNetworkChainId: globallySelectedNetwork.chainId,
+        requestedCaipChainIds,
+        alreadyConnectedCaipChainIds,
+        requestedNamespaces,
+        requestedNamespacesWithoutWallet,
+        isEip1193Request,
+        isEip1193CompatibleRequest,
+        isSolanaWalletStandardRequest,
+        isTronWalletAdapterRequest,
+      }),
+    [
+      nonTestNetworkConfigurations,
+      testNetworkConfigurations,
+      requestedCaipChainIds,
+      isEip1193Request,
+      globallySelectedNetwork.chainId,
+      requestedNamespaces,
+      requestedNamespacesWithoutWallet,
+      alreadyConnectedCaipChainIds,
+      isEip1193CompatibleRequest,
+      isSolanaWalletStandardRequest,
+      isTronWalletAdapterRequest,
+    ],
+  );
 
   const {
     connectedAccountGroups,
@@ -351,26 +302,12 @@ export const MultichainAccountsConnectPage = ({
   } = useAccountGroupsForPermissions(
     existingCaip25CaveatValue,
     requestedCaipAccountIds,
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+    defaultConnectChainIds,
     requestedNamespacesWithoutWallet,
   );
 
-  const [userHasModifiedSelection, setUserHasModifiedSelection] =
+  const [userHasModifiedAccountSelection, setUserHasModifiedAccountSelection] =
     useState(false);
-
-  const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
-  );
-
-  const handleChainIdsSelected = useCallback(
-    (newSelectedChainIds: CaipChainId[], { isUserModified = true } = {}) => {
-      if (isUserModified) {
-        setUserHasModifiedSelection(true);
-      }
-      setSelectedChainIds(newSelectedChainIds);
-    },
-    [setUserHasModifiedSelection, setSelectedChainIds],
-  );
 
   const { suggestedAccountGroups, suggestedCaipAccountIds } = useMemo(() => {
     if (connectedAccountGroups.length > 0) {
@@ -395,7 +332,7 @@ export const MultichainAccountsConnectPage = ({
         suggestedAccountGroups: [defaultSelectedAccountGroup],
         suggestedCaipAccountIds: getCaip25AccountIdsFromAccountGroupAndScope(
           [defaultSelectedAccountGroup],
-          requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+          defaultConnectChainIds,
         ),
       };
     }
@@ -404,7 +341,7 @@ export const MultichainAccountsConnectPage = ({
       suggestedAccountGroups: selectedAndRequestedAccountGroups,
       suggestedCaipAccountIds: getCaip25AccountIdsFromAccountGroupAndScope(
         selectedAndRequestedAccountGroups,
-        requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+        defaultConnectChainIds,
       ),
     };
   }, [
@@ -414,7 +351,7 @@ export const MultichainAccountsConnectPage = ({
     selectedAndRequestedAccountGroups,
     connectedAccountGroupWithRequested,
     caipAccountIdsOfConnectedAndRequestedAccountGroups,
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+    defaultConnectChainIds,
   ]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
@@ -431,14 +368,10 @@ export const MultichainAccountsConnectPage = ({
       { isUserModified = true } = {},
     ) => {
       if (isUserModified) {
-        setUserHasModifiedSelection(true);
+        setUserHasModifiedAccountSelection(true);
       }
-      const updatedSelectedChains = [...selectedChainIds];
 
-      // Create lookup sets for selected account group IDs
       const selectedGroupIds = new Set(accountGroupIds);
-
-      // Filter to only selected account groups
       const selectedAccountGroups = supportedAccountGroups.filter(
         (group: AccountGroupWithInternalAccounts) =>
           selectedGroupIds.has(group.id),
@@ -446,25 +379,22 @@ export const MultichainAccountsConnectPage = ({
 
       const caip25AccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
         selectedAccountGroups,
-        updatedSelectedChains,
+        defaultConnectChainIds,
       );
 
-      handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
       setSelectedCaipAccountIds(caip25AccountIds);
       setPageMode(MultichainAccountsConnectPageMode.Summary);
     },
-    [selectedChainIds, supportedAccountGroups, handleChainIdsSelected],
+    [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  // Ensures the selected account state is kept in sync with the default selected account value
-  // until the user makes modifications to the selected account/network values.
   useEffect(() => {
     const defaultAccountGroupIds = suggestedAccountGroups.map(
       (group) => group.id,
     );
     if (
-      !userHasModifiedSelection &&
+      !userHasModifiedAccountSelection &&
       !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
     ) {
       handleAccountGroupIdsSelected(defaultAccountGroupIds, {
@@ -472,7 +402,7 @@ export const MultichainAccountsConnectPage = ({
       });
     }
   }, [
-    userHasModifiedSelection,
+    userHasModifiedAccountSelection,
     handleAccountGroupIdsSelected,
     selectedAccountGroupIds,
     suggestedAccountGroups,
@@ -503,7 +433,7 @@ export const MultichainAccountsConnectPage = ({
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
           selectedCaipAccountIds,
-          selectedChainIds,
+          defaultConnectChainIds,
         ),
       },
     };
@@ -512,7 +442,7 @@ export const MultichainAccountsConnectPage = ({
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
-    selectedChainIds,
+    defaultConnectChainIds,
     approveConnection,
   ]);
 
@@ -540,6 +470,7 @@ export const MultichainAccountsConnectPage = ({
           balance={formatCurrencyWithMinThreshold(balance, currency)}
           key={accountGroupId}
           walletName={accountGroup?.walletName}
+          disableHoverEffect={true}
         />
       );
     },
@@ -633,87 +564,62 @@ export const MultichainAccountsConnectPage = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
-          <Tab
-            className="multichain-connect-page__tab flex-1"
-            name={t('accounts')}
-            tabKey="accounts"
-            data-testid="accounts-tab"
+        <Box marginTop={2}>
+          <TextDS
+            variant={TextVariantDS.BodySm}
+            color={TextColorDS.TextAlternative}
+            className="ml-4"
           >
-            <Box marginTop={4}>
+            {t('accounts')}
+          </TextDS>
+          <Box
+            backgroundColor={BoxBackgroundColor.BackgroundDefault}
+            className="rounded-xl"
+          >
+            {selectedAccountGroupIds.map(renderAccountCell)}
+          </Box>
+          {selectedAccountGroupIds.length === 0 && (
+            <Box
+              className="flex multichain-connect-page__accounts-empty rounded-xl"
+              justifyContent={BoxJustifyContent.Start}
+              alignItems={BoxAlignItems.Center}
+            >
+              <ButtonLink onClick={setModeToEditAccounts} data-testid="edit">
+                {t('selectAccountToConnect')}
+              </ButtonLink>
+            </Box>
+          )}
+          {selectedAccountGroupIds.length > 0 && (
+            <Box
+              className="flex"
+              marginTop={4}
+              justifyContent={BoxJustifyContent.Start}
+              padding={4}
+            >
               <Box
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                className="rounded-xl"
+                className="flex multichain-connect-page__edit-icon rounded-md"
+                marginRight={4}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
+                backgroundColor={BoxBackgroundColor.InfoMuted}
+                padding={2}
               >
-                {selectedAccountGroupIds.map(renderAccountCell)}
+                <Icon
+                  name={IconName.Edit}
+                  size={IconSize.Md}
+                  color={IconColor.infoDefault}
+                />
               </Box>
-              {selectedAccountGroupIds.length === 0 && (
-                <Box
-                  className="flex multichain-connect-page__accounts-empty rounded-xl"
-                  justifyContent={BoxJustifyContent.Start}
-                  alignItems={BoxAlignItems.Center}
-                >
-                  <ButtonLink
-                    onClick={setModeToEditAccounts}
-                    data-testid="edit"
-                  >
-                    {t('selectAccountToConnect')}
-                  </ButtonLink>
-                </Box>
-              )}
-              {selectedAccountGroupIds.length > 0 && (
-                <Box
-                  className="flex"
-                  marginTop={4}
-                  justifyContent={BoxJustifyContent.Start}
-                  padding={4}
-                >
-                  <Box
-                    className="flex multichain-connect-page__edit-icon rounded-md"
-                    marginRight={4}
-                    alignItems={BoxAlignItems.Center}
-                    justifyContent={BoxJustifyContent.Center}
-                    backgroundColor={BoxBackgroundColor.InfoMuted}
-                    padding={2}
-                  >
-                    <Icon
-                      name={IconName.Edit}
-                      size={IconSize.Md}
-                      color={IconColor.infoDefault}
-                    />
-                  </Box>
-                  <ButtonLink
-                    color={TextColor.infoDefault}
-                    onClick={setModeToEditAccounts}
-                    data-testid="edit"
-                  >
-                    {t('editAccounts')}
-                  </ButtonLink>
-                </Box>
-              )}
+              <ButtonLink
+                color={TextColor.infoDefault}
+                onClick={setModeToEditAccounts}
+                data-testid="edit"
+              >
+                {t('editAccounts')}
+              </ButtonLink>
             </Box>
-          </Tab>
-          <Tab
-            name={t('permissions')}
-            className="multichain-connect-page__tab flex-1"
-            tabKey="permissions"
-            data-testid="permissions-tab"
-            disabled={selectedAccountGroupIds.length === 0}
-          >
-            <Box marginTop={4}>
-              <MultichainSiteCell
-                nonTestNetworks={nonTestNetworkConfigurations}
-                testNetworks={testNetworkConfigurations}
-                supportedAccountGroups={supportedAccountGroups}
-                showEditAccounts={setModeToEditAccounts}
-                onSelectChainIds={handleChainIdsSelected}
-                selectedAccountGroupIds={selectedAccountGroupIds}
-                selectedChainIds={selectedChainIds}
-                isConnectFlow
-              />
-            </Box>
-          </Tab>
-        </Tabs>
+          )}
+        </Box>
       </Content>
       <Footer>
         <Box
@@ -742,10 +648,7 @@ export const MultichainAccountsConnectPage = ({
                   ? IconName.Danger
                   : undefined
               }
-              disabled={
-                selectedAccountGroupIds.length === 0 ||
-                selectedChainIds.length === 0
-              }
+              disabled={selectedAccountGroupIds.length === 0}
             >
               {t('connect')}
             </Button>
@@ -755,6 +658,8 @@ export const MultichainAccountsConnectPage = ({
     </Page>
   ) : (
     <MultichainEditAccountsPage
+      title={t('selectAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

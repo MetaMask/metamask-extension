@@ -30,6 +30,15 @@ export class PerpsMarketListPage {
     xpath: "//*[starts-with(@data-testid,'market-row-')]",
   };
 
+  /**
+   * Perps toast close control. Dismissing avoids click intercept when the banner
+   * overlays Explore markets after favoriting.
+   *
+   * @see ui/components/multichain/toast/toast.tsx
+   */
+  private readonly perpsToastCloseButton =
+    '[data-testid="perps-toast-banner-base"] .mm-banner-base__close-button';
+
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
 
@@ -87,12 +96,15 @@ export class PerpsMarketListPage {
   /**
    * Navigates to the Perps Market List by clicking the "Explore markets" row.
    * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
-   * Dismisses any visible toast first so it does not intercept the click; then uses
-   * clickElementUsingMouseMove for the row to avoid ElementClickInterceptedError.
+   * Dismisses any visible toast that may cover the row, waits for the row to stop
+   * moving (watchlist mount / toast dismiss can shift layout), then clicks with
+   * {@link Driver.clickElement}.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
-    await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
+    await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+    await this.driver.waitForElementToStopMoving(this.exploreMarketsRow);
+    await this.driver.clickElement(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }
 
