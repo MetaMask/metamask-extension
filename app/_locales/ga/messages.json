@@ -615,9 +615,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht"
   },
-  "backupApprovalInfo": {
-    "message": "Tá an cód rúnda seo ag teastáil chun do sparán a aisghabháil i gcás go gcaillfidh tú do ghléas, go ndéanfaidh tú dearmad ar do phasfhocal, go gcaithfidh tú MetaMask a athshuiteáil, nó más mian leat rochtain a fháil ar do sparán ar ghléas eile."
-  },
   "backupApprovalNotice": {
     "message": "Déan cúltaca de do Rúnd-Frása Aisghabhála chun do sparán agus do chistí a choinneáil slán."
   },

@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
   },
-  "backupApprovalInfo": {
-    "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
-  },
   "backupApprovalNotice": {
     "message": "Sao lưu Cụm từ khôi phục bí mật để đảm bảo an toàn cho ví và tiền của bạn."
   },

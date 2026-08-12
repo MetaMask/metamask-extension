@@ -39,6 +39,27 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
+  it('resets nested content scroll position when switching tabs', () => {
+    const { getByTestId, getByText } = render(
+      <Tabs onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          <div data-testid="tab-content">Tab 1 Content</div>
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          <div data-testid="tab-content">Tab 2 Content</div>
+        </Tab>
+      </Tabs>,
+    );
+    const initialContent = getByTestId('tab-content');
+    initialContent.scrollTop = 100;
+
+    fireEvent.click(getByText('Tab 2'));
+
+    const activeContent = getByTestId('tab-content');
+    expect(activeContent).not.toBe(initialContent);
+    expect(activeContent.scrollTop).toBe(0);
+  });
+
   it('keeps clicked tab content visible while activeTab prop is still stale', () => {
     const onTabClick = jest.fn();
     const { getByText, queryByText } = render(

@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Más información sobre cómo protegemos su privacidad"
   },
-  "backupApprovalInfo": {
-    "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
-  },
   "backupApprovalNotice": {
     "message": "Cree una copia de seguridad de su frase secreta de recuperación para mantener protegidos sus fondos y su monedero."
   },

@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
   },
-  "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
-  },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
   },

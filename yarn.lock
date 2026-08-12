@@ -5776,28 +5776,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.1":
-  version: 13.1.1
-  resolution: "@metamask/assets-controller@npm:13.1.1"
+"@metamask/assets-controller@npm:^13.1.0, @metamask/assets-controller@npm:^13.1.1, @metamask/assets-controller@npm:^13.1.2":
+  version: 13.1.2
+  resolution: "@metamask/assets-controller@npm:13.1.2"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/account-tree-controller": "npm:^7.6.0"
-    "@metamask/accounts-controller": "npm:^39.0.6"
-    "@metamask/assets-controllers": "npm:^111.0.0"
+    "@metamask/account-tree-controller": "npm:^7.6.1"
+    "@metamask/accounts-controller": "npm:^39.1.0"
+    "@metamask/assets-controllers": "npm:^111.1.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
     "@metamask/config-registry-controller": "npm:^2.0.1"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/core-backend": "npm:^8.1.1"
     "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/keyring-internal-api": "npm:^12.0.0"
     "@metamask/keyring-snap-client": "npm:^10.0.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^35.0.1"
-    "@metamask/network-enablement-controller": "npm:^6.0.2"
+    "@metamask/network-enablement-controller": "npm:^6.0.3"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/phishing-controller": "npm:^17.3.1"
     "@metamask/polling-controller": "npm:^16.0.9"
@@ -5805,13 +5805,13 @@ __metadata:
     "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^69.5.0"
+    "@metamask/transaction-controller": "npm:^69.5.1"
     "@metamask/utils": "npm:^11.11.0"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/6e53486933d473cbf42564498e6cb0d855388182844d0c5798b674376acecc09bad162eb0d71cb42ccdbed77a6150018d6d5de49e45eca4ba9a5e18344782631
+  checksum: 10/ddb51f7a1799632fcf2c86c89b6584d982ad6511348751a87972df306fa9c8019c9753d3e47f184a0a3bbc637f823e94326be17434050f05f9f540193d8d1bf5
   languageName: node
   linkType: hard
 
@@ -5872,7 +5872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^111.0.0":
+"@metamask/assets-controllers@npm:^111.0.0, @metamask/assets-controllers@npm:^111.1.0":
   version: 111.1.0
   resolution: "@metamask/assets-controllers@npm:111.1.0"
   dependencies:
@@ -6136,15 +6136,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "@metamask/claims-controller@npm:0.4.2"
+"@metamask/claims-controller@npm:^0.5.3":
+  version: 0.5.4
+  resolution: "@metamask/claims-controller@npm:0.5.4"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/3e512f43c581e48c7f5b67d4eab5f0fecb69eb17a1e9e16e236f0798c0e420dc62bd62d1a9755c385ea7f2c28eb4796963184ed4c2832dfe9ed0c97a8cb31764
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/8b728c317eae3e1b96d1b70144a8554b3578511f20333345d138b46e04c240b807aaea1c99b759b8915c115a27efaba969840651cafe91e7652a094a744b1cf1
   languageName: node
   linkType: hard
 
@@ -6250,7 +6252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.18.0, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0, @metamask/controller-utils@npm:^11.3.0":
+"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0, @metamask/controller-utils@npm:^11.3.0":
   version: 11.20.0
   resolution: "@metamask/controller-utils@npm:11.20.0"
   dependencies:
@@ -33067,7 +33069,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^13.1.1"
+    "@metamask/assets-controller": "npm:^13.1.2"
     "@metamask/assets-controllers": "npm:^111.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -33080,7 +33082,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/claims-controller": "npm:^0.4.2"
+    "@metamask/claims-controller": "npm:^0.5.3"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/client-utils": "npm:^2.0.0"

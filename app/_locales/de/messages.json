@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen"
   },
-  "backupApprovalInfo": {
-    "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
-  },
   "backupApprovalNotice": {
     "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, um Ihre Wallet und Ihr Geld geschützt zu halten."
   },
