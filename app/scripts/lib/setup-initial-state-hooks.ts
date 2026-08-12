@@ -37,7 +37,7 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
-function getStateForEarlySegmentEvent(manager) {
+function getStateForEarlySegmentEvent(manager: PersistenceManager) {
   if (globalThis.stateHooks.getSentryAppState) {
     return globalThis.stateHooks.getSentryAppState();
   }

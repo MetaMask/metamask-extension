@@ -32,6 +32,9 @@ const onError = (error: unknown) => {
 export const createEip1193MethodMiddleware = (
   hooks: HandlerHooks & Eip1193OnlyHooks,
 ) =>
+  // Handlers require `origin` on the request; createMethodMiddleware's
+  // AnyMethodHandler map uses bare JsonRpcRequest, so the richer local
+  // handler types are not directly assignable without a widening cast.
   createMethodMiddleware({
     handlers: {
       ...localHandlers,
@@ -39,7 +42,8 @@ export const createEip1193MethodMiddleware = (
     },
     hooks,
     onError,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
 /**
  * A collection of RPC method implementations that, for legacy reasons, MAY
@@ -89,8 +93,10 @@ export const createMultichainApiMethodMiddleware = (
  * MultiChain API.
  */
 export const createMultichainInvokedMethodMiddleware = (hooks: HandlerHooks) =>
+  // See createEip1193MethodMiddleware — same AnyMethodHandler assignability gap.
   createMethodMiddleware({
     handlers: localHandlers,
     hooks,
     onError,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);

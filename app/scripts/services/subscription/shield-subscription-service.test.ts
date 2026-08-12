@@ -307,15 +307,19 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 200));
-        await fn(1, {
-          url: MOCK_REDIRECT_URI,
-        });
+        await fn(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 500));
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
   });
 

@@ -258,7 +258,11 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+        await fn(
+          1,
+          { url: redirectUrl },
+          { url: redirectUrl } as browser.Tabs.Tab,
+        );
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
@@ -351,7 +355,11 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+        await fn(
+          1,
+          { url: redirectUrl },
+          { url: redirectUrl } as browser.Tabs.Tab,
+        );
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
@@ -388,7 +396,7 @@ describe('OAuthService - startOAuthLogin', () => {
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
         await Promise.resolve();
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     const oauthService = new OAuthService({
