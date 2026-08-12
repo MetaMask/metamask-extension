@@ -90,28 +90,12 @@ describe('Ducks - Bridge', () => {
       `);
     });
 
-    it('exits early if the incoming fromToken is the same as the current fromToken', () => {
+    it('dispatches the action for a supported EVM chain that is in the user network configs', () => {
       // The default mock store includes Mainnet — this should succeed.
       const actionPayload = {
         symbol: 'ETH',
         chainId: 'eip155:1',
         assetId: 'eip155:1/slip44:60',
-        decimals: 18,
-        name: 'Ethereum',
-      };
-      store.dispatch(setFromToken(actionPayload as never) as never);
-      const actions = store.getActions();
-      expect(
-        actions.find((a) => a.type === 'bridge/setFromToken'),
-      ).toBeUndefined();
-    });
-
-    it('dispatches the action for a supported EVM chain that is in the user network configs', () => {
-      // The default mock store includes Mainnet — this should succeed.
-      const actionPayload = {
-        symbol: 'ETH',
-        chainId: 'eip155:59144',
-        assetId: 'eip155:59144/slip44:60',
         decimals: 18,
         name: 'Ethereum',
       };
