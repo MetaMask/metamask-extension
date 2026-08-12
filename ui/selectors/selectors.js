@@ -798,7 +798,10 @@ export const getCrossChainMetaMaskCachedBalances = createSelector(
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId =
+    getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
