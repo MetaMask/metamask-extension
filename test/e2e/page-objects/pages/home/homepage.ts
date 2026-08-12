@@ -50,6 +50,9 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
+  private readonly bottomNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -529,7 +532,16 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
+    await this.checkPageIsLoaded();
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavActivityButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavActivityButton);
+    } else {
+      await this.driver.clickElement(this.activityTab);
+    }
   }
 
   async goToBackupSRPPage(): Promise<void> {
