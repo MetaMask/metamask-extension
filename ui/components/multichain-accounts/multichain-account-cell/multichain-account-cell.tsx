@@ -82,13 +82,13 @@ const BalanceDisplay = ({
   );
 };
 
-type MultichainAccountCellBaseProps = {
+export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
-  balancePosition: 'end' | 'subtitle';
+  balancePosition?: 'end' | 'subtitle';
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
