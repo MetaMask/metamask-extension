@@ -87,17 +87,59 @@ async function runWithRetries(
     return await retry({ retries, delay: 1000 }, async () => {
       performanceTracker.reset();
 
+      const startedAt = performance.now();
       const result = await benchmarkFn();
+      const elapsed = performance.now() - startedAt;
       lastResult = result;
 
       if (!result.success) {
         throw new Error(result.error ?? 'Benchmark failed');
       }
-      return result;
+      return withUnattributedTimer(result, elapsed);
     });
   } catch {
     return lastResult;
   }
+}
+
+/**
+ * Appends an `unattributed` timer: wall-clock elapsed minus the sum of the
+ * step timers.
+ *
+ * The step timers are not a partition of the flow. Each is an independent
+ * `performance.now()` pair, and the flows do real work between them — the
+ * onboarding flows click Done and handle the sidepanel *outside* the timer
+ * named for that transition. Time spent there is currently invisible: it is in
+ * neither any step nor `total`, which is the sum of the steps rather than the
+ * elapsed run.
+ *
+ * A positive value is unmeasured gap. A **negative** value means the steps
+ * overlap and some interval is counted twice; it is reported rather than
+ * clamped, because which of the two is happening is the question.
+ *
+ * Tagged with a unit so it is excluded from `total` (the same marker the long
+ * task diagnostics use). This measures the gap; it does not change any
+ * existing metric or threshold.
+ *
+ * @param result - The completed run.
+ * @param elapsed - Wall-clock ms across the whole benchmark function.
+ * @returns The run with the diagnostic timer appended.
+ */
+export function withUnattributedTimer(
+  result: BenchmarkRunResult,
+  elapsed: number,
+): BenchmarkRunResult {
+  const measured = result.timers
+    .filter((t) => !t.unit)
+    .reduce((acc, t) => acc + t.value, 0);
+
+  return {
+    ...result,
+    timers: [
+      ...result.timers,
+      { id: 'unattributed', value: elapsed - measured, unit: 'ms' },
+    ],
+  };
 }
 
 type CdpInnerDriver = {
