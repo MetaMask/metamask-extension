@@ -148,6 +148,7 @@ import {
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerClearStateAction,
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
   SeedlessOnboardingControllerFetchAllSecretDataAction,
@@ -221,14 +222,18 @@ import {
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
+  SubscriptionControllerClearStateAction,
   SubscriptionControllerGetStateAction,
   SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
+  ShieldControllerClearStateAction,
   ShieldControllerStartAction,
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
+import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
+import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -237,6 +242,7 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerClearStateAction,
   PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
@@ -277,7 +283,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
 import type { UsePPOMAction } from '../lib/ppom/ppom-util';
-import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
+import {
+  OnboardingControllerGetIsSocialLoginFlowAction,
+  OnboardingControllerResetOnboardingAction,
+} from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
   getSentinelNetworkFlags,
@@ -299,6 +308,7 @@ import {
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
+  PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
@@ -497,6 +507,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removePermissionsFor',
   'requestSafeReload',
   'resetAccount',
+  'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
   'setAccountLabel',
   'setCurrentCurrency',
@@ -539,6 +550,7 @@ type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerGetStateAction
@@ -560,6 +572,7 @@ type AllowedActions =
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
+  | ClaimsControllerClearStateAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
@@ -606,7 +619,9 @@ type AllowedActions =
   | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerClearStateAction
   | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
@@ -621,6 +636,7 @@ type AllowedActions =
   | PreferencesControllerAddReferralPassedAccountAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
+  | PreferencesControllerResetStateAction
   | PreferencesControllerSetAccountsReferralApprovedAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
@@ -628,6 +644,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
   | SeedlessOnboardingControllerGetSecretDataBackupStateAction
@@ -642,11 +659,13 @@ type AllowedActions =
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | GetSignatureState
+  | ShieldControllerClearStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerClearStateAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
@@ -1269,6 +1288,48 @@ export class LegacyBackgroundApiService {
     }
 
     await this.lookupSelectedNetworks();
+  }
+
+  /**
+   * Resets the wallet to a clean state, clearing sensitive controller state and
+   * signing the user out.
+   *
+   * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+   * restore-vault flow); when `false`, onboarding is also reset and the wallet
+   * reset progress flag is set.
+   */
+  async resetWallet(restoreOnly = false): Promise<void> {
+    // sign out from Authentication service and clear the Session Data
+    this.#messenger.call('AuthenticationController:performSignOut');
+
+    // clear SeedlessOnboardingController state
+    this.#messenger.call('SeedlessOnboardingController:clearState');
+
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.#messenger.call('PasskeyController:clearState');
+
+    // stop subscription polling
+    this.#messenger.call('SubscriptionController:stopAllPolling');
+
+    // clear States
+    this.#messenger.call('SubscriptionController:clearState');
+    this.#messenger.call('ShieldController:clearState');
+    this.#messenger.call('ClaimsController:clearState');
+
+    // clear contacts (address book)
+    this.#messenger.call('AddressBookController:clear');
+
+    // reset preferences to defaults
+    this.#messenger.call('PreferencesController:resetState');
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.#messenger.call('OnboardingController:resetOnboarding');
+      this.#messenger.call(
+        'AppStateController:setIsWalletResetInProgress',
+        true,
+      );
+    }
   }
 
   /**

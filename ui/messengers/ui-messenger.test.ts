@@ -53,13 +53,18 @@ describe('UIMessenger', () => {
           messenger: delegatee,
         });
 
-        const result = await delegatee.call('SnapController:installSnaps', {
-          'npm:my-snap': {},
-        });
+        const result = await delegatee.call(
+          'SnapController:installSnaps',
+          'https://example.com',
+          { 'npm:my-snap': {} },
+        );
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'messengerCall',
-          ['SnapController:installSnaps', [{ 'npm:my-snap': {} }]],
+          [
+            'SnapController:installSnaps',
+            ['https://example.com', { 'npm:my-snap': {} }],
+          ],
         );
         expect(result).toBe('result');
       });
@@ -72,15 +77,18 @@ describe('UIMessenger', () => {
         const delegatee = createDelegatee();
 
         await uiMessenger.delegate({
-          actions: [action],
+          // `KeyringController:addNewKeyring` is deliberately excluded from the
+          // UI messenger, so this exercises the runtime guard.
+          // @ts-expect-error Delegating an excluded action on purpose.
+          actions: ['KeyringController:addNewKeyring'],
           messenger: delegatee,
         });
 
-        const call = delegatee.call as unknown as (
-          actionType: string,
-        ) => unknown;
-        expect(() => call.call(delegatee, action)).toThrow(
-          `The action "${action}" has not been exposed to the UI.`,
+        expect(() =>
+          // @ts-expect-error Calling an excluded action on purpose.
+          delegatee.call('KeyringController:addNewKeyring'),
+        ).toThrow(
+          'The action "KeyringController:addNewKeyring" has not been exposed to the UI.',
         );
         expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
       });
@@ -212,7 +220,9 @@ describe('UIMessenger', () => {
         });
 
         expect(() =>
-          delegatee.call('SnapController:installSnaps', { 'npm:my-snap': {} }),
+          delegatee.call('SnapController:installSnaps', 'https://example.com', {
+            'npm:my-snap': {},
+          }),
         ).toThrow();
       });
 
