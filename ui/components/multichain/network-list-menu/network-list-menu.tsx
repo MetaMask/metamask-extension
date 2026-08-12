@@ -466,7 +466,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       allChainIds,
       tokenNetworkFilter,
       dispatch,
-      getMultichainNetworkConfigurationOrThrow,
     ],
   );
 
