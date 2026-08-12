@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { DiscountType } from '@metamask/bridge-controller';
 import {
@@ -19,8 +19,9 @@ export const BridgeDiscountFeeMessage = () => {
 
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const { isQuoteExpired } = useSelector((state) =>
-    getValidationErrors(state as BridgeAppState, Date.now()),
+  const { isQuoteExpired } = useSelector(
+    (state: BridgeAppState) => getValidationErrors(state, Date.now()),
+    shallowEqual,
   );
 
   if (!activeQuote) {

@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -191,22 +190,20 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              feeData: {
-                ...quote.quote.feeData,
-                metabridge: {
-                  ...quote.quote.feeData.metabridge,
-                  amount: '1',
-                  quoteBpsFee: 87.5,
-                },
-              },
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            feeData: {
+              ...quote.quote.feeData,
+              metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+                ...fee,
+                amount: '1',
+                quoteBpsFee: 87.5,
+              })),
             },
-          }),
-        ),
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -508,16 +505,26 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
         bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 10,
+            destChainId: 137,
+            srcTokenAddress: '0x0000000000000000000000000000000000000000',
+            destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            srcTokenAmount: '14000000',
+          },
           quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
             ...quote,
             quote: {
               ...quote.quote,
               priceData: {
                 ...quote.quote.priceData,
-                priceImpact,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
               },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quotesLastFetched: Date.now() - 5000,
           quotesLoadingStatus: RequestStatus.LOADING,
         },

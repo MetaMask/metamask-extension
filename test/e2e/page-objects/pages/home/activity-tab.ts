@@ -5,6 +5,9 @@ class ActivityTab extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly backButton =
+    '[data-testid="transaction-details-back-button"]';
+
   private readonly baseFeeLabel = {
     xpath: "//div[contains(text(), 'Base fee')]",
   };
@@ -33,6 +36,8 @@ class ActivityTab extends HomePage {
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
+  private readonly popoverClose = '[data-testid="popover-close"]';
+
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
   private readonly tooltip = '.tippy-tooltip-content';
@@ -43,48 +48,117 @@ class ActivityTab extends HomePage {
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
-  private readonly transactionStatusLabel = (status: string) => ({
-    testId: `transaction-details-status-${status}`,
-  });
-
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
       2 + rowIndex
     }) [data-testid="transaction-breakdown-row-value"]`,
   });
 
-  private readonly popoverClose = '[data-testid="popover-close"]';
-
-  private readonly backButton =
-    '[data-testid="transaction-details-back-button"]';
+  private readonly transactionStatusLabel = (status: string) => ({
+    testId: `transaction-details-status-${status}`,
+  });
 
   private readonly viewTransactionOnExplorerButton = {
     testId: 'transaction-details-block-explorer',
   };
 
   /**
-   * This function clicks on the activity at the specified index.
-   * Note: this function need to be called after checkCompletedTxNumberDisplayedInActivity to reduce flakiness.
+   * This function checks a swap or bridge transaction's details
    *
-   * @param expectedNumber - The 1-based index of the activity to be clicked.
+   * @param action - The expected action text for the Activity List item
+   * @param isBridge - Whether the transaction is a bridge or swap
+   * @param expectedStatus - The expected status of the transaction
+   * @param expectedSrcAmount - The expected source amount
+   * @param expectedSrcToken - The expected source token
+   * @param expectedDestAmount - The expected destination amount
+   * @param expectedDestToken - The expected destination token
+   * @returns A promise that resolves when the expected transaction details are displayed within the timeout period.
    */
-  async clickOnActivity(expectedNumber: number): Promise<void> {
-    console.log(`Clicking on activity ${expectedNumber}`);
-    const activities = await this.driver.findElements(this.activityListAction);
-    await activities[expectedNumber - 1].click();
+  async checkBridgeTransactionDetails(
+    action: string,
+    isBridge: boolean,
+    expectedStatus: 'success' | 'failed' | 'pending',
+    expectedSrcAmount?: string,
+    expectedSrcToken?: string,
+    expectedDestAmount?: string,
+    expectedDestToken?: string,
+  ): Promise<void> {
+    console.log(`Open bridge transaction details`);
+    const [completedTx] = await this.driver.findElements({
+      text: action,
+    });
+    await completedTx.click();
+    await this.driver.waitForSelector({ text: action });
+
+    console.log('Checking scanner links');
+    const scannerLinks = await this.driver.findElements(
+      '[data-testid="transaction-details-block-explorer"]',
+    );
+    assert.equal(scannerLinks.length, 1, 'Scanner links are displayed');
+
+    console.log(`Checking ${isBridge ? 'bridge' : 'swap'} status`);
+    await this.driver.waitForSelector(
+      this.transactionStatusLabel(expectedStatus),
+    );
+
+    if (!isBridge) {
+      console.log('Checking displayed amounts');
+      if (expectedSrcAmount) {
+        await this.driver.waitForSelector({
+          text: `${expectedSrcAmount} ${expectedSrcToken}`,
+        });
+      }
+      if (expectedDestAmount) {
+        await this.driver.waitForSelector({
+          text: `${expectedDestAmount} ${expectedDestToken}`,
+        });
+      }
+    }
+
+    console.log('Navigating back to activity list');
+    await this.driver.clickElement(this.backButton);
   }
 
   /**
-   * This function clicks on the "View on block explorer" button for the specified transaction.
+   * This function checks the specified number of completed Bridge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
    *
-   * @param expectedNumber - The 1-based index of the transaction to be clicked.
+   * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge completed transactions is displayed within the timeout period.
    */
-  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
+  async checkCompletedBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
     console.log(
-      `Viewing transaction on explorer for transaction ${expectedNumber}`,
+      `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
     );
-    await this.clickOnActivity(expectedNumber);
-    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
+    await this.driver.wait(async () => {
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionCompleted,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge transactions found in activity list on homepage`,
+    );
+  }
+
+  async checkCompletedTransactionItems(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const confirmedTxes = await this.driver.findElements(
+        this.completedTransactions,
+      );
+      return confirmedTxes.length === expectedNumber;
+    }, 10000);
   }
 
   /**
@@ -154,9 +228,32 @@ class ActivityTab extends HomePage {
     );
   }
 
-  async clickConfirmedTransaction(): Promise<void> {
-    console.log('Clicking on confirmed transaction');
-    await this.driver.clickElement(this.confirmedTransactions);
+  /**
+   * This function checks if the specified number of failed transactions is displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async checkFailedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      try {
+        const failedTxs = await this.driver.findElements(
+          this.failedTransactions,
+        );
+        return failedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
+    }, 60000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
+    );
   }
 
   /**
@@ -183,31 +280,64 @@ class ActivityTab extends HomePage {
     console.log(`Gas price ${expectedGasPrice} verified`);
   }
 
+  async checkNoFailedTransactions(): Promise<void> {
+    try {
+      await this.driver.findElement(this.failedTransactions, 1);
+    } catch (error) {
+      return;
+    }
+
+    const failedTxs = await this.driver.findElements(this.failedTransactions);
+
+    if (!failedTxs.length) {
+      return;
+    }
+
+    const errorMessages = [];
+
+    for (const failedTx of failedTxs) {
+      await this.driver.hoverElement(failedTx);
+
+      const tooltip = await this.driver.findElement(this.tooltip);
+      const errorMessage = await tooltip.getText();
+
+      errorMessages.push(errorMessage);
+    }
+
+    throw new Error(
+      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
+    );
+  }
+
+  async checkNoTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
   /**
-   * This function checks if the specified number of failed transactions is displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   * This function checks the specified number of pending Bridge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
    */
-  async checkFailedTxNumberDisplayedInActivity(
+  async checkPendingBridgeTransactionActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
       try {
-        const failedTxs = await this.driver.findElements(
-          this.failedTransactions,
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionPending,
         );
-        return failedTxs.length === expectedNumber;
+        return completedTxs.length === expectedNumber;
       } catch {
         return false;
       }
     }, 60000);
     console.log(
-      `${expectedNumber} failed transactions found in activity list on homepage`,
+      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
   }
 
@@ -239,12 +369,87 @@ class ActivityTab extends HomePage {
     );
   }
 
-  async checkNoTxInActivity(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.completedTransactions);
-  }
-
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
     await this.driver.waitForSelector(this.speedupInlineButton);
+  }
+
+  async checkSwapActivityTransaction(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: string;
+  }): Promise<void> {
+    await this.goToActivityList();
+    await this.driver.waitForSelector(this.completedTransactions);
+
+    const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;
+    await this.driver.waitForSelector({ tag: 'p', text: swapLabel });
+
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: `-${options.amount} ${options.swapFrom}`,
+    });
+
+    await this.driver.clickElement({ tag: 'p', text: swapLabel });
+
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownAmount,
+      text: `-${options.amount} ${options.swapFrom}`,
+    });
+
+    await this.driver.clickElement(this.popoverClose);
+  }
+
+  /**
+   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
+   *
+   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
+   * @returns A promise that resolves when the transaction activity with the specified text is found.
+   */
+  async checkTransactionActivityByText(txnText: string): Promise<void> {
+    console.log(`Check transaction activity with text: ${txnText}`);
+    await this.driver.waitForSelector({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  async checkTransactionAmount(transactionAmount: string): Promise<void> {
+    console.log('Validate transaction amount');
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
+    });
+  }
+
+  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
+    console.log(`Check transaction amount is absent: ${amount}`);
+    await this.driver.assertElementNotPresent({
+      css: this.transactionAmountsInActivity,
+      text: amount,
+    });
+  }
+
+  async checkTransactionBreakdownRowValue(
+    rowIndex: number,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(
+      `Check transaction breakdown row ${rowIndex} value is ${expectedText}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionBreakdownRowValue(rowIndex).css,
+      text: expectedText,
+    });
   }
 
   /**
@@ -298,119 +503,6 @@ class ActivityTab extends HomePage {
   }
 
   /**
-   * This function checks the specified number of pending Bridge transactions are displayed in the activity list on the homepage.
-   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
-   *
-   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
-   */
-  async checkPendingBridgeTransactionActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      try {
-        const completedTxs = await this.driver.findElements(
-          this.bridgeTransactionPending,
-        );
-        return completedTxs.length === expectedNumber;
-      } catch {
-        return false;
-      }
-    }, 60000);
-    console.log(
-      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
-    );
-  }
-
-  /**
-   * This function checks the specified number of completed Bridge transactions are displayed in the activity list on the homepage.
-   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
-   *
-   * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of Bridge completed transactions is displayed within the timeout period.
-   */
-  async checkCompletedBridgeTransactionActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      try {
-        const completedTxs = await this.driver.findElements(
-          this.bridgeTransactionCompleted,
-        );
-        return completedTxs.length === expectedNumber;
-      } catch {
-        return false;
-      }
-    }, 60000);
-    console.log(
-      `${expectedNumber} Bridge transactions found in activity list on homepage`,
-    );
-  }
-
-  /**
-   * This function checks a swap or bridge transaction's details
-   *
-   * @param action - The expected action text for the Activity List item
-   * @param isBridge - Whether the transaction is a bridge or swap
-   * @param expectedStatus - The expected status of the transaction
-   * @param expectedSrcAmount - The expected source amount
-   * @param expectedSrcToken - The expected source token
-   * @param expectedDestAmount - The expected destination amount
-   * @param expectedDestToken - The expected destination token
-   * @returns A promise that resolves when the expected transaction details are displayed within the timeout period.
-   */
-  async checkBridgeTransactionDetails(
-    action: string,
-    isBridge: boolean,
-    expectedStatus: 'success' | 'failed' | 'pending',
-    expectedSrcAmount?: string,
-    expectedSrcToken?: string,
-    expectedDestAmount?: string,
-    expectedDestToken?: string,
-  ): Promise<void> {
-    console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
-      text: action,
-    });
-    await completedTx.click();
-    await this.driver.waitForSelector({ text: action });
-
-    console.log('Checking scanner links');
-    const scannerLinks = await this.driver.findElements(
-      '[data-testid="transaction-details-block-explorer"]',
-    );
-    assert.equal(scannerLinks.length, 1, 'Scanner links are displayed');
-
-    console.log(`Checking ${isBridge ? 'bridge' : 'swap'} status`);
-    await this.driver.waitForSelector(
-      this.transactionStatusLabel(expectedStatus),
-    );
-
-    if (!isBridge) {
-      console.log('Checking displayed amounts');
-      if (expectedSrcAmount) {
-        await this.driver.waitForSelector({
-          text: `${expectedSrcAmount} ${expectedSrcToken}`,
-        });
-      }
-      if (expectedDestAmount) {
-        await this.driver.waitForSelector({
-          text: `${expectedDestAmount} ${expectedDestToken}`,
-        });
-      }
-    }
-
-    console.log('Navigating back to activity list');
-    await this.driver.clickElement(this.backButton);
-  }
-
-  /**
    * This function checks if a specified transaction amount at the specified index matches the expected one.
    *
    * @param expectedAmount - The expected transaction amount to be displayed. Defaults to '-1 ETH'.
@@ -443,6 +535,21 @@ class ActivityTab extends HomePage {
   }
 
   /**
+   * Waits for a transaction to reach the given status in the activity list.
+   *
+   * @param status - The expected transaction status: 'confirmed' (on-chain),
+   * 'cancelled', or 'pending'. 'pending' is only for snap networks (e.g. BTC)
+   * where updates are slow; these transactions come from the snap.
+   */
+  async checkWaitForTransactionStatus(
+    status: 'confirmed' | 'cancelled' | 'pending',
+  ) {
+    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
+      timeout: 5000,
+    });
+  }
+
+  /**
    * Verifies that a specific warning message is displayed on the activity list.
    *
    * @param warningText - The expected warning text to validate against.
@@ -459,18 +566,44 @@ class ActivityTab extends HomePage {
     });
   }
 
-  async checkCompletedTransactionItems(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return confirmedTxes.length === expectedNumber;
-    }, 10000);
+  async clickCancelTransaction() {
+    // Ensure the Speed Up button is present before canceling
+    // to avoid component re-render, resulting in auto-closing the modal
+    await this.checkSpeedUpInlineButtonIsPresent();
+    await this.driver.clickElement(this.cancelTransactionButton);
+  }
+
+  async clickConfirmedTransaction(): Promise<void> {
+    console.log('Clicking on confirmed transaction');
+    await this.driver.clickElement(this.confirmedTransactions);
+  }
+
+  /**
+   * Clicks the copy transaction hash button.
+   */
+  async clickCopyTransactionHashButton(): Promise<void> {
+    console.log('Clicking copy transaction hash button');
+    await this.driver.clickElement(this.copyTransactionHashButton);
+  }
+
+  /**
+   * This function clicks on the activity at the specified index.
+   * Note: this function need to be called after checkCompletedTxNumberDisplayedInActivity to reduce flakiness.
+   *
+   * @param expectedNumber - The 1-based index of the activity to be clicked.
+   */
+  async clickOnActivity(expectedNumber: number): Promise<void> {
+    console.log(`Clicking on activity ${expectedNumber}`);
+    const activities = await this.driver.findElements(this.activityListAction);
+    await activities[expectedNumber - 1].click();
+  }
+
+  async clickSpeedUpTransaction() {
+    await this.driver.clickElement(this.speedupInlineButton);
+  }
+
+  async clickTransactionListItem() {
+    await this.driver.clickElement(this.completedTransactions);
   }
 
   async getAllTransactionAmounts(): Promise<string[]> {
@@ -486,116 +619,17 @@ class ActivityTab extends HomePage {
     return amounts;
   }
 
-  async checkTransactionAmount(transactionAmount: string): Promise<void> {
-    console.log('Validate transaction amount');
-    await this.driver.waitForSelector({
-      css: this.transactionAmountsInActivity,
-      text: transactionAmount,
-    });
-  }
-
-  async checkTransactionBreakdownRowValue(
-    rowIndex: number,
-    expectedText: string,
-  ): Promise<void> {
+  /**
+   * This function clicks on the "View on block explorer" button for the specified transaction.
+   *
+   * @param expectedNumber - The 1-based index of the transaction to be clicked.
+   */
+  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
     console.log(
-      `Check transaction breakdown row ${rowIndex} value is ${expectedText}`,
+      `Viewing transaction on explorer for transaction ${expectedNumber}`,
     );
-    await this.driver.waitForSelector({
-      css: this.transactionBreakdownRowValue(rowIndex).css,
-      text: expectedText,
-    });
-  }
-
-  async checkTransactionActivityNotPresentByText(
-    txnText: string,
-  ): Promise<void> {
-    console.log(`Check transaction activity with text is absent: ${txnText}`);
-    await this.driver.assertElementNotPresent({
-      text: txnText,
-      css: this.activityListAction,
-    });
-  }
-
-  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
-    console.log(`Check transaction amount is absent: ${amount}`);
-    await this.driver.assertElementNotPresent({
-      css: this.transactionAmountsInActivity,
-      text: amount,
-    });
-  }
-
-  async checkNoFailedTransactions(): Promise<void> {
-    try {
-      await this.driver.findElement(this.failedTransactions, 1);
-    } catch (error) {
-      return;
-    }
-
-    const failedTxs = await this.driver.findElements(this.failedTransactions);
-
-    if (!failedTxs.length) {
-      return;
-    }
-
-    const errorMessages = [];
-
-    for (const failedTx of failedTxs) {
-      await this.driver.hoverElement(failedTx);
-
-      const tooltip = await this.driver.findElement(this.tooltip);
-      const errorMessage = await tooltip.getText();
-
-      errorMessages.push(errorMessage);
-    }
-
-    throw new Error(
-      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
-    );
-  }
-
-  async clickTransactionListItem() {
-    await this.driver.clickElement(this.completedTransactions);
-  }
-
-  async clickCancelTransaction() {
-    // Ensure the Speed Up button is present before canceling
-    // to avoid component re-render, resulting in auto-closing the modal
-    await this.checkSpeedUpInlineButtonIsPresent();
-    await this.driver.clickElement(this.cancelTransactionButton);
-  }
-
-  async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  /**
-   * Waits for a transaction to reach the given status in the activity list.
-   *
-   * @param status - The expected transaction status: 'confirmed' (on-chain),
-   * 'cancelled', or 'pending'. 'pending' is only for snap networks (e.g. BTC)
-   * where updates are slow; these transactions come from the snap.
-   */
-  async checkWaitForTransactionStatus(
-    status: 'confirmed' | 'cancelled' | 'pending',
-  ) {
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
-    });
-  }
-
-  /**
-   * Checks for the presence of a transaction activity item in the activity list by matching the provided text.
-   *
-   * @param txnText - The text to search for within the transaction activity list. (e.g., "Swap SOL to USDC")
-   * @returns A promise that resolves when the transaction activity with the specified text is found.
-   */
-  async checkTransactionActivityByText(txnText: string): Promise<void> {
-    console.log(`Check transaction activity with text: ${txnText}`);
-    await this.driver.waitForSelector({
-      text: txnText,
-      css: this.activityListAction,
-    });
+    await this.clickOnActivity(expectedNumber);
+    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**
@@ -609,40 +643,6 @@ class ActivityTab extends HomePage {
       state: 'detached',
       timeout: 30000,
     });
-  }
-
-  /**
-   * Clicks the copy transaction hash button.
-   */
-  async clickCopyTransactionHashButton(): Promise<void> {
-    console.log('Clicking copy transaction hash button');
-    await this.driver.clickElement(this.copyTransactionHashButton);
-  }
-
-  async checkSwapActivityTransaction(options: {
-    swapFrom: string;
-    swapTo: string;
-    amount: string;
-  }): Promise<void> {
-    await this.goToActivityList();
-    await this.driver.waitForSelector(this.completedTransactions);
-
-    const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;
-    await this.driver.waitForSelector({ tag: 'p', text: swapLabel });
-
-    await this.driver.waitForSelector({
-      css: this.transactionAmountsInActivity,
-      text: `-${options.amount} ${options.swapFrom}`,
-    });
-
-    await this.driver.clickElement({ tag: 'p', text: swapLabel });
-
-    await this.driver.waitForSelector({
-      css: this.transactionBreakdownAmount,
-      text: `-${options.amount} ${options.swapFrom}`,
-    });
-
-    await this.driver.clickElement(this.popoverClose);
   }
 }
 

@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class DecryptMessageConfirmation {
-  driver: Driver;
-
   private readonly accountBalanceValue =
     '.request-decrypt-message__balance-value';
 
@@ -23,8 +21,39 @@ class DecryptMessageConfirmation {
     css: '.request-decrypt-message__header__text',
   };
 
+  driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Check the account balance value in decrypt message confirmation page.
+   *
+   * @param balanceValue - The balance value to check.
+   */
+  async checkAccountBalance(balanceValue: string): Promise<void> {
+    console.log(
+      'Check account balance on decrypt message confirmation screen: ',
+      balanceValue,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountBalanceValue,
+      text: balanceValue,
+    });
+  }
+
+  /**
+   * Check the decrypted message on decrypt message confirmation page.
+   *
+   * @param message - The decrypted message to check.
+   */
+  async checkDecryptedMessage(message: string): Promise<void> {
+    console.log('Check decrypted message on decrypt message confirmation page');
+    await this.driver.waitForSelector({
+      css: this.decryptedMessage,
+      text: message,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -55,35 +84,6 @@ class DecryptMessageConfirmation {
       'Click to confirm decrypt message on decrypt message confirmation page',
     );
     await this.driver.clickElement(this.confirmDecryptMessageButton);
-  }
-
-  /**
-   * Check the account balance value in decrypt message confirmation page.
-   *
-   * @param balanceValue - The balance value to check.
-   */
-  async checkAccountBalance(balanceValue: string): Promise<void> {
-    console.log(
-      'Check account balance on decrypt message confirmation screen: ',
-      balanceValue,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountBalanceValue,
-      text: balanceValue,
-    });
-  }
-
-  /**
-   * Check the decrypted message on decrypt message confirmation page.
-   *
-   * @param message - The decrypted message to check.
-   */
-  async checkDecryptedMessage(message: string): Promise<void> {
-    console.log('Check decrypted message on decrypt message confirmation page');
-    await this.driver.waitForSelector({
-      css: this.decryptedMessage,
-      text: message,
-    });
   }
 }
 

@@ -138,6 +138,7 @@ export const MultichainAccountCell = ({
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             ellipsis
+            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
           >
             {accountName}
           </Text>

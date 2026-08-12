@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -16,12 +16,7 @@ import {
   getWeb3ShimUsageStateForOrigin,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
-import {
-  getIsPrimarySeedPhraseBackedUp,
-  getWeb3ShimUsageAlertEnabledness,
-} from '../../ducks/metamask/metamask';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
-import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import {
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
@@ -46,6 +41,7 @@ import MultipleNotifications from '../../components/app/multiple-notifications';
 import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
@@ -93,19 +89,6 @@ export const HomeNotificationsContainer = memo(function () {
   );
   const showOutdatedBrowserWarning =
     isBrowserDeprecated && showOutdatedBrowserWarningRaw;
-
-  const isPrimarySeedPhraseBackedUp = useSelector(
-    getIsPrimarySeedPhraseBackedUp,
-  );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const seedPhraseReminderSelector = useMemo(
-    () => (state: MetaMaskReduxState) =>
-      selectedAccount
-        ? getShouldShowSeedPhraseReminder(state, selectedAccount)
-        : false,
-    [selectedAccount],
-  );
-  const shouldShowSeedPhraseReminder = useSelector(seedPhraseReminderSelector);
 
   const web3ShimUsageAlertEnabled = useSelector(
     getWeb3ShimUsageAlertEnabledness,
@@ -231,9 +214,6 @@ export const HomeNotificationsContainer = memo(function () {
         </Text>
       </BannerAlert>
     ) : null,
-    !isPrimarySeedPhraseBackedUp && shouldShowSeedPhraseReminder ? (
-      <SeedPhraseBackupNotificationContainer key="show-seed-phrase-reminder" />
-    ) : null,
     shouldShowWeb3ShimUsageNotification ? (
       <HomeNotification
         key="show-web3-shim"
@@ -287,9 +267,12 @@ export const HomeNotificationsContainer = memo(function () {
     ) : null,
   ].filter(Boolean);
 
-  if (!notificationItems.length) {
-    return null;
-  }
-
-  return <MultipleNotifications>{notificationItems}</MultipleNotifications>;
+  return (
+    <>
+      <SeedPhraseBackupNotificationContainer />
+      {notificationItems.length > 0 ? (
+        <MultipleNotifications>{notificationItems}</MultipleNotifications>
+      ) : null}
+    </>
+  );
 });

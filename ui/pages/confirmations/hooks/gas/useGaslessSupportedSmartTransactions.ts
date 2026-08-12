@@ -6,7 +6,6 @@ import {
   SmartTransactionsState,
 } from '../../../../../shared/lib/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { isSendBundleSupported } from '../../../../store/actions';
 import { useConfirmContext } from '../../context/confirm';
 
@@ -19,9 +18,6 @@ export function useGaslessSupportedSmartTransactions(): {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
-  const isHardwareWalletAccount = useIsHardwareWalletAccount(
-    transactionMeta?.txParams?.from,
-  );
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, chainId),
   );
@@ -33,9 +29,10 @@ export function useGaslessSupportedSmartTransactions(): {
 
   return {
     isSmartTransaction: Boolean(isSmartTransaction),
-    isSupported: Boolean(
-      !isHardwareWalletAccount && isSmartTransaction && sendBundleSupported,
-    ),
-    pending: !isHardwareWalletAccount && pending,
+    // sendBundle requires only standard EIP-1559 signing, which all account
+    // types (including hardware wallets) support. Hardware wallets are only
+    // excluded from the EIP-7702 relay path (see useIsGaslessSupported).
+    isSupported: Boolean(isSmartTransaction && sendBundleSupported),
+    pending,
   };
 }

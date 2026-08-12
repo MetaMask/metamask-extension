@@ -278,6 +278,7 @@
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "null"
     },
     "allDeFiPositionsCount": {},
+    "allDeFiPositionsV2": {},
     "allDetectedTokens": {},
     "allIgnoredAssets": {},
     "allIgnoredTokens": {},
@@ -638,8 +639,8 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
-    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
@@ -671,6 +672,7 @@
         }
       }
     },
+    "country": "string",
     "coverageResults": {},
     "countries": {
       "data": [],
@@ -856,13 +858,6 @@
         "snapId": "string"
       }
     },
-    "eventsBeforeMetricsOptIn": [
-      {
-        "category": "string",
-        "event": "string",
-        "properties": {}
-      }
-    ],
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "string",
@@ -1089,6 +1084,7 @@
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
+    "mode": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -1282,6 +1278,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
+      "showTickerWidget": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
@@ -1300,6 +1297,12 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
+    "proLayoutPreferences": {
+      "orderBookExpanded": "boolean",
+      "chartExpanded": "boolean",
+      "orderBookPosition": "string",
+      "orderFormPosition": "string"
+    },
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
     "providers": {
@@ -1332,6 +1335,10 @@
         "conversionRate": "number"
       }
     },
+    "recentlyViewedMarkets": {
+      "testnet": [],
+      "mainnet": []
+    },
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
@@ -1339,6 +1346,7 @@
       "gmx": {},
       "hyperliquid": {}
     },
+    "region": "string",
     "requests": {
       "*": {
         "status": "string",
@@ -1549,6 +1557,7 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
+    "timezone": "string",
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {

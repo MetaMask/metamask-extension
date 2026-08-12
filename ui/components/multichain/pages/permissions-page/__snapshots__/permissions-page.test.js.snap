@@ -119,7 +119,7 @@ exports[`All Connections render renders correctly 1`] = `
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/logout.svg');"
             />
-            Disconnect All
+            Disconnect all
           </button>
         </div>
       </div>

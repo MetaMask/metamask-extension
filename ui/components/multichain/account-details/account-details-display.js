@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 
 import {
@@ -18,6 +18,7 @@ import {
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { shortenString } from '../../../helpers/utils/util';
 import { useAnalytics } from '../../../hooks/useAnalytics';

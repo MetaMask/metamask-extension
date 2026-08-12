@@ -8,9 +8,9 @@ import {
   TextColor,
   BoxFlexDirection,
   BoxAlignItems,
+  Tag,
 } from '@metamask/design-system-react';
 
-import { Tag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../hooks/useSegmentContext';
@@ -97,7 +97,7 @@ export default function AboutInfo(): React.ReactElement {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t('betaTerms')} <Tag label={t('new')} />
+                {t('betaTerms')} <Tag>{t('new')}</Tag>
               </a>
             </TextButton>
           </Box>

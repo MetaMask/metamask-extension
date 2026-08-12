@@ -3,6 +3,9 @@ import { Driver } from '../../webdriver/driver';
 class NotificationsListPage {
   private driver: Driver;
 
+  private readonly notificationListItem = (id: string) =>
+    `[data-testid="notification-list-item-${id}"]`;
+
   private readonly notificationsListPageTitle = {
     text: 'Notifications',
     tag: 'p',
@@ -11,14 +14,18 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
-  private readonly notificationListItem = (id: string) =>
-    `[data-testid="notification-list-item-${id}"]`;
-
   private readonly snapsNotificationMessage =
     '.snap-notifications__item__details__message';
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkNotificationItemByTestId(id: string) {
+    console.log('Checking notification list item by id');
+    await this.driver.scrollToElement(
+      await this.driver.waitForSelector(this.notificationListItem(id)),
+    );
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -37,24 +44,17 @@ class NotificationsListPage {
     console.log('Notifications List page is loaded');
   }
 
-  /**
-   * Navigates to the notifications settings page.
-   *
-   * This method clicks on the notifications settings button to navigate to the settings page.
-   */
-  async goToNotificationsSettings(): Promise<void> {
-    console.log(
-      `On notifications list page, navigating to notifications settings`,
-    );
-    await this.driver.clickElement(this.notificationsSettingsButton);
-  }
-
   async checkSnapsNotificationMessage(expectedMessage: string): Promise<void> {
     console.log('Checking snap notification message');
     await this.driver.waitForSelector({
       css: this.snapsNotificationMessage,
       text: expectedMessage,
     });
+  }
+
+  async clickNotificationItemByTestId(id: string) {
+    console.log('Clicking notification list item by id');
+    await this.driver.clickElement(this.notificationListItem(id));
   }
 
   async clickSpecificNotificationMessage(message: string): Promise<void> {
@@ -65,16 +65,16 @@ class NotificationsListPage {
     });
   }
 
-  async checkNotificationItemByTestId(id: string) {
-    console.log('Checking notification list item by id');
-    await this.driver.scrollToElement(
-      await this.driver.waitForSelector(this.notificationListItem(id)),
+  /**
+   * Navigates to the notifications settings page.
+   *
+   * This method clicks on the notifications settings button to navigate to the settings page.
+   */
+  async goToNotificationsSettings(): Promise<void> {
+    console.log(
+      `On notifications list page, navigating to notifications settings`,
     );
-  }
-
-  async clickNotificationItemByTestId(id: string) {
-    console.log('Clicking notification list item by id');
-    await this.driver.clickElement(this.notificationListItem(id));
+    await this.driver.clickElement(this.notificationsSettingsButton);
   }
 }
 

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -15,6 +14,7 @@ import {
 import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
@@ -29,6 +29,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useDispatch } from '../../../../../store/hooks';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -41,6 +42,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const blockedTokens = useTransactionPayBlockedTokens();
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
     transactionType: currentConfirmation?.type,
@@ -135,13 +137,19 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return postQuoteWithdrawTokenFilter(tokens);
       }
 
-      let available = getAvailableTokens({ payToken, requiredTokens, tokens });
+      let available = getAvailableTokens({
+        payToken,
+        requiredTokens,
+        tokens,
+        blockedTokens,
+      });
 
       available = musdTokenFilter(available);
 
       return available;
     },
     [
+      blockedTokens,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       musdTokenFilter,

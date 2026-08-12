@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import log from 'loglevel';
 import {
@@ -83,6 +83,7 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
+import { useDispatch } from '../../store/hooks';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -118,7 +119,7 @@ const toRelativePath = (path: string) =>
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const navigate = useNavigate();
@@ -390,6 +391,23 @@ export default function OnboardingFlow() {
     return 'var(--color-background-default)';
   }, [isWelcomePage, theme]);
 
+  const onboardingContainerBackgroundColor = useMemo(() => {
+    if (
+      pathname === ONBOARDING_WELCOME_ROUTE ||
+      pathname === ONBOARDING_UNLOCK_ROUTE ||
+      isPopup
+    ) {
+      return 'transparent';
+    }
+    if (
+      pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
+      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE)
+    ) {
+      return 'var(--color-background-default)';
+    }
+    return 'var(--color-background-muted)';
+  }, [pathname, isPopup]);
+
   return (
     <Box
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
@@ -427,12 +445,7 @@ export default function OnboardingFlow() {
         }
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         style={{
-          backgroundColor:
-            [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(
-              pathname,
-            ) || isPopup
-              ? 'transparent'
-              : 'var(--color-background-muted)',
+          backgroundColor: onboardingContainerBackgroundColor,
         }}
       >
         <ErrorBoundary>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   IconColor,
@@ -27,6 +27,7 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {

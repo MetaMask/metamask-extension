@@ -131,12 +131,12 @@ export type ManifestFlags = {
      */
     simulateStorageGetFailure?: boolean;
     /**
-     * Simulate browser.storage.local.set() failure for testing the storage
-     * error toast when write operations fail (e.g., Firefox database corruption).
-     * When enabled, PersistenceManager.set() and persist() will throw an error
-     * immediately, triggering the storage error toast notification.
+     * Simulate browser.storage.local.set() failure for testing persistence
+     * failure handling (e.g., Firefox database corruption). Set to `true` to
+     * fail every write or `'once'` to fail only the first write attempt for
+     * each PersistenceManager instance.
      */
-    simulateStorageSetFailure?: boolean;
+    simulateStorageSetFailure?: boolean | 'once';
     /**
      * Override the fixture server port for dynamic port allocation.
      * When set, FixtureExtensionStore fetches state from this port

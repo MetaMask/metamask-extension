@@ -2400,7 +2400,7 @@ describe('#getConnectedSitesList', () => {
         decimals: 18,
         balance: '966987986469506564059',
         string: '966.988',
-        iconUrl: './images/black-eth-logo.svg',
+        iconUrl: './images/black-eth-logo.png',
         chainId: '0x5',
       };
 
@@ -5258,5 +5258,24 @@ describe('getUnconnectedAccounts', () => {
     expect(result.some((account) => account.address === connectedAddress)).toBe(
       false,
     );
+  });
+});
+
+describe('selectHasBatchSellQuotes', () => {
+  it('returns false when there are no quotes', () => {
+    const state = { metamask: { quotes: [] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns false when quotes exist but none came from batch sell', () => {
+    const state = {
+      metamask: { quotes: [{ featureId: 'unified_swap_bridge' }] },
+    };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns true when a quote came from batch sell', () => {
+    const state = { metamask: { quotes: [{ featureId: 'batch_sell' }] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(true);
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -403,7 +403,7 @@ describe('TokenManagementPage', () => {
     metamask: {
       ...mockState.metamask,
       analyticsId: 'test-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedMultichainNetworkChainId,
       useExternalServices: true,
@@ -1280,8 +1280,10 @@ describe('TokenManagementPage', () => {
       },
     });
 
-    store.replaceReducer((() => nextState) as never);
-    store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+    await act(async () => {
+      store.replaceReducer((() => nextState) as never);
+      store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+    });
 
     const importedAadRow = await screen.findByTestId(
       `token-management-cell-0x1:${aadTokenAddress}`,

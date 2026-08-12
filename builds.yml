@@ -185,7 +185,7 @@ features:
 env:
   - ENABLE_SENTRY: true
   - ACCOUNTS_USE_DEV_APIS: false
-  - BRIDGE_USE_DEV_APIS: false
+  - BRIDGE_USE_CUSTOM_BASE_URL: null
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false
@@ -268,6 +268,9 @@ env:
   - QUICKNODE_HYPEREVM_URL: null
   - QUICKNODE_ARC_URL: null
   - QUICKNODE_ROBINHOOD_URL: null
+  - QUICKNODE_BSC_URL: null
+  - QUICKNODE_ZKSYNC_URL: null
+  - QUICKNODE_MEGAETH_URL: null
 
   ###
   # API keys to 3rd party services

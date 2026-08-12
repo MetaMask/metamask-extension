@@ -1,18 +1,27 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
-  private readonly driver: Driver;
-
-  private readonly amountInput = { testId: 'send-amount-input' };
-
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
 
+  private readonly amountInput = { testId: 'send-amount-input' };
+
+  private readonly amountRequiredError = {
+    text: 'Required',
+  };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
-  private readonly sendAlertAcknowledgeButton =
-    '[data-testid="send-alert-modal-acknowledge-button"]';
+  private readonly continueButtonEnabled =
+    '[data-testid="send-continue-button"]:not([disabled])';
+
+  private readonly continueButtonError = (errorText: string) => ({
+    css: '[data-testid="send-continue-button"]',
+    text: errorText,
+  });
+
+  private readonly driver: Driver;
 
   private readonly header = {
     tag: 'h4',
@@ -23,6 +32,10 @@ class SendPage {
 
   private readonly inputRecipient = {
     testId: 'recipient-address-input',
+  };
+
+  private readonly insufficientBalanceToCoverFeesError = {
+    text: 'Insufficient balance to cover fees',
   };
 
   private readonly insufficientFundsError = {
@@ -42,6 +55,12 @@ class SendPage {
     tag: 'button',
   };
 
+  private readonly networkName = (networkName: string) => {
+    return {
+      testId: networkName,
+    };
+  };
+
   private readonly networkPicker = {
     testId: 'send-network-filter-toggle',
   };
@@ -51,6 +70,14 @@ class SendPage {
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
   };
+
+  private readonly recipientValidationError = (errorText: string) => ({
+    css: '.mm-help-text',
+    text: errorText,
+  });
+
+  private readonly sendAlertAcknowledgeButton =
+    '[data-testid="send-alert-modal-acknowledge-button"]';
 
   private readonly solanaNetwork = {
     text: 'Solana',
@@ -62,10 +89,8 @@ class SendPage {
     };
   };
 
-  private readonly networkName = (networkName: string) => {
-    return {
-      testId: networkName,
-    };
+  private readonly transactionError = {
+    text: 'Transaction error. Exception thrown in contract code.',
   };
 
   constructor(driver: Driver) {
@@ -110,6 +135,30 @@ class SendPage {
     );
   }
 
+  async checkAmountRequiredError(): Promise<void> {
+    console.log('Checking for amount required error');
+    await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
+  /**
+   * Waits until the "available" balance shown on the amount screen matches the
+   * expected token amount.
+   *
+   * @param expectedAmount - The expected available balance amount.
+   */
+  async checkAvailableBalance(expectedAmount: string): Promise<void> {
+    console.log(`Waiting for available balance to be ${expectedAmount}`);
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(this.amountBalance);
+        const text = await element.getText();
+        const numeric = parseFloat(text.replace(/[^0-9.]/gu, ''));
+        return numeric === parseFloat(expectedAmount);
+      },
+      { interval: 100, timeout: 15000 },
+    );
+  }
+
   /**
    * Waits for the continue button to reach the expected enabled/disabled state.
    *
@@ -125,6 +174,11 @@ class SendPage {
     await this.driver.waitForSelector(this.continueButton, {
       state,
     });
+  }
+
+  async checkContinueButtonIsDisabled(): Promise<void> {
+    console.log('Checking that Continue button is disabled');
+    await this.checkContinueButton({ state: 'disabled' });
   }
 
   /**
@@ -150,9 +204,13 @@ class SendPage {
     });
   }
 
+  async checkInsufficientBalanceToCoverFeesError(): Promise<void> {
+    await this.driver.waitForSelector(this.insufficientBalanceToCoverFeesError);
+  }
+
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
-    await this.driver.findElement(this.insufficientFundsError);
+    await this.driver.waitForSelector(this.insufficientFundsError);
   }
 
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
@@ -162,7 +220,7 @@ class SendPage {
 
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
-    await this.driver.findElement(this.invalidAddressError);
+    await this.driver.waitForSelector(this.invalidAddressError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -183,6 +241,18 @@ class SendPage {
     console.log('Send page is loaded');
   }
 
+  /**
+   * Waits for a recipient address validation error to be displayed.
+   * Recipient validation is debounced, so callers should expect this to
+   * wait rather than assert instantly.
+   *
+   * @param errorText - The expected (potentially localized) error text.
+   */
+  async checkRecipientValidationError(errorText: string): Promise<void> {
+    console.log(`Checking recipient validation error: ${errorText}`);
+    await this.driver.waitForSelector(this.recipientValidationError(errorText));
+  }
+
   async checkSendFormIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.amountInput,
@@ -193,6 +263,18 @@ class SendPage {
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
+  }
+
+  /**
+   * Waits for a non-EVM submit validation error on the Continue button after
+   * Continue is pressed with an invalid amount (Tron shows transactionError
+   * copy on the button rather than inline "Required").
+   */
+  async checkTransactionError(): Promise<void> {
+    console.log('Checking for transaction error');
+    await this.driver.waitForSelector(
+      this.continueButtonError(this.transactionError.text),
+    );
   }
 
   async checkWarningMessage(warningText: string): Promise<void> {
@@ -228,6 +310,8 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.clickMaxButton();
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -253,6 +337,9 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.fillAmount(amount);
+    await this.checkAmountInputValue(amount);
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -293,8 +380,13 @@ class SendPage {
     }
   }
 
+  /**
+   * Clicks Continue once the button is stably enabled, then acknowledges the
+   * optional send-alert modal when present.
+   */
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
+    await this.waitForContinueButtonStablyEnabled();
     await this.driver.clickElement(this.continueButton);
     await this.acknowledgeSendAlertIfPresent();
   }
@@ -327,7 +419,26 @@ class SendPage {
 
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+    const tokenAsset = this.tokenAsset(chainId, symbol);
+    await this.driver.waitForSelector(tokenAsset);
+    await this.driver.clickElement(tokenAsset);
+  }
+
+  /**
+   * Waits until the Continue button is visible, enabled, and remains so long
+   * enough to avoid clicking during enable/disable flicker from validation.
+   */
+  async waitForContinueButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for continue button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.continueButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
+    );
   }
 
   async waitForSendAmountBalance(): Promise<void> {

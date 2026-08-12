@@ -1,10 +1,11 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
-import { GitHub } from '@actions/github/lib/utils';
+import type { GitHub } from '@actions/github/lib/utils';
 
 import { retrieveLinkedIssues } from './shared/issue.mts';
-import { Label } from './shared/label.mts';
-import { Labelable, addLabelToLabelable } from './shared/labelable.mts';
+import type { Label } from './shared/label.mts';
+import { addLabelToLabelable } from './shared/labelable.mts';
+import type { Labelable } from './shared/labelable.mts';
 import { retrievePullRequest } from './shared/pull-request.mts';
 import { isValidVersionFormat } from './shared/utils.mts';
 
