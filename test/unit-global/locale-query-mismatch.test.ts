@@ -227,6 +227,10 @@ const RULE_2_BASELINE: Record<string, number> = {
   'ui/components/app/perps/market-row/market-row.test.tsx': 2,
   // Account details tab label is hardcoded as "Type" — not locale-rendered.
   'ui/components/multichain/account-details/account-details-display.test.tsx': 2,
+  // Mocks a perps order-cancellation API error string, not a rendered locale
+  // value. Coincidentally collides with the unrelated `rampsOrderDetailsNotFound`
+  // locale message text ("Order not found").
+  'ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx': 1,
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {

@@ -2,9 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook, act } from '@testing-library/react';
-import type {
-  QuoteMetadata,
-  QuoteResponseV1,
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -28,6 +29,8 @@ import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -197,6 +200,8 @@ const makeWrapper = (
   );
 };
 
+const originalSubmitBridgeTx = bridgeStatusActions.submitBridgeTx;
+const originalSubmitBridgeIntent = bridgeStatusActions.submitBridgeIntent;
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
@@ -208,6 +213,8 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      submitTxSpy.mockImplementation(originalSubmitBridgeTx);
+      submitIntentSpy.mockImplementation(originalSubmitBridgeIntent);
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(true);
       captureExceptionSpy.mockReturnValue(undefined);
@@ -227,10 +234,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        ...ETH_11_USDC_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          ETH_11_USDC_TO_ARB_METADATA,
+        );
 
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
@@ -263,10 +271,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
-        ...OP_0_005_ETH_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+          OP_0_005_ETH_TO_ARB_METADATA,
+        );
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
@@ -579,9 +588,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
     it('submits intent quotes via submitBridgeIntent', async () => {
       const store = makeMockStore();
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
-      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
-        wrapper: makeWrapper(store),
-      });
+      const { result } = renderHook(
+        () => useSubmitBridgeTransaction('fiat_value'),
+        {
+          wrapper: makeWrapper(store),
+        },
+      );
 
       const quoteWithIntent = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
@@ -602,6 +614,8 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
+        activeAbTests: undefined,
+        inputPrimaryDenomination: 'fiat_value',
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
@@ -613,6 +627,114 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
+
+    it('forwards the chain value order assignment to regular submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'treatment',
+          },
+        },
+      });
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      const quoteWithMetadata = {
+        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+        ...OP_0_005_ETH_TO_ARB_METADATA,
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
+      });
+
+      expect(submitTxSpy.mock.calls[0][6]).toStrictEqual([
+        createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'treatment'),
+      ]);
+    });
+
+    it('forwards the chain value order assignment to intent submissions', async () => {
+      const store = makeMockStore({
+        featureFlagOverrides: {
+          // @ts-expect-error - the mock store type only declares bridgeConfig
+          [CHAIN_VALUE_ORDER_AB_KEY]: {
+            name: 'control',
+          },
+        },
+      });
+      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(submitIntentSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activeAbTests: [
+            createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'control'),
+          ],
+        }),
+      );
+    });
+
+    // @ts-expect-error - each is a valid test function
+    it.each([undefined, { name: 'invalid' }])(
+      'forwards no assignment for a missing or malformed experiment value',
+      async (
+        experimentValue:
+          | undefined
+          | {
+              name: string;
+            },
+      ) => {
+        const store = makeMockStore({
+          featureFlagOverrides: {
+            // @ts-expect-error - the mock store type only declares bridgeConfig
+            [CHAIN_VALUE_ORDER_AB_KEY]: experimentValue,
+          },
+        });
+        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+          wrapper: makeWrapper(store),
+        });
+        const quoteWithIntent = {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          quote: {
+            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+            intent: {
+              order: {},
+            } as never,
+          },
+        };
+
+        await act(async () => {
+          await result.current.submitBridgeTransaction(quoteWithIntent);
+        });
+
+        expect(submitIntentSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            activeAbTests: undefined,
+          }),
+        );
+        expect(store.getActions()).not.toContainEqual(
+          expect.objectContaining({
+            type: expect.stringContaining('Experiment'),
+          }),
+        );
+      },
+    );
 
     it('routes to default route with replace when non-HW intent submission fails', async () => {
       const store = makeMockStore();

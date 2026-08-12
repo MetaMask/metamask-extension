@@ -172,7 +172,11 @@ export const Tabs = <TKey extends string = string>({
     }
 
     const activeChild = validChildren[clampedIndex];
-    return activeChild?.props.children || null;
+    return (
+      <React.Fragment key={activeChild.props.tabKey}>
+        {activeChild.props.children}
+      </React.Fragment>
+    );
   };
 
   return (

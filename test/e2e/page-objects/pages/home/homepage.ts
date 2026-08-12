@@ -32,15 +32,11 @@ class HomePage {
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
+  private readonly backupSecretRecoveryPhraseButton =
+    '[data-testid="backup-srp-toast"] button';
 
-  private readonly backupSecretRecoveryPhraseNotification = {
-    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
-    css: '.home-notification__text',
-  };
+  private readonly backupSecretRecoveryPhraseNotification =
+    '[data-testid="backup-srp-toast"]';
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
@@ -53,6 +49,9 @@ class HomePage {
   };
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
+  private readonly bottomNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -89,6 +88,8 @@ class HomePage {
   };
 
   public headerNavbar: HeaderNavbar;
+
+  private readonly loadingLogo = '.loading-logo';
 
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
@@ -512,6 +513,14 @@ class HomePage {
   }
 
   /**
+   * Ensures the home page is rendered and idle (loaded + loading overlay gone).
+   */
+  async ensurePageIsReady(): Promise<void> {
+    await this.checkPageIsLoaded();
+    await this.waitForLoadingOverlayToDisappear();
+  }
+
+  /**
    * Clicks the copy address button.
    */
   async getAccountAddress(): Promise<string> {
@@ -523,7 +532,16 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
+    await this.checkPageIsLoaded();
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavActivityButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavActivityButton);
+    } else {
+      await this.driver.clickElement(this.activityTab);
+    }
   }
 
   async goToBackupSRPPage(): Promise<void> {
@@ -570,6 +588,13 @@ class HomePage {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
+  async waitForLoadingLogoToDisappear(): Promise<void> {
+    console.log('Wait for loading logo to disappear');
+    await this.driver.assertElementNotPresent(this.loadingLogo, {
+      timeout: 10000,
+    });
+  }
+
   async waitForLoadingOverlayToDisappear(): Promise<void> {
     console.log(`Wait for loading overlay to disappear`);
     await this.driver.assertElementNotPresent(this.loadingOverlay, {
@@ -599,14 +624,14 @@ class HomePage {
           const callback = arguments[arguments.length - 1];
           const maxAttempts = 50;
           let attempts = 0;
-  
+
           const checkReduxReady = () => {
             attempts++;
-  
+
             if (window.stateHooks?.getCleanAppState) {
               try {
                 const state = window.stateHooks.getCleanAppState();
-  
+
                 if (state && typeof state === 'object') {
                   if (state.metamask && typeof state.metamask === 'object') {
                     console.log('Redux state is ready');
@@ -618,7 +643,7 @@ class HomePage {
                 console.log('Redux state not ready yet, attempt ' + attempts);
               }
             }
-  
+
             if (attempts >= maxAttempts) {
               console.log('Redux state check timeout, continuing anyway');
               callback();

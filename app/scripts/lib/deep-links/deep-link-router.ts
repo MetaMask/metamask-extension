@@ -172,11 +172,11 @@ export class DeepLinkRouter extends EventEmitter<{
    * If the URL is invalid or too long, it redirects to the 404 error page.
    *
    * In Manifest V3 this listener is non-blocking, so Chrome continues the
-   * original request without waiting for this method's Promise. The first tab
-   * redirect below must stay before all awaited work. Never perform external
-   * network or API lookups in this path. Otherwise `link.metamask.io` can load
-   * its fallback page and incorrectly tell the user to install MetaMask even
-   * though it is installed.
+   * original request without waiting. The call to `navigate` below must start
+   * the extension-owned loading-page redirect before this method returns.
+   * Never perform external network or API lookups in this path. Otherwise
+   * `link.metamask.io` can load its fallback page and incorrectly tell the user
+   * to install MetaMask even though it is installed.
    *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
@@ -193,10 +193,10 @@ export class DeepLinkRouter extends EventEmitter<{
     }
 
     // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
-    // MV3 cannot block the request. Redirect to an extension-owned loading
-    // page synchronously, before even local signature verification. Do not
-    // move this below `parse` or add any awaited work before it.
-    // Do NOT await `this.navigate`.
+    // MV3 cannot block the request. `navigate` must be invoked without awaiting
+    // it so its synchronous prefix starts the extension-owned loading-page
+    // redirect before this handler returns. Do not add work between the length
+    // check above and this call.
     this.navigate(tabId, urlStr, requestOrigin);
 
     if (isManifestV3) {
@@ -240,10 +240,11 @@ export class DeepLinkRouter extends EventEmitter<{
       this.setId(id);
 
       const interstitialPageUrl = this.getInterstitialURL(url, id);
-      // start redirecting now, _before_ we parse. this must happen before we
-      // await anything else. We want to start loading the UI as soon as
-      // possible, even before parsing the deep link, to prevent the original
-      // deeplink request from being fulfilled.
+
+      // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+      // Start the extension-owned redirect before parsing or signature
+      // verification. Do not add awaited work before this call or move it below
+      // `parse`. `redirectTab` must call `browser.tabs.update` before it awaits.
       interstitialPageRedirect = {
         promise: this.redirectTab(tabId, interstitialPageUrl),
         url: interstitialPageUrl,
