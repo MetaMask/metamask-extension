@@ -34,8 +34,6 @@ import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import MetaMaskFoxLogo from '../../../app/images/logo/metamask-fox.svg';
-import SpinnerGif from '../../../app/images/spinner.gif';
 
 type TranslateFunction = (
   key: string,
@@ -347,7 +345,7 @@ export const DeepLink = () => {
           // Creating the task starts parsing immediately. The same promise is
           // reused after the background changes the mode. Intentionally not
           // awaited to allow the page to render immediately.
-          ensurePreParseTask(preParseTaskRef, urlPathAndQuery).promise;
+          ensurePreParseTask(preParseTaskRef, urlPathAndQuery);
         }
 
         // Loading mode is background-authoritative: this page only shows the
@@ -485,7 +483,7 @@ export const DeepLink = () => {
             <img
               className="metamask-deep-link-logo"
               alt="MetaMask logo"
-              src={MetaMaskFoxLogo}
+              src="./images/logo/metamask-fox.svg"
               style={{ width: '160px', height: '160px' }}
             />
           )}
@@ -493,7 +491,7 @@ export const DeepLink = () => {
             <img
               data-testid="loading-indicator"
               className="loading-spinner"
-              src={SpinnerGif}
+              src="./images/spinner.gif"
               alt=""
             />
           )}
