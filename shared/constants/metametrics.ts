@@ -1006,7 +1006,7 @@ export enum MetaMetricsEventName {
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   ScamQuestionnaireCompleted = 'Scam Questionnaire Completed',
-  ScamQuestionnaireContactSupport = 'Scam Questionnaire Contact Support',
+  ScamQuestionnaireSupportContacted = 'Scam Questionnaire Support Contacted',
   ScamQuestionnaireViewed = 'Scam Questionnaire Viewed',
   SecurityPageCtaClicked = 'security_page_cta_clicked',
   SecurityPageDismissed = 'security_page_dismissed',
