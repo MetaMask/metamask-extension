@@ -45,6 +45,7 @@ import {
   getToToken,
 } from './selectors';
 import {
+  assetIdsMatch,
   getDefaultToToken,
   getMaybeHexChainId,
   isSupportedBridgeChain,
@@ -265,7 +266,7 @@ export const setToToken = (newToToken: TokenPayload) => {
     const fromChains = getFromChains(bridgeState);
     // If the new toToken is the same as the current fromToken
     // try to set the fromToken to the old toToken
-    if (fromToken?.assetId.toLowerCase() === newToToken.assetId.toLowerCase()) {
+    if (assetIdsMatch(fromToken?.assetId, newToToken.assetId)) {
       let fromTokenToUse = toToken;
 
       // If the old toToken's chain is disabled, it can't be set as the fromToken
