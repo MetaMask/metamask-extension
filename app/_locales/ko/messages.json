@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "지금 자산을 소각 주소로 전송하고 있습니다. 계속 진행하면 자산을 잃게 됩니다."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "이 트랜잭션의 예상 변경 사항이 업데이트되었습니다. 계속 진행하기 전에 자세히 검토하세요."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "이 주소와 처음으로 상호 작용합니다. 계속하기 전에 주소가 올바른지 확인하세요."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "지원되지 않는 지갑"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "결과가 변경되었습니다"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "첫 상호작용"
@@ -3435,6 +3429,18 @@
   "discover": {
     "message": "발견"
   },
+  "discoverSearchNoResults": {
+    "message": "검색 결과가 없습니다",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "다른 인기 자산 살펴보기",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "거래량",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Snap 알아보기",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -5389,10 +5395,6 @@
     "message": "스테이블코인을 mUSD로 환전하면 최대 $1%의 연 환산 보너스를 벌 수 있고 이를 매일 수령할 수 있습니다. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "제공자: Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "스테이블코인을 mUSD로 환전하고 $1%의 연 환산 보너스를 받으세요.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5430,6 @@
     "message": "수령 가능한 보너스 정보",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "보너스 정보",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5454,6 @@
   "musdConvert": {
     "message": "전환"
   },
-  "musdConvertAndGetBonus": {
-    "message": "전환하고 $1% 받기",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "$1% 보너스 받기",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5467,6 @@
   },
   "musdEducationNotNow": {
     "message": "나중에"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1% mUSD 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
@@ -11310,9 +11300,6 @@
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
   },
-  "tutorial": {
-    "message": "튜토리얼"
-  },
   "txAlertTitle": {
     "message": "이 트랜잭션은 되돌려집니다"
   },
@@ -11520,6 +11507,10 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "모두 보기",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "블록 탐색기에서 보기"

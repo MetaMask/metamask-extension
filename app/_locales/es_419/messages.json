@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Estás enviando tus activos a una dirección de quema. Si continúas, perderás tus activos."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Se actualizaron los cambios estimados para esta transacción. Revíselos detenidamente antes de continuar."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Está interactuando con esta dirección por primera vez. Asegúrese de que sea correcta antes de continuar."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Billetera no admitida"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Los resultados cambiaron"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1.ª interacción"
@@ -3435,6 +3429,18 @@
   "discover": {
     "message": "Descubrir"
   },
+  "discoverSearchNoResults": {
+    "message": "No se encontraron resultados",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Descubre otros activos populares",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Descubrir Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -5389,10 +5395,6 @@
     "message": "Convierte tus monedas estables a mUSD y gana\nhasta un $1 % de bono anualizado que puedes\nreclamar diariamente. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Desarrollado por Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Convierte tus monedas estables a mUSD y obtén un $1 % de bono anualizado.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5430,6 @@
     "message": "Detalles del bono reclamable",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Detalles del bono",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Las tarifas de conversión a mUSD incluyen costos de red y pueden incluir tarifas del proveedor. No se aplica ninguna tarifa de MetaMask al convertir a mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5454,6 @@
   "musdConvert": {
     "message": "Convertir"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Convierte y obtén un $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Gana un bono del $1 %",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5467,6 @@
   },
   "musdEducationNotNow": {
     "message": "Ahora no"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Obtén un bono del $1 % en mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Obtener USDC"
@@ -11310,9 +11300,6 @@
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "Esta transacción se revertirá"
   },
@@ -11520,6 +11507,10 @@
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Ver todo",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"

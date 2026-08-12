@@ -95,6 +95,16 @@ class SnapListPage {
     });
   }
 
+  /**
+   * Checks that a snap with the given name is displayed in the snap list.
+   *
+   * @param snapName - The name of the snap expected to be displayed.
+   */
+  async checkSnapNameIsDisplayed(snapName: string): Promise<void> {
+    console.log(`Checking snap name is displayed: ${snapName}`);
+    await this.driver.waitForSelector({ text: snapName, tag: 'p' });
+  }
+
   async checkUpdateLinkIsNotDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.updateSnapButton, {
       // make sure the Snap page has loaded

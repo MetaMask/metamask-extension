@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "此交易的预计更改已更新。继续之前请仔细审查。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "您首次与此地址交互。请确保地址正确，然后再继续。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "钱包不获支持"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "结果已发生变化"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
@@ -3435,6 +3429,18 @@
   "discover": {
     "message": "发现"
   },
+  "discoverSearchNoResults": {
+    "message": "未找到结果",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "查看其他热门资产",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "交易量",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "探索 Snap",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -5385,10 +5391,6 @@
     "message": "将您的稳定币兑换为 mUSD，即可赚取高达 $1% 的年化奖励，该奖励每日可领取。$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "由 Relay 提供技术支持",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "将您的稳定币兑换为 mUSD，即可获得 $1% 的年化奖励。",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5426,6 @@
     "message": "可领取奖励详情",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "奖励详情",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5450,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdConvertAndGetBonus": {
-    "message": "兑换并获得 $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "获得 $1% 的奖励",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5463,6 @@
   },
   "musdEducationNotNow": {
     "message": "暂时不"
-  },
-  "musdGetBonusPercentage": {
-    "message": "获取 $1% mUSD 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "获取 mUSD"
@@ -11299,9 +11289,6 @@
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
   },
-  "tutorial": {
-    "message": "教程"
-  },
   "txAlertTitle": {
     "message": "该交易将撤销"
   },
@@ -11509,6 +11496,10 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "查看全部",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"

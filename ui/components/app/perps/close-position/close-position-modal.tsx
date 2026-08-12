@@ -1,5 +1,12 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -45,13 +52,15 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
+import { usePerpsAbandonOrderTracking } from '../../../../hooks/perps/usePerpsAbandonOrderTracking';
 import {
   getDisplaySymbol,
   getPositionDirection,
   getPositionPnlRatio,
-  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { PerpsFeesDisplay } from '../perps-fees-display';
@@ -284,6 +293,13 @@ export type ClosePositionModalProps = {
   markPrice?: number | string;
   midPrice?: number;
   sizeDecimals?: number;
+  /**
+   * The CTA that opened this modal (close vs reduce_exposure) and where it was
+   * clicked, surfaced on the position_close PERPS_SCREEN_VIEWED event.
+   * Defaults to the plain close CTA on the asset detail screen.
+   */
+  buttonClicked?: string;
+  buttonLocation?: string;
   displayPrice?: string;
   displayChange?: string;
 };
@@ -296,12 +312,15 @@ export const ClosePositionModal = ({
   markPrice,
   midPrice,
   sizeDecimals,
+  buttonClicked = PERPS_EVENT_VALUE.BUTTON_CLICKED.CLOSE,
+  buttonLocation = PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
   displayPrice,
   displayChange,
 }: ClosePositionModalProps) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
+  const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({
@@ -312,6 +331,9 @@ export const ClosePositionModal = ({
         PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+      // Which CTA opened this modal — close vs reduce_exposure.
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -337,6 +359,12 @@ export const ClosePositionModal = ({
     ? selectedOrderType
     : 'market';
 
+  // Abandon-order tracking state: latest form snapshot, a stable reader for it,
+  // and the commit flag that suppresses the event once a close is submitted.
+  const latestAbandonPropsRef = useRef<Record<string, Json>>({});
+  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const hasConfirmedCloseRef = useRef(false);
+
   useEffect(() => {
     if (isOpen) {
       setClosePercent(100);
@@ -345,6 +373,9 @@ export const ClosePositionModal = ({
       setIsGeoBlockModalOpen(false);
       setSelectedOrderType('market');
       setLimitPrice('');
+      // Reopening starts a fresh close session: a commit from the previous one
+      // must not suppress abandon tracking for this one.
+      hasConfirmedCloseRef.current = false;
     }
   }, [isOpen]);
 
@@ -407,12 +438,49 @@ export const ClosePositionModal = ({
     [closeSize, effectivePrice],
   );
 
-  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: position.symbol,
-      orderType: effectiveOrderType,
-      isMaker: effectiveOrderType === 'limit',
-    });
+  // Emit when the modal closes without a confirmed close. Snapshot refreshed
+  // after each render so the emit carries the latest size. Written in an effect
+  // rather than during render to keep the render body pure.
+  useEffect(() => {
+    latestAbandonPropsRef.current = {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+      [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.DIRECTION]:
+        getPositionDirection(position.size) === 'long'
+          ? PERPS_EVENT_VALUE.DIRECTION.LONG
+          : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+      [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
+      // Omitted rather than zeroed when leverage is unknown: a real position
+      // never has 0x, so a fallback would be indistinguishable from a reading.
+      // Matches mobile, which passes `leverage?.value` through undefined.
+      ...(position.leverage?.value === undefined
+        ? {}
+        : { [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: position.leverage.value }),
+    };
+  }, [
+    position.symbol,
+    position.size,
+    position.leverage?.value,
+    closeNotionalUsd,
+  ]);
+  usePerpsAbandonOrderTracking({
+    getAbandonProperties: getAbandonProperties.current,
+    hasCommittedRef: hasConfirmedCloseRef,
+    active: isOpen,
+  });
+
+  const {
+    feeRate,
+    protocolFeeRate,
+    undiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: effectiveOrderType,
+    isMaker: effectiveOrderType === 'limit',
+  });
 
   const liveUnrealizedPnl = useMemo(
     () => Number.parseFloat(position.unrealizedPnl) || 0,
@@ -556,6 +624,8 @@ export const ClosePositionModal = ({
 
       setIsSubmitting(true);
       setError(null);
+      // The user committed: closing the modal after this is not an abandonment.
+      hasConfirmedCloseRef.current = true;
 
       const orderDescription = getPartialCloseDescription({
         positionSize: position.size,
@@ -595,11 +665,12 @@ export const ClosePositionModal = ({
               : undefined,
           position,
         });
-        closeRequestParams.trackingData = buildPerpsVipTrackingData({
+        closeRequestParams.trackingData = buildTrackingData({
           totalFee: estimatedFees,
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
+          hlFeeRate: protocolFeeRate,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -607,26 +678,6 @@ export const ClosePositionModal = ({
         }>('perpsClosePosition', [closeRequestParams]);
         if (!result.success) {
           const message = result.error || 'Failed to close position';
-          track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-            [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
-            [PERPS_EVENT_PROPERTY.ORDER_TYPE]: effectiveOrderType,
-            ...(effectiveOrderType === 'limit'
-              ? { [PERPS_EVENT_PROPERTY.LIMIT_PRICE]: parsedLimitPrice }
-              : {}),
-            [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-            [PERPS_EVENT_PROPERTY.FEES]: String(estimatedFees),
-            [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-            [PERPS_EVENT_PROPERTY.PNL_DOLLAR]: String(effectivePnl),
-            [PERPS_EVENT_PROPERTY.RECEIVED_AMOUNT]: String(youWillReceive),
-          });
-          track(MetaMetricsEventName.PerpsError, {
-            [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
-              PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: message,
-          });
           const { errorMessage, toast } = getCloseFailureToastConfig({
             error: new Error(message),
             isPartialClose,
@@ -635,23 +686,15 @@ export const ClosePositionModal = ({
             formatFiat,
           });
           setError(errorMessage);
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
           replacePerpsToastByKey(toast);
           return;
         }
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.ORDER_TYPE]: effectiveOrderType,
-          ...(effectiveOrderType === 'limit'
-            ? { [PERPS_EVENT_PROPERTY.LIMIT_PRICE]: parsedLimitPrice }
-            : {}),
-          [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.FEES]: String(estimatedFees),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-          [PERPS_EVENT_PROPERTY.PNL_DOLLAR]: String(effectivePnl),
-          [PERPS_EVENT_PROPERTY.RECEIVED_AMOUNT]: String(youWillReceive),
-        });
         replacePerpsToastByKey(
           effectiveOrderType === 'limit'
             ? {
@@ -666,29 +709,20 @@ export const ClosePositionModal = ({
               }),
         );
       } catch (err) {
-        const errMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: errMessage,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
-          [PERPS_EVENT_PROPERTY.ORDER_TYPE]: effectiveOrderType,
-          ...(effectiveOrderType === 'limit'
-            ? { [PERPS_EVENT_PROPERTY.LIMIT_PRICE]: parsedLimitPrice }
-            : {}),
-          [PERPS_EVENT_PROPERTY.SIZE]: String(closeNotionalUsd),
-          [PERPS_EVENT_PROPERTY.FEES]: String(estimatedFees),
-          [PERPS_EVENT_PROPERTY.METAMASK_FEE]: String(estimatedFees),
-          [PERPS_EVENT_PROPERTY.PNL_DOLLAR]: String(effectivePnl),
-          [PERPS_EVENT_PROPERTY.RECEIVED_AMOUNT]: String(youWillReceive),
-        });
+        // Transport/background throws never reach the controller close
+        // submitted/terminal pipeline — keep client PerpsError for that gap.
+        const raw =
+          err instanceof Error ? err.message : t('somethingWentWrong');
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
         });
-
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
         const { errorMessage, toast } = getCloseFailureToastConfig({
           error: err,
           isPartialClose,
@@ -719,17 +753,15 @@ export const ClosePositionModal = ({
     currentPrice,
     sizeDecimals,
     limitPrice,
-    closeNotionalUsd,
     estimatedFees,
-    effectivePnl,
-    youWillReceive,
-    track,
-    closePercent,
+    protocolFeeRate,
+    buildTrackingData,
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
     vipTier,
     metamaskFeeRateDiscountPercentage,
+    track,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {

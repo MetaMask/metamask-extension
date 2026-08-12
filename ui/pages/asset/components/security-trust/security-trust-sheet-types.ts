@@ -18,6 +18,8 @@ export type SecurityTrustSheetParams = {
   displayIcon: IconName;
   displayIconColor: IconColor;
   tokenSymbol?: string;
+  chainId?: string;
+  tokenAddress?: string;
   features?: TokenSecurityFeature[];
   onProceed?: () => void;
   source: SecurityTrustSheetSource;

@@ -26,29 +26,34 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
         role="dialog"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
         >
           <div
-            class="mm-box mm-box--width-full"
+            class="col-start-2 col-end-3 w-full"
           >
             <h4
-              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
             >
               Select network
             </h4>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="min-width: 0px;"
+            class="col-start-3 justify-self-end"
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/close.svg');"
-              />
+              <svg
+                class="inline-block w-6 h-6 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                />
+              </svg>
             </button>
           </div>
         </header>
@@ -510,29 +515,34 @@ exports[`BridgeInputGroup should render source networks 1`] = `
         role="dialog"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
         >
           <div
-            class="mm-box mm-box--width-full"
+            class="col-start-2 col-end-3 w-full"
           >
             <h4
-              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
             >
               Select network
             </h4>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="min-width: 0px;"
+            class="col-start-3 justify-self-end"
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/close.svg');"
-              />
+              <svg
+                class="inline-block w-6 h-6 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                />
+              </svg>
             </button>
           </div>
         </header>

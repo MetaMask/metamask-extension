@@ -24,6 +24,26 @@ jest.mock('../../../../../utils/token', () => ({
   fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
 }));
 
+/**
+ * Asserts that a render callback throws, while suppressing React's
+ * "The above error occurred in ..." console.error noise so it does not
+ * pollute the console baseline.
+ *
+ * @param render - Render callback that is expected to throw.
+ * @param expectedError - Expected error message or matcher.
+ */
+function expectRenderToThrow(render: () => void, expectedError: string): void {
+  const consoleError = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => undefined);
+
+  try {
+    expect(render).toThrow(expectedError);
+  } finally {
+    consoleError.mockRestore();
+  }
+}
+
 describe('TypedSignPermissionInfo', () => {
   describe('permission section fields', () => {
     const permission = {
@@ -66,9 +86,10 @@ describe('TypedSignPermissionInfo', () => {
       } as unknown as DecodedPermission);
 
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Unknown permission type: invalid');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Unknown permission type: invalid',
+      );
     });
 
     it('throws an error when decodedPermission is not defined', () => {
@@ -78,9 +99,10 @@ describe('TypedSignPermissionInfo', () => {
       )[0].decodedPermission = undefined;
 
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Decoded permission is undefined');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Decoded permission is undefined',
+      );
     });
   });
 
@@ -130,9 +152,10 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutStartTime as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Start time is required');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Start time is required',
+      );
     });
 
     it('renders native token periodic permission without expiry', () => {
@@ -208,9 +231,10 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutStartTime as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Start time is required');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Start time is required',
+      );
     });
 
     it('renders native token stream permission without initial amount', () => {
@@ -328,9 +352,10 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutStartTime as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Start time is required');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Start time is required',
+      );
     });
 
     it('renders ERC20 token periodic permission without expiry', () => {
@@ -403,9 +428,10 @@ describe('TypedSignPermissionInfo', () => {
         permissionWithoutStartTime as DecodedPermission,
       );
       const mockStore = configureMockStore([])(state);
-      expect(() =>
-        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Start time is required');
+      expectRenderToThrow(
+        () => renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
+        'Start time is required',
+      );
     });
 
     it('renders ERC20 token stream permission without initial amount', () => {

@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε διεύθυνση καύσης. Αν συνεχίσετε, θα τα χάσετε."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Οι εκτιμώμενες αλλαγές για αυτή τη συναλλαγή έχουν ενημερωθεί. Ελέγξτε τις προσεκτικά πριν προχωρήσετε."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Αλληλεπιδράτε με αυτή τη διεύθυνση για πρώτη φορά. Βεβαιωθείτε ότι είναι σωστή πριν συνεχίσετε."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Το πορτοφόλι δεν υποστηρίζεται"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Τα αποτελέσματα έχουν αλλάξει"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1η αλληλεπίδραση"
@@ -3435,6 +3429,18 @@
   "discover": {
     "message": "Ανακαλύψτε"
   },
+  "discoverSearchNoResults": {
+    "message": "Δεν βρέθηκαν αποτελέσματα",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Δείτε άλλα δημοφιλή περιουσιακά στοιχεία",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "όγκος",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Ανακαλύψτε τα Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -5385,10 +5391,6 @@
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και κερδίστε \nέως και $1% μπόνους ετησίως, το οποίο μπορείτε \nνα εξαργυρώσετε καθημερινά. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Υποστηρίζεται από το Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Μετατρέψτε τα stablecoins σας σε mUSD και λάβετε $1% μπόνους ετησίως.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5426,6 @@
     "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Πληροφορίες για το μπόνους",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Τα τέλη μετατροπής σε mUSD περιλαμβάνουν τα έξοδα δικτύου και ενδέχεται να περιλαμβάνουν τα τέλη παρόχου. Δεν υπάρχει χρέωση στο MetaMask όταν μετατρέπετε σε mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5450,6 @@
   "musdConvert": {
     "message": "Μετατροπή"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Μετατρέψτε και κερδίστε $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Κερδίστε $1% σε μπόνους",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5463,6 @@
   },
   "musdEducationNotNow": {
     "message": "Όχι τώρα"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Κερδίστε $1% μπόνους σε mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Αποκτήστε mUSD"
@@ -11302,9 +11292,6 @@
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
   },
-  "tutorial": {
-    "message": "Εκμάθηση"
-  },
   "txAlertTitle": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί"
   },
@@ -11512,6 +11499,10 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Προβολή όλων",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"
