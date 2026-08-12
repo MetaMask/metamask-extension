@@ -62,6 +62,14 @@ class GatorPermissionsPage {
   }
 
   /**
+   * Check if the Assets/Token transfer button is present on the page.
+   * The button may not be present if there are no gator permissions.
+   */
+  async isAssetsButtonPresent(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(this.assetsButton);
+  }
+
+  /**
    * Check if the Connections button is present on the page.
    * The button may not be present if there are no site connections.
    */

@@ -388,6 +388,33 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withGatorPermissionsController(
+    data: Partial<{
+      grantedPermissions: {
+        permissionResponse: {
+          chainId: Hex;
+          from: string;
+          permission: {
+            type: string;
+            isAdjustmentAllowed: boolean;
+            data: Record<string, unknown>;
+          };
+          context: string;
+          delegationManager: string;
+        };
+        siteOrigin: string;
+        status: 'Active' | 'Expired' | 'Revoked';
+      }[];
+      lastSyncedTimestamp: number;
+    }>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).GatorPermissionsController,
+      data,
+    );
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
@@ -1228,6 +1255,51 @@ class FixtureBuilderV2 {
           },
         },
       },
+    });
+  }
+
+  /**
+   * Adds a gator permission (token transfer) for the test dapp.
+   * This causes the Gator Permissions page to display with both "Connections" and "Token transfer" sections
+   * instead of auto-redirecting to the Permissions page.
+   * @param options0
+   * @param options0.useLocalhostHostname
+   * @param options0.chainId
+   */
+  withGatorPermissionsConnectedToTestDapp({
+    useLocalhostHostname = false,
+    chainId = '0x539' as Hex, // Default to localhost chain ID (1337 in hex)
+  }: {
+    useLocalhostHostname?: boolean;
+    chainId?: Hex;
+  } = {}): this {
+    const siteOrigin = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
+
+    return this.withGatorPermissionsController({
+      grantedPermissions: [
+        {
+          permissionResponse: {
+            chainId,
+            from: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            permission: {
+              type: 'native-token-stream',
+              isAdjustmentAllowed: false,
+              data: {
+                maxAmount: '0x22b1c8c1227a0000',
+                initialAmount: '0x6f05b59d3b20000',
+                amountPerSecond: '0x6f05b59d3b20000',
+                startTime: 1747699200,
+                justification: 'Test token stream permission',
+              },
+            },
+            context: '0x00000000',
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+          },
+          siteOrigin,
+          status: 'Active',
+        },
+      ],
+      lastSyncedTimestamp: Date.now(),
     });
   }
 
