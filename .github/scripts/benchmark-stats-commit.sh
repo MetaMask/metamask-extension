@@ -224,12 +224,29 @@ jq . "${STATS_FILE}" > /dev/null || {
 }
 
 # --- Check for duplicate ---
+#
+# A push that re-runs CI for the same commit must not add a second point, so the
+# SHA is the dedup key there. A deliberate re-measure is the opposite case: the
+# scheduled live series measures one release SHA repeatedly, and every run is a
+# new point. ALLOW_REMEASURE is set by the caller exactly when it named the ref
+# it measured, which is what distinguishes the two.
+#
+# Suffixing is safe because nothing reads this file by exact SHA:
+# historical-comparison.ts takes Object.keys(), filters on timestamp and mock
+# mode, and sorts by timestamp, so the key is opaque to every consumer.
+
+ENTRY_KEY="${HEAD_COMMIT_HASH}"
 
 if jq -e "has(\"${HEAD_COMMIT_HASH}\")" "${STATS_FILE}" > /dev/null; then
-    echo "SHA ${HEAD_COMMIT_HASH} already exists in ${STATS_FILE}. No new commit needed."
-    cd ..
-    rm -rf "${CLONE_DIR}"
-    exit 0
+    if [[ "${ALLOW_REMEASURE:-false}" == "true" ]]; then
+        ENTRY_KEY="${HEAD_COMMIT_HASH}-${GITHUB_RUN_ID}"
+        echo "SHA ${HEAD_COMMIT_HASH} already present; re-measure stored under ${ENTRY_KEY}."
+    else
+        echo "SHA ${HEAD_COMMIT_HASH} already exists in ${STATS_FILE}. No new commit needed."
+        cd ..
+        rm -rf "${CLONE_DIR}"
+        exit 0
+    fi
 fi
 
 # --- Append and push ---
@@ -241,7 +258,7 @@ TEMP_FILE="${STATS_FILE}.tmp"
 # the blob on argv.
 data_file="$(mktemp)"
 printf '%s' "${COMMIT_DATA}" >"${data_file}"
-jq --arg sha "${HEAD_COMMIT_HASH}" --slurpfile data "${data_file}" \
+jq --arg sha "${ENTRY_KEY}" --slurpfile data "${data_file}" \
     '. + {($sha): $data[0]}' "${STATS_FILE}" > "${TEMP_FILE}"
 rm -f "${data_file}"
 mv "${TEMP_FILE}" "${STATS_FILE}"

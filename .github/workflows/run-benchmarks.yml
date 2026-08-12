@@ -357,6 +357,9 @@ jobs:
     environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
       HEAD_COMMIT_HASH: ${{ inputs.measured-sha || github.sha }}
+      # A named measured-ref means the caller re-measured on purpose, so the
+      # same SHA may legitimately produce more than one point.
+      ALLOW_REMEASURE: ${{ inputs.measured-ref != '' && 'true' || 'false' }}
       OWNER: ${{ github.repository_owner }}
       BRANCH_NAME: ${{ inputs.series-name || inputs.measured-ref || github.ref_name }}
       RELEASE_TAG: ${{ inputs.measured-ref }}
