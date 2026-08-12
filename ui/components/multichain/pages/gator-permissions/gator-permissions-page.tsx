@@ -32,10 +32,7 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { transitionForward } from '../../../ui/transition';
-import {
-  PermissionListItem,
-  PermissionsEmptyState,
-} from './components';
+import { PermissionListItem, PermissionsEmptyState } from './components';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
@@ -152,16 +149,13 @@ export const GatorPermissionsPage = () => {
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                   color={TextColor.TextAlternative}
-                  paddingLeft={4}
                 >
                   {t('dapps')}
                 </Text>
                 <PermissionListItem
                   total={totalSitesConnections}
                   permissionGroupName={t('connections')}
-                  onClick={() =>
-                    transitionForward(() => navigate(PERMISSIONS))
-                  }
+                  onClick={() => transitionForward(() => navigate(PERMISSIONS))}
                 />
               </>
             )}

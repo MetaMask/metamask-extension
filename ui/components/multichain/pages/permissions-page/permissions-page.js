@@ -5,7 +5,11 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Text as TextDS, TextVariant as TextVariantDS, FontWeight } from '@metamask/design-system-react';
+import {
+  Text as TextDS,
+  TextVariant as TextVariantDS,
+  FontWeight,
+} from '@metamask/design-system-react';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Footer, Header, Page } from '../page';
 import {

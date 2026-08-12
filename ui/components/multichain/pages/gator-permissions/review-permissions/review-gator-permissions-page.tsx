@@ -36,7 +36,10 @@ import {
   getAggregatedGatorPermissionByChainId,
   getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { ReviewGatorPermissionItem, PermissionsEmptyState } from '../components';
+import {
+  ReviewGatorPermissionItem,
+  PermissionsEmptyState,
+} from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
 export const ReviewGatorPermissionsPage = () => {
