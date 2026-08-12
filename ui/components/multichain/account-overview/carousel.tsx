@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';

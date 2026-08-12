@@ -2,7 +2,6 @@ import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
-  QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -25,12 +24,11 @@ import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import PrepareBridgePage from '../prepare-bridge-page';
 
 // Mock the bridge hooks
-jest.mock('../../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+jest.mock('../../hooks/useGasIncludedSupport', () => ({
+  useGasIncludedSupport: jest.fn().mockReturnValue({
+    gasIncluded: false,
+    gasIncluded7702: false,
+  }),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();

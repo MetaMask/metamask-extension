@@ -27,6 +27,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -51,6 +52,7 @@ import { getSnapName } from '../../helpers/utils/util';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -65,7 +67,7 @@ import {
   SETTINGS_RENDERABLE_ROUTES,
   getSettingsRouteMeta,
 } from './settings-registry';
-import { SettingsHeader, SettingsRoot, SettingsSearchResults } from './shared';
+import { SettingsRoot, SettingsSearchResults } from './shared';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
 
@@ -128,6 +130,9 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
+
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
 
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
@@ -329,12 +334,12 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       >
         <Box
           className={classnames(
-            'w-full h-full max-w-[262px] bg-background-muted',
+            'w-full h-full max-w-[262px]',
+            // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+            isPureBlack ? 'bg-background-alternative' : 'bg-background-muted',
             {
               flex: isOnSettingsRoot || !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-              'max-w-full bg-background-default':
-                isOnSettingsRoot && usesCompactSettingsLayout,
             },
           )}
         >
@@ -465,11 +470,12 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           onClose={() => setShowShieldEntryModal(false)}
         />
       )}
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={headerTitle}
-        isPopupOrSidepanel={usesCompactSettingsLayout}
-        isOnSettingsRoot={isOnSettingsRoot}
-        onClose={handleClose}
+        endAction={
+          usesCompactSettingsLayout && !isOnSettingsRoot ? 'close' : 'search'
+        }
+        onBack={handleClose}
         isSearchOpen={isSearchOpen}
         onOpenSearch={() => setIsSearchOpen(true)}
         onCloseSearch={handleCloseSearch}

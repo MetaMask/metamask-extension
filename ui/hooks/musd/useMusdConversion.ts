@@ -7,13 +7,13 @@
  * The actual amount entry and relay quoting are handled on the
  * confirmation screen by useTransactionCustomAmount and TransactionPayController.
  * This hook is only responsible for:
- * - Starting the flow (education -> placeholder tx -> confirm screen)
+ * - Starting the flow (placeholder tx -> confirm screen)
  * - Duplicate-preventing transaction creation
  * - Cancelling (navigate back)
  */
 
 import { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -35,11 +35,14 @@ import {
   ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
-import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 
 // ============================================================================
@@ -64,8 +67,6 @@ export type UseMusdConversionResult = {
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
   preferredToken: { address: string; chainId: Hex };
-  /** Skip education screen even if not seen */
-  skipEducation?: boolean;
   /** Entry point for analytics */
   entryPoint?: 'home' | 'token_list' | 'asset_overview' | 'deeplink';
 };
@@ -126,7 +127,7 @@ function findExistingPendingMusdConversion(params: {
  * @returns Object with state and actions for mUSD conversion
  */
 export function useMusdConversion(): UseMusdConversionResult {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);
@@ -169,14 +170,12 @@ export function useMusdConversion(): UseMusdConversionResult {
   /**
    * Start the mUSD conversion flow.
    *
-   * If education has been seen (or skipEducation is true), creates a
-   * musdConversion transaction with a placeholder amount and navigates
-   * directly to the pay-with confirmation screen. Otherwise, navigates
-   * to the education screen first.
+   * Creates a musdConversion transaction with a placeholder amount and
+   * navigates directly to the pay-with confirmation screen.
    */
   const startConversionFlow = useCallback(
     async (options: StartConversionOptions): Promise<void> => {
-      const { preferredToken, skipEducation } = options;
+      const { preferredToken } = options;
 
       if (!isFeatureEnabled) {
         console.warn('[MUSD] Conversion flow not enabled');
@@ -185,11 +184,6 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       if (isUserGeoBlocked) {
         console.warn('[MUSD] User is geo-blocked');
-        return;
-      }
-
-      if (!educationSeen && !skipEducation) {
-        navigate(MUSD_CONVERSION_EDUCATION_ROUTE);
         return;
       }
 
@@ -310,7 +304,6 @@ export function useMusdConversion(): UseMusdConversionResult {
       dispatch,
       isFeatureEnabled,
       isUserGeoBlocked,
-      educationSeen,
       selectedAddress,
       unapprovedTransactions,
       createConversionTransaction,
@@ -321,7 +314,7 @@ export function useMusdConversion(): UseMusdConversionResult {
   );
 
   const cancelConversion = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const markEducationSeen = useCallback(() => {

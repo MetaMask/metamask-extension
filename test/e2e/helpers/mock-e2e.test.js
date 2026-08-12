@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* global describe, expect, it -- Globals defined by Jest */
 
 import { setupMocking } from '../mock-e2e';
 

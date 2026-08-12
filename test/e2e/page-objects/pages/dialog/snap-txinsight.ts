@@ -8,9 +8,9 @@ class SnapTxInsights {
     tag: 'span',
   };
 
-  private readonly transactionType = '.snap-ui-renderer__text';
-
   private readonly transactionAddress = '[data-testid="snap-ui-address"]';
+
+  private readonly transactionType = '.snap-ui-renderer__text';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -34,6 +34,14 @@ class SnapTxInsights {
     );
   }
 
+  async checkTransactionAddress(address: string) {
+    console.log('Checking transaction address');
+    await this.driver.waitForSelector({
+      css: this.transactionAddress,
+      text: address,
+    });
+  }
+
   async checkTransactionInsightsTitle() {
     console.log('Checking transaction insights title');
     await this.driver.waitForSelector(this.insightTitle);
@@ -44,14 +52,6 @@ class SnapTxInsights {
     await this.driver.waitForSelector({
       css: this.transactionType,
       text: transactionType,
-    });
-  }
-
-  async checkTransactionAddress(address: string) {
-    console.log('Checking transaction address');
-    await this.driver.waitForSelector({
-      css: this.transactionAddress,
-      text: address,
     });
   }
 }

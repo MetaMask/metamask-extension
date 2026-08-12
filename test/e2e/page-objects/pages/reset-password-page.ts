@@ -1,19 +1,19 @@
 import { Driver } from '../../webdriver/driver';
 
 class ResetPasswordPage {
-  private driver: Driver;
+  private confirmPasswordInput: string;
 
-  private seedPhraseInput: string;
+  private createPasswordTermsCheckbox: string;
+
+  private driver: Driver;
 
   private passwordInput: string;
 
-  private confirmPasswordInput: string;
-
   private restoreButton: string;
 
-  private srpWordInputContinueButton: string;
+  private seedPhraseInput: string;
 
-  private createPasswordTermsCheckbox: string;
+  private srpWordInputContinueButton: string;
 
   constructor(driver: Driver) {
     this.driver = driver;

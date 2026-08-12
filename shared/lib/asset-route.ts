@@ -28,6 +28,10 @@ export const buildAssetRoutePath = (assetId: CaipAssetType): string => {
   return `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(assetId)}`;
 };
 
+export const buildAssetSecurityTrustRoutePath = (
+  assetId: CaipAssetType,
+): string => `${buildAssetRoutePath(assetId)}/security-trust`;
+
 const decodeRouteParam = (value: string): string => {
   try {
     return decodeURIComponent(value);

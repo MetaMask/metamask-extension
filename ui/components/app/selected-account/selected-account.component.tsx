@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import copyToClipboard from 'copy-to-clipboard';
+import React, { useCallback } from 'react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import { SECOND } from '../../../../shared/constants/time';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import {
   IconColor,
@@ -18,7 +17,6 @@ import {
   FontWeight,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 type SelectedAccountProps = {
   selectedAccount: InternalAccount;
@@ -26,17 +24,9 @@ type SelectedAccountProps = {
 
 function SelectedAccount({ selectedAccount }: SelectedAccountProps) {
   const t = useI18nContext();
-  const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current);
-        copyTimeoutRef.current = null;
-      }
-    };
-  }, []);
+  const [copied, copyToClipboard] = useCopyToClipboard({
+    clearDelayMs: null,
+  });
 
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
 
@@ -45,13 +35,8 @@ function SelectedAccount({ selectedAccount }: SelectedAccountProps) {
   const showAccountCopyIcon = true;
 
   const handleCopy = useCallback(() => {
-    setCopied(true);
-    if (copyTimeoutRef.current) {
-      clearTimeout(copyTimeoutRef.current);
-    }
-    copyTimeoutRef.current = setTimeout(() => setCopied(false), SECOND * 3);
-    copyToClipboard(checksummedAddress, COPY_OPTIONS);
-  }, [checksummedAddress]);
+    copyToClipboard(checksummedAddress);
+  }, [checksummedAddress, copyToClipboard]);
 
   return (
     <div className="selected-account">

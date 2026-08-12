@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
@@ -44,16 +44,16 @@ describe('Linea Network Discover Button', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
 
         // Search for Linea
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.fillNetworkSearchInput('Linea');
-        await selectNetworkDialog.openNetworkListOptions('eip155:59144');
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.fillNetworkSearchInput('Linea');
+        await networksPage.openNetworkListOptions('eip155:59144');
 
         // Verify Discover button is visible
-        await selectNetworkDialog.checkDiscoverButtonIsVisible();
+        await networksPage.checkDiscoverButtonIsVisible();
 
         // Click Discover button
-        await selectNetworkDialog.clickDiscoverButton();
+        await networksPage.clickDiscoverButton();
 
         // Switch to the new tab that was opened
         await driver.switchToWindowWithTitle('E2E Test Page');

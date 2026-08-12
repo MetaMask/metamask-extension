@@ -19,12 +19,11 @@ import {
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import PrepareBridgePage from './prepare-bridge-page';
 
-jest.mock('../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+jest.mock('../hooks/useGasIncludedSupport', () => ({
+  useGasIncludedSupport: jest.fn().mockReturnValue({
+    gasIncluded: false,
+    gasIncluded7702: false,
+  }),
 }));
 
 const mockEnsureNetworkEnabled = jest.fn().mockResolvedValue(undefined);

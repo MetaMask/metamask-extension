@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 
@@ -64,7 +63,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
@@ -80,11 +79,7 @@ describe('Send flow', function (this: Suite) {
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('1');
         await sendPage.checkInsufficientFundsError();
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
+        await sendPage.checkContinueButton({ state: 'disabled' });
       },
     );
   });
@@ -121,27 +116,19 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         await sendPage.waitForSendAmountBalance();
         await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 
@@ -173,25 +160,17 @@ describe('Send flow', function (this: Suite) {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        assert.equal(
-          await sendPage.isContinueButtonEnabled(),
-          true,
-          'Continue button should be enabled',
-        );
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 

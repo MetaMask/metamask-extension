@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -73,6 +73,18 @@ describe('PrivacyTab', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('batch-account-balance-requests-toggle'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows an error when the user enters an Infura IPFS gateway', () => {
+    renderWithProvider(<PrivacyTab />, mockStore);
+
+    fireEvent.change(screen.getByDisplayValue('dweb.link'), {
+      target: { value: 'ipfs.infura.io' },
+    });
+
+    expect(
+      screen.getByText(messages.forbiddenIpfsGateway.message),
     ).toBeInTheDocument();
   });
 });

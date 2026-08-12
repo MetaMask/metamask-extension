@@ -38,7 +38,7 @@ describe('Empty Buy Banner Displayed event', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -48,7 +48,7 @@ describe('Empty Buy Banner Displayed event', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
 
@@ -64,11 +64,7 @@ describe('Empty Buy Banner Displayed event', function () {
           ? 'sidepanel'
           : 'fullscreen';
         const {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           profile_id: _profileId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           canonical_profile_id: _canonicalProfileId,
           ...eventProperties
         } = events[0].properties;

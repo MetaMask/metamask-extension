@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { SelectedAssetButton } from './selected-asset-button';
 import {
   getFromAccount,
@@ -13,6 +13,7 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import configureStore from '../../../../../store/store';
 import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
 import { BridgeAssetPicker } from '.';
+import { useDispatch } from '../../../../../store/hooks';
 
 const storybook = {
   title: 'Pages/Bridge/AssetPicker',

@@ -149,6 +149,18 @@ describe('asset-utils', () => {
       ]);
     });
 
+    it('returns native asset ID for Polygon native token address', () => {
+      const polygonNativeAddress = '0x0000000000000000000000000000000000001010';
+      const chainId = 'eip155:137' as CaipChainId;
+
+      const result = toAssetId(polygonNativeAddress, chainId);
+      expect(result).toBe(getNativeAssetForChainId(chainId).assetId);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
     it('should handle checksummed addresses', () => {
       const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
       const chainId = 'eip155:1' as CaipChainId;
@@ -159,6 +171,45 @@ describe('asset-utils', () => {
         undefined,
         result,
       ]);
+    });
+
+    it('creates Stellar classic asset ID from CODE-ISSUER reference', () => {
+      const ref =
+        'USDY-GAJMPX5NBOG6TQFPQGRABJEEB2YE7RFRLUKJDZAZGAD5GFX4J7TADAZ6';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(ref, chainId);
+      expect(result).toBe(`${chainId}/asset:${ref}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID from Soroban contract StrKey', () => {
+      const contractId =
+        'CAUP7NFABXE5TJRL3FKTPMWRLC7IAXYDCTHQRFSCLR5TMGKHOOQO772J';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(contractId, chainId);
+      expect(result).toBe(`${chainId}/sep41:${contractId}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID when reference includes sep41: prefix', () => {
+      const contractId =
+        'CBOOCGZSVRSZFRE4U2NWR2B4RXYVJWRCBTGOUD2JPI2TDJPWMTJX7FZP';
+      const chainId = MultichainNetworks.STELLAR;
+
+      expect(toAssetId(contractId, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+      expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
     });
   });
 
