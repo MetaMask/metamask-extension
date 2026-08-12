@@ -81,10 +81,10 @@ function checkSendBranch({
   );
   const required = Boolean(
     variant.showQuestionnaire &&
-      isMMSend &&
-      securityAlertResponse?.result_type === BlockaidResultType.Malicious &&
-      securityAlert &&
-      !isAlertConfirmed(securityAlert.key),
+    isMMSend &&
+    securityAlertResponse?.result_type === BlockaidResultType.Malicious &&
+    securityAlert &&
+    !isAlertConfirmed(securityAlert.key),
   );
   return { required, securityAlert, isMMSend };
 }
