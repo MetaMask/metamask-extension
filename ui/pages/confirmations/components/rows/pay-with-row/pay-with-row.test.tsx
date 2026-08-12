@@ -8,7 +8,9 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
-import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { AlertsName } from '../../../hooks/alerts/constants';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -17,8 +19,8 @@ jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
-jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
+jest.mock('../../../../../hooks/useAlerts');
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -29,14 +31,6 @@ jest.mock(
     }),
   }),
 );
-
-jest.mock('../../../../../hooks/useAlerts', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => ({
-    getFieldAlerts: () => [],
-  }),
-}));
 
 jest.mock('../../modals/pay-with-modal', () => ({
   PayWithModal: ({
@@ -137,15 +131,19 @@ describe('PayWithRow', () => {
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
-  const useAccountNoFundsAlertMock = jest.mocked(useAccountNoFundsAlert);
+  const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
+  const getFieldAlertsMock = jest.fn(() => []);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     useSendTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    useAccountNoFundsAlertMock.mockReturnValue([]);
+    getFieldAlertsMock.mockReturnValue([]);
+    useAlertsMock.mockReturnValue({
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: MOCK_PAY_TOKEN,
@@ -231,9 +229,11 @@ describe('PayWithRow', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    useAccountNoFundsAlertMock.mockReturnValue([
-      { key: 'accountNoFunds' },
-    ] as never);
+    getFieldAlertsMock.mockImplementation((field) =>
+      field === RowAlertKey.PayWith
+        ? [{ key: AlertsName.AccountNoFunds }]
+        : [],
+    );
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);

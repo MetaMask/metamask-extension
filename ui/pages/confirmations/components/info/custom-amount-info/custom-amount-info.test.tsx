@@ -11,7 +11,6 @@ import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAu
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
-import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
   CustomAmountInfoSkeleton,
@@ -23,7 +22,6 @@ jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
     amountFiat,
@@ -105,7 +103,6 @@ function render(
     disablePay?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
-    accountNoFundsAlert?: { key: string }[];
     customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
     alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
     isQuotesLoading?: boolean;
@@ -120,7 +117,6 @@ function render(
     disablePay = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
-    accountNoFundsAlert = [],
     customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
     alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
     isQuotesLoading = false,
@@ -159,9 +155,6 @@ function render(
         typeof useTransactionPayAvailableTokensModule.useTransactionPayAvailableTokens
       >,
     );
-  jest
-    .mocked(useAccountNoFundsAlertModule.useAccountNoFundsAlert)
-    .mockReturnValue(accountNoFundsAlert as never);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
     .mockReturnValue(hasQuotes ? [{} as never] : undefined);
@@ -347,16 +340,8 @@ describe('CustomAmountInfo', () => {
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('does not render any pay with selector when no tokens available', () => {
-    const { queryByTestId } = render({ availableTokens: [] });
-    expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
-  });
-
-  it('renders the pay with selector when account has no funds', () => {
-    const { getByTestId } = render({
-      availableTokens: [],
-      accountNoFundsAlert: [{ key: 'accountNoFunds' }],
-    });
+  it('keeps the pay with selector mounted when no tokens are available yet', () => {
+    const { getByTestId } = render({ availableTokens: [] });
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
@@ -450,9 +435,6 @@ describe('CustomAmountInfo', () => {
         .mockReturnValue([MOCK_AVAILABLE_TOKEN] as ReturnType<
           typeof useTransactionPayAvailableTokensModule.useTransactionPayAvailableTokens
         >);
-      jest
-        .mocked(useAccountNoFundsAlertModule.useAccountNoFundsAlert)
-        .mockReturnValue([]);
       jest
         .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
         .mockReturnValue([]);

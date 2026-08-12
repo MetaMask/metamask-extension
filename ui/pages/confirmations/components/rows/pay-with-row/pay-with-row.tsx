@@ -22,7 +22,8 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { AlertsName } from '../../../hooks/alerts/constants';
 import {
   usePayWithToken,
   type PayWithDisplayToken,
@@ -122,8 +123,6 @@ export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
 }: PayWithRowProps = {}) {
   const t = useI18nContext();
-  const accountNoFundsAlert = useAccountNoFundsAlert();
-  const hasAccountNoFunds = accountNoFundsAlert.length > 0;
   const {
     displayToken,
     balanceUsdFormatted,
@@ -135,6 +134,12 @@ export function PayWithRow({
     openModal,
     modal,
   } = usePayWithToken();
+  // Read the registered confirmation alert so empty-placeholder visibility
+  // stays in sync with useConfirmationAlerts (do not re-run the wait timer).
+  const { getFieldAlerts } = useAlerts(ownerId);
+  const hasAccountNoFunds = getFieldAlerts(RowAlertKey.PayWith).some(
+    (alert) => alert.key === AlertsName.AccountNoFunds,
+  );
 
   // When the selected account has no funding tokens, show an empty
   // "Select payment method" placeholder instead of an endless skeleton.
