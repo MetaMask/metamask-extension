@@ -28,6 +28,21 @@ describe('getAuthenticationControllerMessenger', () => {
       }),
     );
   });
+
+  it('delegates KeyringController:withKeyringV2Unsafe for native SIP-6 signing', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAuthenticationControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'KeyringController:withKeyringV2Unsafe',
+        ]),
+      }),
+    );
+  });
 });
 
 describe('getAuthenticationControllerInitMessenger', () => {
