@@ -355,36 +355,6 @@ describe('MetaMaskController', function () {
       expect(token1).toStrictEqual(token2);
     });
 
-    it('networkClientId is used when provided', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.tokensController.messenger, 'call')
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          networkConfigurationsByChainId: {
-            '0xa': {
-              nativeCurrency: 'ETH',
-              chainId: '0xa',
-            },
-          },
-        });
-
-      await metamaskController.getApi().addToken({
-        address,
-        symbol,
-        decimals,
-        networkClientId: 'networkClientId1',
-      });
-      expect(callSpy.mock.calls[0]).toStrictEqual([
-        'NetworkController:getNetworkClientById',
-        'networkClientId1',
-      ]);
-    });
-
     describe('with assets-unify state enabled', function () {
       let unifyController;
 
@@ -471,6 +441,25 @@ describe('MetaMaskController', function () {
           chainId: CHAIN_IDS.SEPOLIA,
           iconUrl: image,
         });
+      });
+
+      it('uses networkClientId to resolve the chain for AssetsController', async function () {
+        const getNetworkClientByIdSpy = jest
+          .spyOn(unifyController.networkController, 'getNetworkClientById')
+          .mockReturnValue({
+            configuration: { chainId: '0xa' },
+          });
+
+        await unifyController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId: 'networkClientId1',
+        });
+
+        expect(getNetworkClientByIdSpy).toHaveBeenCalledWith(
+          'networkClientId1',
+        );
       });
 
       it('omits iconUrl when image is not provided', async function () {

@@ -745,10 +745,9 @@ describe('MetaMaskController', () => {
 
           // Intercept only the watch-asset approval request; delegate every
           // other messenger call to the real implementation.
-          const originalCall =
-            metamaskController.controllerMessenger.call.bind(
-              metamaskController.controllerMessenger,
-            );
+          const originalCall = metamaskController.controllerMessenger.call.bind(
+            metamaskController.controllerMessenger,
+          );
           addRequestSpy = jest.fn().mockResolvedValue(undefined);
           jest
             .spyOn(metamaskController.controllerMessenger, 'call')
