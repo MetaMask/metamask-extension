@@ -32,15 +32,11 @@ class HomePage {
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
+  private readonly backupSecretRecoveryPhraseButton =
+    '[data-testid="backup-srp-toast"] button';
 
-  private readonly backupSecretRecoveryPhraseNotification = {
-    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
-    css: '.home-notification__text',
-  };
+  private readonly backupSecretRecoveryPhraseNotification =
+    '[data-testid="backup-srp-toast"]';
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
