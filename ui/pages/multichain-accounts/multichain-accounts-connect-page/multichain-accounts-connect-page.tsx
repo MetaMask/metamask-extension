@@ -39,6 +39,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   Content,
@@ -114,6 +115,7 @@ type SingleAccountCellProps = {
   accountName: string;
   balance: string;
   onEdit: () => void;
+  privacyMode?: boolean;
 };
 
 type MultiAccountRowProps = {
@@ -127,14 +129,16 @@ const SingleAccountCell = ({
   accountName,
   balance,
   onEdit,
+  privacyMode = false,
 }: SingleAccountCellProps) => (
   <MultichainAccountCell
     accountId={accountGroupId}
     accountName={accountName}
-    balance=""
-    subtitle={balance}
+    balance={balance}
+    balancePosition="below-name"
     disableHoverEffect
     onClick={onEdit}
+    privacyMode={privacyMode}
     endAccessory={
       <Icon
         name={IconName.ArrowRight}
@@ -200,6 +204,7 @@ export const MultichainAccountsConnectPage = ({
   );
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { privacyMode } = useSelector(getPreferences);
   const allBalances = useSelector(selectBalanceForAllWallets);
   const wallets = allBalances?.wallets;
 
@@ -541,7 +546,7 @@ export const MultichainAccountsConnectPage = ({
 
     return {
       accountGroupId,
-      accountName: accountGroup?.metadata.name || 'Unknown Account',
+      accountName: accountGroup?.metadata.name ?? 'Unknown Account',
       balance: formatCurrencyWithMinThreshold(balance, currency),
     };
   }, [
@@ -609,6 +614,7 @@ export const MultichainAccountsConnectPage = ({
                 accountName={singleAccountData.accountName}
                 balance={singleAccountData.balance}
                 onEdit={setModeToEditAccounts}
+                privacyMode={privacyMode}
               />
             )}
             {selectedAccountGroupIds.length > 1 && (

@@ -145,7 +145,8 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     Test Account Group 1
                   </p>
                   <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate multichain-account-cell__account-name"
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
                   >
                     0.00
                   </p>
@@ -155,10 +156,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                />
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
@@ -426,7 +423,8 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     Test Account Group 1
                   </p>
                   <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate multichain-account-cell__account-name"
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
                   >
                     0.00
                   </p>
@@ -436,10 +434,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                />
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"
@@ -707,7 +701,8 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     Test Account Group 1
                   </p>
                   <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate multichain-account-cell__account-name"
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
+                    data-testid="balance-display-subtitle"
                   >
                     0.00
                   </p>
@@ -717,10 +712,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="flex flex-row items-center justify-center"
                 style="flex-shrink: 0;"
               >
-                <p
-                  class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
-                  data-testid="balance-display"
-                />
                 <div
                   aria-label="Test Account Group 1 options"
                   class="flex flex-row items-center justify-end multichain-account-cell__end_accessory"

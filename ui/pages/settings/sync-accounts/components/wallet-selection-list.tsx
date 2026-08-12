@@ -22,6 +22,7 @@ import {
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { VirtualizedList } from '../../../../components/ui/virtualized-list/virtualized-list';
 
@@ -60,6 +61,7 @@ export const WalletSelectionList = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
+  const { privacyMode } = useSelector(getPreferences);
 
   const [collapsedWallets, setCollapsedWallets] = useState<Set<string>>(
     () => new Set(),
@@ -195,6 +197,7 @@ export const WalletSelectionList = ({
           balance={formatCurrencyWithMinThreshold(balance, currency)}
           selected={false}
           showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+          privacyMode={privacyMode}
         />
       );
     },
@@ -203,6 +206,7 @@ export const WalletSelectionList = ({
       formatCurrencyWithMinThreshold,
       isDefaultAddressEnabled,
       showDefaultAddress,
+      privacyMode,
       selectedSet,
       toggleWallet,
       toggleCollapsed,
