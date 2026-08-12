@@ -10,7 +10,7 @@ class GatorPermissionsPage {
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
 
-  private readonly connectionsButton = { text: 'Connections', tag: 'button' };
+  private readonly connectionsButton = { text: 'Connections', tag: 'p' };
 
   private driver: Driver;
 
