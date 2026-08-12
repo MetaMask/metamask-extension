@@ -59,7 +59,8 @@ describe('getShieldControllerInstanceOptions', () => {
         params: ['0xFromAddress', 'normalized-data'],
       });
 
-      const { normalizeSignatureRequest } = getShieldControllerInstanceOptions();
+      const { normalizeSignatureRequest } =
+        getShieldControllerInstanceOptions();
       if (!normalizeSignatureRequest) {
         throw new Error('normalizeSignatureRequest is not defined');
       }
@@ -88,7 +89,8 @@ describe('getShieldControllerInstanceOptions', () => {
         params: ['0xFromAddress', 'normalized-v3-data'],
       });
 
-      const { normalizeSignatureRequest } = getShieldControllerInstanceOptions();
+      const { normalizeSignatureRequest } =
+        getShieldControllerInstanceOptions();
       if (!normalizeSignatureRequest) {
         throw new Error('normalizeSignatureRequest is not defined');
       }
@@ -115,7 +117,8 @@ describe('getShieldControllerInstanceOptions', () => {
         params: ['original-data', '0xFromAddress'],
       });
 
-      const { normalizeSignatureRequest } = getShieldControllerInstanceOptions();
+      const { normalizeSignatureRequest } =
+        getShieldControllerInstanceOptions();
       if (!normalizeSignatureRequest) {
         throw new Error('normalizeSignatureRequest is not defined');
       }
