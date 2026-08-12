@@ -576,8 +576,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "error: Warning: A component is changing": 2
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
