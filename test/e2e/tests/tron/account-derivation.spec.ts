@@ -12,7 +12,7 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
@@ -305,21 +305,22 @@ describe('Tron account derivation', function (this: Suite) {
         await selectTronNetwork(driver);
         await addNHdAccountsForTronDerivation(driver, 8);
 
-        const homepage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
         const addressList = new AddressListModal(driver);
+        const headerNavbar = new HeaderNavbar(driver);
 
         for (let index = 0; index < 8; index += 1) {
           const accountLabel = `Account ${index + 1}`;
           const expected = EXPECTED_TRON_ADDRESSES_BY_INDEX[index];
 
-          await homepage.headerNavbar.openAccountMenu();
+          await headerNavbar.openAccountMenu();
           await accountList.checkPageIsLoaded();
           await accountList.selectAccount(accountLabel);
           await waitUntilAccountTreeSyncIdle(driver);
 
-          await homepage.checkPageIsLoaded();
-          await homepage.clickOnReceiveButton();
+          await homePage.checkPageIsLoaded();
+          await homePage.clickOnReceiveButton();
           await addressList.checkPageIsLoaded();
           await addressList.checkNetworkAddressIsDisplayedForNetwork({
             networkName: 'Tron',

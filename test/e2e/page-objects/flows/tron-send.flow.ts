@@ -3,8 +3,8 @@ import { Driver } from '../../webdriver/driver';
 import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../pages/home/activity-tab';
 import HomePage from '../pages/home/homepage';
-import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import SendPage from '../pages/send/send-page';
+import TokensTab from '../pages/home/tokens-tab';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
 import { login } from './login.flow';
 import { selectTronNetwork } from './tron-network.flow';
@@ -33,20 +33,21 @@ export async function landOnTronSendScreen({
   // Snap balances appear reliably in the token list (same pattern as assets.spec).
   await driver.refresh();
 
-  const home = new NonEvmHomepage(driver);
-  await home.checkPageIsLoaded();
+  const homePage = new HomePage(driver);
+  const tokensTab = new TokensTab(driver);
+  await homePage.checkPageIsLoaded();
   // Wait for the live TRX balance to land on the homepage before navigating to
   // Send. Without this gate, Send opens with the cached "0 TRX available" and
   // every amount renders "Insufficient funds", leaving the Continue button
   // disabled. The local Tron node is seeded with 6.072 TRX in profiles.ts.
   if (expectedNativeBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(
+    await tokensTab.checkExpectedTokenBalanceIsDisplayed(
       expectedNativeBalance,
       'TRX',
     );
   }
   if (expectedTokenBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(
+    await tokensTab.checkExpectedTokenBalanceIsDisplayed(
       expectedTokenBalance,
       symbol,
     );
