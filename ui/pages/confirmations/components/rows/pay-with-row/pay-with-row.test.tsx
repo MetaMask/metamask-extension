@@ -230,9 +230,7 @@ describe('PayWithRow', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    getFieldAlertsMock.mockReturnValue([
-      { key: AlertsName.AccountNoFunds },
-    ]);
+    getFieldAlertsMock.mockReturnValue([{ key: AlertsName.AccountNoFunds }]);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
