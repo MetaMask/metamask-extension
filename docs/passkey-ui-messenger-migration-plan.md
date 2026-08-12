@@ -6,8 +6,9 @@ Steps 1 and 2 are complete: the global blocked list and enrollment route
 migrations are implemented and tested. Steps 2.5 and 2.6 consolidate both the
 enrollment transport and WebAuthn ceremony orchestration in a reusable hook.
 Step 3 migrates both passkey-removal settings routes. Step 4 migrates passkey
-unlock across the standard and onboarding unlock routes. Work is paused for
-review before Step 5.
+unlock across the standard and onboarding unlock routes. Step 5 migrates
+password change and removes the remaining password-removal wrapper. Work is
+paused for review before Step 6.
 
 This plan follows the existing route-messenger patterns used by:
 
@@ -405,9 +406,12 @@ Review checkpoint: verify account initialization and all unlock surfaces.
 ### 5. Migrate password change
 
 - Add settings password-route capabilities.
-- Call the legacy-service password-change action.
+- Call the mutex-protected legacy-service password-change action through a
+  focused hook.
 - Remove the thin `dispatch(changePasswordWithPasskeyVerification(...))`
   wrapper.
+- Reuse the password-verified removal hook for the password fallback and remove
+  its final legacy Redux wrapper.
 - Preserve the state refresh and vault-key-renewal error handling.
 
 Review checkpoint: verify mutex-backed delegation and renewal enabled/disabled.

@@ -149,8 +149,6 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
-    background.changePasswordWithPasskeyVerification = sinon.stub();
-    background.removePasskeyWithPasswordVerification = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     // Vault / seedless methods live on LegacyBackgroundApiService and are only
     // exposed via getApi(); stub them here for tests that use the controller
@@ -344,103 +342,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#changePasswordWithPasskeyVerification', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('submits passkey authentication response and new password to the background', async () => {
-      const store = mockStore();
-      const newPassword = 'new-password';
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      background.changePasswordWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.changePasswordWithPasskeyVerification(
-          newPassword,
-          authenticationResponse,
-        ),
-      );
-
-      expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith({
-          newPassword,
-          authenticationResponse,
-          options: undefined,
-        }),
-      ).toStrictEqual(true);
-    });
-
-    it('forwards renewVaultKeyProtection option to the background', async () => {
-      const store = mockStore();
-      const newPassword = 'new-password';
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      background.changePasswordWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.changePasswordWithPasskeyVerification(
-          newPassword,
-          authenticationResponse,
-          {
-            renewVaultKeyProtection: false,
-          },
-        ),
-      );
-
-      expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith({
-          newPassword,
-          authenticationResponse,
-          options: { renewVaultKeyProtection: false },
-        }),
-      ).toStrictEqual(true);
-    });
-
-    it('throws when the background rejects', async () => {
-      const store = mockStore();
-      const err = new Error('passkey verification failed');
-      background.changePasswordWithPasskeyVerification.rejects(err);
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(
-          actions.changePasswordWithPasskeyVerification('pw', {
-            id: 'cred',
-            rawId: 'cred',
-            response: {
-              clientDataJSON: 'e30',
-              authenticatorData: 'AA',
-              signature: 'sig',
-            },
-            type: 'public-key',
-          }),
-        ),
-      ).rejects.toThrow('passkey verification failed');
-    });
-  });
-
   describe('passkey background requests', () => {
     afterEach(() => {
       sinon.restore();
@@ -458,19 +359,6 @@ describe('Actions', () => {
       expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
         true,
       );
-    });
-
-    it('#removePasskeyWithPasswordVerification forwards the password', async () => {
-      background.removePasskeyWithPasswordVerification.resolves();
-      setBackgroundConnection(background);
-
-      await actions.removePasskeyWithPasswordVerification('wallet-password');
-
-      expect(
-        background.removePasskeyWithPasswordVerification.calledOnceWith(
-          'wallet-password',
-        ),
-      ).toBe(true);
     });
   });
 

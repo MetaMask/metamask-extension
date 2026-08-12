@@ -49,6 +49,7 @@ import type {
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 import {
+  PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
   PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
   PASSKEY_SECURITY_ROUTE_CAPABILITIES,
   PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
@@ -238,6 +239,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
   },
   [SECURITY_REGISTER_PASSKEY_ROUTE]: {
     labelKey: 'setUpPasskey',

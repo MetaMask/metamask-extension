@@ -62,17 +62,21 @@ const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
 const mockGeneratePasskeyAuthenticationOptions = jest.fn(() =>
   Promise.resolve({}),
 );
-const mockChangePasswordWithPasskeyVerification = jest.fn(
-  (
-    _newPassword: string,
-    _authenticationResponse: unknown,
-    _options?: unknown,
-  ) => Promise.resolve(),
-);
+const mockChangePasswordWithPasskeyVerification = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockForceUpdateMetamaskState = jest.fn(() => Promise.resolve());
 const mockRemovePasskeyWithPasswordVerification = jest.fn((_password: string) =>
   Promise.resolve(),
 );
+
+jest.mock('../../../hooks/passkey/usePasskeyPasswordChange', () => ({
+  usePasskeyPasswordChange: () => mockChangePasswordWithPasskeyVerification,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
+  useRemovePasskeyWithPassword: () => mockRemovePasskeyWithPasswordVerification,
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -113,19 +117,7 @@ jest.mock('../../../store/actions', () => ({
   },
   generatePasskeyAuthenticationOptions: () =>
     mockGeneratePasskeyAuthenticationOptions(),
-  changePasswordWithPasskeyVerification: (
-    newPassword: string,
-    authenticationResponse: unknown,
-    options: { renewVaultKeyProtection: boolean },
-  ) =>
-    mockChangePasswordWithPasskeyVerification(
-      newPassword,
-      authenticationResponse,
-      options,
-    ),
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
-  removePasskeyWithPasswordVerification: (password: string) =>
-    mockRemovePasskeyWithPasswordVerification(password),
 }));
 
 jest.mock('../../../../shared/lib/passkey', () => ({
@@ -811,11 +803,11 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: false },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: false },
+        });
         expect(mockChangePassword).not.toHaveBeenCalled();
         expect(
           mockRemovePasskeyWithPasswordVerification,
@@ -896,11 +888,11 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: true },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: true },
+        });
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(
           SECURITY_AND_PASSWORD_ROUTE,
@@ -936,11 +928,11 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith(
-          mockNewPassword,
-          mockAssertion,
-          { renewVaultKeyProtection: false },
-        );
+        expect(mockChangePasswordWithPasskeyVerification).toHaveBeenCalledWith({
+          newPassword: mockNewPassword,
+          authenticationResponse: mockAssertion,
+          options: { renewVaultKeyProtection: false },
+        });
         expect(mockChangePassword).not.toHaveBeenCalled();
         expect(
           mockRemovePasskeyWithPasswordVerification,

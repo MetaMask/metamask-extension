@@ -116,6 +116,19 @@ describe('settings-registry', () => {
       });
     });
 
+    it('assigns passkey capabilities to password change', () => {
+      expect(
+        getSettingsRouteMeta(SECURITY_PASSWORD_CHANGE_V2_ROUTE)
+          ?.messengerCapabilities,
+      ).toStrictEqual({
+        actions: [
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          'PasskeyController:removePasskeyWithPasswordVerification',
+        ],
+        events: [],
+      });
+    });
+
     it('matches dynamic transaction shield claim routes', () => {
       expect(
         getSettingsRouteMeta(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
