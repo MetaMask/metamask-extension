@@ -16,12 +16,9 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
+import { PermissionsEmptyState } from '../gator-permissions/components';
 import {
   AlignItems,
   BackgroundColor,
@@ -30,8 +27,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -55,7 +50,6 @@ import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
@@ -192,22 +186,7 @@ const PermissionsPage = () => {
             height={BlockSize.Full}
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>

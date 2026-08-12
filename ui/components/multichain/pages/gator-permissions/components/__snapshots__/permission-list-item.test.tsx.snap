@@ -16,7 +16,7 @@ exports[`Permission List Item render renders correctly 1`] = `
         sites
       </p>
       <div
-        class="flex flex-row gap-1 items-center"
+        class="flex flex-row gap-2 items-center"
       >
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"

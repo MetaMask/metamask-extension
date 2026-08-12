@@ -6942,7 +6942,10 @@
     "message": "Permissions"
   },
   "permissionsPageEmptyDescription": {
-    "message": "No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
+    "message": "When you grant permissions, the details will appear here."
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Nothing to see here"
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"

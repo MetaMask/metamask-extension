@@ -58,18 +58,23 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
           data-testid="no-connections"
         >
           <div
-            class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 mx-auto"
+            class="flex flex-col gap-3 items-center justify-center max-w-64 mx-auto pb-12"
           >
             <img
-              alt="No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
+              alt="When you grant permissions, the details will appear here."
               height="72"
               src="/images/empty-state-permissions-light.png"
               width="72"
             />
             <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Nothing to see here
+            </p>
+            <p
               class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
             >
-              No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here.
+              When you grant permissions, the details will appear here.
             </p>
           </div>
         </div>

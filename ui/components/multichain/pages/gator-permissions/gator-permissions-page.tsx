@@ -19,9 +19,6 @@ import {
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -36,11 +33,13 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { transitionForward } from '../../../ui/transition';
-import { PermissionListItem } from './components/permission-list-item';
+import {
+  PermissionListItem,
+  PermissionsEmptyState,
+} from './components';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
@@ -168,22 +167,7 @@ export const GatorPermissionsPage = () => {
         padding={4}
         className="h-full"
       >
-        <TabEmptyState
-          icon={
-            <img
-              src={
-                theme === ThemeType.dark
-                  ? '/images/empty-state-permissions-dark.png'
-                  : '/images/empty-state-permissions-light.png'
-              }
-              alt={t('permissionsPageEmptyDescription')}
-              width={72}
-              height={72}
-            />
-          }
-          description={t('permissionsPageEmptyDescription')}
-          className="mx-auto"
-        />
+        <PermissionsEmptyState />
       </Box>
     );
   };

@@ -17,14 +17,11 @@ import {
   TextVariant as TextVariantLocal,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../../shared/constants/preferences';
 import {
   PREVIOUS_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { PermissionGroupListItem } from '../components';
+import { PermissionGroupListItem, PermissionsEmptyState } from '../components';
 import {
   AppState,
   getPermissionGroupMetaData,
@@ -34,7 +31,6 @@ import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const navigate = useNavigate();
   const urlParams = useParams<{ origin?: string }>();
   const origin = urlParams.origin
@@ -113,22 +109,7 @@ export const TokenTransferPage = () => {
             className="h-full"
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>
