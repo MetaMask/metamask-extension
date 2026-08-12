@@ -57,7 +57,7 @@ const AccountCellAvatar = ({
 
 type BalanceDisplayProps = {
   balance: string;
-  useSubtitleStyles?: boolean;
+  isSubtitle?: boolean;
   isHidden?: boolean;
 };
 
