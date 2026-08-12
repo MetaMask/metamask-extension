@@ -31,6 +31,8 @@ export type PreferredPayToken = {
   name?: string;
 };
 
+const EMPTY_PREFERRED_PAY_TOKENS: PreferredPayToken[] = [];
+
 type PreferredTokensConfig = {
   default?: PreferredPayToken[] | Record<string, PreferredPayToken[]>;
   overrides?: Record<string, PreferredPayToken[]>;
@@ -182,7 +184,7 @@ export const selectPreferredPayTokens = createSelector(
   [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
   (flag, transactionType): PreferredPayToken[] =>
     getPreferredTokensForTransaction(flag?.preferredTokens, transactionType) ??
-    [],
+    EMPTY_PREFERRED_PAY_TOKENS,
 );
 
 export const selectPreferredPayToken = createSelector(
