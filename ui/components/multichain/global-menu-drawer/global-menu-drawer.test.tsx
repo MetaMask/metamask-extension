@@ -17,11 +17,6 @@ const getEnvironmentType = jest.requireMock(
   '../../../../shared/lib/environment-type',
 ).getEnvironmentType as jest.Mock;
 
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: jest.fn(() => false),
-}));
-
 jest.mock('../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
@@ -101,11 +96,9 @@ describe('GlobalMenuDrawer', () => {
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
   });
 
-  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or sidepanel).
+  // The border-l is applied only when isLargeDrawer (fullscreen or sidepanel).
 
-  it('does not apply border-l in pure black mode on popup', async () => {
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(true);
+  it('does not apply border-l on popup', async () => {
     getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
     const { container } = renderWithProvider(
@@ -118,7 +111,7 @@ describe('GlobalMenuDrawer', () => {
 
     await waitFor(() => {
       expect(
-        container.querySelector('.border-l.border-muted'),
+        container.querySelector('.border-l.border-alternative'),
       ).not.toBeInTheDocument();
     });
   });

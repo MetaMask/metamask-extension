@@ -9,12 +9,6 @@ import {
   invokePerpsBalanceAction,
 } from './perps-balance-dropdown';
 
-const mockUsePureBlack = jest.fn().mockReturnValue(false);
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: () => mockUsePureBlack(),
-}));
-
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
@@ -325,37 +319,13 @@ describe('PerpsBalanceDropdown', () => {
     );
   });
 
-  describe('pure black mode', () => {
-    beforeEach(() => {
-      mockUsePureBlack.mockReturnValue(false);
-    });
+  it('uses bg-elevated2 for the dropdown panel', () => {
+    renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
-    it('uses bg-background-default for the dropdown panel in normal dark mode', () => {
-      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
 
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-
-      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
-        'bg-background-default',
-      );
-      expect(
-        screen.getByTestId('perps-balance-dropdown-panel'),
-      ).not.toHaveClass('bg-background-alternative');
-    });
-
-    it('uses bg-background-alternative for the dropdown panel in pure black mode', () => {
-      mockUsePureBlack.mockReturnValue(true);
-
-      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-
-      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
-        'bg-background-alternative',
-      );
-      expect(
-        screen.getByTestId('perps-balance-dropdown-panel'),
-      ).not.toHaveClass('bg-background-default');
-    });
+    expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
+      'bg-elevated2',
+    );
   });
 });

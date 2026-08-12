@@ -6,11 +6,6 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CoinButtons from './coin-buttons';
 
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: jest.fn(() => false),
-}));
-
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -116,32 +111,17 @@ const renderCoinButtons = (batchSellEnabled = true) => {
   );
 };
 
-describe('CoinButtons – MoreButtonsGroup pure black dropdown', () => {
+describe('CoinButtons – MoreButtonsGroup dropdown', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(false);
   });
 
-  it('uses bg-background-default for the dropdown in normal mode', async () => {
+  it('uses bg-elevated2 for the dropdown', async () => {
     const { getByTestId, container } = renderCoinButtons();
     fireEvent.click(getByTestId('coin-overview-more'));
 
     await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-default');
-      expect(dropdown).toBeInTheDocument();
-    });
-  });
-
-  it('uses bg-background-alternative for the dropdown in pure black mode', async () => {
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(true);
-
-    const { getByTestId, container } = renderCoinButtons();
-    fireEvent.click(getByTestId('coin-overview-more'));
-
-    await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-alternative');
+      const dropdown = container.querySelector('.bg-elevated2');
       expect(dropdown).toBeInTheDocument();
     });
   });

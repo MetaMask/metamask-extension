@@ -27,7 +27,6 @@ import {
   Text,
   TextColor,
   TextVariant,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -131,9 +130,6 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
-
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
 
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
@@ -335,9 +331,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       >
         <Box
           className={classnames(
-            'w-full h-full max-w-[262px]',
-            // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-            isPureBlack ? 'bg-background-alternative' : 'bg-background-muted',
+            'w-full h-full max-w-[262px] bg-elevated1',
             {
               flex: isOnSettingsRoot || !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
