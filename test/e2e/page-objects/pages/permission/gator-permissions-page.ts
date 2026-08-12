@@ -10,7 +10,7 @@ class GatorPermissionsPage {
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
 
-  private readonly connectionsButton = { text: 'Connections', tag: 'p' };
+  private readonly connectionsButton = { text: 'Connections', tag: 'button' };
 
   private driver: Driver;
 
@@ -59,6 +59,14 @@ class GatorPermissionsPage {
   async clickSites(): Promise<void> {
     console.log('Click Connections on Gator Permissions page');
     await this.driver.clickElement(this.connectionsButton);
+  }
+
+  /**
+   * Check if the Connections button is present on the page.
+   * The button may not be present if there are no site connections.
+   */
+  async isConnectionsButtonPresent(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(this.connectionsButton);
   }
 
   /**
