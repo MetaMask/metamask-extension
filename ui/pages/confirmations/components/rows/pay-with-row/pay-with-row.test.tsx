@@ -230,9 +230,7 @@ describe('PayWithRow', () => {
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getFieldAlertsMock.mockImplementation((field) =>
-      field === RowAlertKey.PayWith
-        ? [{ key: AlertsName.AccountNoFunds }]
-        : [],
+      field === RowAlertKey.PayWith ? [{ key: AlertsName.AccountNoFunds }] : [],
     );
 
     const store = mockStore(getMockState());
