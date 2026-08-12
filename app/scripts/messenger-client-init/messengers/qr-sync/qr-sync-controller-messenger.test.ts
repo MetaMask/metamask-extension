@@ -10,7 +10,7 @@ describe('getQrSyncControllerMessenger', () => {
     expect(qrSyncControllerMessenger).toBeInstanceOf(Messenger);
   });
 
-  it('delegates QrSyncDataService:buildWalletExportEntries', () => {
+  it('delegates AccountTreeController:exportState', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -19,7 +19,7 @@ describe('getQrSyncControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
-          'QrSyncDataService:buildWalletExportEntries',
+          'AccountTreeController:exportState',
         ]),
       }),
     );

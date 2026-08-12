@@ -190,8 +190,6 @@ export class QrSyncController extends BaseController<
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
   ): Promise<void> {
-    const selectedPayloadIds = new Set(selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)));
-
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
@@ -202,8 +200,9 @@ export class QrSyncController extends BaseController<
       { includeSecrets: true, password } as ExportStateOptions,
     );
 
+    const selectedPayloadIds = new Set(selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)));
     snapshot = snapshot.filterAllGroups((payloadGroup) => selectedPayloadIds.has(payloadGroup.id));
-    const exportData = snapshot.serialize() as unknown as QrSyncReadyData; // FIXME
+    const exportData = snapshot.serialize();
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 

@@ -6,27 +6,18 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 
 import {
-  KeyringControllerExportAccountAction,
-  KeyringControllerExportSeedPhraseAction,
-  KeyringControllerWithKeyringV2Action,
-} from '@metamask/keyring-controller';
-import {
   AccountTreeControllerExportStateAction,
-  AccountTreeControllerGetAccountGroupObjectAction,
-  AccountTreeControllerGetAccountWalletObjectAction,
+  type AccountTreePayload,
 } from '@metamask/account-tree-controller';
-import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
 import type { KeyManager } from './key-manager';
 import {
   QR_SYNC_CONTROLLER_NAME,
-  QR_SYNC_DATA_SERVICE_NAME,
   QrSyncActionTypes,
   QrSyncConnectionStatus,
   QrSyncMessageVersion,
 } from './constants';
-import { QrSyncDataServiceMethodActions } from './qr-sync-data-service-method-action-types';
 import type { QrSyncController } from './qr-sync-controller';
 
 export type QrSyncConnectionStatusType =
@@ -83,129 +74,12 @@ export type QrSyncError = {
 };
 
 /**
- * Metadata for a single HD account group within a mnemonic wallet export.
- *
- * Boolean flags (`hidden`, `pinned`) are omitted when `false`.
- */
-export type AccountGroupExport = {
-  /**
-   * The account group index within the HD wallet (Account 1 = 0).
-   *
-   * @type {number}
-   */
-  groupIndex: number;
-  /**
-   * The display name of the account group.
-   *
-   * @type {string}
-   */
-  name?: string;
-  /**
-   * Whether the account group is hidden in the UI.
-   *
-   * @type {boolean}
-   */
-  hidden?: boolean;
-  /**
-   * Whether the account group is pinned in the UI.
-   *
-   * @type {boolean}
-   */
-  pinned?: boolean;
-};
-
-/**
- * Mnemonic wallet entry in a sync-ready export bundle.
- */
-export type MnemonicWalletExport = {
-  /**
-   * The wallet entry type.
-   *
-   * @type {'Mnemonic'}
-   */
-  type: 'Mnemonic';
-  /**
-   * Base64-encoded UTF-8 string of the space-separated BIP-39 mnemonic words
-   * (not wordlist indices).
-   *
-   * @type {string}
-   */
-  mnemonic: string;
-  /**
-   * The display name of the wallet.
-   *
-   * @type {string}
-   */
-  name?: string;
-  /**
-   * Whether this wallet is the primary SRP wallet.
-   *
-   * @type {boolean}
-   */
-  isPrimary?: boolean;
-  /**
-   * The account groups to restore for this wallet.
-   *
-   * @type {AccountGroupExport[]}
-   */
-  groups: AccountGroupExport[];
-};
-
-/**
- * Imported private-key account entry in a sync-ready export bundle.
- *
- * Boolean flags (`hidden`, `pinned`) are omitted when `false`.
- */
-export type PrivateKeyAccountExport = {
-  /**
-   * The wallet entry type.
-   *
-   * @type {'PrivateKey'}
-   */
-  type: 'PrivateKey';
-  /**
-   * Base64-encoded UTF-8 string of the hex private key (e.g. base64("0xabc…"),
-   * not raw bytes).
-   *
-   * @type {string}
-   */
-  privateKey: string;
-  /**
-   * The display name of the imported account.
-   *
-   * Private Key accounts are not synced to the profile service and are not
-   * discovered by the account discovery service. Therefore, to sync the
-   * private key account name in mobile, we need to provide it here.
-   *
-   * @type {string}
-   */
-  name?: string;
-  /**
-   * Whether the imported account is hidden in the UI.
-   *
-   * @type {boolean}
-   */
-  hidden?: boolean;
-  /**
-   * Whether the imported account is pinned in the UI.
-   *
-   * @type {boolean}
-   */
-  pinned?: boolean;
-};
-
-/**
- * A single wallet or imported account entry in a sync-ready export bundle.
- */
-export type WalletExportEntry = MnemonicWalletExport | PrivateKeyAccountExport;
-
-/**
- * Wallet export entries sent in the `sync-ready` message `data` field.
+ * Wallet snapshot sent in the `sync-ready` message `data` field.
  *
  * The MWP envelope is
  * `{ type: 'sync-ready', version: '1.0.0', deadline, data: QrSyncReadyData }`.
  */
-export type QrSyncReadyData = WalletExportEntry[];
+export type QrSyncReadyData = AccountTreePayload;
 
 export type QrSyncControllerState = {
   /**
@@ -315,7 +189,6 @@ export type QrSyncControllerActions =
 
 export type QrSyncAllowedActions =
   | QrSyncControllerActions
-  | QrSyncDataServiceMethodActions
   | AccountTreeControllerExportStateAction;
 
 export type QrSyncControllerMessenger = Messenger<
@@ -324,17 +197,3 @@ export type QrSyncControllerMessenger = Messenger<
   QrSyncControllerEvents
 >;
 
-export type QrSyncDataServiceAllowedActions =
-  | QrSyncDataServiceMethodActions
-  | AccountTreeControllerGetAccountGroupObjectAction
-  | AccountTreeControllerGetAccountWalletObjectAction
-  | AccountsControllerGetAccountAction
-  | KeyringControllerExportSeedPhraseAction
-  | KeyringControllerExportAccountAction
-  | KeyringControllerWithKeyringV2Action;
-
-export type QrSyncDataServiceMessenger = Messenger<
-  typeof QR_SYNC_DATA_SERVICE_NAME,
-  QrSyncDataServiceAllowedActions,
-  never
->;
