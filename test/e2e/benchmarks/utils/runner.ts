@@ -44,6 +44,8 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+import Timers from './timers';
+import type { TimerWithId } from './timers';
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -87,15 +89,15 @@ async function runWithRetries(
     return await retry({ retries, delay: 1000 }, async () => {
       performanceTracker.reset();
 
-      const startedAt = performance.now();
       const result = await benchmarkFn();
-      const elapsed = performance.now() - startedAt;
+      // Read the step timers before the next iteration's reset clears them.
+      const spanMetrics = computeStepSpanMetrics(Timers.getAllTimers());
       lastResult = result;
 
       if (!result.success) {
         throw new Error(result.error ?? 'Benchmark failed');
       }
-      return withUnattributedTimer(result, elapsed);
+      return withStepSpanTimers(result, spanMetrics);
     });
   } catch {
     return lastResult;
@@ -103,41 +105,69 @@ async function runWithRetries(
 }
 
 /**
- * Appends an `unattributed` timer: wall-clock elapsed minus the sum of the
- * step timers.
+ * Gap and overlap between the step timers, derived from the steps themselves.
  *
- * The step timers are not a partition of the flow. Each is an independent
- * `performance.now()` pair, and the flows do real work between them — the
- * onboarding flows click Done and handle the sidepanel *outside* the timer
- * named for that transition. Time spent there is currently invisible: it is in
- * neither any step nor `total`, which is the sum of the steps rather than the
- * elapsed run.
+ * `span` is first-start to last-end across the completed step timers, so it
+ * covers the measured region of the journey and nothing else. Bracketing the
+ * whole benchmark function instead would fold in `withFixtures` — browser
+ * launch, mock servers, teardown — which is seconds of setup and would dwarf
+ * the inter-step gaps this exists to expose.
  *
- * A positive value is unmeasured gap. A **negative** value means the steps
- * overlap and some interval is counted twice; it is reported rather than
- * clamped, because which of the two is happening is the question.
+ * Returns `null` below two completed steps, where there is no inter-step
+ * region for either quantity to describe.
  *
- * Tagged with a unit so it is excluded from `total` (the same marker the long
- * task diagnostics use). This measures the gap; it does not change any
- * existing metric or threshold.
+ * @param timers - Raw timers from the `Timers` singleton for this run.
+ * @returns Non-negative `gap` and `overlap` in ms, or null.
+ */
+export function computeStepSpanMetrics(
+  timers: TimerWithId[],
+): { gap: number; overlap: number } | null {
+  const completed = timers.filter(
+    (t): t is TimerWithId & { start: number; end: number; duration: number } =>
+      t.start !== null && t.end !== null && t.duration !== null,
+  );
+  if (completed.length < 2) {
+    return null;
+  }
+
+  const span =
+    Math.max(...completed.map((t) => t.end)) -
+    Math.min(...completed.map((t) => t.start));
+  const measured = completed.reduce((acc, t) => acc + t.duration, 0);
+  const difference = span - measured;
+
+  // Emitted as two non-negative metrics rather than one signed one:
+  // `validateMetricValue` rejects negatives outright, so a signed value would
+  // have its overlap samples dropped before aggregation and overlap would read
+  // as absent in the published mean and percentiles.
+  return { gap: Math.max(0, difference), overlap: Math.max(0, -difference) };
+}
+
+/**
+ * Appends the step-span diagnostics to a completed run.
+ *
+ * Both carry a unit, which is the marker the per-run total already filters on
+ * (`timers.filter((t) => !t.unit)`) and which the long task diagnostics use, so
+ * `total` stays the sum of the steps and no threshold moves.
  *
  * @param result - The completed run.
- * @param elapsed - Wall-clock ms across the whole benchmark function.
- * @returns The run with the diagnostic timer appended.
+ * @param spanMetrics - Output of {@link computeStepSpanMetrics}, or null.
+ * @returns The run, with the diagnostics appended when available.
  */
-export function withUnattributedTimer(
+export function withStepSpanTimers(
   result: BenchmarkRunResult,
-  elapsed: number,
+  spanMetrics: { gap: number; overlap: number } | null,
 ): BenchmarkRunResult {
-  const measured = result.timers
-    .filter((t) => !t.unit)
-    .reduce((acc, t) => acc + t.value, 0);
+  if (!spanMetrics) {
+    return result;
+  }
 
   return {
     ...result,
     timers: [
       ...result.timers,
-      { id: 'unattributed', value: elapsed - measured, unit: 'ms' },
+      { id: 'unattributedGap', value: spanMetrics.gap, unit: 'ms' },
+      { id: 'stepOverlap', value: spanMetrics.overlap, unit: 'ms' },
     ],
   };
 }
