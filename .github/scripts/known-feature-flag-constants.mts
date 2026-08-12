@@ -75,6 +75,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/assets/security-trust-feature-flags.ts',
     exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
   },
+  {
+    key: 'BOTTOM_NAV_AB_TEST_KEY',
+    file: 'shared/lib/ab-testing/configs/bottom-nav-bar.ts',
+    exportName: 'BOTTOM_NAV_AB_TEST_KEY',
+  },
 ];
 
 /**
