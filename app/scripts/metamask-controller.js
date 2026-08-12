@@ -3392,14 +3392,6 @@ export default class MetamaskController extends EventEmitter {
         'PasskeyController:exportAccountsWithPasskey',
       ),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
-      getMoneyAccountAddress: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MoneyAccountAvailabilityService:getAddress',
-      ),
-      getMoneyAccountAvailability: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MoneyAccountAvailabilityService:getAvailability',
-      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
