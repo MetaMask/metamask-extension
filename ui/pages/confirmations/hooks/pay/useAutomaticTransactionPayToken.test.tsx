@@ -672,4 +672,49 @@ describe('useAutomaticTransactionPayToken', () => {
       chainId: CHAIN_ID_2_MOCK,
     });
   });
+
+  it('resolves preferred flag tokens from nested type on batch transactions', () => {
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 20 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      confirmContextValue: {
+        currentConfirmation: {
+          id: TRANSACTION_ID_MOCK,
+          type: TransactionType.batch,
+          nestedTransactions: [
+            { type: TransactionType.moneyAccountDeposit },
+          ],
+          txParams: { from: '0x123' },
+        } as never,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      },
+      remoteFeatureFlags: {
+        confirmations_pay_tokens: {
+          preferredTokens: {
+            overrides: {
+              moneyAccountDeposit: [
+                {
+                  address: TOKEN_ADDRESS_1_MOCK,
+                  chainId: CHAIN_ID_1_MOCK,
+                },
+              ],
+            },
+          },
+        },
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
+    });
+  });
 });

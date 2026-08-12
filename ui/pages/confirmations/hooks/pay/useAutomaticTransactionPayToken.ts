@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
-import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import {
+  getTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
@@ -40,7 +43,8 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
-  const transactionType = currentConfirmation?.type;
+  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
+  const transactionType = getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
