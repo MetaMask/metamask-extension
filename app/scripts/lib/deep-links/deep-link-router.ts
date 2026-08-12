@@ -186,7 +186,7 @@ export class DeepLinkRouter extends EventEmitter<{
     tabId: number,
     urlStr: string,
     requestOrigin?: string,
-  ): browser.WebRequest.BlockingResponseOrPromise {
+  ): browser.WebRequest.BlockingResponse {
     if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
       log.debug('Url is too long, skipping deep link handling');
       return {};
@@ -195,11 +195,11 @@ export class DeepLinkRouter extends EventEmitter<{
     // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
     // MV3 cannot block the request. `navigate` must be invoked without awaiting
     // it so its synchronous prefix starts the extension-owned loading-page
-    // redirect before this handler returns. Do not add asynchronous work before
-    // this call.
-    if (isManifestV3) {
-      this.navigate(tabId, urlStr, requestOrigin);
+    // redirect before this handler returns. Do not add work between the length
+    // check above and this call.
+    this.navigate(tabId, urlStr, requestOrigin);
 
+    if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
       // not support blocking redirects.
       return {};
@@ -210,9 +210,7 @@ export class DeepLinkRouter extends EventEmitter<{
     // request, and then use our `redirectTab` method to complete the redirect.
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
-    return this.navigate(tabId, urlStr, requestOrigin).then(() => ({
-      cancel: true,
-    }));
+    return { cancel: true };
   }
 
   /**

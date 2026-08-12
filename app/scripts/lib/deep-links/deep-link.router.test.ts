@@ -83,9 +83,7 @@ async function handleRequestAndWaitForNavigation(
 ): Promise<browser.WebRequest.BlockingResponse | undefined> {
   const response = onBeforeRequest?.(details);
 
-  if (mockIsManifestV3()) {
-    await flushPromises();
-  }
+  await flushPromises();
 
   return response;
 }
@@ -222,16 +220,17 @@ describe('DeepLinkRouter', () => {
       });
     });
 
-    it('keeps MV2 blocking while verification finishes', async () => {
+    it('cancels MV2 requests before verification finishes', async () => {
       mockIsManifestV3.mockReturnValue(false);
       const verification = createDeferredPromise<ParsedDeepLink | false>();
       parseMock.mockReturnValue(verification.promise);
 
-      const responsePromise = onBeforeRequest?.({
+      const response = onBeforeRequest?.({
         tabId: 1,
         url: 'https://link.metamask.io/buy',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
+      expect(response).toEqual({ cancel: true });
       expect(browser.tabs.update).not.toHaveBeenCalled();
 
       verification.resolve({
@@ -239,7 +238,8 @@ describe('DeepLinkRouter', () => {
         signature: 'invalid',
       } as ParsedDeepLink);
 
-      await expect(responsePromise).resolves.toEqual({ cancel: true });
+      await flushPromises();
+
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenCalledWith(1, {
         url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy',
