@@ -166,10 +166,10 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    // Wait for the new account's funding tokens before selecting. Otherwise
-    // getBestToken falls back to the required destination token (mUSD on
-    // Monad) and the Pay-with row briefly shows that instead of a loader.
-    // If tokens never arrive (truly empty account), settle after timeout.
+    // Wait for the new account's funding tokens before selecting. Tokens can
+    // arrive after the account override, and selecting too early leaves the
+    // Pay-with row empty or briefly wrong. If tokens never arrive (truly empty
+    // account), settle after timeout without a destination-token fallback.
     if (tokensWithBalance.length === 0 && !emptyAccountReselectTimedOut) {
       return;
     }
@@ -326,7 +326,15 @@ function getBestToken({
     };
   }
 
-  return targetTokenFallback;
+  // Deposit flows: do not fall back to the required destination token when
+  // the account has no funding balance. Leaving payToken unset empties the
+  // selector and allows the account-no-funds alert to surface. Post-quote
+  // withdraws still use the destination token as a known-safe default.
+  if (isPostQuoteWithdraw) {
+    return targetTokenFallback;
+  }
+
+  return undefined;
 }
 
 function getPreferredToken({

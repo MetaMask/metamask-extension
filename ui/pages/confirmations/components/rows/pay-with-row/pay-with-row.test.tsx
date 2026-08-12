@@ -8,6 +8,7 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -16,6 +17,7 @@ jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 
 jest.mock(
@@ -135,6 +137,7 @@ describe('PayWithRow', () => {
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useAccountNoFundsAlertMock = jest.mocked(useAccountNoFundsAlert);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
 
   beforeEach(() => {
@@ -142,6 +145,7 @@ describe('PayWithRow', () => {
 
     useSendTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useAccountNoFundsAlertMock.mockReturnValue([]);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: MOCK_PAY_TOKEN,
@@ -218,6 +222,29 @@ describe('PayWithRow', () => {
     renderWithProvider(<PayWithRow />, store);
 
     expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders empty selection placeholder when account has no funds', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useAccountNoFundsAlertMock.mockReturnValue([
+      { key: 'accountNoFunds' },
+    ] as never);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
   });
 
   it('falls back to first required token when no pay token', () => {
