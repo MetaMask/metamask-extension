@@ -27,7 +27,7 @@ import {
   getPermissionGroupMetaData,
   getPermissionGroupMetaDataByOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
+import { safeDecodeURIComponent } from '../helper';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
@@ -89,13 +89,10 @@ export const TokenTransferPage = () => {
           />
         }
         textProps={{
-          variant: TextVariantLocal.headingMd,
           'data-testid': 'token-transfer-page-title',
         }}
       >
-        {origin
-          ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
-          : t('tokenTransfer')}
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         {permissionGroupMetaData.length > 0 ? (

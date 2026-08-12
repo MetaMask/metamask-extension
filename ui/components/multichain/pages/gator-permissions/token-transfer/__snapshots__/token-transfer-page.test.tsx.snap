@@ -37,12 +37,12 @@ exports[`Token Transfer Page render renders correctly 1`] = `
         <div
           class="mm-box"
         >
-          <h3
-            class="mm-box mm-text mm-text--heading-md mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
+          <p
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
             data-testid="token-transfer-page-title"
           >
-            Token transfer
-          </h3>
+            Permissions
+          </p>
         </div>
       </div>
       <div
