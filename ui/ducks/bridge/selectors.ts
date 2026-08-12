@@ -21,6 +21,7 @@ import {
   RequestStatus,
   isNonEvmChainId,
   isStellarChainId,
+  selectExchangeRateByAssetId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -671,6 +672,7 @@ export const getFromTokenConversionRate = createSelector(
     getMultichainCoinRates,
     getTokenRatesControllerMarketData, // rates for non-native evm tokens
     getCurrencyRateControllerCurrencyRates, // EVM only
+    (state: BridgeAppState) => state.metamask.assetExchangeRates,
   ],
   (
     fromToken,
@@ -679,6 +681,7 @@ export const getFromTokenConversionRate = createSelector(
     rates,
     marketData,
     currencyRates,
+    assetExchangeRates,
   ) => {
     const nullResult = {
       valueInCurrency: null,
@@ -688,6 +691,19 @@ export const getFromTokenConversionRate = createSelector(
       return nullResult;
     }
     const { chainId, assetId } = fromToken;
+
+    const assetExchangeRate = selectExchangeRateByAssetId(
+      { assetExchangeRates },
+      assetId,
+    );
+
+    if (assetExchangeRate?.exchangeRate && assetExchangeRate?.usdExchangeRate) {
+      return {
+        valueInCurrency: Number(assetExchangeRate.exchangeRate),
+        usd: Number(assetExchangeRate.usdExchangeRate),
+      };
+    }
+
     const nativeAsset = getNativeAssetForChainId(chainId);
     if (!nativeAsset) {
       return nullResult;
