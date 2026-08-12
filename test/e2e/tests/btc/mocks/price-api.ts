@@ -136,7 +136,8 @@ export const mockSolanaSpotPrices = (mockServer: Mockttp) =>
 // USD spot prices keyed by CAIP-19 asset id for the assets involved in BTC swaps.
 const BTC_SWAP_SPOT_PRICES_USD: Record<string, number> = {
   // BTC (native)
-  'bip122:000000000019d6689c085ae165831e93/slip44:0': DEFAULT_BTC_CONVERSION_RATE,
+  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+    DEFAULT_BTC_CONVERSION_RATE,
   // ETH (native) — destination for BTC → ETH
   'eip155:1/slip44:60': 3000,
   // USDC — destination for BTC → USDC
