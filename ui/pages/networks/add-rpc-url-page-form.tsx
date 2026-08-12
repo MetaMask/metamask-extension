@@ -26,6 +26,20 @@ const templateInfuraRpc = (endpoint: string) => {
   return new URL(rpcUrl).toString();
 };
 
+const getUrlErrorKey = (
+  nextUrl: string,
+): 'urlErrorMsg' | 'invalidRPC' | undefined => {
+  if (!nextUrl) {
+    return undefined;
+  }
+
+  if (isWebUrl(nextUrl)) {
+    return undefined;
+  }
+
+  return isWebUrl(`https://${nextUrl}`) ? 'urlErrorMsg' : 'invalidRPC';
+};
+
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;
   onAdded: (url: string, name?: string) => void;
@@ -39,25 +53,13 @@ export const AddRpcUrlPageForm = ({
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
   const [rpcValidationError, setRpcValidationError] = useState<string>();
-  const [isValidatingRpcUrl, setIsValidatingRpcUrl] = useState(false);
   const [validatedUrl, setValidatedUrl] = useState<string>();
   const validationRequestIdRef = useRef(0);
   const latestUrlRef = useRef(url);
   const debouncedUrl = useDebouncedValue(url);
 
-  const getUrlError = (nextUrl: string) => {
-    if (!nextUrl) {
-      return undefined;
-    }
-
-    if (isWebUrl(nextUrl)) {
-      return undefined;
-    }
-
-    return isWebUrl(`https://${nextUrl}`) ? t('urlErrorMsg') : t('invalidRPC');
-  };
-
-  const urlError = getUrlError(url);
+  const urlErrorKey = getUrlErrorKey(url);
+  const urlError = urlErrorKey ? t(urlErrorKey) : undefined;
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextUrl = event.target.value;
@@ -68,18 +70,15 @@ export const AddRpcUrlPageForm = ({
   };
 
   useEffect(() => {
-    validationRequestIdRef.current += 1;
-    const requestId = validationRequestIdRef.current;
     const trimmedUrl = debouncedUrl.trim();
-    const debouncedUrlError = getUrlError(debouncedUrl);
+    const debouncedUrlErrorKey = getUrlErrorKey(debouncedUrl);
 
-    if (!trimmedUrl || debouncedUrlError) {
-      setValidatedUrl(undefined);
-      setIsValidatingRpcUrl(false);
+    if (!trimmedUrl || debouncedUrlErrorKey) {
       return;
     }
 
-    setIsValidatingRpcUrl(true);
+    validationRequestIdRef.current += 1;
+    const requestId = validationRequestIdRef.current;
     const isCurrentValidation = () =>
       validationRequestIdRef.current === requestId &&
       latestUrlRef.current.trim() === trimmedUrl;
@@ -96,26 +95,23 @@ export const AddRpcUrlPageForm = ({
           setRpcValidationError(t('failedToFetchChainId'));
           setValidatedUrl(undefined);
         }
-      })
-      .finally(() => {
-        if (isCurrentValidation()) {
-          setIsValidatingRpcUrl(false);
-        }
       });
+
+    return () => {
+      validationRequestIdRef.current += 1;
+    };
   }, [debouncedUrl, t]);
 
+  const trimmedUrl = url.trim();
   const error = urlError ?? rpcValidationError;
   const isSubmitDisabled =
-    !url.trim() ||
-    validatedUrl !== url.trim() ||
-    Boolean(error) ||
-    isValidatingRpcUrl;
+    !trimmedUrl || validatedUrl !== trimmedUrl || Boolean(error);
   const handleSubmit = () => {
     if (isSubmitDisabled) {
       return;
     }
 
-    onAdded(url.trim(), name || undefined);
+    onAdded(trimmedUrl, name || undefined);
   };
 
   return (
