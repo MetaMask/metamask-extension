@@ -3,10 +3,10 @@ import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { LOCALHOST_NETWORK_CLIENT_ID } from '../../constants';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import Homepage from '../../page-objects/pages/home/homepage';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
@@ -41,30 +41,28 @@ describe('Custom RPC history', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField(networkName);
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField(networkName);
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           chainId.toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField(symbol);
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.fillCurrencySymbolInputField(symbol);
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(rpcUrl);
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork();
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(rpcUrl);
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.saveAddRpcUrl();
+        await addEditNetworkPage.saveEditedNetwork();
         // Validate the network was added
-        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
-          networkName,
-        );
+        await networksPage.checkAddNetworkMessageIsDisplayed(networkName);
       },
     );
   });
@@ -83,23 +81,23 @@ describe('Custom RPC history', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.openAddRpcUrlModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(duplicateRpcUrl);
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.saveAddRpcUrl();
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(duplicateRpcUrl);
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.saveAddRpcUrl();
 
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkChainIdInputField('1');
-        await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkChainIdInputField('1');
+        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
           'The RPC URL you have entered returned a different chain ID (1337).',
         );
       },
@@ -120,25 +118,23 @@ describe('Custom RPC history', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkChainIdInputField(
-          duplicateChainId,
-        );
-        await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkChainIdInputField(duplicateChainId);
+        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
           'This Chain ID is currently used by the Ethereum network.',
         );
 
         // Add invalid rcp url
-        await addEditNetworkModal.openAddRpcUrlModal();
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput('test');
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.checkErrorMessageInvalidUrlIsDisplayed();
+        await addEditNetworkPage.openAddRpcUrlPage();
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput('test');
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.checkErrorMessageInvalidUrlIsDisplayed();
       },
     );
   });
@@ -186,17 +182,15 @@ describe('Custom RPC history', function (this: Suite) {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
 
         // Custom rpcs length is 1 because networks has been merged
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
-          'Localhost 8545',
-        );
+        await networksPage.checkNetworkOptionIsDisplayed('Localhost 8545');
 
         // Only recent 3 are found and in correct order (most recent at the top)
-        await selectNetworkDialog.openNetworkRPC('eip155:1337');
-        await selectNetworkDialog.checkNetworkRPCNumber(3);
+        await networksPage.openNetworkRPC('eip155:1337');
+        await networksPage.checkNetworkRPCNumber(3);
       },
     );
   });
@@ -253,15 +247,15 @@ describe('Custom RPC history', function (this: Suite) {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',
         );
 
         // Delete network from network list
-        await selectNetworkDialog.deleteNetwork('eip155:1344');
-        await selectNetworkDialog.clickCloseButton();
+        await networksPage.deleteNetwork('eip155:1344');
+        await networksPage.clickCloseButton();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
@@ -271,8 +265,8 @@ describe('Custom RPC history', function (this: Suite) {
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
         await headerNavbar.openGlobalNetworksMenu({ isDrawerOpen: true });
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',
           false,
         );

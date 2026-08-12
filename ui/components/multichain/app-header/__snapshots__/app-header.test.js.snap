@@ -257,11 +257,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           </button>
         </div>
         <dialog
-          class="global-menu-drawer"
+          class="group box-border border-0 bg-transparent p-0 m-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))] h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none] transition-[display,overlay] transition-discrete duration-300 ease-in-out motion-reduce:duration-[0.01ms] backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete backdrop:duration-[var(--global-drawer-open,300ms)] backdrop:ease-linear starting:open:backdrop:opacity-0 motion-reduce:backdrop:duration-[0.01ms] max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full"
           closedby="any"
         >
           <div
-            class="global-menu-drawer__frame"
+            class="h-full w-full [translate:100%_0] transition-[translate] duration-300 ease-in-out motion-reduce:duration-[0.01ms] group-open:[translate:0_0] group-open:[animation:var(--global-drawer-open,slide-in-from-right_300ms_ease-in-out_backwards)] starting:group-open:[translate:var(--global-drawer-open,100%_0)] motion-reduce:group-open:animate-none"
           >
             <div
               class="bg-default h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
@@ -289,8 +289,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               <div
                 class="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
               >
-                <div
-                  class="flex flex-col global-menu-list"
+                <nav
+                  class="global-menu-list "
                 >
                   <div
                     class="flex flex-col"
@@ -324,8 +324,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <div
@@ -546,8 +546,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <div
@@ -636,8 +636,8 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                     <div
                       class="w-full px-2 py-2"
                     >
-                      <div
-                        class="w-full border-t border-muted"
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
                       />
                     </div>
                     <button
@@ -663,7 +663,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                       </div>
                     </button>
                   </div>
-                </div>
+                </nav>
               </div>
             </div>
           </div>

@@ -242,7 +242,7 @@ import {
   getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -1096,7 +1096,7 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  ppomController: this.ppomController,
+                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -1172,14 +1172,27 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest, requestContext) =>
-        addDappTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            dappRequest,
-            requestContext,
-          }),
-        ),
+      processTransaction: (transactionParams, dappRequest, requestContext) => {
+        const networkClientId = requestContext?.get('networkClientId');
+        const { chainId } =
+          this.networkController.getNetworkConfigurationByNetworkClientId(
+            networkClientId,
+          );
+        return addDappTransaction({
+          messenger: this.controllerMessenger,
+          internalAccounts: this.accountsController.listAccounts(),
+          selectedAccount: this.accountsController.getAccountByAddress(
+            transactionParams.from,
+          ),
+          networkClientId,
+          chainId,
+          transactionParams,
+          dappRequest,
+          requestContext,
+          securityAlertsEnabled:
+            this.preferencesController.state?.securityAlertsEnabled,
+        });
+      },
       // msg signing
       processTypedMessage: (...args) =>
         addTypedMessage({
@@ -3388,25 +3401,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getNextNonce',
       ),
-      addTransaction: (transactionParams, transactionOptions) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: { ...transactionOptions, isInternal: true },
-            waitForSubmit: false,
-          }),
-        ),
-      addTransactionAndWaitForPublish: (
-        transactionParams,
-        transactionOptions,
-      ) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: { ...transactionOptions, isInternal: true },
-            waitForSubmit: true,
-          }),
-        ),
+      addTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransaction',
+      ),
+      addTransactionAndWaitForPublish: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+      ),
       upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
@@ -3986,7 +3988,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:lookupSelectedNetworks',
       ),
-      resetWallet: this.resetWallet.bind(this),
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
   }
 
@@ -4002,43 +4007,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Reset the wallet, restart the from the onboarding flow
-   *
-   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
-   * @returns void
-   */
-  async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
-    this.passkeyController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
   }
 
   /**
@@ -4500,51 +4468,6 @@ export default class MetamaskController extends EventEmitter {
   }
   // Identity Management (signature operations)
 
-  getAddTransactionRequest({
-    transactionParams,
-    transactionOptions,
-    dappRequest,
-    requestContext,
-    ...otherParams
-  }) {
-    const networkClientId =
-      requestContext?.get('networkClientId') ??
-      transactionOptions?.networkClientId;
-    const { chainId } =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        networkClientId,
-      );
-    return {
-      internalAccounts: this.accountsController.listAccounts(),
-      dappRequest,
-      requestContext,
-      networkClientId,
-      selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
-      ),
-      transactionController: this.txController,
-      keyringController: this.keyringController,
-      transactionOptions,
-      transactionParams,
-      userOperationController: this.userOperationController,
-      chainId,
-      ppomController: this.ppomController,
-      securityAlertsEnabled:
-        this.preferencesController.state?.securityAlertsEnabled,
-      updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
-      getSecurityAlertResponse:
-        this.appStateController.getAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      addSecurityAlertResponse:
-        this.appStateController.addAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
-      ...otherParams,
-    };
-  }
-
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
@@ -4737,13 +4660,10 @@ export default class MetamaskController extends EventEmitter {
     securityAlertResponse,
   ) {
     return await updateSecurityAlertResponse({
-      appStateController: this.appStateController,
       messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
-      signatureController: this.signatureController,
-      transactionController: this.txController,
     });
   }
 
@@ -5564,7 +5484,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.ppomController,
+        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -6084,7 +6004,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.ppomController,
+        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -7246,21 +7166,16 @@ export default class MetamaskController extends EventEmitter {
         upgradeContractAddress,
         networkClientId,
       },
-      async (transactionParams, options) => {
-        const transactionMeta = await addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: {
-              ...options,
-              isInternal: true,
-              origin: 'metamask',
-              requireApproval: true,
-            },
-            waitForSubmit: true,
-          }),
-        );
-        return transactionMeta;
-      },
+      async (transactionParams, options) =>
+        this.controllerMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          transactionParams,
+          {
+            ...options,
+            origin: 'metamask',
+            requireApproval: true,
+          },
+        ),
     );
   }
 

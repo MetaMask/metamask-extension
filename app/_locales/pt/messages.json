@@ -1770,9 +1770,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Saiba como protegemos sua privacidade"
   },
-  "backupApprovalInfo": {
-    "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
-  },
   "backupApprovalNotice": {
     "message": "Faça backup da Frase de Recuperação Secreta para manter sua carteira e seus fundos em segurança."
   },
@@ -3401,9 +3398,6 @@
   },
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Quer mesmo desconectar? Você pode perder a funcionalidade do site."
-  },
-  "disconnectAllDescriptionText": {
-    "message": "Se você se desconectar deste site, precisará reconectar suas contas e redes para usar este site novamente."
   },
   "disconnectAllSites": {
     "message": "Desconectar tudo"

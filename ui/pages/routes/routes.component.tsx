@@ -92,7 +92,6 @@ import {
 } from '../../selectors';
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
-import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
@@ -131,6 +130,7 @@ import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/mult
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -712,7 +712,7 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
-  // OPEN_ROUTE navigates in-place (sidepanel cold/warm + popup warm).
+
   useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
