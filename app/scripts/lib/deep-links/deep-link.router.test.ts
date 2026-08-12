@@ -68,6 +68,8 @@ const routesProtectedByInterstitial = [
   '/shield',
 ] as const;
 
+const TEST_REQUEST_ID = '00000000-0000-4000-8000-000000000000';
+
 const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   (['missing', 'invalid'] as const).map((signature) => ({
     route,
@@ -81,7 +83,9 @@ const removeId = jest.fn();
 async function handleRequestAndWaitForNavigation(
   details: browser.WebRequest.OnBeforeRequestDetailsType,
 ): Promise<browser.WebRequest.BlockingResponse | undefined> {
-  const response = onBeforeRequest?.(details);
+  const response = onBeforeRequest?.(details) as
+    | browser.WebRequest.BlockingResponse
+    | undefined;
 
   await flushPromises();
 
@@ -96,7 +100,7 @@ describe('DeepLinkRouter', () => {
     mockIsManifestV3.mockReturnValue(true);
     randomUuidSpy = jest
       .spyOn(globalThis.crypto, 'randomUUID')
-      .mockReturnValue('test-request-id');
+      .mockReturnValue(TEST_REQUEST_ID);
     getState.mockReturnValue({
       preferences: { skipDeepLinkInterstitial: false },
     } as unknown as ReturnType<MetaMaskController['getState']>);
@@ -162,7 +166,7 @@ describe('DeepLinkRouter', () => {
         expect(response).toEqual({});
         expect(browser.tabs.update).toHaveBeenCalledTimes(1);
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
+          url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
         });
 
         verification.resolve({
@@ -206,7 +210,7 @@ describe('DeepLinkRouter', () => {
       await Promise.resolve();
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
       expect(browser.tabs.update).toHaveBeenNthCalledWith(1, 1, {
-        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
+        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
       });
 
       loadingPageRedirect.resolve({} as browser.Tabs.Tab);
@@ -281,7 +285,7 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
+          url: `chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=${TEST_REQUEST_ID}`,
         });
       },
     );
@@ -309,7 +313,7 @@ describe('DeepLinkRouter', () => {
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
           url: `chrome-extension://extension-id/home.html#/link?${new URLSearchParams(
-            { u: route, id: 'test-request-id' },
+            { u: route, id: TEST_REQUEST_ID },
           ).toString()}`,
         });
       },
@@ -389,7 +393,7 @@ describe('DeepLinkRouter', () => {
           requestDetails: arrangeRequestDetails({
             initiator: 'https://evil.com',
           }),
-          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Ftest-route&id=test-request-id`,
+          expectedUrl: `${EXTENSION_HOME}#/link?u=%2Ftest-route&id=${TEST_REQUEST_ID}`,
         },
       ];
 
@@ -446,7 +450,7 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=test-request-id',
+          url: `chrome-extension://extension-id/home.html#/link?u=%2Fexternal-route%3Fquery%3Dparam&id=${TEST_REQUEST_ID}`,
         });
       });
     });
@@ -504,7 +508,7 @@ describe('DeepLinkRouter', () => {
             url: testCase.url,
           } as browser.WebRequest.OnBeforeRequestDetailsType);
           expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: `${testCase.expectedUrl}&id=test-request-id`,
+            url: `${testCase.expectedUrl}&id=${TEST_REQUEST_ID}`,
           });
         },
       );
@@ -616,7 +620,7 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=test-request-id',
+        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
       });
     });
 
