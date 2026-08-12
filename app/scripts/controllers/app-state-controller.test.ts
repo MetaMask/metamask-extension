@@ -55,11 +55,11 @@ const extensionMock = {
   },
 } as unknown as jest.Mocked<Browser>;
 
-beforeEach(() => {
-  tabsOnRemovedAddListenerMock.mockClear();
-});
-
 describe('AppStateController', () => {
+  beforeEach(() => {
+    tabsOnRemovedAddListenerMock.mockClear();
+  });
+
   describe('updateNftDropDownState', () => {
     it('updates the NFT dropdown state', async () => {
       await withController(({ controller }) => {

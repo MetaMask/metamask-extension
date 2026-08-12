@@ -63,7 +63,6 @@ import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
-import { createEvent } from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
@@ -111,7 +110,9 @@ import {
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { trackDeepLinkNavigation } from './lib/deep-links/track-deep-link-navigation';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { sanitizeSentryBackgroundState } from './lib/state-utils';
 import {
   readCriticalErrorRestoreSession,
   clearCriticalErrorRestoreSession,
@@ -910,14 +911,17 @@ async function initialize(backup) {
     .on('navigate', async ({ tabId, url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        if (canSubmitAnalytics()) {
-          const event = { signature: parsed.signature, url };
-          if (parsed.destination?.trackContinuity) {
-            event.continuityId =
-              controller.appStateController.setContinuityIdForTab(tabId);
-          }
-          trackEvent(createEvent(event));
-        }
+        trackDeepLinkNavigation({
+          canSubmitAnalytics,
+          parsed,
+          setContinuityIdForTab:
+            controller.appStateController.setContinuityIdForTab.bind(
+              controller.appStateController,
+            ),
+          tabId,
+          trackEvent,
+          url,
+        });
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -2547,7 +2551,9 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
-    const backgroundState = store.memStore.getState();
+    const backgroundState = sanitizeSentryBackgroundState(
+      store.memStore.getState(),
+    );
     return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
