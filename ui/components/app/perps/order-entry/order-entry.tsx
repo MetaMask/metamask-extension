@@ -14,6 +14,7 @@ import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
+import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -61,6 +62,7 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
  * @param props.limitPricePrefill
+ * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
   asset,
@@ -70,6 +72,7 @@ export const OrderEntry = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onInputMethodChange,
   onCalculationsChange,
   showSubmitButton = true,
   showOrderSummary = true,
@@ -188,7 +191,7 @@ export const OrderEntry = ({
     }
   }, [calculations, hasCalculationsChanged]);
 
-  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+  const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
@@ -313,6 +316,7 @@ export const OrderEntry = ({
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
+            onInputMethodChange={onInputMethodChange}
             balancePercent={formState.balancePercent}
             onBalancePercentChange={handleBalancePercentChange}
             availableBalance={availableBalance}

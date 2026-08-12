@@ -72,7 +72,7 @@ function wrapElementWithAPI(element, driver) {
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
-        return await driver.wait(until.stalenessOf(element), timeout);
+        return await driver.wait(until.elementIsNotVisible(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
       case 'disabled':
@@ -1258,6 +1258,30 @@ class Driver {
       );
       return '';
     }
+  }
+
+  /**
+   * Waits until the clipboard contains the expected text.
+   * Clipboard writes from the extension are async; reading immediately after
+   * a copy click can race and return stale or empty content.
+   *
+   * @param {string} expectedContent - The expected clipboard text.
+   * @param {object} [options] - Wait options.
+   * @param {number} [options.interval] - Poll interval in milliseconds.
+   * @param {number} [options.timeout] - Maximum wait time in milliseconds.
+   * @returns {Promise<void>}
+   */
+  async waitForClipboardContent(
+    expectedContent,
+    { interval = 100, timeout = this.timeout } = {},
+  ) {
+    await this.waitUntil(
+      async () => {
+        const content = await this.getClipboardContent();
+        return content === expectedContent;
+      },
+      { interval, timeout },
+    );
   }
 
   /**

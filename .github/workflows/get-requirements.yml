@@ -74,7 +74,7 @@ jobs:
       needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
       needs-storybook: ${{ steps.set-needs-storybook.outputs.needs-storybook || 'false' }}
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
-      needs-benchmarks: ${{ 'false' }} # Temporarily disabled, do not carry this forward to main or another release branch
+      needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
     steps:
       - name: Check pull request merge queue status

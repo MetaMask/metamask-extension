@@ -41,6 +41,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -112,7 +113,6 @@ import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
-import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -281,13 +281,13 @@ const AssetPage = ({
     () => ({
       symbol,
       name,
-      chainId: String(chainId),
+      chainId: caipChainId,
       address,
       decimals: asset.decimals,
       isNative: type === AssetType.native,
       image,
     }),
-    [address, asset.decimals, chainId, image, name, symbol, type],
+    [address, asset.decimals, caipChainId, image, name, symbol, type],
   );
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
@@ -434,7 +434,7 @@ const AssetPage = ({
               size={ButtonIconSize.Md}
               ariaLabel={t('back') as string}
               iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(-1))}
+              onClick={() => transitionBack(() => navigate(PREVIOUS_ROUTE))}
               className="asset-page__back-button"
             />
           </Box>
@@ -548,12 +548,6 @@ const AssetPage = ({
                   className="asset-page__divider"
                 />
               )}
-              <MusdConvertSection />
-              <Box
-                marginTop={5}
-                marginBottom={5}
-                className="asset-page__divider"
-              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (

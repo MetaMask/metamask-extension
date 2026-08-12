@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Varlıklarınızı bir yakım adresine gönderiyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Bu işlem için tahmin edilen değişiklikler güncellendi. Devam etmeden önce dikkatle inceleyin."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Bu adresle ilk kez etkileşimde bulunuyorsunuz. Devam etmeden önce doğru olduğundan emin olun."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Cüzdan desteklenmiyor"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Sonuçlar değişti"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1. etkileşim"
@@ -1775,9 +1769,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
-  },
-  "backupApprovalInfo": {
-    "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
   "backupApprovalNotice": {
     "message": "Cüzdanınızı ve paranızı güvende tutmak için Gizli Kurtarma İfadenizi yedekleyin."
@@ -3408,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bağlantıyı kesmek istediğinizden emin misiniz? Sitenin işlevselliğini kaybedebilirsiniz."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Bu site ile bağlantınızı keserseniz bu siteyi tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
-  },
   "disconnectAllSites": {
     "message": "Tümünün Bağlantısını Kes"
   },
@@ -3434,6 +3422,18 @@
   },
   "discover": {
     "message": "Keşfet"
+  },
+  "discoverSearchNoResults": {
+    "message": "Sonuç bulunamadı",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Diğer popüler varlıkları inceleyin",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "hac",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snap'leri keşfedin",
@@ -5389,10 +5389,6 @@
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün\nve günlük olarak alabileceğiniz %$1 orana kadar\nyıllıklandırılmış bonus kazanın. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Destekleyen Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün ve %$1 yıllıklandırılmış bonus alın.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5424,6 @@
     "message": "Alınabilir bonus bilgileri",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Bonus bilgileri",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD dönüştürme işlemine ağ maliyetleri dahildir ve sağlayıcı ücretleri dahil olabilir. mUSD dönüştürürken MetaMask ücreti uygulanmaz.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5448,6 @@
   "musdConvert": {
     "message": "Dönüştür"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Dönüştür ve %$1 al",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "%$1 bonus kazan",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5461,6 @@
   },
   "musdEducationNotNow": {
     "message": "Şimdi değil"
-  },
-  "musdGetBonusPercentage": {
-    "message": "%$1 mUSD bonus al",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD kazan"
@@ -11310,9 +11294,6 @@
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
   },
-  "tutorial": {
-    "message": "Öğretici"
-  },
   "txAlertTitle": {
     "message": "Bu işlem geri alınacak"
   },
@@ -11520,6 +11501,10 @@
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Tümünü görüntüle",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"

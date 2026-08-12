@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Anda mengirimkan aset ke alamat burn. Jika dilanjutkan, aset Anda akan hilang."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Estimasi perubahan untuk transaksi ini telah diperbarui. Tinjau dengan saksama sebelum melanjutkan."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Anda berinteraksi dengan alamat ini untuk pertama kalinya. Pastikan alamat tersebut benar sebelum melanjutkan."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Dompet tidak didukung"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Hasil telah berubah"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
@@ -1775,9 +1769,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
-  },
-  "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -3408,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
-  },
   "disconnectAllSites": {
     "message": "Putuskan Semua Koneksi"
   },
@@ -3434,6 +3422,18 @@
   },
   "discover": {
     "message": "Temukan"
+  },
+  "discoverSearchNoResults": {
+    "message": "Hasil tidak ditemukan",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Lihat aset populer lainnya",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Temukan Snap",
@@ -5389,10 +5389,6 @@
     "message": "Konversikan stablecoin Anda ke mUSD dan dapatkan\nbonus tahunan hingga $1% yang dapat Anda\nklaim setiap hari. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Didukung oleh Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Konversikan stablecoin Anda ke mUSD dan dapatkan bonus tahunan sebesar $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5424,6 @@
     "message": "Detail bonus yang dapat diklaim",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Detail bonus",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Biaya konversi mUSD mencakup biaya jaringan dan mungkin termasuk biaya penyedia. MetaMask tidak mengenakan biaya saat Anda mengonversi ke mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5448,6 @@
   "musdConvert": {
     "message": "Konversikan"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Konversikan dan dapatkan $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Dapatkan bonus sebesar $1%",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5461,6 @@
   },
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Dapatkan bonus $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Dapatkan mUSD"
@@ -11310,9 +11294,6 @@
   "turnOnTokenDetection": {
     "message": "Aktifkan deteksi token yang ditingkatkan"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "Transaksi ini akan dibatalkan"
   },
@@ -11520,6 +11501,10 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Lihat semua",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Lihat di block explorer"

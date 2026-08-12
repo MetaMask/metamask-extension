@@ -59,7 +59,7 @@ class AccountListPage {
     'header button[aria-label="Close"]';
 
   private readonly closeMultichainAccountsPageButton =
-    '.multichain-page-header button[aria-label="Back"]';
+    '[data-testid="account-list-page-back-button"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
@@ -643,6 +643,23 @@ class AccountListPage {
   }
 
   /**
+   * Checks that the multichain account label is not displayed on the multichain account list page.
+   *
+   * @param expectedLabel - The label that should not be displayed.
+   */
+  async checkMultichainAccountNameNotDisplayed(
+    expectedLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is not displayed on account list page`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.multichainAccountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  /**
    * Verifies number of accounts currently showing in the accounts menu.
    *
    * @param expectedNumberOfAccounts - The expected number of accounts showing.
@@ -789,7 +806,9 @@ class AccountListPage {
 
   async closeChooseWalletTypePage(): Promise<void> {
     console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.chooseWalletTypeBackButton,
+    );
   }
 
   async closeMultichainAccountsPage(): Promise<void> {

@@ -3,6 +3,7 @@
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
@@ -43,6 +44,21 @@ export const getIsTronSupportEnabled = createSelector(
   ({ tronAccounts }) => {
     let enabled = false;
     enabled = isMultichainFeatureEnabled(tronAccounts);
+    return enabled;
+  },
+);
+
+/**
+ * Get the state of the `stellarAccounts` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns The state of the `stellarAccounts` remote feature flag.
+ */
+export const getIsStellarSupportEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ stellarAccounts }) => {
+    let enabled = false;
+    enabled = isMultichainFeatureEnabled(stellarAccounts);
     return enabled;
   },
 );
@@ -152,4 +168,31 @@ export const getIsChainlistEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUxChainlist }) =>
     getBooleanFeatureFlag(extensionUxChainlist, false),
+);
+
+/**
+ * Get the state of the `extensionTrustAndSecurityTdp` remote feature flag.
+ * LD key: `extension-trust-and-security-tdp` (camelCased in extension state).
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when Security & Trust TDP surfaces should be shown.
+ */
+export const getIsSecurityTrustTdpEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags[EXTENSION_TRUST_AND_SECURITY_TDP_FLAG],
+      false,
+    ),
+);
+
+/**
+ * Get the state of the `extensionUXSearch` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsDiscoverSearchEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionUXSearch }) => getBooleanFeatureFlag(extensionUXSearch, false),
 );

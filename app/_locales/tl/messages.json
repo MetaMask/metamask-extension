@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Ipapadala mo ang mga asset mo sa burn address. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset mo."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Na-update na ang mga tinatayang pagbabago para sa transaksyong ito. Suriin ang mga ito nang mabuti bago magpatuloy."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Ito ang unang interaksyon mo sa address na ito. Siguraduhing tama ito bago ka magpatuloy."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Hindi sinusuportahan ang wallet"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Nagbago ang mga resulta"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
@@ -1775,9 +1769,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Alamin kung paano namin pinoprotektahan ang privacy mo"
-  },
-  "backupApprovalInfo": {
-    "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
   "backupApprovalNotice": {
     "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi para mapanatiling secure ang iyong wallet at mga pondo."
@@ -3408,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sigurado ka bang gusto mong idiskonekta? Maaaring mawala ang functionality ng site."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Kapag idiniskonekta mo sa site na ito, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang site na ito."
-  },
   "disconnectAllSites": {
     "message": "Idiskonekta Lahat"
   },
@@ -3434,6 +3422,18 @@
   },
   "discover": {
     "message": "Tuklasin"
+  },
+  "discoverSearchNoResults": {
+    "message": "Walang nahanap na mga resulta",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Tumingin ng iba pang popular na asset",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Diskubrehin ang mga Snap",
@@ -5385,10 +5385,6 @@
     "message": "I-convert ang mga stablecoin mo sa mUSD at kumita\nng hanggang $1% taunang bonus na puwede mong\nma-claim araw-araw. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Pinapagana ng Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "I-convert ang mga stablecoin mo sa mUSD at makakuha ng $1% taunang bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5420,6 @@
     "message": "Mga detalye ng bonus na pwedeng i-claim",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Mga detalye ng bonus",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "Kasama sa mga bayarin sa pag-convert ng mUSD ang mga bayad sa network at posible ring kasama ang mga bayarin sa provider. Walang hihinging bayad sa MetaMask kapag nag-convert ka sa mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5444,6 @@
   "musdConvert": {
     "message": "I-convert"
   },
-  "musdConvertAndGetBonus": {
-    "message": "I-convert at makakuha ng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Kumita ng $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5457,6 @@
   },
   "musdEducationNotNow": {
     "message": "Hindi sa ngayon"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Makakuha ng $1% mUSD bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"
@@ -11302,9 +11286,6 @@
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
   },
-  "tutorial": {
-    "message": "Pagtuturo"
-  },
   "txAlertTitle": {
     "message": "Ibabalik ang transaksyong ito"
   },
@@ -11512,6 +11493,10 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Tingnan lahat",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"

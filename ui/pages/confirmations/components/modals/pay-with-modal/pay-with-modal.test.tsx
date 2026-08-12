@@ -8,6 +8,7 @@ import configureStore from '../../../../../store/store';
 import { useDispatch } from '../../../../../store/hooks';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import {
@@ -23,6 +24,7 @@ import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayBlockedTokens');
 jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
@@ -112,6 +114,9 @@ describe('PayWithModal', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayBlockedTokensMock = jest.mocked(
+    useTransactionPayBlockedTokens,
+  );
   const getAvailableTokensMock = jest.mocked(getAvailableTokens);
   const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
   const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
@@ -128,6 +133,10 @@ describe('PayWithModal', () => {
     } as ReturnType<typeof useConfirmContext>);
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
+    useTransactionPayBlockedTokensMock.mockReturnValue({
+      chainIds: [],
+      tokens: [],
+    });
     usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
       isFilterApplied: false,

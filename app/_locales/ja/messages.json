@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "このトランザクションの予測される増減額が更新されました。先に進む前によく確認してください。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "未対応のウォレットです"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "結果が変更されました"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
@@ -1775,9 +1769,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "当社のプライバシー保護への取り組みについてはこちらをご覧ください"
-  },
-  "backupApprovalInfo": {
-    "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
   },
   "backupApprovalNotice": {
     "message": "シークレットリカバリーフレーズをバックアップして、ウォレットと資金の安全を確保してください。"
@@ -3408,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "本当に接続解除しますか？サイトの機能を失う可能性があります。"
   },
-  "disconnectAllDescriptionText": {
-    "message": "このサイトとの接続を解除すると、このサイトをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
-  },
   "disconnectAllSites": {
     "message": "すべて接続解除"
   },
@@ -3434,6 +3422,18 @@
   },
   "discover": {
     "message": "ディスカバリ"
+  },
+  "discoverSearchNoResults": {
+    "message": "結果が見つかりませんでした",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "他の人気資産をご覧ください",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "出来高",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snapのご紹介",
@@ -5389,10 +5389,6 @@
     "message": "お持ちのステーブルコインをmUSDに換えて、\n年換算で最大$1%のボーナスを獲得しましょう。\nこのボーナスは毎日請求できます。$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Powered by Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "お持ちのステーブルコインをmUSDに換えて、年換算$1%のボーナスを獲得しましょう。",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5424,6 @@
     "message": "請求可能なボーナスの詳細",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "ボーナスの詳細",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD換算手数料にはネットワークコストが含まれるほか、プロバイダー手数料も含まれる場合があります。なお、mUSDへの換算時にMetaMaskの手数料は発生しません。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5448,6 @@
   "musdConvert": {
     "message": "変換"
   },
-  "musdConvertAndGetBonus": {
-    "message": "換金して$1%獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "$1%のボーナスを獲得",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5461,6 @@
   },
   "musdEducationNotNow": {
     "message": "後で"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1%のmUSDボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSDを入手"
@@ -11306,9 +11290,6 @@
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
-  "tutorial": {
-    "message": "チュートリアル"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -11516,6 +11497,10 @@
   "viewAddressOnExplorer": {
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "すべて表示",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"

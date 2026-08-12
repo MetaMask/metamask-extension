@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Вы отправляете свои активы на адрес для сжигания. Если вы продолжите, вы потеряете их."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Предполагаемые изменения для этой транзакции обновлены. Прежде чем продолжить, внимательно просмотрите их."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Вы впервые взаимодействуете с этим адресом. Прежде чем продолжить, убедитесь, что он верный."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Кошелек не поддерживается"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Результаты изменились"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1-е взаимодействие"
@@ -1775,9 +1769,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Узнайте, как мы защищаем вашу конфиденциальность"
-  },
-  "backupApprovalInfo": {
-    "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
   "backupApprovalNotice": {
     "message": "Создайте резервную копию своей секретной фразы для восстановления, чтобы обезопасить свой кошелек и средства."
@@ -3408,9 +3399,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Уверены, что хотите отключить? Вы можете потерять доступ к функциям сайта."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Если вы отключитесь от этого сайта, вам придется повторно подключить свои счета и сети, чтобы снова использовать этот сайт."
-  },
   "disconnectAllSites": {
     "message": "Отключить все"
   },
@@ -3434,6 +3422,18 @@
   },
   "discover": {
     "message": "Обзор"
+  },
+  "discoverSearchNoResults": {
+    "message": "Результаты не найдены",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Посмотрите другие популярные активы",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "об.",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Откройте для себя Snaps",
@@ -5385,10 +5385,6 @@
     "message": "Конвертируйте стейблкоины в mUSD и зарабатывайте\nбонус до $1% годовых, который можно\nполучать ежедневно. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "При поддержке Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Конвертируйте свои стейблкоины в mUSD и получите годовой бонус $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5420,6 @@
     "message": "Детали доступного для получения бонуса",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Детали бонуса",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "В стоимость конвертации mUSD входят расходы сети, а также могут входить комиссии поставщика. При обмене на mUSD комиссия MetaMask не взимается.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5444,6 @@
   "musdConvert": {
     "message": "Конвертировать"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Конвертируйте и получите $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Заработайте бонус $1%",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5457,6 @@
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Получите бонус в размере $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Получить mUSD"
@@ -11302,9 +11286,6 @@
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"
   },
-  "tutorial": {
-    "message": "Руководство"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -11512,6 +11493,10 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
+  },
+  "viewAll": {
+    "message": "Смотреть все",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"
