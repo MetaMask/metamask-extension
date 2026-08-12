@@ -1282,9 +1282,11 @@ export function protectVaultKeyWithPasskey(
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
+    {
+      registrationResponse,
+      authenticationResponse,
+      password,
+    },
   ]);
 }
 
@@ -1331,9 +1333,11 @@ export function changePasswordWithPasskeyVerification(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
+      {
+        newPassword,
+        authenticationResponse,
+        options,
+      },
     ]);
   };
 }
@@ -4244,6 +4248,10 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
+}
+
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
 }
 
 export function setDismissSmartAccountSuggestionEnabled(
