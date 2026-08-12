@@ -1,0 +1,86 @@
+diff --git a/lib/options.json b/lib/options.json
+index 40443b8a8959fc691b43c712b18582f5ea48b399..2cec6e6a5691dd1b2e9ca94f86d634b8614d2375 100644
+--- a/lib/options.json
++++ b/lib/options.json
+@@ -72,6 +72,9 @@
+       ]
+     },
+     "library": { "type": "string" },
++    "runtimeEntry": {
++      "anyOf": [{ "const": false }, { "$ref": "#/definitions/Path" }]
++    },
+     "overlay": {
+       "anyOf": [{ "type": "boolean" }, { "$ref": "#/definitions/OverlayOptions" }]
+     }
+diff --git a/lib/types.js b/lib/types.js
+index b2ce954c26a441b370601d082e910a255dab6a0b..b1e64cc0214d84651e4f3e489849a8a0c5ee0c44 100644
+--- a/lib/types.js
++++ b/lib/types.js
+@@ -22,6 +22,7 @@
+  * @property {string | RegExp | Array<string | RegExp>} [include] Files to explicitly include for processing.
+  * @property {string} [library] Name of the library bundle.
+  * @property {boolean | ErrorOverlayOptions} [overlay] Modifies how the error overlay integration works in the plugin.
++ * @property {string | false} [runtimeEntry] Runtime entry to prepend to Webpack entries, or false to disable automatic injection.
+  */
+ 
+ /**
+@@ -30,7 +31,7 @@
+  */
+ 
+ /**
+- * @typedef {import('type-fest').SetRequired<import('type-fest').Except<ReactRefreshPluginOptions, 'overlay'>, 'exclude' | 'include'> & OverlayOverrides} NormalizedPluginOptions
++ * @typedef {import('type-fest').SetRequired<import('type-fest').Except<ReactRefreshPluginOptions, 'overlay'>, 'exclude' | 'include' | 'runtimeEntry'> & OverlayOverrides} NormalizedPluginOptions
+  */
+ 
+ module.exports = {};
+diff --git a/lib/utils/getAdditionalEntries.js b/lib/utils/getAdditionalEntries.js
+index e6616152f4dcb4ae790187b87d47518fda43d105..3579aa140126d2887d3b9042ada27f17d0042840 100644
+--- a/lib/utils/getAdditionalEntries.js
++++ b/lib/utils/getAdditionalEntries.js
+@@ -79,8 +79,8 @@ function getAdditionalEntries({ devServer, options }) {
+ 
+   const prependEntries = [
+     // React-refresh runtime
+-    require.resolve('../../client/ReactRefreshEntry'),
+-  ];
++    options.runtimeEntry && require.resolve(options.runtimeEntry),
++  ].filter(Boolean);
+ 
+   const overlayEntries = [
+     // Error overlay runtime
+diff --git a/lib/utils/normalizeOptions.js b/lib/utils/normalizeOptions.js
+index 8c7bbbb9fe14b16af67f64f2bd0b69efc4c5fea7..1465af0faaef10f7d53828879062c014956ef2ed 100644
+--- a/lib/utils/normalizeOptions.js
++++ b/lib/utils/normalizeOptions.js
+@@ -10,6 +10,7 @@ const normalizeOptions = (options) => {
+   d(options, 'include', /\.([cm]js|[jt]sx?|flow)$/i);
+   d(options, 'forceEnable');
+   d(options, 'library');
++  d(options, 'runtimeEntry', require.resolve('../../client/ReactRefreshEntry'));
+ 
+   n(options, 'overlay', (overlay) => {
+     /** @type {import('../types').NormalizedErrorOverlayOptions} */
+diff --git a/types/lib/types.d.ts b/types/lib/types.d.ts
+index be0924c3a078ac910576c4952acb9862d5b20b1d..de158cbd9f997bcbc23d30826eaacaede03a3070 100644
+--- a/types/lib/types.d.ts
++++ b/types/lib/types.d.ts
+@@ -63,6 +63,11 @@ export type ReactRefreshPluginOptions = {
+    * Modifies how the error overlay integration works in the plugin.
+    */
+   overlay?: boolean | ErrorOverlayOptions | undefined;
++  /**
++   * Runtime entry to prepend to Webpack entries, or false to disable automatic
++   * injection.
++   */
++  runtimeEntry?: string | false | undefined;
+ };
+ export type OverlayOverrides = {
+   /**
+@@ -72,6 +77,6 @@ export type OverlayOverrides = {
+ };
+ export type NormalizedPluginOptions = import('type-fest').SetRequired<
+   import('type-fest').Except<ReactRefreshPluginOptions, 'overlay'>,
+-  'exclude' | 'include'
++  'exclude' | 'include' | 'runtimeEntry'
+ > &
+   OverlayOverrides;

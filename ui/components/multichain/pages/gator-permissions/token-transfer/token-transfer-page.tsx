@@ -90,7 +90,7 @@ export const TokenTransferPage = () => {
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
             onClick={() => navigate(PREVIOUS_ROUTE)}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
           />
         }
         textProps={{

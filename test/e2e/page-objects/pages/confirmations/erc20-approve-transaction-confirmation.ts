@@ -24,6 +24,9 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('methodData'),
   };
 
+  private readonly nftTokenValue: RawLocator =
+    '[data-testid="simulation-token-value"]';
+
   private readonly requestFromSection = {
     css: 'p',
     text: tEn('requestFrom'),
@@ -54,6 +57,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('spendingCap'),
   };
 
+  private readonly withdrawSection = {
+    css: 'p',
+    text: tEn('simulationApproveHeading'),
+  };
+
   async checkAdvancedDetailsSections(): Promise<void> {
     console.log('Verify all advanced details sections are displayed');
     await this.checkInteractingWithSection();
@@ -75,6 +83,14 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkMethodSection(): Promise<void> {
     console.log('Verify method section is displayed');
     await this.driver.waitForSelector(this.methodSection);
+  }
+
+  async checkNftTokenValue(expectedValue: string): Promise<void> {
+    console.log(`Verify NFT token value ${expectedValue} is displayed`);
+    await this.driver.waitForSelector({
+      css: this.nftTokenValue,
+      text: expectedValue,
+    });
   }
 
   async checkRequestFromSection(): Promise<void> {
@@ -113,6 +129,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkSpendingCapSection(): Promise<void> {
     console.log('Verify spending cap section is displayed');
     await this.driver.waitForSelector(this.spendingCapSection);
+  }
+
+  async checkWithdrawSection(): Promise<void> {
+    console.log('Verify withdraw section is displayed');
+    await this.driver.waitForSelector(this.withdrawSection);
   }
 
   /**

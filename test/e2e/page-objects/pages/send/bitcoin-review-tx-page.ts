@@ -1,37 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 class BitcoinReviewTxPage {
-  private driver: Driver;
-
   private readonly cancelButton =
     '[data-testid="confirmation-cancel-snap-footer-button"]';
 
   private readonly confirmButton =
     '[data-testid="confirmation-confirm-snap-footer-button"]';
 
+  private driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.cancelButton,
-        this.confirmButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for bitcoin review tx page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Bitcoin review tx page is loaded');
-  }
-
-  async clickConfirmButton() {
-    console.log('Click confirm button on bitcoin review tx page');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 
   async checkNetworkFeeIsDisplayed(fee: string): Promise<void> {
@@ -42,6 +21,26 @@ class BitcoinReviewTxPage {
       text: `${fee} BTC`,
       tag: 'p',
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.cancelButton,
+        this.confirmButton,
+      ]);
+      await this.driver.waitForSelector({
+        text: 'Transaction request',
+        tag: 'h2',
+      });
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for bitcoin review tx page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Bitcoin review tx page is loaded');
   }
 
   async checkSendAmountIsDisplayed(amount: string): Promise<void> {
@@ -62,6 +61,11 @@ class BitcoinReviewTxPage {
       text: `${total} USD`,
       tag: 'p',
     });
+  }
+
+  async clickConfirmButton() {
+    console.log('Click confirm button on bitcoin review tx page');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 }
 

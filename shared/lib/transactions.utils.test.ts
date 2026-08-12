@@ -7,11 +7,33 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
+  isValidTransactionHash,
 } from './transactions.utils';
 
 describe('Transactions utils', () => {
+  describe('isValidTransactionHash', () => {
+    it('returns true for a valid EVM transaction hash', () => {
+      expect(
+        isValidTransactionHash(
+          '0x8586e162e456a23c1969573a4b79e77912705b474bc5aa0c2a63d56556623ab2',
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for invalid EVM transaction hashes', () => {
+      expect(
+        isValidTransactionHash('48a75190-45ca-11ef-9001-f3886ec2397c'),
+      ).toBe(false);
+    });
+
+    it('returns false for truncated EVM hashes', () => {
+      expect(isValidTransactionHash('0x1234')).toBe(false);
+    });
+  });
+
   describe('isBatchTransaction', () => {
     it('returns true when nestedTransactions has items', () => {
       const nested: NestedTransactionMetadata[] = [{ to: '0x1', data: '0x' }];
@@ -115,6 +137,70 @@ describe('Transactions utils', () => {
 
       expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
         false,
+      );
+    });
+  });
+
+  describe('getTransactionType', () => {
+    it('returns undefined for undefined input', () => {
+      expect(getTransactionType(undefined)).toBeUndefined();
+    });
+
+    it('returns direct type for regular transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns nested type when nested transactions exist', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns direct type when nested transactions have no type', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [{}],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns first nested type that has a type', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          {},
+          { type: TransactionType.perpsWithdraw },
+          { type: TransactionType.predictWithdraw },
+        ],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns direct type when nestedTransactions is empty', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        nestedTransactions: [],
+      } as unknown as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
       );
     });
   });

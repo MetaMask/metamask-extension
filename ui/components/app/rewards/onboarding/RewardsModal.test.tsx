@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
   selectRewardsModalOpen,
@@ -13,12 +13,18 @@ import {
   setRewardsDeeplinkUrl,
 } from '../../../../ducks/rewards';
 import { ThemeType } from '../../../../../shared/constants/preferences';
+import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import type { MetaMaskReduxState } from '../../../../store/store';
+import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import RewardsModal from './RewardsModal';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useTheme', () => ({
@@ -38,11 +44,14 @@ jest.mock('../RewardsQRCode', () => () => (
 ));
 
 const mockedUseSelector = useSelector as jest.Mock;
-const mockedUseDispatch = useDispatch as jest.Mock;
+const mockedUseAppDispatch = useDispatch as jest.Mock;
+const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 function setupSelectors({
   isOpen = true,
   candidateSubscriptionId = null as string | null,
+  rewardActiveAccountSubscriptionId = null as string | null,
+  hardwareWalletType = null,
 } = {}) {
   mockedUseSelector.mockImplementation(
     (selector: (state: MetaMaskReduxState) => unknown): unknown => {
@@ -52,8 +61,22 @@ function setupSelectors({
       if (selector === selectCandidateSubscriptionId) {
         return candidateSubscriptionId;
       }
+      if (selector === getHardwareWalletType) {
+        return hardwareWalletType;
+      }
       return undefined;
     },
+  );
+
+  mockedUseAppSelector.mockImplementation(
+    (selector: (state: MetaMaskReduxState) => unknown): unknown =>
+      selector({
+        metamask: {
+          rewardsActiveAccount: rewardActiveAccountSubscriptionId
+            ? { subscriptionId: rewardActiveAccountSubscriptionId }
+            : undefined,
+        },
+      } as MetaMaskReduxState),
   );
 }
 
@@ -64,7 +87,7 @@ describe('RewardsModal', () => {
 
   it('renders the single onboarding page when not yet opted in', () => {
     setupSelectors({ isOpen: true, candidateSubscriptionId: null });
-    mockedUseDispatch.mockReturnValue(jest.fn());
+    mockedUseAppDispatch.mockReturnValue(jest.fn());
 
     render(<RewardsModal />);
 
@@ -80,7 +103,7 @@ describe('RewardsModal', () => {
       isOpen: true,
       candidateSubscriptionId: 'valid-subscription-id',
     });
-    mockedUseDispatch.mockReturnValue(jest.fn());
+    mockedUseAppDispatch.mockReturnValue(jest.fn());
 
     render(<RewardsModal />);
 
@@ -93,7 +116,7 @@ describe('RewardsModal', () => {
   (['error', 'pending', 'retry'] as const).forEach((id) => {
     it(`still renders the main step when candidateSubscriptionId is "${id}"`, () => {
       setupSelectors({ isOpen: true, candidateSubscriptionId: id });
-      mockedUseDispatch.mockReturnValue(jest.fn());
+      mockedUseAppDispatch.mockReturnValue(jest.fn());
 
       render(<RewardsModal />);
 
@@ -105,7 +128,7 @@ describe('RewardsModal', () => {
   it('dispatches close + clears referral code + clears deeplink url when close button is clicked', () => {
     setupSelectors({ isOpen: true, candidateSubscriptionId: null });
     const dispatchMock = jest.fn();
-    mockedUseDispatch.mockReturnValue(dispatchMock);
+    mockedUseAppDispatch.mockReturnValue(dispatchMock);
 
     render(<RewardsModal />);
 
@@ -121,7 +144,7 @@ describe('RewardsModal', () => {
 
   it('sets header theme attribute based on useTheme: light', () => {
     setupSelectors({ isOpen: true });
-    mockedUseDispatch.mockReturnValue(jest.fn());
+    mockedUseAppDispatch.mockReturnValue(jest.fn());
 
     render(<RewardsModal />);
 
@@ -136,7 +159,7 @@ describe('RewardsModal', () => {
     useTheme.mockReturnValue('dark');
 
     setupSelectors({ isOpen: true });
-    mockedUseDispatch.mockReturnValue(jest.fn());
+    mockedUseAppDispatch.mockReturnValue(jest.fn());
 
     render(<RewardsModal />);
 

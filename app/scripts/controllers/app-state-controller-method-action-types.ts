@@ -55,6 +55,16 @@ export type AppStateControllerSetLastViewedUserSurveyAction = {
   handler: AppStateController['setLastViewedUserSurvey'];
 };
 
+/**
+ * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+ *
+ * @param suppressed - When true, auto passkey unlock is suppressed.
+ */
+export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
+  type: `AppStateController:setPasskeyAutoUnlockSuppressed`;
+  handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -266,6 +276,17 @@ export type AppStateControllerSetHasShownMultichainAccountsIntroModalAction = {
 };
 
 /**
+ * Sets whether the user has seen (and therefore dismissed) the Perps tab
+ * "New" badge.
+ *
+ * @param value - Whether the Perps tab badge has been seen
+ */
+export type AppStateControllerSetPerpsTabBadgeSeenAction = {
+  type: `AppStateController:setPerpsTabBadgeSeen`;
+  handler: AppStateController['setPerpsTabBadgeSeen'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -407,7 +428,11 @@ export type AppStateControllerCompleteQrCodeScanAction = {
  * Cancels the current QR code scan, if one is in progress.
  * This will reject the promise with an error.
  *
- * @param error - The error to reject the promise with.
+ * @param error - The error (or serialized form) to reject the promise with.
+ * Callers across the extension-port boundary may pass a plain string or a
+ * serialized `HardwareWalletError` JSON shape because `Error` instances do
+ * not survive port serialization. Missing payloads default to
+ * `ErrorCode.UserCancelled`.
  * @throws If no QR code scan is in progress.
  */
 export type AppStateControllerCancelQrCodeScanAction = {
@@ -561,6 +586,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetRecoveryPhraseReminderHasBeenShownAction
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
+  | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetPna25AcknowledgedAction
@@ -584,6 +610,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerRemovePollingTokenAction
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
+  | AppStateControllerSetPerpsTabBadgeSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction

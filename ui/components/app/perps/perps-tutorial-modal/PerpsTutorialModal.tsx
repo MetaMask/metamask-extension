@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -26,12 +26,12 @@ import {
   TUTORIAL_STEPS_ORDER,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { useDispatch } from '../../../../store/hooks';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -45,7 +45,7 @@ type PerpsTutorialModalProps = {
   onClose?: () => void;
 };
 
-const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
+const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   const isOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
   const dispatch = useDispatch();

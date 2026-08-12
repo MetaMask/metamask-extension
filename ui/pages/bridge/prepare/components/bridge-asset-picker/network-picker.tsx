@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -8,17 +9,42 @@ import {
 import { type CaipChainId } from '@metamask/utils';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../../shared/constants/bridge';
 import {
+  IconName as ComponentIconName,
   Popover,
   PopoverRole,
 } from '../../../../../components/component-library';
-import { NetworkListItem } from '../../../../../components/multichain';
+import { NetworkListItem } from '../../../../../components/multichain/network-list-item';
+import {
+  NetworkSelectionModal,
+  type NetworkSelectionSection,
+} from '../../../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import {
+  CHAIN_VALUE_ORDER_AB_KEY,
+  CHAIN_VALUE_ORDER_AB_TEST_EXPOSURE_METADATA,
+  CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+} from '../../../../../../shared/lib/ab-testing/configs/chain-value-order';
+import { useABTest } from '../../../../../hooks/useABTest';
+import { useChainValueOrder } from '../../../hooks/useChainValueOrder';
 
-export const NetworkPicker = ({
+type NetworkPickerProps = {
+  chains: { chainId: CaipChainId; name: string }[];
+  selectedChainId: CaipChainId | null;
+  disabledChainId?: CaipChainId;
+  onNetworkChange: (chainId: CaipChainId | null) => void;
+  buttonElement?: HTMLElement | null;
+  isOpen: boolean;
+  onClose: () => void;
+  testId: string;
+};
+
+const NetworkPickerContent = ({
   chains,
   selectedChainId,
   disabledChainId,
@@ -27,17 +53,62 @@ export const NetworkPicker = ({
   isOpen,
   onClose,
   testId,
-}: {
-  chains: { chainId: CaipChainId; name: string }[];
-  selectedChainId: CaipChainId | null;
-  disabledChainId?: CaipChainId;
-  onNetworkChange: (chainId: CaipChainId | null) => void;
-  buttonElement: HTMLElement | null;
-  isOpen: boolean;
-  onClose: () => void;
-  testId: string;
-}) => {
+}: NetworkPickerProps) => {
   const t = useI18nContext();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
+
+  const networkSections = useMemo(() => getNetworkSections(chains), [chains]);
+
+  const sections = useMemo<NetworkSelectionSection[]>(
+    () =>
+      networkSections.map((section) => ({
+        key: section.key,
+        title: section.titleKey ? t(section.titleKey) : undefined,
+        items: section.items.map(({ chainId, name }) => ({
+          key: chainId,
+          chainId,
+          name,
+          iconSrc: BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId],
+          selected: selectedChainId === chainId,
+          disabled: disabledChainId === chainId,
+          onClick: () => {
+            if (disabledChainId === chainId) {
+              return;
+            }
+            onNetworkChange(chainId);
+          },
+          testId: `${testId}-item-${chainId}`,
+        })),
+      })),
+    [
+      disabledChainId,
+      networkSections,
+      onNetworkChange,
+      selectedChainId,
+      t,
+      testId,
+    ],
+  );
+
+  if (isNetworkManagementEnabled) {
+    return (
+      <NetworkSelectionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('bridgeSelectNetwork')}
+        data-testid={testId}
+        topItem={{
+          key: 'all-networks',
+          name: t('allNetworks'),
+          iconSrc: ComponentIconName.Global,
+          selected: !selectedChainId,
+          onClick: () => onNetworkChange(null),
+          testId: `${testId}-all-networks`,
+        }}
+        sections={sections}
+      />
+    );
+  }
 
   return (
     <Popover
@@ -96,4 +167,25 @@ export const NetworkPicker = ({
       ))}
     </Popover>
   );
+};
+
+const NetworkValueOrderedPicker = (props: NetworkPickerProps) => {
+  const orderedChains = useChainValueOrder(props.chains);
+
+  return <NetworkPickerContent {...props} chains={orderedChains} />;
+};
+
+export const NetworkPicker = (props: NetworkPickerProps) => {
+  const { variant } = useABTest(
+    CHAIN_VALUE_ORDER_AB_KEY,
+    CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+    CHAIN_VALUE_ORDER_AB_TEST_EXPOSURE_METADATA,
+    { trackExposure: props.isOpen },
+  );
+
+  if (props.isOpen && variant.orderByValue) {
+    return <NetworkValueOrderedPicker {...props} />;
+  }
+
+  return <NetworkPickerContent {...props} />;
 };

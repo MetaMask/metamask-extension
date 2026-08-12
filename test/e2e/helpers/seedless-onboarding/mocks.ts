@@ -14,6 +14,7 @@ import {
   AuthServer,
   MetadataService,
   PasswordChangeItemId,
+  ProfileSyncServer,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
 } from './constants';
@@ -29,8 +30,8 @@ import {
   InitialMockEncryptionKey,
   MockKeyShareData,
   MockJwtPrivateKey,
-  NewMockPwdEncryptionKeyAfterPasswordChange,
   MockAuthPubKey2,
+  NewMockPwdEncryptionKeyAfterPasswordChange,
 } from './data';
 
 /**
@@ -50,6 +51,7 @@ function generateMockJwtToken(
   const payload = {
     iss: 'torus-key-test',
     aud: 'torus-key-test',
+    sub: userId,
     name: userId,
     email: userId,
     scope: 'email',
@@ -118,56 +120,90 @@ async function generateBlindedOutput(
 }
 
 /**
- * Generate a mock encrypted secret data for Metadata Service.
+ * Generate mock encrypted secret data for Metadata Service.
  *
- * @param secretDataArr - The array of secret data.
- * @returns The encrypted secret data.
+ * @param secretDataArr - Array of secret data items.
+ * @returns Parallel arrays matching the server response format (data, ids, versions, dataTypes, createdAt).
  */
-async function generateEncryptedSecretData(
-  secretDataArr: { data: Uint8Array; timestamp?: number; type?: SecretType }[],
-) {
-  const encData = secretDataArr.map((secretData) => {
+function generateEncryptedSecretData(
+  secretDataArr: {
+    data: Uint8Array;
+    timestamp?: number;
+    type?: SecretType;
+    itemId?: string;
+    dataType?: number | null;
+    createdAt?: string | null;
+    version?: string;
+  }[],
+): {
+  data: string[];
+  ids: string[];
+  versions: string[];
+  dataTypes: (number | null)[];
+  createdAt: (string | null)[];
+} {
+  const data: string[] = [];
+  const ids: string[] = [];
+  const versions: string[] = [];
+  const dataTypes: (number | null)[] = [];
+  const createdAt: (string | null)[] = [];
+
+  for (const secretData of secretDataArr) {
     const b64SecretData = Buffer.from(secretData.data).toString('base64');
     const secretMetadata = JSON.stringify({
       data: b64SecretData,
       timestamp: secretData.timestamp ?? 1752564090656,
       type: secretData.type,
     });
-    const secretBytes = stringToBytes(secretMetadata);
 
     const aes = managedNonce(gcm)(InitialMockEncryptionKey);
-    const cipherText = aes.encrypt(secretBytes);
-    return bytesToBase64(cipherText);
-  });
-  return encData;
+    const cipherText = aes.encrypt(stringToBytes(secretMetadata));
+
+    data.push(bytesToBase64(cipherText));
+    ids.push(secretData.itemId ?? '');
+    versions.push(secretData.version ?? 'v2');
+    dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
+    createdAt.push(secretData.createdAt ?? null);
+  }
+
+  return { data, ids, versions, dataTypes, createdAt };
 }
 
 /**
- * Generate a mock encrypted password change item for Metadata Service.
- * This is to mock the password change operation for social login flow.
+ * Generate mock encrypted password change item for Metadata Service.
+ * Used to simulate the password outdated flow in social login.
  *
- * @returns The encrypted password change item.
+ * The PW_BACKUP is made self-referential (encKey points to itself) with a
+ * non-matching authKeyPair.pk, causing the SDK's password chain loop to
+ * exhaust and throw `maxKeyChainLengthExceeded`.
+ *
+ * @returns Encrypted password change item with metadata.
  */
-async function generateEncryptedPasswordChangeItem() {
-  const pwdChangeItem = {
-    itemId: PasswordChangeItemId,
-    data: utf8ToBytes(
-      JSON.stringify({
-        pw: 'newPassword',
-        encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
-        authKeyPair: {
-          sk: '1',
-          pk: 'deadbeef',
-        },
-      }),
-    ),
-  };
+function generateEncryptedPasswordChangeItem(): {
+  data: string;
+  id: string;
+  version: string;
+  dataType: null;
+  createdAt: null;
+} {
+  const pwdChangeItemData = utf8ToBytes(
+    JSON.stringify({
+      pw: 'newPassword',
+      encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
+      authKeyPair: { sk: '1', pk: 'deadbeef' },
+    }),
+  );
 
   const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
-  const cipherText = aes.encrypt(pwdChangeItem.data);
-  const encryptedPwdChangeItem = bytesToBase64(cipherText);
+  const cipherText = aes.encrypt(pwdChangeItemData);
 
-  return encryptedPwdChangeItem;
+  return {
+    data: bytesToBase64(cipherText),
+    id: PasswordChangeItemId,
+    version: 'v2',
+    dataType: null,
+    createdAt: null,
+  };
 }
 
 // Mock OAuth Service and Authentication Server
@@ -192,7 +228,6 @@ export class OAuthMockttpService {
   ) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const jsonRpcRequestBody = await request.body.getJson();
-    // eslint-disable-next-line camelcase
     const { grant_type: grantType } = jsonRpcRequestBody as {
       grant_type: string;
     };
@@ -235,23 +270,11 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: accessToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: idToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'mock-revoke-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         metadata_access_token: idToken,
       },
     };
@@ -305,12 +328,75 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'new-mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'new-mock-revoke-token',
+      },
+    };
+  }
+
+  mockAuthServerMint(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+    const idToken = generateMockJwtToken(userEmail, expiresIn);
+    const accessToken = generateMockJwtToken(userEmail, expiresIn, 'new');
+
+    return {
+      statusCode: 200,
+      json: {
+        access_token: accessToken,
+        id_token: idToken,
+        expires_in: 3600,
+        refresh_token: 'mock-refresh-token',
+        revoke_token: 'mock-revoke-token',
+        metadata_access_token: idToken,
+      },
+    };
+  }
+
+  mockTelegramLoginInitiate(request: CompletedRequest) {
+    const requestUrl = new URL(request.url);
+    const appRedirectUri = requestUrl.searchParams.get('app_redirect_uri');
+    const state = requestUrl.searchParams.get('state') ?? '';
+
+    if (!appRedirectUri) {
+      throw new Error('Missing app_redirect_uri in Telegram initiate request');
+    }
+
+    const redirectUrl = new URL(appRedirectUri);
+    redirectUrl.searchParams.set('code', 'mock-telegram-auth-code');
+    redirectUrl.searchParams.set('state', state);
+
+    return {
+      statusCode: 302,
+      headers: {
+        Location: redirectUrl.toString(),
+      },
+    };
+  }
+
+  mockTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+
+    return {
+      statusCode: 200,
+      json: {
+        token: generateMockJwtToken(userEmail, expiresIn),
+      },
+    };
+  }
+
+  mockProfileSyncOidcToken() {
+    return {
+      statusCode: 200,
+      json: {
+        access_token: 'mocked-oidc-access-token',
       },
     };
   }
@@ -321,6 +407,28 @@ export class OAuthMockttpService {
 
   onPostRenewRefreshToken() {
     return this.mockAuthServerRenewRefreshToken();
+  }
+
+  onPostMintToken(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockAuthServerMint(overrides);
+  }
+
+  onGetTelegramLoginInitiate(request: CompletedRequest) {
+    return this.mockTelegramLoginInitiate(request);
+  }
+
+  onPostTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockTelegramLoginVerify(overrides);
+  }
+
+  onPostProfileSyncOidcToken() {
+    return this.mockProfileSyncOidcToken();
   }
 
   async onPostToprfCommitment(
@@ -397,7 +505,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet() {
+  async onPostMetadataGet(requestedItemId?: string) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -405,24 +513,40 @@ export class OAuthMockttpService {
       .map((word: string) => wordlist.indexOf(word));
     const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
 
-    const secretData = [
+    // Server-side filtering
+    if (requestedItemId === PasswordChangeItemId) {
+      const pwdChangeItem = generateEncryptedPasswordChangeItem();
+      return {
+        statusCode: 200,
+        json: {
+          success: true,
+          data: [pwdChangeItem.data],
+          ids: [pwdChangeItem.id],
+          versions: [pwdChangeItem.version],
+          dataTypes: [pwdChangeItem.dataType],
+          createdAt: [pwdChangeItem.createdAt],
+        },
+      };
+    }
+
+    // Default: return SRP data only (PW_BACKUP excluded from regular queries)
+    const result = generateEncryptedSecretData([
       {
         data: seedPhraseBytes,
         timestamp: Date.now(),
         type: SecretType.Mnemonic,
+        itemId: crypto.randomUUID(),
+        dataType: 1,
+        createdAt: new Date().toISOString(),
+        version: 'v2',
       },
-    ];
-
-    const encryptedSecretData = await generateEncryptedSecretData(secretData);
-    const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
-    encryptedSecretData.push(encryptedPwdChangeItem);
+    ]);
 
     return {
       statusCode: 200,
       json: {
         success: true,
-        data: encryptedSecretData,
-        ids: ['', PasswordChangeItemId],
+        ...result,
       },
     };
   }
@@ -489,6 +613,30 @@ export class OAuthMockttpService {
         .always()
         .thenCallback(() => {
           return this.onPostRenewRefreshToken();
+        }),
+      await server
+        .forPost(AuthServer.MintToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostMintToken(options);
+        }),
+      await server
+        .forGet(ProfileSyncServer.OAuthInitiate)
+        .always()
+        .thenCallback((request) => {
+          return this.onGetTelegramLoginInitiate(request);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OAuthVerify)
+        .always()
+        .thenCallback(() => {
+          return this.onPostTelegramLoginVerify(options);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OIDCToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostProfileSyncOidcToken();
         }),
     ];
 
@@ -603,8 +751,10 @@ export class OAuthMockttpService {
       await server
         .forPost(MetadataService.Get)
         .always()
-        .thenCallback(async (_request) => {
-          return this.onPostMetadataGet();
+        .thenCallback(async (request) => {
+          const body = await request.body.getJson();
+          const requestedItemId = (body as { itemId?: string })?.itemId;
+          return this.onPostMetadataGet(requestedItemId);
         }),
       await server
         .forPost(MetadataService.AcquireLock)

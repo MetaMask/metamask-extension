@@ -13,7 +13,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
       >
         <img
           alt="mUSD"
@@ -28,7 +28,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       style="bottom: 0px; right: 0px;"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
         style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
       >
         <img
@@ -108,7 +108,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
       >
         <img
           alt="BTC"
@@ -123,7 +123,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       style="bottom: 0px; right: 0px;"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
         style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
       >
         <img
@@ -212,7 +212,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
       >
         <img
           alt="mUSD"
@@ -227,7 +227,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       style="bottom: 0px; right: 0px;"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
         style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
       >
         <img
@@ -315,7 +315,7 @@ exports[`BridgeAsset should render native asset 1`] = `
       class="inline-flex"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
       >
         <img
           alt="ETH"
@@ -330,7 +330,7 @@ exports[`BridgeAsset should render native asset 1`] = `
       style="bottom: 0px; right: 0px;"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
         style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
       >
         <img

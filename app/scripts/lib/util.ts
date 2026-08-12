@@ -1,13 +1,9 @@
-import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
-import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   DEVICE_TYPE,
@@ -42,9 +38,10 @@ import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
   getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/constants/network-failover';
+import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
@@ -56,6 +53,9 @@ export {
   isValidEmail,
   isWebOrigin,
 } from '../../../shared/lib/url-utils';
+export { formatValue, isValidAmount } from '../../../shared/lib/format-value';
+export { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
+export { getConversionRatesForNativeAsset } from '../../../shared/lib/asset-conversion-rates';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -339,28 +339,6 @@ export const getOs = (): Os => {
   return OS.UNKNOWN;
 };
 
-/**
- * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
- *
- * @param str - The string to prefix.
- * @returns The prefixed string.
- */
-const addHexPrefix = (str: string) => {
-  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
-    return str;
-  }
-
-  if (str.match(/^-?0X/u)) {
-    return str.replace('0X', '0x');
-  }
-
-  if (str.startsWith('-')) {
-    return str.replace('-', '-0x');
-  }
-
-  return `0x${str}`;
-};
-
 function getChainType(chainId: string) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
@@ -381,7 +359,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export { addHexPrefix, checkAlarmExists, getChainType, getPlatform };
+export { checkAlarmExists, getChainType, getPlatform };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =
@@ -433,23 +411,21 @@ export function previousValueComparator<A>(
 }
 
 /**
- * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
- * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
- * If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+ * Determines whether to emit a MetaMetrics event for a given analytics ID.
+ * Relies on the last 4 characters of the analytics ID. Assumes the IDs are evenly distributed.
+ * If analytics IDs are distributed evenly, this should be a 1% sample rate
  *
- * @param metaMetricsId - The metametricsId to use for the event.
+ * @param analyticsId - The analytics ID to use for the event.
  * @returns Whether to emit the event or not.
  */
-export function shouldEmitDappViewedEvent(
-  metaMetricsId: string | null,
-): boolean {
+export function shouldEmitDappViewedEvent(analyticsId: string | null): boolean {
   const isFireFox = getPlatform() === PLATFORM_FIREFOX;
 
-  if (metaMetricsId === null || isFireFox) {
+  if (analyticsId === null || isFireFox) {
     return false;
   }
 
-  const lastFourCharacters = metaMetricsId.slice(-4);
+  const lastFourCharacters = analyticsId.slice(-4);
   const lastFourCharactersAsNumber = parseInt(lastFourCharacters, 16);
 
   return lastFourCharactersAsNumber % 100 === 0;
@@ -502,23 +478,11 @@ export function formatTxMetaForRpcResult(
     from,
     hash,
     nonce: nonce ? `${nonce}` : '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     input: data || '0x',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     value: value || '0x0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     accessList: accessList || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockHash: txReceipt?.blockHash || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockNumber: txReceipt?.blockNumber || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionIndex: txReceipt?.transactionIndex || null,
     type:
       maxFeePerGas && maxPriorityFeePerGas
@@ -535,24 +499,6 @@ export function formatTxMetaForRpcResult(
   }
 
   return formattedTxMeta;
-}
-
-export const isValidAmount = (amount: number | null | undefined): boolean =>
-  amount !== null && amount !== undefined && !Number.isNaN(amount);
-
-export function formatValue(
-  value: number | null | undefined,
-  includeParentheses: boolean,
-): string {
-  if (!isValidAmount(value)) {
-    return '';
-  }
-
-  const numericValue = value as number;
-  const sign = numericValue >= 0 ? '+' : '';
-  const formattedNumber = `${sign}${numericValue.toFixed(2)}%`;
-
-  return includeParentheses ? `(${formattedNumber})` : formattedNumber;
 }
 
 type MethodData = {
@@ -604,38 +550,6 @@ export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
 }
 
-type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
-};
-
-export function getConversionRatesForNativeAsset({
-  conversionRates,
-  chainId,
-}: {
-  conversionRates: AssetsRatesState['metamask']['conversionRates'];
-  chainId: string;
-}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
-  // Return early if conversionRates is falsy
-  if (!conversionRates) {
-    return null;
-  }
-
-  let conversionRateResult = null;
-
-  Object.entries(conversionRates).forEach(
-    ([caip19Identifier, conversionRate]) => {
-      const { assetNamespace, chainId: caipChainId } = parseCaipAssetType(
-        caip19Identifier as CaipAssetType,
-      );
-      if (assetNamespace === 'slip44' && caipChainId === chainId) {
-        conversionRateResult = conversionRate;
-      }
-    },
-  );
-
-  return conversionRateResult;
-}
-
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;
 let initPromise: Promise<void> | null = null;
@@ -653,33 +567,6 @@ function extractHostname(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Check if a hostname is localhost or an IP address.
- * Public RPC providers use domain names, not raw IP addresses.
- * These should never be considered "public" endpoints even if they appear in chainlist.
- *
- * @param hostname - The hostname to check.
- * @returns True if the hostname is localhost or an IP address (v4 or v6).
- */
-function isLocalhostOrIPAddress(hostname: string): boolean {
-  const lowerHostname = hostname.toLowerCase();
-
-  // Check for localhost
-  if (lowerHostname === 'localhost') {
-    return true;
-  }
-
-  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
-  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
-
-  // Check for IP address (v4 or v6)
-  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
-    return true;
-  }
-
-  return false;
 }
 
 // RFC 6761 special-use TLDs that should never be used by real public RPC providers

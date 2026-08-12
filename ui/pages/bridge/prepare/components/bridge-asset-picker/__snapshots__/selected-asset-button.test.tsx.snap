@@ -16,7 +16,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
           >
             <img
               alt="ETH"
@@ -30,7 +30,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           style="bottom: 0px; right: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img
@@ -74,7 +74,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
           >
             <img
               alt="BTC"
@@ -88,7 +88,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           style="bottom: 0px; right: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img
@@ -132,7 +132,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
           >
             <img
               alt="mUSD"
@@ -146,7 +146,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           style="bottom: 0px; right: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img

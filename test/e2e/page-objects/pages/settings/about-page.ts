@@ -11,19 +11,6 @@ class AboutPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.metaMaskLogo,
-        this.metaMaskVersionNumber,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for About page to be loaded', e);
-      throw e;
-    }
-    console.log('About page is loaded');
-  }
-
   /**
    * Check the displayed MetaMask version is the expected version
    *
@@ -35,6 +22,19 @@ class AboutPage {
       css: this.metaMaskVersionNumber,
       text: version,
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.metaMaskLogo,
+        this.metaMaskVersionNumber,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for About page to be loaded', e);
+      throw e;
+    }
+    console.log('About page is loaded');
   }
 }
 

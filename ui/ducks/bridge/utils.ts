@@ -1,8 +1,8 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -19,6 +19,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
@@ -29,6 +30,17 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
+
+export const assetIdsMatch = (
+  left?: string | null,
+  right?: string | null,
+): boolean =>
+  left === right ||
+  Boolean(
+    left?.startsWith('eip155:') &&
+    right?.startsWith('eip155:') &&
+    left.toLowerCase() === right.toLowerCase(),
+  );
 
 /**
  *
@@ -98,8 +110,6 @@ const fetchTokenExchangeRates = async (
     includeMarketData: 'true',
     vsCurrency: currency,
   });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',
@@ -213,6 +223,18 @@ export const toBridgeToken = (
   };
 };
 
+export const getDefaultFromToken = (fromChainId: CaipChainId) => {
+  const defaultFromTokenForChain =
+    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (defaultFromTokenForChain) {
+    return toBridgeToken(defaultFromTokenForChain);
+  }
+
+  // Last resort: native token
+  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+};
+
 export const getDefaultToToken = (
   toChainId: CaipChainId,
   fromAssetId: CaipAssetType,
@@ -226,8 +248,13 @@ export const getDefaultToToken = (
     return toBridgeToken(commonPair);
   }
 
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  /**
+   * Our current "from" asset is our default "to" token.
+   * Hence we can make our "to" token be the default "from" token.
+   * It will still fallback to native (original behavior).
+   * We know fromChainId === toChainId because of the assetId clash.
+   */
+  return getDefaultFromToken(toChainId);
 };
 
 /**

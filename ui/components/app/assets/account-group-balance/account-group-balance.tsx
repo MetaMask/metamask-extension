@@ -3,19 +3,22 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  Skeleton,
+} from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
   selectBalanceBySelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
+import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 
-import {
-  AlignItems,
-  Display,
-  FlexWrap,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../../component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
@@ -40,27 +43,37 @@ export type AccountGroupBalanceProps = {
   chainId: CaipChainId | Hex;
 };
 
-export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
+export const AccountGroupBalance = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,
   balance,
   chainId,
-}) => {
+}: AccountGroupBalanceProps) => {
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  const legacySelectedGroupBalance = useSelector(
+    selectBalanceBySelectedAccountGroup,
+  );
+  const unifiedSelectedGroupBalance = useSelector(
+    selectUnifiedBalanceBySelectedAccountGroup,
+  );
+  const selectedGroupBalance = isAssetsUnifyStateEnabled
+    ? unifiedSelectedGroupBalance
+    : legacySelectedGroupBalance;
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const caipChainId = isCaipChainId(chainId)
-    ? chainId
-    : formatChainIdToCaip(chainId);
+  const caipChainId = useMemo(
+    () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
+    [chainId],
+  );
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
@@ -69,19 +82,28 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
 
-  const isEvm = isEvmChainId(chainId);
+  const isEvm = useMemo(() => isEvmChainId(chainId), [chainId]);
 
-  const isTestnetSelected = Boolean(
-    Object.keys(enabledNetworks).length === 1 &&
-    TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+  const isTestnetSelected = useMemo(
+    () =>
+      Boolean(
+        Object.keys(enabledNetworks).length === 1 &&
+        TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+      ),
+    [enabledNetworks],
   );
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
   const networks = useSelector(getMultichainNetwork);
-  const showNativeTokenAsMain = Boolean(
-    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      Boolean(
+        showNativeTokenAsMainBalance &&
+        Object.keys(enabledNetworks).length === 1,
+      ),
+    [showNativeTokenAsMainBalance, enabledNetworks],
   );
 
   const showConversionForTestnets = useSelector(getShowFiatInTestnets);
@@ -153,6 +175,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   return (
     <Skeleton
       hideChildren={
+        isEvm &&
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }
@@ -160,13 +183,17 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
       data-testid="account-group-balance-skeleton"
     >
       <Box
-        className={classnames(`${classPrefix}-overview__primary-balance`, {
-          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-        })}
+        className={classnames(
+          'flex',
+          `${classPrefix}-overview__primary-balance`,
+          {
+            [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+          },
+        )}
         data-testid={`${classPrefix}-overview__primary-currency`}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexWrap={FlexWrap.Wrap}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
       >
         <SensitiveText
           ellipsis

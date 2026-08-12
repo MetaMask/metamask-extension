@@ -22,11 +22,11 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
   ProfileMetricsController,
   ProfileMetricsControllerMessenger
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
-  const metaMetricsController = getMessengerClient('MetaMetricsController');
+  const analyticsController = getMessengerClient('AnalyticsController');
   const appStateController = getMessengerClient('AppStateController');
   const assertUserOptedIn = () =>
     appStateController.state.pna25Acknowledged === true &&
-    metaMetricsController.state.participateInMetaMetrics === true;
+    analyticsController.state.optedIn === true;
 
   const messengerClient = new ProfileMetricsController({
     messenger: controllerMessenger,
@@ -34,7 +34,7 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
     interval: isTestEnvironment ? 1000 : 10 * 1000,
     initialDelayDuration,
     assertUserOptedIn,
-    getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
+    getMetaMetricsId: () => analyticsController.state.analyticsId,
   });
 
   return {

@@ -20,8 +20,7 @@ import {
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 import { NETWORK_CLIENT_ID } from '../../constants';
 
-const isUnifiedAssetsEnabled =
-  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+const isUnifiedAssetsEnabled = true;
 
 // Local fixture for this spec file
 function createShieldFixture() {

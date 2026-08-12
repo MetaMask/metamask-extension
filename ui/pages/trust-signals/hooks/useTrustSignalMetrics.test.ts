@@ -111,20 +111,14 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
       };
 
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
         { properties: expectedProperties },
-        OWNER_ID_MOCK,
-      );
-      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
-        { sensitiveProperties: expectedAnonymousProperties },
         OWNER_ID_MOCK,
       );
       expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
@@ -147,9 +141,6 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
@@ -160,11 +151,9 @@ describe('useTrustSignalMetrics', () => {
         SIGNATURE_STATE_MOCK,
       );
 
+      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
         properties: expectedProperties,
-      });
-      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
-        sensitiveProperties: expectedAnonymousProperties,
       });
       expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
     });

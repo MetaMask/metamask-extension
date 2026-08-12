@@ -4,7 +4,6 @@
 @import 'prepare/components/index';
 @import 'prepare/components/bridge-asset-picker/index';
 @import 'quotes/index';
-@import 'transaction-details/index';
 @import 'awaiting-signatures/index';
 
 
@@ -17,5 +16,6 @@
 .bridge__container {
   height: 100%;
   overflow-y: scroll;
-  max-width: clamp(var(--width-sm), 85vw, var(--width-max));
+  max-width: 100%;
 }
+

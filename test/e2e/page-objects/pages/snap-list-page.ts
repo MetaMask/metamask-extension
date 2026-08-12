@@ -1,8 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 
 class SnapListPage {
-  private readonly driver: Driver;
-
   private readonly backButton = 'button[aria-label="Back"]';
 
   private readonly closeModalButton = 'button[aria-label="Close"]';
@@ -21,6 +19,8 @@ class SnapListPage {
     text: 'Description from Webpack Plugin Example Snap',
     tag: 'p',
   };
+
+  private readonly driver: Driver;
 
   private readonly homePageSnap = {
     text: 'Home Page Example Snap',
@@ -93,6 +93,16 @@ class SnapListPage {
       text: "You don't have any snaps installed.",
       tag: 'p',
     });
+  }
+
+  /**
+   * Checks that a snap with the given name is displayed in the snap list.
+   *
+   * @param snapName - The name of the snap expected to be displayed.
+   */
+  async checkSnapNameIsDisplayed(snapName: string): Promise<void> {
+    console.log(`Checking snap name is displayed: ${snapName}`);
+    await this.driver.waitForSelector({ text: snapName, tag: 'p' });
   }
 
   async checkUpdateLinkIsNotDisplayed(): Promise<void> {

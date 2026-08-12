@@ -4,7 +4,6 @@ import {
   NameType,
 } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { getNames } from '../selectors';
 
 export type UseNameRequest = {
@@ -22,7 +21,7 @@ export function useName(
 }
 
 export function useNames(requests: UseNameRequest[]): NameEntry[] {
-  const names = useSelector(getNames, isEqual);
+  const names = useSelector(getNames);
 
   return requests.map(({ value, type, variation }) => {
     const normalizedValue = normalizeValue(value, type);

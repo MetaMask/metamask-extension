@@ -25,10 +25,12 @@ describe('trackCriticalErrorEvent', () => {
     const backup: Backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
       AppMetadataController: {},
-      MetaMetricsController: {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id-123',
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-123',
+        consentDecisionMade: true,
       },
+      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -59,10 +61,12 @@ describe('trackCriticalErrorEvent', () => {
     const backup: Backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
       AppMetadataController: {},
-      MetaMetricsController: {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id-456',
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-456',
+        consentDecisionMade: true,
       },
+      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -96,28 +100,21 @@ describe('trackCriticalErrorEvent', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['backup is null', null],
-    ['MetaMetricsController is missing', { KeyringController: {} }],
+    ['AnalyticsController is missing', { KeyringController: {} }],
     [
-      'participateInMetaMetrics is false',
+      'optedIn is false',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: false,
-          metaMetricsId: 'id',
+        AnalyticsController: {
+          optedIn: false,
+          analyticsId: 'id',
         },
       },
     ],
     [
-      'participateInMetaMetrics is null',
+      'analyticsId is missing',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: null,
-          metaMetricsId: 'id',
-        },
+        AnalyticsController: { optedIn: true },
       },
-    ],
-    [
-      'metaMetricsId is missing',
-      { MetaMetricsController: { participateInMetaMetrics: true } },
     ],
   ])('does not track when %s', (_: string, backup: Backup | null) => {
     trackCriticalErrorEvent(

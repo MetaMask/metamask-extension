@@ -1,9 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import { BorderRadius } from '../../../../../helpers/constants/design-system';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type SearchInputProps = {
@@ -30,13 +26,13 @@ export type SearchInputProps = {
  * @param options0.onInputClick - Called when the user clicks the search input
  * @param options0.autoFocus - Auto-focus the input when mounted
  */
-export const SearchInput: React.FC<SearchInputProps> = ({
+export const SearchInput = ({
   value,
   onChange,
   onClear,
   onInputClick,
   autoFocus = false,
-}) => {
+}: SearchInputProps) => {
   const t = useI18nContext();
 
   const handleKeyDown = useCallback(
@@ -50,19 +46,21 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <TextFieldSearch
-      size={TextFieldSearchSize.Md}
-      placeholder={t('perpsSearchMarkets')}
       autoFocus={autoFocus}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
+      className="w-full"
       clearButtonOnClick={onClear}
-      borderRadius={BorderRadius.MD}
       data-testid="search-input-container"
-      inputProps={{
-        'data-testid': 'search-input',
-        onKeyDown: handleKeyDown,
-        onClick: onInputClick,
-      }}
+      inputProps={
+        {
+          'data-testid': 'search-input',
+          onClick: onInputClick,
+          onKeyDown: handleKeyDown,
+        } as React.ComponentPropsWithoutRef<'input'>
+      }
+      onChange={(event) => onChange(event.target.value)}
+      placeholder={t('perpsSearchMarkets')}
+      size={TextFieldSize.Md}
+      value={value}
     />
   );
 };

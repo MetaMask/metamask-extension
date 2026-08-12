@@ -1,12 +1,18 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
-import { AddNetworkFields } from '@metamask/network-controller';
+import { useSelector } from 'react-redux';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_RPCS,
-} from '../../../../../../shared/constants/network';
+  BtcScope,
+  EthScope,
+  SolScope,
+  TrxScope,
+  XlmScope,
+} from '@metamask/keyring-api';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import {
+  getFeaturedEvmNetworks,
+  type FeaturedNetwork,
+} from '../../../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
@@ -62,10 +68,12 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
+import { useDispatch } from '../../../../../store/hooks';
 
-const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
+const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
   const networkImageUrl =
+    network.imageUrl ||
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
@@ -80,7 +88,6 @@ const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
       width={BlockSize.Full}
-      onClick={() => handleAdditionalNetworkClick(network)}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
@@ -110,12 +117,13 @@ const AdditionalNetwork = ({ network }: { network: AddNetworkFields }) => {
         )}
       </Box>
       <ButtonIcon
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         color={IconColor.iconDefault}
         iconName={IconName.Add}
         padding={0}
         marginLeft={'auto'}
         ariaLabel={t('addNetwork')}
+        onClick={() => handleAdditionalNetworkClick(network)}
       />
     </Box>
   );
@@ -166,6 +174,10 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
 
+  const xlmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, XlmScope.Pubnet),
+  );
+
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
@@ -196,10 +208,13 @@ const DefaultNetworks = memo(() => {
     selectedNonEvmChainId,
   ]);
 
+  // Get the base featured list (dynamic from config registry when flag on, else static)
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
-    const availableNetworks = FEATURED_RPCS.filter(
+    const availableNetworks = featuredNetworksBaseList.filter(
       ({ chainId }) => !evmNetworks[chainId],
     );
 
@@ -218,7 +233,12 @@ const DefaultNetworks = memo(() => {
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds, useExternalServices]);
+  }, [
+    featuredNetworksBaseList,
+    evmNetworks,
+    blacklistedChainIds,
+    useExternalServices,
+  ]);
 
   const isAllPopularNetworksSelected = useMemo(
     () => allEnabledNetworksForAllNamespaces.length > 1,
@@ -295,6 +315,9 @@ const DefaultNetworks = memo(() => {
         if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
           return true;
         }
+        if (xlmAccountGroup && network.chainId === XlmScope.Pubnet) {
+          return true;
+        }
         return false;
       });
     };
@@ -312,8 +335,13 @@ const DefaultNetworks = memo(() => {
         return null;
       }
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
-        getItemCallbacks(network);
+      const {
+        onDelete,
+        onDeleteMenuLabel,
+        onEdit,
+        onDiscoverClick,
+        onRpcSelect,
+      } = getItemCallbacks(network);
       const iconSrc = getNetworkIcon(network);
       const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
@@ -343,6 +371,7 @@ const DefaultNetworks = memo(() => {
             await dispatch(hideModal());
           }}
           onDeleteClick={onDelete}
+          deleteMenuLabel={onDeleteMenuLabel}
           onEditClick={onEdit}
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
@@ -361,6 +390,7 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
+    xlmAccountGroup,
     evmAccountGroup,
     dispatch,
     enabledChainIds,

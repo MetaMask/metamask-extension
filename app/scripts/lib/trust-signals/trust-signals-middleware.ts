@@ -29,6 +29,7 @@ import {
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
   origin?: string;
+  requestUrl?: string;
   networkClientId: NetworkClientId;
 };
 
@@ -38,6 +39,7 @@ export function createTrustSignalsMiddleware(
   phishingController: PhishingController,
   preferencesController: PreferencesController,
   getPermittedAccounts: (origin: string) => string[],
+  requestUrl?: string,
 ) {
   return async (
     req: TrustSignalsMiddlewareRequest,
@@ -45,6 +47,8 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
+      req.requestUrl = requestUrl;
+
       if (
         !isSecurityAlertsEnabledByUser(preferencesController) ||
         !isSecurityAlertsAPIEnabled()
@@ -77,8 +81,10 @@ function scanUrl(
   req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
 ) {
-  if (req.origin) {
-    phishingController.scanUrl(req.origin).catch((error) => {
+  const urlToScan = req.requestUrl ?? req.origin;
+
+  if (urlToScan) {
+    phishingController.scanUrl(urlToScan).catch((error) => {
       console.error('[createTrustSignalsMiddleware] error:', error);
     });
   }

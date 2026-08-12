@@ -2,19 +2,23 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BlockSize,
   Display,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, Button } from '../../component-library';
+import { Button } from '../../component-library';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -25,7 +29,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   /**
    * Prevent animation events from propogating up
@@ -41,13 +45,14 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const onMouseDown = () => {
     isLongPressing.current = true;
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
-      properties: {
-        key_type: MetaMetricsEventKeyType.Srp,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpHoldToRevealClickStarted)
+        .addCategory(MetaMetricsEventCategory.Keys)
+        .addProperties({
+          key_type: MetaMetricsEventKeyType.Srp,
+        })
+        .build(),
+    );
   };
 
   /**
@@ -71,25 +76,27 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const triggerOnLongPressed = useCallback(
     (e) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpHoldToRevealCompleted,
-        properties: {
-          key_type: MetaMetricsEventKeyType.Srp,
-        },
-      });
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealViewed,
-        properties: {
-          key_type: MetaMetricsEventKeyType.Srp,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SrpHoldToRevealCompleted)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
+          .build(),
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SrpRevealViewed)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            key_type: MetaMetricsEventKeyType.Srp,
+          })
+          .build(),
+      );
       onLongPressed();
       setHasTriggeredUnlock(true);
       preventPropogation(e);
     },
-    [onLongPressed, trackEvent],
+    [createEventBuilder, onLongPressed, trackEvent],
   );
 
   /**
@@ -131,10 +138,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </Box>
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          className="hold-to-reveal-button__lock-icon-container"
+          className="flex hold-to-reveal-button__lock-icon-container"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
         >
           <img
             src="images/lock-icon.svg"

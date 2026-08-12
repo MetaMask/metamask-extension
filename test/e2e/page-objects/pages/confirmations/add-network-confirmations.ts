@@ -1,34 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AddNetworkConfirmation {
-  private readonly driver: Driver;
+  private readonly alertModalButton = { testId: 'alert-modal-button' };
 
   private readonly approveButton = { testId: 'confirm-footer-button' };
 
   private readonly cancelButton = { testId: 'confirm-footer-cancel-button' };
 
-  private readonly alertModalButton = { testId: 'alert-modal-button' };
+  private readonly driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * @param networkName - The name of the network to check for in the confirmation page
-   */
-  async checkPageIsLoaded(networkName: string): Promise<void> {
-    try {
-      await this.driver.waitForSelector({
-        text: `Add ${networkName}`,
-      });
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for Add network ${networkName} confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
-    console.log(`Add network ${networkName} confirmation page is loaded`);
   }
 
   /**
@@ -64,6 +46,24 @@ class AddNetworkConfirmation {
     }
     console.log('Approve button is enabled');
     return true;
+  }
+
+  /**
+   * @param networkName - The name of the network to check for in the confirmation page
+   */
+  async checkPageIsLoaded(networkName: string): Promise<void> {
+    try {
+      await this.driver.waitForSelector({
+        text: `Add ${networkName}`,
+      });
+    } catch (e) {
+      console.log(
+        `Timeout while waiting for Add network ${networkName} confirmation page to be loaded`,
+        e,
+      );
+      throw e;
+    }
+    console.log(`Add network ${networkName} confirmation page is loaded`);
   }
 
   async checkWarningMessageIsDisplayed(key: string, message: string) {

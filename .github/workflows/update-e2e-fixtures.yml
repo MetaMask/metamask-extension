@@ -30,9 +30,22 @@ jobs:
     needs: is-cross-repo-pr
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
 
       - name: React to the comment
         run: |
@@ -44,7 +57,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           REPO: ${{ github.repository }}
 
   prepare:
@@ -54,6 +67,9 @@ jobs:
     needs: is-cross-repo-pr
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
+    permissions:
+      id-token: write
+      contents: read
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
@@ -61,10 +77,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            statuses: read
+            contents: write
+            pull_requests: write
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
@@ -81,57 +108,59 @@ jobs:
         id: branch
         run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
         env:
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Find and download dist artifact
+      # The build-reuse feature skips the build jobs on a PR's Main run when its
+      # build-source hash matches a prior run (commonly a `main` run); in that
+      # case the artifact lives on the donor run, not the PR's own run.
+      # get-requirements.yml publishes the canonical run that holds the builds
+      # (this run for fresh builds, the donor run when reused) as a
+      # `builds-from-run` commit status on the PR head, so we just read it.
+      - name: Find dist artifact run
+        id: find-dist
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ steps.token.outputs.token }}
+          script: |
+            const { owner, repo } = context.repo;
+            const { stdout: headOut } = await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { silent: true });
+            const headSha = headOut.trim();
+
+            // getCombinedStatusForRef de-duplicates to the most recent status
+            // per context, so a single page is sufficient.
+            const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
+              owner, repo, ref: headSha, per_page: 100,
+            });
+            const buildsFromRun = statuses.find((s) => s.context === 'builds-from-run')?.description;
+
+            if (!buildsFromRun) {
+              core.setFailed(`No 'builds-from-run' commit status found on ${headSha}. This commit's Main run may predate the build-reuse pointer, or its best-effort status post failed. Re-run the Main workflow on this branch, then '@metamaskbot update-e2e-fixture'.`);
+              return;
+            }
+            core.info(`-> builds-from-run: ${buildsFromRun}`);
+            core.setOutput('run-id', buildsFromRun);
+
+      - name: Download dist artifact
         run: |
-          COMMIT_SHA_FULL=$(git rev-parse HEAD)
-
-          # Get the most recent run for the Main workflow on this branch
-          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion,headSha --limit 1 --jq 'first')
-
-          if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
-            echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
-            exit 1
-          fi
-
-          RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
-          RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
-          RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
-          RUN_HEAD_SHA=$(echo "$RUN_INFO" | jq -r '.headSha')
-
-          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}, headSha: ${RUN_HEAD_SHA}"
-          echo "Current PR HEAD commit: ${COMMIT_SHA_FULL}"
-
-          if [ "${RUN_HEAD_SHA}" != "${COMMIT_SHA_FULL}" ]; then
-            echo "::error::The latest 'Main' workflow run (commit ${RUN_HEAD_SHA}) does not match the current PR HEAD (commit ${COMMIT_SHA_FULL}). Please ensure the Main workflow has run for the latest commit on this branch."
-            exit 1
-          fi
-
-          if [ "${RUN_STATUS}" != "completed" ]; then
-            echo "::notice::The latest 'Main' workflow run is still in progress (status: ${RUN_STATUS}). Attempting to download the dist artifact anyway."
-          elif [ "${RUN_CONCLUSION}" != "success" ]; then
-            echo "::warning::The latest 'Main' workflow run concluded with '${RUN_CONCLUSION}'. The build artifact may still be available, proceeding with download attempt."
-          fi
-
-          echo "Attempting to download dist artifact..."
-
+          echo "Attempting to download dist artifact from run ${RUN_ID}..."
           if ! gh run download "${RUN_ID}" -n build-dist-webpack -D build-dist-webpack; then
-            echo "::error::Failed to download the 'build-dist-webpack' artifact. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
+            echo "::error::Failed to download the 'build-dist-webpack' artifact from run ${RUN_ID}. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
             exit 1
           fi
-
           echo "Successfully downloaded dist artifact."
         env:
-          BRANCH: ${{ steps.branch.outputs.BRANCH }}
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          RUN_ID: ${{ steps.find-dist.outputs.run-id }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
 
-      - name: Cache dist artifact
-        uses: actions/cache/save@v5
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v6
         with:
+          name: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
           path: build-dist-webpack
-          key: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
+          if-no-files-found: error
+          # Allow workflow re-runs to replace the artifact from a prior attempt.
+          overwrite: true
 
   update-fixtures:
     name: Update E2E fixtures
@@ -151,24 +180,14 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Restore .metamask folder
-        id: restore-metamask
-        uses: actions/cache/restore@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: false
-
-      - name: Install anvil if cache missed
-        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+      - name: Install anvil
         run: yarn mm-foundryup
 
-      - name: Restore dist artifact
-        uses: actions/cache/restore@v5
+      - name: Download dist artifact
+        uses: actions/download-artifact@v7
         with:
+          name: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: build-dist-webpack
-          key: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
 
       - name: Prepare dist
         run: |
@@ -193,13 +212,16 @@ jobs:
             ./test-artifacts
             ./test/test-results/e2e
 
-      - name: Cache updated fixture
-        uses: actions/cache/save@v5
+      - name: Upload updated fixtures
+        uses: actions/upload-artifact@v6
         with:
+          name: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
             test/e2e/fixtures/onboarding-fixture.json
             test/e2e/fixtures/default-fixture.json
-          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
+          if-no-files-found: error
+          # Allow workflow re-runs to replace the artifact from a prior attempt.
+          overwrite: true
 
   commit-updated-fixtures:
     name: Commit the updated E2E fixtures
@@ -211,26 +233,36 @@ jobs:
       - update-fixtures
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
+    permissions:
+      id-token: write
+      contents: read
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
+
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Restore updated fixtures
-        uses: actions/cache/restore@v5
+      - name: Download updated fixtures
+        uses: actions/download-artifact@v7
         with:
-          path: |
-            test/e2e/fixtures/onboarding-fixture.json
-            test/e2e/fixtures/default-fixture.json
-          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: test/e2e/fixtures
 
       - name: Check whether there are fixture changes
         id: fixture-changes
@@ -260,7 +292,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.fixture-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -292,10 +324,23 @@ jobs:
       - is-cross-repo-pr
       - check-status
     environment: default-branch
+    permissions:
+      id-token: write
+      contents: read
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
+
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Post comment if the update failed
         run: |
@@ -304,6 +349,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "E2E fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'

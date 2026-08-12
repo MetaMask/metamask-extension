@@ -96,7 +96,7 @@ const generateDefaultNetworkEnablementControllerState = (
     };
   } else if (
     process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENVIRONMENT === 'test'
+    process.env.METAMASK_ENVIRONMENT === 'testing'
   ) {
     return {
       enabledNetworkMap: {

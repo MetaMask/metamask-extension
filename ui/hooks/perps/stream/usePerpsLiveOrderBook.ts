@@ -1,6 +1,12 @@
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import type {
+  OrderBookConnectionStatus,
+  PerpsStreamManager,
+} from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -14,8 +20,22 @@ export type UsePerpsLiveOrderBookOptions = {
   nSigFigs?: 2 | 3 | 4 | 5;
   /** Mantissa for aggregation when nSigFigs is 5 */
   mantissa?: 2 | 5;
-  /** Callback for errors */
-  onError?: (error: Error) => void;
+  /** When false, no background order-book stream is activated (default: true). */
+  enabled?: boolean;
+  /**
+   * When false, only read from the shared channel; do not activate/deactivate the
+   * background stream (default: true). Use when another surface already owns
+   * order-book stream lifecycle (e.g. order entry page top-of-book).
+   */
+  manageStream?: boolean;
+  /**
+   * Which order-book channel to read/activate (default: 'orderBook').
+   * 'orderBook' is the raw, full-precision book shared with top-of-book mid and
+   * slippage estimation. 'orderBookAggregated' is a second, independent
+   * subscription that uses server-side `nSigFigs`/`mantissa` aggregation for the
+   * order-book panel, so the raw channel is never coarsened.
+   */
+  channel?: 'orderBook' | 'orderBookAggregated';
 };
 
 /**
@@ -26,54 +46,248 @@ export type UsePerpsLiveOrderBookReturn = {
   orderBook: OrderBookData | null;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
+  /**
+   * Health of the underlying stream. Only meaningful for the
+   * `orderBookAggregated` channel (its dedicated socket); the raw channel
+   * always reports `connected`.
+   */
+  connectionStatus: OrderBookConnectionStatus;
+  /**
+   * Re-establishes the stream after a dropped connection. Tears the current
+   * subscription down and re-activates it (rebuilding the dedicated socket for
+   * the aggregated channel). No-op unless `manageStream` is enabled.
+   */
+  reconnect: () => void;
 };
 
 const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
+const getOrderBookAggregatedChannel = (sm: PerpsStreamManager) =>
+  sm.orderBookAggregated;
+const getOrderBookAggregatedStatusChannel = (sm: PerpsStreamManager) =>
+  sm.orderBookAggregatedStatus;
+
+/**
+ * Monotonic counter for aggregated order-book subscription instances.
+ * Never reused across activations so A→B→A and close→reopen cannot collide
+ * with a late packet from an earlier socket that shared the same config.
+ */
+let nextOrderBookAggregatedSubscriptionGeneration = 0;
+
+/**
+ * Allocate a never-reused generation for one aggregated order-book activation.
+ *
+ * @returns Next monotonic generation value.
+ */
+export function allocateOrderBookAggregatedSubscriptionGeneration(): number {
+  nextOrderBookAggregatedSubscriptionGeneration += 1;
+  return nextOrderBookAggregatedSubscriptionGeneration;
+}
+
+/**
+ * Reset the generation counter. Test-only — keeps suite IDs deterministic.
+ */
+export function resetOrderBookAggregatedSubscriptionGenerationForTests(): void {
+  nextOrderBookAggregatedSubscriptionGeneration = 0;
+}
+
+/**
+ * Build the UI-owned identity for an aggregated order-book subscription
+ * instance. Includes a unique monotonic `generation` so each activation is
+ * distinct even when symbol/grouping/reconnect config repeats.
+ *
+ * @param params - Identity components.
+ * @param params.symbol - Market symbol.
+ * @param params.nSigFigs - Server aggregation significant figures.
+ * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+ * @param params.generation - Never-reused activation counter.
+ * @returns Identity string carried through activate + emissions.
+ */
+export function buildOrderBookAggregatedSubscriptionId({
+  symbol,
+  nSigFigs,
+  mantissa,
+  generation,
+}: {
+  symbol: string;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+  generation: number;
+}): string {
+  return `${symbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${generation}`;
+}
 
 /**
  * Hook for real-time order book data via background stream notifications.
  *
- * Receives data pushed from the background PerpsController via
- * perpsStreamUpdate notifications → PerpsStreamManager.handleBackgroundUpdate().
- *
- * Note: The background emits a single orderBook channel for the currently
- * subscribed symbol. The symbol/levels/nSigFigs parameters are used
- * for the perpsSubscriberChange registration (future: per-symbol scoping).
+ * Activates the background order-book stream for `symbol` (mirrors
+ * `usePerpsTopOfBook` / mobile's subscribeToOrderBook wiring) and reads from
+ * the shared PerpsStreamManager channel.
  *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
- * @example
- * ```tsx
- * function OrderBookDisplay() {
- *   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
- *     symbol: 'BTC',
- *     levels: 10,
- *   });
- *
- *   if (isInitialLoading) return <Spinner />;
- *   if (!orderBook) return <div>No data</div>;
- *
- *   return (
- *     <div>
- *       <div>Asks: {orderBook.asks.length}</div>
- *       <div>Bids: {orderBook.bids.length}</div>
- *       <div>Spread: {orderBook.spread}</div>
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  // options.symbol is available for future per-symbol scoping
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { symbol: _symbol } = options;
+  const {
+    symbol,
+    levels,
+    nSigFigs,
+    mantissa,
+    enabled = true,
+    manageStream = true,
+    channel = 'orderBook',
+  } = options;
+  const activeSymbol = enabled ? symbol : undefined;
+  const isAggregated = channel === 'orderBookAggregated';
+  const { streamManager } = usePerpsStreamManager();
+
+  // Bumped by reconnect() to force the activate effect to tear down and
+  // re-subscribe (which rebuilds the aggregated channel's dedicated socket).
+  const [reconnectNonce, setReconnectNonce] = useState(0);
+  const reconnect = useCallback(() => {
+    setReconnectNonce((nonce) => nonce + 1);
+  }, []);
+
+  // Configuration + reconnect inputs that should start a new subscription
+  // instance. The instance identity itself is a never-reused generation so
+  // A→B→A and close→reopen cannot accept a late packet from the earlier socket.
+  const activationKey =
+    isAggregated && activeSymbol
+      ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${reconnectNonce}`
+      : undefined;
+
+  // Allocated in layout (not render) so the module-level generation counter is
+  // not mutated during a potentially discarded / StrictMode-double render.
+  // `activationKey` on the stored entry lets this render treat a stale id as
+  // absent until the matching layout pass commits the new one — so activate and
+  // resetKey never run against a previous instance's identity.
+  const [aggregatedSubscription, setAggregatedSubscription] = useState<{
+    activationKey: string;
+    subscriptionId: string;
+  } | null>(null);
+
+  const subscriptionId =
+    isAggregated &&
+    activationKey &&
+    aggregatedSubscription?.activationKey === activationKey
+      ? aggregatedSubscription.subscriptionId
+      : undefined;
+  // Reset key clears cached rows the instant the subscription instance changes
+  // (grouping, reconnect, or a fresh open after close).
+  const resetKey = isAggregated ? subscriptionId : activeSymbol;
+
+  // Allocate + register before paint; deregister on unmount / identity change so
+  // a closed panel rejects late packets until the next activation registers.
+  useLayoutEffect(() => {
+    if (!isAggregated) {
+      setAggregatedSubscription(null);
+      return undefined;
+    }
+    if (!streamManager) {
+      return undefined;
+    }
+
+    const nextSubscriptionId =
+      activationKey && activeSymbol
+        ? buildOrderBookAggregatedSubscriptionId({
+            symbol: activeSymbol,
+            nSigFigs,
+            mantissa,
+            generation: allocateOrderBookAggregatedSubscriptionGeneration(),
+          })
+        : undefined;
+
+    setAggregatedSubscription(
+      activationKey && nextSubscriptionId
+        ? { activationKey, subscriptionId: nextSubscriptionId }
+        : null,
+    );
+    streamManager.setActiveOrderBookAggregatedSubscriptionId(
+      nextSubscriptionId ?? null,
+    );
+
+    return () => {
+      // Null the identity and drop cached rows/status in the same commit so a
+      // late packet cannot repopulate the cache between clear and deregister.
+      // Page-level clears are unnecessary once this owns both.
+      streamManager.setActiveOrderBookAggregatedSubscriptionId(null);
+      streamManager.orderBookAggregated.clearCache();
+      streamManager.orderBookAggregatedStatus.clearCache();
+    };
+  }, [
+    isAggregated,
+    streamManager,
+    activationKey,
+    activeSymbol,
+    nSigFigs,
+    mantissa,
+  ]);
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
-    getOrderBookChannel,
+    isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,
     null,
+    resetKey,
   );
 
-  return { orderBook, isInitialLoading };
+  const { data: connectionStatus } = usePerpsChannel<OrderBookConnectionStatus>(
+    getOrderBookAggregatedStatusChannel,
+    'connecting',
+    // Raw-channel consumers must not reset the shared aggregated status cache
+    // when their symbol changes — only aggregated instances own that channel.
+    isAggregated ? resetKey : undefined,
+  );
+
+  useEffect(() => {
+    if (!manageStream || !enabled || !symbol) {
+      return undefined;
+    }
+    // Wait for the layout pass to allocate a matching aggregated identity so we
+    // never activate with a stale subscriptionId from the prior activationKey.
+    if (isAggregated && !subscriptionId) {
+      return undefined;
+    }
+    const activateAction = isAggregated
+      ? 'perpsActivateOrderBookAggregatedStream'
+      : 'perpsActivateOrderBookStream';
+    const deactivateAction = isAggregated
+      ? 'perpsDeactivateOrderBookAggregatedStream'
+      : 'perpsDeactivateOrderBookStream';
+    submitRequestToBackground(activateAction, [
+      {
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+        ...(isAggregated ? { subscriptionId } : {}),
+      },
+    ]).catch(() => {
+      // Controller not ready yet — stream will activate on retry when symbol changes.
+    });
+    return () => {
+      submitRequestToBackground(deactivateAction, []).catch(() => {
+        // Best-effort teardown.
+      });
+    };
+  }, [
+    manageStream,
+    enabled,
+    symbol,
+    levels,
+    nSigFigs,
+    mantissa,
+    isAggregated,
+    // Raw channel has no subscriptionId; reconnect must still force re-activate.
+    reconnectNonce,
+    subscriptionId,
+  ]);
+
+  return {
+    orderBook,
+    isInitialLoading: isInitialLoading || !activeSymbol,
+    // The raw channel shares the always-on controller socket, so it has no
+    // independent health to report — treat it as connected.
+    connectionStatus: isAggregated ? connectionStatus : 'connected',
+    reconnect,
+  };
 }

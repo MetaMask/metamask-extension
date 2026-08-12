@@ -9,9 +9,10 @@ import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { mockEip7702FeatureFlag } from '../helpers';
@@ -74,6 +75,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -193,6 +195,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -243,6 +246,12 @@ describe('Enforced Simulations', function (this: Suite) {
 
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
+
+        // Ensure the confirmation values are populated before toggling to prevent re-renders
+        await confirmation.checkGasFeeEstimate('$15.05');
+        await confirmation.checkEstimatedSimulationDetails('- <0.000001');
+
+        // Disable enforced simulations
         await confirmation.checkEnforcedSimulationsRowIsDisplayed();
         await confirmation.clickEnforcedSimulationsToggle();
         await confirmation.checkEnforcedSimulationsToggleUnchecked();
@@ -303,6 +312,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'failed',
+          true,
         );
 
         assert.strictEqual(
@@ -361,18 +371,26 @@ async function confirmAndGetTransaction(
   confirmation: TransactionConfirmation,
   anvil: Anvil,
   expectedStatus: 'confirmed' | 'failed',
+  acknowledgeDangerAlert = false,
 ) {
   await confirmation.clickFooterConfirmButton();
 
+  if (acknowledgeDangerAlert) {
+    const alertModal = new ConfirmAlertModal(driver);
+    await alertModal.acknowledgeAlert();
+    await alertModal.confirmFromAlertModal();
+    await confirmation.clickFooterConfirmButton();
+  }
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const activityList = new ActivityListPage(driver);
-  await activityList.openActivityTab();
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
 
   if (expectedStatus === 'confirmed') {
-    await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+    await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
   } else {
-    await activityList.checkFailedTxNumberDisplayedInActivity(1);
+    await activityTab.checkFailedTxNumberDisplayedInActivity(1);
   }
 
   await driver.switchToWindowWithTitle(

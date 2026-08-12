@@ -2,14 +2,15 @@ import React, { useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -19,7 +20,7 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 
 import { getSelectedAccount } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -27,6 +28,10 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { getDefiPositions } from '../../../selectors/assets';
+import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
+import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
+import DeFiDetailsPageV2 from '../pages/defi-details-page-v2';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
@@ -46,7 +51,7 @@ const useExtractUnderlyingTokens = (
     );
   }, [positions]);
 
-const DeFiPage = () => {
+const DeFiDetailsPageV1 = () => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId, protocolId } = useParams();
   const navigate = useNavigate();
@@ -90,16 +95,15 @@ const DeFiPage = () => {
   return (
     <Box className="main-container asset__container">
       <Box
+        className="flex pt-4 sticky top-0 z-10 bg-background-default"
         paddingLeft={2}
-        display={Display.Flex}
         paddingBottom={4}
-        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
           color={IconColor.iconDefault}
           marginRight={1}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
           onClick={() => navigate(DEFAULT_ROUTE)}
@@ -107,9 +111,9 @@ const DeFiPage = () => {
       </Box>
 
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
         paddingRight={4}
       >
         <Text
@@ -145,7 +149,7 @@ const DeFiPage = () => {
       <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
         <hr style={{ border: '1px solid var(--border-muted, #858B9A33)' }} />
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Column}>
         {Object.keys(PositionTypeLabels).map((positionType) =>
           protocolPosition.positionTypes[positionType as PositionTypeKeys] ? (
             <DefiDetailsList
@@ -161,4 +165,24 @@ const DeFiPage = () => {
   );
 };
 
-export default DeFiPage;
+const DeFiDetailsPage = () => {
+  const isDefiControllerV2Enabled = useSelector(getIsDefiControllerV2Enabled);
+
+  // V2 needs a route messenger for `fetchDeFiPositions`. Legacy V1 does not —
+  // wrap only the V2 branch so integration tests without a UI messenger keep
+  // working when the V2 flag is off.
+  if (isDefiControllerV2Enabled) {
+    return (
+      <RouteWithMessenger
+        path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+      >
+        <DeFiDetailsPageV2 />
+      </RouteWithMessenger>
+    );
+  }
+
+  return <DeFiDetailsPageV1 />;
+};
+
+export default DeFiDetailsPage;

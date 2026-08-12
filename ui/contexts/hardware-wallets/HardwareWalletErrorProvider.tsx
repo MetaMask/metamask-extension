@@ -8,7 +8,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
@@ -17,14 +17,19 @@ import {
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
+import { useDispatch } from '../../store/hooks';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-import { ConnectionStatus } from './types';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
+import { ConnectionStatus, HardwareWalletType } from './types';
+import {
+  HARDWARE_WALLET_ERROR_MODAL_NAME,
+  HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
+} from './constants';
 import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
@@ -82,9 +87,7 @@ type HardwareWalletErrorProviderProps = {
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isHardwareWalletErrorModalVisible = useSelector(
@@ -137,6 +140,19 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     // Close the popup if there are no more pending approvals
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
+
+  const openRepairPage = useCallback((walletType?: HardwareWalletType) => {
+    const queryString = walletType
+      ? new URLSearchParams({
+          [HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM]: walletType,
+        }).toString()
+      : null;
+
+    globalThis.platform.openExtensionInBrowser(
+      HARDWARE_WALLET_REPAIR_ROUTE,
+      queryString,
+    );
+  }, []);
 
   /**
    * Manually dismiss the error modal
@@ -205,11 +221,19 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         error,
         onRetry: handleRetry,
         onCancel: handleCancel,
+        onRepairDevice: openRepairPage,
         isOpen: true,
       };
       dispatch(showModal(modalPayload));
     },
-    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection],
+    [
+      dispatch,
+      displayedError,
+      handleCancel,
+      handleRetry,
+      isUserRejection,
+      openRepairPage,
+    ],
   );
 
   /**
@@ -369,9 +393,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-export const HardwareWalletErrorProvider: React.FC<
-  HardwareWalletErrorProviderProps
-> = ({ children }) => {
+export const HardwareWalletErrorProvider = ({
+  children,
+}: HardwareWalletErrorProviderProps) => {
   return (
     <HardwareWalletProvider>
       <HardwareWalletErrorMonitor>{children}</HardwareWalletErrorMonitor>

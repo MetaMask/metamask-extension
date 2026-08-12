@@ -7,13 +7,6 @@ export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
 export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 
-// HMR (Hot Module Reloading) can't be used until all circular dependencies in
-// the codebase are removed
-// See: https://github.com/MetaMask/metamask-extension/issues/22450
-// TODO: remove this variable when HMR is ready. The env var is for tests and
-// must also be removed everywhere.
-export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
-
 /**
  * Target browsers
  */
@@ -69,6 +62,10 @@ export const UI_COMPONENT_RE = new RegExp(
   `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
   'u',
 );
+
+export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+
+export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
 
 /**
  * No Operation. A function that does nothing and returns nothing.

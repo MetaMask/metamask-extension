@@ -10,13 +10,18 @@ import {
   webpack,
   Compiler,
   WebpackPluginInstance,
+  RuleSetRule,
 } from 'webpack';
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
-import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
+import {
+  DEFAULT_ZIP_MTIME,
+  isValidZipMtime,
+} from '../utils/plugins/ManifestPlugin/zip-mtime';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -24,6 +29,14 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+function getExpectedDefaultZipMtime() {
+  const latestCommitTimestamp = getLatestCommit().timestamp();
+  if (isValidZipMtime(latestCommitTimestamp)) {
+    return latestCommitTimestamp;
+  }
+  return DEFAULT_ZIP_MTIME;
 }
 
 async function withWatching<T>(
@@ -86,7 +99,6 @@ describe('webpack.config.test.ts', () => {
     metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
     metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
   };
-
   before(() => {
     // cache originals before we start messing with them
     originalArgv = process.argv;
@@ -131,6 +143,43 @@ ${Object.entries(env)
       return originalReadFileSync.call(fs, path, options);
     });
     return require('../webpack.config.ts').default;
+  }
+
+  function getPluginNames(config: Configuration): string[] {
+    return (config.plugins ?? [])
+      .map((plugin) => plugin?.constructor.name)
+      .filter((name): name is string => typeof name === 'string');
+  }
+
+  type SwcReactRule = RuleSetRule & {
+    use: {
+      options: {
+        jsc: {
+          transform: {
+            react: {
+              development: boolean;
+              refresh: boolean;
+            };
+          };
+        };
+      };
+    };
+  };
+
+  function isSwcReactRule(rule: unknown): rule is SwcReactRule {
+    if (!rule || typeof rule !== 'object' || Array.isArray(rule)) {
+      return false;
+    }
+    const maybeRule = rule as Partial<SwcReactRule>;
+    return (
+      typeof maybeRule.use?.options?.jsc?.transform?.react?.refresh ===
+        'boolean' &&
+      typeof maybeRule.use.options.jsc.transform.react.development === 'boolean'
+    );
+  }
+
+  function getSwcReactRules(config: Configuration): SwcReactRule[] {
+    return (config.module?.rules ?? []).filter(isSwcReactRule);
   }
 
   function mockOptionalRcFiles({
@@ -237,7 +286,6 @@ ${Object.entries(env)
       },
       'chrome',
     );
-    console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
       manifest_version: 3,
       name: 'name',
@@ -251,8 +299,8 @@ ${Object.entries(env)
     });
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
-    const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
-    assert.strictEqual(manifestOpts.zipOptions, undefined);
+    assert.strictEqual(manifestPlugin.options.stats, false);
+    assert.strictEqual('zipOptions' in manifestPlugin.options, false);
 
     const progressPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -279,6 +327,73 @@ ${Object.entries(env)
     );
   });
 
+  it('enables React Refresh for development watch builds', () => {
+    mockOptionalRcFiles();
+
+    const config: Configuration = getWebpackConfig(['--watch']);
+
+    assert.strictEqual(config.watch, true);
+    assert.deepStrictEqual(
+      getPluginNames(config).filter((name) =>
+        ['HotModuleReplacementPlugin', 'ReactRefreshPlugin'].includes(name),
+      ),
+      ['HotModuleReplacementPlugin', 'ReactRefreshPlugin'],
+    );
+
+    const reactRefreshRules = getSwcReactRules(config).filter(
+      (rule) => rule.use.options.jsc.transform.react.refresh,
+    );
+    assert.deepStrictEqual(
+      reactRefreshRules.map((rule) => rule.test?.toString()),
+      [/\.(?:ts|mts|tsx)$/u.toString(), /\.(?:js|mjs|jsx)$/u.toString()],
+    );
+    assert.deepStrictEqual(
+      reactRefreshRules.map((rule) => rule.exclude),
+      [undefined, undefined],
+    );
+    assert.ok(
+      reactRefreshRules.every(
+        (rule) =>
+          rule.include instanceof RegExp &&
+          rule.use.options.jsc.transform.react.development,
+      ),
+      'React Refresh rules should be scoped to UI source with development React transforms',
+    );
+  });
+
+  it('does not enable React Refresh for production watch builds', () => {
+    const config: Configuration = getWebpackConfig(
+      [
+        '--mode',
+        'production',
+        '--env',
+        'production',
+        '--no-validateEnv',
+        '--watch',
+        '--no-lavamoat',
+      ],
+      {
+        INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
+        SEGMENT_WRITE_KEY: '-',
+        SEGMENT_PROD_WRITE_KEY: '-',
+      },
+    );
+
+    assert.strictEqual(config.watch, true);
+    assert.deepStrictEqual(
+      getPluginNames(config).filter((name) =>
+        ['HotModuleReplacementPlugin', 'ReactRefreshPlugin'].includes(name),
+      ),
+      [],
+    );
+    assert.strictEqual(
+      getSwcReactRules(config).filter(
+        (rule) => rule.use.options.jsc.transform.react.refresh,
+      ).length,
+      0,
+    );
+  });
+
   it('should apply non-default options', () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
@@ -299,9 +414,6 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
-        GOOGLE_PROD_CLIENT_ID: '00000000000',
-        APPLE_PROD_CLIENT_ID: '00000000000',
-        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
@@ -317,7 +429,7 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.cache.type, 'memory');
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
-    assert.strictEqual(stats.preset, 'normal');
+    assert.strictEqual(stats.preset, 'none');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
     assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
@@ -332,7 +444,7 @@ ${Object.entries(env)
 
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
-    ) as WebpackPluginInstance;
+    ) as WebpackPluginInstance & ManifestPlugin<true>;
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
@@ -341,7 +453,27 @@ ${Object.entries(env)
       manifestPlugin.options.zipOptions.outFilePath,
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.mtime,
+      getExpectedDefaultZipMtime(),
+    );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
+    assert(manifestPlugin.options.stats, 'Stats options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.stats.outFile,
+      BUNDLE_SIZE_SUMMARY_FILE,
+    );
+    assert.strictEqual(manifestPlugin.options.stats.debug, true);
+    assert.deepStrictEqual(manifestPlugin.options.html, [
+      { directory: join('html', 'ui'), category: 'ui' },
+      { directory: join('html', 'background'), category: 'background' },
+      { directory: join('html', 'other'), category: 'other' },
+    ]);
+
+    const htmlBundlerPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'HtmlBundlerPlugin',
+    );
+    assert(htmlBundlerPlugin, 'HtmlBundlerPlugin should be present');
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -362,9 +494,25 @@ ${Object.entries(env)
     );
   });
 
+  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', () => {
+    const config: Configuration = getWebpackConfig(['--zip'], {
+      SOURCE_DATE_EPOCH: '1711141205',
+    });
+    const instance = getWebpackInstance(config);
+    const manifestPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<true>;
+
+    assert(manifestPlugin, 'Manifest plugin should be present');
+    assert.strictEqual(manifestPlugin.options.zip, true);
+    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 1711141205000);
+  });
+
   it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
     const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
     const instance = getWebpackInstance(config);
+    const stats = instance.options.stats as { preset: string };
+    assert.strictEqual(stats.preset, 'none');
     const bundleAnalyzerPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
@@ -494,15 +642,34 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
+  it('includes the resolved zip mtime in the dry-run message when zipping', () => {
+    const exit = mock.method(process, 'exit', noop, { times: 1 });
+    const error = mock.method(console, 'error', noop, { times: 1 });
+
+    getWebpackConfig(['--zip', '--dry-run'], {
+      SOURCE_DATE_EPOCH: '1711141205',
     });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
+
+    assert.strictEqual(error.mock.calls.length, 1);
+    assert.match(
+      error.mock.calls[0].arguments[0] as string,
+      /Zip mtime: 1711141205000 \(2024-03-22T21:00:05\.000Z\)/u,
     );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
+
+    assert.strictEqual(exit.mock.calls.length, 1);
+    assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
+  });
+
+  it('validates SOURCE_DATE_EPOCH during zip dry-run', () => {
+    assert.throws(
+      () =>
+        getWebpackConfig(['--zip', '--dry-run'], {
+          SOURCE_DATE_EPOCH: '0',
+        }),
+      {
+        message:
+          /Invalid SOURCE_DATE_EPOCH value "0": expected a Unix timestamp in seconds greater than or equal to 315532800 and less than 4102444800/u,
+      },
+    );
   });
 });

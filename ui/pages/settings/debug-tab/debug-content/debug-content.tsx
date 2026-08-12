@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -21,40 +21,52 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   perpsToggleTestnet,
   resetOnboarding,
   resetViewedNotifications,
-  setServiceWorkerKeepAlivePreference,
 } from '../../../../store/actions';
 import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
+import { useDispatch } from '../../../../store/hooks';
 import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
+const PAGE_CRASH_ERROR_MESSAGE =
+  'Unable to find value of key "debug" for locale "en"';
+
+type PageCrashTriggerProps = {
+  shouldCrash: boolean;
+};
+
+// Throws during render when armed. Prefer this over flushSync + locale
+// corruption: createRoot can batch the locale update such that the error
+// page never mounts for E2E.
+const PageCrashTrigger = ({ shouldCrash }: PageCrashTriggerProps) => {
+  if (shouldCrash) {
+    throw new Error(PAGE_CRASH_ERROR_MESSAGE);
+  }
+
+  return null;
+};
+
 const DebugContent = () => {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // This translation call is only required for the "Generate Page Crash" test button.
-  // The crash mechanism works by setting 'debug' to undefined in the locale,
-  // which causes this t() call to throw an error that triggers the error boundary.
-  t('debug');
+  const [shouldCrashPage, setShouldCrashPage] = useState(false);
+  const triggerPageCrash = useCallback(() => {
+    setShouldCrashPage(true);
+  }, []);
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
-  const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
-    useState(true);
 
   const handleResetAnnouncementClick = useCallback((): void => {
     resetViewedNotifications();
@@ -77,13 +89,6 @@ const DebugContent = () => {
       navigate(backUpSRPRoute);
     }
   }, [dispatch, navigate]);
-
-  const handleToggleServiceWorkerAlive = async (
-    value: boolean,
-  ): Promise<void> => {
-    await dispatch(setServiceWorkerKeepAlivePreference(value));
-    setIsServiceWorkerKeptAlive(value);
-  };
 
   const renderAnnouncementReset = () => {
     return (
@@ -154,8 +159,6 @@ const DebugContent = () => {
         <div className="settings-page__content-item-col">
           <Button
             variant={ButtonVariant.Primary}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleResetOnboardingClick}
           >
             Reset
@@ -179,20 +182,6 @@ const DebugContent = () => {
           </Box>
         </div>
       </Box>
-    );
-  };
-
-  const renderServiceWorkerKeepAliveToggle = () => {
-    return (
-      <ToggleRow
-        title="Service Worker Keep Alive"
-        description="Results in a timestamp being continuously saved to session.storage"
-        isEnabled={isServiceWorkerKeptAlive}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
-        dataTestId="developer-options-service-worker-alive-toggle"
-      />
     );
   };
 
@@ -239,6 +228,7 @@ const DebugContent = () => {
 
   return (
     <div className="settings-page__body">
+      <PageCrashTrigger shouldCrash={shouldCrashPage} />
       <Text className="settings-page__security-tab-sub-header__bold">
         States
       </Text>
@@ -263,7 +253,6 @@ const DebugContent = () => {
       <div className="settings-page__content-padded">
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
-        {renderServiceWorkerKeepAliveToggle()}
         {process.env.METAMASK_DEBUG && (
           <ToggleRow
             title="Perps Testnet"
@@ -277,7 +266,7 @@ const DebugContent = () => {
       </div>
 
       <BackupAndSyncDevSettings />
-      <SentryTest />
+      <SentryTest triggerPageCrash={triggerPageCrash} />
       <hr />
       <MigrateToSplitStateTest />
       <hr />

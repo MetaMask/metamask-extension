@@ -2,11 +2,11 @@ import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class PhishingWarningPage {
-  private readonly driver: Driver;
-
   private readonly backToSafetyButton = {
     text: 'Back to safety',
   };
+
+  private readonly driver: Driver;
 
   private readonly iframeSelector = 'iframe';
 

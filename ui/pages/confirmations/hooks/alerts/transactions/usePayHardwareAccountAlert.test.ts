@@ -18,70 +18,66 @@ import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
 
-function createHardwareAccountState(keyringType: string) {
+function buildAccountState(keyringType: string) {
+  return {
+    internalAccounts: {
+      accounts: {
+        [HARDWARE_ACCOUNT_ID]: {
+          address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+          id: HARDWARE_ACCOUNT_ID,
+          metadata: {
+            importTime: 0,
+            name: 'Hardware Account',
+            keyring: { type: keyringType },
+            lastSelected: 0,
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          scopes: ['eip155:0'],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: HARDWARE_ACCOUNT_ID,
+    },
+    accountIdByAddress: {
+      [CONTRACT_INTERACTION_SENDER_ADDRESS]: HARDWARE_ACCOUNT_ID,
+    },
+  };
+}
+
+function buildState(keyringType: string, flagEnabled: boolean) {
   return {
     metamask: {
-      internalAccounts: {
-        accounts: {
-          [HARDWARE_ACCOUNT_ID]: {
-            address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-            id: HARDWARE_ACCOUNT_ID,
-            metadata: {
-              importTime: 0,
-              name: 'Hardware Account',
-              keyring: {
-                type: keyringType,
-              },
-              lastSelected: 0,
-            },
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            scopes: ['eip155:0'],
-            type: 'eip155:eoa',
-          },
-        },
-        selectedAccount: HARDWARE_ACCOUNT_ID,
-      },
-      accountIdByAddress: {
-        [CONTRACT_INTERACTION_SENDER_ADDRESS]: HARDWARE_ACCOUNT_ID,
+      ...buildAccountState(keyringType),
+      remoteFeatureFlags: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_hardware: { enabled: flagEnabled },
       },
     },
   };
 }
 
-function runHookWithMusdConversion(keyringType: string = 'HD Key Tree') {
+function runHook(
+  transactionType: TransactionType,
+  keyringType: string,
+  flagEnabled: boolean,
+) {
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
     }),
-    type: TransactionType.musdConversion,
+    type: transactionType,
   };
 
   const state = getMockConfirmStateForTransaction(
     transaction,
-    createHardwareAccountState(keyringType),
-  );
-
-  return renderHookWithConfirmContextProvider(
-    () => usePayHardwareAccountAlert(),
-    state,
-  );
-}
-
-function runHookWithContractInteraction(keyringType: string) {
-  const transaction = genUnapprovedContractInteractionConfirmation({
-    address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
-  });
-
-  const state = getMockConfirmStateForTransaction(
-    transaction,
-    createHardwareAccountState(keyringType),
+    buildState(keyringType, flagEnabled),
   );
 
   return renderHookWithConfirmContextProvider(
@@ -91,11 +87,9 @@ function runHookWithContractInteraction(keyringType: string) {
 }
 
 function runHookWithoutTransaction() {
-  const state = getMockConfirmState();
-
   return renderHookWithConfirmContextProvider(
     () => usePayHardwareAccountAlert(),
-    state,
+    getMockConfirmState(),
   );
 }
 
@@ -109,47 +103,125 @@ const EXPECTED_ALERT = {
 };
 
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert for Ledger account on musdConversion', async () => {
-    const { result } = runHookWithMusdConversion(KeyringTypes.ledger);
+  // predictDeposit and predictWithdraw are in PAY_HARDWARE_ALERT_TRANSACTION_TYPES
+  // but are not yet in REDESIGN_USER_TRANSACTION_TYPES (confirmation.utils.ts),
+  // so currentConfirmation is undefined for those types and the hook cannot fire.
+  // Tests below cover the types that go through the redesigned confirmation flow.
+  describe('PAY_HARDWARE_ALERT_TRANSACTION_TYPES — always blocked regardless of flag', () => {
+    const alwaysBlockedTypes = [
+      TransactionType.perpsDeposit,
+      TransactionType.perpsWithdraw,
+    ];
 
-    await waitFor(() => {
-      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    for (const txType of alwaysBlockedTypes) {
+      it(`returns alert for ${txType} when flag is enabled`, async () => {
+        const { result } = runHook(txType, KeyringTypes.ledger, true);
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+        });
+      });
+
+      it(`returns alert for ${txType} when flag is disabled`, async () => {
+        const { result } = runHook(txType, KeyringTypes.ledger, false);
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+        });
+      });
+
+      it(`returns no alert for ${txType} when non-hardware wallet`, async () => {
+        const { result } = runHook(txType, 'HD Key Tree', true);
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([]);
+        });
+      });
+    }
+  });
+
+  describe('PAY_HARDWARE_FLAG_GATED_TYPES — blocked only when flag is disabled', () => {
+    it('returns alert for musdConversion when flag is disabled', async () => {
+      const { result } = runHook(
+        TransactionType.musdConversion,
+        KeyringTypes.ledger,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
+
+    it('returns no alert for musdConversion when flag is enabled', async () => {
+      const { result } = runHook(
+        TransactionType.musdConversion,
+        KeyringTypes.ledger,
+        true,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
+    });
+
+    it('returns no alert for musdConversion with non-hardware wallet regardless of flag', async () => {
+      const { result } = runHook(
+        TransactionType.musdConversion,
+        'HD Key Tree',
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
     });
   });
 
-  it('returns alert for Trezor account on musdConversion', async () => {
-    const { result } = runHookWithMusdConversion(KeyringTypes.trezor);
+  describe('hardware wallet keyring types', () => {
+    it('returns alert for Ledger', async () => {
+      const { result } = runHook(
+        TransactionType.perpsDeposit,
+        KeyringTypes.ledger,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
 
-    await waitFor(() => {
-      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    it('returns alert for Trezor', async () => {
+      const { result } = runHook(
+        TransactionType.perpsDeposit,
+        KeyringTypes.trezor,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
+
+    it('returns alert for Lattice', async () => {
+      const { result } = runHook(
+        TransactionType.perpsDeposit,
+        KeyringTypes.lattice,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
     });
   });
 
-  it('returns alert for Lattice account on musdConversion', async () => {
-    const { result } = runHookWithMusdConversion(KeyringTypes.lattice);
-
-    await waitFor(() => {
-      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-    });
-  });
-
-  it('returns no alert for non-hardware wallet account on musdConversion', () => {
-    const { result } = runHookWithMusdConversion('HD Key Tree');
-
-    expect(result.current).toStrictEqual([]);
-  });
-
-  it('returns no alert for hardware wallet on contractInteraction', async () => {
-    const { result } = runHookWithContractInteraction(KeyringTypes.ledger);
-
-    await waitFor(() => {
-      expect(result.current).toStrictEqual([]);
+  describe('non-applicable transaction types', () => {
+    it('returns no alert for contractInteraction with hardware wallet', async () => {
+      const { result } = runHook(
+        TransactionType.contractInteraction,
+        KeyringTypes.ledger,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
     });
   });
 
   it('returns no alert if there is no current confirmation', () => {
     const { result } = runHookWithoutTransaction();
-
     expect(result.current).toStrictEqual([]);
   });
 });

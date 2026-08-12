@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rampsPaymentMethodsKeys includes fiat and assetId in the detail key 1`] = `
+[
+  "ramps",
+  "paymentMethods",
+  "us",
+  "usd",
+  "eip155:1/slip44:60",
+  "transak",
+]
+`;
+
+exports[`rampsPaymentMethodsOptions loads payment methods from the controller action 1`] = `
+[
+  {
+    "id": "credit_debit_card",
+    "name": "Card",
+  },
+]
+`;

@@ -1,5 +1,7 @@
 import { strict as assert } from 'assert';
 import {
+  DAPP_HOST_ADDRESS,
+  DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
   DAPP_URL,
   DEFAULT_FIXTURE_ACCOUNT,
@@ -8,8 +10,8 @@ import {
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
+import { confirmConnectAndUpdateSiteNetworks } from '../page-objects/flows/connect.flow';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
-import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
@@ -144,26 +146,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.switchToWindowWithUrl(DAPP_URL);
         await dappOne.checkPageIsLoaded();
         await dappOne.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const connectAccountConfirmationDappOne =
-          new ConnectAccountConfirmation(driver);
-        await connectAccountConfirmationDappOne.checkPageIsLoaded();
-        await connectAccountConfirmationDappOne.goToPermissionsTab();
-        await connectAccountConfirmationDappOne.openEditNetworksModal();
-
-        // Disconnect Localhost 8545 and connect to Dapp One
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmationDappOne.checkPageIsLoaded();
-        await connectAccountConfirmationDappOne.confirmConnect();
+        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_HOST_ADDRESS, [
+          {
+            networkName: 'Localhost 8545',
+            shouldBeSelected: false,
+          },
+        ]);
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -259,27 +248,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await dappTwo.checkPageIsLoaded();
         await dappTwo.clickConnectAccountButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
 
-        // Click the edit button for networks and disconnect Localhost 8545
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-          driver,
-        );
-        await networkPermissionSelectModal.checkPageIsLoaded();
-        await networkPermissionSelectModal.selectNetwork({
-          networkName: 'Localhost 8545',
-          shouldBeSelected: false,
-        });
-        await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await confirmConnectAndUpdateSiteNetworks(driver, DAPP_ONE_ADDRESS, [
+          {
+            networkName: 'Localhost 8545',
+            shouldBeSelected: false,
+          },
+        ]);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);

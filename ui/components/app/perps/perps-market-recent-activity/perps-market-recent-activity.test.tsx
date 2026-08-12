@@ -87,7 +87,9 @@ describe('PerpsMarketRecentActivity', () => {
         mockStore,
       );
 
-      const skeletons = container.querySelectorAll('.mm-skeleton');
+      const skeletons = container.querySelectorAll(
+        '[data-testid="perps-recent-activity-skeleton"]',
+      );
       expect(skeletons.length).toBe(3);
     });
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   ButtonIcon,
@@ -8,13 +8,13 @@ import {
   IconColor,
   IconSize,
 } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getPasskeyDerivationMethod } from '../../../selectors';
 
 export type UnlockPasskeyIconButtonProps = {
@@ -28,21 +28,22 @@ export const UnlockPasskeyIconButton = ({
 }: UnlockPasskeyIconButtonProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const handleClick = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyUnlockInteracted,
-      properties: {
-        status: 'passkey_icon_clicked',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        derivation_method: passkeyDerivationMethod,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          status: 'passkey_icon_clicked',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+        })
+        .build(),
+    );
     onClick();
-  }, [onClick, passkeyDerivationMethod, trackEvent]);
+  }, [onClick, passkeyDerivationMethod, trackEvent, createEventBuilder]);
 
   return (
     <ButtonIcon
