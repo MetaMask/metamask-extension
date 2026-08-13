@@ -1,4 +1,5 @@
 export enum AlertsName {
+  AccountNoFunds = 'accountNoFunds',
   AddressPoisoning = 'address_poisoning',
   GasEstimateFailed = 'gasEstimateFailed',
   GasFeeLow = 'gasFeeLow',

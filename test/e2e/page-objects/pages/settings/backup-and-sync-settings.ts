@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings → Backup and sync: account / contact sync toggles.
+ *
+ * Screen: `#/settings/backup-and-sync`, reached from
+ * `SettingsPage.goToBackupAndSyncSettings`.
+ * Owns: page load checks and toggling backup-and-sync, account sync, and
+ * contact sync.
+ * Boundaries: toggle surface only. QR sync / add-wallet flows belong to
+ * `SyncAccountsSettingsPage`; contact CRUD belongs to `ContactsSettings`.
+ * Related: `SettingsPage`, `SyncAccountsSettingsPage`, `ContactsSettings`.
+ *
+ * @see ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.tsx
+ */
 class BackupAndSyncSettings {
   private readonly accountSyncToggle =
     '[data-testid="account-syncing-toggle-container"]';

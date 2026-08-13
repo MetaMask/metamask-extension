@@ -615,9 +615,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht"
   },
-  "backupApprovalInfo": {
-    "message": "Tá an cód rúnda seo ag teastáil chun do sparán a aisghabháil i gcás go gcaillfidh tú do ghléas, go ndéanfaidh tú dearmad ar do phasfhocal, go gcaithfidh tú MetaMask a athshuiteáil, nó más mian leat rochtain a fháil ar do sparán ar ghléas eile."
-  },
   "backupApprovalNotice": {
     "message": "Déan cúltaca de do Rúnd-Frása Aisghabhála chun do sparán agus do chistí a choinneáil slán."
   },
@@ -1720,9 +1717,6 @@
   },
   "editNonceMessage": {
     "message": "Is gné ardteicneolaíochta í seo, bain úsáid as go cúramach."
-  },
-  "editPermissions": {
-    "message": "Ceadanna a chur in eagar"
   },
   "editSpendingCap": {
     "message": "Cuir an teorainn caiteachais in eagar"
@@ -3908,9 +3902,6 @@
   "permitSimulationDetailInfo": {
     "message": "Tá tú ag tabhairt cead don chaiteoir an líon seo comharthaí a chaitheamh ó do chuntas."
   },
-  "permittedChainToastUpdate": {
-    "message": "Tá rochtain ag $1 ar $2."
-  },
   "personalAddressDetected": {
     "message": "Seoladh pearsanta braite. Cuir isteach seoladh an chonartha comhartha."
   },
@@ -4346,9 +4337,6 @@
   },
   "select": {
     "message": "Roghnaigh"
-  },
-  "selectAccountToConnect": {
-    "message": "Roghnaigh cuntas le ceangal"
   },
   "selectAll": {
     "message": "Roghnaigh gach rud"

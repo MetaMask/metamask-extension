@@ -8,7 +8,7 @@
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 8px;
-    row-gap: 4px;
+    row-gap: 8px;
     padding-top: 8px;
     padding-bottom: 8px;
 
@@ -41,12 +41,10 @@
       }
     }
 
-    .mm-text-field.mm-text-field--target-index {
-      outline: 5px auto var(--color-primary-default);
-    }
-
+    .mm-text-field.mm-text-field--target-index,
     .mm-text-field.mm-text-field--focused {
-      outline: 5px auto var(--color-primary-default);
+      outline: none;
+      border-color: var(--color-icon-default);
     }
 
     .mm-input {
