@@ -12,7 +12,7 @@ exports[`No Connections Content should render correctly 1`] = `
       width="72"
     />
     <p
-      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      class="text-default text-s-body-lg leading-s-body-lg tracking-s-body-lg md:text-l-body-lg md:leading-l-body-lg md:tracking-l-body-lg font-medium font-default"
     >
       Nothing to see here
     </p>
