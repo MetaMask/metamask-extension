@@ -153,6 +153,11 @@ export const GatorPermissionsPage = () => {
                 />
               </>
             )}
+            {totalSitesConnections > 0 && totalGatorPermissions > 0 && (
+              <Box className="w-full px-4">
+                <hr className="m-0 w-full border-0 border-t border-muted" />
+              </Box>
+            )}
             {totalGatorPermissions > 0 && (
               <>
                 <Text

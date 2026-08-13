@@ -92,6 +92,13 @@ exports[`Gator Permissions Page render renders correctly 1`] = `
               </div>
             </div>
           </button>
+          <div
+            class="w-full px-4"
+          >
+            <hr
+              class="m-0 w-full border-0 border-t border-muted"
+            />
+          </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default pl-4"
           >
