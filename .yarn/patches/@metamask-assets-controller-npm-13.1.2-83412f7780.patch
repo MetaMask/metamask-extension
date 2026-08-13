@@ -1,38 +1,26 @@
 diff --git a/dist/data-sources/AccountsApiDataSource.cjs b/dist/data-sources/AccountsApiDataSource.cjs
-index bf8742cc220732a274d1f40e20d2a9b2a1dbca66..7109eaa80c60bedafc1fd3114f8e4debe55eac57 100644
+index bf8742cc220732a274d1f40e20d2a9b2a1dbca66..2fe7a3b92055ba6705d944d0c9ef15e876db8cdf 100644
 --- a/dist/data-sources/AccountsApiDataSource.cjs
 +++ b/dist/data-sources/AccountsApiDataSource.cjs
-@@ -186,9 +186,11 @@ class AccountsApiDataSource extends AbstractDataSource_js_1.AbstractDataSource {
-             if (accountIds.length === 0) {
+@@ -187,7 +187,7 @@ class AccountsApiDataSource extends AbstractDataSource_js_1.AbstractDataSource {
                  return response;
              }
--            const fetchOptions = request.forceUpdate
+             const fetchOptions = request.forceUpdate
 -                ? { staleTime: 100, gcTime: 100 }
--                : undefined;
-+            // Balances must never be served from the TanStack cache in any flow:
-+            // invalidate cached balance queries first, then fetch with
-+            // staleTime/gcTime 0 so the response is neither read back nor retained.
-+            const fetchOptions = { staleTime: 0, gcTime: 0 };
-+            await __classPrivateFieldGet(this, _AccountsApiDataSource_apiClient, "f").accounts.invalidateBalances();
++                ? { staleTime: 0, gcTime: 0 }
+                 : undefined;
              // Feature-flagged: v6 endpoint with a fallback to legacy v5. The flag is
              // read here (not cached) so a runtime toggle can revert v6 -> v5.
-             const { unprocessedNetworks, assetsBalance } = __classPrivateFieldGet(this, _AccountsApiDataSource_instances, "m", _AccountsApiDataSource_isBalanceV6Enabled).call(this)
 diff --git a/dist/data-sources/AccountsApiDataSource.mjs b/dist/data-sources/AccountsApiDataSource.mjs
-index fe209d53cd62299cb5e53c1685ed29d792fe5530..be4e57c0983394d5da145bbf377fd3def44eb001 100644
+index fe209d53cd62299cb5e53c1685ed29d792fe5530..762ab07e282e6b46e90bd4384098c902f1f29230 100644
 --- a/dist/data-sources/AccountsApiDataSource.mjs
 +++ b/dist/data-sources/AccountsApiDataSource.mjs
-@@ -182,9 +182,11 @@ export class AccountsApiDataSource extends AbstractDataSource {
-             if (accountIds.length === 0) {
+@@ -183,7 +183,7 @@ export class AccountsApiDataSource extends AbstractDataSource {
                  return response;
              }
--            const fetchOptions = request.forceUpdate
+             const fetchOptions = request.forceUpdate
 -                ? { staleTime: 100, gcTime: 100 }
--                : undefined;
-+            // Balances must never be served from the TanStack cache in any flow:
-+            // invalidate cached balance queries first, then fetch with
-+            // staleTime/gcTime 0 so the response is neither read back nor retained.
-+            const fetchOptions = { staleTime: 0, gcTime: 0 };
-+            await __classPrivateFieldGet(this, _AccountsApiDataSource_apiClient, "f").accounts.invalidateBalances();
++                ? { staleTime: 0, gcTime: 0 }
+                 : undefined;
              // Feature-flagged: v6 endpoint with a fallback to legacy v5. The flag is
              // read here (not cached) so a runtime toggle can revert v6 -> v5.
-             const { unprocessedNetworks, assetsBalance } = __classPrivateFieldGet(this, _AccountsApiDataSource_instances, "m", _AccountsApiDataSource_isBalanceV6Enabled).call(this)
