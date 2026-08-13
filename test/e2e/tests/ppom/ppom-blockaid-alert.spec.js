@@ -58,7 +58,7 @@ const testMaliciousConfigs = [
     btnSelector: '#maliciousPermit',
     expectedTitle: 'High-risk approval',
     expectedDescription:
-      "You're giving another address permission to move your assets.",
+      "You're giving an address flagged by security partners permission to move your assets.",
     expectedReason: 'permit_farming',
   },
   {
@@ -72,7 +72,7 @@ const testMaliciousConfigs = [
     btnSelector: '#maliciousSeaport',
     expectedTitle: 'High-risk approval',
     expectedDescription:
-      "You're giving another address permission to move your assets listed on OpenSea.",
+      "You're giving an address flagged by security partners permission to move your assets listed on OpenSea.",
     expectedReason: 'seaport_farming',
   },
   {

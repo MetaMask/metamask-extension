@@ -2070,7 +2070,7 @@
     "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "You're giving another address permission to move your assets."
+    "message": "You're giving an address flagged by security partners permission to move your assets."
   },
   "blockaidDescriptionErrored": {
     "message": "We couldn't complete this safety check. Continue only if you trust the site and addresses involved."
@@ -2086,7 +2086,7 @@
     "description": "$1 is the formatted fiat value at risk"
   },
   "blockaidDescriptionMarketplaceFarming": {
-    "message": "You're giving another address permission to move your assets listed on $1.",
+    "message": "You're giving an address flagged by security partners permission to move your assets listed on $1.",
     "description": "$1 is a marketplace name such as OpenSea or Blur"
   },
   "blockaidDescriptionRiskSignals": {
