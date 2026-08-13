@@ -1,5 +1,8 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { merge } from 'lodash';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { DEFAULT_VALIDATION_ERRORS } from '../../../../test/data/bridge/mock-bridge-store';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -15,6 +18,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { BannerAlertSeverity } from '../../../components/component-library';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
@@ -518,7 +522,9 @@ describe('useBridgeAlerts', () => {
     });
 
     it('adds insufficient-native-reserve to bannerAlerts when insufficientNativeReserveError is present even when a quote is loading', () => {
-      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest
+        .mocked(getBridgeQuotes)
+        .mockReturnValue({ ...MOCK_GET_BRIDGE_QUOTES, isLoading: true });
       jest.mocked(getActiveQuotePriceData).mockReturnValue({
         priceImpact: { amount: '0.05' },
       });

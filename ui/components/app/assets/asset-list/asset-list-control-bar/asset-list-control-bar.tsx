@@ -52,6 +52,7 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -164,6 +165,8 @@ const AssetListControlBar = ({
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
     useState(false);
+  const { value: isNetworkSwitchPending, setValue: setIsNetworkSwitchPending } =
+    useBoolean();
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
@@ -395,6 +398,8 @@ const AssetListControlBar = ({
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
+          loading={isNetworkSwitchPending}
+          disabled={isNetworkSwitchPending}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
@@ -494,6 +499,7 @@ const AssetListControlBar = ({
         <HomeNetworkFilterModal
           isOpen={isNetworkFilterModalOpen}
           onClose={closePopover}
+          onPendingChange={setIsNetworkSwitchPending}
         />
       )}
 

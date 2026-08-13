@@ -161,7 +161,6 @@ export const CustomAmountInfo = React.memo(
             amountFiat={amountFiat}
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
-            hasTokens={hasTokens}
           />
         )}
       </Box>
@@ -265,12 +264,10 @@ function BottomContainer({
   amountFiat,
   disablePay,
   displayAccountRow,
-  hasTokens,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
-  hasTokens: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady();
@@ -287,7 +284,9 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
-      {disablePay !== true && hasTokens && <PayWithRow />}
+      {/* Keep mounted while funding tokens load after account override so the
+          selector does not unmount for the reselect wait, then remount. */}
+      {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
           <BridgeFeeRow

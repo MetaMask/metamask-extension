@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -63,6 +63,11 @@ jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
     '../../components/multichain/networks-form/use-safe-chains',
   ),
   useSafeChains: () => ({ safeChains: mockSafeChains }),
+}));
+
+const mockJsonRpcRequest = jest.fn().mockResolvedValue('0x1');
+jest.mock('../../../shared/lib/rpc.utils', () => ({
+  jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 
 jest.mock('../../components/ui/toggle-button', () => {
@@ -580,9 +585,11 @@ describe('NetworksPage', () => {
       'Add URL',
     );
 
-    await userEvent.type(
-      screen.getByTestId('rpc-url-input-test'),
-      'https://new-rpc.example.com',
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 

@@ -8,6 +8,21 @@ const SECTION_TITLES = [
 ] as const;
 type SectionTitle = (typeof SECTION_TITLES)[number];
 
+/**
+ * Bitcoin native / token asset details: balance sections, chart, and CTAs.
+ *
+ * Screen: `#/asset/:chainId/:asset?/:id?` for Bitcoin assets.
+ * Owns: standard section titles (balance, token/market details, activity),
+ * price chart/header presence, action-button visibility (send/swap/receive),
+ * and asserting staked balance is absent.
+ * Boundaries: the asset details surface only. Send/swap/receive destinations
+ * belong to their own page objects once opened.
+ * Related: `TronAssetDetailsPage` (same asset shell for Tron).
+ *
+ * @see ui/pages/asset/asset.tsx
+ * @see ui/pages/asset/components/asset-page.tsx
+ * @see ui/components/app/wallet-overview/coin-overview.tsx
+ */
 class BitcoinAssetDetailsPage {
   private driver: Driver;
 

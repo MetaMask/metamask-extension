@@ -343,10 +343,7 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
-  feature3: {
-    name: 'groupA',
-    value: 'valueA',
-  },
+  feature3: 'valueA',
 };
 
 /* Mock customized remote feature flags response*/
