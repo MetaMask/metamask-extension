@@ -2321,6 +2321,7 @@ async function applyToolbarSidePanelBehavior() {
   await browser.sidePanel.setPanelBehavior({
     openPanelOnActionClick: useSidePanelAsDefault,
   });
+  // Keep the persisted action popup aligned with the selected viewport.
   await browser.action?.setPopup?.({
     popup: useSidePanelAsDefault ? '' : 'popup-init.html',
   });

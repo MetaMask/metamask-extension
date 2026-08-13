@@ -4349,6 +4349,7 @@ export function toggleDefaultView(): ThunkAction<
     try {
       if (isSidepanel) {
         await dispatch(setUseSidePanelAsDefault(false));
+        // Restore the popup for future toolbar clicks.
         await setActionPopup('popup-init.html');
         window.close();
         return;
@@ -4394,6 +4395,7 @@ export function toggleDefaultView(): ThunkAction<
         // honors the side panel choice and the background toolbar-behavior
         // subscription flips to open-on-click.
         await dispatch(setUseSidePanelAsDefault(true));
+        // Disable the popup so future toolbar clicks open the sidepanel.
         await setActionPopup('');
         window.close();
       }
