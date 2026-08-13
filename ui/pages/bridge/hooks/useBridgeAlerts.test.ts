@@ -1,4 +1,5 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { BannerAlertSeverity } from '@metamask/design-system-react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -14,7 +15,6 @@ import {
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { BannerAlertSeverity } from '../../../components/component-library';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
