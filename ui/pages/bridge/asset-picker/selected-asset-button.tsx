@@ -13,25 +13,25 @@ import {
 import {
   SelectButtonProps,
   SelectButtonSize,
-} from '../../../../../components/component-library/select-button/select-button.types';
+} from '../../../components/component-library/select-button/select-button.types';
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
-} from '../../../../../helpers/constants/design-system';
-import { BridgeToken } from '../../../../../ducks/bridge/types';
+} from '../../../helpers/constants/design-system';
+import { BridgeToken } from '../../../ducks/bridge/types';
 import {
   IconName,
   Label,
   SelectButton,
-} from '../../../../../components/component-library';
+} from '../../../components/component-library';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../../../shared/constants/bridge';
-import { useAssetSecurityData } from '../../../hooks/useAssetSecurityData';
+} from '../../../../shared/constants/bridge';
+import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
 
 export const SelectedAssetButton = ({
   asset,
