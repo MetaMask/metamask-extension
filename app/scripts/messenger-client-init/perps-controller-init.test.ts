@@ -119,6 +119,8 @@ jest.mock('@metamask/perps-controller', () => {
       clearPendingTransactionRequests: jest.fn(),
       saveOrderBookGrouping: jest.fn(),
       getOrderBookGrouping: jest.fn(),
+      getProLayoutPreferences: jest.fn(),
+      setProLayoutPreferences: jest.fn(),
       getMaxSlippage: jest.fn(),
       setMaxSlippage: jest.fn(),
       getActiveProvider: jest.fn().mockReturnValue({
@@ -612,6 +614,8 @@ describe('PerpsControllerInit', () => {
       ],
       ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
       ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
+      ['perpsGetProLayoutPreferences', 'getProLayoutPreferences'],
+      ['perpsSetProLayoutPreferences', 'setProLayoutPreferences'],
       ['perpsGetMaxSlippage', 'getMaxSlippage'],
       ['perpsSetMaxSlippage', 'setMaxSlippage'],
       ['perpsClearDepositResult', 'clearDepositResult'],
