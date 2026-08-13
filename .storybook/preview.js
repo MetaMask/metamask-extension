@@ -25,21 +25,6 @@ const queryClient = new QueryClient({
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 
-if (!globalThis.platform) {
-  globalThis.platform = {
-    getExtensionURL: (route = null, queryString = null) => {
-      let extensionURL = 'home.html';
-      if (route) {
-        extensionURL += `#${route}`;
-      }
-      if (queryString) {
-        extensionURL += `?${queryString}`;
-      }
-      return extensionURL;
-    },
-  };
-}
-
 export const parameters = {
   backgrounds: {
     default: 'default',
