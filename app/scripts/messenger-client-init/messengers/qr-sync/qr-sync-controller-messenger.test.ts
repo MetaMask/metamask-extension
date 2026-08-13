@@ -1,26 +1,24 @@
-import { Messenger } from '@metamask/messenger';
-import { getRootMessenger } from '../../../lib/messenger';
-import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
+import { Messenger } from "@metamask/messenger";
+import { getRootMessenger } from "../../../lib/messenger";
+import { getQrSyncControllerMessenger } from "./qr-sync-controller-messenger";
 
-describe('getQrSyncControllerMessenger', () => {
-  it('returns a restricted messenger', () => {
+describe("getQrSyncControllerMessenger", () => {
+  it("returns a restricted messenger", () => {
     const messenger = getRootMessenger<never, never>();
     const qrSyncControllerMessenger = getQrSyncControllerMessenger(messenger);
 
     expect(qrSyncControllerMessenger).toBeInstanceOf(Messenger);
   });
 
-  it('delegates AccountTreeController:exportState', () => {
+  it("delegates AccountTreeController:exportState", () => {
     const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
+    const delegateSpy = jest.spyOn(messenger, "delegate");
 
     getQrSyncControllerMessenger(messenger);
 
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        actions: expect.arrayContaining([
-          'AccountTreeController:exportState',
-        ]),
+        actions: expect.arrayContaining(["AccountTreeController:exportState"]),
       }),
     );
   });
