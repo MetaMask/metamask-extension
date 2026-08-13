@@ -26,6 +26,7 @@ export const PermissionsEmptyState = () => {
 
   return (
     <Box
+      data-testid="permissions-empty-state"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}

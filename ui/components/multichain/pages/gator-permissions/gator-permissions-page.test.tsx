@@ -4,7 +4,7 @@ import type { PermissionInfoWithMetadata } from '@metamask/gator-permissions-con
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import messages from '../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { GatorPermissionsPage } from './gator-permissions-page';
 
 const MOCK_CHAIN_ID = '0x1' as Hex;
