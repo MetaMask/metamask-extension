@@ -33,8 +33,7 @@ export const SendAlerts = () => {
     setUiState({ epochKey, userClosed: false });
   }
 
-  const userClosed =
-    uiState.epochKey === epochKey ? uiState.userClosed : false;
+  const userClosed = uiState.epochKey === epochKey ? uiState.userClosed : false;
   const isNetworkAlertOpen = Boolean(isNetworkUnreliable && !userClosed);
 
   const handleNetworkClose = useCallback(() => {
