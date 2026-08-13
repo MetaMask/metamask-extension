@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Это продвинутая функция, используйте ее с осторожностью."
   },
-  "editPermissions": {
-    "message": "Изменить разрешения"
-  },
   "editSpendingCap": {
     "message": "Изменить лимит расходов"
   },
@@ -6881,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Вы даете отправителю разрешение потратить такое количество токенов с вашего счета."
   },
-  "permittedChainToastUpdate": {
-    "message": "У $1 есть доступ к $2."
-  },
   "perps": {
     "message": "Перпы"
   },
@@ -9272,9 +9266,6 @@
   },
   "select": {
     "message": "Выбрать"
-  },
-  "selectAccountToConnect": {
-    "message": "Выберите счет для подключения"
   },
   "selectAll": {
     "message": "Выбрать все"

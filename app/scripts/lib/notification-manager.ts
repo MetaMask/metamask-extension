@@ -1,5 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
+import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../platforms/extension';
+import type { AppStateController } from '../controllers/app-state-controller';
 import {
   NOTIFICATION_HEIGHT,
   NOTIFICATION_WIDTH,
@@ -13,6 +15,22 @@ export const NOTIFICATION_MANAGER_EVENTS = {
  * A collection of methods for controlling the showing and hiding of the notification popup.
  */
 export default class NotificationManager extends EventEmitter {
+  platform: ExtensionPlatform;
+
+  /**
+   * Popup bookkeeping. The id and its setter are only ever assigned together,
+   * by `showPopup` — grouping them lets the compiler prove the setter is present
+   * wherever the id matched, instead of asserting or re-checking it.
+   */
+  _popup:
+    | {
+        id: number | undefined;
+        setCurrentPopupId: AppStateController['setCurrentPopupId'];
+      }
+    | undefined;
+
+  _popupAutomaticallyClosed: boolean | undefined;
+
   constructor() {
     super();
     this.platform = new ExtensionPlatform();
@@ -33,13 +51,16 @@ export default class NotificationManager extends EventEmitter {
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
    *
-   * @param {Function} setCurrentPopupId - setter of current popup id from appStateController
-   * @param {number} currentPopupId - id of current opened metamask popup window
+   * @param setCurrentPopupId - setter of current popup id from appStateController
+   * @param currentPopupId - id of current opened metamask popup window
    */
-  async showPopup(setCurrentPopupId, currentPopupId) {
-    this._popupId = currentPopupId;
-    this._setCurrentPopupId = setCurrentPopupId;
-    const popup = await this._getPopup(currentPopupId);
+  async showPopup(
+    setCurrentPopupId: AppStateController['setCurrentPopupId'],
+    currentPopupId: number | undefined,
+  ) {
+    const popupState = { id: currentPopupId, setCurrentPopupId };
+    this._popup = popupState;
+    const popup = await this._getPopup();
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup
@@ -51,11 +72,12 @@ export default class NotificationManager extends EventEmitter {
       try {
         const lastFocused = await this.platform.getLastFocusedWindow();
         // Position window in top right corner of lastFocused window.
-        top = lastFocused.top;
+        top = lastFocused.top ?? 0;
         // - this is to make sure no error is triggered from polyfill
         // error eg: Invalid value for bounds. Bounds must be at least 50% within visible screen space.
         left = Math.max(
-          lastFocused.left + (lastFocused.width - NOTIFICATION_WIDTH),
+          (lastFocused.left ?? 0) +
+            ((lastFocused.width ?? 0) - NOTIFICATION_WIDTH),
           0,
         );
       } catch (_) {
@@ -80,17 +102,17 @@ export default class NotificationManager extends EventEmitter {
       if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
         await this.platform.updateWindowPosition(popupWindow.id, left, top);
       }
-      // pass new created popup window id to appController setter
-      // and store the id to private variable this._popupId for future access
-      this._setCurrentPopupId(popupWindow.id);
-      this._popupId = popupWindow.id;
+      // Pass the new popup window id to the appController setter and keep it
+      // on the local popupState (also assigned to this._popup above).
+      popupState.setCurrentPopupId(popupWindow.id);
+      popupState.id = popupWindow.id;
     }
   }
 
-  _onWindowClosed(windowId) {
-    if (windowId === this._popupId) {
-      this._setCurrentPopupId(undefined);
-      this._popupId = undefined;
+  _onWindowClosed(windowId: number) {
+    if (this._popup && windowId === this._popup.id) {
+      this._popup.setCurrentPopupId(undefined);
+      this._popup.id = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,
       });
@@ -113,13 +135,13 @@ export default class NotificationManager extends EventEmitter {
    * Given an array of windows, returns the 'popup' that has been opened by MetaMask, or null if no such window exists.
    *
    * @private
-   * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
+   * @param windows - An array of objects containing data about the open MetaMask extension windows.
    */
-  _getPopupIn(windows) {
+  _getPopupIn(windows: browser.Windows.Window[] | undefined) {
     return windows
       ? windows.find((win) => {
           // Returns notification popup
-          return win && win.type === 'popup' && win.id === this._popupId;
+          return win && win.type === 'popup' && win.id === this._popup?.id;
         })
       : null;
   }
