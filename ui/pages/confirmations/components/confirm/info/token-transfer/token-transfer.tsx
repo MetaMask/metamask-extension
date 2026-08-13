@@ -1,7 +1,4 @@
-import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
@@ -10,6 +7,7 @@ import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import SendHeading from '../shared/send-heading/send-heading';
 import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
+import { useIsEnforcedSimulationsDisplayed } from '../../../../hooks/useIsEnforcedSimulationsDisplayed';
 import { TokenDetailsSection } from './token-details-section';
 import { TransactionFlowSection } from './transaction-flow-section';
 
@@ -18,9 +16,7 @@ const TokenTransferInfo = () => {
     useConfirmContext<TransactionMeta>();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
-  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
-    TransactionContainerType.EnforcedSimulations,
-  );
+  const isEnforcedSimulationsDisplayed = useIsEnforcedSimulationsDisplayed();
 
   return (
     <>
@@ -31,7 +27,7 @@ const TokenTransferInfo = () => {
         isTransactionsRedesign
         enableMetrics
         metricsOnly={isWalletInitiated}
-        sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
+        sectionMarginBottom={isEnforcedSimulationsDisplayed ? 2 : undefined}
       />
       <EnforcedSimulationsRow />
       <TokenDetailsSection />

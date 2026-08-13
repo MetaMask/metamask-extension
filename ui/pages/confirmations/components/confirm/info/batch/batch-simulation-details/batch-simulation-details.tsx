@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -19,10 +18,12 @@ import { TokenStandard } from '../../../../../../../../shared/constants/transact
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import { useIsEnforcedSimulationsDisplayed } from '../../../../../hooks/useIsEnforcedSimulationsDisplayed';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isEnforcedSimulationsDisplayed = useIsEnforcedSimulationsDisplayed();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -86,9 +87,6 @@ export function BatchSimulationDetails() {
     nestedTransactionIndexToEdit === undefined
       ? undefined
       : nestedTransactions?.[nestedTransactionIndexToEdit];
-  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
-    TransactionContainerType.EnforcedSimulations,
-  );
 
   return (
     <>
@@ -107,7 +105,7 @@ export function BatchSimulationDetails() {
             transaction={transactionMeta}
             staticRows={approveRows}
             isTransactionsRedesign
-            sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
+            sectionMarginBottom={isEnforcedSimulationsDisplayed ? 2 : undefined}
             enableMetrics
           />
         </>
