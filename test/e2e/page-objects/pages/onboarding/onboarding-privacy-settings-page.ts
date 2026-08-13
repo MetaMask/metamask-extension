@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Default privacy settings opened from the onboarding completion screen.
+ *
+ * Screen: `#/onboarding/privacy-settings`
+ * Owns: General / Assets / Security category navigation, basic-functionality
+ * and assets toggles, and adding a custom network during onboarding.
+ * Boundaries: this settings detour only. Returning to completion is via
+ * `navigateBackToOnboardingCompletePage`; finishing onboarding remains on
+ * `OnboardingCompletePage`.
+ * Related: entered from `OnboardingCompletePage.navigateToDefaultPrivacySettings`;
+ * returns to `OnboardingCompletePage`; `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/privacy-settings/privacy-settings.tsx
+ */
 class OnboardingPrivacySettingsPage {
   // General settings - add custom network section
   private readonly addCustomNetworkButton = {

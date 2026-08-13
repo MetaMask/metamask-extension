@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap transaction-insights panel embedded in a confirmation dialog.
+ *
+ * Screen: insight section under an open transaction/signature confirmation
+ * dialog, shown when an insights snap (e.g. Insights Example Snap) returns UI.
+ * Owns: insight title, snap UI address, and rendered insight text checks.
+ * Boundaries: only the snaps insight section. Confirm/reject of the parent
+ * confirmation belongs to confirmation page objects; snap install belongs to
+ * `SnapInstall`.
+ * Related: confirmation page objects under `pages/confirmations/`,
+ * `SnapInstall` for installing the insights snap.
+ *
+ * @see ui/pages/confirmations/components/confirm/snaps/snaps-section/snap-insight.tsx
+ */
 class SnapTxInsights {
   private driver: Driver;
 

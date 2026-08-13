@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-and-send transaction confirmation (snap custom UI
+ * footer).
+ *
+ * Screen: snap confirmation dialog with "Transaction request" header (not
+ * redesigned MetaMask `#/confirmation`).
+ * Owns: header/footer loaded checks, snap address and network display,
+ * security-alerts error copy, and confirm/cancel snap footer actions.
+ * Boundaries: snap sign-only transaction is `SnapSignTransactionConfirmation`.
+ * MetaMask redesigned txs are `TransactionConfirmation` and subclasses.
+ * Related: `SnapSignTransactionConfirmation`, `TransactionConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapTransactionConfirmation {
   private addressTestId = 'snap-ui-address';
 

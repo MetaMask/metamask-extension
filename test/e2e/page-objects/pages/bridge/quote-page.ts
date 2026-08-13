@@ -18,6 +18,26 @@ export type BridgeQuote = {
   unapproved?: boolean;
 };
 
+/**
+ * Unified SwapBridge prepare/quote UI: source/destination assets, amount, and
+ * submit.
+ *
+ * Screen: `#/cross-chain/swaps/prepare-bridge-page` (and the nested assets
+ * picker at `#/cross-chain/swaps/prepare-bridge-page/assets`).
+ * Owns: source/destination asset pickers and search, network selection in the
+ * picker, amount entry (including Max), quote fetch/ready checks, fee and
+ * price-impact messaging, insufficient-funds / geo-block states, slippage
+ * controls, and the bridge CTA / snap confirm footer used after submit.
+ * Boundaries: the prepare and quote surface. Post-submit redesigned
+ * confirmations and activity belong elsewhere; same-chain swap helpers that
+ * wrap this page live on `SwapPage`.
+ * Related: `SwapPage` (swap-oriented wrapper that delegates picker steps
+ * here); `flows/bridge.flow.ts` for end-to-end bridge journeys.
+ *
+ * @see ui/pages/bridge/index.tsx
+ * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
+ * @see test/e2e/page-objects/flows/bridge.flow.ts
+ */
 class BridgeQuotePage {
   public assetInfoIcon = (assetId: string) => ({
     tag: 'button' as const,
