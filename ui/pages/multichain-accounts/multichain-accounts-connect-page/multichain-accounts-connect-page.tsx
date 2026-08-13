@@ -38,6 +38,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useBoolean } from '../../../hooks/useBoolean';
 import { getPermissions } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
@@ -81,6 +82,8 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { ConnectionPermissionsList } from '../../../components/app/connection-permissions-list/connection-permissions-list';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { getAvatarType } from '../../../components/app/preferred-avatar/preferred-avatar';
+import { TrustSignalPill } from '../../../components/app/trust-signal-pill/trust-signal-pill';
+import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -202,6 +205,11 @@ export const MultichainAccountsConnectPage = ({
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const {
+    value: showRiskModal,
+    setTrue: openRiskModal,
+    setFalse: closeRiskModal,
+  } = useBoolean();
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
@@ -523,6 +531,9 @@ export const MultichainAccountsConnectPage = ({
   const { state: trustSignalState } = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
+  const isDangerousTrustSignal =
+    trustSignalState === TrustSignalDisplayState.Malicious ||
+    trustSignalState === TrustSignalDisplayState.Warning;
 
   const seedAddresses = useSelector((state) =>
     selectedAccountGroupIds.map((id) =>
@@ -557,131 +568,147 @@ export const MultichainAccountsConnectPage = ({
   ]);
 
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (
-    <Page
-      data-testid="connect-page"
-      className="main-container multichain-connect-page"
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      <Header paddingTop={12} paddingBottom={6}>
-        <Box className="flex justify-center mb-6">
-          {targetSubjectMetadata.iconUrl ? (
-            <AvatarFavicon
-              className="bg-muted"
-              size={AvatarFaviconSize.Lg}
-              src={targetSubjectMetadata.iconUrl}
-              name={title}
-            />
-          ) : (
-            <AvatarBase
-              size={AvatarBaseSize.Lg}
-              className="flex items-center justify-center text-alternative bg-muted border-0"
-            >
-              {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
-            </AvatarBase>
-          )}
-        </Box>
-        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-          <Text
-            variant={TextVariant.HeadingMd}
-            className="break-words whitespace-normal"
-          >
-            {title}
-          </Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>
-            {t('connectionDescription')}
-          </Text>
-        </Box>
-      </Header>
-
-      <Content
-        paddingLeft={4}
-        paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
-        gap={6}
+    <>
+      {showRiskModal && (
+        <TrustSignalModal
+          onContinue={() => {
+            closeRiskModal();
+            onConfirm();
+          }}
+          onCancel={closeRiskModal}
+        />
+      )}
+      <Page
+        data-testid="connect-page"
+        className="main-container multichain-connect-page"
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('account')}
-          </Text>
-          <Box
-            backgroundColor={BoxBackgroundColor.BackgroundMuted}
-            className="rounded-lg cursor-pointer"
-            data-testid="account-selection-section"
-          >
-            {singleAccountData && (
-              <SingleAccountCell
-                accountGroupId={singleAccountData.accountGroupId}
-                accountName={singleAccountData.accountName}
-                balance={singleAccountData.balance}
-                onEdit={setModeToEditAccounts}
-                privacyMode={privacyMode}
+        <Header paddingTop={12} paddingBottom={6}>
+          <Box className="flex justify-center mt-4 mb-6">
+            {targetSubjectMetadata.iconUrl ? (
+              <AvatarFavicon
+                className="bg-muted"
+                size={AvatarFaviconSize.Lg}
+                src={targetSubjectMetadata.iconUrl}
+                name={title}
               />
-            )}
-            {selectedAccountGroupIds.length > 1 && (
-              <MultiAccountRow
-                seedAddresses={seedAddresses}
-                onEdit={setModeToEditAccounts}
-                accountsCount={selectedAccountGroupIds.length}
-              />
+            ) : (
+              <AvatarBase
+                size={AvatarBaseSize.Lg}
+                className="flex items-center justify-center text-alternative bg-muted border-0"
+              >
+                {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
+              </AvatarBase>
             )}
           </Box>
-        </Box>
-        <ConnectionPermissionsList />
-      </Content>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Text
+              variant={TextVariant.HeadingMd}
+              className="break-words whitespace-normal"
+            >
+              {title}
+            </Text>
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
+            >
+              {t('connectionDescription')}
+            </Text>
+          </Box>
+          <Box className="flex justify-center mt-4">
+            <TrustSignalPill state={trustSignalState} />
+          </Box>
+        </Header>
 
-      <Footer>
-        <Box
-          className={`flex w-full gap-4 ${
-            trustSignalState === TrustSignalDisplayState.Malicious ||
-            trustSignalState === TrustSignalDisplayState.Warning
-              ? 'flex-col'
-              : 'flex-row'
-          }`}
+        <Content
+          paddingLeft={4}
+          paddingRight={4}
+          backgroundColor={BackgroundColor.transparent}
+          gap={6}
         >
-          {trustSignalState === TrustSignalDisplayState.Malicious ||
-          trustSignalState === TrustSignalDisplayState.Warning ? (
-            <>
-              <Button
-                size={ButtonSize.Lg}
-                data-testid="cancel-btn"
-                onClick={handleCancelConnection}
-              >
-                {t('backToSafety')}
-              </Button>
-              <Button
-                variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
-                data-testid="confirm-btn"
-                onClick={onConfirm}
-                isDanger
-              >
-                {t('continueAtYourOwnRisk')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                className="flex-1"
-                variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
-                data-testid="cancel-btn"
-                onClick={handleCancelConnection}
-              >
-                {t('cancel')}
-              </Button>
-              <Button
-                className="flex-1"
-                data-testid="confirm-btn"
-                size={ButtonSize.Lg}
-                onClick={onConfirm}
-              >
-                {t('connect')}
-              </Button>
-            </>
-          )}
-        </Box>
-      </Footer>
-    </Page>
+          <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('account')}
+            </Text>
+            <Box
+              backgroundColor={BoxBackgroundColor.BackgroundMuted}
+              className="rounded-lg cursor-pointer"
+              data-testid="account-selection-section"
+            >
+              {singleAccountData && (
+                <SingleAccountCell
+                  accountGroupId={singleAccountData.accountGroupId}
+                  accountName={singleAccountData.accountName}
+                  balance={singleAccountData.balance}
+                  onEdit={setModeToEditAccounts}
+                  privacyMode={privacyMode}
+                />
+              )}
+              {selectedAccountGroupIds.length > 1 && (
+                <MultiAccountRow
+                  seedAddresses={seedAddresses}
+                  onEdit={setModeToEditAccounts}
+                  accountsCount={selectedAccountGroupIds.length}
+                />
+              )}
+            </Box>
+          </Box>
+          <ConnectionPermissionsList />
+        </Content>
+
+        <Footer>
+          <Box
+            className={`flex w-full gap-4 ${
+              isDangerousTrustSignal ? 'flex-col' : 'flex-row'
+            }`}
+          >
+            {isDangerousTrustSignal ? (
+              <>
+                <Button
+                  size={ButtonSize.Lg}
+                  data-testid="cancel-btn"
+                  onClick={handleCancelConnection}
+                >
+                  {t('backToSafety')}
+                </Button>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Lg}
+                  data-testid="confirm-btn"
+                  onClick={openRiskModal}
+                  isDanger
+                >
+                  {t('continueAtYourOwnRisk')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="flex-1"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Lg}
+                  data-testid="cancel-btn"
+                  onClick={handleCancelConnection}
+                >
+                  {t('cancel')}
+                </Button>
+                <Button
+                  className="flex-1"
+                  data-testid="confirm-btn"
+                  size={ButtonSize.Lg}
+                  onClick={onConfirm}
+                >
+                  {t('connect')}
+                </Button>
+              </>
+            )}
+          </Box>
+        </Footer>
+      </Page>
+    </>
   ) : (
     <MultichainEditAccountsPage
       title={t('selectAccounts')}

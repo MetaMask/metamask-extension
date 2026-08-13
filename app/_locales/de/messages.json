@@ -11423,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask hat Probleme beim Starten."
   },
-  "trustSignalBlockDescription": {
-    "message": "Wenn Sie diese Website besuchen, könnten Sie all Ihre Assets verlieren."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Schadhafte Website erkannt"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Trotzdem verbinden"
-  },
   "tryAgain": {
     "message": "Erneut versuchen"
   },
