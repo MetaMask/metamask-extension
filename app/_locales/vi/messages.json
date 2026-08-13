@@ -851,50 +851,6 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Rút tiền dự đoán"
   },
-  "activity_rampBuy_failed_description": {
-    "message": "Mua thất bại"
-  },
-  "activity_rampBuy_failed_title": {
-    "message": "Mua thất bại"
-  },
-  "activity_rampBuy_pending_description": {
-    "message": "Đang mua $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_pending_title": {
-    "message": "Đang mua $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_description": {
-    "message": "Đã mua $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_title": {
-    "message": "Đã mua $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_failed_description": {
-    "message": "Bán thất bại"
-  },
-  "activity_rampSell_failed_title": {
-    "message": "Bán thất bại"
-  },
-  "activity_rampSell_pending_description": {
-    "message": "Đang bán $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_pending_title": {
-    "message": "Đang bán $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_description": {
-    "message": "Đã bán $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_title": {
-    "message": "Đã bán $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_receive_failed_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
@@ -3455,9 +3411,6 @@
   "disconnectAllSitesError": {
     "message": "Không thể ngắt kết nối một số dapp. Vui lòng thử lại."
   },
-  "disconnectAllSitesQuestion": {
-    "message": "Ngắt kết nối tất cả?"
-  },
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
   },
@@ -3466,9 +3419,6 @@
   },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
-  },
-  "disconnectQuestion": {
-    "message": "Ngắt kết nối?"
   },
   "disconnectThisAccount": {
     "message": "Ngắt kết nối tài khoản này"
@@ -8190,80 +8140,6 @@
   "rampsOnNetwork": {
     "message": "trên $1",
     "description": "$1 is the network name"
-  },
-  "rampsOrderDetailsBankDetails": {
-    "message": "Chi tiết chuyển khoản ngân hàng"
-  },
-  "rampsOrderDetailsBuyAgain": {
-    "message": "Mua lại"
-  },
-  "rampsOrderDetailsFees": {
-    "message": "Phí"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "Mã lệnh"
-  },
-  "rampsOrderDetailsPaidWith": {
-    "message": "Đã thanh toán bằng",
-    "description": "Label for the payment method used on a ramp order"
-  },
-  "rampsOrderDetailsProviderFee": {
-    "message": "Phí $1",
-    "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsTotal": {
-    "message": "Tổng cộng"
-  },
-  "rampsOrderDetailsViewOnProvider": {
-    "message": "Xem trên $1"
-  },
-  "rampsOrderToastFailedDescription": {
-    "message": "Đã xảy ra lỗi với lệnh của bạn.",
-    "description": "Description for the failed ramp buy order toast"
-  },
-  "rampsOrderToastFailedTitle": {
-    "message": "Mua thất bại",
-    "description": "Title for the failed ramp buy order toast"
-  },
-  "rampsOrderToastPendingDescription": {
-    "message": "Lệnh của bạn đang được xử lý.",
-    "description": "Description for the pending ramp buy order toast"
-  },
-  "rampsOrderToastPendingTitle": {
-    "message": "Đang mua",
-    "description": "Title for the pending ramp buy order toast"
-  },
-  "rampsOrderToastSellFailedDescription": {
-    "message": "Đã xảy ra lỗi với lệnh của bạn.",
-    "description": "Description for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellFailedTitle": {
-    "message": "Bán thất bại",
-    "description": "Title for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingDescription": {
-    "message": "Lệnh của bạn đang được xử lý.",
-    "description": "Description for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingTitle": {
-    "message": "Đang bán",
-    "description": "Title for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessDescription": {
-    "message": "Tiền của bạn đang được chuyển đến.",
-    "description": "Description for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessTitle": {
-    "message": "Bán thành công",
-    "description": "Title for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSuccessDescription": {
-    "message": "Tiền mã hóa của bạn đang được chuyển đến.",
-    "description": "Description for the successful ramp buy order toast"
-  },
-  "rampsOrderToastSuccessTitle": {
-    "message": "Mua thành công",
-    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Tùy chọn khác"

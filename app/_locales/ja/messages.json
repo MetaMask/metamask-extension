@@ -851,50 +851,6 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "予測の引き出し"
   },
-  "activity_rampBuy_failed_description": {
-    "message": "購入に失敗しました"
-  },
-  "activity_rampBuy_failed_title": {
-    "message": "購入に失敗しました"
-  },
-  "activity_rampBuy_pending_description": {
-    "message": "$1を購入しています",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_pending_title": {
-    "message": "$1を購入しています",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_description": {
-    "message": "$1を購入しました",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_title": {
-    "message": "$1を購入しました",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_failed_description": {
-    "message": "売却に失敗しました"
-  },
-  "activity_rampSell_failed_title": {
-    "message": "売却に失敗しました"
-  },
-  "activity_rampSell_pending_description": {
-    "message": "$1を売却しています",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_pending_title": {
-    "message": "$1を売却しています",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_description": {
-    "message": "$1を売却しました",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_title": {
-    "message": "$1を売却しました",
-    "description": "$1 is the token symbol"
-  },
   "activity_receive_failed_description": {
     "message": "移動元: $1",
     "description": "$1 is the shortened sender address"
@@ -3455,9 +3411,6 @@
   "disconnectAllSitesError": {
     "message": "一部のDAppの接続を解除できませんでした。もう一度お試しください。"
   },
-  "disconnectAllSitesQuestion": {
-    "message": "すべて接続解除?"
-  },
   "disconnectAllSitesSuccess": {
     "message": "すべてのDAppの接続が解除されました。"
   },
@@ -3466,9 +3419,6 @@
   },
   "disconnectPrompt": {
     "message": "$1を接続解除"
-  },
-  "disconnectQuestion": {
-    "message": "接続解除?"
   },
   "disconnectThisAccount": {
     "message": "このアカウントを接続解除"
@@ -8186,80 +8136,6 @@
   "rampsOnNetwork": {
     "message": "$1上",
     "description": "$1 is the network name"
-  },
-  "rampsOrderDetailsBankDetails": {
-    "message": "銀行送金の詳細"
-  },
-  "rampsOrderDetailsBuyAgain": {
-    "message": "再度購入する"
-  },
-  "rampsOrderDetailsFees": {
-    "message": "手数料"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "注文ID"
-  },
-  "rampsOrderDetailsPaidWith": {
-    "message": "支払方法:",
-    "description": "Label for the payment method used on a ramp order"
-  },
-  "rampsOrderDetailsProviderFee": {
-    "message": "$1手数料",
-    "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsTotal": {
-    "message": "合計"
-  },
-  "rampsOrderDetailsViewOnProvider": {
-    "message": "$1で表示"
-  },
-  "rampsOrderToastFailedDescription": {
-    "message": "注文で問題が発生しました。",
-    "description": "Description for the failed ramp buy order toast"
-  },
-  "rampsOrderToastFailedTitle": {
-    "message": "購入に失敗しました",
-    "description": "Title for the failed ramp buy order toast"
-  },
-  "rampsOrderToastPendingDescription": {
-    "message": "注文を処理しています。",
-    "description": "Description for the pending ramp buy order toast"
-  },
-  "rampsOrderToastPendingTitle": {
-    "message": "購入処理中",
-    "description": "Title for the pending ramp buy order toast"
-  },
-  "rampsOrderToastSellFailedDescription": {
-    "message": "注文で問題が発生しました。",
-    "description": "Description for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellFailedTitle": {
-    "message": "売却に失敗しました",
-    "description": "Title for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingDescription": {
-    "message": "注文を処理しています。",
-    "description": "Description for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingTitle": {
-    "message": "売却処理中",
-    "description": "Title for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessDescription": {
-    "message": "資金がまもなくお手元に届きます。",
-    "description": "Description for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessTitle": {
-    "message": "売却成功",
-    "description": "Title for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSuccessDescription": {
-    "message": "暗合資産がまもなくお手元に届きます。",
-    "description": "Description for the successful ramp buy order toast"
-  },
-  "rampsOrderToastSuccessTitle": {
-    "message": "購入成功",
-    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "その他のオプション"

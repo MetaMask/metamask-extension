@@ -851,50 +851,6 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "예측 자금 출금"
   },
-  "activity_rampBuy_failed_description": {
-    "message": "매수 실패"
-  },
-  "activity_rampBuy_failed_title": {
-    "message": "매수 실패"
-  },
-  "activity_rampBuy_pending_description": {
-    "message": "$1 매수 중",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_pending_title": {
-    "message": "$1 매수 중",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_description": {
-    "message": "$1 구매",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_title": {
-    "message": "$1 구매",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_failed_description": {
-    "message": "매도 실패"
-  },
-  "activity_rampSell_failed_title": {
-    "message": "매도 실패"
-  },
-  "activity_rampSell_pending_description": {
-    "message": "$1 매도 중",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_pending_title": {
-    "message": "$1 매도 중",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_description": {
-    "message": "$1 매도 완료",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_title": {
-    "message": "$1 매도 완료",
-    "description": "$1 is the token symbol"
-  },
   "activity_receive_failed_description": {
     "message": "발신: $1",
     "description": "$1 is the shortened sender address"
@@ -3455,9 +3411,6 @@
   "disconnectAllSitesError": {
     "message": "일부 디앱은 연결을 해제할 수 없습니다. 다시 시도해 주세요."
   },
-  "disconnectAllSitesQuestion": {
-    "message": "모두 연결 해제?"
-  },
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
   },
@@ -3466,9 +3419,6 @@
   },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
-  },
-  "disconnectQuestion": {
-    "message": "연결 해제?"
   },
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
@@ -8190,80 +8140,6 @@
   "rampsOnNetwork": {
     "message": "$1에서",
     "description": "$1 is the network name"
-  },
-  "rampsOrderDetailsBankDetails": {
-    "message": "은행 송금 세부 정보"
-  },
-  "rampsOrderDetailsBuyAgain": {
-    "message": "다시 매수"
-  },
-  "rampsOrderDetailsFees": {
-    "message": "수수료"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "주문 ID"
-  },
-  "rampsOrderDetailsPaidWith": {
-    "message": "결제 수단:",
-    "description": "Label for the payment method used on a ramp order"
-  },
-  "rampsOrderDetailsProviderFee": {
-    "message": "$1 수수료",
-    "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsTotal": {
-    "message": "총액"
-  },
-  "rampsOrderDetailsViewOnProvider": {
-    "message": "$1에서 보기"
-  },
-  "rampsOrderToastFailedDescription": {
-    "message": "주문에 오류가 발생했습니다.",
-    "description": "Description for the failed ramp buy order toast"
-  },
-  "rampsOrderToastFailedTitle": {
-    "message": "매수 실패",
-    "description": "Title for the failed ramp buy order toast"
-  },
-  "rampsOrderToastPendingDescription": {
-    "message": "주문이 처리 중입니다.",
-    "description": "Description for the pending ramp buy order toast"
-  },
-  "rampsOrderToastPendingTitle": {
-    "message": "매수 진행 중",
-    "description": "Title for the pending ramp buy order toast"
-  },
-  "rampsOrderToastSellFailedDescription": {
-    "message": "주문에 오류가 발생했습니다.",
-    "description": "Description for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellFailedTitle": {
-    "message": "매도 실패",
-    "description": "Title for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingDescription": {
-    "message": "주문이 처리 중입니다.",
-    "description": "Description for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingTitle": {
-    "message": "매도 진행 중",
-    "description": "Title for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessDescription": {
-    "message": "자금을 송금 중입니다.",
-    "description": "Description for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessTitle": {
-    "message": "매도 성공",
-    "description": "Title for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSuccessDescription": {
-    "message": "암호화폐를 전송 중입니다.",
-    "description": "Description for the successful ramp buy order toast"
-  },
-  "rampsOrderToastSuccessTitle": {
-    "message": "매수 성공",
-    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "기타 옵션"

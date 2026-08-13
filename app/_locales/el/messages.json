@@ -851,50 +851,6 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Ανάληψη από προβλέψεις"
   },
-  "activity_rampBuy_failed_description": {
-    "message": "Η αγορά απέτυχε"
-  },
-  "activity_rampBuy_failed_title": {
-    "message": "Η αγορά απέτυχε"
-  },
-  "activity_rampBuy_pending_description": {
-    "message": "Αγορά $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_pending_title": {
-    "message": "Αγορά $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_description": {
-    "message": "Αγοράσατε $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_title": {
-    "message": "Αγοράσατε $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_failed_description": {
-    "message": "Η πώληση απέτυχε"
-  },
-  "activity_rampSell_failed_title": {
-    "message": "Η πώληση απέτυχε"
-  },
-  "activity_rampSell_pending_description": {
-    "message": "Πώληση $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_pending_title": {
-    "message": "Πώληση $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_description": {
-    "message": "Πωλήθηκαν $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_title": {
-    "message": "Πωλήθηκαν $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_receive_failed_description": {
     "message": "Από: $1",
     "description": "$1 is the shortened sender address"
@@ -3455,9 +3411,6 @@
   "disconnectAllSitesError": {
     "message": "Ορισμένες αποκεντρωμένες εφαρμογές (dapps) δεν ήταν δυνατό να αποσυνδεθούν. Παρακαλώ δοκιμάστε ξανά."
   },
-  "disconnectAllSitesQuestion": {
-    "message": "Αποσύνδεση όλων των?"
-  },
   "disconnectAllSitesSuccess": {
     "message": "Όλες οι αποκεντρωμένες εφαρμογές (dapps) αποσυνδέθηκαν με επιτυχία."
   },
@@ -3466,9 +3419,6 @@
   },
   "disconnectPrompt": {
     "message": "Αποσύνδεση $1"
-  },
-  "disconnectQuestion": {
-    "message": "Αποσύνδεση?"
   },
   "disconnectThisAccount": {
     "message": "Αποσύνδεση αυτού του λογαριασμού"
@@ -8182,80 +8132,6 @@
   "rampsOnNetwork": {
     "message": "στο $1",
     "description": "$1 is the network name"
-  },
-  "rampsOrderDetailsBankDetails": {
-    "message": "Στοιχεία τραπεζικής μεταφοράς"
-  },
-  "rampsOrderDetailsBuyAgain": {
-    "message": "Αγοράστε ξανά"
-  },
-  "rampsOrderDetailsFees": {
-    "message": "Τέλη"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "Αριθμός Εντολής"
-  },
-  "rampsOrderDetailsPaidWith": {
-    "message": "Πληρώθηκε με",
-    "description": "Label for the payment method used on a ramp order"
-  },
-  "rampsOrderDetailsProviderFee": {
-    "message": "Τέλη $1",
-    "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsTotal": {
-    "message": "Σύνολο"
-  },
-  "rampsOrderDetailsViewOnProvider": {
-    "message": "Προβολή σε $1"
-  },
-  "rampsOrderToastFailedDescription": {
-    "message": "Κάτι πήγε στραβά με την εντολή σας.",
-    "description": "Description for the failed ramp buy order toast"
-  },
-  "rampsOrderToastFailedTitle": {
-    "message": "Η αγορά απέτυχε",
-    "description": "Title for the failed ramp buy order toast"
-  },
-  "rampsOrderToastPendingDescription": {
-    "message": "Η εντολή σας βρίσκεται υπό επεξεργασία.",
-    "description": "Description for the pending ramp buy order toast"
-  },
-  "rampsOrderToastPendingTitle": {
-    "message": "Η αγορά βρίσκεται σε εξέλιξη",
-    "description": "Title for the pending ramp buy order toast"
-  },
-  "rampsOrderToastSellFailedDescription": {
-    "message": "Κάτι πήγε στραβά με την εντολή σας.",
-    "description": "Description for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellFailedTitle": {
-    "message": "Η πώληση απέτυχε",
-    "description": "Title for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingDescription": {
-    "message": "Η εντολή σας βρίσκεται υπό επεξεργασία.",
-    "description": "Description for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingTitle": {
-    "message": "Η πώληση βρίσκεται σε εξέλιξη",
-    "description": "Title for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessDescription": {
-    "message": "Τα χρήματά σας είναι καθ’ οδόν.",
-    "description": "Description for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessTitle": {
-    "message": "Η πώληση ολοκληρώθηκε με επιτυχία",
-    "description": "Title for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSuccessDescription": {
-    "message": "Τα κρυπτονομίσματά σας είναι καθ’ οδόν.",
-    "description": "Description for the successful ramp buy order toast"
-  },
-  "rampsOrderToastSuccessTitle": {
-    "message": "Η αγορά ολοκληρώθηκε με επιτυχία",
-    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Άλλες επιλογές"

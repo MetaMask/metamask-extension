@@ -851,50 +851,6 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Retrait des prédictions"
   },
-  "activity_rampBuy_failed_description": {
-    "message": "Échec de l’achat"
-  },
-  "activity_rampBuy_failed_title": {
-    "message": "Échec de l’achat"
-  },
-  "activity_rampBuy_pending_description": {
-    "message": "Acheter des $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_pending_title": {
-    "message": "Acheter des $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_description": {
-    "message": "A acheté $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampBuy_success_title": {
-    "message": "A acheté $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_failed_description": {
-    "message": "Échec de la vente"
-  },
-  "activity_rampSell_failed_title": {
-    "message": "Échec de la vente"
-  },
-  "activity_rampSell_pending_description": {
-    "message": "Vendre en $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_pending_title": {
-    "message": "Vendre en $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_description": {
-    "message": "Vendu en $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_rampSell_success_title": {
-    "message": "Vendu en $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_receive_failed_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
@@ -3455,9 +3411,6 @@
   "disconnectAllSitesError": {
     "message": "Certaines dapps n’ont pas pu être déconnectées. Veuillez réessayer."
   },
-  "disconnectAllSitesQuestion": {
-    "message": "Tout déconnecter?"
-  },
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
   },
@@ -3466,9 +3419,6 @@
   },
   "disconnectPrompt": {
     "message": "Déconnecter $1"
-  },
-  "disconnectQuestion": {
-    "message": "Déconnecter?"
   },
   "disconnectThisAccount": {
     "message": "Déconnecter ce compte"
@@ -8182,80 +8132,6 @@
   "rampsOnNetwork": {
     "message": "sur $1",
     "description": "$1 is the network name"
-  },
-  "rampsOrderDetailsBankDetails": {
-    "message": "Coordonnées bancaires pour le virement"
-  },
-  "rampsOrderDetailsBuyAgain": {
-    "message": "Acheter à nouveau"
-  },
-  "rampsOrderDetailsFees": {
-    "message": "Frais"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "Numéro de la commande"
-  },
-  "rampsOrderDetailsPaidWith": {
-    "message": "Payé avec",
-    "description": "Label for the payment method used on a ramp order"
-  },
-  "rampsOrderDetailsProviderFee": {
-    "message": "Frais de $1",
-    "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsTotal": {
-    "message": "Total"
-  },
-  "rampsOrderDetailsViewOnProvider": {
-    "message": "Consulter sur $1"
-  },
-  "rampsOrderToastFailedDescription": {
-    "message": "Une erreur s’est produite lors de la passation de votre ordre.",
-    "description": "Description for the failed ramp buy order toast"
-  },
-  "rampsOrderToastFailedTitle": {
-    "message": "Échec de l’achat",
-    "description": "Title for the failed ramp buy order toast"
-  },
-  "rampsOrderToastPendingDescription": {
-    "message": "Votre ordre est en cours de traitement.",
-    "description": "Description for the pending ramp buy order toast"
-  },
-  "rampsOrderToastPendingTitle": {
-    "message": "Achat en cours",
-    "description": "Title for the pending ramp buy order toast"
-  },
-  "rampsOrderToastSellFailedDescription": {
-    "message": "Une erreur s’est produite lors de la passation de votre ordre.",
-    "description": "Description for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellFailedTitle": {
-    "message": "Échec de la vente",
-    "description": "Title for the failed ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingDescription": {
-    "message": "Votre ordre est en cours de traitement.",
-    "description": "Description for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellPendingTitle": {
-    "message": "Vente en cours",
-    "description": "Title for the pending ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessDescription": {
-    "message": "Vos fonds sont en cours d’acheminement.",
-    "description": "Description for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSellSuccessTitle": {
-    "message": "Vente effectuée avec succès",
-    "description": "Title for the successful ramp sell order toast"
-  },
-  "rampsOrderToastSuccessDescription": {
-    "message": "Vos cryptomonnaies sont en cours d’acheminement.",
-    "description": "Description for the successful ramp buy order toast"
-  },
-  "rampsOrderToastSuccessTitle": {
-    "message": "Achat effectué avec succès",
-    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Autres options"
