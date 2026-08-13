@@ -43,7 +43,7 @@ export const PermissionsEmptyState = ({
       className="max-w-64 mx-auto pb-12"
     >
       <img src={imageSrc} alt={descriptionText} width={72} height={72} />
-      <Text variant={TextVariant.BodyLgMedium} fontWeight={FontWeight.Medium}>
+      <Text variant={TextVariant.BodyLg} fontWeight={FontWeight.Medium}>
         {t('permissionsPageEmptyTitle')}
       </Text>
       <Text
