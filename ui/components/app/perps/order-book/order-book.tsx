@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -15,8 +16,11 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  twMerge,
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { selectOrderBookPosition } from '../../../../selectors/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -38,6 +42,7 @@ import {
 import { PerpsOrderBookConfigModal } from './order-book-config-modal';
 import { PerpsOrderBookSkeleton } from './order-book-skeleton';
 import type {
+  OrderBookLayoutPosition,
   OrderBookListCurrency,
   OrderBookListMetric,
   PerpsOrderBookProps,
@@ -138,6 +143,11 @@ type OrderBookRowProps = {
   szDecimals?: number;
   onSelectPrice?: (price: string) => void;
   selectPriceLabel?: string;
+  /**
+   * Which side of the panel the depth bar grows from. Mirrors the panel's own
+   * position so bars always fill away from the outer edge of the window.
+   */
+  depthAlign: OrderBookLayoutPosition;
   testId: string;
 };
 
@@ -150,6 +160,7 @@ const OrderBookRow = ({
   szDecimals,
   onSelectPrice,
   selectPriceLabel,
+  depthAlign,
   testId,
 }: OrderBookRowProps) => {
   const depthWidth = getDepthWidth(level, maxTotal);
@@ -165,6 +176,34 @@ const OrderBookRow = ({
   };
 
   const sideColor = isBid ? TextColor.SuccessDefault : TextColor.ErrorDefault;
+
+  // Price sits on the inner edge and the value on the outer edge, so the value
+  // stays at the end the depth bar grows from. Swapped in the DOM rather than
+  // with CSS so the reading order matches what is on screen.
+  const priceCell = (
+    <Text
+      key="price"
+      variant={TextVariant.BodyXs}
+      fontWeight={FontWeight.Medium}
+      color={sideColor}
+      className="relative z-10"
+      data-testid={`${testId}-price`}
+    >
+      {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
+    </Text>
+  );
+  const valueCell = (
+    <Text
+      key="value"
+      variant={TextVariant.BodyXs}
+      fontWeight={FontWeight.Medium}
+      color={sideColor}
+      className="relative z-10"
+      data-testid={`${testId}-value`}
+    >
+      {formatColumnValue(level, currency, metric, szDecimals)}
+    </Text>
+  );
 
   return (
     <Box
@@ -188,7 +227,10 @@ const OrderBookRow = ({
     >
       <Box
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0"
+        className={twMerge(
+          'pointer-events-none absolute inset-y-0',
+          depthAlign === 'left' ? 'left-0' : 'right-0',
+        )}
         style={{
           width: `${depthWidth}%`,
           backgroundColor: isBid
@@ -197,24 +239,7 @@ const OrderBookRow = ({
           opacity: DEPTH_BAR_OPACITY,
         }}
       />
-      <Text
-        variant={TextVariant.BodyXs}
-        fontWeight={FontWeight.Medium}
-        color={sideColor}
-        className="relative z-10"
-        data-testid={`${testId}-price`}
-      >
-        {formatPerpsFiat(level.price, { ranges: PRICE_RANGES_UNIVERSAL })}
-      </Text>
-      <Text
-        variant={TextVariant.BodyXs}
-        fontWeight={FontWeight.Medium}
-        color={sideColor}
-        className="relative z-10"
-        data-testid={`${testId}-value`}
-      >
-        {formatColumnValue(level, currency, metric, szDecimals)}
-      </Text>
+      {depthAlign === 'left' ? [valueCell, priceCell] : [priceCell, valueCell]}
     </Box>
   );
 };
@@ -252,6 +277,10 @@ export const PerpsOrderBook = ({
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
 
+  const orderBookLayout: OrderBookLayoutPosition = useSelector(
+    selectOrderBookPosition,
+  );
+
   // Cycle the ladder view: both sides -> buy (bids) only -> sell (asks) only.
   const handleCycleViewMode = useCallback(() => {
     setViewMode((current) => {
@@ -281,6 +310,31 @@ export const PerpsOrderBook = ({
   const unitLabel = currency === 'usd' ? 'USD' : displaySymbol;
   const metricLabel =
     metric === 'total' ? t('perpsOrderBookTotal') : t('perpsOrderBookSize');
+
+  const priceHeader = (
+    <Text
+      key="price"
+      variant={TextVariant.BodyXs}
+      fontWeight={FontWeight.Medium}
+      color={TextColor.TextAlternative}
+    >
+      {t('perpsOrderBookPrice')}
+    </Text>
+  );
+  const valueHeader = (
+    <Text
+      key="value"
+      variant={TextVariant.BodyXs}
+      fontWeight={FontWeight.Medium}
+      color={TextColor.TextAlternative}
+    >
+      {`${metricLabel} (${unitLabel})`}
+    </Text>
+  );
+  const columnHeaders =
+    orderBookLayout === 'left'
+      ? [valueHeader, priceHeader]
+      : [priceHeader, valueHeader];
 
   // Single source of truth for the mid price: prefer the raw book's own mid (so
   // the displayed mid and grouping options never drift), falling back to the
@@ -393,10 +447,16 @@ export const PerpsOrderBook = ({
       currency: OrderBookListCurrency;
       metric: OrderBookListMetric;
       grouping: number;
+      layout: OrderBookLayoutPosition;
     }) => {
       setCurrency(next.currency);
       setMetric(next.metric);
       setSelectedGrouping(next.grouping);
+      submitRequestToBackground('perpsSetProLayoutPreferences', [
+        { orderBookPosition: next.layout },
+      ]).catch((error) =>
+        console.error('Failed to persist order book layout', error),
+      );
     },
     [],
   );
@@ -483,7 +543,8 @@ export const PerpsOrderBook = ({
         />
       </Box>
 
-      {/* Column headers */}
+      {/* Column headers — mirrored with the rows so each label stays above its
+          column. */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -491,20 +552,7 @@ export const PerpsOrderBook = ({
         paddingRight={4}
         paddingBottom={1}
       >
-        <Text
-          variant={TextVariant.BodyXs}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
-        >
-          {t('perpsOrderBookPrice')}
-        </Text>
-        <Text
-          variant={TextVariant.BodyXs}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
-        >
-          {`${metricLabel} (${unitLabel})`}
-        </Text>
+        {columnHeaders}
       </Box>
 
       {/* Ladder */}
@@ -577,6 +625,7 @@ export const PerpsOrderBook = ({
                         ])
                       : undefined
                   }
+                  depthAlign={orderBookLayout}
                   testId={`${dataTestId}-ask-row-${index}`}
                 />
               ))}
@@ -634,6 +683,7 @@ export const PerpsOrderBook = ({
                         ])
                       : undefined
                   }
+                  depthAlign={orderBookLayout}
                   testId={`${dataTestId}-bid-row-${index}`}
                 />
               ))}
@@ -710,6 +760,7 @@ export const PerpsOrderBook = ({
         metric={metric}
         grouping={currentGrouping}
         groupingOptions={groupingOptions}
+        layout={orderBookLayout}
         onApply={handleApplyConfig}
         onClose={() => setIsConfigOpen(false)}
         data-testid={`${dataTestId}-config-modal`}
