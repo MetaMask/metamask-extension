@@ -13,8 +13,7 @@ import { Driver } from '../../../webdriver/driver';
  * `SitePermissionPage` / `permissions.flow.ts`. Does not cover account
  * permission editing (`EditConnectedAccountsModal`).
  * Related: `SitePermissionPage`, `EditConnectedAccountsModal`,
- * `flows/permissions.flow.ts`. A page-shaped sibling
- * `MultichainEditNetworksPage` exists but is not wired as the opener here.
+ * `flows/permissions.flow.ts`.
  *
  * @see ui/components/multichain/edit-networks-modal/edit-networks-modal.js
  */
