@@ -1,8 +1,17 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the site permission page.
- * This page allows users to view and manage permissions for a connected site.
+ * Per-site permissions review: accounts, networks, edit, and disconnect.
+ *
+ * Screen: `#/review-permissions` for a selected connected origin.
+ * Owns: connected account/network counts, edit accounts/networks modals,
+ * disconnect confirmation, and related copy checks.
+ * Boundaries: one site's review surface. The connected-sites list is
+ * `PermissionListPage`.
+ * Related: `PermissionListPage`, `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page.tsx
+ * @see test/e2e/page-objects/flows/permissions.flow.ts
  */
 class SitePermissionPage {
   private readonly confirmDisconnectButton = '[data-testid="disconnect-all"]';

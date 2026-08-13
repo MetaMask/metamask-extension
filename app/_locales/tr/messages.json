@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Tahmin bakiyesini çek"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Kimden: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
-  },
-  "backupApprovalInfo": {
-    "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
   "backupApprovalNotice": {
     "message": "Cüzdanınızı ve paranızı güvende tutmak için Gizli Kurtarma İfadenizi yedekleyin."
@@ -3403,13 +3444,13 @@
     "message": "Bağlantıyı kesmek istediğinizden emin misiniz? Sitenin işlevselliğini kaybedebilirsiniz."
   },
   "disconnectAllSites": {
-    "message": "Tümünün Bağlantısını Kes"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Tüm sitelerin bağlantınızı keserseniz bu siteleri tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
+    "message": "Tümünün bağlantısını kes"
   },
   "disconnectAllSitesError": {
     "message": "Bazı dapp'lerin bağlantısı kesilemedi. Lütfen tekrar deneyin."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Tümünün bağlantısını kes?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
+  "disconnectQuestion": {
+    "message": "Bağlantıyı kes?"
+  },
   "disconnectThisAccount": {
     "message": "Bu hesabın bağlantısını kes"
   },
   "discover": {
     "message": "Keşfet"
   },
+  "discoverSearchCap": {
+    "message": "üst limit",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Sonuç bulunamadı",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "“$1” için sonuç bulunamadı",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Diğer popüler varlıkları inceleyin",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Bu gelişmiş bir özelliktir, dikkatli kullanın."
-  },
-  "editPermissions": {
-    "message": "İzinleri düzenle"
   },
   "editSpendingCap": {
     "message": "Harcama üst limitini düzenle"
@@ -6833,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar token harcama izni veriyorsunuz."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 için $2 erişimi var."
-  },
   "perps": {
     "message": "Sürekli Vadeli"
   },
@@ -6913,6 +6959,10 @@
   },
   "perpsCancelOrder": {
     "message": "Emri iptal et"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "Emir iptal edilemedi. Tekrar deneyin.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "Mum aralığını ayarla"
@@ -7052,6 +7102,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Kazancı al için tah. K&Z",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "İşlem yapmaya başlamak için fon ekleyin.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Piyasaları keşfet"
@@ -7249,8 +7303,19 @@
   "perpsOrderBookApply": {
     "message": "Uygula"
   },
+  "perpsOrderBookBuy": {
+    "message": "Al: %$1",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Sıralama ölçütü & Gruplandırma ölçütü"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Emir defteri bağlantısı kesildi"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "%$1 al, %$2 sat",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Gruplandırma ölçütü"
@@ -7261,11 +7326,24 @@
   "perpsOrderBookLoading": {
     "message": "Emir defteri yükleniyor"
   },
+  "perpsOrderBookNoData": {
+    "message": "Emir defteri verisi yok"
+  },
   "perpsOrderBookPrice": {
     "message": "Fiyat"
   },
   "perpsOrderBookReconnect": {
     "message": "Tekrar bağla"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Emir defterine yeniden bağlanılıyor"
+  },
+  "perpsOrderBookResize": {
+    "message": "Emir defterini yeniden boyutlandır"
+  },
+  "perpsOrderBookSell": {
+    "message": "Sat: %$1",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Boyut"
@@ -7276,8 +7354,24 @@
   "perpsOrderBookTotal": {
     "message": "Toplam"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Limit fiyat olarak $1 kullan",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Değer türü"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Alışları ve satışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Yalnızca alışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Yalnızca satışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Tarih"
@@ -7498,6 +7592,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Kazancı al fiyatı $1 $2 olmalıdır",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Bu emir artık açık değil",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Emir iptal edilemedi",
@@ -8080,6 +8178,80 @@
   "rampsOnNetwork": {
     "message": "$1 üzerinde",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Banka transferi bilgileri"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Tekrar al"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Ücretler"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Emir Numarası"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Ödeme aracı",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 ücret",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Toplam"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1 üzerinde görüntüle"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Emrinizle ilgili bir şeyler ters gitti.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Alış işlemi başarısız oldu",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Emriniz gerçekleştiriliyor.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Alış işlemi sürüyor",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Emrinizle ilgili bir şeyler ters gitti.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Satış işlemi başarısız oldu",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Emriniz gerçekleştiriliyor.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Satış işlemi sürüyor",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Fonlarınız yolda.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Satış işlemi başarılı",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Kriptonuz yolda.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Alış işlemi başarılı",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Diğer seçenekler"
@@ -9102,9 +9274,6 @@
   },
   "select": {
     "message": "Seç"
-  },
-  "selectAccountToConnect": {
-    "message": "Bağlamak için bir hesap seç"
   },
   "selectAll": {
     "message": "Tümünü seç"
@@ -11262,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask başlatılırken sorun oluştu."
   },
-  "trustSignalBlockDescription": {
-    "message": "Bu siteye bağlanırsanız varlıklarınızın tamamını kaybedebilirsiniz."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Kötü amaçlı site algılandı"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Yine de Bağlan"
-  },
   "tryAgain": {
     "message": "Tekrar deneyin"
   },
@@ -11528,6 +11688,10 @@
   },
   "viewTokenDetails": {
     "message": "Token bilgilerini görüntüle"
+  },
+  "viewXMore": {
+    "message": "$1 tanesini daha görüntüle",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",

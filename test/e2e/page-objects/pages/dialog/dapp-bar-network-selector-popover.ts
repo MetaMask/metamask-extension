@@ -1,9 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the inline network selector popover that is anchored to
- * the network button in the Dapp Connection Control Bar (replaces the old
- * full-screen network picker when switching networks for a connected dapp).
+ * Inline network selector popover on the dapp connection control bar.
+ *
+ * Screen: popover anchored to the network control in the dapp connection bar
+ * (replaces the older full-screen network picker for switching a connected
+ * dapp's network). Opened from the dapp connection control bar network button.
+ * Owns: popover/list presence, network option visibility by display name, and
+ * selecting a network (popover auto-closes on selection).
+ * Boundaries: stops at the popover. Opening it belongs to the dapp connection
+ * control bar / confirmation chrome. Broader network management belongs to
+ * `pages/networks/*`. Site network permission editing belongs to
+ * `NetworkPermissionSelectModal`.
+ * Related: `NetworkPermissionSelectModal`, `pages/networks/*`,
+ * `DappConnectionControlBar` UI.
+ *
+ * @see ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.tsx
  */
 class DappBarNetworkSelectorPopover {
   private driver: Driver;

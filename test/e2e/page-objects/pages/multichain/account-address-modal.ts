@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Single-address QR overlay: full address and view-on-explorer.
+ *
+ * Screen: address QR modal opened from the multichain address list (not a
+ * dedicated hash route).
+ * Owns: reading the displayed address, view-on-Etherscan presence, and close /
+ * back.
+ * Boundaries: the QR modal only. The per-network address list is
+ * `AddressListModal`.
+ * Related: `AddressListModal` (how tests open this overlay).
+ *
+ * @see ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.tsx
+ */
 class AccountAddressModal {
   private readonly accountAddress = '[data-testid="account-address"]';
 

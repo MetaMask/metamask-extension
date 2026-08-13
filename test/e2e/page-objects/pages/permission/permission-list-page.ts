@@ -1,8 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the permissions list page.
- * This page allows users to view permissions for connected sites.
+ * Connected-sites permissions list.
+ *
+ * Screen: `#/permissions`.
+ * Owns: page-loaded checks, counting connection list items, asserting a site
+ * is listed, opening a site's permission page, and back navigation.
+ * Boundaries: the list only. Per-site edit/disconnect is
+ * `SitePermissionPage`; the Gator category hub is `GatorPermissionsPage`.
+ * Related: `SitePermissionPage`, `GatorPermissionsPage`,
+ * `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain/pages/permissions-page/permissions-page.js
+ * @see test/e2e/page-objects/flows/permissions.flow.ts
  */
 class PermissionListPage {
   private readonly backButton = '[data-testid="permissions-page-back"]';

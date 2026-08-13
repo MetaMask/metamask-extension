@@ -31,6 +31,27 @@ export type SwapQuote = {
   provider?: string;
 };
 
+/**
+ * Same-chain swap helpers on Unified SwapBridge, plus a few legacy Metaswap
+ * status selectors.
+ *
+ * Screen: primarily `#/cross-chain/swaps/prepare-bridge-page` (bridge-*
+ * source/destination/CTA/quotes). Also asserts some post-submit Metaswap
+ * surfaces via `awaiting-swap-*`, `swaps-banner-title`, and smart-tx status
+ * test ids when those screens still appear.
+ * Owns: building a swap (delegating network/token picker steps to
+ * `BridgeQuotePage`), quote checks, submit, quotes modal, notification
+ * banners, and awaiting/complete status checks.
+ * Boundaries: swap-oriented prepare/submit and status. Full bridge journeys
+ * and shared quote-page APIs belong on `BridgeQuotePage` /
+ * `flows/bridge.flow.ts`.
+ * Related: `BridgeQuotePage`, `flows/bridge.flow.ts`.
+ *
+ * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
+ * @see ui/pages/bridge/quotes/bridge-quotes-modal.tsx
+ * @see ui/pages/swaps/awaiting-swap/awaiting-swap.js
+ * @see ui/pages/swaps/swaps-banner-alert/swaps-banner-alert.js
+ */
 class SwapPage {
   private readonly assetPickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
