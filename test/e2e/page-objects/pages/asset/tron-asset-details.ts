@@ -8,6 +8,22 @@ const SECTION_TITLES = [
 ] as const;
 type SectionTitle = (typeof SECTION_TITLES)[number];
 
+/**
+ * Tron native / token asset details: sections, chart, CTAs, and daily resources.
+ *
+ * Screen: `#/asset/:chainId/:asset?/:id?` for Tron assets.
+ * Owns: standard section titles, asset name, price chart/header, native and
+ * token action buttons (including More-menu receive/batch-sell variants), and
+ * the Tron daily resources (bandwidth/energy) section.
+ * Boundaries: the asset details surface only. Flows after Send/Swap/Receive
+ * belong to those destination page objects.
+ * Related: `BitcoinAssetDetailsPage` (same asset shell for Bitcoin).
+ *
+ * @see ui/pages/asset/asset.tsx
+ * @see ui/pages/asset/components/asset-page.tsx
+ * @see ui/pages/asset/components/tron-daily-resources.tsx
+ * @see ui/components/app/wallet-overview/coin-overview.tsx
+ */
 class TronAssetDetailsPage {
   private readonly assetName = '[data-testid="asset-name"]';
 
