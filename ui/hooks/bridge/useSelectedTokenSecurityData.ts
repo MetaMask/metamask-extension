@@ -60,8 +60,6 @@ export function useSelectedTokenSecurityData(
   toToken: BridgeToken,
 ): SelectedTokenSecurityDataByAssetId {
   const useExternalServices = useSelector(getUseExternalServices);
-  const [securityDataByAssetId, setSecurityDataByAssetId] =
-    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
   const assetIds = useMemo(() => {
     const tokens = [fromToken, toToken];
@@ -81,16 +79,12 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
-  const assetIdsKey = assetIds.join('|');
-  const [prevFetchKey, setPrevFetchKey] = useState(
-    `${useExternalServices}:${assetIdsKey}`,
-  );
-  const fetchKey = `${useExternalServices}:${assetIdsKey}`;
-
-  if (fetchKey !== prevFetchKey) {
-    setPrevFetchKey(fetchKey);
-    setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
-  }
+  const fetchKey = `${useExternalServices}:${assetIds.join('|')}`;
+  // Keyed cache: ignore stale entries when the fetch key changes (no render reset).
+  const [securityDataCache, setSecurityDataCache] = useState<{
+    key: string;
+    data: SelectedTokenSecurityDataByAssetId;
+  }>({ key: fetchKey, data: EMPTY_SECURITY_DATA });
 
   useEffect(() => {
     if (!useExternalServices || assetIds.length === 0) {
@@ -117,18 +111,23 @@ export function useSelectedTokenSecurityData(
             return result;
           }, {});
 
-        setSecurityDataByAssetId(nextSecurityData);
+        setSecurityDataCache({ key: fetchKey, data: nextSecurityData });
       })
       .catch(() => {
         if (isCurrentRequest) {
-          setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
+          setSecurityDataCache({ key: fetchKey, data: EMPTY_SECURITY_DATA });
         }
       });
 
     return () => {
       isCurrentRequest = false;
     };
-  }, [assetIds, useExternalServices]);
+  }, [assetIds, useExternalServices, fetchKey]);
+
+  const securityDataByAssetId =
+    securityDataCache.key === fetchKey
+      ? securityDataCache.data
+      : EMPTY_SECURITY_DATA;
 
   return useExternalServices ? securityDataByAssetId : EMPTY_SECURITY_DATA;
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   Button,
@@ -105,16 +105,19 @@ export const BridgeAlertModal = ({
     onClose,
   ]);
 
-  // Reset alert index when the modal opens. Do not call onClose whenever
+  // Reset alert index only when the modal opens. Do not call onClose whenever
   // isModalOpen is false — that races with alert/quote settling and clears
   // parent isOpen before the modal can appear (and inline onClose in deps OOMs).
-  const [prevIsModalOpen, setPrevIsModalOpen] = useState(isModalOpen);
-  if (isModalOpen && !prevIsModalOpen) {
-    setPrevIsModalOpen(true);
-    setActiveAlertIndex(0);
-  } else if (!isModalOpen && prevIsModalOpen) {
-    setPrevIsModalOpen(false);
-  }
+  const wasModalOpenRef = useRef(isModalOpen);
+  useEffect(() => {
+    const wasOpen = wasModalOpenRef.current;
+    wasModalOpenRef.current = isModalOpen;
+    if (isModalOpen && !wasOpen) {
+      queueMicrotask(() => {
+        setActiveAlertIndex(0);
+      });
+    }
+  }, [isModalOpen, setActiveAlertIndex]);
 
   // If the submit modal was open and the quote becomes unusable, close it.
   useEffect(() => {

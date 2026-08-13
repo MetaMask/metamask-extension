@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getAccountGroupNameByInternalAccount,
@@ -46,40 +46,54 @@ export const useDestinationAccount = () => {
       : null,
   );
 
-  const buildDestinationAccount = (): DestinationAccount | null =>
-    defaultInternalDestinationAccount
-      ? {
-          ...defaultInternalDestinationAccount,
-          walletName: walletName ?? '',
-          isExternal: false,
-          displayName: displayName ?? '',
-        }
-      : null;
+  const defaultDestinationAccount = useMemo((): DestinationAccount | null => {
+    if (!defaultInternalDestinationAccount) {
+      return null;
+    }
+    return {
+      ...defaultInternalDestinationAccount,
+      walletName: walletName ?? '',
+      isExternal: false,
+      displayName: displayName ?? '',
+    };
+  }, [defaultInternalDestinationAccount, displayName, walletName]);
 
-  const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<DestinationAccount | null>(buildDestinationAccount);
-  const [isDestinationAccountPickerOpen, setIsDestinationAccountPickerOpen] =
-    useState(() => !defaultInternalDestinationAccount);
+  const defaultAccountKey = `${defaultDestinationAccount?.address ?? ''}|${
+    defaultDestinationAccount?.displayName ?? ''
+  }|${defaultDestinationAccount?.walletName ?? ''}`;
 
-  const [
-    prevDefaultInternalDestinationAccount,
-    setPrevDefaultInternalDestinationAccount,
-  ] = useState(defaultInternalDestinationAccount);
-  const [prevDisplayName, setPrevDisplayName] = useState(displayName);
-  const [prevWalletName, setPrevWalletName] = useState(walletName);
+  const [accountOverride, setAccountOverride] = useState<
+    DestinationAccount | null | undefined
+  >(undefined);
+  const [overrideForKey, setOverrideForKey] = useState(defaultAccountKey);
+  const [pickerOpenOverride, setPickerOpenOverride] = useState<
+    boolean | undefined
+  >(undefined);
+  const [pickerOverrideForKey, setPickerOverrideForKey] =
+    useState(defaultAccountKey);
 
-  if (
-    defaultInternalDestinationAccount !==
-      prevDefaultInternalDestinationAccount ||
-    displayName !== prevDisplayName ||
-    walletName !== prevWalletName
-  ) {
-    setPrevDefaultInternalDestinationAccount(defaultInternalDestinationAccount);
-    setPrevDisplayName(displayName);
-    setPrevWalletName(walletName);
-    setSelectedDestinationAccount(buildDestinationAccount());
-    setIsDestinationAccountPickerOpen(!defaultInternalDestinationAccount);
-  }
+  const selectedDestinationAccount =
+    overrideForKey === defaultAccountKey && accountOverride !== undefined
+      ? accountOverride
+      : defaultDestinationAccount;
+
+  const isDestinationAccountPickerOpen =
+    pickerOverrideForKey === defaultAccountKey &&
+    pickerOpenOverride !== undefined
+      ? pickerOpenOverride
+      : !defaultDestinationAccount;
+
+  const setSelectedDestinationAccount = (
+    account: DestinationAccount | null,
+  ) => {
+    setOverrideForKey(defaultAccountKey);
+    setAccountOverride(account);
+  };
+
+  const setIsDestinationAccountPickerOpen = (isOpen: boolean) => {
+    setPickerOverrideForKey(defaultAccountKey);
+    setPickerOpenOverride(isOpen);
+  };
 
   return {
     selectedDestinationAccount,

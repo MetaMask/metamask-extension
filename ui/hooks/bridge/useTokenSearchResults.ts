@@ -137,18 +137,19 @@ export const useTokenSearchResults = ({
   }, [filteredAssetsToInclude]);
 
   const searchResetKey = `${searchQuery}|${stableMinimalAssetsString}|${Array.from(chainIds).join(',')}|${jwt ?? ''}`;
-  const [prevSearchResetKey, setPrevSearchResetKey] = useState(searchResetKey);
 
-  if (searchResetKey !== prevSearchResetKey) {
-    setPrevSearchResetKey(searchResetKey);
-    // Reset state on search query / filter change
-    setSearchResultsWithBalance(
-      jwt && searchQuery.length > 0 ? filteredAssetsToInclude : [],
-    );
-    setSearchResultCursor(undefined);
-    setHasMoreResults(false);
-    setIsSearchResultsLoading(Boolean(jwt && searchQuery.length > 0));
-  }
+  // Reset results when the search inputs change (commit phase, not render).
+  useEffect(() => {
+    const nextResults =
+      jwt && searchQuery.length > 0 ? filteredAssetsToInclude : [];
+    const nextLoading = Boolean(jwt && searchQuery.length > 0);
+    queueMicrotask(() => {
+      setSearchResultsWithBalance(nextResults);
+      setSearchResultCursor(undefined);
+      setHasMoreResults(false);
+      setIsSearchResultsLoading(nextLoading);
+    });
+  }, [searchResetKey, jwt, searchQuery, filteredAssetsToInclude]);
 
   useEffect(() => {
     if (!jwt || searchQuery.length === 0) {

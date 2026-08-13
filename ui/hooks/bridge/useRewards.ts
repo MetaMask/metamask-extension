@@ -129,9 +129,6 @@ export const useRewardsWithQuote = ({
     localRewardsAccountLinkedTimestamp,
     setLocalRewardsAccountLinkedTimestamp,
   ] = useState(() => new Map<string, number | null>());
-  // Track the current account's linked timestamp to trigger useEffect when it changes
-  const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
-    useState<number | null>(null);
   const debouncedEstimatePoints = useCallback(
     // eslint-disable-next-line react-hooks/use-memo
     debounce(
@@ -253,33 +250,31 @@ export const useRewardsWithQuote = ({
     ],
   );
 
-  // Sync linked-timestamp map/state when the account or global timestamp changes
-  const [prevFromAddress, setPrevFromAddress] = useState(fromAddress);
-  const [
-    prevRewardsAccountLinkedTimestamp,
-    setPrevRewardsAccountLinkedTimestamp,
-  ] = useState(rewardsAccountLinkedTimestamp);
-
+  // Persist non-null global linked timestamps per address (keyed cache).
+  // `currentAccountLinkedTimestamp` is derived — no render-time multi-setter sync.
+  const linkedTimestampKey = `${fromAddress ?? ''}|${
+    rewardsAccountLinkedTimestamp ?? ''
+  }`;
+  const [prevLinkedTimestampKey, setPrevLinkedTimestampKey] =
+    useState(linkedTimestampKey);
   if (
-    fromAddress !== prevFromAddress ||
-    rewardsAccountLinkedTimestamp !== prevRewardsAccountLinkedTimestamp
+    linkedTimestampKey !== prevLinkedTimestampKey &&
+    fromAddress &&
+    rewardsAccountLinkedTimestamp !== null
   ) {
-    setPrevFromAddress(fromAddress);
-    setPrevRewardsAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
-
-    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
-      const nextTimestamps = new Map(localRewardsAccountLinkedTimestamp);
-      nextTimestamps.set(fromAddress, rewardsAccountLinkedTimestamp);
-      setLocalRewardsAccountLinkedTimestamp(nextTimestamps);
-      setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
-    } else if (fromAddress) {
-      const storedTimestamp =
-        localRewardsAccountLinkedTimestamp.get(fromAddress);
-      setCurrentAccountLinkedTimestamp(storedTimestamp ?? null);
-    } else {
-      setCurrentAccountLinkedTimestamp(null);
-    }
+    setPrevLinkedTimestampKey(linkedTimestampKey);
+    const nextTimestamps = new Map(localRewardsAccountLinkedTimestamp);
+    nextTimestamps.set(fromAddress, rewardsAccountLinkedTimestamp);
+    setLocalRewardsAccountLinkedTimestamp(nextTimestamps);
+  } else if (linkedTimestampKey !== prevLinkedTimestampKey) {
+    setPrevLinkedTimestampKey(linkedTimestampKey);
   }
+
+  const currentAccountLinkedTimestamp = fromAddress
+    ? (rewardsAccountLinkedTimestamp ??
+      localRewardsAccountLinkedTimestamp.get(fromAddress) ??
+      null)
+    : null;
 
   // Estimate points when quote request id changes
   useEffect(() => {
