@@ -1,11 +1,27 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Create-wallet SRP backup: reveal, review, confirm quiz, or remind later.
+ *
+ * Screen: `#/onboarding/reveal-recovery-phrase`, then
+ * `#/onboarding/review-recovery-phrase` and
+ * `#/onboarding/confirm-recovery-phrase` (and the confirm success modal).
+ * Owns: optional password gate, reveal/continue, quiz chip selection,
+ * confirm success, and the "remind me later" skip.
+ * Boundaries: create-flow SRP backup only. Import-flow SRP entry is
+ * `OnboardingSrpPage`. Does not handle metrics or completion.
+ * Related: preceded by `OnboardingPasswordPage` / `SetupPasskeyPage`; next
+ * is `OnboardingMetricsPage` (Chrome) then `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/recovery-phrase/reveal-recovery-phrase.tsx
+ * @see ui/pages/onboarding-flow/recovery-phrase/review-recovery-phrase.tsx
+ * @see ui/pages/onboarding-flow/recovery-phrase/confirm-recovery-phrase.tsx
+ * @see ui/pages/onboarding-flow/recovery-phrase/confirm-srp-modal.tsx
+ */
 class SecureWalletPage {
   private readonly confirmPasswordButton =
     '[data-testid="reveal-recovery-phrase-continue"]';
-
-  private readonly confirmRecoveryPhraseButton =
-    '[data-testid="recovery-phrase-confirm"]';
 
   private readonly confirmSecretRecoveryPhraseMessage = {
     text: 'Confirm your Secret Recovery Phrase',
@@ -113,8 +129,7 @@ class SecureWalletPage {
     await this.driver.clickElement(quizInputSelector1);
     await this.driver.clickElement(quizInputSelector2);
 
-    await this.driver.clickElement(this.confirmRecoveryPhraseButton);
-
+    // Modal opens automatically after all three quiz words are selected
     await this.driver.waitForMultipleSelectors([
       this.confirmSrpSuccessMessage,
       this.confirmSrpConfirmButton,

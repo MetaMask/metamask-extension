@@ -2,9 +2,23 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 
 /**
- * Page object for the new redesigned gas fee modal.
- * This modal allows users to select gas fee options (low, medium, high, advanced)
- * and customize gas parameters.
+ * Redesigned edit-gas-fee modal: estimate tiers and advanced EIP-1559 / legacy
+ * gas price forms.
+ *
+ * Screen: overlay modal opened from a transaction confirmation gas row (not a
+ * hash route).
+ * Owns: estimates modal (low/medium/high/site-suggested/advanced), advanced
+ * EIP-1559 and gas-price forms, gas limit/price/priority inputs, and
+ * save/cancel.
+ * Boundaries: opening the modal (edit-gas icon) belongs to
+ * `TransactionConfirmation`. Choosing which token pays gas is
+ * `GasFeeTokenModal`, not this object.
+ * Related: `TransactionConfirmation` (how tests get here).
+ *
+ * @see ui/pages/confirmations/components/modals/gas-fee-modal/gas-fee-modal.tsx
+ * @see ui/pages/confirmations/components/modals/estimates-modal/estimates-modal.tsx
+ * @see ui/pages/confirmations/components/modals/advanced-eip1559-modal/advanced-eip1559-modal.tsx
+ * @see ui/pages/confirmations/components/modals/advanced-gas-price-modal/advanced-gas-price-modal.tsx
  */
 export default class GasFeeModal {
   private readonly advancedEIP1559Modal: RawLocator =
