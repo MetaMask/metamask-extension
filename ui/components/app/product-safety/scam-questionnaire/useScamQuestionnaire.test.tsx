@@ -327,7 +327,7 @@ describe('useScamQuestionnaire', () => {
     });
 
     it('resets pass state when the confirmation changes', () => {
-      const { result } = setupDomainBranch();
+      const { result, rerender } = setupDomainBranch();
       act(() => result.current.showScamQuestionnaire());
       act(() => result.current.scamQuestionnaireProps.onCleanPass());
       expect(result.current.isScamQuestionnaireRequired).toBe(false);
@@ -340,8 +340,7 @@ describe('useScamQuestionnaire', () => {
           securityAlertResponse: { result_type: BlockaidResultType.Benign },
         },
       } as unknown as ReturnType<typeof useConfirmContext>);
-
-      act(() => {});
+      act(() => rerender());
 
       expect(result.current.isScamQuestionnaireRequired).toBe(true);
       expect(result.current.isScamQuestionnaireVisible).toBe(false);
