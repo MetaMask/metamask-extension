@@ -198,19 +198,20 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp);
 
-          // Check that we're connected to the currently selected account (Account 1)
+          // Check that we're connected to the last selected account
           const header = await testDapp.getHeader();
-          await header.verifyAccount(account1Short);
 
-          // Switch to Account 2
+          await header.verifyAccount(account2Short);
+
+          // Switch to the first account
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await switchToAccount(driver, 'Account 2');
+          await switchToAccount(driver, 'Account 1');
           await testDapp.switchTo();
 
-          // Check that we're now connected to Account 2
-          await header.verifyAccount(account2Short);
+          // Check that we're connected to the first account
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -236,29 +237,29 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await connectSolanaTestDapp(driver, testDapp);
 
-          // Check that we're connected to the currently selected account (Account 1)
+          // Check that we're connected to the second account
           const header = await testDapp.getHeader();
-          await header.verifyAccount(account1Short);
+          await header.verifyAccount(account2Short);
 
-          // Switch to Account 2 in the extension
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await switchToAccount(driver, 'Account 2');
-          await testDapp.switchTo();
-
-          // Check that we're still connected to Account 1 (dapp should not reflect the switch)
-          await header.verifyAccount(account1Short);
-
-          // Switch back to Account 1 in the extension
+          // Now switch to the first account
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await switchToAccount(driver, 'Account 1');
           await testDapp.switchTo();
 
-          // Check that we're still connected to Account 1
-          await header.verifyAccount(account1Short);
+          // Check that we're still connected to the second account
+          await header.verifyAccount(account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Account 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          await header.verifyAccount(account2Short);
         },
       );
     });
@@ -292,7 +293,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    it('With 2 accounts, refreshing the page should keep me connected to the selected account', async function () {
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
@@ -315,16 +316,13 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.checkPageIsLoaded();
           const header = await testDapp.getHeader();
 
-          // After refresh, should still be connected to Account 1
-          await header.verifyAccount(account1Short);
+          await header.verifyAccount(account2Short);
         },
       );
     });
   });
 
-  // BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Given I have connected to Mainnet and Devnet', function () {
+  describe('Given I have connected to Mainnet and Devnet', function () {
     it('Should use the Mainnet scope by default', async function () {
       await withFixtures(
         {
