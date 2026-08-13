@@ -9,17 +9,17 @@ import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
-import {
-  IndexedDBStorageAdapter,
-  isIndexedDBMutationBlockedError,
-} from './indexeddb-storage-adapter';
+import { IndexedDBStorageAdapter } from './indexeddb-storage-adapter';
 
 const TEST_NAMESPACE = 'TestController';
 const TEST_KEY = 'myKey';
 const FULL_KEY = `${STORAGE_KEY_PREFIX}${TEST_NAMESPACE}:${TEST_KEY}`;
 
 function createBlockedError(): DOMException {
-  return new DOMException('Browser-provided message', 'InvalidStateError');
+  return new DOMException(
+    'A mutation operation was attempted on a database that did not allow mutations.',
+    'InvalidStateError',
+  );
 }
 
 function createFallbackStorage(): jest.Mocked<StorageAdapter> {
@@ -66,20 +66,6 @@ describe('IndexedDBStorageAdapter', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-  });
-
-  describe('isIndexedDBMutationBlockedError', () => {
-    it('classifies blocked IndexedDB mutations', () => {
-      expect(isIndexedDBMutationBlockedError(createBlockedError())).toBe(true);
-      expect(isIndexedDBMutationBlockedError(new Error('Other error'))).toBe(
-        false,
-      );
-      expect(
-        isIndexedDBMutationBlockedError(
-          new DOMException('Quota exceeded', 'QuotaExceededError'),
-        ),
-      ).toBe(false);
-    });
   });
 
   describe('when IndexedDB is available', () => {

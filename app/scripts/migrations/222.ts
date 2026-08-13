@@ -1,13 +1,15 @@
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { isIndexedDBMutationBlockedError } from '../../../shared/lib/stores/indexeddb-storage-adapter';
 import {
   STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
   STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
-import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
+import {
+  IndexedDBStore,
+  isIndexedDBMutationBlockedError,
+} from '../../../shared/lib/stores/indexeddb-store';
 import type { Migrate } from './types';
 
 export const version = 222;

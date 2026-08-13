@@ -11,7 +11,10 @@ import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
-import { IndexedDBStore } from './indexeddb-store';
+import {
+  IndexedDBStore,
+  isIndexedDBMutationBlockedError,
+} from './indexeddb-store';
 
 type StorageDatabase = Pick<
   IndexedDBStore,
@@ -22,17 +25,6 @@ type IndexedDBStorageAdapterOptions = {
   database?: StorageDatabase;
   fallbackStorage?: StorageAdapter;
 };
-
-/**
- * Checks if the browser blocked IndexedDB mutations, which can happen in
- * Firefox private browsing mode.
- *
- * @param error - The error thrown by IndexedDB.
- * @returns True if IndexedDB is unavailable because mutations are blocked.
- */
-export function isIndexedDBMutationBlockedError(error: unknown): boolean {
-  return error instanceof DOMException && error.name === 'InvalidStateError';
-}
 
 /**
  * Extension StorageService adapter backed by IndexedDB.

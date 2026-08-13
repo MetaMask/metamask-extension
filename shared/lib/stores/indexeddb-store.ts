@@ -11,6 +11,22 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
 }
 
 /**
+ * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
+ * extensions in private browsing mode.
+ *
+ * @param error - The error thrown by IndexedDB.
+ * @returns Whether the error represents blocked IndexedDB mutations.
+ */
+export function isIndexedDBMutationBlockedError(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    error.name === 'InvalidStateError' &&
+    error.message ===
+      'A mutation operation was attempted on a database that did not allow mutations.'
+  );
+}
+
+/**
  * Store for managing IndexedDB operations in an objectStore named `store`.
  * Used for storing backups of the critical parts of the extension state.
  */

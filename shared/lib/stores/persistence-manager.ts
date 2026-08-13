@@ -7,7 +7,10 @@ import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
-import { IndexedDBStore } from './indexeddb-store';
+import {
+  IndexedDBStore,
+  isIndexedDBMutationBlockedError,
+} from './indexeddb-store';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -433,13 +436,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // private browsing mode due to this bug:
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
       // cases we just won't have a backup vault.
-      if (
-        isObject(error) &&
-        error instanceof DOMException &&
-        error.name === 'InvalidStateError' &&
-        error.message ===
-          'A mutation operation was attempted on a database that did not allow mutations.'
-      ) {
+      if (isIndexedDBMutationBlockedError(error)) {
         // Custom fingerprint prevents Sentry's deduplication from dropping
         // this event when other persistence errors with the same underlying
         // error message (e.g., "An unexpected error occurred") are reported.

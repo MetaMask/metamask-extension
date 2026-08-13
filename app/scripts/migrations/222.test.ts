@@ -31,7 +31,10 @@ function buildVersionedData() {
 }
 
 function createBlockedError(): DOMException {
-  return new DOMException('Browser-provided message', 'InvalidStateError');
+  return new DOMException(
+    'A mutation operation was attempted on a database that did not allow mutations.',
+    'InvalidStateError',
+  );
 }
 
 function mockStorage(entries: Record<string, unknown>): void {
