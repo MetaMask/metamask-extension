@@ -1,6 +1,18 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 
+/**
+ * Unlock / login screen for an existing vault (password or passkey).
+ *
+ * Screen: `#/unlock` (and onboarding unlock variants that reuse this UI).
+ * Owns: password/passkey unlock, forgot-password / reset-wallet entry,
+ * incorrect-password messaging, and connections-removed modal handling.
+ * Boundaries: unlock surface only. Password reset via SRP belongs to
+ * `ResetPasswordPage`; post-unlock home belongs to `HomePage`.
+ * Related: `ResetPasswordPage`, `HomePage`.
+ *
+ * @see ui/pages/unlock-page/unlock-page.component.tsx
+ */
 class LoginPage {
   private readonly connectionsRemovedModal: object = {
     testId: 'connections-removed-modal',

@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Edit connected accounts modal for a site's account permissions.
+ *
+ * Screen: modal/page layered over site permissions or connection review,
+ * opened via the accounts "Edit" control on `SitePermissionPage` (or connect
+ * flows that reuse the same edit-accounts UI).
+ * Owns: account cells and checkboxes, add-account control, connect/update
+ * footer, and selection status waits.
+ * Boundaries: stops at this edit-accounts surface. Opening it belongs to
+ * `SitePermissionPage` / permissions flows. Network permission editing belongs
+ * to `NetworkPermissionSelectModal`.
+ * Related: `SitePermissionPage`, `NetworkPermissionSelectModal`,
+ * `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page.tsx
+ */
 class EditConnectedAccountsModal {
   private readonly accountCell = '.multichain-account-cell';
 
