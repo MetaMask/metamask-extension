@@ -1,0 +1,124 @@
+diff --git a/dist/defaults.cjs b/dist/defaults.cjs
+index f2235110fad15dd99eb5b22d5c10116be40b8fdc..0261ee2210c7db70fbde357d3dbb33091378dddd 100644
+--- a/dist/defaults.cjs
++++ b/dist/defaults.cjs
+@@ -26,18 +26,30 @@ const MUSD_METADATA = {
+     decimals: 6,
+ };
+ /**
+- * Harcoded metadata for USDC on Arc (5042/0x13b2).
+- * USDC exists as both native (18 decimals) and ERC20 (6 decimals).
+- * We choose to force-hide the native version to avoid double listing using
+- * `CHAIN_IDS_WITH_NO_NATIVE_TOKEN`.
+- * In the meantime, the code below force-shows USDC the ERC20 token.
++ * Hardcoded metadata for native USDC on Arc (5042/0x13b2).
++ *
++ * Arc's native gas token is USDC. It's a default tracked asset (see
++ * DEFAULT_TRACKED_ASSETS_BY_CHAIN below) so #ensureDefaultTrackedAssetsSeeded
++ * writes both a zero assetsBalance entry and this assetsInfo metadata up
++ * front. That explicit metadata seed is required because it can never arrive
++ * from a live poll: Arc's Accounts-API balance fetch always succeeds, which
++ * marks the chain "handled" and skips the RPC fallback path that would
++ * otherwise be the only place writing type: 'native' for this id. Without a
++ * metadata entry here, the zero-balance native row that
++ * #ensureNativeBalancesDefaultZero seeds for every chain has no
++ * type: 'native' to be recognized by, and is silently dropped by clients
++ * that gate rendering on it (e.g. metamask-mobile's assets-migration.ts).
++ *
++ * The 0x3600... ERC20 interface for USDC on Arc is no longer tracked here —
++ * it's not a valid representation to default-track anymore now that the
++ * native id carries its own metadata directly.
+  */
+-const USDC_ON_ARC_ASSET_ID = 'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+-const USDC_ON_ARC_METADATA = {
+-    type: 'erc20',
++const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
++const ARC_NATIVE_METADATA = {
++    type: 'native',
+     symbol: 'USDC',
+     name: 'USDC',
+-    decimals: 6,
++    decimals: 18,
+ };
+ /**
+  * Build the CAIP-19 asset ID for the mUSD ERC-20 token on a given EVM
+@@ -63,7 +75,7 @@ exports.DEFAULT_TRACKED_ASSETS_BY_CHAIN = new Map([
+     ['eip155:1', [musdAssetId('eip155:1')]],
+     ['eip155:59144', [musdAssetId('eip155:59144')]],
+     ['eip155:143', [musdAssetId('eip155:143')]],
+-    ['eip155:5042', [USDC_ON_ARC_ASSET_ID]],
++    ['eip155:5042', [ARC_NATIVE_ASSET_ID]],
+ ]);
+ /**
+  * Chains that have at least one default tracked asset. Useful for
+@@ -79,7 +91,7 @@ exports.DEFAULT_ASSET_METADATA = new Map([
+     [musdAssetId('eip155:1'), MUSD_METADATA],
+     [musdAssetId('eip155:59144'), MUSD_METADATA],
+     [musdAssetId('eip155:143'), MUSD_METADATA],
+-    [USDC_ON_ARC_ASSET_ID, USDC_ON_ARC_METADATA],
++    [ARC_NATIVE_ASSET_ID, ARC_NATIVE_METADATA],
+ ]);
+ /**
+  * Return the default tracked assets for a CAIP-2 chain id. Empty when
+diff --git a/dist/defaults.mjs b/dist/defaults.mjs
+index ccc5fb822dc28fb1f43422789e4a2e511b10f037..8e4b36f40715a1cd71ecd455160c9e35d1086c03 100644
+--- a/dist/defaults.mjs
++++ b/dist/defaults.mjs
+@@ -23,18 +23,30 @@ const MUSD_METADATA = {
+     decimals: 6,
+ };
+ /**
+- * Harcoded metadata for USDC on Arc (5042/0x13b2).
+- * USDC exists as both native (18 decimals) and ERC20 (6 decimals).
+- * We choose to force-hide the native version to avoid double listing using
+- * `CHAIN_IDS_WITH_NO_NATIVE_TOKEN`.
+- * In the meantime, the code below force-shows USDC the ERC20 token.
++ * Hardcoded metadata for native USDC on Arc (5042/0x13b2).
++ *
++ * Arc's native gas token is USDC. It's a default tracked asset (see
++ * DEFAULT_TRACKED_ASSETS_BY_CHAIN below) so #ensureDefaultTrackedAssetsSeeded
++ * writes both a zero assetsBalance entry and this assetsInfo metadata up
++ * front. That explicit metadata seed is required because it can never arrive
++ * from a live poll: Arc's Accounts-API balance fetch always succeeds, which
++ * marks the chain "handled" and skips the RPC fallback path that would
++ * otherwise be the only place writing type: 'native' for this id. Without a
++ * metadata entry here, the zero-balance native row that
++ * #ensureNativeBalancesDefaultZero seeds for every chain has no
++ * type: 'native' to be recognized by, and is silently dropped by clients
++ * that gate rendering on it (e.g. metamask-mobile's assets-migration.ts).
++ *
++ * The 0x3600... ERC20 interface for USDC on Arc is no longer tracked here —
++ * it's not a valid representation to default-track anymore now that the
++ * native id carries its own metadata directly.
+  */
+-const USDC_ON_ARC_ASSET_ID = 'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+-const USDC_ON_ARC_METADATA = {
+-    type: 'erc20',
++const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
++const ARC_NATIVE_METADATA = {
++    type: 'native',
+     symbol: 'USDC',
+     name: 'USDC',
+-    decimals: 6,
++    decimals: 18,
+ };
+ /**
+  * Build the CAIP-19 asset ID for the mUSD ERC-20 token on a given EVM
+@@ -60,7 +72,7 @@ export const DEFAULT_TRACKED_ASSETS_BY_CHAIN = new Map([
+     ['eip155:1', [musdAssetId('eip155:1')]],
+     ['eip155:59144', [musdAssetId('eip155:59144')]],
+     ['eip155:143', [musdAssetId('eip155:143')]],
+-    ['eip155:5042', [USDC_ON_ARC_ASSET_ID]],
++    ['eip155:5042', [ARC_NATIVE_ASSET_ID]],
+ ]);
+ /**
+  * Chains that have at least one default tracked asset. Useful for
+@@ -76,7 +88,7 @@ export const DEFAULT_ASSET_METADATA = new Map([
+     [musdAssetId('eip155:1'), MUSD_METADATA],
+     [musdAssetId('eip155:59144'), MUSD_METADATA],
+     [musdAssetId('eip155:143'), MUSD_METADATA],
+-    [USDC_ON_ARC_ASSET_ID, USDC_ON_ARC_METADATA],
++    [ARC_NATIVE_ASSET_ID, ARC_NATIVE_METADATA],
+ ]);
+ /**
+  * Return the default tracked assets for a CAIP-2 chain id. Empty when
