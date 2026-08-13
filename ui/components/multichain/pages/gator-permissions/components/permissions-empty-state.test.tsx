@@ -32,7 +32,7 @@ describe('PermissionsEmptyState', () => {
   it('renders title', () => {
     const { getByText } = renderWithProvider(<PermissionsEmptyState />, store);
     expect(
-      getByText(messages.notificationsPageEmptyTitle.message),
+      getByText(messages.permissionsPageEmptyTitle.message),
     ).toBeInTheDocument();
   });
 });
