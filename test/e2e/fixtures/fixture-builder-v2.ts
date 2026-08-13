@@ -978,52 +978,16 @@ class FixtureBuilderV2 {
     });
   }
 
-  // XDC is absent from the default fixture, so the network has to be injected
-  // here rather than retargeted with withNetworkRpcUrlOnLocalhost, which throws
-  // when no configuration exists for the chain. Unlike the Sei and PulseChain
-  // fixtures above, this points at the local node so tests can transact.
-  withNetworkControllerOnXdc(): this {
-    const xdcChainId = '0x32';
-    const xdcClientId = 'xdc-local';
-
-    return this.withNetworkController({
-      selectedNetworkClientId: xdcClientId,
-      networkConfigurationsByChainId: {
-        [xdcChainId]: {
-          blockExplorerUrls: ['https://xdcscan.io'],
-          chainId: xdcChainId,
-          defaultBlockExplorerUrlIndex: 0,
-          defaultRpcEndpointIndex: 0,
-          name: 'XDC Network',
-          nativeCurrency: 'XDC',
-          rpcEndpoints: [
-            {
-              networkClientId: xdcClientId,
-              type: RpcEndpointType.Custom,
-              url: 'http://localhost:8545',
-            },
-          ],
-        },
-      },
-      networksMetadata: {
-        [xdcClientId]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
-      },
-    });
-  }
-
   /**
    * Injects and selects a custom EVM network that is absent from the default
    * fixture, pointing its RPC endpoint at the local Anvil node on port 8545.
    *
-   * Generalises {@link withNetworkControllerOnXdc} to any chain so multiple
-   * custom-network specs can share one builder method instead of growing a
-   * near-identical method per chain. The caller supplies the chain id, client
-   * id, display name, native currency symbol and block explorer URL; the RPC
-   * endpoint is fixed to `http://localhost:8545` so tests can transact against
-   * an Anvil node started with the matching chain id.
+   * Chains that ship in the default fixture should use
+   * {@link withNetworkRpcUrlOnLocalhost} instead; this method throws nothing
+   * when the chain is missing — it injects the config. Prefer
+   * `prepareCustomNetwork` from `test/e2e/helpers/custom-network-harness.ts`
+   * for custom-network E2E specs so enablement, native asset ids, and Token/Price
+   * mocks stay behind one interface.
    *
    * @param config - Custom network configuration.
    * @param config.chainId - Hex chain id (e.g. `0x6f0` for Injective).

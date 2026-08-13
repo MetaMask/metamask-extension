@@ -352,6 +352,30 @@ class HomePage {
     });
   }
 
+  async checkNoErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check no blocking error toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'cryptocurrencies',
+      },
+      { timeout: 5000 },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'unsupported',
+      },
+      { timeout: 5000 },
+    );
+  }
+
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {

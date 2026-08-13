@@ -1,78 +1,56 @@
 /**
  * HyperEVM unsupported crypto handling - graceful degradation.
  *
- * Monitors the regression where selecting HyperEVM throws a price API
- * "unsupported cryptocurrencies" error. The UI should handle this
- * gracefully — no blocking error toast, no blocking error screen. The
- * native HYPE token should still render on the Tokens tab.
+ * Monitors the regression where selecting HyperEVM hits the price API
+ * "None of the cryptocurrencies are supported by price api" failure path
+ * (native HYPE is missing from `/v1/exchange-rates`, and spot-prices has no
+ * fallback rate). The UI should handle this gracefully: homepage and Tokens
+ * tab still load, HYPE still renders, fiat shows the em-dash placeholder, and
+ * no blocking error toast appears.
  *
- * See `test/e2e/helpers/custom-chain-conversion-rates.ts` for the fixture
- * and mock wiring.
+ * See `test/e2e/helpers/custom-network-harness.ts`.
  */
 
-import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import {
-  getCustomChainFixtureBuilder,
-  mockChainConversionRateApis,
-} from '../../helpers/custom-chain-conversion-rates';
+import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
-const HYPE_CONFIG = {
-  name: 'HyperEVM',
-  chainIdHex: '0x3e7' as const,
-  chainIdDecimal: 999,
-  nativeSymbol: 'HYPE',
-  nativeAssetId: 'eip155:999/slip44:2457',
-  uiNativeAssetId: 'eip155:999/slip44:2457',
-  caipChainId: 'eip155:999',
-  blockExplorerUrl: 'https://hyperevmscan.io/',
-  clientId: 'hyperevm-local',
-  localNodeOptions: [{ type: 'anvil' as const, options: { chainId: 999 } }],
-};
-
 describe('HyperEVM unsupported crypto handling', function () {
   it('does not show a blocking error toast when price API is unsupported', async function () {
+    const { fixtures, localNodeOptions, testSpecificMock, network } =
+      prepareCustomNetwork('hyperevm', 'unsupportedPrice');
+
     await withFixtures(
       {
-        fixtures: getCustomChainFixtureBuilder(HYPE_CONFIG).build(),
-        localNodeOptions: HYPE_CONFIG.localNodeOptions,
-        testSpecificMock: (
-          mockServer: Parameters<typeof mockChainConversionRateApis>[0],
-        ) => mockChainConversionRateApis(mockServer, HYPE_CONFIG),
+        fixtures,
+        localNodeOptions,
+        testSpecificMock,
         title: this.test?.fullTitle(),
-        // The "unsupported cryptocurrencies" console error is expected
-        // since the test verifies the UI handles it gracefully.
-        ignoredConsoleErrors: ['unsupported cryptocurrencies'],
+        // CurrencyRateController logs this when /v1/exchange-rates has no HYPE
+        // key; the UI is expected to degrade gracefully despite the console error.
+        ignoredConsoleErrors: [
+          'None of the cryptocurrencies are supported by price api',
+          'Failed to fetch exchange rates',
+        ],
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes?: Anvil[];
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
 
-        // Verify the homepage loaded — no blocking error screen.
         await homePage.checkPageIsLoaded();
-
-        // Navigate to the Tokens tab.
         await tokensTab.checkTokenListIsDisplayed();
+        await tokensTab.checkTokenExistsInList(network.nativeSymbol);
 
-        // The native HYPE token should be visible (metadata is mocked).
-        await tokensTab.checkTokenExistsInList('HYPE');
+        // Prove the unsupported-price path was hit: fiat secondary value is the
+        // em-dash placeholder, not a recovered rate from spot-prices fallback.
+        await tokensTab.checkNoConversionRateDisplayed();
 
-        // No blocking error toast should appear — the UI degrades gracefully
-        // when the price API doesn't support the chain's native asset.
-        // The fiat column may show an em dash, but no error toast blocks the UI.
-        await homePage.checkNoSurveyToastIsDisplayed();
+        await homePage.checkNoErrorToastIsDisplayed();
       },
     );
   });

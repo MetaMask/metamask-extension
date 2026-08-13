@@ -7,30 +7,29 @@
  * Without name/symbol/decimals the UI cannot render the asset, so it shows a
  * zero balance and no list entry.
  *
- * The fixture seeds both the native XDC network (via `getXdcChainFixtureBuilder`)
- * and an ERC-20 token (via `withTokensControllerERC20({ chainId: 50 })`), and
- * `mockXdcChainApisWithErc20` supplies a single combined `v3/assets` handler
- * serving metadata for both assets. See `test/e2e/helpers/xdc-chain.ts`.
+ * See `test/e2e/helpers/custom-network-harness.ts`.
  */
 
 import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import {
-  XDC_LOCAL_NODE_OPTIONS,
-  getXdcChainFixtureBuilderWithErc20,
-  mockXdcChainApisWithErc20,
-} from '../../helpers/xdc-chain';
+  SEEDED_ERC20_SYMBOL,
+  prepareCustomNetwork,
+} from '../../helpers/custom-network-harness';
 import { login } from '../../page-objects/flows/login.flow';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
 describe('Token visibility on XDC Network', function () {
   it('shows native XDC and ERC-20 tokens on the Tokens tab', async function () {
+    const { fixtures, localNodeOptions, testSpecificMock, network } =
+      prepareCustomNetwork('xdc', 'nativeAndErc20');
+
     await withFixtures(
       {
-        fixtures: getXdcChainFixtureBuilderWithErc20().build(),
-        localNodeOptions: XDC_LOCAL_NODE_OPTIONS,
-        testSpecificMock: mockXdcChainApisWithErc20,
+        fixtures,
+        localNodeOptions,
+        testSpecificMock,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -47,11 +46,13 @@ describe('Token visibility on XDC Network', function () {
 
         // Native XDC must render — this is the regression: without metadata
         // mocks it shows 0 and no list entry.
-        await tokensTab.checkTokenExistsInList('XDC');
+        await tokensTab.checkTokenExistsInList(network.nativeSymbol);
 
-        // ERC-20 seeded via withTokensControllerERC20({ chainId: 50 }).
-        await tokensTab.checkTokenExistsInList('TST');
-        await tokensTab.checkExpectedTokenBalanceIsDisplayed('10', 'TST');
+        await tokensTab.checkTokenExistsInList(SEEDED_ERC20_SYMBOL);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+          '10',
+          SEEDED_ERC20_SYMBOL,
+        );
       },
     );
   });

@@ -280,6 +280,19 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Checks that the Tokens tab shows the "—" (em dash) fiat placeholder because
+   * no conversion rate is available (e.g. price API does not support the asset).
+   *
+   * @param timeout - How long to wait for the placeholder to appear.
+   */
+  async checkNoConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.waitForSelector(this.noPriceAvailableMessage, {
+      timeout,
+    });
+  }
+
+  /**
    * Asserts the asset list contains exactly the given asset names by token-name
    * cell, and no others.
    *

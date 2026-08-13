@@ -2,8 +2,7 @@
  * Send XDC - XDC Network
  *
  * Wallet-initiated native XDC send, backed by a local Anvil node running on
- * XDC's chain id. See `test/e2e/helpers/xdc-chain.ts` for the fixture and local
- * node wiring.
+ * XDC's chain id. See `test/e2e/helpers/custom-network-harness.ts`.
  */
 
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -17,23 +16,21 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import {
-  XDC_CHAIN_ID_HEX,
-  XDC_LOCAL_NODE_OPTIONS,
-  getXdcChainFixtureBuilder,
-  mockXdcChainApis,
-} from '../../helpers/xdc-chain';
+import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
 import { login } from '../../page-objects/flows/login.flow';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Send XDC on XDC Network', function () {
   it('sends XDC', async function () {
+    const { fixtures, localNodeOptions, testSpecificMock, network } =
+      prepareCustomNetwork('xdc', 'nativeSend');
+
     await withFixtures(
       {
-        fixtures: getXdcChainFixtureBuilder().build(),
-        localNodeOptions: XDC_LOCAL_NODE_OPTIONS,
-        testSpecificMock: mockXdcChainApis,
+        fixtures,
+        localNodeOptions,
+        testSpecificMock,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -60,7 +57,7 @@ describe('Send XDC on XDC Network', function () {
         await selectNetworkModal.close();
 
         await homePage.startSendFlow();
-        await sendPage.selectToken(XDC_CHAIN_ID_HEX, 'XDC');
+        await sendPage.selectToken(network.chainIdHex, network.nativeSymbol);
         await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
@@ -70,7 +67,7 @@ describe('Send XDC on XDC Network', function () {
         await homePage.goToActivityList();
         await activityTab.checkTransactionActivityByText('Sent');
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
-        await activityTab.checkTxAmountInActivity('-1 XDC');
+        await activityTab.checkTxAmountInActivity(`-1 ${network.nativeSymbol}`);
       },
     );
   });
