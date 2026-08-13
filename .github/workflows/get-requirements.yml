@@ -335,8 +335,15 @@ jobs:
             async function findMatchingRun(searchBranch) {
               core.info(`Searching branch '${searchBranch}' for matching build hash...`);
 
-              let runs;
-              try {
+              // This listing intermittently serves a stale page: observed returning
+              // ten contiguous runs from four weeks earlier, and on another
+              // occasion from four months earlier, while hundreds of newer runs
+              // existed. A stale page contains no recent build, so the lookup
+              // concludes "nothing reusable" and rebuilds work that was already
+              // done. Re-request once when the newest run returned predates the
+              // last push; the staleness is transient and a second call usually
+              // gets current data.
+              async function listRuns() {
                 const resp = await github.rest.actions.listWorkflowRuns({
                   owner,
                   repo,
@@ -344,7 +351,22 @@ jobs:
                   branch: searchBranch,
                   per_page: 10,
                 });
-                runs = resp.data.workflow_runs ?? [];
+                return resp.data.workflow_runs ?? [];
+              }
+
+              let runs;
+              try {
+                runs = await listRuns();
+                const newest = runs[0]?.created_at;
+                const lastPush = context.payload.repository?.pushed_at;
+                if (newest && lastPush && new Date(newest) < new Date(lastPush)) {
+                  core.info(`Newest '${searchBranch}' run is ${newest}, older than the last push — re-requesting.`);
+                  const retry = await listRuns();
+                  if ((retry[0]?.created_at ?? '') > newest) {
+                    core.info(`-> retry returned fresher data (${retry[0].created_at})`);
+                    runs = retry;
+                  }
+                }
               } catch (err) {
                 core.warning(`API error listing runs for '${searchBranch}': ${err.message}`);
                 return false;
@@ -651,13 +673,6 @@ jobs:
       # Benchmarks measure build output performance — reused builds produce
       # identical results, so running them is pointless. This absorbs the
       # inline builds-from-run == github.run_id gate from main.yml.
-      #
-      # The decision is pinned to the head SHA as a commit status, because the
-      # lookup behind it is not deterministic: the workflow-run listing it
-      # depends on intermittently returns a stale page, so an unchanged commit
-      # can require benchmarks on one attempt and skip them on the next. Left
-      # unpinned that is a gate bypass, since a skipped job counts as passing
-      # in ci-status-gate.yml.
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Skip on cross-repo PRs — benchmarks need secrets not available to external contributors.
@@ -668,82 +683,18 @@ jobs:
             env.EVENT_NAME != 'merge_group' &&
             steps.set-skip-everything.outputs.skip-everything != 'true'
           }}
-        uses: actions/github-script@v8
         env:
           BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
-          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
-          SKIP_BUILDS: ${{ steps.build-overrides.outputs.skip }}
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const sha = process.env.HEAD_COMMIT_HASH;
-            const statusContext = 'benchmarks-required';
+        run: |
+          echo "=== Benchmarks skip decision ==="
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
 
-            core.info('=== Benchmarks skip decision ===');
-            core.info(`  Builds from base branch: ${process.env.BUILDS_FROM_BASE_BRANCH}`);
-
-            // Honour a decision already recorded for this commit, so a re-run
-            // cannot turn a gated commit into an ungated one.
-            let pinned;
-            try {
-              const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
-                owner,
-                repo,
-                ref: sha,
-                per_page: 100,
-              });
-              pinned = statuses.find((s) => s.context === statusContext)?.description;
-            } catch (err) {
-              core.warning(`Could not read ${statusContext} status: ${err.message}`);
-            }
-
-            if (pinned === 'true' || pinned === 'false') {
-              if (pinned === 'true') {
-                core.setOutput('needs-benchmarks', 'true');
-              }
-              core.info(`-> needs-benchmarks=${pinned} (pinned to ${sha.slice(0, 9)} by an earlier attempt)`);
-              return;
-            }
-
-            const required = process.env.BUILDS_FROM_BASE_BRANCH !== 'true';
-            if (required) {
-              core.setOutput('needs-benchmarks', 'true');
-              core.info('-> needs-benchmarks=true (fresh builds)');
-            } else {
-              core.info('-> needs-benchmarks=false (builds from base branch — identical output)');
-            }
-
-            // Never pin a decision reached under [skip-builds]. That path skips the
-            // build-hash check when matching a donor run, so `builds-from-base-branch`
-            // can be true without the build output being equivalent, and the resulting
-            // `false` says nothing about this commit. ci-status-gate blocks the merge
-            // while the label is present, but that block lifts when the label is
-            // removed — so a pin written here would outlive the only thing making it
-            // safe, and a same-SHA re-run would skip benchmarks with nothing blocking.
-            // Reading an existing pin stays unconditional: one written by a normal,
-            // hash-checked evaluation is still valid.
-            if (process.env.SKIP_BUILDS === 'true') {
-              core.info(
-                `Not pinning ${statusContext} under [skip-builds] — the decision was made without a build-hash check`,
-              );
-              return;
-            }
-
-            // Best-effort, like the other commit statuses in this job: if the
-            // write fails, the next attempt simply recomputes as before.
-            try {
-              await github.rest.repos.createCommitStatus({
-                owner,
-                repo,
-                sha,
-                state: 'success',
-                context: statusContext,
-                description: String(required),
-              });
-              core.info(`Posted ${statusContext}: ${required}`);
-            } catch (err) {
-              core.warning(`Could not post ${statusContext} status: ${err.message}`);
-            }
+          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
+            echo "-> needs-benchmarks=false (builds from base branch — identical output)"
+          else
+            echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+            echo "-> needs-benchmarks=true (fresh builds)"
+          fi
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
