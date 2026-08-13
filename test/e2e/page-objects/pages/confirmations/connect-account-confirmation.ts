@@ -89,6 +89,10 @@ class ConnectAccountConfirmation {
     console.log('Open edit accounts modal');
     await this.driver.clickElement(this.accountSection);
   }
+
+  async waitForCancelButton(): Promise<void> {
+    await this.driver.findClickableElements(this.cancelConnectButton);
+  }
 }
 
 export default ConnectAccountConfirmation;

@@ -123,12 +123,16 @@ export class ConfirmationsRejectRule implements Rule {
           try {
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const text = 'Cancel';
+            // Try cancel-btn (new MMDS UI), fall back to text-based (old UI)
+            let cancelButton;
+            try {
+              await this.driver.findClickableElement({ testId: 'cancel-btn' });
+              cancelButton = { testId: 'cancel-btn' };
+            } catch {
+              cancelButton = { text: 'Cancel', tag: 'button' };
+            }
 
-            await this.driver.findClickableElements({
-              text: 'Cancel',
-              tag: 'button',
-            });
+            await this.driver.findClickableElements(cancelButton);
 
             const screenshot = await this.driver.driver.takeScreenshot();
             call.attachments = call.attachments || [];
@@ -136,10 +140,7 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElementAndWaitForWindowToClose({
-              text,
-              tag: 'button',
-            });
+            await this.driver.clickElementAndWaitForWindowToClose(cancelButton);
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             const testDapp = new TestDapp(this.driver);
