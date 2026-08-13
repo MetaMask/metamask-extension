@@ -4,7 +4,6 @@ import {
   MessengerEvents,
   type ActionConstraint,
   type EventConstraint,
-  type ActionHandler,
   type ExtractEventPayload,
   ExtractEventHandler,
   ActionHandler,
