@@ -3565,7 +3565,10 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
     await submitRequestToBackground('createCancelTransaction', [
       txId,
@@ -3588,7 +3591,10 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch, getState: () => MetaMaskReduxState) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
     await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
