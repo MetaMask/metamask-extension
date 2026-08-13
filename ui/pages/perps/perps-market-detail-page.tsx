@@ -445,9 +445,18 @@ const PerpsMarketDetailPage = () => {
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
+  const livePriceStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevLivePriceStreamKey, setPrevLivePriceStreamKey] =
+    useState(livePriceStreamKey);
+  if (livePriceStreamKey !== prevLivePriceStreamKey) {
+    setPrevLivePriceStreamKey(livePriceStreamKey);
+    setLivePrice(undefined);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setLivePrice(undefined);
       return undefined;
     }
 

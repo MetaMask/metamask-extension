@@ -1,4 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
+import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
@@ -554,6 +555,9 @@ class HomePage {
     );
     if (isBottomNav) {
       await this.driver.clickElement(this.bottomNavActivityButton);
+      await this.driver.waitForUrl({
+        url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
+      });
     } else {
       await this.driver.clickElement(this.activityTab);
     }

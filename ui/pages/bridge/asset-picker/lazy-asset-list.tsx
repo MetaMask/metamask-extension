@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { type CaipAssetType } from '@metamask/utils';
 import { FontWeight, Text, TextColor } from '@metamask/design-system-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { assetIdsMatch } from '@metamask/bridge-controller';
 import { type BridgeToken } from '../../../ducks/bridge/types';
 import { useTokenSearchResults } from '../../../hooks/bridge/useTokenSearchResults';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
@@ -150,9 +151,7 @@ export const BridgeAssetList = ({
               onClick={() => {
                 onAssetChange(token);
               }}
-              selected={
-                selectedAssetId.toLowerCase() === token?.assetId?.toLowerCase()
-              }
+              selected={assetIdsMatch(selectedAssetId, token?.assetId)}
               isDestination={isDestination}
             />
           );
