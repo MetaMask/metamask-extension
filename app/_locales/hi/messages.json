@@ -11423,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask को शुरू करने में परेशानी हुई।"
   },
-  "trustSignalBlockDescription": {
-    "message": "अगर आप इस साइट से कनेक्ट होते हैं, तो आप अपने सभी एसेट खो सकते हैं।"
-  },
-  "trustSignalBlockTitle": {
-    "message": "बुरी नीयत वाली साइट का पता चला"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "तब भी कनेक्ट करें"
-  },
   "tryAgain": {
     "message": "फिर से प्रयास करें"
   },

@@ -11433,15 +11433,6 @@
   "troubleStartingTitle": {
     "message": "MetaMaskの起動中に問題が発生しました。"
   },
-  "trustSignalBlockDescription": {
-    "message": "このサイトに接続すると、資産をすべて失う可能性があります。"
-  },
-  "trustSignalBlockTitle": {
-    "message": "悪質なサイトが検出されました"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "それでも接続する"
-  },
   "tryAgain": {
     "message": "再試行してください"
   },

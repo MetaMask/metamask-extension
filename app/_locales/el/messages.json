@@ -11429,15 +11429,6 @@
   "troubleStartingTitle": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση."
   },
-  "trustSignalBlockDescription": {
-    "message": "Εάν συνδεθείτε σε αυτόν τον ιστότοπο, ενδέχεται να χάσετε όλα τα περιουσιακά σας στοιχεία."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Εντοπίστηκε κακόβουλος ιστότοπος"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Σύνδεση ούτως ή άλλως"
-  },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"
   },

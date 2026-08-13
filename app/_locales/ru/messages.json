@@ -11429,15 +11429,6 @@
   "troubleStartingTitle": {
     "message": "У MetaMask возникли проблемы с запуском."
   },
-  "trustSignalBlockDescription": {
-    "message": "Если вы подключитесь к этому сайту, вы можете потерять все свои активы."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Обнаружен вредоносный сайт"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Все равно подключить"
-  },
   "tryAgain": {
     "message": "Повторить попытку"
   },

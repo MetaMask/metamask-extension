@@ -11429,15 +11429,6 @@
   "troubleStartingTitle": {
     "message": "A MetaMask teve problemas para iniciar."
   },
-  "trustSignalBlockDescription": {
-    "message": "Se você se conectar a este site, poderá perder todos os seus ativos."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Site malicioso detectado"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Conectar mesmo assim"
-  },
   "tryAgain": {
     "message": "Tente novamente"
   },

@@ -11319,15 +11319,6 @@
   "troubleStartingTitle": {
     "message": "Nagkakaproblema ang MetaMask sa pagsisimula."
   },
-  "trustSignalBlockDescription": {
-    "message": "Kapag kumonekta ka sa site na ito, maaaring mawala sa iyo ang lahat ng asset mo."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Natukoy ang mapanganib na site"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Kumonekta Pa Rin"
-  },
   "tryAgain": {
     "message": "Subukang muli"
   },
