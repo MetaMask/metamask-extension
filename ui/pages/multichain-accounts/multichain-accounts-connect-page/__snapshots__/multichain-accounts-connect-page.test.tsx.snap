@@ -20,7 +20,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="flex justify-center mb-6"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -46,6 +46,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
@@ -298,7 +301,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="flex justify-center mb-6"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -324,6 +327,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
@@ -576,7 +582,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="flex justify-center mb-6"
+              class="flex justify-center mt-4 mb-6"
             >
               <div
                 class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-muted"
@@ -602,6 +608,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 Connect this website with MetaMask
               </p>
             </div>
+            <div
+              class="flex justify-center mt-4"
+            />
           </p>
         </div>
       </div>
