@@ -6,7 +6,7 @@ export type PriceMode = 'quoted' | 'unsupported';
 /**
  * One asset the catalog can answer for. Callers pass exact CAIP-19 ids and/or
  * CAIP-2 prefixes (with a trailing slash) so native slip44 segments that are
- * derived at runtime still match.
+ * derived at runtime still match. Exact ids take precedence over prefixes.
  */
 export type CatalogAsset = {
   name: string;
@@ -65,24 +65,32 @@ const ETH_USD_EXCHANGE_RATES: Record<string, ExchangeRateEntry> = {
   },
 };
 
-function assetMatches(asset: CatalogAsset, requestedId: string): boolean {
-  if (asset.assetIds?.includes(requestedId)) {
-    return true;
-  }
+function assetMatchesExact(asset: CatalogAsset, requestedId: string): boolean {
+  return Boolean(asset.assetIds?.includes(requestedId));
+}
+
+function assetMatchesPrefix(asset: CatalogAsset, requestedId: string): boolean {
   return Boolean(
     asset.idPrefixes?.some((prefix) => requestedId.startsWith(prefix)),
   );
 }
 
+/**
+ * Resolve each requested id to one catalog entry. Exact `assetIds` win over
+ * `idPrefixes` so a whole-chain native prefix (e.g. `eip155:50/`) cannot
+ * steal a later ERC-20 that lists the same id.
+ * @param assets
+ * @param requestedAssetIds
+ */
 function matchingAssets(
   assets: CatalogAsset[],
   requestedAssetIds: string[],
 ): { requestedId: string; asset: CatalogAsset }[] {
   const matches: { requestedId: string; asset: CatalogAsset }[] = [];
   for (const requestedId of requestedAssetIds) {
-    const asset = assets.find((candidate) =>
-      assetMatches(candidate, requestedId),
-    );
+    const asset =
+      assets.find((candidate) => assetMatchesExact(candidate, requestedId)) ??
+      assets.find((candidate) => assetMatchesPrefix(candidate, requestedId));
     if (asset) {
       matches.push({ requestedId, asset });
     }

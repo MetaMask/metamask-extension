@@ -18,6 +18,15 @@ const XDC_NATIVE = {
   assetIds: ['eip155:50/slip44:60'],
 };
 
+/**
+ * Same shape `nativeCatalogAsset` builds for XDC: exact native ids plus a
+ * whole-chain prefix so runtime slip44 variants still match.
+ */
+const XDC_NATIVE_WITH_CHAIN_PREFIX = {
+  ...XDC_NATIVE,
+  idPrefixes: ['eip155:50/'],
+};
+
 const XDC_ERC20 = {
   name: 'TST',
   symbol: 'TST',
@@ -80,6 +89,33 @@ describe('token-price-mock-catalog', () => {
           'eip155:50/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947'
         ]?.price,
       ).toBe(1);
+    });
+
+    it('prefers an exact ERC-20 id over a native whole-chain prefix', () => {
+      const erc20Id =
+        'eip155:50/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+      const responses = catalogResponses({
+        assets: [XDC_NATIVE_WITH_CHAIN_PREFIX, XDC_ERC20],
+        priceMode: 'quoted',
+        requestedAssetIds: ['eip155:50/slip44:60', erc20Id],
+      });
+
+      expect(responses.assetsMetadata).toStrictEqual([
+        {
+          assetId: 'eip155:50/slip44:60',
+          name: 'XDC Network',
+          symbol: 'XDC',
+          decimals: 18,
+        },
+        {
+          assetId: erc20Id,
+          name: 'TST',
+          symbol: 'TST',
+          decimals: 4,
+        },
+      ]);
+      expect(responses.spotPrices[erc20Id]?.price).toBe(1);
+      expect(responses.spotPrices[erc20Id]?.id).toBe('tst');
     });
 
     it('returns empty spot prices in unsupported mode while still serving metadata', () => {
