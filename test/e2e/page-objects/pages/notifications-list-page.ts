@@ -1,5 +1,19 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Notifications inbox list with entry to settings and notification details.
+ *
+ * Screen: `#/notifications`, usually opened from `HeaderNavbar`.
+ * Owns: list title, per-item open/check by test id, snap notification
+ * messages, and navigation to notifications settings.
+ * Boundaries: the list surface only. Detail and settings pages belong to
+ * `NotificationDetailsPage` and `NotificationsSettingsPage`.
+ * Related: `HeaderNavbar`, `NotificationDetailsPage`,
+ * `NotificationsSettingsPage`.
+ *
+ * @see ui/pages/notifications/notifications.tsx
+ * @see ui/pages/notifications/notifications-list.tsx
+ */
 class NotificationsListPage {
   private driver: Driver;
 

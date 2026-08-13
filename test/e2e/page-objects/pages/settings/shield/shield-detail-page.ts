@@ -1,6 +1,22 @@
-// ShieldDetailPage class for interacting with the Shield Detail page
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield membership detail: status, billing, manage plan.
+ *
+ * Screen: `#/settings/transaction-shield`, reached from
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: membership status/billing/payment assertions, cancel membership,
+ * manage-plan / payment-method entry, claims navigation, notification banner,
+ * and add-funds modal when shown.
+ * Boundaries: membership detail only. Plan selection belongs to
+ * `ShieldPlanPage`; claims list/form to `ShieldClaimsListPage` /
+ * `ShieldClaimPage`; crypto approve confirmation to
+ * `ShieldSubscriptionApprovePage`.
+ * Related: `SettingsPage`, `ShieldPlanPage`, `ShieldClaimsListPage`,
+ * `ShieldSubscriptionApprovePage`.
+ *
+ * @see ui/pages/shield/transaction-shield/transaction-shield.tsx
+ */
 export default class ShieldDetailPage {
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
