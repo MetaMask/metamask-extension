@@ -1,22 +1,22 @@
-import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
+import { hexToBigInt } from '@metamask/utils';
 
 import { MAX_UINT256 } from './permission-constants';
 
 /**
- * Parses an amount represented as a hex string to BigNumber.
- * When value is defined, returns BigNumber; when value is undefined (or null), returns null.
+ * Parses an amount represented as a hex string to bigint.
+ * When value is defined, returns bigint; when value is undefined (or null), returns null.
  *
  * @param value - Hex string; undefined/null treated as absent
- * @returns BigNumber when value is defined, or null when value is undefined or null
+ * @returns bigint when value is defined, or null when value is undefined or null
  */
-function toAmountBn(value: Hex): BigNumber;
-function toAmountBn(value: Hex | undefined | null): BigNumber | null;
-function toAmountBn(value: Hex | undefined | null): BigNumber | null {
+function toAmountBigInt(value: Hex): bigint;
+function toAmountBigInt(value: Hex | undefined | null): bigint | null;
+function toAmountBigInt(value: Hex | undefined | null): bigint | null {
   if (value === undefined || value === null) {
     return null;
   }
-  return new BigNumber(value, 16);
+  return hexToBigInt(value);
 }
 
 /** Parameters required to compute total exposure for a stream permission. */
@@ -38,36 +38,34 @@ export type TotalExposureParams = {
  * - Special case: maxAmount equal to MAX_UINT256 is treated as unlimited (returns null).
  *
  * @param params - Parameters required to compute total exposure (amounts as Hex strings)
- * @returns BigNumber for the total exposure, or null if unlimited
+ * @returns bigint for the total exposure, or null if unlimited
  */
 export function computeTotalExposure(
   params: TotalExposureParams,
-): BigNumber | null {
+): bigint | null {
   const { initialAmount, maxAmount, amountPerSecond, startTime, expiry } =
     params;
 
-  let exposureAtExpiry: BigNumber | null = null;
+  let exposureAtExpiry: bigint | null = null;
   if (expiry !== null) {
     const elapsedSeconds = expiry - startTime;
-    const initial = initialAmount
-      ? toAmountBn(initialAmount)
-      : new BigNumber(0);
-    const rateBn = toAmountBn(amountPerSecond);
+    const initial = initialAmount ? toAmountBigInt(initialAmount) : 0n;
+    const rate = toAmountBigInt(amountPerSecond);
     const streamed =
-      elapsedSeconds > 0 && rateBn
-        ? rateBn.times(elapsedSeconds)
-        : new BigNumber(0);
-    exposureAtExpiry = initial.plus(streamed);
+      elapsedSeconds > 0 && rate ? rate * BigInt(elapsedSeconds) : 0n;
+    exposureAtExpiry = initial + streamed;
   } else if (maxAmount?.toLowerCase() === MAX_UINT256) {
     return null;
   }
 
-  const maxAmountBn = toAmountBn(maxAmount);
+  const maxAmountBigInt = toAmountBigInt(maxAmount);
 
-  if (exposureAtExpiry !== null && maxAmountBn !== null) {
-    return BigNumber.min(maxAmountBn, exposureAtExpiry);
+  if (exposureAtExpiry !== null && maxAmountBigInt !== null) {
+    return maxAmountBigInt < exposureAtExpiry
+      ? maxAmountBigInt
+      : exposureAtExpiry;
   }
-  return maxAmountBn ?? exposureAtExpiry ?? null;
+  return maxAmountBigInt ?? exposureAtExpiry ?? null;
 }
 
 /**
@@ -109,7 +107,7 @@ export function isPermissionDataWithTotalExposure(
 export function computeTotalExposureForPermission(
   permissionData: PermissionDataWithTotalExposure,
   expiry: number | null,
-): BigNumber | null {
+): bigint | null {
   return computeTotalExposure({
     initialAmount: permissionData.initialAmount,
     maxAmount: permissionData.maxAmount,

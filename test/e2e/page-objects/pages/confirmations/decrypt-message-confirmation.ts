@@ -1,8 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Decrypt-message request confirmation (`eth_decrypt`).
+ *
+ * Screen: `#/confirm-transaction/:id/decrypt-message` (legacy decrypt page,
+ * not redesigned `#/confirmation`).
+ * Owns: decrypt request title, account balance, decrypt-message CTA,
+ * decrypted message text, and final Decrypt confirm.
+ * Boundaries: encryption public key requests are
+ * `GetEncryptionKeyConfirmation`. Signature confirms are separate classes.
+ * Related: `GetEncryptionKeyConfirmation`.
+ *
+ * @see ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.js
+ */
 class DecryptMessageConfirmation {
-  driver: Driver;
-
   private readonly accountBalanceValue =
     '.request-decrypt-message__balance-value';
 
@@ -23,8 +34,39 @@ class DecryptMessageConfirmation {
     css: '.request-decrypt-message__header__text',
   };
 
+  driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Check the account balance value in decrypt message confirmation page.
+   *
+   * @param balanceValue - The balance value to check.
+   */
+  async checkAccountBalance(balanceValue: string): Promise<void> {
+    console.log(
+      'Check account balance on decrypt message confirmation screen: ',
+      balanceValue,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountBalanceValue,
+      text: balanceValue,
+    });
+  }
+
+  /**
+   * Check the decrypted message on decrypt message confirmation page.
+   *
+   * @param message - The decrypted message to check.
+   */
+  async checkDecryptedMessage(message: string): Promise<void> {
+    console.log('Check decrypted message on decrypt message confirmation page');
+    await this.driver.waitForSelector({
+      css: this.decryptedMessage,
+      text: message,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -55,35 +97,6 @@ class DecryptMessageConfirmation {
       'Click to confirm decrypt message on decrypt message confirmation page',
     );
     await this.driver.clickElement(this.confirmDecryptMessageButton);
-  }
-
-  /**
-   * Check the account balance value in decrypt message confirmation page.
-   *
-   * @param balanceValue - The balance value to check.
-   */
-  async checkAccountBalance(balanceValue: string): Promise<void> {
-    console.log(
-      'Check account balance on decrypt message confirmation screen: ',
-      balanceValue,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountBalanceValue,
-      text: balanceValue,
-    });
-  }
-
-  /**
-   * Check the decrypted message on decrypt message confirmation page.
-   *
-   * @param message - The decrypted message to check.
-   */
-  async checkDecryptedMessage(message: string): Promise<void> {
-    console.log('Check decrypted message on decrypt message confirmation page');
-    await this.driver.waitForSelector({
-      css: this.decryptedMessage,
-      text: message,
-    });
   }
 }
 

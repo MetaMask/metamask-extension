@@ -377,11 +377,14 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
-    expect(mockEndTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: TraceName.ShowAccountPrivateKeyList,
-      }),
-    );
+    // endTrace runs in a useEffect after reveal becomes true
+    await waitFor(() => {
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+    });
   });
 
   describe('passkey reveal', () => {

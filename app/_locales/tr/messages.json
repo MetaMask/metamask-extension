@@ -376,21 +376,12 @@
     "message": "Şuna dönüştürüldü: $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "Para yatırma işlemi başarısız oldu"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1 yatırılıyor",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 yatırıldı",
@@ -860,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Tahmin bakiyesini çek"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Kimden: $1",
     "description": "$1 is the shortened sender address"
@@ -1000,10 +1035,10 @@
     "message": "Takas başarısız oldu"
   },
   "activity_swap_pending_title": {
-    "message": "Takas ediliyor"
+    "message": "Takas"
   },
   "activity_swap_success_title": {
-    "message": "Takas edildi"
+    "message": "Takas yapıldı"
   },
   "activity_unwrap_failed_description": {
     "message": "Çözme başarısız oldu"
@@ -1174,6 +1209,27 @@
   "addWallet": {
     "message": "Cüzdan ekle"
   },
+  "add_device_error_connection": {
+    "message": "Telefonunuzla güvenli bir bağlantı sürdüremedik. İnternet bağlantınızı kontrol edip tekrar deneyin."
+  },
+  "add_device_error_expired": {
+    "message": "Bu senkronizasyon oturumunun süresi doldu. Yeni bir QR kodu oluşturmak için yeniden başlatın."
+  },
+  "add_device_error_generic": {
+    "message": "Telefonunuzla senkronizasyon gerçekleştirilirken bir şeyler ters gitti. Lütfen tekrar deneyin."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Doğrulama kodu yanlıştı. Telefonunuzla senkronizasyonu denemek için yeniden başlatın."
+  },
+  "add_device_error_rejected": {
+    "message": "Senkronizasyon telefonunuzda iptal edildi. Senkronizasyonu denemek için yeniden başlatın."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Hesaplarınızı telefonunuza senkronize etme işlemini tamamlayamadık. Lütfen tekrar deneyin."
+  },
+  "add_device_error_title": {
+    "message": "Senkronizasyon tamamlanamadı"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 içe aktarılan hesap telefonunuza senkronize edildi.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1291,10 @@
   },
   "addedProtectionDescription": {
     "message": "Bilinmeyen bir adresle etkileşimde bulunuyorsunuz. Bu, kötü amaçlı işlemleri önlemeye yardımcı olur."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "İlave koruma için $1 dahildir",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "İsteğe bağlı"
@@ -1389,9 +1449,6 @@
   "alertMessageBurnAddress": {
     "message": "Varlıklarınızı bir yakım adresine gönderiyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Bu işlem için tahmin edilen değişiklikler güncellendi. Devam etmeden önce dikkatle inceleyin."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Bu adresle ilk kez etkileşimde bulunuyorsunuz. Devam etmeden önce doğru olduğundan emin olun."
   },
@@ -1454,9 +1511,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Cüzdan desteklenmiyor"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Sonuçlar değişti"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1. etkileşim"
@@ -1628,8 +1682,24 @@
     "message": "Başlamak için $2 üzerinde $1 aktivasyonunu gerçekleştirin.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Bu trustline eklenirken bir şeyler ters gitti. Tekrar deneyin.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Herhangi bir geçmiş veri getiremedik"
+  },
+  "assetDeactivate": {
+    "message": "Kaldır",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Bu trustline kaldırılırken bir şeyler ters gitti. Tekrar deneyin.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "Bu cüzdanda hala $1 $2 var. Stellar üzerinde bu varlığı devre dışı bırakmadan önce tamamını göndermeli veya takas etmelisiniz.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Aktif değil",
@@ -1743,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
-  },
-  "backupApprovalInfo": {
-    "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
   "backupApprovalNotice": {
     "message": "Cüzdanınızı ve paranızı güvende tutmak için Gizli Kurtarma İfadenizi yedekleyin."
@@ -3226,6 +3293,9 @@
   "deepLink_theSwapsPage": {
     "message": "takaslar sayfası"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "İşlem Takip sayfası"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "işlem kalkanı sayfası"
   },
@@ -3373,17 +3443,14 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bağlantıyı kesmek istediğinizden emin misiniz? Sitenin işlevselliğini kaybedebilirsiniz."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Bu site ile bağlantınızı keserseniz bu siteyi tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
-  },
   "disconnectAllSites": {
-    "message": "Tümünün Bağlantısını Kes"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Tüm sitelerin bağlantınızı keserseniz bu siteleri tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
+    "message": "Tümünün bağlantısını kes"
   },
   "disconnectAllSitesError": {
     "message": "Bazı dapp'lerin bağlantısı kesilemedi. Lütfen tekrar deneyin."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Tümünün bağlantısını kes?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
@@ -3394,11 +3461,34 @@
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
+  "disconnectQuestion": {
+    "message": "Bağlantıyı kes?"
+  },
   "disconnectThisAccount": {
     "message": "Bu hesabın bağlantısını kes"
   },
   "discover": {
     "message": "Keşfet"
+  },
+  "discoverSearchCap": {
+    "message": "üst limit",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "Sonuç bulunamadı",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "“$1” için sonuç bulunamadı",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Diğer popüler varlıkları inceleyin",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "hac",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snap'leri keşfedin",
@@ -3676,6 +3766,9 @@
   "enter_verification_code_expires_in": {
     "message": "Süresinin dolmasına kalan: $1sn",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Çok sayıda yanlış deneme yapıldı. Yeni bir QR kodu ile başlayın."
   },
   "enter_your_password": {
     "message": "Şifrenizi girin"
@@ -4220,6 +4313,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Donanım cüzdanı bağlandı"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Cihazın yanıt vermesi çok zaman alıyor veya bağlantı zaman aşımına uğradı. Cihazınızın bağlı olduğundan ve kilitli olmadığından emin olup tekrar deneyin."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Devam Et"
@@ -5348,10 +5444,6 @@
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün\nve günlük olarak alabileceğiniz %$1 orana kadar\nyıllıklandırılmış bonus kazanın. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Destekleyen Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Stabil kripto paralarınızı mUSD'ye dönüştürün ve %$1 yıllıklandırılmış bonus alın.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5387,10 +5479,6 @@
     "message": "Alınabilir bonus bilgileri",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Bonus bilgileri",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD dönüştürme işlemine ağ maliyetleri dahildir ve sağlayıcı ücretleri dahil olabilir. mUSD dönüştürürken MetaMask ücreti uygulanmaz.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5415,10 +5503,6 @@
   "musdConvert": {
     "message": "Dönüştür"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Dönüştür ve %$1 al",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "%$1 bonus kazan",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5432,10 +5516,6 @@
   },
   "musdEducationNotNow": {
     "message": "Şimdi değil"
-  },
-  "musdGetBonusPercentage": {
-    "message": "%$1 mUSD bonus al",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD kazan"
@@ -5643,6 +5723,9 @@
   },
   "networkNameTron": {
     "message": "Tron"
+  },
+  "networkNotSupportedByThisAccount": {
+    "message": "Bu hesap ile desteklenmiyor."
   },
   "networkOptions": {
     "message": "Ağ seçenekleri"
@@ -6883,6 +6966,10 @@
   "perpsCancelOrder": {
     "message": "Emri iptal et"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Emir iptal edilemedi. Tekrar deneyin.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Mum aralığını ayarla"
   },
@@ -6907,6 +6994,12 @@
   "perpsCloseAmount": {
     "message": "Kapanış tutarı"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Fiyat, piyasa fiyatından %95'ten fazla sapamaz"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Devam etmek için geçerli bir limit fiyat girin."
+  },
   "perpsCloseLong": {
     "message": "Long pozisyonu kapat"
   },
@@ -6915,6 +7008,9 @@
   },
   "perpsClosePosition": {
     "message": "Pozisyonu kapat"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Mevcut fiyat bilgisine ulaşılamıyor. Birazdan tekrar deneyin."
   },
   "perpsCloseShort": {
     "message": "Short pozisyonu kapat"
@@ -6946,6 +7042,10 @@
   "perpsDateYesterday": {
     "message": "Dün"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Para Yatır",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Köprü işlemi başarısız oldu"
   },
@@ -6976,6 +7076,10 @@
   "perpsDepositToastSuccessTitle": {
     "message": "Sürekli Vadeli İşlem Sözleşmelerinize fon yatırıldı"
   },
+  "perpsDepositedVerb": {
+    "message": "Yatırıldı",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
+  },
   "perpsDeposits": {
     "message": "Yatırma İşlemleri"
   },
@@ -7004,6 +7108,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Kazancı al için tah. K&Z",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "İşlem yapmaya başlamak için fon ekleyin.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Piyasaları keşfet"
@@ -7195,6 +7303,82 @@
   "perpsOraclePriceTooltip": {
     "message": "Fonlama oranının hesaplanmasında kullanılan, harici fiyatların doğrulayıcılar tarafından bildirilen medyanı"
   },
+  "perpsOrderBook": {
+    "message": "Emir defteri"
+  },
+  "perpsOrderBookApply": {
+    "message": "Uygula"
+  },
+  "perpsOrderBookBuy": {
+    "message": "Al: %$1",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Sıralama ölçütü & Gruplandırma ölçütü"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Emir defteri bağlantısı kesildi"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "%$1 al, %$2 sat",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Gruplandırma ölçütü"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listeleyen"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Emir defteri yükleniyor"
+  },
+  "perpsOrderBookNoData": {
+    "message": "Emir defteri verisi yok"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Fiyat"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Tekrar bağla"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Emir defterine yeniden bağlanılıyor"
+  },
+  "perpsOrderBookResize": {
+    "message": "Emir defterini yeniden boyutlandır"
+  },
+  "perpsOrderBookSell": {
+    "message": "Sat: %$1",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
+  "perpsOrderBookSize": {
+    "message": "Boyut"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Toplam"
+  },
+  "perpsOrderBookUsePrice": {
+    "message": "Limit fiyat olarak $1 kullan",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
+  "perpsOrderBookValueType": {
+    "message": "Değer türü"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Alışları ve satışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Yalnızca alışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Yalnızca satışları gösteren emir defteri",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
+  },
   "perpsOrderDate": {
     "message": "Tarih"
   },
@@ -7370,11 +7554,17 @@
   "perpsStatusCompleted": {
     "message": "Tamamlandı"
   },
+  "perpsStatusFailed": {
+    "message": "Başarısız oldu"
+  },
   "perpsStatusFilled": {
     "message": "Gerçekleşti"
   },
   "perpsStatusOpen": {
     "message": "Açık"
+  },
+  "perpsStatusPending": {
+    "message": "Bekliyor"
   },
   "perpsStatusQueued": {
     "message": "Kuyruğa alındı"
@@ -7408,6 +7598,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Kazancı al fiyatı $1 $2 olmalıdır",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Bu emir artık açık değil",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Emir iptal edilemedi",
@@ -7444,6 +7638,10 @@
   "perpsToastClosePnlSubtitle": {
     "message": "Kazancınız ve Zararınız $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastLimitCloseFailed": {
+    "message": "Kapatma emri verilemedi",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
   },
   "perpsToastMarginAddSuccess": {
     "message": "$2 pozisyonunuza $1 marj eklendi",
@@ -7496,6 +7694,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Pozisyon kısmen kapatıldı",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Kısmi kapatma emri verilemedi",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Pozisyonunuz halen aktif",
@@ -7602,6 +7804,9 @@
   "perpsUnrealizedPnl": {
     "message": "Gerçekleşmemiş K&Z"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "Bu piyasada desteklenmeyen teminat kullanılıyor ve işlem yapılamaz."
+  },
   "perpsWatchlist": {
     "message": "İzleme Listesi"
   },
@@ -7681,6 +7886,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Çekme işlemi",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Çekildi",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "Aldığınız"
@@ -7811,149 +8024,6 @@
   "publicAddress": {
     "message": "Genel adres"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "$1 uzun pozisyonunuz artık açık.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "$1 kısa pozisyonunuz artık açık.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Limit emri gerçekleşti"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "$1 uzun pozisyonunuz kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "$1 kısa pozisyonunuz kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Pozisyon likidasyona uğradı"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Talebiniz oluşturuldu"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Talep oluşturuldu"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Talebiniz güncellendi"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Talep güncellendi"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Daha fazla bilgi edin"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Planınız şu anda aktif."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Planınız başarısız ödemeden dolayı duraklatıldı."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask İşlem Kalkanı"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "Ödemeyi güncelle"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "$1 uzun pozisyonunuz zararda durdur noktanızda kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "$1 kısa pozisyonunuz zararda durdur noktanızda kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Zararda durdur tetiklendi"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "$1 uzun pozisyonunuz kazancı al noktanızda kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "$1 kısa pozisyonunuz kazancı al noktanızda kapandı.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Kazancı al tetiklendi"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "$1 $2 aldınız"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Bir miktar token aldınız"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Para alındı"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "$1 $2 gönderdiniz"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Başarılı bir şekilde bir miktar token gönderdiniz"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Para gönderildi"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Yeni NFT'ler aldınız"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "NFT alındı"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Başarılı bir şekilde bir NFT gönderdiniz"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "NFT gönderildi"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Lido stake işleminiz başarılı oldu"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Stake tamamlandı"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Lido stake işleminiz şu anda para çekme işlemine hazır"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Stake, para çekme işlemine hazır"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Lido para çekme işleminiz başarılı oldu"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Para çekme işlemi tamamlandı"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Lido para çekme talebiniz gönderildi"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Para çekme talep edildi"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "RocketPool stake işleminiz başarılı oldu"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Stake tamamlandı"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "RocketPool unstake işleminiz başarılı oldu"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Unstake tamamlandı"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "MetaMask Swap başarılı oldu"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Swap tamamlandı"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8062,8 +8132,205 @@
   "quotedTotalCost": {
     "message": "Toplam maliyet: $1"
   },
+  "rampsBestRate": {
+    "message": "En iyi oran"
+  },
+  "rampsBuyToken": {
+    "message": "$1 Al",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Satın alma işleminiz başlatılamıyor. Lütfen tekrar deneyin."
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1 üzerinden satın alınıyor.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Sağlayıcı değiştirin."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Lütfen tekrar deneyin, bu durum devam ederse destek bölümüyle iletişime geçin."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Bölgenizi doğrulayamadık"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Ödeme yöntemleri yüklenirken hata oluştu"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Tokenlar yüklenirken hata oluştu"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maksimum satın alma $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Minimum satın alma $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "En güvenilir"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Kullanılabilir ödeme yöntemi yok."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Sağlayıcı mevcut değil."
+  },
   "rampsNoTokensAvailable": {
     "message": "tokenlar yok"
+  },
+  "rampsOnNetwork": {
+    "message": "$1 üzerinde",
+    "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Banka transferi bilgileri"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Tekrar al"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Ücretler"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Emir Numarası"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Ödeme aracı",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 ücret",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Toplam"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1 üzerinde görüntüle"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Emrinizle ilgili bir şeyler ters gitti.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Alış işlemi başarısız oldu",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Emriniz gerçekleştiriliyor.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Alış işlemi sürüyor",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Emrinizle ilgili bir şeyler ters gitti.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Satış işlemi başarısız oldu",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Emriniz gerçekleştiriliyor.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Satış işlemi sürüyor",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Fonlarınız yolda.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Satış işlemi başarılı",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Kriptonuz yolda.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Alış işlemi başarılı",
+    "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsOtherOptions": {
+    "message": "Diğer seçenekler"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "iş günü"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "iş günü"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "saat"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "saat"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Anında"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "En fazla"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "dk."
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "dk."
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Maks $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Min $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Daha önce kullanılan"
+  },
+  "rampsProviders": {
+    "message": "Sağlayıcılar"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Teklif alınamadı."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Teklif kullanılamıyor."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1 için teklifler görüntüleniyor.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Ödeme yöntemi seç"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Hizmet kesintisi yaşıyoruz. Lütfen daha sonra tekrar deneyin."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Alış işlemi geçici olarak kullanılamıyor"
+  },
+  "rampsShowAllTokens": {
+    "message": "Tüm tokenları göster"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Kripto alışı henüz bölgenizde desteklenmiyor."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Alış burada kullanılamıyor"
   },
   "rank": {
     "message": "Sıralama"
@@ -8696,6 +8963,300 @@
   },
   "securitySrpLabel": {
     "message": "GİZLİ KURTARMA İFADELERİ"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Alış/Satış Vergisi"
+  },
+  "securityTrustBuyTax": {
+    "message": "Alış vergisi"
+  },
+  "securityTrustContinueAnyway": {
+    "message": "Yine de devam et"
+  },
+  "securityTrustCreated": {
+    "message": "Oluşturuldu"
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Güvenlik verileri mevcut değil"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "Bu güvenlik incelemesi yalnızca değerlendirme amaçlıdır ve onay veya işlem tavsiyesi teşkil etmez."
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Şüpheli airdrop"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Kara listeye alabilir"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Beyaz listeye alabilir"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Konsantre arz"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Gizli transferler"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Şüpheli davranış"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "Harici çağrılar"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Şişirilmiş yatırımcı sayısı"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Sahte hacim"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "İşlem bekleme süresi"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Yoğun bot aktivitesi"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Gizli sahip"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Açıklanmamış arz"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "Yüksel alış ücreti"
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "İtibarı kanıtlanmış"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "Yüksek satış ücreti"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "Yüksek işlem hacmi"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "Yüksek transfer ücreti"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Honeypot (bal küpü/satış engeli) riski"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Taklitçi"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Muhtemel taklitçi"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Onaylanmamış taklitçi"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Olası taklitçi"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Hassas bir varlığı taklit ediyor"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Uygunsuz içerik"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Yapay hacim"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Düşük kilitli likidite"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mint edilebilir"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Kötü amaçlı olarak biliniyor"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Borsada listelenmiş"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "İçerik oluşturucunun itibarı düşük"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Şüpheli meta veri"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Değiştirilebilir vergiler"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Transfer edilemez"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Sahibi bakiyeyi değiştirebilir"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Olası fiyat manipülasyonu"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Proxy sözleşme"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Rugpull (likidite boşaltma) riski"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Yaptırım uygulanan içerik oluşturucu"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Kötü amaçlı sözleşmeye benziyor"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Lansman sırasında bot aktivitesi"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Spam metin"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Şüpheli kod"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Token arka kapısı"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Transfer geri döndürme etkin"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Transfer kancası etkin"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transferler duraklatılabilir"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Satılamayan token"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "İstikrarsız fiyat"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Yayınlanmış sözleşme"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading (kendi kendine işlem yaparak hacim şişirme)"
+  },
+  "securityTrustMalicious": {
+    "message": "Kötü amaçlı"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Kötü amaçlı"
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 kötü amaçlı olarak işaretlenmiş. Onunla etkileşime giren herkesin fonlarını çalması muhtemeldir."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "Bu token kötü amaçlı olarak işaretlenmiş. Bununla etkileşimde bulunan herkesten fon çalması muhtemeldir."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "$1 üzerinde ciddi risk sinyalleri tespit edildi. Bu token ile işlem yapmamanızı tavsiye ederiz."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Bu tokenda ciddi risk sinyalleri algılandı. Bu token ile işlem yapılmamasını öneririz."
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Kötü amaçlı tokenlar"
+  },
+  "securityTrustMore": {
+    "message": "daha fazla"
+  },
+  "securityTrustNa": {
+    "message": "Yok"
+  },
+  "securityTrustNetwork": {
+    "message": "Ağ:"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "Gizli ücret algılanmadı"
+  },
+  "securityTrustNoIssues": {
+    "message": "Sorun yok"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Resmi Bağlantılar"
+  },
+  "securityTrustOther": {
+    "message": "Diğer"
+  },
+  "securityTrustRisky": {
+    "message": "Riskli"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 şüpheli olarak işaretlendi. Devam etmeden önce risklere bakın."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "Bu token şüpheli olarak işaretlenmiş. Devam etmeden önce risklere göz atın."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Şüpheli tokenlar"
+  },
+  "securityTrustSellTax": {
+    "message": "Satış vergisi"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Ciddi risk sinyalleri algılandı. Bu varlıktan kaçınmanızı tavsiye ederiz."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Uyarı sinyalleri tespit edildi. Bu varlıkla işlem yapmadan önce işaretli sorunları dikkatli bir şekilde inceleyin."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Bu token için güvenlik analizi yüklenemedi."
+  },
+  "securityTrustSuspicious": {
+    "message": "Şüpheli"
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 şüpheli bir token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "Bu şüpheli bir tokendır."
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustTitle": {
+    "message": "Güvenlik ve güven"
+  },
+  "securityTrustTokenAge": {
+    "message": "Token yaşı"
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Token dağılımı"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Token Bilgileri"
+  },
+  "securityTrustTop10Holders": {
+    "message": "En büyük 10 hissedar"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Toplam arz"
+  },
+  "securityTrustTransfer": {
+    "message": "Transfer"
+  },
+  "securityTrustType": {
+    "message": "Tür"
+  },
+  "securityTrustVerified": {
+    "message": "Doğrulandı"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 aktif olarak işlem görmekte olup yaygın olarak tanınmaktadır. Doğrulama, MetaMask tarafından onaylandığı anlamına gelmez."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Doğrulanmış tokenlar"
+  },
+  "securityTrustWebsite": {
+    "message": "Web Sitesi"
   },
   "seeAllPermissions": {
     "message": "Tüm izinleri gör",
@@ -10155,18 +10716,6 @@
   "statusNotConnected": {
     "message": "Bağlanmadı"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Bu trustline eklenirken bir şeyler ters gitti. Tekrar deneyin.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Bu trustline kaldırılırken bir şeyler ters gitti. Tekrar deneyin.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Bu cüzdanda hala $1 $2 var. Stellar üzerinde bu varlığı devre dışı bırakmadan önce tamamını göndermeli veya takas etmelisiniz.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Halen $1 ağına bağlanılıyor...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10676,6 +11225,9 @@
   "tokenDecimal": {
     "message": "Token ondalığı"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0 ile 36 arasında bir tam sayı girin."
+  },
   "tokenDetails": {
     "message": "Token bilgileri"
   },
@@ -10923,9 +11475,6 @@
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
   },
-  "tutorial": {
-    "message": "Öğretici"
-  },
   "txAlertTitle": {
     "message": "Bu işlem geri alınacak"
   },
@@ -11134,6 +11683,10 @@
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "Tümünü görüntüle",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "Blok gezgininde görüntüle"
   },
@@ -11153,6 +11706,10 @@
   },
   "viewTokenDetails": {
     "message": "Token bilgilerini görüntüle"
+  },
+  "viewXMore": {
+    "message": "$1 tanesini daha görüntüle",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",

@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import {
   BATCH_SELL_SELECT_ROUTE,
   BATCH_SELL_REVIEW_ROUTE,

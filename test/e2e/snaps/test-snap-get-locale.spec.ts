@@ -2,6 +2,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HomePage from '../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display-settings';
+import SnapListPage from '../page-objects/pages/snap-list-page';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
 import { closeSettings } from '../page-objects/flows/settings.flow';
@@ -59,9 +60,9 @@ describe('Test Snap Get Locale', function () {
         await closeSettings(driver);
 
         await homePage.headerNavbar.openSnapListPage();
-        await driver.waitForSelector({
-          text: 'Oversættelses Eksempel Snap',
-        });
+        await new SnapListPage(driver).checkSnapNameIsDisplayed(
+          'Oversættelses Eksempel Snap',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('sendGetLocaleHelloButton');

@@ -544,12 +544,11 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {
-          completedMetaMetricsOnboarding: true,
-        },
+        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
+          consentDecisionMade: true,
         },
       } as unknown as MetaMaskStateType);
 
@@ -563,12 +562,11 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {
-          completedMetaMetricsOnboarding: true,
-        },
+        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
+          consentDecisionMade: true,
         },
         meta: {
           version: 10,

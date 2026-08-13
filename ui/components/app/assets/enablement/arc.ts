@@ -1,6 +1,5 @@
 import { BridgeAsset } from '@metamask/bridge-controller';
 import { hexToNumber } from '@metamask/utils';
-import { AssetsControllerState } from '@metamask/assets-controller';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
@@ -90,26 +89,4 @@ export function filterOutArcERC20USDAsset<
   TAsset extends { chainId?: string; isNative?: boolean },
 >(assets: TAsset[]): TAsset[] {
   return assets.filter((asset) => !isERC20USDCArcAsset(asset));
-}
-
-/**
- * Augments the Asset Controller state for Arc-related concerns.
- * Precisely for Arc: Removing ERC20 USDC balances to avoid double counting in balance total.
- * @param assetsControllerState
- * @returns altered (copy) version of assetsControllerState with no ERC20 USDC balance
- */
-export function augmentAssetControllersState(
-  assetsControllerState: AssetsControllerState,
-): AssetsControllerState {
-  return {
-    ...assetsControllerState,
-    assetsBalance: Object.fromEntries(
-      Object.entries(assetsControllerState.assetsBalance).map(
-        ([accountId, assets]) => {
-          const { [ARC_ERC20_USDC_ASSET_ID]: _omit, ...rest } = assets;
-          return [accountId, rest];
-        },
-      ),
-    ),
-  };
 }

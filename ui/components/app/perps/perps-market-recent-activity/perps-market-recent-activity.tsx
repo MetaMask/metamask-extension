@@ -69,7 +69,7 @@ const RecentActivityList = ({
         variant="muted"
         showTopBorder={index > 0}
         onClick={onTransactionClick}
-        screenName={PERPS_EVENT_VALUE.SCREEN_NAME.MARKET_DETAIL}
+        screenName={PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS}
       />
     ))}
   </Box>

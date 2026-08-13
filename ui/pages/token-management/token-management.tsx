@@ -26,7 +26,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -109,11 +108,8 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-} from '../../../shared/constants/network';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { filterExcludedAssetList } from '../../components/app/assets/enablement/networks-customization';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -609,21 +605,7 @@ export const TokenManagementPage = () => {
       }),
     );
 
-    // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
-    // display duplicate. Hide it here too — it can re-enter via imported tokens
-    // even though the asset selector already filters it from balances. The
-    // chain id can be hex (0x13b2) or CAIP (eip155:5042) and the address may
-    // only live inside the assetId, so normalize both before comparing.
-    const visibleAssets = dedupedAssets.filter((asset) => {
-      if (normalizeToHexChainId(String(asset.chainId)) !== CHAIN_IDS.ARC) {
-        return true;
-      }
-      const assetAddress =
-        'address' in asset && asset.address
-          ? asset.address
-          : getAssetReferenceFromAssetId(asset.assetId);
-      return assetAddress?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
-    });
+    const visibleAssets = filterExcludedAssetList(dedupedAssets);
 
     const accountAssets = sortAssetsWithPriority(
       visibleAssets,
@@ -651,6 +633,16 @@ export const TokenManagementPage = () => {
     tokenSortConfig,
     useExternalServices,
   ]);
+
+  const managedAssetsByKey = useMemo(() => {
+    const assetsByKey = new Map<string, ManagedAsset>();
+
+    visibleTokens.forEach((token) => {
+      assetsByKey.set(getManagedTokenListOrderKey(token), token);
+    });
+
+    return assetsByKey;
+  }, [visibleTokens]);
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const immediateNormalizedQuery = searchQuery.trim();
@@ -691,14 +683,7 @@ export const TokenManagementPage = () => {
 
     // On Arc the native gas token IS USDC, so the USDC ERC20 (0x3600…) is a
     // display duplicate. Drop it from search/browse results too.
-    return results.filter((result) => {
-      const chainPart = String(result.assetId).split('/')[0];
-      if (normalizeToHexChainId(chainPart) !== CHAIN_IDS.ARC) {
-        return true;
-      }
-      const reference = getAssetReferenceFromAssetId(result.assetId);
-      return reference?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
-    });
+    return filterExcludedAssetList(results);
   }, [deferredNormalizedQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
@@ -1241,6 +1226,9 @@ export const TokenManagementPage = () => {
       const evmImportedKey = payload.hexChainId
         ? `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`
         : undefined;
+      const ownedAsset = managedAssetsByKey.get(
+        getSearchResultListOrderKey(result),
+      );
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
@@ -1274,15 +1262,18 @@ export const TokenManagementPage = () => {
           assetId={payload.assetId}
           primaryLabel={payload.name || payload.symbol}
           secondaryLabel={
-            networkConfigurations?.[payload.hexChainId as Hex]?.name ??
-            allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
-            payload.caipChainId
+            ownedAsset
+              ? `${ownedAsset.balance} ${ownedAsset.symbol}`
+              : (networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+                allMultichainNetworkConfigurations?.[payload.caipChainId]
+                  ?.name ??
+                payload.caipChainId)
           }
           isOn={isPending || (isImported && !isHidden) || payload.isNative}
           disabled={payload.isNative || isPending}
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
-          showToggle={!payload.isNative}
+          showToggle
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );
@@ -1295,6 +1286,7 @@ export const TokenManagementPage = () => {
       handleSearchResultToggle,
       ignoredEvmAssetIds,
       importedAssetIds,
+      managedAssetsByKey,
       networkConfigurations,
       pendingKeys,
       stagedHideKeys,
@@ -1581,7 +1573,7 @@ export const TokenManagementPage = () => {
         paddingBottom={2}
       >
         <TextFieldSearch
-          className="app-text-field-search"
+          className="w-full"
           clearButtonOnClick={handleSearchClear}
           inputProps={
             {
@@ -1591,7 +1583,6 @@ export const TokenManagementPage = () => {
           }
           onChange={handleSearchChange}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
-          size={TextFieldSize.Lg}
           value={searchQuery}
         />
       </Box>

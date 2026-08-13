@@ -6,7 +6,6 @@ import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   TextVariant,
@@ -57,7 +56,6 @@ export const SelectableListItem = ({
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >

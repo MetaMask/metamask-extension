@@ -22,6 +22,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   TextVariant,
@@ -45,7 +46,6 @@ import {
 } from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
-  hidePermittedNetworkToast,
   removePermissionsFor,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
@@ -53,7 +53,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { getURLHost } from '../../../helpers/utils/util';
 import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
-import { Tag } from '../../component-library/tag/tag';
+import { usePermittedNetworkToast } from '../../../hooks/multichain-accounts/usePermittedNetworkToast';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
 import { useDispatch } from '../../../store/hooks';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
@@ -72,6 +72,7 @@ export const DappConnectionControlBar = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { dismissPermittedNetworkToast } = usePermittedNetworkToast();
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);
   const [networkButtonElement, setNetworkButtonElement] =
@@ -190,9 +191,9 @@ export const DappConnectionControlBar = memo(() => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
+    dismissPermittedNetworkToast();
     setShowDisconnectModal(false);
-  }, [dispatch, subjects, activeTabOrigin]);
+  }, [dispatch, subjects, activeTabOrigin, dismissPermittedNetworkToast]);
 
   const handleDisconnectClick = useCallback(() => {
     setShowDisconnectModal(true);
@@ -283,11 +284,11 @@ export const DappConnectionControlBar = memo(() => {
                 </Text>
                 {showNotConnectedState && (
                   <Tag
-                    label={t('statusNotConnected')}
-                    textVariant={TextVariant.BodyXs}
                     className="dapp-connection-control-bar__not-connected-tag"
                     data-testid="dapp-connection-control-bar__not-connected-tag"
-                  />
+                  >
+                    {t('statusNotConnected')}
+                  </Tag>
                 )}
               </Box>
             )}
@@ -393,6 +394,7 @@ export const DappConnectionControlBar = memo(() => {
         <DisconnectAllModal
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
+          origin={activeTabOrigin}
         />
       )}
 

@@ -51,36 +51,16 @@ export function formatPriceImpactPercentage(
  * the source input fiat amount and the destination output fiat amount,
  * formatted in the user's current currency (e.g. "$4.23", "€3.90").
  *
- * @param activeQuote - The active bridge quote metadata.
+ * @param priceImpact - The price impact in the current currency
  * @param currentCurrency - The user's current display currency (e.g. "usd").
  * @returns Formatted fiat impact string, or `undefined` when either fiat value is unavailable.
  */
 export function formatPriceImpactFiat(
-  activeQuote:
-    | {
-        sentAmount?: { valueInCurrency?: string | number | null } | null;
-        toTokenAmount?: { valueInCurrency?: string | number | null } | null;
-      }
-    | null
-    | undefined,
+  priceImpact: string | null | undefined,
   currentCurrency: string,
 ): string | undefined {
-  if (!activeQuote) {
+  if (!priceImpact) {
     return undefined;
   }
-
-  const sourceFiat = activeQuote.sentAmount?.valueInCurrency;
-  const destFiat = activeQuote.toTokenAmount?.valueInCurrency;
-
-  if (
-    sourceFiat === null ||
-    sourceFiat === undefined ||
-    destFiat === null ||
-    destFiat === undefined
-  ) {
-    return undefined;
-  }
-
-  const diff = new BigNumber(sourceFiat).minus(destFiat).abs().toFixed();
-  return formatCurrencyAmount(diff, currentCurrency, 2);
+  return formatCurrencyAmount(priceImpact, currentCurrency, 2);
 }

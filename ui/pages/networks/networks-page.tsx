@@ -36,6 +36,7 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -205,6 +206,21 @@ export const NetworksPage = () => {
   const handleNewNetwork = useCallback(() => {
     setView('add');
   }, [setView]);
+
+  const handleAddCustomNetworkClick = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          source_connection_method:
+            MetaMetricsNetworkEventSource.CustomNetworkForm,
+        })
+        .build(),
+    );
+    handleNewNetwork();
+  }, [createEventBuilder, handleNewNetwork, trackEvent]);
 
   const handleAddFromChainlist = useCallback(() => {
     trackEvent(
@@ -426,7 +442,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
-            onAddCustomNetwork={handleNewNetwork}
+            onAddCustomNetwork={handleAddCustomNetworkClick}
             footerContent={
               pageToast ? (
                 <Box

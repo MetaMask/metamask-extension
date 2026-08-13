@@ -30,10 +30,7 @@ import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import {
-  type ApprovalsMetaMaskState,
-  internalSelectPendingApproval,
-} from '../../../../selectors';
+import { internalSelectPendingApproval } from '../../../../selectors';
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {

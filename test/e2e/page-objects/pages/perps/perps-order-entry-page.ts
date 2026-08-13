@@ -1,16 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Order Entry page.
- * Accessible after clicking Long/Short on a market detail page.
- * Handles new orders, add-exposure, and reduce-exposure flows.
+ * The Perps Order Entry page for placing or adjusting a position (new order,
+ * add exposure, or reduce exposure).
+ *
+ * Screen: `#/perps/trade/:symbol`, reached from Long/Short on
+ * `PerpsMarketDetailPage`.
+ * Owns: direction tabs, market/limit type, amount and leverage inputs, TP/SL
+ * and auto-close controls, validation errors, submit, and back.
+ * Boundaries: market detail chrome and close-position / margin modals stay on
+ * `PerpsMarketDetailPage`. This object only covers the trade route form.
+ * Related: `PerpsMarketDetailPage` (how tests get here and where back returns).
  *
  * @see ui/pages/perps/perps-order-entry-page.tsx
  * @see ui/components/app/perps/order-entry/order-entry.tsx
  */
 export class PerpsOrderEntryPage {
-  private readonly driver: Driver;
-
   private readonly amountInputField = { testId: 'amount-input-field' };
 
   private readonly amountInputFieldInput =
@@ -26,6 +31,8 @@ export class PerpsOrderEntryPage {
   private readonly directionTabLong = { testId: 'direction-tab-long' };
 
   private readonly directionTabShort = { testId: 'direction-tab-short' };
+
+  private readonly driver: Driver;
 
   private readonly leverageInput = '[data-testid="leverage-input"] input';
 
@@ -68,15 +75,6 @@ export class PerpsOrderEntryPage {
         timeout: options?.timeout ?? 20000,
       },
     );
-  }
-
-  /**
-   * Waits until the order entry route has unmounted (e.g. after submit navigates back to market detail).
-   *
-   * @param timeout - Max wait in ms (default 15_000).
-   */
-  async waitForPageClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
   }
 
   /**
@@ -198,6 +196,15 @@ export class PerpsOrderEntryPage {
    */
   async waitForOrderSubmitError(): Promise<void> {
     await this.driver.waitForSelector(this.orderSubmitError);
+  }
+
+  /**
+   * Waits until the order entry route has unmounted (e.g. after submit navigates back to market detail).
+   *
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForPageClosed(timeout = 15000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
   }
 
   /**

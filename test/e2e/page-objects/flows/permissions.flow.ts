@@ -1,4 +1,6 @@
 import { Driver } from '../../webdriver/driver';
+import EditConnectedAccountsModal from '../pages/dialog/edit-connected-accounts-modal';
+import NetworkPermissionSelectModal from '../pages/dialog/network-permission-select-modal';
 import HeaderNavbar from '../pages/header-navbar';
 import GatorPermissionsPage from '../pages/permission/gator-permissions-page';
 import PermissionListPage from '../pages/permission/permission-list-page';
@@ -41,6 +43,37 @@ export const openPermissionsPageFlow = async (
 };
 
 /**
+ * Opens the network and account permission modals from the site permission
+ * page and asserts that the expected networks and accounts are displayed.
+ *
+ * @param driver - The webdriver instance.
+ * @param sitePermissionPage - The site permission page already navigated to.
+ * @param hostname - The hostname shown on the site permission page,
+ * e.g. '127.0.0.1:8080'.
+ * @param networks - Network display names expected to be selected.
+ * @param accounts - Account labels expected to be displayed.
+ */
+export async function checkAccountsAndNetworksDisplayed(
+  driver: Driver,
+  sitePermissionPage: SitePermissionPage,
+  hostname: string,
+  networks: string[],
+  accounts: string[],
+): Promise<void> {
+  await sitePermissionPage.checkPageIsLoaded(hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await networkPermissionSelectModal.checkNetworkStatus(networks);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+
+  await sitePermissionPage.openAccountPermissionsModal();
+  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
+  await editConnectedAccountsModal.checkPageIsLoaded();
+  await editConnectedAccountsModal.checkAccountsAreDisplayed(accounts);
+}
+
+/**
  * Navigate to the permissions page for a specific host origin and return a
  * SitePermissionPage PO ready for assertions.
  *
@@ -62,4 +95,62 @@ export async function getPermissionsPageForHost(
   const sitePermissionPage = new SitePermissionPage(driver);
   await sitePermissionPage.checkPageIsLoaded(hostname);
   return sitePermissionPage;
+}
+
+export type NetworkSelectionUpdate = {
+  networkName: string;
+  shouldBeSelected: boolean;
+};
+
+async function editConnectedSiteNetworks(
+  driver: Driver,
+  hostname: string,
+  editNetworks: (modal: NetworkPermissionSelectModal) => Promise<void>,
+): Promise<void> {
+  const sitePermissionPage = await getPermissionsPageForHost(driver, hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await editNetworks(networkPermissionSelectModal);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+}
+
+/**
+ * Updates the connected site's permitted networks from the Connected sites page.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param updates - Network display names and desired selection state.
+ */
+export async function updateConnectedSiteNetworkSelection(
+  driver: Driver,
+  hostname: string,
+  updates: NetworkSelectionUpdate[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    for (const { networkName, shouldBeSelected } of updates) {
+      await modal.selectNetwork({
+        networkName,
+        shouldBeSelected,
+      });
+    }
+  });
+}
+
+/**
+ * Updates the connected site's permitted networks so only the specified
+ * networks remain selected.
+ *
+ * @param driver - The webdriver instance.
+ * @param hostname - The hostname shown on the site permission page.
+ * @param selectedNetworkNames - Network display names that should remain selected.
+ */
+export async function updateConnectedSiteNetworksToOnly(
+  driver: Driver,
+  hostname: string,
+  selectedNetworkNames: string[],
+): Promise<void> {
+  await editConnectedSiteNetworks(driver, hostname, async (modal) => {
+    await modal.updateNetworkStatus(selectedNetworkNames);
+  });
 }

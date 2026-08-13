@@ -25,9 +25,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HardwareWalletSignatures from '.';
 
 jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
-jest.mock('../../../components/app/toast-listener/shared', () => ({
-  showSuccessToast: jest.fn(),
-}));
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -69,12 +66,12 @@ function renderWithQuote(
     createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
-          address: quote.quote.srcAsset.address,
-          symbol: quote.quote.srcAsset.symbol,
+          address: quote.quote.src.asset.assetId,
+          symbol: quote.quote.src.asset.symbol,
         },
         toToken: {
-          address: quote.quote.destAsset.address,
-          symbol: quote.quote.destAsset.symbol,
+          address: quote.quote.dest.asset.assetId,
+          symbol: quote.quote.dest.asset.symbol,
         },
       },
       bridgeStateOverrides: {

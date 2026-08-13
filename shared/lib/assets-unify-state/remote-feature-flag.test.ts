@@ -1,5 +1,6 @@
 import {
   isAssetsUnifyStateFeatureEnabled,
+  isAssetsUnifyStateTracesEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from './remote-feature-flag';
 
@@ -85,5 +86,86 @@ describe('isAssetsUnifyStateFeatureEnabled', () => {
         ),
       ).toBe(true);
     });
+  });
+});
+
+describe('isAssetsUnifyStateTracesEnabled', () => {
+  const originalInTest = process.env.IN_TEST;
+
+  afterEach(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
+  });
+
+  beforeEach(() => {
+    delete process.env.IN_TEST;
+  });
+
+  it('returns false when unify is disabled', () => {
+    expect(
+      isAssetsUnifyStateTracesEnabled(
+        {
+          enabled: false,
+          featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+          tracesEnabled: true,
+        },
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when unify is enabled but tracesEnabled is absent', () => {
+    expect(
+      isAssetsUnifyStateTracesEnabled(
+        { enabled: true, featureVersion: ASSETS_UNIFY_STATE_VERSION_1 },
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when unify is enabled but tracesEnabled is false', () => {
+    expect(
+      isAssetsUnifyStateTracesEnabled(
+        {
+          enabled: true,
+          featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+          tracesEnabled: false,
+        },
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when unify is enabled and tracesEnabled is true', () => {
+    expect(
+      isAssetsUnifyStateTracesEnabled(
+        {
+          enabled: true,
+          featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+          tracesEnabled: true,
+        },
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ),
+    ).toBe(true);
+  });
+
+  it('in IN_TEST still requires tracesEnabled to be true', () => {
+    process.env.IN_TEST = 'true';
+    expect(
+      isAssetsUnifyStateTracesEnabled(undefined, ASSETS_UNIFY_STATE_VERSION_1),
+    ).toBe(false);
+    expect(
+      isAssetsUnifyStateTracesEnabled(
+        {
+          enabled: true,
+          featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+          tracesEnabled: true,
+        },
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ),
+    ).toBe(true);
   });
 });

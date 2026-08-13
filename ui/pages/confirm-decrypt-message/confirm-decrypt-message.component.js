@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'clsx';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
@@ -14,7 +13,6 @@ import { PageContainerFooter } from '../../components/ui/page-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
@@ -23,8 +21,8 @@ import {
   IconName,
   Icon,
 } from '../../components/component-library';
-import { COPY_OPTIONS } from '../../../shared/constants/copy';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useScrollRequired } from '../../hooks/useScrollRequired';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
@@ -192,13 +190,15 @@ const MessageBody = forwardRef(
     const t = useI18nContext();
 
     const [copyToClipboardPressed, setCopyToClipboardPressed] = useState(false);
-    const [hasCopied, setHasCopied] = useState(false);
     const [hasDecrypted, setHasDecrypted] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [hasCopied, copyToClipboard] = useCopyToClipboard({
+      clearDelayMs: null,
+    });
 
     const copyMessage = () => {
-      copyToClipboard(rawMessage, COPY_OPTIONS);
+      copyToClipboard(rawMessage);
       trackEvent(
         createEventBuilder('Copy')
           .addCategory(MetaMetricsEventCategory.Messages)
@@ -208,8 +208,6 @@ const MessageBody = forwardRef(
           })
           .build(),
       );
-      setHasCopied(true);
-      setTimeout(() => setHasCopied(false), SECOND * 3);
     };
 
     const onDecryptMessage = async (event) => {

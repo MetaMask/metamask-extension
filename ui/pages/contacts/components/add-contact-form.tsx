@@ -404,7 +404,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
+          className="flex-1 rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}

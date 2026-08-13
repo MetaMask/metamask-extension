@@ -1,4 +1,5 @@
 import React from 'react';
+import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -21,6 +22,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getNotificationTypeForAnalytics } from '../../../helpers/utils/notification.util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -44,12 +46,14 @@ export type NotificationDetailCopyButtonProps = {
  * @param [props.color] - The color of the text.
  * @returns The rendered component.
  */
-export const NotificationDetailCopyButton = ({
+export const NotificationDetailCopyButton: FC<
+  NotificationDetailCopyButtonProps
+> = ({
   notification,
   text,
   displayText,
   color = TextColor.textAlternative,
-}: NotificationDetailCopyButtonProps): JSX.Element => {
+}): JSX.Element => {
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
@@ -79,16 +83,13 @@ export const NotificationDetailCopyButton = ({
         createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            /* eslint-disable @typescript-eslint/naming-convention */
             notification_id: notification.id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_type: notification.type,
+            notification_type: getNotificationTypeForAnalytics(notification),
+            notification_subtype: notification.notification_subtype,
             ...otherNotificationProperties(),
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             clicked_item: 'tx_id',
+            /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),
       );
