@@ -9281,9 +9281,6 @@
   "select": {
     "message": "선택"
   },
-  "selectAccountToConnect": {
-    "message": "연결할 계정 선택"
-  },
   "selectAll": {
     "message": "전체 선택"
   },

@@ -9273,9 +9273,6 @@
   "select": {
     "message": "Επιλογή"
   },
-  "selectAccountToConnect": {
-    "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
