@@ -115,6 +115,10 @@ import {
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
 import { requestRepair } from './lib/repair';
+import {
+  createSidepanelOpener,
+  shouldUseSidepanel,
+} from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -229,6 +233,8 @@ let controller;
 const senderOriginMapping = {};
 const tabOriginMapping = {};
 const frameIdMapping = {};
+
+const requestOpenSidepanel = createSidepanelOpener();
 
 if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
@@ -2113,6 +2119,12 @@ export function setupController(
 // Etc...
 //
 
+async function getCurrentTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true };
+  const [tab] = await browser.tabs.query(queryOptions);
+  return tab;
+}
+
 /**
  * Opens the browser popup for user confirmation
  */
@@ -2127,12 +2139,28 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  if (openSidePanelCount > 0) {
+    return;
+  }
+
+  // Attempt to open the sidepanel with a roundtrip request
+  if (shouldUseSidepanel(controller)) {
+    const tab = await getCurrentTab();
+    if (tab?.id) {
+      const opened = await requestOpenSidepanel(tab.id);
+      if (opened) {
+        return;
+      }
+      // If the sidepanel failed to open, fall back to opening the popup
+    }
+  }
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0 &&
-    true
+    openSidePanelCount === 0
   ) {
     uiIsTriggering = true;
     try {
@@ -2262,8 +2290,9 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          controller
-            .handleDefiReferral(
+          controller.controllerMessenger
+            .call(
+              'LegacyBackgroundApiService:handleDefiReferral',
               partner,
               tabId,
               ReferralTriggerType.OnNavigateConnectedTab,

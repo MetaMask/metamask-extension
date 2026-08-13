@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';

@@ -74,7 +74,6 @@
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
-    "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "singleExceptions": {
       "testKey": "null"
@@ -1277,6 +1276,7 @@
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": "boolean",
       "showTestNetworks": "boolean",
+      "showTickerWidget": "boolean",
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
@@ -1354,13 +1354,13 @@
         "lastFetchedAt": "number"
       }
     },
+    "featureFlagThresholdGroups": {
+      "feature3": "string"
+    },
     "remoteFeatureFlags": {
       "feature1": "boolean",
       "feature2": "boolean",
-      "feature3": {
-        "name": "string",
-        "value": "string"
-      }
+      "feature3": "string"
     },
     "rawRemoteFeatureFlags": {
       "feature1": "boolean",

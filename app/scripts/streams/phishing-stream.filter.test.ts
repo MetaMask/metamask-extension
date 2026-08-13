@@ -7,6 +7,10 @@ process.env.PHISHING_WARNING_PAGE_URL = 'https://example.com/phishing';
 (global as any).mockPipeline = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).mockLogCalls = [] as unknown[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).mockOnMessageListeners = [] as ((
+  message: unknown,
+) => unknown)[];
 
 jest.mock('readable-stream', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,8 +68,9 @@ jest.mock('webextension-polyfill', () => ({
         },
       }),
       onMessage: {
-        addListener: () => {
-          // empty on purpose
+        addListener: (listener: (message: unknown) => unknown) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (global as any).mockOnMessageListeners.push(listener);
         },
       },
     },
@@ -134,5 +139,23 @@ describe('phishing-stream logging filter', () => {
     cb(new Error('boom'));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((global as any).mockLogCalls.length).toBe(2);
+  });
+});
+
+describe('phishing-stream runtime message listener', () => {
+  it('does not claim a response for unrelated messages', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const listeners = (global as any).mockOnMessageListeners as ((
+      message: unknown,
+    ) => unknown)[];
+    const listenerCountBefore = listeners.length;
+    // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
+    const { initPhishingStreams } = await import('./phishing-stream');
+    initPhishingStreams();
+    const listener = listeners[listenerCountBefore];
+
+    const result = listener({ type: 'unrelated' });
+
+    expect(result).toBeUndefined();
   });
 });

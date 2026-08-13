@@ -1,6 +1,19 @@
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../constants';
 
+/**
+ * External vault-decryptor webapp for recovering seed from vault JSON/logs.
+ *
+ * Screen: hosted vault-decryptor app
+ * (`https://metamask.github.io/vault-decryptor`), not a MetaMask route and not
+ * vendored in this repo.
+ * Owns: file/text vault input modes, password entry, decrypt confirm, and
+ * decrypted seed-phrase assertion.
+ * Boundaries: the external decryptor page only. Extension log export and
+ * critical-error recovery UI belong to extension page objects.
+ * Related: `CriticalErrorPage` / `VaultRecoveryPage` for in-extension recovery;
+ * `test/e2e/dist/vault-decryption-chrome.spec.ts` for usage.
+ */
 class VaultDecryptorPage {
   private readonly decryptButton = {
     text: 'Decrypt',

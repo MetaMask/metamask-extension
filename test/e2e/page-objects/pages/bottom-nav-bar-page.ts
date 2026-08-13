@@ -2,10 +2,17 @@ import { Driver } from '../../webdriver/driver';
 import { SWAP_PATH } from '../../../../ui/helpers/constants/routes';
 
 /**
- * Page object for the BottomNavBar component.
+ * Bottom navigation bar chrome for the bottom-nav AB test treatment.
  *
- * Only present when the user is in the bottom nav AB test treatment and on
- * an applicable route (home, perps-home, swaps, activity).
+ * Screen: chrome component (not a full page), only present in the bottom nav
+ * AB test treatment on applicable routes (home, perps-home, swaps, activity).
+ * Owns: the bottom nav bar itself and tab clicks that assert navigation to
+ * home or swaps.
+ * Boundaries: the nav chrome only. Destination screens belong to `HomePage`,
+ * swap/bridge page objects, etc. after navigation.
+ * Related: `HomePage`, swap/bridge prepare flows reached via the swaps tab.
+ *
+ * @see ui/components/app/bottom-nav-bar/bottom-nav-bar.tsx
  */
 class BottomNavBar {
   private readonly driver: Driver;

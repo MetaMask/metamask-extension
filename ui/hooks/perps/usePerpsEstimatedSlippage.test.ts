@@ -1,5 +1,5 @@
 import type { OrderBookData } from '@metamask/perps-controller';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { calculateEstimatedSlippageBps } from '../../components/app/perps/utils/slippageCalculation';
 import { usePerpsEstimatedSlippage } from './usePerpsEstimatedSlippage';
 import { usePerpsLiveOrderBook } from './stream/usePerpsLiveOrderBook';

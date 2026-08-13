@@ -19,6 +19,8 @@ import {
  */
 export const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
 
+const BASIS_POINTS_PER_PERCENT = 100;
+
 const ENFORCED_SIMULATIONS_FEATURE_FLAG = 'confirmations_enforced_simulations';
 
 /**
@@ -91,6 +93,18 @@ export function getEnforcedSimulationsSlippage(
     getEnforcedSimulationsFlag(source)?.slippage ??
     DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE
   );
+}
+
+/**
+ * Converts an enforced simulations slippage percentage to basis points.
+ *
+ * @param slippage - The slippage percentage.
+ * @returns The slippage in basis points.
+ */
+export function getEnforcedSimulationsSlippageBasisPoints(
+  slippage: number,
+): number {
+  return Math.round(slippage * BASIS_POINTS_PER_PERCENT);
 }
 
 /**

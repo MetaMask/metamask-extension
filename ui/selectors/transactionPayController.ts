@@ -50,8 +50,20 @@ export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
     false,
 );
 
+/**
+ * Funding account override for a transaction, when the user picks a different
+ * "From" account on money-account deposit (or similar) confirmations.
+ */
 export const selectTransactionPayAccountOverrideByTransactionId =
   createSelector(
     selectTransactionDataByTransactionId,
     (transactionData) => transactionData?.accountOverride,
   );
+
+/**
+ * Alternate payment strategy override (e.g. Money Account) for a transaction.
+ */
+export const selectPaymentOverrideByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.paymentOverride,
+);

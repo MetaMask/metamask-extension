@@ -1,6 +1,19 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Phishing warning interstitial served when a blocked site is detected.
+ *
+ * Screen: phishing-warning page (hosted package / local phishing-warning
+ * server), not an in-extension hash route.
+ * Owns: harmful-site title, back-to-safety, proceed-anyway, report-detection
+ * problem, and open-warning-in-new-tab (iframe) actions.
+ * Boundaries: the phishing warning UI only. Mock sites that trigger detection
+ * and post-proceed destinations are out of scope.
+ * Related: `MockedPage` for stub sites; `test/e2e/phishing-warning-page-server.js`.
+ *
+ * @see node_modules/@metamask/phishing-warning/dist/index.html
+ */
 class PhishingWarningPage {
   private readonly backToSafetyButton = {
     text: 'Back to safety',

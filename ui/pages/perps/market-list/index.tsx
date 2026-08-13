@@ -43,6 +43,7 @@ import {
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getIsPerpsExperienceAvailable,
@@ -477,7 +478,7 @@ export const MarketListView = () => {
 
   // Handlers
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleSearchChange = useCallback((value: string) => {

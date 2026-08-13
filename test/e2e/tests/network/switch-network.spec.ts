@@ -34,23 +34,19 @@ describe('Switch network - ', function (this: Suite) {
         const homePage = new HomePage(driver);
 
         // Validate the switch network functionality to Ethereum
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8545',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Arbitrum');
+        await switchToNetworkFromNetworkSelect(driver, 'Arbitrum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         await homePage.checkPageIsLoaded();
         await homePage.checkLocalNodeBalanceIsDisplayed();
       },
