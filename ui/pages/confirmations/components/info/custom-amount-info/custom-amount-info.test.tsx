@@ -340,9 +340,9 @@ describe('CustomAmountInfo', () => {
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('does not render any pay with selector when no tokens available', () => {
-    const { queryByTestId } = render({ availableTokens: [] });
-    expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+  it('keeps the pay with selector mounted when no tokens are available yet', () => {
+    const { getByTestId } = render({ availableTokens: [] });
+    expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
   describe('percentage buttons', () => {

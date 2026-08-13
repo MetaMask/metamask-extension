@@ -5977,9 +5977,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "@metamask/auto-changelog@npm:5.3.1"
+"@metamask/auto-changelog@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/auto-changelog@npm:6.2.0"
   dependencies:
     "@octokit/rest": "npm:^20.0.0"
     diff: "npm:^5.0.0"
@@ -5987,10 +5987,16 @@ __metadata:
     semver: "npm:^7.3.5"
     yargs: "npm:^17.0.1"
   peerDependencies:
+    oxfmt: ^0.45.0
     prettier: ">=3.0.0"
+  peerDependenciesMeta:
+    oxfmt:
+      optional: true
+    prettier:
+      optional: true
   bin:
     auto-changelog: dist/cli.mjs
-  checksum: 10/a7cfd0901d56a3ce918793b6648e3b0f153d030616c0d1711e23bffb4ea353468a3d2b69f376a73595b760b4e7ed3d7422d4edc6512528678b30fb7e7a8f2a89
+  checksum: 10/9cefcf494dd68d0ee689b54f159a2b78ed41ceb5964288f7237a470f88a1beabb4d4f6c28c596ae4960af2285c95713bea3b75931e632d0aa8923c89d2484b6d
   languageName: node
   linkType: hard
 
@@ -6136,15 +6142,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "@metamask/claims-controller@npm:0.4.2"
+"@metamask/claims-controller@npm:^0.5.3":
+  version: 0.5.4
+  resolution: "@metamask/claims-controller@npm:0.5.4"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/3e512f43c581e48c7f5b67d4eab5f0fecb69eb17a1e9e16e236f0798c0e420dc62bd62d1a9755c385ea7f2c28eb4796963184ed4c2832dfe9ed0c97a8cb31764
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/8b728c317eae3e1b96d1b70144a8554b3578511f20333345d138b46e04c240b807aaea1c99b759b8915c115a27efaba969840651cafe91e7652a094a744b1cf1
   languageName: node
   linkType: hard
 
@@ -6250,7 +6258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.18.0, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0, @metamask/controller-utils@npm:^11.3.0":
+"@metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.19.0, @metamask/controller-utils@npm:^11.20.0, @metamask/controller-utils@npm:^11.3.0":
   version: 11.20.0
   resolution: "@metamask/controller-utils@npm:11.20.0"
   dependencies:
@@ -33070,7 +33078,7 @@ __metadata:
     "@metamask/assets-controller": "npm:^13.1.2"
     "@metamask/assets-controllers": "npm:^111.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.2"
@@ -33080,7 +33088,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/claims-controller": "npm:^0.4.2"
+    "@metamask/claims-controller": "npm:^0.5.3"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
     "@metamask/client-utils": "npm:^2.0.0"

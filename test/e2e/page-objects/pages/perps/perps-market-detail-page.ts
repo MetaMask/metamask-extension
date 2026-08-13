@@ -2,7 +2,19 @@ import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Market Detail page (single market, order entry).
+ * The Perps Market Detail page for a single symbol: chart, position actions,
+ * favorites, and entry points into order entry / close / margin modals.
+ *
+ * Screen: `#/perps/market/:symbol`, reached from `PerpsMarketListPage` or
+ * `PerpsTab.clickPositionCard`.
+ * Owns: market detail chrome (favorite, geo-block, add-funds CTA), opening
+ * Long/Short into order entry, close-position and edit-margin modals (including
+ * the close-amount slider), and navigating back.
+ * Boundaries: the full order-entry route belongs to `PerpsOrderEntryPage`.
+ * Methods that open Long/Short only click through; await that page's
+ * `checkPageIsLoaded`. Withdraw confirmations are separate.
+ * Related: `PerpsMarketListPage` / `PerpsTab` (how tests get here),
+ * `PerpsOrderEntryPage` (Long/Short), `PerpsTab` (back to home).
  *
  * @see ui/pages/perps/perps-market-detail-page.tsx
  */
