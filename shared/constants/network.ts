@@ -608,7 +608,8 @@ export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
 export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
-export const APECHAIN_IMAGE_URL = './images/ape.svg';
+export const APECHAIN_IMAGE_URL = './images/apechain.svg';
+export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
 export const ABSTRACT_IMAGE_URL = './images/abstract.png';
 export const NOMINA_IMAGE_URL = './images/nomina.svg';
 export const NOMINA_NATIVE_TOKEN_IMAGE_URL = './images/nomina.svg';
@@ -1277,8 +1278,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
-  [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_IMAGE_URL,
-  [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
+  [CHAIN_IDS.APECHAIN_MAINNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.NOMINA]: NOMINA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.XDC]: XDC_NATIVE_TOKEN_IMAGE_URL,
