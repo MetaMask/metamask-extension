@@ -286,9 +286,9 @@ export const setToToken = (newToToken: TokenPayload) => {
           typeof dispatch
         >[0],
       );
+      dispatch(setFromTokenInputValue(currentFromAmount));
     }
 
     dispatch(setToTokenAction(newToToken));
-    dispatch(setFromTokenInputValue(currentFromAmount));
   };
 };
