@@ -316,7 +316,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.checkPageIsLoaded();
           const header = await testDapp.getHeader();
 
-          await header.verifyAccount(account2Short);
+          await header.verifyAccount(account1Short);
         },
       );
     });
