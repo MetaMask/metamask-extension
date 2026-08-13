@@ -22,10 +22,10 @@ const clearSlippageState = (state: BridgeState) => {
 };
 
 const didAssetPairChange = (
-  previousFromAssetId: string | undefined,
-  previousToAssetId: string | undefined,
-  nextFromAssetId: string | undefined,
-  nextToAssetId: string | undefined,
+  previousFromAssetId: CaipAssetType | undefined,
+  previousToAssetId: CaipAssetType | undefined,
+  nextFromAssetId: CaipAssetType | undefined,
+  nextToAssetId: CaipAssetType | undefined,
 ) =>
   !assetIdsMatch(previousFromAssetId, nextFromAssetId) ||
   !assetIdsMatch(previousToAssetId, nextToAssetId);
@@ -134,7 +134,6 @@ const bridgeSlice = createSlice({
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
       state.fromNativeBalance = initialState.fromNativeBalance;
-      state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
       if (

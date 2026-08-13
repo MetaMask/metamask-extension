@@ -576,7 +576,6 @@ const PrepareBridgePage = ({
                       formatTokenAmount(locale, previousDestAmount),
                     ),
                   );
-                dispatch(setToToken(fromToken));
               }}
             />
           </Box>
