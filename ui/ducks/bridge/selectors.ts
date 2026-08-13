@@ -9,6 +9,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   type BridgeAppState as BridgeAppStateFromController,
+  type InputPrimaryDenomination,
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
@@ -19,6 +20,7 @@ import {
   isCrossChain,
   RequestStatus,
   isNonEvmChainId,
+  isStellarChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -112,6 +114,7 @@ import {
   formatPriceImpactFiat,
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
+import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-order';
 import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
@@ -209,6 +212,14 @@ export const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+export const getChainValueOrderOverride = createSelector(
+  [
+    (state: BridgeAppState) =>
+      getRemoteFeatureFlags(state).swapsChainValueOrderOverride,
+  ],
+  parsePositionOverrides,
+);
+
 const getChainRanking = (state: BridgeAppState) =>
   getBridgeFeatureFlags(state)?.chainRanking;
 
@@ -302,6 +313,13 @@ export const getFromChains = createDeepEqualSelector(
           MultichainNetworks.TRON,
         ),
       ),
+    (state: BridgeAppState) =>
+      Boolean(
+        getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          MultichainNetworks.STELLAR,
+        ),
+      ),
   ],
   (
     allBridgeableNetworks,
@@ -309,6 +327,7 @@ export const getFromChains = createDeepEqualSelector(
     hasSolanaAccount,
     hasBitcoinAccount,
     hasTronAccount,
+    hasStellarAccount,
   ) => {
     const allChains: Record<CaipChainId, BridgeNetwork> = {
       ...Object.fromEntries(
@@ -341,12 +360,16 @@ export const getFromChains = createDeepEqualSelector(
         ? hasBitcoinAccount
         : true;
       const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
+      const shouldAddStellar = isStellarChainId(chainId)
+        ? hasStellarAccount
+        : true;
       const matchedNetwork = allChains[chainId];
       if (
         [
           shouldAddSolana,
           shouldAddBitcoin,
           shouldAddTron,
+          shouldAddStellar,
           matchedNetwork,
         ].every(Boolean)
       ) {
@@ -494,6 +517,17 @@ export const getToChain = createSelector(
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
+
+export const getInputPrimaryDenomination = (
+  state: BridgeAppState,
+): InputPrimaryDenomination =>
+  state.metamask.inputPrimaryDenomination ?? 'token_amount';
+
+export const getIsFiatToggleEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags): boolean =>
+    (flags as { enableFiatToggle?: boolean }).enableFiatToggle === true,
+);
 
 export const getAccountGroupNameByInternalAccount = createSelector(
   [getAllAccountGroups, (_, account: InternalAccount | null) => account],

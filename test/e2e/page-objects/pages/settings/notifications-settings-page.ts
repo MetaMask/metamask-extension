@@ -15,6 +15,22 @@ const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
   'agenticCli',
 ];
 
+/**
+ * Settings → Notifications: global allow toggle and preference sections.
+ *
+ * Screen: `#/settings/notifications` (and section sub-routes), reached from
+ * `SettingsPage.goToNotificationsSettings` or
+ * `flows/notifications.flow.ts` `goToNotificationsSettingsPage`.
+ * Owns: allow-notifications toggle, per-account toggles, preference section
+ * navigation (wallet activity, perps, marketing, agentic CLI), and in-app
+ * notification toggles within those sections.
+ * Boundaries: notification preferences only. The notifications list / inbox
+ * UI is outside this page object.
+ * Related: `SettingsPage`, `flows/notifications.flow.ts`.
+ *
+ * @see ui/pages/settings/notifications-tab/notifications-tab.tsx
+ * @see ui/pages/settings/notifications-tab/notification-section-sub-page.tsx
+ */
 class NotificationsSettingsPage {
   private readonly allowNotificationsAddressToggle = (
     address: string,

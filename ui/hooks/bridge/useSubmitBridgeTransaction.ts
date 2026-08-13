@@ -1,10 +1,13 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  InputPrimaryDenomination,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
@@ -21,6 +24,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getInputPrimaryDenomination,
   getToToken,
   getWarningLabels,
   type BridgeAppState,
@@ -30,6 +34,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
@@ -39,11 +44,19 @@ import {
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
+import {
+  CHAIN_VALUE_ORDER_AB_KEY,
+  CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+} from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { useABTest } from '../useABTest';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-export default function useSubmitBridgeTransaction() {
+export default function useSubmitBridgeTransaction(
+  inputPrimaryDenominationOverride?: InputPrimaryDenomination,
+) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHardwareWalletSigningPage = Boolean(
@@ -58,6 +71,11 @@ export default function useSubmitBridgeTransaction() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const persistedInputPrimaryDenomination = useSelector(
+    getInputPrimaryDenomination,
+  );
+  const inputPrimaryDenomination =
+    inputPrimaryDenominationOverride ?? persistedInputPrimaryDenomination;
   const fromAccount = useSelector(getFromAccount);
   const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
@@ -71,7 +89,29 @@ export default function useSubmitBridgeTransaction() {
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    variantName: chainValueOrderVariantName,
+    isActive: isChainValueOrderExperimentActive,
+  } = useABTest(
+    CHAIN_VALUE_ORDER_AB_KEY,
+    CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+    undefined,
+    { trackExposure: false },
+  );
+  const activeAbTests = useMemo(
+    () =>
+      isChainValueOrderExperimentActive
+        ? [
+            createActiveABTestAssignment(
+              CHAIN_VALUE_ORDER_AB_KEY,
+              chainValueOrderVariantName,
+            ),
+          ]
+        : undefined,
+    [chainValueOrderVariantName, isChainValueOrderExperimentActive],
+  );
   // Tracks an in-flight submitBridgeTx so Promise.race timeouts cannot leave a
   // live dispatch that a hardware-wallet retry would duplicate.
   const inFlightSubmitBridgeTxRef = useRef<{
@@ -96,6 +136,8 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+            activeAbTests,
+            inputPrimaryDenomination,
           }),
         );
         return;
@@ -123,6 +165,8 @@ export default function useSubmitBridgeTransaction() {
             ),
             location,
             toToken?.securityData?.type ?? null,
+            activeAbTests,
+            inputPrimaryDenomination,
           ),
         );
         const tracked = { requestId, promise: rpcPromise };
@@ -163,6 +207,7 @@ export default function useSubmitBridgeTransaction() {
 
     try {
       if (
+        !inE2e &&
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {

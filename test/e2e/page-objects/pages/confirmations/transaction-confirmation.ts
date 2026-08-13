@@ -5,6 +5,27 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 import Confirmation from './confirmation';
 
+/**
+ * Redesigned transaction confirmation: gas, simulations, advanced details,
+ * and send-style headings on top of shared `Confirmation` chrome.
+ *
+ * Screen: `#/confirmation` / `#/confirmation/:id` for transaction approvals
+ * (dapp- or wallet-initiated; not a dedicated `#/confirm-transaction` page
+ * object path).
+ * Owns: advanced-details toggle and data/hex sections, gas fee display and
+ * edit entry points, custom nonce, simulation/enforced-simulation rows,
+ * alerts banner, sender/recipient, and wallet-initiated back.
+ * Boundaries: inherits footer/nav from `Confirmation`. Selecting a gas option
+ * or advanced gas form is `GasFeeModal`; picking a fee token is
+ * `GasFeeTokenModal`; alert copy after inline-alert click is `AlertModal`.
+ * Related: `TokenTransferTransactionConfirmation`,
+ * `ERC20ApproveTransactionConfirmation`,
+ * `SetApprovalForAllTransactionConfirmation`, `Eip7702AndSendCalls`.
+ *
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ * @see ui/pages/confirmations/components/confirm/info/base-transaction-info/base-transaction-info.tsx
+ * @see ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.tsx
+ */
 class TransactionConfirmation extends Confirmation {
   private readonly advancedDetailsButton: RawLocator = `[data-testid="header-advanced-details-button"]`;
 
