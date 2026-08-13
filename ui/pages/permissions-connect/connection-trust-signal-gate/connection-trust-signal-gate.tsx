@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 type ConnectionTrustSignalGateProps = {
   origin: string;
@@ -15,16 +16,16 @@ export function ConnectionTrustSignalGate({
   onCancel,
 }: Readonly<ConnectionTrustSignalGateProps>) {
   const { state } = useOriginTrustSignals(origin);
-  const [dismissed, setDismissed] = useState(false);
+  const { value: dismissed, setTrue: dismiss } = useBoolean(false);
 
-  if (!dismissed && state === TrustSignalDisplayState.Malicious) {
-    return (
-      <TrustSignalModal
-        onContinue={() => setDismissed(true)}
-        onCancel={onCancel}
-      />
-    );
-  }
+  const showModal = !dismissed && state === TrustSignalDisplayState.Malicious;
 
-  return <>{children}</>;
+  return (
+    <>
+      {showModal && (
+        <TrustSignalModal onContinue={dismiss} onCancel={onCancel} />
+      )}
+      {children}
+    </>
+  );
 }
