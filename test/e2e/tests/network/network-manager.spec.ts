@@ -9,9 +9,10 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager, {
+import SelectNetworkModal, {
   NetworkId,
-} from '../../page-objects/pages/network-manager';
+} from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
@@ -196,10 +197,12 @@ describe('Network Manager', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await selectNetworkModal.checkNetworkIsDeselected(NetworkId.LINEA);
       },
     );
   });
@@ -215,11 +218,13 @@ describe('Network Manager', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
 
         // there cannot be an inbetween value, either 1 network or all networks. So the controller updates to all networks
-        await networkManager.checkAllPopularNetworksIsSelected();
+        await selectNetworkModal.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -235,27 +240,32 @@ describe('Network Manager', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
 
         // Assert - initial Network Manager State (eth selected, linea deselected)
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await selectNetworkModal.checkNetworkIsDeselected(NetworkId.LINEA);
 
         // Act Assert - select linea will deselect etherum and select linea
-        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
-        await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.LINEA);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.LINEA);
+        await selectNetworkModal.checkNetworkIsDeselected(NetworkId.ETHEREUM);
+        await selectNetworkModal.close();
 
         // Act Assert - select ethereum will deselect linea and select ethereum
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsDeselected(NetworkId.LINEA);
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await selectNetworkModal.close();
       },
     );
   });
@@ -273,19 +283,22 @@ describe('Network Manager', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
         const tokensTab = new TokensTab(driver);
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Only Ethereum native token and MUSD
         await tokensTab.checkTokenItemNumber(2);
 
         // Change to Linea, only Linea native token and MUSD visible
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.LINEA);
         await tokensTab.checkTokenItemNumber(2);
 
         // Change to Ethereum, only Ethereum native token and MUSD visible
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
         await tokensTab.checkTokenItemNumber(2);
       },
     );
@@ -364,11 +377,13 @@ describe('Network Manager', function (this: Suite) {
         );
 
         // Now verify both networks are preserved in network manager
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
 
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
-        await networkManager.checkNetworkIsSelected(NetworkId.AVALANCHE);
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.AVALANCHE);
       },
     );
   });
@@ -445,20 +460,15 @@ describe('Network Manager', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check what network is currently active by reading the button text
-        await driver.delay(2000);
-        const networkButtonText = await driver.executeScript(`
-          const networkButton = document.querySelector('[data-testid="sort-by-networks"]');
-          return networkButton ? networkButton.textContent.trim() : 'Button not found';
-        `);
-        console.log(`🔍 Current network button text: "${networkButtonText}"`);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
         // Now check the network manager state
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
 
         // Verify Ethereum is deselected
-        await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
+        await selectNetworkModal.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );
   });

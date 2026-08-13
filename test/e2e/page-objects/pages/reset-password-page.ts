@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Forgot-password / restore-vault flow: SRP then new password.
+ *
+ * Screen: `#/restore-vault`, reached from unlock via forgot password.
+ * Owns: SRP entry/confirm, new password + confirm, terms checkbox, and restore
+ * submit through password-input detachment after success.
+ * Boundaries: restore-vault form only. Unlock entry belongs to `LoginPage`;
+ * post-restore home belongs to `HomePage`.
+ * Related: `LoginPage` (forgot-password entry).
+ *
+ * @see ui/pages/keychains/restore-vault.tsx
+ */
 class ResetPasswordPage {
   private confirmPasswordInput: string;
 

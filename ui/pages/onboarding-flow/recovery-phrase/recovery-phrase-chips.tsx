@@ -156,7 +156,6 @@ export default function RecoveryPhraseChips({
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
       <Box
-        backgroundColor={BoxBackgroundColor.BackgroundSection}
         className={classnames(
           'recovery-phrase__secret rounded-lg w-full',
           recoveryPhraseChipsContainerClassName,
@@ -186,20 +185,20 @@ export default function RecoveryPhraseChips({
                 className="recovery-phrase__text rounded-lg px-2"
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
-                backgroundColor={
-                  isQuizWord
-                    ? BoxBackgroundColor.BackgroundDefault
-                    : BoxBackgroundColor.BackgroundMuted
-                }
-                borderColor={
-                  isTargetIndex
-                    ? BoxBorderColor.PrimaryDefault
-                    : BoxBorderColor.BorderMuted
-                }
-                borderWidth={isTargetIndex ? 2 : 1}
+                backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                borderColor={BoxBorderColor.BorderMuted}
+                borderWidth={1}
                 paddingTop={1}
                 paddingBottom={1}
                 gap={1}
+                style={
+                  isTargetIndex
+                    ? {
+                        borderColor: 'var(--color-icon-default)',
+                        borderWidth: '1.5px',
+                      }
+                    : undefined
+                }
                 onClick={() => {
                   if (!isQuizWord) {
                     return;
@@ -305,7 +304,7 @@ export default function RecoveryPhraseChips({
                 data-testid={`recovery-phrase-quiz-answered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 color={TextColor.TextAlternative}
-                className="rounded-lg w-full bg-muted"
+                className="rounded-lg w-full bg-muted hover:bg-muted-hover active:bg-muted-pressed"
                 onClick={() => {
                   removeQuizWord(quizWord.word);
                 }}
@@ -317,7 +316,7 @@ export default function RecoveryPhraseChips({
                 data-testid={`recovery-phrase-quiz-unanswered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 variant={ButtonVariant.Secondary}
-                className="rounded-lg w-full bg-muted border-primary-default border text-primary-default"
+                className="rounded-lg w-full"
                 onClick={() => {
                   addQuizWord(quizWord.word, actualIdxInSrp);
                 }}

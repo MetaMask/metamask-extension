@@ -267,10 +267,6 @@ export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
 }
 
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
-}
-
 /**
  * To retrieve the name of the new Network added using add network form
  *
@@ -4060,7 +4056,7 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink) {
+    if (!deferredDeepLink?.referringLink) {
       return null;
     }
 

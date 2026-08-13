@@ -2076,6 +2076,141 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('addTransaction', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<LegacyBackgroundApiService['addTransaction']>[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    /**
+     * Registers the handlers required by the transaction-add pipeline to add an
+     * EOA transaction with security alerts disabled.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param transactions - The transactions to expose via
+     * `TransactionController:getState`.
+     */
+    function registerAddTransactionHandlers(
+      rootMessenger: RootMessenger,
+      transactions: TransactionMeta[] = [],
+    ): void {
+      rootMessenger.registerActionHandler(
+        'AccountsController:listAccounts',
+        jest.fn().mockReturnValue([]),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        jest
+          .fn()
+          .mockReturnValue(
+            createMockInternalAccount({ address: '0xfromaddress' }),
+          ),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId: '0x1' }),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+      );
+      rootMessenger.registerActionHandler(
+        'TransactionController:getState',
+        jest.fn().mockReturnValue({ transactions }),
+      );
+    }
+
+    it('adds the transaction via the TransactionController and returns its metadata without waiting for publish', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+        registerAddTransactionHandlers(rootMessenger);
+        const addTransactionHandler = jest.fn().mockResolvedValue({
+          result: Promise.resolve('0xhash'),
+          transactionMeta,
+        });
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          addTransactionHandler,
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransaction',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(addTransactionHandler).toHaveBeenCalledWith(TRANSACTION_PARAMS, {
+          networkClientId: NETWORK_CLIENT_ID,
+          isInternal: true,
+        });
+        expect(result).toStrictEqual(transactionMeta);
+      });
+    });
+  });
+
+  describe('addTransactionAndWaitForPublish', () => {
+    const TRANSACTION_PARAMS = {
+      from: '0xfromaddress',
+      to: '0xtoaddress',
+    } as unknown as Parameters<
+      LegacyBackgroundApiService['addTransactionAndWaitForPublish']
+    >[0];
+    const NETWORK_CLIENT_ID = 'networkClientId';
+
+    it('waits for the transaction to publish and returns the final metadata', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const finalTransactionMeta = {
+          id: 'txId',
+          hash: '0xhash',
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:listAccounts',
+          jest.fn().mockReturnValue([]),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest
+            .fn()
+            .mockReturnValue(
+              createMockInternalAccount({ address: '0xfromaddress' }),
+            ),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          jest.fn().mockReturnValue({ chainId: '0x1' }),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue({ securityAlertsEnabled: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [finalTransactionMeta] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:addTransaction',
+          jest.fn().mockResolvedValue({
+            result: Promise.resolve('0xhash'),
+            transactionMeta: { id: 'txId' } as TransactionMeta,
+          }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          TRANSACTION_PARAMS,
+          { networkClientId: NETWORK_CLIENT_ID },
+        );
+
+        expect(result).toStrictEqual(finalTransactionMeta);
+      });
+    });
+  });
+
   describe('resetAccount', () => {
     it('resets the account and returns the selected address', async () => {
       const selectedAddress = '0x123';
@@ -2155,6 +2290,134 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'NetworkController:resetConnection',
         );
+      });
+    });
+  });
+
+  describe('resetWallet', () => {
+    /**
+     * Registers no-op handlers for every action `resetWallet` invokes.
+     *
+     * @param rootMessenger - The root messenger to register the handlers on.
+     */
+    function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
+      rootMessenger.registerActionHandler(
+        'AuthenticationController:performSignOut',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SeedlessOnboardingController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PasskeyController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ClaimsController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AddressBookController:clear',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:resetState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:resetOnboarding',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AppStateController:setIsWalletResetInProgress',
+        jest.fn(),
+      );
+    }
+
+    it('clears sensitive controller state and signs the user out', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:stopAllPolling',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('ShieldController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('ClaimsController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('AddressBookController:clear');
+        expect(callSpy).toHaveBeenCalledWith(
+          'PreferencesController:resetState',
+        );
+      });
+    });
+
+    it('resets onboarding and flags the reset as in progress when restoreOnly is false', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+      });
+    });
+
+    it('preserves onboarding state when restoreOnly is true', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          true,
+        );
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+        // Non-onboarding cleanup still runs.
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
       });
     });
   });
@@ -6840,6 +7103,7 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:lookupNetwork',
       'NetworkEnablementController:getState',
@@ -6961,6 +7225,31 @@ function getMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:updateSecurityAlertResponse',
+      'UserOperationController:addUserOperationFromTransaction',
+      'UserOperationController:startPollingByNetworkClientId',
+      'PPOMController:usePPOM',
+      'KeyringController:getKeyringForAccount',
+      'SignatureController:getState',
+      'AppStateController:getAddressSecurityAlertResponse',
+      'AppStateController:addAddressSecurityAlertResponse',
+      'AppStateController:addSignatureSecurityAlertResponse',
+      'SubscriptionController:getSubscriptionByProduct',
+      'AuthenticationController:getBearerToken',
+      'ShieldController:clearState',
+      'SeedlessOnboardingController:clearState',
+      'PasskeyController:clearState',
+      'SubscriptionController:clearState',
+      'ClaimsController:clearState',
+      'AddressBookController:clear',
+      'PreferencesController:resetState',
+      'OnboardingController:resetOnboarding',
+    ],
+    events: [
+      'TransactionController:unapprovedTransactionAdded',
+      'SignatureController:stateChange',
     ],
   });
 

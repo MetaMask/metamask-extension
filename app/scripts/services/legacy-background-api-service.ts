@@ -1,8 +1,10 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
+  NetworkConfiguration,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
@@ -40,6 +42,7 @@ import {
   KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
@@ -81,14 +84,28 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   TransactionContainerType,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionControllerWipeTransactionsAction,
+  type TransactionMeta,
+  type TransactionParams,
 } from '@metamask/transaction-controller';
+import {
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
+} from '@metamask/user-operation-controller';
+import {
+  GetSignatureState,
+  SignatureStateChange,
+} from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
@@ -131,6 +148,7 @@ import {
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerClearStateAction,
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
   SeedlessOnboardingControllerFetchAllSecretDataAction,
@@ -199,17 +217,23 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
+  SubscriptionControllerClearStateAction,
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
+  ShieldControllerClearStateAction,
   ShieldControllerStartAction,
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
+import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
+import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -218,6 +242,7 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerClearStateAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -256,7 +281,11 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
+import {
+  OnboardingControllerGetIsSocialLoginFlowAction,
+  OnboardingControllerResetOnboardingAction,
+} from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
   getSentinelNetworkFlags,
@@ -267,12 +296,18 @@ import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import {
+  addTransaction as addTransactionToPipeline,
+  type AddTransactionOptions,
+  type AddTransactionRequest,
+} from '../lib/transaction/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
+  PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
@@ -312,6 +347,9 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerAddSignatureSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
   AppStateControllerGetIsWalletResetInProgressAction,
   AppStateControllerSetIsWalletResetInProgressAction,
   AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
@@ -329,9 +367,8 @@ import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   LatticeKeyringV2,
@@ -406,6 +443,8 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addTransaction',
+  'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
   'captureTestError',
@@ -465,6 +504,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removePermissionsFor',
   'requestSafeReload',
   'resetAccount',
+  'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
   'setAccountLabel',
   'setCurrentCurrency',
@@ -506,11 +546,15 @@ type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | AppStateControllerAddSignatureSecurityAlertResponseAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetIsWalletResetInProgressAction
@@ -520,9 +564,11 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
+  | ClaimsControllerClearStateAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
@@ -532,6 +578,7 @@ type AllowedActions =
   | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
@@ -558,6 +605,7 @@ type AllowedActions =
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
@@ -567,7 +615,9 @@ type AllowedActions =
   | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerClearStateAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
@@ -581,6 +631,7 @@ type AllowedActions =
   | PreferencesControllerAddReferralPassedAccountAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
+  | PreferencesControllerResetStateAction
   | PreferencesControllerSetAccountsReferralApprovedAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
@@ -588,6 +639,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
   | SeedlessOnboardingControllerGetSecretDataBackupStateAction
@@ -601,24 +653,44 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | GetSignatureState
+  | ShieldControllerClearStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerClearStateAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
   | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerGetStateAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateEditableParamsAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | TransactionControllerWipeTransactionsAction
+  | UsePPOMAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction;
+
+/**
+ * The events that the {@link LegacyBackgroundApiService} can subscribe to.
+ *
+ * Consumed by the shared transaction-add pipeline to await the pending
+ * transaction or signature request while running PPOM security validation.
+ */
+type AllowedEvents =
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | SignatureStateChange;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -626,7 +698,7 @@ type AllowedActions =
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -1018,6 +1090,88 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, without waiting for the
+   * transaction to be published.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The transaction metadata.
+   */
+  async addTransaction(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        false,
+      ),
+    );
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, waiting for the
+   * transaction to be published and returning the final transaction metadata.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The final transaction metadata.
+   */
+  async addTransactionAndWaitForPublish(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        true,
+      ),
+    );
+  }
+
+  /**
+   * Builds the request consumed by the shared transaction-add pipeline from the
+   * messenger, mirroring the former `MetamaskController.getAddTransactionRequest`.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @param waitForSubmit - Whether to wait for the transaction to be published.
+   * @returns The transaction-add request.
+   */
+  #buildAddTransactionRequest(
+    transactionParams: TransactionParams,
+    transactionOptions: Partial<AddTransactionOptions> | undefined,
+    waitForSubmit: boolean,
+  ): AddTransactionRequest {
+    const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
+
+    return {
+      messenger: this.#messenger,
+      internalAccounts: this.#messenger.call('AccountsController:listAccounts'),
+      selectedAccount: this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        transactionParams.from,
+      ) as InternalAccount,
+      networkClientId: networkClientId as string,
+      chainId,
+      transactionParams,
+      transactionOptions: { ...transactionOptions, isInternal: true },
+      securityAlertsEnabled: this.#messenger.call(
+        'PreferencesController:getState',
+      ).securityAlertsEnabled,
+      waitForSubmit,
+    };
+  }
+
+  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -1136,6 +1290,48 @@ export class LegacyBackgroundApiService {
     }
 
     await this.lookupSelectedNetworks();
+  }
+
+  /**
+   * Resets the wallet to a clean state, clearing sensitive controller state and
+   * signing the user out.
+   *
+   * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+   * restore-vault flow); when `false`, onboarding is also reset and the wallet
+   * reset progress flag is set.
+   */
+  async resetWallet(restoreOnly = false): Promise<void> {
+    // sign out from Authentication service and clear the Session Data
+    this.#messenger.call('AuthenticationController:performSignOut');
+
+    // clear SeedlessOnboardingController state
+    this.#messenger.call('SeedlessOnboardingController:clearState');
+
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.#messenger.call('PasskeyController:clearState');
+
+    // stop subscription polling
+    this.#messenger.call('SubscriptionController:stopAllPolling');
+
+    // clear States
+    this.#messenger.call('SubscriptionController:clearState');
+    this.#messenger.call('ShieldController:clearState');
+    this.#messenger.call('ClaimsController:clearState');
+
+    // clear contacts (address book)
+    this.#messenger.call('AddressBookController:clear');
+
+    // reset preferences to defaults
+    this.#messenger.call('PreferencesController:resetState');
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.#messenger.call('OnboardingController:resetOnboarding');
+      this.#messenger.call(
+        'AppStateController:setIsWalletResetInProgress',
+        true,
+      );
+    }
   }
 
   /**
@@ -2762,7 +2958,7 @@ export class LegacyBackgroundApiService {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+    return isDmkFeatureEnabled(merged)
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }

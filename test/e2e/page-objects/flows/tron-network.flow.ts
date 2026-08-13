@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import {
   switchToNetworkFromNetworkSelect,
-  waitForNetworkManagerBackdropToClear,
+  waitForNetworkModalBackdropToClear,
 } from './network.flow';
 
 /**
@@ -15,5 +15,5 @@ import {
  */
 export async function selectTronNetwork(driver: Driver): Promise<void> {
   await switchToNetworkFromNetworkSelect(driver, 'Tron');
-  await waitForNetworkManagerBackdropToClear(driver);
+  await waitForNetworkModalBackdropToClear(driver);
 }
