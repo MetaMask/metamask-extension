@@ -83,11 +83,24 @@ export default function GasTiming({
 
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
-  const [prevIsUnknownLow, setPrevIsUnknownLow] = useState(isUnknownLow);
-
-  if (isUnknownLow !== prevIsUnknownLow) {
-    setPrevIsUnknownLow(isUnknownLow);
-    if (isUnknownLow !== false && prevIsUnknownLow === true) {
+  const [prevEstimateInputs, setPrevEstimateInputs] = useState({
+    isUnknownLow,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  });
+  if (
+    isUnknownLow !== prevEstimateInputs.isUnknownLow ||
+    maxFeePerGas !== prevEstimateInputs.maxFeePerGas ||
+    maxPriorityFeePerGas !== prevEstimateInputs.maxPriorityFeePerGas
+  ) {
+    const shouldClearCustomEstimate =
+      prevEstimateInputs.isUnknownLow === true && isUnknownLow !== false;
+    setPrevEstimateInputs({
+      isUnknownLow,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    });
+    if (shouldClearCustomEstimate) {
       setCustomEstimatedTime(null);
     }
   }

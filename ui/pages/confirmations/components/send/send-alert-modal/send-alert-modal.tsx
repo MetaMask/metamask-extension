@@ -160,11 +160,11 @@ export const SendAlertModal = ({
       viewedKeys: new Set(),
     });
   } else if (alertKeys !== uiState.alertKeys) {
-    setUiState({
-      ...uiState,
+    setUiState((prev) => ({
+      ...prev,
       alertKeys,
       currentIndex: 0,
-    });
+    }));
   }
 
   const safeIndex = Math.min(
