@@ -35,9 +35,11 @@ class SnapTransactionConfirmation {
     tag: 'h2',
   };
 
+  // This message is rendered by the Solana wallet snap from its own bundled
+  // locale, not from the extension's messages.json.
   private securityAlertsError = {
     tag: 'p',
-    text: `We couldn't complete this safety check.`,
+    text: `Because of an error, we couldn't check for security alerts.`,
   };
 
   constructor(driver: Driver) {
