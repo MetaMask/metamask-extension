@@ -3408,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "Αποσύνδεση όλων"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Αν αποσυνδεθείτε από όλους τους ιστότοπους, θα πρέπει να συνδέσετε ξανά τους λογαριασμούς και τα δίκτυά σας για να τους χρησιμοποιήσετε ξανά."
-  },
   "disconnectAllSitesError": {
     "message": "Ορισμένες αποκεντρωμένες εφαρμογές (dapps) δεν ήταν δυνατό να αποσυνδεθούν. Παρακαλώ δοκιμάστε ξανά."
   },
@@ -3429,9 +3426,17 @@
   "discover": {
     "message": "Ανακαλύψτε"
   },
+  "discoverSearchCap": {
+    "message": "κεφαλαιοποίηση",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Δεν βρέθηκαν αποτελέσματα",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Δεν βρέθηκαν αποτελέσματα για \"$1\"",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Δείτε άλλα δημοφιλή περιουσιακά στοιχεία",
@@ -6913,6 +6918,10 @@
   "perpsCancelOrder": {
     "message": "Ακύρωση εντολής"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Δεν ήταν δυνατή η ακύρωση της εντολής. Προσπαθήστε ξανά.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Ορισμός διαστήματος κεριών"
   },
@@ -7051,6 +7060,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Εκτ. Κ&Ζ εφόσον ενεργοποιηθεί η λήψη κερδών",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Προσθέστε χρήματα για να ξεκινήσετε τις συναλλαγές.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Εξερευνήστε αγορές"
@@ -7248,8 +7261,19 @@
   "perpsOrderBookApply": {
     "message": "Εφαρμογή"
   },
+  "perpsOrderBookBuy": {
+    "message": "Αγορά: $1",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Ταξινόμηση κατά & Ομαδοποίηση κατά"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Η σύνδεση με το βιβλίο εντολών χάθηκε"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Αγορά $1%, πώληση $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Ομαδοποίηση κατά"
@@ -7260,11 +7284,24 @@
   "perpsOrderBookLoading": {
     "message": "Φόρτωση βιβλίου εντολών"
   },
+  "perpsOrderBookNoData": {
+    "message": "Δεν υπάρχουν δεδομένα βιβλίου εντολών"
+  },
   "perpsOrderBookPrice": {
     "message": "Τιμή"
   },
   "perpsOrderBookReconnect": {
     "message": "Επανασύνδεση"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Επανασύνδεση στο βιβλίο εντολών"
+  },
+  "perpsOrderBookResize": {
+    "message": "Προσαρμογή μεγέθους βιβλίου εντολών"
+  },
+  "perpsOrderBookSell": {
+    "message": "Πώληση: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Μέγεθος"
@@ -7275,8 +7312,24 @@
   "perpsOrderBookTotal": {
     "message": "Σύνολο"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Χρησιμοποιήστε το $1 ως τιμή ορίου",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Τύπος τιμής"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Το βιβλίο εντολών εμφανίζει αγορές και πωλήσεις",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Το βιβλίο εντολών εμφανίζει μόνο αγορές",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Το βιβλίο εντολών εμφανίζει μόνο πωλήσεις",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Ημερομηνία"
@@ -7497,6 +7550,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Η Λήψη Κερδών πρέπει να είναι μεταξύ $1 και $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Αυτή η εντολή δεν είναι πλέον διαθέσιμη",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Αποτυχία ακύρωσης εντολής",
@@ -11523,6 +11580,10 @@
   },
   "viewTokenDetails": {
     "message": "Προβολή λεπτομερειών token"
+  },
+  "viewXMore": {
+    "message": "Δείτε $1 ακόμη",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Προβολή $1 στον explorer",

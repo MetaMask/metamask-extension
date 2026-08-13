@@ -3406,10 +3406,7 @@
     "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
   },
   "disconnectAllSites": {
-    "message": "Putuskan Semua Koneksi"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Jika Anda memutuskan koneksi dari semua situs, Anda perlu menghubungkan kembali akun dan jaringan Anda untuk dapat menggunakannya lagi."
+    "message": "Putuskan semua koneksi"
   },
   "disconnectAllSitesError": {
     "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
@@ -3429,9 +3426,17 @@
   "discover": {
     "message": "Temukan"
   },
+  "discoverSearchCap": {
+    "message": "kap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Hasil tidak ditemukan",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Tidak ditemukan hasil untuk “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Lihat aset populer lainnya",
@@ -6917,6 +6922,10 @@
   "perpsCancelOrder": {
     "message": "Batalkan order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order tidak dapat dibatalkan. Coba lagi.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Atur interval lilin"
   },
@@ -7055,6 +7064,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Estimasi P&L pada take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Tambahkan dana untuk memulai perdagangan.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Jelajahi pasar"
@@ -7252,8 +7265,19 @@
   "perpsOrderBookApply": {
     "message": "Terapkan"
   },
+  "perpsOrderBookBuy": {
+    "message": "Beli: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Disusun berdasarkan dan Dikelompokkan berdasarkan"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Koneksi pemesanan order hilang"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Beli $1%, jual $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Pengelompokan berdasarkan"
@@ -7264,11 +7288,24 @@
   "perpsOrderBookLoading": {
     "message": "Memuat daftar order"
   },
+  "perpsOrderBookNoData": {
+    "message": "Daftar order kosong"
+  },
   "perpsOrderBookPrice": {
     "message": "Harga"
   },
   "perpsOrderBookReconnect": {
     "message": "Hubungkan kembali"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Menghubungkan kembali ke daftar order"
+  },
+  "perpsOrderBookResize": {
+    "message": "Ubah ukuran daftar order"
+  },
+  "perpsOrderBookSell": {
+    "message": "Jual: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Ukuran"
@@ -7279,8 +7316,24 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Gunakan $1 sebagai harga limit",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Jenis nilai"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Daftar order yang menampilkan harga beli dan harga jual",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Daftar order yang menampilkan harga beli saja",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Daftar order yang menampilkan harga jual saja",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Tanggal"
@@ -7501,6 +7554,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit harus dilakukan pada harga $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Order ini tidak lagi dibuka",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Gagal membatalkan order",
@@ -11531,6 +11588,10 @@
   },
   "viewTokenDetails": {
     "message": "Lihat detail token"
+  },
+  "viewXMore": {
+    "message": "Lihat $1 lainnya",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",

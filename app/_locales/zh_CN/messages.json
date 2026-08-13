@@ -3408,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "断开所有连接"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "如果您断开与所有网站的连接，您需要重新连接账户和网络才能继续使用它们。"
-  },
   "disconnectAllSitesError": {
     "message": "部分去中心化应用无法断开连接。请重试。"
   },
@@ -3429,9 +3426,17 @@
   "discover": {
     "message": "发现"
   },
+  "discoverSearchCap": {
+    "message": "市值",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "未找到结果",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "未找到 “$1” 的相关结果",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "查看其他热门资产",
@@ -6913,6 +6918,10 @@
   "perpsCancelOrder": {
     "message": "取消订单"
   },
+  "perpsCancelOrderFailed": {
+    "message": "订单无法取消。请重试。",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "设置 K 线间隔"
   },
@@ -7051,6 +7060,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "预估止盈盈亏",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "充值后即可开始交易。",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "探索市场"
@@ -7248,8 +7261,19 @@
   "perpsOrderBookApply": {
     "message": "应用"
   },
+  "perpsOrderBookBuy": {
+    "message": "买入：$1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "排列方式与分组方式"
+  },
   "perpsOrderBookConnectionError": {
     "message": "订单簿连接丢失"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "买入 $1%，卖出 $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "分组依据"
@@ -7257,11 +7281,27 @@
   "perpsOrderBookListedBy": {
     "message": "排序依据"
   },
+  "perpsOrderBookLoading": {
+    "message": "正在加载订单簿"
+  },
+  "perpsOrderBookNoData": {
+    "message": "无订单簿数据"
+  },
   "perpsOrderBookPrice": {
     "message": "价格"
   },
   "perpsOrderBookReconnect": {
     "message": "重新连接"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "正在重新连接订单簿"
+  },
+  "perpsOrderBookResize": {
+    "message": "调整订单簿大小"
+  },
+  "perpsOrderBookSell": {
+    "message": "卖出：$1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "规模"
@@ -7272,8 +7312,24 @@
   "perpsOrderBookTotal": {
     "message": "共计"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "使用 $1 作为限价",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "价值类型"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "显示买盘和卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "仅显示买盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "仅显示卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "日期"
@@ -7494,6 +7550,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "止盈价必须为 $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "此订单已关闭",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "取消订单失败",
@@ -11520,6 +11580,10 @@
   },
   "viewTokenDetails": {
     "message": "查看代币详情"
+  },
+  "viewXMore": {
+    "message": "查看另外 $1 条",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",

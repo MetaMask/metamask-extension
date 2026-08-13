@@ -3406,10 +3406,7 @@
     "message": "Kapag idiniskonekta mo sa site na ito, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang site na ito."
   },
   "disconnectAllSites": {
-    "message": "Idiskonekta Lahat"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Kapag idiniskonekta mo sa lahat ng site, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang mga iyon."
+    "message": "Idiskonekta ang lahat"
   },
   "disconnectAllSitesError": {
     "message": "Hindi maaaring idiskonekta ang ilang mga dapp. Pakisubukan muli."
