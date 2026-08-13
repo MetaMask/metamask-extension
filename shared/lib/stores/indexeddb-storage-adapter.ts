@@ -48,8 +48,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   #openPromise?: Promise<boolean>;
 
-  #useFallbackStorageOnly = false;
-
   constructor({
     database = new IndexedDBStore(),
     fallbackStorage = new BrowserStorageAdapter(),
@@ -69,10 +67,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
     );
 
     if (fallbackMarker.result === true) {
-      this.#useFallbackStorageOnly = true;
-      console.warn(
-        'StorageService: Continuing to use browser.storage.local because it contains fallback data.',
-      );
       return false;
     }
 
@@ -97,7 +91,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
         true,
       );
 
-      this.#useFallbackStorageOnly = true;
       console.warn(
         'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
       );
@@ -107,10 +100,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   async #canUseIndexedDB(): Promise<boolean> {
-    if (this.#useFallbackStorageOnly) {
-      return false;
-    }
-
     if (!this.#openPromise) {
       this.#openPromise = this.#selectStorage().catch((error) => {
         this.#openPromise = undefined;

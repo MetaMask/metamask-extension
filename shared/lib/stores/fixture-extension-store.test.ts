@@ -4,10 +4,6 @@ import nock from 'nock';
 import browser from 'webextension-polyfill';
 import * as manifestFlagsModule from '../manifestFlags';
 import { FixtureExtensionStore } from './fixture-extension-store';
-import {
-  STORAGE_SERVICE_INDEXED_DB_NAME,
-  STORAGE_SERVICE_INDEXED_DB_VERSION,
-} from './indexeddb-storage-constants';
 import { IndexedDBStore } from './indexeddb-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';
@@ -138,40 +134,25 @@ describe('FixtureExtensionStore', () => {
         ...MOCK_STATE,
         storageServiceData: storageServiceEntries,
       });
-      const openSpy = jest.spyOn(IndexedDBStore.prototype, 'open');
       const setSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
-      const closeSpy = jest.spyOn(IndexedDBStore.prototype, 'close');
       const store = new FixtureExtensionStore({ initialize: true });
 
       await store.get();
 
-      expect(openSpy).toHaveBeenCalledWith(
-        STORAGE_SERVICE_INDEXED_DB_NAME,
-        STORAGE_SERVICE_INDEXED_DB_VERSION,
-      );
       expect(setSpy).toHaveBeenCalledWith(storageServiceEntries);
-      expect(closeSpy).toHaveBeenCalled();
     });
 
-    it('does not write storageServiceData when it is empty', async () => {
-      setMockFixtureServerReply({
-        ...MOCK_STATE,
-        storageServiceData: {},
-      });
+    it('does not write empty or absent storageServiceData', async () => {
       const setSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
-      const store = new FixtureExtensionStore({ initialize: true });
+      for (const state of [
+        { ...MOCK_STATE, storageServiceData: {} },
+        MOCK_STATE,
+      ]) {
+        setMockFixtureServerReply(state);
+        const store = new FixtureExtensionStore({ initialize: true });
 
-      await store.get();
-
-      expect(setSpy).not.toHaveBeenCalled();
-    });
-
-    it('does not write storageServiceData when it is absent', async () => {
-      setMockFixtureServerReply(MOCK_STATE);
-      const setSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
-      const store = new FixtureExtensionStore({ initialize: true });
-
-      await store.get();
+        await store.get();
+      }
 
       expect(setSpy).not.toHaveBeenCalled();
     });

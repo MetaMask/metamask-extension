@@ -6,8 +6,7 @@
 function transactionPromise(tx: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve();
-    tx.onerror = () =>
-      reject(tx.error ?? new Error('IndexedDB transaction failed.'));
+    tx.onerror = () => reject(tx.error);
   });
 }
 
@@ -30,7 +29,7 @@ export class IndexedDBStore {
     }
     await new Promise<void>((resolve, reject) => {
       const request = indexedDB.open(name, version);
-      request.onupgradeneeded = () => {
+      request.onupgradeneeded = async () => {
         const db = request.result;
         // Default migration: create the 'store' object store if it doesn't exist
         if (!db.objectStoreNames.contains('store')) {
@@ -95,23 +94,19 @@ export class IndexedDBStore {
     return keys.map((key) => resultMap.get(key));
   }
 
-  async getKeys(prefix?: string): Promise<string[]> {
+  async getKeys(prefix: string): Promise<string[]> {
     if (!this.#db) {
       throw new Error('Database is not open');
     }
     const tx = this.#db.transaction('store', 'readonly');
     const store = tx.objectStore('store');
 
-    const query =
-      prefix === undefined
-        ? undefined
-        : IDBKeyRange.bound(prefix, `${prefix}\uffff`);
-
-    const request = store.getAllKeys(query);
+    const request = store.getAllKeys(
+      IDBKeyRange.bound(prefix, `${prefix}\uffff`),
+    );
     const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () =>
-        reject(request.error ?? new Error('Failed to list IndexedDB keys.'));
+      request.onerror = () => reject(request.error);
     });
     await transactionPromise(tx);
     return keys.filter((key): key is string => typeof key === 'string');

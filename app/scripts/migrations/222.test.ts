@@ -15,7 +15,6 @@ jest.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: jest.fn(),
-      getKeys: jest.fn(),
       remove: jest.fn(),
       set: jest.fn(),
     },
@@ -36,7 +35,6 @@ function createBlockedError(): DOMException {
 }
 
 function mockStorage(entries: Record<string, unknown>): void {
-  mockBrowser.storage.local.getKeys.mockResolvedValueOnce(Object.keys(entries));
   mockBrowser.storage.local.get.mockResolvedValueOnce(entries);
 }
 
@@ -65,7 +63,6 @@ describe(`migration #${version}`, () => {
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     database = mockIndexedDBStore();
     mockBrowser.storage.local.get.mockResolvedValue({});
-    mockBrowser.storage.local.getKeys.mockResolvedValue([]);
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
     mockBrowser.storage.local.set.mockResolvedValue(undefined);
   });
@@ -74,12 +71,11 @@ describe(`migration #${version}`, () => {
 
   it('updates the version without opening IndexedDB when no keys match', async () => {
     const oldStorage = buildVersionedData();
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
+    mockBrowser.storage.local.get.mockResolvedValueOnce({ unrelated: 'value' });
 
     await migrate(oldStorage, new Set());
 
     expect(oldStorage.meta.version).toBe(version);
-    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
     expect(database.open).not.toHaveBeenCalled();
   });
 
@@ -132,7 +128,6 @@ describe(`migration #${version}`, () => {
   it('preserves newer IndexedDB data when cleanup is retried', async () => {
     const legacyValue = { sourceCode: 'legacy-source-code' };
     const cleanupError = new Error('storage.local cleanup failed');
-    mockBrowser.storage.local.getKeys.mockResolvedValue([STORAGE_SERVICE_KEY]);
     mockBrowser.storage.local.get.mockResolvedValue({
       [STORAGE_SERVICE_KEY]: legacyValue,
     });
@@ -210,29 +205,5 @@ describe(`migration #${version}`, () => {
     );
 
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-  });
-
-  it('reads all storage values when getKeys is unavailable', async () => {
-    const storageLocal = mockBrowser.storage.local as {
-      get: typeof browser.storage.local.get;
-      getKeys?: typeof browser.storage.local.getKeys;
-    };
-    const { getKeys } = storageLocal;
-    storageLocal.getKeys = undefined;
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: 'legacy-value',
-      unrelated: 'value',
-    });
-
-    try {
-      await migrate(buildVersionedData(), new Set());
-    } finally {
-      storageLocal.getKeys = getKeys;
-    }
-
-    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith(null);
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
-      STORAGE_SERVICE_KEY,
-    ]);
   });
 });

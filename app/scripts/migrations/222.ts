@@ -12,48 +12,7 @@ import type { Migrate } from './types';
 
 export const version = 222;
 
-type StorageServiceEntry = [string, unknown];
-type BrowserStorageLocal = Pick<
-  typeof browser.storage.local,
-  'get' | 'remove' | 'set'
-> & {
-  getKeys?: () => Promise<string[]>;
-};
-
 const FALLBACK_MARKER_STORAGE_KEY = `${STORAGE_KEY_PREFIX}${STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE}:${STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY}`;
-
-function getStorageServiceEntries(
-  storageData: Record<string, unknown>,
-): StorageServiceEntry[] {
-  return Object.entries(storageData).filter(([key]) => {
-    return key.startsWith(STORAGE_KEY_PREFIX);
-  });
-}
-
-async function getStorageServiceEntriesFromStorageLocal(
-  storageLocal: BrowserStorageLocal,
-): Promise<StorageServiceEntry[]> {
-  // Avoid reading all browser.storage.local values when getKeys is available
-  // (Chrome 130+ and Firefox 143+).
-  if (typeof storageLocal.getKeys === 'function') {
-    const storageServiceKeys = (await storageLocal.getKeys()).filter((key) => {
-      return key.startsWith(STORAGE_KEY_PREFIX);
-    });
-
-    if (storageServiceKeys.length === 0) {
-      return [];
-    }
-
-    const storageData = await storageLocal.get(storageServiceKeys);
-
-    return storageServiceKeys
-      .filter((key) => key in storageData)
-      .map((key) => [key, storageData[key]]);
-  }
-
-  const allStorage = await storageLocal.get(null);
-  return getStorageServiceEntries(allStorage);
-}
 
 /**
  * Moves legacy StorageService data from browser.storage.local to IndexedDB.
@@ -63,32 +22,25 @@ async function getStorageServiceEntriesFromStorageLocal(
 export const migrate = (async (versionedData, _changedKeys) => {
   versionedData.meta.version = version;
 
-  let database: IndexedDBStore | undefined;
+  const storageLocal = browser.storage?.local;
+  if (!storageLocal) {
+    return;
+  }
 
+  const allStorage = await storageLocal.get(null);
+  if (FALLBACK_MARKER_STORAGE_KEY in allStorage) {
+    return;
+  }
+
+  const storageServiceEntries = Object.entries(allStorage).filter(([key]) => {
+    return key.startsWith(STORAGE_KEY_PREFIX);
+  });
+  if (storageServiceEntries.length === 0) {
+    return;
+  }
+
+  const database = new IndexedDBStore();
   try {
-    const storageLocal = browser.storage?.local as
-      | BrowserStorageLocal
-      | undefined;
-    if (!storageLocal) {
-      return;
-    }
-
-    const storageServiceEntries =
-      await getStorageServiceEntriesFromStorageLocal(storageLocal);
-
-    if (storageServiceEntries.length === 0) {
-      return;
-    }
-
-    const hasFallbackMarker = storageServiceEntries.some(([key]) => {
-      return key === FALLBACK_MARKER_STORAGE_KEY;
-    });
-    if (hasFallbackMarker) {
-      return;
-    }
-
-    database = new IndexedDBStore();
-
     try {
       await database.open(
         STORAGE_SERVICE_INDEXED_DB_NAME,
@@ -118,6 +70,6 @@ export const migrate = (async (versionedData, _changedKeys) => {
 
     await storageLocal.remove(storageServiceKeys);
   } finally {
-    database?.close();
+    database.close();
   }
 }) satisfies Migrate;
