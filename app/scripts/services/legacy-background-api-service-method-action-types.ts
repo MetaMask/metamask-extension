@@ -189,7 +189,7 @@ export type LegacyBackgroundApiServiceEstimateGasAction = {
  * @param customGasSettings - Overrides to use for gas params instead of
  * allowing this method to generate them.
  * @param options - Options for the cancel transaction.
- * @returns The updated MetaMask state.
+ * @returns A promise that resolves when the transaction has been cancelled.
  */
 export type LegacyBackgroundApiServiceCreateCancelTransactionAction = {
   type: `LegacyBackgroundApiService:createCancelTransaction`;
@@ -205,7 +205,7 @@ export type LegacyBackgroundApiServiceCreateCancelTransactionAction = {
  * @param customGasSettings - Overrides to use for gas params instead of
  * allowing this method to generate them.
  * @param options - Options for the speed up transaction.
- * @returns The updated MetaMask state.
+ * @returns A promise that resolves when the transaction has been sped up.
  */
 export type LegacyBackgroundApiServiceCreateSpeedUpTransactionAction = {
   type: `LegacyBackgroundApiService:createSpeedUpTransaction`;
