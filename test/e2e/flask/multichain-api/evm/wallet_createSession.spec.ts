@@ -380,11 +380,9 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
 
-            assert.strictEqual(
-              await editConnectedAccountsModal.isConnectButtonEnabled(),
-              false,
-              'should not be able to approve the create session request without at least one account selected',
-            );
+            await editConnectedAccountsModal.waitForConnectButtonState({
+              state: 'disabled',
+            });
           },
         );
       });

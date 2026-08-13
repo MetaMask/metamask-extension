@@ -2,6 +2,28 @@ import { Driver } from '../../../webdriver/driver';
 import { tEn } from '../../../../lib/i18n-helpers';
 import { THIRD_PARTY_APIS_ROUTE } from '../../../../../ui/helpers/constants/routes';
 
+/**
+ * Privacy tab plus Security and password helpers used by many settings tests.
+ *
+ * Screen: `#/settings/privacy` (and `#/settings/privacy/third-party-apis`) via
+ * `SettingsPage.goToPrivacySettings`; also `#/settings/security-and-password`
+ * (SRP, passkeys, change-password entry) via
+ * `SettingsPage.goToSecurityAndPasswordSettings` /
+ * `flows/settings.flow.ts` `navigateToSecurityAndPassword`.
+ * Owns: MetaMetrics / marketing / basic privacy toggles, IPFS/ENS/network
+ * checks, Blockaid, export data and state logs, third-party APIs navigation,
+ * SRP reveal quiz/list, passkey register/turn-off entry, and opening change
+ * password.
+ * Boundaries: not the Settings hub. The change-password form itself belongs to
+ * `ChangePasswordPage`. Onboarding privacy defaults belong to
+ * `OnboardingPrivacySettingsPage`.
+ * Related: `SettingsPage`, `ChangePasswordPage`, `flows/settings.flow.ts`.
+ *
+ * @see ui/pages/settings/privacy-tab/privacy-tab.tsx
+ * @see ui/pages/settings/privacy-tab/third-party-apis-sub-page.tsx
+ * @see ui/pages/settings/security-and-password-tab/security-and-password-tab.tsx
+ * @see ui/pages/settings/security-and-password-tab/manage-wallet-recovery-sub-page.tsx
+ */
 class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="use-nft-detection"] .toggle-button > div';

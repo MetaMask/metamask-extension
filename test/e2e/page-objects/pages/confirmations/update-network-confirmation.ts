@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Update-network confirmation when `wallet_addEthereumChain` targets a chain
+ * MetaMask already knows.
+ *
+ * Screen: `#/confirmation` with update-network info (title like
+ * "Update {name}"; not a dedicated networks hash route).
+ * Owns: approve/cancel footer, approve enabled check, page-loaded by network
+ * name, and opening/dismissing warning alerts via inline-alert.
+ * Boundaries: adding a brand-new chain is `AddNetworkConfirmation`. Switching
+ * the active network is `SwitchNetworkConfirmation`. Alert modal content can
+ * also be asserted via `AlertModal`.
+ * Related: `AddNetworkConfirmation`, `AlertModal`.
+ *
+ * @see ui/pages/confirmations/external/add-ethereum-chain/add-ethereum-chain.tsx
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ */
 class UpdateNetworkConfirmation {
   private readonly alertModalButton = { testId: 'alert-modal-button' };
 
