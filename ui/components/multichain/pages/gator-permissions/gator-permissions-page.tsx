@@ -57,7 +57,9 @@ export const GatorPermissionsPage = () => {
 
   useEffect(() => {
     if (shouldRedirect) {
-      navigate(buildRouteWithFrom(PERMISSIONS, from), { replace: true });
+      navigate(`${PERMISSIONS}?from=${encodeURIComponent(from)}`, {
+        replace: true,
+      });
     }
   }, [shouldRedirect, navigate, from]);
 
@@ -154,11 +156,7 @@ export const GatorPermissionsPage = () => {
                 <PermissionListItem
                   total={totalSitesConnections}
                   permissionGroupName={t('connections')}
-                  onClick={() =>
-                    transitionForward(() =>
-                      navigate(buildRouteWithFrom(PERMISSIONS, from)),
-                    )
-                  }
+                  onClick={() => transitionForward(() => navigate(PERMISSIONS))}
                 />
               </>
             )}
@@ -181,9 +179,7 @@ export const GatorPermissionsPage = () => {
                   total={totalGatorPermissions}
                   permissionGroupName={t('tokenTransfer')}
                   onClick={() =>
-                    transitionForward(() =>
-                      navigate(buildRouteWithFrom(TOKEN_TRANSFER_ROUTE, from)),
-                    )
+                    transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE))
                   }
                 />
               </>
