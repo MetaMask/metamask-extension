@@ -3,10 +3,17 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
-import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import {
+  getTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
-import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
+import {
+  selectMinimumRequiredTokenBalance,
+  selectPreferredPayTokens,
+  type PreferredPayToken,
+} from '../../selectors/feature-flags';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -36,6 +43,8 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
+  const transactionType = getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -44,6 +53,10 @@ export function useAutomaticTransactionPayToken({
     isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
     isTokenAllowed: isPostQuoteWithdrawTokenAllowed,
   } = usePostQuoteWithdrawTokenFilter();
+
+  const preferredTokensFromFlags = useSelector((state) =>
+    selectPreferredPayTokens(state, transactionType),
+  );
 
   const tokens = useMemo(
     () =>
@@ -81,9 +94,10 @@ export function useAutomaticTransactionPayToken({
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
         minimumRequiredTokenBalance,
+        preferredToken,
+        preferredTokensFromFlags,
         targetToken,
         tokens: tokensWithBalance,
-        preferredToken,
       }),
     [
       isHardwareWallet,
@@ -92,6 +106,7 @@ export function useAutomaticTransactionPayToken({
       isPostQuoteWithdrawTokenAllowed,
       minimumRequiredTokenBalance,
       preferredToken,
+      preferredTokensFromFlags,
       targetToken,
       tokensWithBalance,
     ],
@@ -151,16 +166,18 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    // Wait for the new account's funding tokens before selecting. Otherwise
-    // getBestToken falls back to the required destination token (mUSD on
-    // Monad) and the Pay-with row briefly shows that instead of a loader.
-    // If tokens never arrive (truly empty account), settle after timeout.
+    // Wait for the new account's funding tokens before selecting. Tokens can
+    // arrive after the account override, and selecting too early leaves the
+    // Pay-with row empty or briefly wrong. If tokens never arrive (truly empty
+    // account), settle after timeout without a destination-token fallback.
     if (tokensWithBalance.length === 0 && !emptyAccountReselectTimedOut) {
       return;
     }
 
     if (!automaticToken) {
-      pendingAccountReselectRef.current = false;
+      // Keep pending after the empty-account timeout. Funding tokens can still
+      // arrive later; clearing pending here would leave payToken unset forever
+      // (initial selection is already gated by isUpdated for this tx).
       return;
     }
 
@@ -218,6 +235,7 @@ function getBestToken({
   isPostQuoteWithdrawTokenAllowed,
   minimumRequiredTokenBalance,
   preferredToken,
+  preferredTokensFromFlags,
   targetToken,
   tokens,
 }: {
@@ -230,6 +248,7 @@ function getBestToken({
   ) => boolean;
   minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
+  preferredTokensFromFlags: PreferredPayToken[];
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
@@ -272,6 +291,16 @@ function getBestToken({
     }
   }
 
+  const preferredFromFlags = getPreferredToken({
+    isPostQuoteWithdraw,
+    minimumRequiredTokenBalance,
+    preferredTokensFromFlags,
+    tokens,
+  });
+  if (preferredFromFlags) {
+    return preferredFromFlags;
+  }
+
   if (isPostQuoteWithdrawTokenFilterApplied && tokens.length === 0) {
     return undefined;
   }
@@ -299,5 +328,73 @@ function getBestToken({
     };
   }
 
-  return targetTokenFallback;
+  // Non-post-quote-withdraw flows (money-account deposit, perps deposit,
+  // etc.): do not fall back to the required destination token when the
+  // account has no funding balance. Leaving payToken unset empties the
+  // selector. The blocking account-no-funds alert is money-account-deposit
+  // only; other deposit types rely on the empty/skeleton pay-with UI.
+  // Post-quote withdraws still use the destination token as a known-safe
+  // default.
+  if (isPostQuoteWithdraw) {
+    return targetTokenFallback;
+  }
+
+  return undefined;
+}
+
+function getPreferredToken({
+  isPostQuoteWithdraw,
+  minimumRequiredTokenBalance,
+  preferredTokensFromFlags,
+  tokens,
+}: {
+  isPostQuoteWithdraw: boolean;
+  minimumRequiredTokenBalance: number;
+  preferredTokensFromFlags: PreferredPayToken[];
+  tokens: Asset[];
+}): { address: Hex; chainId: Hex } | undefined {
+  if (!preferredTokensFromFlags.length) {
+    return undefined;
+  }
+
+  const candidates = preferredTokensFromFlags.reduce<Asset[]>(
+    (result, preferred) => {
+      const matchingToken = tokens.find(
+        (token) =>
+          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferred.chainId.toLowerCase(),
+      );
+
+      if (matchingToken) {
+        result.push(matchingToken);
+      }
+
+      return result;
+    },
+    [],
+  );
+
+  // Post-quote withdraws: first held preferred token (no fiat floor).
+  if (isPostQuoteWithdraw && candidates.length) {
+    return {
+      address: candidates[0].address as Hex,
+      chainId: candidates[0].chainId as Hex,
+    };
+  }
+
+  const eligible = candidates
+    .filter(
+      (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
+    )
+    .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
+
+  if (!eligible.length) {
+    return undefined;
+  }
+
+  return {
+    address: eligible[0].address as Hex,
+    chainId: eligible[0].chainId as Hex,
+  };
 }

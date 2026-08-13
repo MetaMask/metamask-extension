@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Review permissions page for connected-site network/account permissions.
+ *
+ * Screen: permissions review UI reached from a connected site (not a
+ * `#/confirmation` redesign route).
+ * Owns: "Review permissions" title, enabled-networks messaging, network
+ * presence checks, connect-more-chains, and page-container confirm/cancel.
+ * Boundaries: initial dapp connect is `ConnectAccountConfirmation`. Editing
+ * the chain set after "connect more chains" moves into the edit-networks
+ * page/modal.
+ * Related: `ConnectAccountConfirmation`.
+ *
+ * @see ui/components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page.tsx
+ * @see ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx
+ */
 class ReviewPermissionsConfirmation {
   private readonly cancelReviewPermissionsButton =
     '[data-testid="page-container-footer-cancel"]';
