@@ -1,7 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionContainerType } from '@metamask/transaction-controller';
 
-import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmStateForTransaction,
+  getMockTokenTransferConfirmState,
+} from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import NativeTransferInfo from './native-transfer';
 
@@ -57,5 +62,21 @@ describe('NativeTransferInfo', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('reduces the simulation section bottom margin when the enforced simulations row is displayed', () => {
+    const state = getMockConfirmStateForTransaction({
+      ...genUnapprovedTokenTransferConfirmation({ chainId: '0x5' }),
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+    const mockStore = configureMockStore([])(state);
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <NativeTransferInfo />,
+      mockStore,
+    );
+
+    expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
+      'mm-box--margin-bottom-2',
+    );
   });
 });

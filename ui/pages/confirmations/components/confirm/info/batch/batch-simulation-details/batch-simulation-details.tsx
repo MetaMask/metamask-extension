@@ -18,12 +18,10 @@ import { TokenStandard } from '../../../../../../../../shared/constants/transact
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
-import { useIsEnforcedSimulationsDisplayed } from '../../../../../hooks/useIsEnforcedSimulationsDisplayed';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
-  const isEnforcedSimulationsDisplayed = useIsEnforcedSimulationsDisplayed();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -87,6 +85,8 @@ export function BatchSimulationDetails() {
     nestedTransactionIndexToEdit === undefined
       ? undefined
       : nestedTransactions?.[nestedTransactionIndexToEdit];
+  const isEnforcedSimulationsDisplayed =
+    transactionMeta.containerTypes !== undefined;
 
   return (
     <>

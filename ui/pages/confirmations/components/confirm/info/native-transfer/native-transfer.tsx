@@ -10,7 +10,6 @@ import { TokenDetailsSection } from '../token-transfer/token-details-section';
 import { TransactionFlowSection } from '../token-transfer/transaction-flow-section';
 import { useMaxValueRefresher } from '../hooks/useMaxValueRefresher';
 import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
-import { useIsEnforcedSimulationsDisplayed } from '../../../../hooks/useIsEnforcedSimulationsDisplayed';
 
 const NativeTransferInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -18,7 +17,8 @@ const NativeTransferInfo = () => {
   useMaxValueRefresher();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
-  const isEnforcedSimulationsDisplayed = useIsEnforcedSimulationsDisplayed();
+  const isEnforcedSimulationsDisplayed =
+    transactionMeta.containerTypes !== undefined;
 
   return (
     <>

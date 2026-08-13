@@ -31,7 +31,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
-import { useIsEnforcedSimulationsDisplayed } from '../../../hooks/useIsEnforcedSimulationsDisplayed';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../../shared/lib/transaction/enforced-simulations';
 
@@ -49,7 +48,7 @@ export function EnforcedSimulationsRow() {
   const autoEnableRequestId = useRef(0);
   const currentTransactionIdRef = useRef(transactionId);
 
-  const hasAutoEnabled = useIsEnforcedSimulationsDisplayed();
+  const hasAutoEnabled = containerTypes !== undefined;
 
   const hasEnforcedSimulations = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,

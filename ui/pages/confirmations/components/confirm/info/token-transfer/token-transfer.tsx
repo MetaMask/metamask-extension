@@ -7,7 +7,6 @@ import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import SendHeading from '../shared/send-heading/send-heading';
 import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
-import { useIsEnforcedSimulationsDisplayed } from '../../../../hooks/useIsEnforcedSimulationsDisplayed';
 import { TokenDetailsSection } from './token-details-section';
 import { TransactionFlowSection } from './transaction-flow-section';
 
@@ -16,7 +15,8 @@ const TokenTransferInfo = () => {
     useConfirmContext<TransactionMeta>();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
-  const isEnforcedSimulationsDisplayed = useIsEnforcedSimulationsDisplayed();
+  const isEnforcedSimulationsDisplayed =
+    transactionMeta.containerTypes !== undefined;
 
   return (
     <>

@@ -629,8 +629,8 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 23,
-      "React: Act warnings (component updates not wrapped)": 2
+      "MetaMask: Background connection not initialized": 47,
+      "React: Act warnings (component updates not wrapped)": 4
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 22,
@@ -698,8 +698,8 @@
       "React: Act warnings (component updates not wrapped)": 6
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 21,
-      "React: Act warnings (component updates not wrapped)": 3
+      "MetaMask: Background connection not initialized": 43,
+      "React: Act warnings (component updates not wrapped)": 6
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign-v1/typed-sign-v1.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
