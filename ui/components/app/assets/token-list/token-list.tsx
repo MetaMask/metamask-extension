@@ -20,6 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDeferredValue } from '../../../../hooks/useDeferredValue';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -209,6 +210,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
+  // Defer preference/asset fan-out so Settings toggles (hide-zero-balance,
+  // autodetect tokens) stay responsive while this list recomputes.
+  const deferredShouldHideZeroBalanceTokens = useDeferredValue(
+    shouldHideZeroBalanceTokens,
+  );
+  const deferredAccountGroupIdAssets = useDeferredValue(accountGroupIdAssets);
+
   const useExternalServices = useSelector(getUseExternalServices);
   const lowValueAssetFiatThreshold = useMemo(
     () => getLowValueAssetFiatThreshold(currencyRates),
@@ -220,24 +228,24 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const sortedFilteredTokens = useMemo(() => {
-    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
-      ([chainId, assets]) => {
-        if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
-          return [];
-        }
+    const accountAssetsPreSort = Object.entries(
+      deferredAccountGroupIdAssets,
+    ).flatMap(([chainId, assets]) => {
+      if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
+        return [];
+      }
 
-        // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
-        return assets.filter((asset) => {
-          if (isTronSpecialAsset(asset.assetId)) {
-            return false;
-          }
-          if (shouldHideZeroBalanceTokens && asset.balance === '0') {
-            return false;
-          }
-          return true;
-        });
-      },
-    );
+      // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
+      return assets.filter((asset) => {
+        if (isTronSpecialAsset(asset.assetId)) {
+          return false;
+        }
+        if (deferredShouldHideZeroBalanceTokens && asset.balance === '0') {
+          return false;
+        }
+        return true;
+      });
+    });
 
     const accountAssets = sortAssetsWithPriority(
       accountAssetsPreSort,
@@ -270,9 +278,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     isEvm,
     currentNetwork.chainId,
     tokenSortConfig,
-    accountGroupIdAssets,
+    deferredAccountGroupIdAssets,
     allEnabledNetworksForAllNamespaces,
-    shouldHideZeroBalanceTokens,
+    deferredShouldHideZeroBalanceTokens,
     useExternalServices,
   ]);
 

@@ -1,4 +1,4 @@
-import React, { startTransition } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,11 +40,6 @@ export type ToggleItemConfig = {
   trackEventProperty?: string;
   // Full tracking config for complex cases. Takes precedence over trackEventProperty.
   trackEvent?: ToggleEventConfig;
-  /**
-   * When true, wrap the Redux dispatch in `startTransition` so large fan-out
-   * re-renders (e.g. Home asset list) do not block Settings chrome.
-   */
-  deferUpdate?: boolean;
 };
 
 /**
@@ -84,14 +79,7 @@ export const createToggleItem = (
 
       const result = config.action(newValue);
       if (result !== undefined && result !== null) {
-        const actionToDispatch = result as Parameters<MetaMaskReduxDispatch>[0];
-        if (config.deferUpdate) {
-          startTransition(() => {
-            dispatch(actionToDispatch);
-          });
-        } else {
-          dispatch(actionToDispatch);
-        }
+        dispatch(result as Parameters<MetaMaskReduxDispatch>[0]);
       }
     };
 

@@ -103,29 +103,6 @@ describe('createToggleItem', () => {
     expect(mockAction).toHaveBeenCalledWith(false);
   });
 
-  describe('with deferUpdate', () => {
-    it('still dispatches the action when deferUpdate is enabled', () => {
-      const configWithDefer: ToggleItemConfig = {
-        ...testConfig,
-        dataTestId: 'test-toggle-deferred',
-        deferUpdate: true,
-      };
-      const DeferredToggleItem = createToggleItem(configWithDefer);
-      const mockStore = createMockStore({ testToggleValue: false });
-
-      renderWithProvider(<DeferredToggleItem />, mockStore);
-      fireEvent.click(screen.getByTestId('test-toggle-deferred'));
-
-      // startTransition runs the callback synchronously, so the action still lands.
-      expect(mockAction).toHaveBeenCalledWith(true);
-      expect(
-        mockStore
-          .getActions()
-          .some((action) => action.type === 'MOCK_TOGGLE_ACTION'),
-      ).toBe(true);
-    });
-  });
-
   describe('with disabledSelector', () => {
     const configWithDisabled: ToggleItemConfig = {
       ...testConfig,
