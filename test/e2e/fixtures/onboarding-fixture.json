@@ -29,15 +29,15 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
       "consentDecisionMade": false,
+      "optedIn": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
-          "type": "track",
           "eventName": "App Installed",
           "messageId": "00000000-0000-4000-8000-000000000000",
+          "properties": {},
           "timestamp": "2026-01-01T00:00:00.000Z",
-          "properties": {}
+          "type": "track"
         }
       }
     },
@@ -2115,7 +2115,6 @@
       "syncQueue": {}
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -2123,7 +2122,8 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2299,6 +2299,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 221
+    "version": 222
   }
 }
