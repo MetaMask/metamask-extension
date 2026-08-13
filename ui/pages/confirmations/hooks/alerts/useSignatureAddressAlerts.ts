@@ -1,0 +1,133 @@
+import { useMemo } from 'react';
+import { NameType } from '@metamask/name-controller';
+import { extractSignatureAddresses } from '@metamask/phishing-controller';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { useConfirmContext } from '../../context/confirm';
+import { isSignatureTransactionType } from '../../utils';
+import { SignatureRequestType } from '../../types/confirm';
+import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
+import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  useTrustSignals,
+  TrustSignalDisplayState,
+} from '../../../../hooks/useTrustSignals';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+
+/**
+ * Generate trust-signal alerts for the address fields of a typed-data
+ * signature. Every address-typed field is scanned; the top-level permit
+ * `spender` is left to `useSpenderAlerts` to avoid a duplicate alert.
+ */
+export function useSignatureAddressAlerts(): Alert[] {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext();
+
+  const {
+    addresses: signatureAddresses,
+    fields,
+    overflow,
+  } = useMemo(() => {
+    const empty = {
+      addresses: [] as string[],
+      fields: {} as Record<string, string>,
+      overflow: false,
+    };
+
+    if (
+      !currentConfirmation ||
+      !isSignatureTransactionType(currentConfirmation) ||
+      currentConfirmation.type !== 'eth_signTypedData' ||
+      !isSecurityAlertsAPIEnabled()
+    ) {
+      return empty;
+    }
+
+    const signatureRequest = currentConfirmation as SignatureRequestType;
+    const msgData = signatureRequest.msgParams?.data as string;
+    if (!msgData) {
+      return empty;
+    }
+
+    try {
+      const parsed = parseTypedDataMessage(msgData);
+      const signer = signatureRequest.msgParams?.from as string | undefined;
+      const isPermit = PRIMARY_TYPES_PERMIT.some(
+        (type) => type === parsed.primaryType,
+      );
+      return extractSignatureAddresses(parsed, {
+        exclude: signer ? [signer] : [],
+        excludeFields: isPermit ? ['spender'] : [],
+      });
+    } catch {
+      return empty;
+    }
+  }, [currentConfirmation]);
+
+  const trustSignals = useTrustSignals(
+    signatureAddresses.map((value) => ({
+      value,
+      type: NameType.ETHEREUM_ADDRESS,
+      chainId: currentConfirmation?.chainId,
+    })),
+  );
+
+  return useMemo(() => {
+    const alerts: Alert[] = [];
+
+    if (overflow) {
+      alerts.push({
+        actions: [],
+        field: RowAlertKey.InteractingWith,
+        isBlocking: false,
+        key: 'signatureAddressScanIncomplete',
+        message: t('alertMessageSignatureAddressScanIncomplete'),
+        reason: t('alertReasonSignatureAddressScanIncomplete'),
+        severity: Severity.Warning,
+      });
+    }
+
+    if (signatureAddresses.length === 0) {
+      return alerts;
+    }
+
+    trustSignals.forEach(({ state }, index) => {
+      const address = signatureAddresses[index];
+
+      if (state === TrustSignalDisplayState.Malicious) {
+        alerts.push({
+          actions: [],
+          field: RowAlertKey.InteractingWith,
+          isBlocking: false,
+          key: `signatureAddressTrustSignalMalicious_${address}`,
+          message: t('alertMessageSignatureAddressMalicious', [
+            fields[address],
+            shortenAddress(address),
+          ]),
+          reason: t('nameModalTitleMalicious'),
+          severity: Severity.Danger,
+        });
+      } else if (state === TrustSignalDisplayState.Warning) {
+        alerts.push({
+          actions: [],
+          field: RowAlertKey.InteractingWith,
+          isBlocking: false,
+          key: `signatureAddressTrustSignalWarning_${address}`,
+          message: t('alertMessageSignatureAddressWarning', [
+            fields[address],
+            shortenAddress(address),
+          ]),
+          reason: t('nameModalTitleWarning'),
+          severity: Severity.Warning,
+        });
+      }
+    });
+
+    return alerts;
+  }, [signatureAddresses, fields, overflow, trustSignals, t]);
+}
