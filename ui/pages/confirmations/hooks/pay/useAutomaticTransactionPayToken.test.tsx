@@ -200,15 +200,12 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token if no tokens with balance', () => {
+  it('does not select token when no tokens with balance', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider();
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('does nothing if no required tokens', () => {
@@ -262,7 +259,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('selects target token when preferred payment token provided but no tokens available', () => {
+  it('does not select token when preferred payment token provided but no tokens available', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider({
@@ -272,10 +269,7 @@ describe('useAutomaticTransactionPayToken', () => {
       },
     });
 
-    expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
-    });
+    expect(setPayTokenMock).not.toHaveBeenCalled();
   });
 
   it('selects first available token when preferred token not in available tokens', () => {
@@ -557,7 +551,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
-  it('settles with the required-token fallback after empty-account reselect timeout', () => {
+  it('leaves pay token unset after empty-account reselect timeout', () => {
     jest.useFakeTimers();
     useTransactionPayAvailableTokensMock.mockReturnValue([
       { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
@@ -583,9 +577,47 @@ describe('useAutomaticTransactionPayToken', () => {
       jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
     });
 
+    // Deposit flows intentionally do not fall back to the required destination
+    // token when the selected account has no funding balance.
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
+  it('selects a funding token that arrives after empty-account reselect timeout', () => {
+    jest.useFakeTimers();
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
+
+    const { rerender } = renderHookWithProvider();
+    expect(setPayTokenMock).toHaveBeenCalled();
+    setPayTokenMock.mockClear();
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: setPayTokenMock,
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+    rerender();
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_3_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+    rerender();
+
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: TOKEN_ADDRESS_1_MOCK,
-      chainId: CHAIN_ID_1_MOCK,
+      address: TOKEN_ADDRESS_3_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
     });
   });
 
