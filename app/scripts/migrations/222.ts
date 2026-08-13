@@ -66,7 +66,12 @@ export const migrate = (async (versionedData, _changedKeys) => {
   let database: IndexedDBStore | undefined;
 
   try {
-    const storageLocal: BrowserStorageLocal = browser.storage.local;
+    const storageLocal = browser.storage?.local as
+      | BrowserStorageLocal
+      | undefined;
+    if (!storageLocal) {
+      return;
+    }
 
     const storageServiceEntries =
       await getStorageServiceEntriesFromStorageLocal(storageLocal);
