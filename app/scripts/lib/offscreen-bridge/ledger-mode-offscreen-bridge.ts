@@ -73,8 +73,12 @@ export function setupLedgerModeOffscreenBridge(
   // This second handshake covers createOffscreen() resolving via its timeout
   // before the offscreen document has actually finished booting.
   browser.runtime.onMessage.addListener(
-    (message: Record<string, unknown>): undefined => {
+    (message: unknown): undefined => {
       if (
+        message &&
+        typeof message === 'object' &&
+        'target' in message &&
+        'event' in message &&
         message.target === OffscreenCommunicationTarget.extensionMain &&
         message.event === OffscreenCommunicationEvents.ledgerModeReady
       ) {
