@@ -1,20 +1,24 @@
-import { renderHook } from '@testing-library/react';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
-import { HIDE_LOADING, SHOW_LOADING } from '../../store/actionConstants';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
+import type { UIMessenger } from '../../messengers/ui-messenger';
+import type { RouteMessenger } from '../../messengers/route-messenger';
+import {
+  hideLoadingIndication,
+  showLoadingIndication,
+} from '../../store/actions';
 import { usePasskeyPrivateKeyExport } from './usePasskeyPrivateKeyExport';
 import { usePasskeySeedPhraseExport } from './usePasskeySeedPhraseExport';
 
-const mockCall = jest.fn();
-const mockMessenger = { call: mockCall };
-const mockDispatch = jest.fn();
-
-jest.mock('../useMessenger', () => ({
-  useMessenger: () => mockMessenger,
-}));
-
-jest.mock('../../store/hooks', () => ({
-  useDispatch: () => mockDispatch,
-}));
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+  return {
+    ...actual,
+    showLoadingIndication: jest.fn(actual.showLoadingIndication),
+    hideLoadingIndication: jest.fn(actual.hideLoadingIndication),
+  };
+});
 
 const authenticationResponse: PasskeyAuthenticationResponse = {
   id: 'credential-id',
@@ -28,7 +32,45 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
   clientExtensionResults: {},
 };
 
+type RenderHookOptions = {
+  uiMessenger?: UIMessenger;
+  routeMessenger?: RouteMessenger | false;
+};
+
+function renderPrivateKeyExportHook({
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = createMockRouteMessenger(),
+}: RenderHookOptions = {}) {
+  return renderHookWithProviderTyped(
+    () => usePasskeyPrivateKeyExport(),
+    {},
+    '/',
+    undefined,
+    jest.fn(),
+    uiMessenger,
+    routeMessenger,
+  );
+}
+
+function renderSeedPhraseExportHook({
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = createMockRouteMessenger(),
+}: RenderHookOptions = {}) {
+  return renderHookWithProviderTyped(
+    () => usePasskeySeedPhraseExport(),
+    {},
+    '/',
+    undefined,
+    jest.fn(),
+    uiMessenger,
+    routeMessenger,
+  );
+}
+
 describe('passkey export hooks', () => {
+  const exportAccountsWithPasskey = jest.fn();
+  const exportSeedPhraseWithPasskey = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -36,64 +78,81 @@ describe('passkey export hooks', () => {
   it('exports private keys in address order with loading state', async () => {
     const privateKeys = ['private-key-1', 'private-key-2'];
     const addresses = ['0x1', '0x2'];
-    mockCall.mockResolvedValue(privateKeys);
-    const { result } = renderHook(() => usePasskeyPrivateKeyExport());
+    exportAccountsWithPasskey.mockResolvedValue(privateKeys);
+    const { result } = renderPrivateKeyExportHook({
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:exportAccountsWithPasskey':
+          exportAccountsWithPasskey,
+      }),
+    });
 
     await expect(
       result.current(authenticationResponse, addresses),
     ).resolves.toBe(privateKeys);
 
-    expect(mockCall).toHaveBeenCalledWith(
-      'PasskeyController:exportAccountsWithPasskey',
+    expect(exportAccountsWithPasskey).toHaveBeenCalledWith(
       authenticationResponse,
       addresses,
     );
-    expect(mockDispatch.mock.calls).toStrictEqual([
-      [{ type: SHOW_LOADING, payload: undefined }],
-      [{ type: HIDE_LOADING }],
-    ]);
+    expect(showLoadingIndication).toHaveBeenCalledTimes(1);
+    expect(hideLoadingIndication).toHaveBeenCalledTimes(1);
   });
 
   it('hides loading when private-key export fails', async () => {
     const error = new Error('export failed');
-    mockCall.mockRejectedValue(error);
-    const { result } = renderHook(() => usePasskeyPrivateKeyExport());
+    exportAccountsWithPasskey.mockRejectedValue(error);
+    const { result } = renderPrivateKeyExportHook({
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:exportAccountsWithPasskey':
+          exportAccountsWithPasskey,
+      }),
+    });
 
     await expect(result.current(authenticationResponse, ['0x1'])).rejects.toBe(
       error,
     );
 
-    expect(mockDispatch).toHaveBeenLastCalledWith({ type: HIDE_LOADING });
+    expect(hideLoadingIndication).toHaveBeenCalledTimes(1);
   });
 
   it('exports and decodes a seed phrase for a specific keyring', async () => {
     const encodedSeedPhrase = Array.from(
       new TextEncoder().encode('abandon ability'),
     );
-    mockCall.mockResolvedValue(encodedSeedPhrase);
-    const { result } = renderHook(() => usePasskeySeedPhraseExport());
+    exportSeedPhraseWithPasskey.mockResolvedValue(encodedSeedPhrase);
+    const { result } = renderSeedPhraseExportHook({
+      routeMessenger: createMockRouteMessenger({
+        'LegacyBackgroundApiService:exportSeedPhraseWithPasskey':
+          exportSeedPhraseWithPasskey,
+      }),
+    });
 
     await expect(
       result.current(authenticationResponse, 'keyring-id'),
     ).resolves.toBe('abandon ability');
 
-    expect(mockCall).toHaveBeenCalledWith(
-      'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
-      { authenticationResponse, keyringId: 'keyring-id' },
-    );
+    expect(exportSeedPhraseWithPasskey).toHaveBeenCalledWith({
+      authenticationResponse,
+      keyringId: 'keyring-id',
+    });
   });
 
   it('omits the keyring id for primary seed phrase export', async () => {
-    mockCall.mockResolvedValue(
+    exportSeedPhraseWithPasskey.mockResolvedValue(
       Array.from(new TextEncoder().encode('abandon ability')),
     );
-    const { result } = renderHook(() => usePasskeySeedPhraseExport());
+    const { result } = renderSeedPhraseExportHook({
+      routeMessenger: createMockRouteMessenger({
+        'LegacyBackgroundApiService:exportSeedPhraseWithPasskey':
+          exportSeedPhraseWithPasskey,
+      }),
+    });
 
     await result.current(authenticationResponse);
 
-    expect(mockCall).toHaveBeenCalledWith(
-      'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
-      { authenticationResponse, keyringId: undefined },
-    );
+    expect(exportSeedPhraseWithPasskey).toHaveBeenCalledWith({
+      authenticationResponse,
+      keyringId: undefined,
+    });
   });
 });

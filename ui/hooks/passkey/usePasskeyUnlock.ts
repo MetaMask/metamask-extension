@@ -3,18 +3,24 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
 } from '../../../shared/lib/passkey';
+import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useDispatch } from '../../store/hooks';
 import {
   forceUpdateMetamaskState,
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../store/actions';
-import { useMessenger } from '../../hooks/useMessenger';
-import type { UnlockRouteMessenger } from './messenger';
+import { useMessenger } from '../useMessenger';
+
+type PasskeyUnlockMessenger = RouteMessenger<
+  | 'PasskeyController:generateAuthenticationOptions'
+  | 'LegacyBackgroundApiService:unlockWithPasskey',
+  never
+>;
 
 export function usePasskeyUnlock() {
   const dispatch = useDispatch();
-  const messenger = useMessenger<UnlockRouteMessenger>();
+  const messenger = useMessenger<PasskeyUnlockMessenger>();
 
   useEffect(
     () => () => {

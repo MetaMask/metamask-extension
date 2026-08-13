@@ -14,7 +14,7 @@ import { UnlockPasskeySection } from './unlock-passkey-section';
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
 
-jest.mock('../usePasskeyUnlock', () => ({
+jest.mock('../../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
 }));
 

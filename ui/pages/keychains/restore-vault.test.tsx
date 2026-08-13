@@ -5,6 +5,8 @@ import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
+import { RouteMessengerContext } from '../../contexts/route-messenger';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -12,7 +14,6 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import RestoreVaultPage from './restore-vault';
-import { RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES } from './restore-vault-messenger';
 
 const mockTrackEvent = jest.fn();
 
@@ -56,17 +57,6 @@ describe('Restore vault Component', () => {
 
   afterEach(() => {
     sinon.restore();
-  });
-
-  it('allows only passkey enrollment actions in the passkey setup subtree', () => {
-    expect(RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES).toStrictEqual({
-      actions: [
-        'PasskeyController:generateRegistrationOptions',
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        'PasskeyController:protectVaultKeyWithPasskey',
-      ],
-      events: [],
-    });
   });
 
   it('renders match snapshot', () => {
@@ -266,7 +256,9 @@ describe('Restore vault Component', () => {
     }) as typeof actions.resetWallet);
 
     const { queryByTestId } = renderWithProvider(
-      <RestoreVaultPage />,
+      <RouteMessengerContext.Provider value={createMockRouteMessenger()}>
+        <RestoreVaultPage />
+      </RouteMessengerContext.Provider>,
       testStore,
     );
 

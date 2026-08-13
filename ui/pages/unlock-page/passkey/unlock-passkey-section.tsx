@@ -39,7 +39,7 @@ import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPasskeyDerivationMethod } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
-import { usePasskeyUnlock } from '../usePasskeyUnlock';
+import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;

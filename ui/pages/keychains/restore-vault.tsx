@@ -26,10 +26,7 @@ import {
   setFirstTimeFlowType,
   unMarkPasswordForgotten,
 } from '../../store/actions';
-import {
-  DEFAULT_ROUTE,
-  RESTORE_VAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -47,8 +44,6 @@ import SrpInputForm from '../srp-input-form';
 import { CreatePasswordForm } from '../create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useDispatch } from '../../store/hooks';
-import { RouteWithMessenger } from '../../layouts/route-with-messenger';
-import { RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES } from './restore-vault-messenger';
 
 function RestoreVaultPage() {
   const dispatch = useDispatch();
@@ -153,15 +148,10 @@ function RestoreVaultPage() {
   let content;
   if (showPasskeySetup) {
     content = (
-      <RouteWithMessenger
-        path={`${RESTORE_VAULT_ROUTE}/passkey-setup`}
-        capabilities={RESTORE_VAULT_PASSKEY_ROUTE_CAPABILITIES}
-      >
-        <SetupPasskeyContent
-          onNext={handlePasskeySetupComplete}
-          password={restorePassword}
-        />
-      </RouteWithMessenger>
+      <SetupPasskeyContent
+        onNext={handlePasskeySetupComplete}
+        password={restorePassword}
+      />
     );
   } else if (shouldShowPasswordForm) {
     content = (

@@ -1,5 +1,9 @@
-import { renderHook } from '@testing-library/react';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
+import type { UIMessenger } from '../../messengers/ui-messenger';
+import type { RouteMessenger } from '../../messengers/route-messenger';
 import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
@@ -8,13 +12,6 @@ import {
   useRemovePasskeyWithPasskey,
   useRemovePasskeyWithPassword,
 } from './usePasskeyRemoval';
-
-const mockCall = jest.fn();
-const mockMessenger = { call: mockCall };
-
-jest.mock('../useMessenger', () => ({
-  useMessenger: () => mockMessenger,
-}));
 
 jest.mock('../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
@@ -37,9 +34,57 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
   clientExtensionResults: {},
 };
 
+type RenderHookOptions = {
+  uiMessenger?: UIMessenger;
+  routeMessenger?: RouteMessenger | false;
+};
+
+function renderRemovePasskeyWithPasskeyHook({
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = createMockRouteMessenger(),
+}: RenderHookOptions = {}) {
+  return renderHookWithProviderTyped(
+    () => useRemovePasskeyWithPasskey(),
+    {},
+    '/',
+    undefined,
+    jest.fn(),
+    uiMessenger,
+    routeMessenger,
+  );
+}
+
+function renderRemovePasskeyWithPasswordHook({
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = createMockRouteMessenger(),
+}: RenderHookOptions = {}) {
+  return renderHookWithProviderTyped(
+    () => useRemovePasskeyWithPassword(),
+    {},
+    '/',
+    undefined,
+    jest.fn(),
+    uiMessenger,
+    routeMessenger,
+  );
+}
+
 describe('usePasskeyRemoval', () => {
+  const generateAuthenticationOptions = jest
+    .fn()
+    .mockResolvedValue(authenticationOptions);
+  const removePasskeyWithPasskeyVerification = jest
+    .fn()
+    .mockResolvedValue(undefined);
+  const removePasskeyWithPasswordVerification = jest
+    .fn()
+    .mockResolvedValue(undefined);
+
   beforeEach(() => {
     jest.clearAllMocks();
+    generateAuthenticationOptions.mockResolvedValue(authenticationOptions);
+    removePasskeyWithPasskeyVerification.mockResolvedValue(undefined);
+    removePasskeyWithPasswordVerification.mockResolvedValue(undefined);
     jest
       .mocked(startPasskeyAuthentication)
       .mockResolvedValue(authenticationResponse);
@@ -47,20 +92,21 @@ describe('usePasskeyRemoval', () => {
 
   describe('useRemovePasskeyWithPasskey', () => {
     it('authenticates and removes the passkey', async () => {
-      mockCall
-        .mockResolvedValueOnce(authenticationOptions)
-        .mockResolvedValueOnce(undefined);
-      const { result } = renderHook(() => useRemovePasskeyWithPasskey());
+      const { result } = renderRemovePasskeyWithPasskeyHook({
+        routeMessenger: createMockRouteMessenger({
+          'PasskeyController:generateAuthenticationOptions':
+            generateAuthenticationOptions,
+          'PasskeyController:removePasskeyWithPasskeyVerification':
+            removePasskeyWithPasskeyVerification,
+        }),
+      });
 
       await result.current();
 
-      expect(mockCall.mock.calls).toStrictEqual([
-        ['PasskeyController:generateAuthenticationOptions'],
-        [
-          'PasskeyController:removePasskeyWithPasskeyVerification',
-          authenticationResponse,
-        ],
-      ]);
+      expect(generateAuthenticationOptions).toHaveBeenCalledTimes(1);
+      expect(removePasskeyWithPasskeyVerification).toHaveBeenCalledWith(
+        authenticationResponse,
+      );
       expect(startPasskeyAuthentication).toHaveBeenCalledWith(
         authenticationOptions,
       );
@@ -68,17 +114,24 @@ describe('usePasskeyRemoval', () => {
 
     it('preserves ceremony errors without removing the passkey', async () => {
       const error = new Error('authentication failed');
-      mockCall.mockResolvedValueOnce(authenticationOptions);
       jest.mocked(startPasskeyAuthentication).mockRejectedValue(error);
-      const { result } = renderHook(() => useRemovePasskeyWithPasskey());
+      const { result } = renderRemovePasskeyWithPasskeyHook({
+        routeMessenger: createMockRouteMessenger({
+          'PasskeyController:generateAuthenticationOptions':
+            generateAuthenticationOptions,
+          'PasskeyController:removePasskeyWithPasskeyVerification':
+            removePasskeyWithPasskeyVerification,
+        }),
+      });
 
       await expect(result.current()).rejects.toBe(error);
 
-      expect(mockCall).toHaveBeenCalledTimes(1);
+      expect(generateAuthenticationOptions).toHaveBeenCalledTimes(1);
+      expect(removePasskeyWithPasskeyVerification).not.toHaveBeenCalled();
     });
 
     it('cancels an active ceremony on unmount', () => {
-      const { unmount } = renderHook(() => useRemovePasskeyWithPasskey());
+      const { unmount } = renderRemovePasskeyWithPasskeyHook();
       unmount();
       expect(cancelPasskeyCeremony).toHaveBeenCalledTimes(1);
     });
@@ -86,21 +139,29 @@ describe('usePasskeyRemoval', () => {
 
   describe('useRemovePasskeyWithPassword', () => {
     it('removes the passkey using the password', async () => {
-      mockCall.mockResolvedValue(undefined);
-      const { result } = renderHook(() => useRemovePasskeyWithPassword());
+      const { result } = renderRemovePasskeyWithPasswordHook({
+        routeMessenger: createMockRouteMessenger({
+          'PasskeyController:removePasskeyWithPasswordVerification':
+            removePasskeyWithPasswordVerification,
+        }),
+      });
 
       await result.current('password');
 
-      expect(mockCall).toHaveBeenCalledWith(
-        'PasskeyController:removePasskeyWithPasswordVerification',
+      expect(removePasskeyWithPasswordVerification).toHaveBeenCalledWith(
         'password',
       );
     });
 
     it('preserves removal errors', async () => {
       const error = new Error('removal failed');
-      mockCall.mockRejectedValue(error);
-      const { result } = renderHook(() => useRemovePasskeyWithPassword());
+      removePasskeyWithPasswordVerification.mockRejectedValue(error);
+      const { result } = renderRemovePasskeyWithPasswordHook({
+        routeMessenger: createMockRouteMessenger({
+          'PasskeyController:removePasskeyWithPasswordVerification':
+            removePasskeyWithPasswordVerification,
+        }),
+      });
 
       await expect(result.current('password')).rejects.toBe(error);
     });

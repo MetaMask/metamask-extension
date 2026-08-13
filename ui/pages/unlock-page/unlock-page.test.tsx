@@ -18,7 +18,7 @@ const UnlockPage = UnlockPageImport as React.ComponentType<
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
 
-jest.mock('./usePasskeyUnlock', () => ({
+jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
 }));
 

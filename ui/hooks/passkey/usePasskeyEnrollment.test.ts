@@ -1,8 +1,12 @@
-import { renderHook } from '@testing-library/react';
 import type {
   PasskeyAuthenticationResponse,
   PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
+import type { UIMessenger } from '../../messengers/ui-messenger';
+import type { RouteMessenger } from '../../messengers/route-messenger';
 import {
   cancelPasskeyCeremony,
   isPasskeyPRFSupported,
@@ -10,13 +14,6 @@ import {
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
 import { usePasskeyEnrollment } from './usePasskeyEnrollment';
-
-const mockCall = jest.fn();
-const mockMessenger = { call: mockCall };
-
-jest.mock('../useMessenger', () => ({
-  useMessenger: () => mockMessenger,
-}));
 
 jest.mock('../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
@@ -51,12 +48,44 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
   clientExtensionResults: {},
 };
 
+type RenderHookOptions = {
+  uiMessenger?: UIMessenger;
+  routeMessenger?: RouteMessenger | false;
+};
+
+function renderHook({
+  uiMessenger = createMockUIMessenger(),
+  routeMessenger = createMockRouteMessenger(),
+}: RenderHookOptions = {}) {
+  return renderHookWithProviderTyped(
+    () => usePasskeyEnrollment(),
+    {},
+    '/',
+    undefined,
+    jest.fn(),
+    uiMessenger,
+    routeMessenger,
+  );
+}
+
 describe('usePasskeyEnrollment', () => {
   const registrationOptions = { challenge: 'registration-challenge' };
   const authenticationOptions = { challenge: 'authentication-challenge' };
+  const generateRegistrationOptions = jest
+    .fn()
+    .mockResolvedValue(registrationOptions);
+  const generatePostRegistrationAuthenticationOptions = jest
+    .fn()
+    .mockResolvedValue(authenticationOptions);
+  const protectVaultKeyWithPasskey = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    generateRegistrationOptions.mockResolvedValue(registrationOptions);
+    generatePostRegistrationAuthenticationOptions.mockResolvedValue(
+      authenticationOptions,
+    );
+    protectVaultKeyWithPasskey.mockResolvedValue(undefined);
     jest.mocked(isPasskeyPRFSupported).mockResolvedValue(true);
     jest
       .mocked(startPasskeyRegistration)
@@ -64,26 +93,24 @@ describe('usePasskeyEnrollment', () => {
     jest
       .mocked(startPasskeyAuthentication)
       .mockResolvedValue(authenticationResponse);
-    mockCall.mockImplementation((action: string) => {
-      if (action === 'PasskeyController:generateRegistrationOptions') {
-        return Promise.resolve(registrationOptions);
-      }
-      if (
-        action ===
-        'PasskeyController:generatePostRegistrationAuthenticationOptions'
-      ) {
-        return Promise.resolve(authenticationOptions);
-      }
-      if (action === 'PasskeyController:protectVaultKeyWithPasskey') {
-        return Promise.resolve(undefined);
-      }
-      throw new Error(`Unexpected action: ${action}`);
-    });
   });
+
+  function renderEnrollmentHook() {
+    return renderHook({
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateRegistrationOptions':
+          generateRegistrationOptions,
+        'PasskeyController:generatePostRegistrationAuthenticationOptions':
+          generatePostRegistrationAuthenticationOptions,
+        'PasskeyController:protectVaultKeyWithPasskey':
+          protectVaultKeyWithPasskey,
+      }),
+    });
+  }
 
   it('runs the complete enrollment ceremony in order', async () => {
     const onStageChange = jest.fn();
-    const { result } = renderHook(() => usePasskeyEnrollment());
+    const { result } = renderEnrollmentHook();
 
     await result.current.enrollWithPasskey({
       password: 'password',
@@ -95,21 +122,17 @@ describe('usePasskeyEnrollment', () => {
       ['verify'],
       ['enroll'],
     ]);
-    expect(mockCall.mock.calls).toStrictEqual([
-      ['PasskeyController:generateRegistrationOptions', { prfAvailable: true }],
-      [
-        'PasskeyController:generatePostRegistrationAuthenticationOptions',
-        { registrationResponse },
-      ],
-      [
-        'PasskeyController:protectVaultKeyWithPasskey',
-        {
-          registrationResponse,
-          authenticationResponse,
-          password: 'password',
-        },
-      ],
-    ]);
+    expect(generateRegistrationOptions).toHaveBeenCalledWith({
+      prfAvailable: true,
+    });
+    expect(generatePostRegistrationAuthenticationOptions).toHaveBeenCalledWith({
+      registrationResponse,
+    });
+    expect(protectVaultKeyWithPasskey).toHaveBeenCalledWith({
+      registrationResponse,
+      authenticationResponse,
+      password: 'password',
+    });
     expect(startPasskeyRegistration).toHaveBeenCalledWith(registrationOptions);
     expect(startPasskeyAuthentication).toHaveBeenCalledWith(
       authenticationOptions,
@@ -118,22 +141,20 @@ describe('usePasskeyEnrollment', () => {
 
   it('requests registration options without PRF when unsupported', async () => {
     jest.mocked(isPasskeyPRFSupported).mockResolvedValue(false);
-    const { result } = renderHook(() => usePasskeyEnrollment());
+    const { result } = renderEnrollmentHook();
 
     await result.current.enrollWithPasskey();
 
-    expect(mockCall).toHaveBeenNthCalledWith(
-      1,
-      'PasskeyController:generateRegistrationOptions',
-      { prfAvailable: false },
-    );
+    expect(generateRegistrationOptions).toHaveBeenCalledWith({
+      prfAvailable: false,
+    });
   });
 
   it('preserves enrollment errors and stops at the failing stage', async () => {
     const error = new Error('registration failed');
     jest.mocked(startPasskeyRegistration).mockRejectedValue(error);
     const onStageChange = jest.fn();
-    const { result } = renderHook(() => usePasskeyEnrollment());
+    const { result } = renderEnrollmentHook();
 
     await expect(
       result.current.enrollWithPasskey({ onStageChange }),
@@ -141,18 +162,21 @@ describe('usePasskeyEnrollment', () => {
 
     expect(onStageChange).toHaveBeenCalledTimes(1);
     expect(onStageChange).toHaveBeenCalledWith('register');
-    expect(mockCall).toHaveBeenCalledTimes(1);
+    expect(generateRegistrationOptions).toHaveBeenCalledTimes(1);
+    expect(
+      generatePostRegistrationAuthenticationOptions,
+    ).not.toHaveBeenCalled();
     expect(startPasskeyAuthentication).not.toHaveBeenCalled();
   });
 
   it('cancels an active ceremony on unmount', () => {
-    const { unmount } = renderHook(() => usePasskeyEnrollment());
+    const { unmount } = renderHook();
     unmount();
     expect(cancelPasskeyCeremony).toHaveBeenCalledTimes(1);
   });
 
   it('returns a stable enrollment callback across rerenders', () => {
-    const { result, rerender } = renderHook(() => usePasskeyEnrollment());
+    const { result, rerender } = renderEnrollmentHook();
     const initialCallback = result.current.enrollWithPasskey;
 
     rerender();

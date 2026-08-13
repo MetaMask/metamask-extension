@@ -12,7 +12,7 @@ import UnlockPage from './unlock-page.component';
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
 
-jest.mock('./usePasskeyUnlock', () => ({
+jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
 }));
 
