@@ -1260,57 +1260,27 @@ export class LegacyBackgroundApiService {
 
   /**
    * Resolves once the given network is enabled in the
-   * NetworkEnablementController, or after `timeout` ms as a safety net so a
-   * missing enablement can't hang `addNetwork`.
+   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
+   * always enables a newly added network, so this is guaranteed to resolve.
    *
    * @param chainId - The chain ID of the newly added network.
-   * @param timeout - Maximum time to wait, in milliseconds.
    */
-  #waitForNetworkToBeEnabled(chainId: Hex, timeout = 15_000): Promise<void> {
+  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
     if (
       this.#messenger.call(
         'NetworkEnablementController:isNetworkEnabled',
         chainId,
       )
     ) {
-      return Promise.resolve();
+      return;
     }
 
-    return new Promise((resolve) => {
-      // Boxed so `onStateChange` (declared first) and the timeout can both
-      // reference the timer without a forward reference.
-      const timer: { id?: ReturnType<typeof setTimeout> } = {};
-
-      const onStateChange = () => {
-        if (
-          this.#messenger.call(
-            'NetworkEnablementController:isNetworkEnabled',
-            chainId,
-          )
-        ) {
-          clearTimeout(timer.id);
-          this.#messenger.unsubscribe(
-            'NetworkEnablementController:stateChange',
-            onStateChange,
-          );
-          resolve();
-        }
-      };
-
-      this.#messenger.subscribe(
-        'NetworkEnablementController:stateChange',
-        onStateChange,
-      );
-
-      // Safety net so a missing enablement can't hang `addNetwork`. Unsubscribe
-      // here too so the listener never dangles once we stop waiting.
-      timer.id = setTimeout(() => {
-        this.#messenger.unsubscribe(
-          'NetworkEnablementController:stateChange',
-          onStateChange,
-        );
-        resolve();
-      }, timeout);
+    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
+      condition: () =>
+        this.#messenger.call(
+          'NetworkEnablementController:isNetworkEnabled',
+          chainId,
+        ),
     });
   }
 
