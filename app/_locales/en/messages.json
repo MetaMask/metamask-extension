@@ -7435,6 +7435,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Group by"
   },
+  "perpsOrderBookLayout": {
+    "message": "Order book layout"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Left"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Right"
+  },
   "perpsOrderBookListedBy": {
     "message": "Listed by"
   },

@@ -1,9 +1,10 @@
+import type { Hex } from '@metamask/utils';
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
 import browser from 'webextension-polyfill';
 
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
-import resolveEnsToIpfsContentId from './resolver';
+import resolveEnsToIpfsContentId, { type EthProvider } from './resolver';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -14,6 +15,11 @@ export default function setupEnsIpfsResolver({
   getCurrentChainId,
   getIpfsGateway,
   getUseAddressBarEnsResolution,
+}: {
+  provider: EthProvider;
+  getCurrentChainId: () => Hex;
+  getIpfsGateway: () => string;
+  getUseAddressBarEnsResolution: () => boolean;
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -30,14 +36,16 @@ export default function setupEnsIpfsResolver({
     },
   };
 
-  async function webRequestDidFail(details) {
+  async function webRequestDidFail(
+    details: browser.WebRequest.OnErrorOccurredDetailsType,
+  ) {
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
     if (
       (tabId === -1 || getCurrentChainId() !== '0x1') &&
       // E2E tests use a chain other than 0x1, so for testing,
-      // allow the reuqest to pass through
+      // allow the request to pass through
       !process.env.IN_TEST
     ) {
       return;
@@ -54,7 +62,19 @@ export default function setupEnsIpfsResolver({
     attemptResolve({ tabId, name, pathname, search, fragment });
   }
 
-  async function attemptResolve({ tabId, name, pathname, search, fragment }) {
+  async function attemptResolve({
+    tabId,
+    name,
+    pathname,
+    search,
+    fragment,
+  }: {
+    tabId: number;
+    name: string;
+    pathname: string;
+    search: string;
+    fragment: string;
+  }) {
     const ipfsGateway = getIpfsGateway();
     const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
@@ -65,7 +85,7 @@ export default function setupEnsIpfsResolver({
       await browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
-    let url = ensSiteUrl;
+    let url: string | null = ensSiteUrl;
 
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL
