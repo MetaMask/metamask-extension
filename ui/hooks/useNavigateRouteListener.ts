@@ -1,22 +1,23 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, type Path } from 'react-router-dom';
 import browser from 'webextension-polyfill';
+import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { useAppSelector } from '../store/hooks';
 
-type OpenRouteMessage = {
-  type?: string;
-  body?: {
-    path?: unknown;
-    search?: unknown;
-  };
-};
-
 function routeFromMessage(
-  message: OpenRouteMessage,
+  message: unknown,
 ): Pick<Path, 'pathname' | 'search'> | null {
-  const pathname = message.body?.path;
+  if (
+    !isObject(message) ||
+    message.type !== EXTENSION_MESSAGES.OPEN_ROUTE ||
+    !isObject(message.body)
+  ) {
+    return null;
+  }
+
+  const pathname = message.body.path;
   if (typeof pathname !== 'string' || !pathname.startsWith('/')) {
     return null;
   }
@@ -38,14 +39,12 @@ export function useNavigateRouteListener(): void {
     null,
   );
 
-  isUnlockedRef.current = isUnlocked;
+  useEffect(() => {
+    isUnlockedRef.current = isUnlocked;
+  }, [isUnlocked]);
 
   useEffect(() => {
-    const onMessage = (message: OpenRouteMessage) => {
-      if (message?.type !== EXTENSION_MESSAGES.OPEN_ROUTE) {
-        return undefined;
-      }
-
+    const onMessage = (message: unknown) => {
       const route = routeFromMessage(message);
       if (!route) {
         return undefined;
