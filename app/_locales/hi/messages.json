@@ -5865,9 +5865,6 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask इस साइट से कनेक्ट नहीं है। शुरू करने के लिए, साइट का कनेक्ट बटन चुनें।"
-  },
   "noDefaultAddress": {
     "message": "कोई $1 एड्रेस नहीं",
     "description": "$1 is the default address scope"

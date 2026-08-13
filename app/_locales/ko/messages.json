@@ -5875,9 +5875,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noConnectionDescription": {
-    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
-  },
   "noDefaultAddress": {
     "message": "$1 주소가 없음",
     "description": "$1 is the default address scope"

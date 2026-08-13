@@ -5871,9 +5871,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noConnectionDescription": {
-    "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
-  },
   "noDefaultAddress": {
     "message": "Адрес № $1",
     "description": "$1 is the default address scope"

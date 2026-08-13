@@ -5871,9 +5871,6 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
-  },
   "noDefaultAddress": {
     "message": "无 $1 地址",
     "description": "$1 is the default address scope"

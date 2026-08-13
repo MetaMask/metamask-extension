@@ -5875,9 +5875,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask bu siteye bağlı değil. Başlamak için sitenin Bağla düğmesini seçin."
-  },
   "noDefaultAddress": {
     "message": "$1 adresi yok",
     "description": "$1 is the default address scope"

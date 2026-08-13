@@ -5871,9 +5871,6 @@
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
-  "noConnectionDescription": {
-    "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
-  },
   "noDefaultAddress": {
     "message": "Aucune adresse $1",
     "description": "$1 is the default address scope"

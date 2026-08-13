@@ -3176,9 +3176,6 @@
   "noAccountsFound": {
     "message": "Ní bhfuarthas aon chuntais don fhiosrúchán cuardaigh tugtha"
   },
-  "noConnectionDescription": {
-    "message": "Chun ceangal le suíomh, aimsigh agus roghnaigh an cnaipe \"ceangail\". Cuimhnigh nach féidir le MetaMask ceangal ach le suíomhanna ar an ngréasán 3."
-  },
   "noDomainResolution": {
     "message": "Níor soláthraíodh aon réiteach don fhearann."
   },

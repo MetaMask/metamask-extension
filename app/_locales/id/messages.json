@@ -5875,9 +5875,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask tidak terhubung ke situs ini. Untuk memulai, pilih tombol Hubungkan ke situs ini."
-  },
   "noDefaultAddress": {
     "message": "Tidak ada alamat $1",
     "description": "$1 is the default address scope"

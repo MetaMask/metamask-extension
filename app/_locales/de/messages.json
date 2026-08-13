@@ -5871,9 +5871,6 @@
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask ist nicht mit dieser Website verbunden. Um zu beginnen, wählen Sie die Schaltfläche „Verbinden“ der Website."
-  },
   "noDefaultAddress": {
     "message": "Keine $1-Adresse",
     "description": "$1 is the default address scope"

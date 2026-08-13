@@ -5863,9 +5863,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectionDescription": {
-    "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
-  },
   "noDefaultAddress": {
     "message": "Walang $1 address",
     "description": "$1 is the default address scope"
