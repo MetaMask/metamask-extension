@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Si continúa, todos los activos que ha registrado en Blur podrían estar en peligro."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Está interactuando con un sitio malicioso. Si continúa, perderá sus activos."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Si continúa, todos los activos que ha incluido en OpenSea podrían estar en peligro."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Si confirma esta solicitud, podría perder sus activos. Le recomendamos que cancele esta solicitud."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Está enviando sus activos a un estafador. Si continúa, perderá esos activos."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Si confirma esta solicitud, permitirá que un estafador retire y gaste sus activos. No los podrá recuperar."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por estafas podría quedarse con todos sus activos."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Si aprueba esta solicitud, alguien puede robar sus activos enlistados en Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "Debido a un error, no pudimos comprobar si hay alertas de seguridad. Continúe solo si confía en todas las direcciones involucradas."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Está interactuando con un dominio malicioso. Si aprueba esta solicitud, podría perder sus activos."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Si aprueba esta solicitud, podría perder sus activos."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Si aprueba esta solicitud, alguien puede robar sus activos enlistados en OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por estafar, tomará todos sus activos."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Esta es una solicitud engañosa"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Tenga cuidado"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Esta es una solicitud sospechosa"
   },
   "blockies": {
     "message": "Blockies"

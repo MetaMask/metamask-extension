@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Se você continuar, todos os ativos que você listou na Blur podem estar em risco."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Você está interagindo com um site mal-intencionado. Se você continuar, perderá seus ativos."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Se você continuar, todos os ativos listados na OpenSea podem estar em risco."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Se você confirmar essa solicitação, poderá perder seus ativos. Recomendamos que você cancele esta solicitação."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Você está enviando seus ativos para um golpista. Se você continuar, perderá esses ativos."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Se você confirmar essa solicitação, estará permitindo que um golpista saque e gaste seus ativos. Você não os receberá de volta."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Se você aprovar esta solicitação, um terceiro conhecido por aplicar golpes poderá se apropriar de todos os seus ativos."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Se você aprovar essa solicitação, alguém poderá roubar seus ativos listados na Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "Devido a um erro, não foi possível verificar os alertas de segurança. Prossiga somente se você confiar em todos os endereços envolvidos."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Você está interagindo com um domínio mal-intencionado. Se você aprovar essa solicitação, poderá perder seus ativos."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Se você aprovar essa solicitação, poderá perder seus ativos."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Se você aprovar essa solicitação, alguém poderá roubar seus ativos listados na OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Se você aprovar essa solicitação, algum terceiro conhecido por aplicar golpes tomará todos os seus ativos."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Essa solicitação é enganosa"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Tenha cuidado"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Essa solicitação é suspeita"
   },
   "blockies": {
     "message": "Blockies"

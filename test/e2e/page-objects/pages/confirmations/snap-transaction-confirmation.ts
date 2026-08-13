@@ -37,7 +37,7 @@ class SnapTransactionConfirmation {
 
   private securityAlertsError = {
     tag: 'p',
-    text: `Because of an error, we couldn't check for security alerts.`,
+    text: `We couldn't complete this safety check.`,
   };
 
   constructor(driver: Driver) {

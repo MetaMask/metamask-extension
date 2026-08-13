@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Если вы продолжите, все активы, которые вы разместили на Blur, могут оказаться под угрозой."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Вы взаимодействуете с вредоносным сайтом. Если вы продолжите, вы потеряете свои активы."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Если вы продолжите, все активы, которые вы разместили на OpenSea, могут оказаться под угрозой."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Если вы подтвердите этот запрос, вы можете потерять свои активы. Мы рекомендуем вам отменить запрос."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Вы отправляете свои активы мошеннику. Если вы продолжите, вы потеряете эти активы."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Если вы подтвердите этот запрос, вы позволите мошеннику снять и потратить ваши активы. Вы не получите их обратно."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, которая, как известно, совершала мошеннические действия, может похитить все ваши активы."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, зарегистрированные в Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "Из-за ошибки этот запрос не был подтвержден поставщиком услуг безопасности. Действуйте осторожно."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Вы взаимодействуете с вредоносным доменом. Если вы одобрите этот запрос, вы можете потерять свои активы."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Если вы одобрите этот запрос, вы можете потерять свои активы."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, указанные в OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, похитит все ваши активы."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Это запрос с целью обмана"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Будьте осторожны"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Это подозрительный запрос"
   },
   "blockies": {
     "message": "Blockies"

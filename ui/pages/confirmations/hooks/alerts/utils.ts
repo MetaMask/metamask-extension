@@ -17,28 +17,93 @@ export const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.permitFarming]: 'blockaidDescriptionApproveFarming',
   [BlockaidReason.setApprovalForAll]: 'blockaidDescriptionApproveFarming',
 
-  [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
+  [BlockaidReason.blurFarming]: 'blockaidDescriptionMarketplaceFarming',
+  [BlockaidReason.seaportFarming]: 'blockaidDescriptionMarketplaceFarming',
 
-  [BlockaidReason.errored]: 'blockaidDescriptionErrored', // TODO: change in i8n
-
-  [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
+  [BlockaidReason.errored]: 'blockaidDescriptionErrored',
 
   [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
 
-  [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
-  [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionHighRiskSignature',
+  [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionHighRiskSignature',
 
   [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFromFarming]: 'blockaidDescriptionTransferFarming',
 
-  [BlockaidReason.other]: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.other]: 'blockaidDescriptionRiskSignals',
+});
+
+/**
+ * Amount-bearing variants of banner descriptions, used when a formatted fiat
+ * total of outgoing assets is available. The amount is injected as $1.
+ */
+export const REASON_TO_DESCRIPTION_WITH_AMOUNT_TKEY = Object.freeze({
+  [BlockaidReason.maliciousDomain]:
+    'blockaidDescriptionMaliciousDomainWithAmount',
+
+  [BlockaidReason.rawNativeTokenTransfer]:
+    'blockaidDescriptionTransferFarmingWithAmount',
+  [BlockaidReason.transferFarming]:
+    'blockaidDescriptionTransferFarmingWithAmount',
+  [BlockaidReason.transferFromFarming]:
+    'blockaidDescriptionTransferFarmingWithAmount',
+});
+
+/**
+ * Marketplace display names injected into
+ * blockaidDescriptionMarketplaceFarming as $1. Product names are not
+ * localized.
+ */
+export const REASON_TO_MARKETPLACE_NAME = Object.freeze({
+  [BlockaidReason.blurFarming]: 'Blur',
+  [BlockaidReason.seaportFarming]: 'OpenSea',
 });
 
 /** Reason to title translation key mapping. */
 export const REASON_TO_TITLE_TKEY = Object.freeze({
+  [BlockaidReason.approvalFarming]: 'blockaidTitleHighRiskApproval',
+  [BlockaidReason.permitFarming]: 'blockaidTitleHighRiskApproval',
+  [BlockaidReason.setApprovalForAll]: 'blockaidTitleHighRiskApproval',
+
+  [BlockaidReason.blurFarming]: 'blockaidTitleHighRiskApproval',
+  [BlockaidReason.seaportFarming]: 'blockaidTitleHighRiskApproval',
+
   [BlockaidReason.errored]: 'blockaidTitleMayNotBeSafe',
-  [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
+
+  [BlockaidReason.maliciousDomain]: 'blockaidTitleSiteFlaggedUnsafe',
+
+  [BlockaidReason.rawSignatureFarming]: 'blockaidTitleHighRiskSignature',
+  [BlockaidReason.tradeOrderFarming]: 'blockaidTitleHighRiskSignature',
+
+  [BlockaidReason.rawNativeTokenTransfer]: 'blockaidTitleHighRiskTransfer',
+  [BlockaidReason.transferFarming]: 'blockaidTitleHighRiskTransfer',
+  [BlockaidReason.transferFromFarming]: 'blockaidTitleHighRiskTransfer',
+
+  [BlockaidReason.other]: 'blockaidTitleRiskSignalsDetected',
+});
+
+/**
+ * Reason to request-type noun translation key mapping. The noun is composed
+ * into the confirm-anyway modal message ("...high-risk signals in this
+ * approval").
+ */
+export const REASON_TO_REQUEST_TYPE_TKEY = Object.freeze({
+  [BlockaidReason.approvalFarming]: 'blockaidRequestTypeApproval',
+  [BlockaidReason.permitFarming]: 'blockaidRequestTypeApproval',
+  [BlockaidReason.setApprovalForAll]: 'blockaidRequestTypeApproval',
+  [BlockaidReason.blurFarming]: 'blockaidRequestTypeApproval',
+  [BlockaidReason.seaportFarming]: 'blockaidRequestTypeApproval',
+
+  [BlockaidReason.rawSignatureFarming]: 'blockaidRequestTypeSignature',
+  [BlockaidReason.tradeOrderFarming]: 'blockaidRequestTypeSignature',
+
+  [BlockaidReason.rawNativeTokenTransfer]: 'blockaidRequestTypeTransfer',
+  [BlockaidReason.transferFarming]: 'blockaidRequestTypeTransfer',
+  [BlockaidReason.transferFromFarming]: 'blockaidRequestTypeTransfer',
+
+  [BlockaidReason.maliciousDomain]: 'blockaidRequestTypeRequest',
+  [BlockaidReason.other]: 'blockaidRequestTypeRequest',
 });
 
 /**
@@ -61,33 +126,75 @@ export function getProviderAlertSeverity(
 }
 
 /**
+ * Returns the localized banner description for a security alert reason.
+ *
+ * @param reason - The Blockaid reason.
+ * @param t - The translation function.
+ * @param sendingFiatTotal - Formatted fiat total of outgoing assets, or null
+ * when unavailable. When present, amount-bearing copy variants are used.
+ * @returns The localized description.
+ */
+export function getProviderAlertMessage(
+  reason: BlockaidReason,
+  t: ReturnType<typeof useI18nContext>,
+  sendingFiatTotal?: string | null,
+): string {
+  const withAmountKey =
+    REASON_TO_DESCRIPTION_WITH_AMOUNT_TKEY[
+      reason as keyof typeof REASON_TO_DESCRIPTION_WITH_AMOUNT_TKEY
+    ];
+
+  if (withAmountKey && sendingFiatTotal) {
+    return t(withAmountKey, [sendingFiatTotal]);
+  }
+
+  const marketplaceName =
+    REASON_TO_MARKETPLACE_NAME[
+      reason as keyof typeof REASON_TO_MARKETPLACE_NAME
+    ];
+
+  if (marketplaceName) {
+    return t('blockaidDescriptionMarketplaceFarming', [marketplaceName]);
+  }
+
+  return t(
+    REASON_TO_DESCRIPTION_TKEY[
+      reason as keyof typeof REASON_TO_DESCRIPTION_TKEY
+    ] || REASON_TO_DESCRIPTION_TKEY.other,
+  );
+}
+
+/**
  * Normalizes a security alert response into an Alert object.
  *
  * @param securityAlertResponse - The security alert response to normalize.
  * @param t - The translation function.
  * @param reportUrl - URL to report.
+ * @param sendingFiatTotal - Formatted fiat total of outgoing assets, or null
+ * when unavailable.
  * @returns The normalized Alert object.
  */
 export function normalizeProviderAlert(
   securityAlertResponse: SecurityAlertResponse,
   t: ReturnType<typeof useI18nContext>,
   reportUrl?: string,
+  sendingFiatTotal?: string | null,
 ): Alert {
   return {
     key: securityAlertResponse.securityAlertId || '',
     reason: t(
       REASON_TO_TITLE_TKEY[
         securityAlertResponse.reason as keyof typeof REASON_TO_TITLE_TKEY
-      ] || 'blockaidTitleDeceptive',
+      ] || 'blockaidTitleRiskSignalsDetected',
     ),
     severity: getProviderAlertSeverity(
       securityAlertResponse.result_type as BlockaidResultType,
     ),
     alertDetails: securityAlertResponse.features,
-    message: t(
-      REASON_TO_DESCRIPTION_TKEY[
-        securityAlertResponse.reason as keyof typeof REASON_TO_DESCRIPTION_TKEY
-      ] || REASON_TO_DESCRIPTION_TKEY.other,
+    message: getProviderAlertMessage(
+      securityAlertResponse.reason as BlockaidReason,
+      t,
+      sendingFiatTotal,
     ),
     provider: SecurityProvider.Blockaid, // TODO: Remove this once we support more providers and implement a way to determine it.
     reportUrl,

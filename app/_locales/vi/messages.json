@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên Blur có thể gặp rủi ro."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Bạn đang tương tác với một trang web độc hại. Nếu tiếp tục, bạn sẽ bị mất tài sản."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên OpenSea có thể gặp rủi ro."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể bị mất tài sản. Chúng tôi khuyên bạn nên hủy yêu cầu này."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Bạn đang gửi tài sản của mình cho kẻ lừa đảo. Nếu tiếp tục, bạn sẽ bị mất những tài sản đó."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn đang cho phép kẻ lừa đảo rút và chi tiêu tài sản của mình. Bạn sẽ không lấy lại được tài sản."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên Blur của bạn."
   },
   "blockaidDescriptionErrored": {
     "message": "Do có lỗi, chúng tôi không thể kiểm tra các cảnh báo bảo mật. Chỉ tiếp tục nếu bạn tin tưởng tất cả các địa chỉ liên quan."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Bạn đang tương tác với một tên miền độc hại. Nếu bạn chấp thuận yêu cầu này, bạn có thể mất tài sản của mình."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, bạn có thể mất tài sản của mình."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên OpenSea của bạn."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo sẽ lấy hết tài sản của bạn."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Đây là một yêu cầu lừa đảo"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Hãy cẩn thận"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Đây là một yêu cầu đáng ngờ"
   },
   "blockies": {
     "message": "Blockies"

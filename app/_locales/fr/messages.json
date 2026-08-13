@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Si vous continuez, vous risquez de perdre tous les actifs que vous avez listés sur Blur."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Vous interagissez avec un site malveillant. Si vous continuez, vous risquez de perdre tous vos actifs."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Si vous continuez, vous risquez de perdre tous les actifs que vous avez listés sur OpenSea."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Si vous confirmez cette demande, vous risquez de perdre tous vos actifs. Nous vous recommandons d’annuler cette demande."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Vous allez transférer vos actifs à un escroc. Si vous continuez, vous perdrez ces actifs."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Si vous confirmez cette demande, un escroc pourra retirer et dépenser vos actifs. Ces derniers ne pourront pas être restitués."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Si vous approuvez cette demande, quelqu’un pourrait s’emparer de vos actifs répertoriés sur Blur."
   },
   "blockaidDescriptionErrored": {
     "message": "En raison d’une erreur, nous n’avons pas pu vérifier les alertes de sécurité. Ne continuez que si vous faites confiance à toutes les adresses concernées."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Vous interagissez avec un domaine malveillant. Si vous approuvez cette demande, vous risquez de perdre vos actifs."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Si vous approuvez cette demande, vous risquez de perdre vos actifs."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Si vous approuvez cette demande, quelqu’un pourrait s'emparer de vos actifs répertoriés sur OpenSea."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Cette demande est trompeuse"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Soyez prudent"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Cette demande est suspecte"
   },
   "blockies": {
     "message": "Blockies"

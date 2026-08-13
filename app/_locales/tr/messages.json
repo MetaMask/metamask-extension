@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Devam ederseniz Blur'de yer alan tüm varlıklarınız riske girebilir."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Kötü niyetli bir siteyle etkileşimde bulunuyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Devam ederseniz OpenSea'de yer alan tüm varlıklarınız riske girebilir."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Bu talebi onaylarsanız varlıklarınızı kaybedebilirsiniz. Bu talebi iptal etmenizi öneririz."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Varlıklarınızı bir dolandırıcıya gönderiyorsunuz. Devam ederseniz bu varlıkları kaybedeceksiniz."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Bu talebi onaylarsanız bir dolandırıcının varlıklarınızı çekmesine ve harcamasına izin verirsiniz. Varlıklarınızı geri alamazsınız."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalabilir."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Bu talebi onaylarsanız birisi Blur üzerinde yer alan varlıklarınızı çalabilir."
   },
   "blockaidDescriptionErrored": {
     "message": "Bir hatadan dolayı güvenlik uyarılarını kontrol edemedik. Sadece ilgili her adrese güveniyorsanız ilerleyin."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Kötü niyetli bir alanla etkileşimde bulunuyorsunuz. Bu talebi onaylarsanız varlıklarınızı kaybedebilirsiniz."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Bu talebi onaylarsanız varlıklarınızı kaybedebilirsiniz."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Bu talebi onaylarsanız birisi OpenSea üzerinde yer alan varlıklarınızı çalabilir."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalar."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Bu, aldatıcı bir taleptir"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Dikkatli olun"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Bu, şüheli bir taleptir"
   },
   "blockies": {
     "message": "Blockie'ler"

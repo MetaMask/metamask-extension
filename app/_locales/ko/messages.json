@@ -1991,29 +1991,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "계속하면 Blur에 등록한 모든 자산이 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "악성 사이트와 인터렉션하고 있습니다. 계속하면 자산을 잃게 됩니다."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "계속하면 OpenSea에 등록한 모든 자산이 위험에 처할 수 있습니다."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "이 요청을 컨펌하면, 자산을 잃을 수 있습니다. 이 요청을 취소할 것을 권장합니다."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "지금 자산을 사기범에게 보내고 있습니다. 계속하면 해당 자산을 잃게 됩니다."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "이 요청을 컨펌하면, 사기범이 자산을 인출하고 사용할 수 있게 됩니다. 그러한 자산은 돌려받을 수 없습니다."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠을 목적으로 하는 제3자가 회원님의 자산을 모두 가져갈 수 있습니다."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "이 요청을 승인하면 Blur에 등록된 회원님의 자산을 타인이 훔칠 수 있습니다."
   },
   "blockaidDescriptionErrored": {
     "message": "오류로 인해 보안 알림을 확인할 수 없었습니다. 모든 관련 주소를 신뢰하는 경우에만 계속 진행하세요."
@@ -2021,23 +2000,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "악성 도메인과 인터렉션하고 있습니다. 이 요청을 승인하면 본인의 자산을 잃을 수도 있습니다."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "이 요청을 승인하면, 자산을 잃을 수 있습니다."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "이 요청을 승인하면 OpenSea에 등록된 회원님의 자산을 타인이 훔칠 수 있습니다."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "이 요청을 승인하면 스캠을 목적으로 하는 타사가 회원님의 자산을 모두 가져가게 됩니다."
   },
-  "blockaidTitleDeceptive": {
-    "message": "사기성 요청입니다"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "주의"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "의심스러운 요청입니다"
   },
   "blockies": {
     "message": "블로키즈"
