@@ -131,11 +131,16 @@ const bridgeSlice = createSlice({
       ) {
         state.toToken = currentFromToken;
       }
+      if (
+        previousFromAssetId?.toLowerCase() !==
+        newFromToken?.assetId.toLowerCase()
+      ) {
+        state.fromTokenInputValue = initialState.fromTokenInputValue;
+      }
       state.fromToken = newFromToken;
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
       state.fromNativeBalance = initialState.fromNativeBalance;
-      state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
       if (

@@ -174,16 +174,8 @@ describe('Popular Networks', function (this: Suite) {
           'https://unresponsive-rpc.test',
         );
         await addEditRpcUrlPage.fillAddRpcNameInput('testName');
-        await addEditRpcUrlPage.saveAddRpcUrl();
-
-        // check the error message is displayed
-        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
-          'Could not fetch chain ID. Is your RPC URL correct?',
-        );
-        assert.equal(
-          await addEditNetworkPage.checkSaveButtonIsEnabled(),
-          false,
-        );
+        await addEditRpcUrlPage.checkErrorMessageFailedToFetchChainIdIsDisplayed();
+        await addEditRpcUrlPage.checkAddRpcUrlButtonIsEnabled(false);
       },
     );
   });

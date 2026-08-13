@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Encryption public key request confirmation
+ * (`eth_getEncryptionPublicKey`).
+ *
+ * Screen: `#/confirm-transaction/:id/encryption-public-key` (legacy page, not
+ * redesigned `#/confirmation`).
+ * Owns: request title, account balance, and Provide / Cancel actions.
+ * Boundaries: decrypting a message is `DecryptMessageConfirmation`. This
+ * object only covers sharing the encryption public key.
+ * Related: `DecryptMessageConfirmation`.
+ *
+ * @see ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.component.js
+ */
 class GetEncryptionKeyConfirmation {
   private readonly accountBalanceValue =
     '.request-encryption-public-key__balance-value';

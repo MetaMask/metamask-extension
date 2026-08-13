@@ -3,6 +3,22 @@ import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../constants';
 
+/**
+ * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
+ *
+ * Screen: `#/account-list`, usually opened from `HeaderNavbar.openAccountMenu`.
+ * Owns: listing and selecting accounts/wallets, add-wallet / choose-wallet-type
+ * flows, pin/hide/remove account actions, SRP export entry, search, and balance
+ * assertions on list items.
+ * Boundaries: the account list surface only. Account details, wallet details,
+ * hardware connect, and confirmation dialogs belong to their own page objects
+ * once navigated away.
+ * Related: `HeaderNavbar` (how tests open this), `WalletDetailsPage`,
+ * `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/account-list/account-list.tsx
+ * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
+ */
 class AccountListPage {
   private readonly accountDetailsTab = {
     text: 'Account details',

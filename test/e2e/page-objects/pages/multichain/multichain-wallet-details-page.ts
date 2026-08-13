@@ -1,5 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Multichain wallet details: accounts under a named wallet.
+ *
+ * Screen: `#/multichain-wallet-details-page`.
+ * Owns: loaded check for the `{walletName} / Accounts` header.
+ * Boundaries: wallet-level shell only. Per-account details belong to
+ * `MultichainAccountDetailsPage`.
+ * Related: `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx
+ */
 class MultichainWalletDetailsPage {
   private readonly driver: Driver;
 
