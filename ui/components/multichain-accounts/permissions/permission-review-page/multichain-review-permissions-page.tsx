@@ -53,7 +53,10 @@ import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
-import { PermissionsCell, PermissionsEmptyState } from '../../../multichain/pages/gator-permissions/components';
+import {
+  PermissionsCell,
+  PermissionsEmptyState,
+} from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 import { useDispatch } from '../../../../store/hooks';
