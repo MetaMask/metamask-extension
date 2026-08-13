@@ -4,6 +4,7 @@ import type { PermissionInfoWithMetadata } from '@metamask/gator-permissions-con
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import messages from '../../../../../app/_locales/en/messages.json';
 import { GatorPermissionsPage } from './gator-permissions-page';
 
 const MOCK_CHAIN_ID = '0x1' as Hex;
@@ -97,8 +98,8 @@ describe('Gator Permissions Page', () => {
       );
 
       expect(container).toMatchSnapshot();
-      expect(getByText('Assets')).toBeInTheDocument();
-      expect(getByText('Token transfer')).toBeInTheDocument();
+      expect(getByText(messages.assets.message)).toBeInTheDocument();
+      expect(getByText(messages.tokenTransfer.message)).toBeInTheDocument();
     });
 
     it('renders connections section when site permissions exist', () => {
@@ -108,8 +109,8 @@ describe('Gator Permissions Page', () => {
       });
       const { getByText } = renderWithProvider(<GatorPermissionsPage />, store);
 
-      expect(getByText('Dapps')).toBeInTheDocument();
-      expect(getByText('Connections')).toBeInTheDocument();
+      expect(getByText(messages.dapps.message)).toBeInTheDocument();
+      expect(getByText(messages.connections.message)).toBeInTheDocument();
     });
   });
 });
