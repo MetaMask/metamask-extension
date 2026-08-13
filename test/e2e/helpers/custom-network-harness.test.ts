@@ -28,22 +28,6 @@ function enabledEip155(
 
 describe('custom-network-harness', () => {
   describe('prepareCustomNetwork', () => {
-    it('retargets Base onto the local node without injecting a new config', () => {
-      const { fixtures, localNodeOptions, network } = prepareCustomNetwork(
-        'base',
-        'nativeSend',
-      );
-
-      expect(network.chainIdHex).toBe('0x2105');
-      expect(localNodeOptions).toStrictEqual([
-        { type: 'anvil', options: { chainId: 8453 } },
-      ]);
-      expect(networkController(fixtures).selectedNetworkClientId).toBe(
-        '0x2105-local',
-      );
-      expect(enabledEip155(fixtures)).toStrictEqual({ '0x2105': true });
-    });
-
     it('injects XDC and enables only that chain for native send', () => {
       const { fixtures, network } = prepareCustomNetwork('xdc', 'nativeSend');
 

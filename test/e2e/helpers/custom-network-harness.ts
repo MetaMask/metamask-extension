@@ -11,7 +11,6 @@ import {
 } from './token-price-mock-catalog';
 
 export type CustomNetworkId =
-  | 'base'
   | 'xdc'
   | 'injective'
   | 'chiliz'
@@ -48,19 +47,6 @@ const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
-  base: {
-    id: 'base',
-    name: 'Base',
-    chainIdHex: CHAIN_IDS.BASE,
-    chainIdDecimal: 8453,
-    nativeSymbol: 'ETH',
-    nativeAssetId: 'eip155:8453/slip44:60',
-    uiNativeAssetId: 'eip155:8453/slip44:60',
-    caipChainId: 'eip155:8453',
-    blockExplorerUrl: 'https://basescan.org',
-    clientId: 'base-local',
-    inDefaultFixture: true,
-  },
   xdc: {
     id: 'xdc',
     name: 'XDC Network',
