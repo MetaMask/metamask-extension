@@ -40,8 +40,6 @@ export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export type { ButtonPrimaryProps } from './button-primary';
 export { ButtonSecondary, ButtonSecondarySize } from './button-secondary';
 export type { ButtonSecondaryProps } from './button-secondary';
-export { Checkbox } from './checkbox';
-export type { CheckboxProps } from './checkbox';
 export { Container, ContainerMaxWidth } from './container';
 export type { ContainerProps } from './container';
 export { FormTextField, FormTextFieldSize } from './form-text-field';
