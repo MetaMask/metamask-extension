@@ -31,7 +31,7 @@ export function scopeDesignTokensForShadow(css: string) {
 }
 
 function readPageTheme(): 'light' | 'dark' {
-  const pageTheme = document.documentElement.getAttribute('data-theme');
+  const pageTheme = document.documentElement.dataset.theme;
   if (pageTheme === 'dark' || pageTheme === 'dim') {
     return 'dark';
   }
