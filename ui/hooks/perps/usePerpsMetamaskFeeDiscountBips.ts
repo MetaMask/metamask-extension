@@ -105,23 +105,7 @@ export function usePerpsMetamaskFeeDiscountBips(
 
   if (discountKey !== prevDiscountKey) {
     setPrevDiscountKey(discountKey);
-
-    if (!isVipProgramEnabled || !selectedAddress) {
-      setDiscountBips(undefined);
-    } else {
-      const caipAccountId = formatAccountToCaipAccountId(
-        selectedAddress,
-        currentChainId,
-      );
-      if (caipAccountId && feeDiscountCache?.caipAccountId === caipAccountId) {
-        // TTL is enforced in the effect (Date.now is impure in render).
-        setDiscountBips(feeDiscountCache.discountBips);
-      } else {
-        // Clear the previous account's discount immediately so downstream memos
-        // don't apply a stale discount while the new fetch is in flight.
-        setDiscountBips(undefined);
-      }
-    }
+    setDiscountBips(undefined);
   }
 
   useEffect(() => {
@@ -143,7 +127,15 @@ export function usePerpsMetamaskFeeDiscountBips(
       feeDiscountCache?.caipAccountId === caipAccountId &&
       now - feeDiscountCache.timestamp < FEE_DISCOUNT_CACHE_TTL_MS
     ) {
-      return undefined;
+      const cachedBips = feeDiscountCache.discountBips;
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setDiscountBips(cachedBips);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
     submitRequestToBackground<number | null>(
