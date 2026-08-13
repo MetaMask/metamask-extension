@@ -20,10 +20,7 @@ import { useABTest } from '../../../../hooks/useABTest';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import type { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
 import type { ScamQuestionnaireProps } from './scam-questionnaire';
-import {
-  ScamQuestionnaireTrigger,
-  SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY,
-} from './scam-questionnaire.constants';
+import { ScamQuestionnaireTrigger } from './scam-questionnaire.constants';
 
 const SEND_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.simpleSend,
@@ -55,7 +52,6 @@ function matchesScamDomain(origin: string, domain: string): boolean {
 type SendBranchResult = {
   required: boolean;
   securityAlert: { key: string } | undefined;
-  isMMSend: boolean;
 };
 
 function checkSendBranch({
@@ -86,7 +82,7 @@ function checkSendBranch({
     securityAlert &&
     !isAlertConfirmed(securityAlert.key),
   );
-  return { required, securityAlert, isMMSend };
+  return { required, securityAlert };
 }
 
 function checkDomainBranch({
@@ -98,10 +94,10 @@ function checkDomainBranch({
   remoteFlags: Record<string, unknown>;
   hasPassed: boolean;
 }): boolean {
-  const scamDomains =
-    (remoteFlags[SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY] as
-      | string[]
-      | undefined) ?? [];
+  const flagValue = remoteFlags[SCAM_QUESTIONNAIRE_FLAG_KEY] as
+    | { name?: string; value?: string[] }
+    | undefined;
+  const scamDomains = flagValue?.value ?? [];
   const { origin } = currentConfirmation ?? {};
   const isDappInitiated = Boolean(origin && origin !== ORIGIN_METAMASK);
   return (
@@ -135,11 +131,7 @@ export function useScamQuestionnaire({
     { trackExposure: false },
   );
   const { alerts, setAlertConfirmed, isAlertConfirmed } = useAlerts(ownerId);
-  const {
-    required: isSendBranchRequired,
-    securityAlert,
-    isMMSend,
-  } = checkSendBranch({
+  const { required: isSendBranchRequired, securityAlert } = checkSendBranch({
     variant,
     currentConfirmation,
     alerts,

@@ -1,8 +1,5 @@
 export const TOTAL_QUESTIONS = 3;
 
-export const SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY =
-  'productSafetyScamQuestionnaireDomainList';
-
 export enum ScamQuestionnaireTrigger {
   SecurityAlert = 'security_alert',
   DomainList = 'domain_list',

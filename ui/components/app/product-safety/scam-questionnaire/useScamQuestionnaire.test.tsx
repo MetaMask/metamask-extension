@@ -16,10 +16,7 @@ import { ABTestVariant } from '../../../../../shared/lib/ab-testing/variants';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useABTest } from '../../../../hooks/useABTest';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
-import {
-  ScamQuestionnaireTrigger,
-  SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY,
-} from './scam-questionnaire.constants';
+import { ScamQuestionnaireTrigger } from './scam-questionnaire.constants';
 import { useScamQuestionnaire } from './useScamQuestionnaire';
 
 jest.mock('react-redux', () => ({
@@ -104,7 +101,10 @@ function setupDomainBranch({
   const onCancel = jest.fn();
 
   mockUseSelector.mockReturnValue({
-    [SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY]: scamDomains,
+    [SCAM_QUESTIONNAIRE_FLAG_KEY]: {
+      name: ABTestVariant.Control,
+      value: scamDomains,
+    },
   });
 
   mockUseABTest.mockReturnValue({
