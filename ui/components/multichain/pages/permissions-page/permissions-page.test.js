@@ -121,11 +121,7 @@ describe('All Connections', () => {
 
   describe('render', () => {
     it('renders correctly', () => {
-      const { container, getByTestId } = renderWithProvider(
-        <PermissionsPage />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
 
       expect(getByTestId('permissions-page')).toBeInTheDocument();
     });

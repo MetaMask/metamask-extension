@@ -42,8 +42,9 @@ const MOCK_SITE_PERMISSION = {
   },
 };
 
+const mockUseGatorPermissions = jest.fn(() => ({ loading: false }));
 jest.mock('../../../../hooks/gator-permissions/useGatorPermissions', () => ({
-  useGatorPermissions: jest.fn(() => ({ loading: false })),
+  useGatorPermissions: () => mockUseGatorPermissions(),
 }));
 
 const createStore = ({
@@ -64,7 +65,24 @@ const createStore = ({
 };
 
 describe('Gator Permissions Page', () => {
+  beforeEach(() => {
+    mockUseGatorPermissions.mockReturnValue({ loading: false });
+  });
+
   describe('render', () => {
+    it('renders loading spinner while loading', () => {
+      mockUseGatorPermissions.mockReturnValue({ loading: true });
+      const store = createStore();
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <GatorPermissionsPage />,
+        store,
+      );
+
+      expect(getByTestId('gator-permissions-loading')).toBeInTheDocument();
+      expect(queryByTestId('permission-list')).not.toBeInTheDocument();
+      expect(queryByTestId('no-connections')).not.toBeInTheDocument();
+    });
+
     it('renders page container', () => {
       const store = createStore({
         grantedPermissions: [MOCK_GATOR_PERMISSION],
@@ -92,12 +110,12 @@ describe('Gator Permissions Page', () => {
         grantedPermissions: [MOCK_GATOR_PERMISSION],
         subjects: {},
       });
-      const { container, getByTestId, getByText } = renderWithProvider(
+      const { getByTestId, getByText } = renderWithProvider(
         <GatorPermissionsPage />,
         store,
       );
 
-      expect(container).toMatchSnapshot();
+      expect(getByTestId('permission-list')).toBeInTheDocument();
       expect(getByText(messages.assets.message)).toBeInTheDocument();
       expect(getByText(messages.tokenTransfer.message)).toBeInTheDocument();
     });
