@@ -1751,3 +1751,22 @@ This section captures non-obvious, durable caveats for running this repo inside 
 ### E2E tests
 
 - Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.
+
+---
+
+## Learned User Preferences
+
+- Prefer extending `prepareCustomNetwork` and `token-price-mock-catalog.ts` over adding new per-chain E2E helpers. Specs should call the harness only.
+
+## Learned Workspace Facts
+
+- E2E mockttp mock server port **8000 is hardcoded** in `test/e2e/helpers.js` with no env override. If port 8000 is occupied, E2E fails immediately with "Failed to set up mock server" — free the port before running E2E.
+- `yarn build:test` **exits 0 even when webpack compilation fails** (e.g. "compiled with 5 errors"). Do not rely on exit code; grep the build output for `compiled with` to detect failures.
+- The default `tokens.api.cx.metamask.io/v3/assets` mock in `mock-e2e.js` only knows mainnet and localhost native ETH — leave it that way. Custom-network E2E specs should use `prepareCustomNetwork` in `test/e2e/helpers/custom-network-harness.ts` rather than adding a per-chain helper. Specs should not import the catalog; the harness registers Token/Price mocks. `mockPriceApi` stays for mainnet ETH.
+- Native asset CAIP IDs in fixture `nativeAssetIdentifiers` can differ from the ID the Tokens tab requests. Catalog mocks must prefix-match `eip155:<chainId>/` (see `uiNativeAssetId` and `test/e2e/CONTEXT.md`). For unsupported-cryptocurrency coverage, use the `unsupportedPrice` scenario — quoted price mocks hide that path.
+- `unifiedEvmAccountsApiBalances.mainnetAdditionalBalances` only seeds ERC-20 balances for chain 1 (mainnet). For non-mainnet ERC-20 balances, use fixture-seeded `AssetsController` state instead.
+- The `nativeAssetIdentifiers` type requires **literal template strings**, not interpolated values — interpolated strings widen to `string` and fail `tsc`. Spell out CAIP IDs as literals.
+- `withEnabledNetworks` **replaces** the enabled-networks map entirely (not a merge), while `withNetworkEnablementController` merges. When enabling a custom network via `withEnabledNetworks`, include every network you want enabled, not just the new one.
+- `withNetworkRpcUrlOnLocalhost` **throws** if the target chain is not already in the default fixture. For chains absent from the default fixture, `prepareCustomNetwork` injects via `withNetworkControllerOnCustomNetwork`.
+- Two `always()` handlers on the same URL in mockttp cause the first to match every time and silently drop the second. `mockTokenAndPriceApis` in `token-price-mock-catalog.ts` registers one handler per URL; do not add a second `always()` on the same Token/Price endpoint.
+- E2E network UI page objects live under `test/e2e/page-objects/pages/networks/` (e.g. `network-filter.ts`, `select-network-modal.ts`) — there is **no** `page-objects/pages/network-manager` module. To open the network picker use `NetworkFilter`; to interact with the dropdown use `SelectNetworkModal` / `NetworkId`.

@@ -22,21 +22,6 @@ export type CheckExpectedBalanceOptions = {
 // past the default 10s wait.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
-/**
- * Wallet home / account overview: balance, primary CTAs, and tab navigation.
- *
- * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
- * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
- * navigating to Tokens / NFTs / DeFi / Activity tabs, home notifications,
- * shield entry modal, survey and SRP toasts, and page-ready waits.
- * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
- * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
- * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
- * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
- * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
- *
- * @see ui/pages/home/home.tsx
- */
 class HomePage {
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
@@ -47,11 +32,15 @@ class HomePage {
     text: 'Remind me later',
   };
 
-  private readonly backupSecretRecoveryPhraseButton =
-    '[data-testid="backup-srp-toast"] button';
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
 
-  private readonly backupSecretRecoveryPhraseNotification =
-    '[data-testid="backup-srp-toast"]';
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
+  };
 
   // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
   // (`coin-overview__primary-currency`) balance containers.
@@ -64,9 +53,6 @@ class HomePage {
   };
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
-
-  private readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -366,6 +352,30 @@ class HomePage {
     });
   }
 
+  async checkNoErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check no blocking error toast is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.storageErrorToast, {
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(this.surveyToast, {
+      timeout: 5000,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'cryptocurrencies',
+      },
+      { timeout: 5000 },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: '.toast-container',
+        text: 'unsupported',
+      },
+      { timeout: 5000 },
+    );
+  }
+
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
@@ -547,16 +557,7 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    await this.checkPageIsLoaded();
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavActivityButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavActivityButton);
-    } else {
-      await this.driver.clickElement(this.activityTab);
-    }
+    await this.driver.clickElement(this.activityTab);
   }
 
   async goToBackupSRPPage(): Promise<void> {
