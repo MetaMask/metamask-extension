@@ -17,9 +17,7 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
-    # `quality-gate` is the only check that blocks the PR, so this leg is
-    # continue-on-error. It still gates its own metrics below, which turns just
-    # this leg red on a breach and lets only this leg be re-run to re-measure.
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -116,10 +114,6 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-      # compare-benchmarks.ts evaluates each result file independently, so
-      # pointing --current at this leg's single-file dir gates exactly this leg.
-      # A breach fails the leg, so it can be re-run in isolation. Runs only when
-      # the benchmark produced a result.
       - name: Gate this benchmark leg
         if: ${{ steps.run-benchmark.outcome == 'success' }}
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
@@ -128,9 +122,7 @@ jobs:
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
-    # continue-on-error for the same reason as the matrix `benchmarks` job: it
-    # gates its own metrics below so a breach turns it red and it can be re-run in
-    # isolation, while `quality-gate` remains the only check that blocks the PR.
+    # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -207,9 +199,6 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-      # Gate this job against its own page-load result file so a breach fails it
-      # and it can be re-run in isolation. Same rationale as the matrix
-      # `benchmarks` job's per-leg gate.
       - name: Gate this benchmark leg
         if: ${{ steps.run-page-load.outcome == 'success' }}
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
