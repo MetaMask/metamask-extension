@@ -9,13 +9,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
+  SensitiveText,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { SensitiveText } from '../../component-library';
-import { TextVariant as TextVariantDeprecated } from '../../../helpers/constants/design-system';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
 import {
   STATUS_CONNECTED,
@@ -56,12 +55,40 @@ const AccountCellAvatar = ({
   );
 };
 
+type BalanceDisplayProps = {
+  balance: string;
+  isSubtitle?: boolean;
+  isHidden?: boolean;
+};
+
+const BalanceDisplay = ({
+  balance,
+  isSubtitle = false,
+  isHidden = false,
+}: BalanceDisplayProps) => {
+  return (
+    <SensitiveText
+      className="multichain-account-cell__account-balance"
+      data-testid={isSubtitle ? 'balance-display-subtitle' : 'balance-display'}
+      variant={isSubtitle ? TextVariant.BodySm : TextVariant.BodyMd}
+      color={isSubtitle ? TextColor.TextAlternative : undefined}
+      fontWeight={isSubtitle ? undefined : FontWeight.Medium}
+      style={isSubtitle ? undefined : { marginRight: 8 }}
+      ellipsis
+      isHidden={isHidden}
+    >
+      {balance}
+    </SensitiveText>
+  );
+};
+
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
+  balancePosition?: 'end' | 'subtitle';
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
@@ -85,6 +112,7 @@ export const MultichainAccountCell = ({
   accountNameString,
   onClick,
   balance,
+  balancePosition = 'end',
   startAccessory,
   endAccessory,
   selected = false,
@@ -162,6 +190,13 @@ export const MultichainAccountCell = ({
           >
             {accountName}
           </Text>
+          {balancePosition === 'subtitle' && (
+            <BalanceDisplay
+              balance={balance}
+              isHidden={privacyMode}
+              isSubtitle
+            />
+          )}
           {walletName && (
             <Text
               className="multichain-account-cell__account-name"
@@ -190,16 +225,9 @@ export const MultichainAccountCell = ({
         justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
-        <SensitiveText
-          className="multichain-account-cell__account-balance"
-          data-testid="balance-display"
-          variant={TextVariantDeprecated.bodyMdMedium}
-          marginRight={2}
-          isHidden={privacyMode}
-          ellipsis
-        >
-          {balance}
-        </SensitiveText>
+        {balancePosition === 'end' && (
+          <BalanceDisplay balance={balance} isHidden={privacyMode} />
+        )}
         <Box
           className="multichain-account-cell__end_accessory"
           flexDirection={BoxFlexDirection.Row}

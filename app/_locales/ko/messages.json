@@ -3649,9 +3649,6 @@
   "editNonceMessage": {
     "message": "이는 고급 기능으로, 주의해서 사용해야 합니다."
   },
-  "editPermissions": {
-    "message": "권한 수정"
-  },
   "editSpendingCap": {
     "message": "지출 한도 편집"
   },
@@ -6891,9 +6888,6 @@
   "permitSimulationDetailInfo": {
     "message": "지출자에게 내 계정에서 이 정도의 토큰을 지출할 수 있는 권한을 부여합니다."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1은(는) $2에 액세스 할 수 있습니다."
-  },
   "perps": {
     "message": "무기한 선물"
   },
@@ -9286,9 +9280,6 @@
   },
   "select": {
     "message": "선택"
-  },
-  "selectAccountToConnect": {
-    "message": "연결할 계정 선택"
   },
   "selectAll": {
     "message": "전체 선택"
