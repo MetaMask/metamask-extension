@@ -313,7 +313,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
+        // Both the existing Solana account and the requested EVM account should be pre-selected
         await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_ONE,
           EVM_ACCOUNT_LABEL_TWO,
         ]);
 
