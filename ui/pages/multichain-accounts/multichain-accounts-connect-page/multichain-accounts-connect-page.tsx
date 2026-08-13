@@ -627,7 +627,10 @@ export const MultichainAccountsConnectPage = ({
           gap={6}
         >
           <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
               {t('account')}
             </Text>
             <Box
@@ -653,7 +656,7 @@ export const MultichainAccountsConnectPage = ({
               )}
             </Box>
           </Box>
-        <ConnectionPermissionsList />
+          <ConnectionPermissionsList />
         </Content>
 
         <Footer>
