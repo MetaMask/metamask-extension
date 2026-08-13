@@ -104,6 +104,8 @@ describe('settings-registry', () => {
         actions: [
           'PasskeyController:generateAuthenticationOptions',
           'PasskeyController:removePasskeyWithPasskeyVerification',
+          'PasskeyController:removePasskeyWithPasswordVerification',
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
         ],
         events: [],
       });

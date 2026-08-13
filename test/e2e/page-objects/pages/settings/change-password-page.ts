@@ -26,6 +26,9 @@ export default class ChangePasswordPage {
   private readonly verifyCurrentPasswordButton =
     '[data-testid="verify-current-password-button"]';
 
+  private readonly verifyPasskeyUsePasswordButton =
+    '[data-testid="change-password-verify-passkey-use-password"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -57,6 +60,15 @@ export default class ChangePasswordPage {
     console.log('Confirm current password');
     await this.driver.fill(this.currentPasswordInput, password);
     await this.driver.clickElement(this.verifyCurrentPasswordButton);
+  }
+
+  async clickUsePasswordForPasskeyVerification(): Promise<void> {
+    console.log(
+      'Switch change-password verification from passkey to current password',
+    );
+    await this.driver.waitForSelector(this.verifyPasskeyUsePasswordButton);
+    await this.driver.clickElement(this.verifyPasskeyUsePasswordButton);
+    await this.driver.waitForSelector(this.currentPasswordInput);
   }
 
   async waitForPasskeyVerificationToComplete(): Promise<void> {

@@ -15,11 +15,23 @@ export type PasskeyRegistrationRouteMessenger = RouteMessengerFromCapabilities<
   typeof PASSKEY_REGISTRATION_ROUTE_CAPABILITIES
 >;
 
+export const PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES =
+  defineAllowedRouteCapabilities({
+    actions: [
+      'PasskeyController:generateAuthenticationOptions',
+      'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+      'PasskeyController:removePasskeyWithPasswordVerification',
+    ],
+    events: [],
+  });
+
 export const PASSKEY_SECURITY_ROUTE_CAPABILITIES =
   defineAllowedRouteCapabilities({
     actions: [
       'PasskeyController:generateAuthenticationOptions',
       'PasskeyController:removePasskeyWithPasskeyVerification',
+      'PasskeyController:removePasskeyWithPasswordVerification',
+      'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
     ],
     events: [],
   });
@@ -37,16 +49,6 @@ export const PASSKEY_TURN_OFF_ROUTE_CAPABILITIES =
 export type PasskeyTurnOffRouteMessenger = RouteMessengerFromCapabilities<
   typeof PASSKEY_TURN_OFF_ROUTE_CAPABILITIES
 >;
-
-export const PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES =
-  defineAllowedRouteCapabilities({
-    actions: [
-      'PasskeyController:generateAuthenticationOptions',
-      'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-      'PasskeyController:removePasskeyWithPasswordVerification',
-    ],
-    events: [],
-  });
 
 export type PasskeyPasswordChangeRouteMessenger =
   RouteMessengerFromCapabilities<
