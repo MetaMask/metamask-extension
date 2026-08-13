@@ -388,6 +388,9 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
+import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
+import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -677,6 +680,9 @@ export default class MetamaskController extends EventEmitter {
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
+      MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
+      MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
+      MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -3988,7 +3994,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:lookupSelectedNetworks',
       ),
-      resetWallet: this.resetWallet.bind(this),
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
   }
 
@@ -4004,43 +4013,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Reset the wallet, restart the from the onboarding flow
-   *
-   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
-   * @returns void
-   */
-  async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
-    this.passkeyController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
   }
 
   /**

@@ -2,14 +2,17 @@
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
+  selectEnableMoneyAccountTransactions,
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
+  selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
   selectMinimumRequiredTokenBalance,
   selectPayQuoteConfig,
   selectPreferredPayToken,
+  selectPreferredPayTokens,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -69,6 +72,7 @@ type PayExtendedFlag = {
     overrides?: Record<string, PayPrefilledAmountConfig>;
     musdConversion?: PayPrefilledAmountConfig;
   };
+  enableMoneyAccountTransactions?: Record<string, boolean>;
 };
 
 type HardwareWalletFlag = {
@@ -250,6 +254,55 @@ describe('Confirmations Pay Feature Flags', () => {
         enabled: false,
         tokens: undefined,
       });
+    });
+  });
+
+  describe('selectPreferredPayTokens', () => {
+    it('returns all transaction override tokens from the resolved config', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+          overrides: {
+            perpsWithdraw: [
+              {
+                address: '0x1111111111111111111111111111111111111111',
+                chainId: '0x1',
+                name: 'mUSD',
+              },
+              {
+                address: '0x2222222222222222222222222222222222222222',
+                chainId: '0xa4b1',
+                name: 'USDC',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual([
+        {
+          address: '0x1111111111111111111111111111111111111111',
+          chainId: '0x1',
+          name: 'mUSD',
+        },
+        {
+          address: '0x2222222222222222222222222222222222222222',
+          chainId: '0xa4b1',
+          name: 'USDC',
+        },
+      ]);
+    });
+
+    it('returns an empty array when no preferred tokens are configured', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual(
+        [],
+      );
     });
   });
 
@@ -466,6 +519,66 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectIsPayAmountPrefillEnabled(state, 'musdConversion')).toBe(
         false,
       );
+    });
+  });
+
+  describe('selectEnableMoneyAccountTransactions', () => {
+    it('returns the map from the flag', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: {
+          perpsDeposit: true,
+          predictDeposit: false,
+        },
+      });
+
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({
+        perpsDeposit: true,
+        predictDeposit: false,
+      });
+    });
+
+    it('defaults to an empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({});
+    });
+  });
+
+  describe('selectIsMoneyAccountTransactionEnabled', () => {
+    it('returns true when the transaction type is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(true);
+    });
+
+    it('returns false when the transaction type is disabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: false },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the transaction type is absent', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { predictDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the flag map is missing', () => {
+      const state = getMockPayExtendedState();
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
     });
   });
 

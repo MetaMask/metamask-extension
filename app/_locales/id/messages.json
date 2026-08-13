@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Penarikan prediksi"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Dari: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
-  },
-  "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -3403,13 +3444,13 @@
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
   "disconnectAllSites": {
-    "message": "Putuskan Semua Koneksi"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Jika Anda memutuskan koneksi dari semua situs, Anda perlu menghubungkan kembali akun dan jaringan Anda untuk dapat menggunakannya lagi."
+    "message": "Putuskan semua koneksi"
   },
   "disconnectAllSitesError": {
     "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Putuskan semua koneksi?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
   },
+  "disconnectQuestion": {
+    "message": "Putuskan koneksi?"
+  },
   "disconnectThisAccount": {
     "message": "Putuskan koneksi akun ini"
   },
   "discover": {
     "message": "Temukan"
   },
+  "discoverSearchCap": {
+    "message": "kap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Hasil tidak ditemukan",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Tidak ditemukan hasil untuk “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Lihat aset populer lainnya",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
-  "editPermissions": {
-    "message": "Edit izin"
   },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
@@ -6833,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Anda memberi izin kepada spender untuk menggunakan sejumlah token ini dari akun Anda."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 memiliki akses ke $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -6913,6 +6959,10 @@
   },
   "perpsCancelOrder": {
     "message": "Batalkan order"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "Order tidak dapat dibatalkan. Coba lagi.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "Atur interval lilin"
@@ -7052,6 +7102,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Estimasi P&L pada take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Tambahkan dana untuk memulai perdagangan.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Jelajahi pasar"
@@ -7249,8 +7303,19 @@
   "perpsOrderBookApply": {
     "message": "Terapkan"
   },
+  "perpsOrderBookBuy": {
+    "message": "Beli: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Disusun berdasarkan dan Dikelompokkan berdasarkan"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Koneksi pemesanan order hilang"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Beli $1%, jual $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Pengelompokan berdasarkan"
@@ -7261,11 +7326,24 @@
   "perpsOrderBookLoading": {
     "message": "Memuat daftar order"
   },
+  "perpsOrderBookNoData": {
+    "message": "Daftar order kosong"
+  },
   "perpsOrderBookPrice": {
     "message": "Harga"
   },
   "perpsOrderBookReconnect": {
     "message": "Hubungkan kembali"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Menghubungkan kembali ke daftar order"
+  },
+  "perpsOrderBookResize": {
+    "message": "Ubah ukuran daftar order"
+  },
+  "perpsOrderBookSell": {
+    "message": "Jual: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Ukuran"
@@ -7276,8 +7354,24 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Gunakan $1 sebagai harga limit",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Jenis nilai"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Daftar order yang menampilkan harga beli dan harga jual",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Daftar order yang menampilkan harga beli saja",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Daftar order yang menampilkan harga jual saja",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Tanggal"
@@ -7498,6 +7592,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit harus dilakukan pada harga $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Order ini tidak lagi dibuka",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Gagal membatalkan order",
@@ -8080,6 +8178,80 @@
   "rampsOnNetwork": {
     "message": "pada $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Detail transfer bank"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Beli lagi"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Biaya"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ID Order"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Dibayar dengan",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Biaya $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Lihat di $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Pembelian gagal",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Pembelian sedang berlangsung",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Penjualan gagal",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Penjualan sedang berlangsung",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Dana Anda sedang dikirim.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Penjualan berhasil",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Kripto Anda sedang dikirim.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Pembelian berhasil",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Opsi lainnya"
@@ -9102,9 +9274,6 @@
   },
   "select": {
     "message": "Pilih"
-  },
-  "selectAccountToConnect": {
-    "message": "Pilih akun yang akan dihubungkan"
   },
   "selectAll": {
     "message": "Pilih semua"
@@ -11262,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
   },
-  "trustSignalBlockDescription": {
-    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Situs berbahaya terdeteksi"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Tetap Terhubung"
-  },
   "tryAgain": {
     "message": "Coba lagi"
   },
@@ -11528,6 +11688,10 @@
   },
   "viewTokenDetails": {
     "message": "Lihat detail token"
+  },
+  "viewXMore": {
+    "message": "Lihat $1 lainnya",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",

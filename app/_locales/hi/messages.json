@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "प्रेडिक्शन्स विदड्रॉवल"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "खरीदना नहीं हो पाया"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "खरीदना नहीं हो पाया"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 खरीद रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 खरीद रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "बेचना नहीं हो पाया"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "बेचना नहीं हो पाया"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 बेचा जा रहा है",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 बेचा जा रहा है",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 बेचा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 बेचा गया",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "भेजने वाले: $1",
     "description": "$1 is the shortened sender address"
@@ -1145,7 +1189,7 @@
     "message": "RPC URL जोड़ें"
   },
   "addSnapAccountToggle": {
-    "message": "\"अकाउंट Snap जोड़ें (बीटा)\" को चालू करें"
+    "message": "“Snap (बीटा) से अकाउंट जोड़ें” ऑन करें"
   },
   "addSnapAccountsDescription": {
     "message": "इस फीचर को चालू करने से आपको सीधे अपनी अकाउंट लिस्ट से नया बीटा अकाउंट Snap जोड़ने का विकल्प मिलेगा। अगर आप Snap अकाउंट इनस्टॉल करते हैं, तो याद रखें कि यह एक थर्ड-पार्टी सर्विस है।"
@@ -1735,7 +1779,7 @@
     "message": "बैकअप और सिंक"
   },
   "backupAndSyncBasicFunctionalityNameMention": {
-    "message": "बेसिक फंक्शनलिटी"
+    "message": "बुनियादी सुविधाएं"
   },
   "backupAndSyncEnable": {
     "message": "बैकअप और सिंक चालू करें"
@@ -1770,9 +1814,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "जानें कि हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं"
   },
-  "backupApprovalInfo": {
-    "message": "यदि आप अपना डिवाइस खो देते हैं, अपना पासवर्ड भूल जाते हैं, MetaMask को फिर से इनस्टॉल करना हो या दूसरे डिवाइस पर अपने वॉलेट को एक्सेस करना चाहते हों, तो आपके वॉलेट को रिकवर करने के लिए यह सीक्रेट कोड आवश्यक है।"
-  },
   "backupApprovalNotice": {
     "message": "अपने वॉलेट और फंड्स को सुरक्षित रखने के लिए अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें।"
   },
@@ -1795,7 +1836,7 @@
     "message": "बुनियादी"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask इंटरनेट सेवाओं के माध्यम से टोकन विवरण और गैस सेटिंग्स जैसी बुनियादी सुविधाएं प्रदान करता है। जब आप इंटरनेट सेवाओं का उपयोग करते हैं, तो आपका आईपी ​​एड्रेस साझा किया जाता है, इस मामले में MetaMask के साथ। यह बिल्कुल वैसा ही है जैसे आप किसी वेबसाइट पर जाते हैं। MetaMask इस डेटा का अस्थायी रूप से उपयोग करता है और कभी भी आपका डेटा नहीं बेचता है। आप वीपीएन का उपयोग कर सकते हैं या इन सेवाओं को बंद कर सकते हैं, लेकिन यह आपके MetaMask अनुभव को प्रभावित कर सकता है। अधिक जानने के लिए हमारी $1 पढ़ें।",
+    "message": "MetaMask इंटरनेट सेवाओं के ज़रिए टोकन की जानकारी और गैस सेटिंग्स जैसे बुनियादी फ़ीचर्स उपलब्ध कराता है। इंटरनेट सेवाओं का इस्तेमाल करते समय आपका IP एड्रेस MetaMask के साथ शेयर किया जाता है, ठीक वैसे ही जैसे किसी वेबसाइट को खोलते समय होता है। MetaMask इस डेटा को थोड़े समय के लिए इस्तेमाल करता है और इसे कभी बेचता नहीं है। ज़रूरत के मुताबिक VPN का इस्तेमाल किया जा सकता है या इन सेवाओं को बंद किया जा सकता है, लेकिन याद रहे इससे MetaMask के संबंध में आपके अनुभव पर असर पड़ सकता है। ज़्यादा जानकारी के लिए हमारी $1 पढ़ें।",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
@@ -1803,7 +1844,7 @@
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
-    "message": "बेसिक फंक्शनलिटी"
+    "message": "बुनियादी सुविधाएं"
   },
   "basicConfigurationModalCheckbox": {
     "message": "मैं समझता/समझती हूं और जारी रखना चाहता/चाहती हूं"
@@ -1860,7 +1901,7 @@
     "message": "बेसिक फंक्शनलिटी बंद है"
   },
   "basicFunctionalityRequired_toggleLabel": {
-    "message": "बेसिक फंक्शनलिटी"
+    "message": "बुनियादी सुविधाएं"
   },
   "batchSell": {
     "message": "बैच सेल"
@@ -2465,7 +2506,7 @@
     "message": "अपने hardware wallet से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का इस्तेमाल करने की आवश्यकता है।"
   },
   "circulatingSupply": {
-    "message": "सप्लाई सर्कुलेट किया जा रहा है"
+    "message": "बाज़ार में उपलब्ध कुल सप्लाई"
   },
   "clear": {
     "message": "हटाएं"
@@ -3405,9 +3446,6 @@
   "disconnectAllSites": {
     "message": "सभी को डिस्कनेक्ट करें"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "यदि आप सभी साइट से डिस्कनेक्ट हो जाते हैं, तो आपको उन्हें दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
-  },
   "disconnectAllSitesError": {
     "message": "कुछ dapps डिसकनेक्ट नहीं किए जा सके। कृपया फिर से कोशिश करें।"
   },
@@ -3426,9 +3464,17 @@
   "discover": {
     "message": "खोजें"
   },
+  "discoverSearchCap": {
+    "message": "कैप",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "कोई रिज़ल्ट नहीं मिला",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "\"$1\" के लिए कोई परिणाम नहीं मिला",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "अन्य लोकप्रिय एसेट्स देखें",
@@ -3591,9 +3637,6 @@
   "editNonceMessage": {
     "message": "यह एक एडवांस्ड सुविधा है, सावधानी से इस्तेमाल करें।"
   },
-  "editPermissions": {
-    "message": "अनुमतियाँ बदलें"
-  },
   "editSpendingCap": {
     "message": "खर्च करने की लिमिट बदलें"
   },
@@ -3643,7 +3686,7 @@
     "message": "MetaMask आपको सीधे आपके ब्राउज़़र के एड्रेस बार में ENS डोमेन देखने की सुविधा देता है। यह ऐसे काम करता है:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
-    "message": "ध्यान रखें कि इस फ़ीचर का इस्तेमाल करने से आपका आईपी एड्रेस IPFS थर्ड-पार्टी सर्विसेज़ के सामने आ जाता है।"
+    "message": "ध्यान रखें कि इस फ़ीचर का इस्तेमाल करने से आपका IP एड्रेस IPFS थर्ड-पार्टी सर्विसेज़ को दिखाई दे सकता है।"
   },
   "ensDomainsSettingDescriptionPart1": {
     "message": "ENS नाम से जुड़े कोड को खोजने के लिए MetaMask, Ethereum के ENS कॉन्ट्रैक्ट की जांच करता है।"
@@ -3652,7 +3695,7 @@
     "message": "अगर कोड IPFS से लिंक होता है, तो आप उससे जुड़े कंटेंट (आमतौर पर एक वेबसाइट) को देख सकते हैं।"
   },
   "ensDomainsSettingTitle": {
-    "message": "एड्रेस बार में ENS डोमेन दिखाएँ"
+    "message": "एड्रेस बार में ENS डोमेन दिखाएं"
   },
   "ensUnknownError": {
     "message": "ENS लुकअप नहीं हो पाया।"
@@ -6185,7 +6228,7 @@
     "message": "IPFS गेटवे URL मान्य है"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी ​​एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें; Solana एकाउंट्स, $2 के लिए।"
+    "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें; Solana एकाउंट्स, $2 के लिए।"
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "यहां क्लिक करें"
@@ -6204,7 +6247,7 @@
     "message": "मेरे पास एक मौजूदा वॉलेट है"
   },
   "onboardingLoginFooter": {
-    "message": "जारी रखकर, मैं MetaMask की $1 और $2"
+    "message": "जारी रखकर, मैं MetaMask की $1 और $2 से सहमत हूँ"
   },
   "onboardingLoginFooterPrivacyNotice": {
     "message": "गोपनीयता नोटिस"
@@ -6308,7 +6351,7 @@
     "description": "$1 is the name of the origin"
   },
   "osTheme": {
-    "message": "व्यवस्था"
+    "message": "सिस्टम"
   },
   "other": {
     "message": "अन्य"
@@ -6829,9 +6872,6 @@
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 की पहुंच $2 तक है।"
-  },
   "perps": {
     "message": "पर्प्स"
   },
@@ -6909,6 +6949,10 @@
   },
   "perpsCancelOrder": {
     "message": "ऑर्डर कैंसिल करें"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "ऑर्डर कैंसिल नहीं हो पाया। कृपया दोबारा कोशिश करें।",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "कैंडल इंटर्वल सेट करें"
@@ -7048,6 +7092,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "टेक प्रॉफ़िट पर अनुमानित पी एंड एल",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "ट्रेडिंग शुरू करने के लिए फंड जोड़ें।",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "मार्केट एक्सप्लोर करें"
@@ -7245,8 +7293,19 @@
   "perpsOrderBookApply": {
     "message": "लागू करें"
   },
+  "perpsOrderBookBuy": {
+    "message": "खरीदें: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "इनके द्वारा सूचीबद्ध और समूहीकृत"
+  },
   "perpsOrderBookConnectionError": {
     "message": "ऑर्डर बुक से कनेक्शन टूट गया"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "$1% खरीदें, $2% बेचें",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "के द्वारा समूह बनाएं"
@@ -7254,11 +7313,27 @@
   "perpsOrderBookListedBy": {
     "message": "के द्वारा लिस्ट किया गया"
   },
+  "perpsOrderBookLoading": {
+    "message": "ऑर्डर बुक लोड हो रही है"
+  },
+  "perpsOrderBookNoData": {
+    "message": "कोई ऑर्डर बुक डेटा नहीं मिला"
+  },
   "perpsOrderBookPrice": {
     "message": "प्राइस"
   },
   "perpsOrderBookReconnect": {
     "message": "रीकनेक्ट करें"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "ऑर्डर बुक से रीकनेक्ट हो रहा है"
+  },
+  "perpsOrderBookResize": {
+    "message": "ऑर्डर बुक का साइज़ बदलें"
+  },
+  "perpsOrderBookSell": {
+    "message": "बेचें: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "आकार"
@@ -7269,8 +7344,24 @@
   "perpsOrderBookTotal": {
     "message": "कुल"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "लिमिट प्राइस के तौर पर $1 का इस्तेमाल करें",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "मूल्य प्रकार"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "बोली और मांग दिखाने वाली ऑर्डर बुक",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "केवल बोलियां दिखाने वाली ऑर्डर बुक",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "ऑर्डर बुक में केवल मांगें दिखाई गई हैं",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "तिथि"
@@ -7491,6 +7582,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "टेक प्रॉफ़िट $1 $2 प्राइस का होना चाहिए",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "यह ऑर्डर अब ओपन नहीं है",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "ऑर्डर कैंसिल नहीं हो पाया",
@@ -8069,6 +8164,80 @@
   "rampsOnNetwork": {
     "message": "$1 पर",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "बैंक ट्रांसफर की जानकारी"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "फिर से खरीदें"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "फीस"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ऑर्डर ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "के साथ भुगतान किया गया",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 शुल्क",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "कुल"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1 पर देखें"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "आपके ऑर्डर में कुछ समस्या हुई।",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "खरीदना नहीं हो पाया",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "आपके ऑर्डर को प्रोसेस किया जा रहा है।",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "खरीद प्रगति पर है",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "आपके ऑर्डर में कुछ समस्या हुई।",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "बेचना नहीं हो पाया",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "आपके ऑर्डर को प्रोसेस किया जा रहा है।",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "बिक्री प्रगति पर है",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "आपका पैसा आप तक भेजा रहा है।",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "बिक्री सफल रही",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "आपकी क्रिप्टो आप तक पहुंच रही है।",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "खरीद सफल रही",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "अन्य विकल्प"
@@ -9092,9 +9261,6 @@
   "select": {
     "message": "चयन करें"
   },
-  "selectAccountToConnect": {
-    "message": "कनेक्ट करने के लिए एक अकाउंट चुनें"
-  },
   "selectAll": {
     "message": "सभी को चुनें"
   },
@@ -9851,7 +10017,7 @@
     "message": "हेक्स डेटा दिखाएं"
   },
   "showHexDataDescription": {
-    "message": "भेजने की स्क्रीन पर हेक्स डेटा फील्ड दिखाने के लिए इसको चुनें"
+    "message": "पैसे/टोकन भेजने वाली स्क्रीन पर हेक्स डेटा फ़ील्ड दिखाने के लिए, इसे ऑन करें"
   },
   "showLess": {
     "message": "कम दिखाएं"
@@ -9967,7 +10133,7 @@
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
   },
   "simulationsSettingDescription": {
-    "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
+    "message": "इसे ऑन करने पर ट्रांज़ैक्शन या सिग्नेचर कन्फर्म करने से पहले बैलेंस में होने वाले बदलाव का अनुमान दिखाया जाएगा। यह अंतिम परिणाम की गारंटी नहीं है। $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "ट्रांसेक्शन को कन्फर्म करने से पहले बैलेंस अमाउंट में बदलाव का अनुमान लगाता है। यह आपके ट्रांसेक्शन के फाइनल आउटकम की गारंटी नहीं देता है।$1"
@@ -10317,16 +10483,16 @@
     "message": "एक सीक्रेट रिकवरी फ्रेज़, जिसे सीड फ्रेज़ या निमोनिक भी कहा जाता है, शब्दों का एक समूह है जो आपको अपने क्रिप्टो वॉलेट तक पहुँचने और उसे नियंत्रित करने देता है। अपने वॉलेट को MetaMask में ले जाने के लिए, आपको इस फ्रेज़ की आवश्यकता है।"
   },
   "srpDetailsOwnsAccessListItemOne": {
-    "message": "अपने सारे पैसे ले लें"
+    "message": "आपके सारे पैसों का गबन कर सकता है"
   },
   "srpDetailsOwnsAccessListItemThree": {
-    "message": "अपनी लॉगिन जानकारी बदलें"
+    "message": "आपकी लॉगिन जानकारी बदल सकता है   "
   },
   "srpDetailsOwnsAccessListItemTwo": {
-    "message": "ट्रांसेक्शन कन्फर्म करें"
+    "message": "ट्रांज़ैक्शन कन्फर्म कर सकता है "
   },
   "srpDetailsOwnsAccessListTitle": {
-    "message": "आपके सीक्रेट रिकवरी फ्रेज़ के साथ कोई भी निम्नलिखित कर सकता है:"
+    "message": "अगर किसी व्यक्ति के पास आपका सीक्रेट रिकवरी फ्रेज़ है, तो वह:"
   },
   "srpDetailsTitle": {
     "message": "सीक्रेट रिकवरी फ्रेज़ क्या है?"
@@ -11251,15 +11417,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask को शुरू करने में परेशानी हुई।"
   },
-  "trustSignalBlockDescription": {
-    "message": "अगर आप इस साइट से कनेक्ट होते हैं, तो आप अपने सभी एसेट खो सकते हैं।"
-  },
-  "trustSignalBlockTitle": {
-    "message": "बुरी नीयत वाली साइट का पता चला"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "तब भी कनेक्ट करें"
-  },
   "tryAgain": {
     "message": "फिर से प्रयास करें"
   },
@@ -11284,7 +11441,7 @@
     "message": "नोटिफिकेशंस बनाने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
   },
   "turnOnTokenDetection": {
-    "message": "एडवांस्ड टोकन डिटेक्शन चालू करें"
+    "message": "एन्हांस्ड टोकन डिटेक्शन चालू करें"
   },
   "txAlertTitle": {
     "message": "यह ट्रांसेक्शन वापस कर दिया जाएगा"
@@ -11442,7 +11599,7 @@
     "message": "बैच खाता बैलेन्स रिक्वेस्ट"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "अकाउंट बैलेंस रिक्वेस्ट्स को बैच कर तेज़ी से बैलेंस अपडेट प्राप्त करें। इससे हमें आपके अकाउंट का बैलेंस एक साथ मिल जाती है, जिससे आपको बेहतर अनुभव के लिए जल्द अपडेट प्राप्त होते हैं। जब यह सुविधा बंद हो जाती है, तो थर्ड पार्टियों द्वारा आपके एकाउंट्स को एक-दूसरे के साथ संबद्ध करने की संभावना कम हो जाती है।"
+    "message": "बैच अकाउंट बैलेंस रिक्वेस्टअकाउंट बैलेंस रिक्वेस्ट्स को बैच कर तेज़ी से बैलेंस अपडेट पाएं। इससे आपके सभी अकाउंट का बैलेंस हमें एक बार में मिल जाता है, जिससे आपको जल्दी अपडेट मिलते हैं और बेहतर अनुभव मिलता है। इस फ़ीचर के बंद होने पर थर्ड पार्टियों के लिए आपके अकाउंट्स को एक-दूसरे के साथ लिंक करना थोड़ा मुश्किल हो जाता है।   "
   },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "आपके सभी अकाउंट्स के लिए एक साथ बैलेंस अपडेट भेजता है। इससे कई अकाउंट्स को मैनेज करने का अनुभव तेज़ और कुल मिलाकर बेहतर होता है।"
@@ -11473,7 +11630,7 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "आपके खाते में भेजे गए टोकन को स्वतः प्रदर्शित करने में टोकन की इमेज के लिए तीसरे पक्ष के सर्वर के साथ संचार करना शामिल है। उन सेवाओं की पहुंच आपके आईपी पते तक होगी।"
+    "message": "आपके खाते में भेजे गए टोकन को स्वतः प्रदर्शित करने के लिए थर्ड-पार्टी के सर्वर से कनेक्ट करना ज़रूरी होता है, ताकि टोकन की इमेजेज़ प्राप्त की जा सकें। इन सर्वर के पास आपके IP एड्रेस का एक्सेस होगा। "
   },
   "usedByClients": {
     "message": "विभिन्न क्लाइंट द्वारा इस्तेमाल किया जाता है"
@@ -11517,6 +11674,10 @@
   },
   "viewTokenDetails": {
     "message": "टोकन का विवरण देखें"
+  },
+  "viewXMore": {
+    "message": "$1 और देखें",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "एक्सप्लोरर में $1 देखें",

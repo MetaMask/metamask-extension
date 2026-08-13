@@ -59,3 +59,11 @@ export const selectTransactionPayAccountOverrideByTransactionId =
     selectTransactionDataByTransactionId,
     (transactionData) => transactionData?.accountOverride,
   );
+
+/**
+ * Alternate payment strategy override (e.g. Money Account) for a transaction.
+ */
+export const selectPaymentOverrideByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.paymentOverride,
+);

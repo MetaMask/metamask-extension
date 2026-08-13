@@ -7,7 +7,7 @@ export const useDismissableAlerts = (tokenAlerts: BridgeAlert[]) => {
   // new array each render.
   const tokenAlertsKey = tokenAlerts.map((alert) => alert.id).join('|');
   const [dismissedIds, setDismissedIds] = useState<ReadonlySet<string>>(
-    () => new Set(),
+    () => new Set<string>(),
   );
   const [dismissedForKey, setDismissedForKey] = useState(tokenAlertsKey);
 
@@ -30,8 +30,9 @@ export const useDismissableAlerts = (tokenAlerts: BridgeAlert[]) => {
     (id: string) => {
       setDismissedForKey(tokenAlertsKey);
       setDismissedIds((prev) => {
-        const base = dismissedForKey === tokenAlertsKey ? prev : new Set();
-        const next = new Set(base);
+        const base =
+          dismissedForKey === tokenAlertsKey ? prev : new Set<string>();
+        const next = new Set<string>(base);
         next.add(id);
         return next;
       });

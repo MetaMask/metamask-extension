@@ -1,7 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Market List (search / explore crypto).
+ * The Perps Market List: search, filter/sort, and picking a market to open.
+ *
+ * Screen: `#/perps/market-list`, reached from `PerpsTab.clickExploreMarketsRow`.
+ * Owns: the market list view, filter/sort controls, market rows, dismissing
+ * the perps toast that can intercept clicks, and header back.
+ * Boundaries: selecting a row only navigates — market detail interactions
+ * belong to `PerpsMarketDetailPage`. Toast content beyond the close control
+ * is out of scope.
+ * Related: `PerpsTab` (how tests get here), `PerpsMarketDetailPage` (opened
+ * by choosing a market row).
  *
  * @see ui/pages/perps/market-list/index.tsx
  */

@@ -1,6 +1,4 @@
-'use no memo';
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -93,6 +91,91 @@ type UseRewardsWithQuoteParams = {
   chainId: string | null | undefined;
 };
 
+type RewardsOptInDetectionResult =
+  | { status: 'error' }
+  | {
+      status: 'ok';
+      accountOptedIn: boolean | null;
+      shouldShow: boolean;
+      caipAccount: CaipAccountId | null;
+      shouldEstimate: boolean;
+    };
+
+/**
+ * Extracted so React Compiler can optimize the hook: try/catch with
+ * conditional value blocks inside a component is unsupported.
+ *
+ * @param params
+ * @param params.dispatch
+ * @param params.primaryWalletGroupAccounts
+ * @param params.fromAddress
+ * @param params.chainId
+ * @param params.fromAddressAccount
+ */
+async function detectRewardsOptIn({
+  dispatch,
+  primaryWalletGroupAccounts,
+  fromAddress,
+  chainId,
+  fromAddressAccount,
+}: {
+  dispatch: ReturnType<typeof useDispatch>;
+  primaryWalletGroupAccounts: InternalAccount[];
+  fromAddress: string;
+  chainId: string;
+  fromAddressAccount?: InternalAccount | null;
+}): Promise<RewardsOptInDetectionResult> {
+  try {
+    const candidateSubscriptionId = (await dispatch(
+      getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
+    )) as unknown as string | null;
+
+    if (!candidateSubscriptionId) {
+      return {
+        status: 'ok',
+        accountOptedIn: null,
+        shouldShow: false,
+        caipAccount: null,
+        shouldEstimate: false,
+      };
+    }
+
+    const caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
+
+    if (!caipAccount) {
+      return {
+        status: 'ok',
+        accountOptedIn: null,
+        shouldShow: false,
+        caipAccount: null,
+        shouldEstimate: false,
+      };
+    }
+
+    const hasOptedIn = (await dispatch(
+      getRewardsHasAccountOptedIn(caipAccount),
+    )) as unknown as boolean;
+
+    let shouldShow = hasOptedIn;
+    if (!hasOptedIn && fromAddressAccount) {
+      const isOptInSupported = (await dispatch(
+        rewardsIsOptInSupported({ account: fromAddressAccount }),
+      )) as unknown as boolean;
+      shouldShow = isOptInSupported;
+    }
+
+    return {
+      status: 'ok',
+      accountOptedIn: hasOptedIn,
+      shouldShow,
+      caipAccount,
+      shouldEstimate: shouldShow && hasOptedIn,
+    };
+  } catch {
+    return { status: 'error' };
+  }
+}
+
 /**
  * A hook that accepts quote, fromAddress, and chainId as arguments
  * and estimates rewards for the given quote.
@@ -123,31 +206,68 @@ export const useRewardsWithQuote = ({
   );
   const { accounts: primaryWalletGroupAccounts } =
     usePrimaryWalletGroupAccounts();
-  // Track linked timestamp per account address to prevent triggering for accounts that weren't linked.
-  // Kept in state (not a ref) so render-time sync can read/write without react-hooks/refs violations.
-  const [
-    localRewardsAccountLinkedTimestamp,
-    setLocalRewardsAccountLinkedTimestamp,
-  ] = useState(() => new Map<string, number | null>());
-  const debouncedEstimatePoints = useCallback(
-    // eslint-disable-next-line react-hooks/use-memo
-    debounce(
-      async (
-        _estimationQuoteArg:
-          | QuoteResponse['quote']
-          | QuoteResponseV1['quote']
-          | null,
-        _caipAccountArg: CaipAccountId | null,
-      ) => {
-        setEstimatedPoints(null);
-        setShouldShowRewardsRow(false);
-        setIsLoading(false);
-        setHasError(false);
-      },
-      750,
-    ),
+  // Per-account linked timestamps + current account's value. Updated during render
+  // when fromAddress / global timestamp change (avoids setState-in-effect).
+  const [accountLinkSync, setAccountLinkSync] = useState<{
+    fromAddress: string | null | undefined;
+    globalTimestamp: number | null;
+    currentTimestamp: number | null;
+    byAccount: Map<string, number | null>;
+  }>(() => ({
+    fromAddress: undefined,
+    globalTimestamp: null,
+    currentTimestamp: null,
+    byAccount: new Map(),
+  }));
+  if (
+    fromAddress !== accountLinkSync.fromAddress ||
+    rewardsAccountLinkedTimestamp !== accountLinkSync.globalTimestamp
+  ) {
+    const byAccount = new Map(accountLinkSync.byAccount);
+    let currentTimestamp: number | null = null;
+    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
+      byAccount.set(fromAddress, rewardsAccountLinkedTimestamp);
+      currentTimestamp = rewardsAccountLinkedTimestamp;
+    } else if (fromAddress) {
+      currentTimestamp = byAccount.get(fromAddress) ?? null;
+    }
+    setAccountLinkSync({
+      fromAddress,
+      globalTimestamp: rewardsAccountLinkedTimestamp,
+      currentTimestamp,
+      byAccount,
+    });
+  }
+  const currentAccountLinkedTimestamp = accountLinkSync.currentTimestamp;
+
+  // `debounce()` returns a new stateful function on every call, so it has to be
+  // built inside a `useMemo` factory — passing it to `useCallback` would construct
+  // (and discard) a fresh timer-holding instance on every render.
+  const debouncedEstimatePoints = useMemo(
+    () =>
+      debounce(
+        async (
+          _estimationQuoteArg:
+            | QuoteResponse['quote']
+            | QuoteResponseV1['quote']
+            | null,
+          _caipAccountArg: CaipAccountId | null,
+        ) => {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setIsLoading(false);
+          setHasError(false);
+        },
+        750,
+      ),
     [dispatch],
   );
+
+  useEffect(() => {
+    return () => {
+      debouncedEstimatePoints.cancel();
+    };
+  }, [debouncedEstimatePoints]);
 
   const estimatePoints = useCallback(
     async (
@@ -175,70 +295,34 @@ export const useRewardsWithQuote = ({
       setIsLoading(true);
       setHasError(false);
 
-      let caipAccount: CaipAccountId | null = null;
+      const detection = await detectRewardsOptIn({
+        dispatch,
+        primaryWalletGroupAccounts,
+        fromAddress,
+        chainId,
+        fromAddressAccount,
+      });
 
-      try {
-        // Check if there's a subscription first
-        const candidateSubscriptionId = (await dispatch(
-          getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
-        )) as unknown as string | null;
-
-        if (!candidateSubscriptionId) {
-          setEstimatedPoints(null);
-          setShouldShowRewardsRow(false);
-          setAccountOptedIn(null);
-          setHasError(false);
-          setIsLoading(false);
-          return;
-        }
-
-        // Format account to CAIP-10
-        caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
-
-        if (!caipAccount) {
-          setEstimatedPoints(null);
-          setHasError(false);
-          setShouldShowRewardsRow(false);
-          setAccountOptedIn(null);
-          setIsLoading(false);
-          return;
-        }
-
-        // Check if account has opted in
-        const hasOptedIn = (await dispatch(
-          getRewardsHasAccountOptedIn(caipAccount),
-        )) as unknown as boolean;
-
-        setAccountOptedIn(hasOptedIn);
-
-        // Determine if we should show the rewards row
-        // Show row if: opted in OR (not opted in AND opt-in is supported)
-        let shouldShow = hasOptedIn;
-        if (!hasOptedIn && fromAddressAccount) {
-          const isOptInSupported = (await dispatch(
-            rewardsIsOptInSupported({ account: fromAddressAccount }),
-          )) as unknown as boolean;
-          shouldShow = isOptInSupported;
-        }
-
-        setShouldShowRewardsRow(shouldShow);
-        setEstimatedPoints(null);
-        setHasError(false);
-
-        if (!shouldShow || !hasOptedIn) {
-          setIsLoading(false);
-          return;
-        }
-
-        await debouncedEstimatePoints(estimationQuoteArg, caipAccount);
-      } catch {
-        // Failed to detect opt in
+      if (detection.status === 'error') {
         setIsLoading(false);
         setShouldShowRewardsRow(false);
         setEstimatedPoints(null);
         setAccountOptedIn(null);
         setHasError(false);
+        return;
       }
+
+      setAccountOptedIn(detection.accountOptedIn);
+      setShouldShowRewardsRow(detection.shouldShow);
+      setEstimatedPoints(null);
+      setHasError(false);
+
+      if (!detection.shouldEstimate || !detection.caipAccount) {
+        setIsLoading(false);
+        return;
+      }
+
+      await debouncedEstimatePoints(estimationQuoteArg, detection.caipAccount);
     },
     [
       fromAddress,
@@ -247,39 +331,14 @@ export const useRewardsWithQuote = ({
       dispatch,
       fromAddressAccount,
       debouncedEstimatePoints,
+      primaryWalletGroupAccounts,
     ],
   );
 
-  // Persist non-null global linked timestamps per address (keyed cache).
-  // `currentAccountLinkedTimestamp` is derived — no render-time multi-setter sync.
-  const linkedTimestampKey = `${fromAddress ?? ''}|${
-    rewardsAccountLinkedTimestamp ?? ''
-  }`;
-  const [prevLinkedTimestampKey, setPrevLinkedTimestampKey] =
-    useState(linkedTimestampKey);
-  if (
-    linkedTimestampKey !== prevLinkedTimestampKey &&
-    fromAddress &&
-    rewardsAccountLinkedTimestamp !== null
-  ) {
-    setPrevLinkedTimestampKey(linkedTimestampKey);
-    const nextTimestamps = new Map(localRewardsAccountLinkedTimestamp);
-    nextTimestamps.set(fromAddress, rewardsAccountLinkedTimestamp);
-    setLocalRewardsAccountLinkedTimestamp(nextTimestamps);
-  } else if (linkedTimestampKey !== prevLinkedTimestampKey) {
-    setPrevLinkedTimestampKey(linkedTimestampKey);
-  }
-
-  const currentAccountLinkedTimestamp = fromAddress
-    ? (rewardsAccountLinkedTimestamp ??
-      localRewardsAccountLinkedTimestamp.get(fromAddress) ??
-      null)
-    : null;
-
-  // Estimate points when quote request id changes
+  // Estimate points when dependencies change.
+  // Defer so setState inside estimatePoints is not synchronous in the effect body.
   useEffect(() => {
     if (prevRequestId !== quote?.requestId) {
-      // Defer so estimatePoints' synchronous loading resets are not in the effect body
       queueMicrotask(() => {
         estimatePoints(quote);
       });

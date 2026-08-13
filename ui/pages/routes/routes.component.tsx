@@ -74,6 +74,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
@@ -130,6 +131,7 @@ import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/mult
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -261,6 +263,9 @@ const PerpsMarketDetailPage = mmLazy(
 const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
+);
+const PerpsTransactionDetailsPage = mmLazy(
+  () => import('../perps/perps-transaction-details-page.tsx'),
 );
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
@@ -623,6 +628,10 @@ export const routeConfig = [
                 element: <PerpsActivityPage />,
               },
               {
+                path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                element: <PerpsTransactionDetailsPage />,
+              },
+              {
                 path: PERPS_MARKET_LIST_ROUTE,
                 element: <MarketListView />,
               },
@@ -711,6 +720,8 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

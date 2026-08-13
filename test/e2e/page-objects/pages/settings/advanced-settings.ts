@@ -1,6 +1,22 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Legacy “Advanced” settings helpers (auto-lock, state logs, hex data, STX).
+ *
+ * Screen: Settings V2 has no Advanced tab; tests reach the closest surface via
+ * `SettingsPage.goToAdvancedSettings` → `#/settings/developer-tools`. Some
+ * locators still target controls that now live on other tabs.
+ * Owns: auto-lock timeout input, clear activity data, download state logs /
+ * export data, show-testnets / fiat-on-testnets toggles, hex-data and smart
+ * transactions toggles when present.
+ * Boundaries: not the Settings hub. Prefer `TransactionsSettingsPage`,
+ * `PrivacySettings`, or `SettingsPage` for controls that moved in V2.
+ * Related: `SettingsPage` (navigation), `TransactionsSettingsPage`,
+ * `PrivacySettings`.
+ *
+ * @see ui/pages/settings/developer-tools-tab/developer-tools-tab.tsx
+ */
 class AdvancedSettings {
   private readonly autoLockoutButton = {
     testId: 'auto-lockout-button',
