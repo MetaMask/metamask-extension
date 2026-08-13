@@ -1,9 +1,13 @@
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { getManifestFlags } from '../manifestFlags';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
+import {
+  STORAGE_SERVICE_INDEXED_DB_NAME,
+  STORAGE_SERVICE_INDEXED_DB_VERSION,
+} from './indexeddb-storage-constants';
+import { IndexedDBStore } from './indexeddb-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -27,6 +31,27 @@ function resolveFixtureServerPort(): number {
 
 function getFixtureServerUrl(): string {
   return `http://${FIXTURE_SERVER_HOST}:${resolveFixtureServerPort()}/state.json`;
+}
+
+/**
+ * Seed StorageService fixture entries into its IndexedDB store.
+ *
+ * @param storageServiceData - StorageService entries keyed by their full storage key.
+ */
+async function setStorageServiceData(
+  storageServiceData: Record<string, unknown>,
+): Promise<void> {
+  const database = new IndexedDBStore();
+
+  try {
+    await database.open(
+      STORAGE_SERVICE_INDEXED_DB_NAME,
+      STORAGE_SERVICE_INDEXED_DB_VERSION,
+    );
+    await database.set(storageServiceData);
+  } finally {
+    database.close();
+  }
 }
 
 /**
@@ -84,10 +109,10 @@ export class FixtureExtensionStore extends ExtensionStore {
       if (response.ok) {
         const state = await response.json();
 
-        // Write StorageService entries directly to browser.storage.local
-        // so controllers can read them outside the main extension state.
+        // Write StorageService entries directly to its IndexedDB store so
+        // controllers can read them outside the main extension state.
         if (Object.keys(state.storageServiceData ?? {}).length > 0) {
-          await browser.storage.local.set(state.storageServiceData);
+          await setStorageServiceData(state.storageServiceData);
         }
 
         if (state.meta?.storageKind === 'split') {
