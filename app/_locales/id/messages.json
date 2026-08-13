@@ -11431,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
   },
-  "trustSignalBlockDescription": {
-    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Situs berbahaya terdeteksi"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Tetap Terhubung"
-  },
   "tryAgain": {
     "message": "Coba lagi"
   },

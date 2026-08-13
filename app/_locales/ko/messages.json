@@ -11431,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask 시작 중 문제가 발생했습니다."
   },
-  "trustSignalBlockDescription": {
-    "message": "이 사이트에 연결하면 모든 자산을 잃을 수 있습니다."
-  },
-  "trustSignalBlockTitle": {
-    "message": "악성 사이트 감지됨"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "연결 계속"
-  },
   "tryAgain": {
     "message": "다시 시도"
   },
