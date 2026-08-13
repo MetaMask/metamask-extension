@@ -848,14 +848,17 @@
     "@metamask/account-tree-controller": {
       "globals": {
         "console.warn": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "structuredClone": true
       },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
+        "@metamask/keyring-sdk": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
@@ -1780,6 +1783,7 @@
     },
     "@metamask/keyring-sdk": {
       "globals": {
+        "TextDecoder": true,
         "TextEncoder": true
       },
       "packages": {
@@ -1787,6 +1791,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
