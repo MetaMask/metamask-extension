@@ -4,6 +4,7 @@ import {
   OWNER_ATTRIBUTE,
   SELECTOR_ID_ATTRIBUTE,
   STAMP_ATTRIBUTES,
+  VIEWPORT_ATTRIBUTE,
   type PageObject,
   type PageObjectIndex,
   type Selector,
@@ -298,7 +299,13 @@ export function stampOwnership(
         });
       }
     }
+
+    if (elements.length > 5) {
+      genericSelectorIds.add(selector.id);
+    }
   };
+
+  const genericSelectorIds = new Set<string>();
 
   for (const pageObject of index.pageObjects) {
     for (const selector of pageObject.selectors) {
@@ -316,6 +323,10 @@ export function stampOwnership(
     if (names.length > 1) {
       conflicts += 1;
       element.setAttribute(CONFLICT_ATTRIBUTE, names.join(','));
+    }
+
+    if (genericSelectorIds.has(first)) {
+      element.setAttribute(VIEWPORT_ATTRIBUTE, '');
     }
   }
 

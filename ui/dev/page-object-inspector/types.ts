@@ -40,6 +40,8 @@ export type PinnedElement = {
   isUncovered: boolean;
   /** The raw data-testid value when the element is uncovered. */
   uncoveredTestId?: string;
+  /** True when match came from a parent element, not the element itself. */
+  isAncestorFallback?: boolean;
 };
 
 export type PageObject = {
@@ -63,9 +65,11 @@ export const INSPECTOR_ROOT_ATTRIBUTE = 'data-po-inspector';
 export const OWNER_ATTRIBUTE = 'data-po-owner';
 export const SELECTOR_ID_ATTRIBUTE = 'data-po-selector-id';
 export const CONFLICT_ATTRIBUTE = 'data-po-conflict';
+export const VIEWPORT_ATTRIBUTE = 'data-po-viewport';
 
 export const STAMP_ATTRIBUTES = [
   OWNER_ATTRIBUTE,
   SELECTOR_ID_ATTRIBUTE,
   CONFLICT_ATTRIBUTE,
+  VIEWPORT_ATTRIBUTE,
 ];

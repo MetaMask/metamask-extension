@@ -12,6 +12,7 @@ import {
   INSPECTOR_ROOT_ATTRIBUTE,
   OWNER_ATTRIBUTE,
   SELECTOR_ID_ATTRIBUTE,
+  VIEWPORT_ATTRIBUTE,
   type PageObjectIndex,
   type PinnedElement,
   type Selector,
@@ -134,6 +135,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
   const [showPinButton, setShowPinButton] = useState(false);
   const [pinButtonPosition, setPinButtonPosition] = useState({ x: 0, y: 0 });
   const [highlightSelectorId, setHighlightSelectorId] = useState<string | null>(null);
+  const [highlightColor, setHighlightColor] = useState<string>('cyan');
 
   const dwellTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -205,6 +207,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
       selector: t.selector,
       conflictingClassNames: t.conflictingClassNames,
       isUncovered: false,
+      isAncestorFallback: t.isAncestorFallback,
     };
 
     setPinnedElements((prev) => {
@@ -244,7 +247,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
         ? selectorsById.get(owned.getAttribute(SELECTOR_ID_ATTRIBUTE) ?? '')
         : undefined;
 
-      if (!owned || !entry) {
+      if (!owned || !entry || owned.hasAttribute(VIEWPORT_ATTRIBUTE)) {
         setTarget(null);
         currentTargetRef.current = null;
       } else {
@@ -338,7 +341,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
     if (settings.outline) {
       for (const { className } of index.pageObjects) {
         rules.push(
-          `[${OWNER_ATTRIBUTE}="${className}"]{` +
+          `[${OWNER_ATTRIBUTE}="${className}"]:not([${VIEWPORT_ATTRIBUTE}]){` +
             `box-shadow:inset 0 0 0 2px ${colorForClass(className)};` +
             `background-color:${tintForClass(className)};` +
             `border-radius:2px}`,
@@ -346,22 +349,16 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
       }
     }
 
-    rules.push(
-      `[${CONFLICT_ATTRIBUTE}]{` +
-        `box-shadow:inset 0 0 0 3px ${CONFLICT_COLOR}!important;` +
-        `background-color:color-mix(in srgb, ${CONFLICT_COLOR} 14%, transparent)!important}`,
-    );
-
     if (highlightSelectorId) {
       rules.push(
         `[${SELECTOR_ID_ATTRIBUTE}="${highlightSelectorId}"]{` +
-          `box-shadow:inset 0 0 0 3px cyan,0 0 0 3px cyan!important;` +
-          `background-color:color-mix(in srgb, cyan 15%, transparent)!important}`,
+          `box-shadow:inset 0 0 0 3px ${highlightColor},0 0 0 3px ${highlightColor}!important;` +
+          `background-color:color-mix(in srgb, ${highlightColor} 15%, transparent)!important}`,
       );
     }
 
     return rules.join('\n');
-  }, [isOn, settings.outline, index, highlightSelectorId]);
+  }, [isOn, settings.outline, index, highlightSelectorId, highlightColor]);
 
   if (!isOn) {
     return null;
@@ -393,7 +390,10 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
           pinnedElements={pinnedElements}
           result={result}
           onUnpin={handleUnpin}
-          onHighlight={setHighlightSelectorId}
+          onHighlight={(id, color) => {
+            setHighlightSelectorId(id);
+            setHighlightColor(color ?? 'cyan');
+          }}
         />
       ) : (
         <div style={TOOLTIP_STYLE}>

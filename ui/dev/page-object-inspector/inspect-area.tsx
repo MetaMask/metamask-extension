@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { colorForClass } from './colors';
-import type { PinnedElement, Selector } from './types';
 import type { StampResult } from './matcher';
+import {
+  CONFLICT_ATTRIBUTE,
+  OWNER_ATTRIBUTE,
+  SELECTOR_ID_ATTRIBUTE,
+  type PinnedElement,
+  type Selector,
+} from './types';
 
 type Target = {
   ownerClassName: string;
@@ -16,7 +22,7 @@ type InspectAreaProps = {
   pinnedElements: PinnedElement[];
   result: StampResult | null;
   onUnpin: (index: number) => void;
-  onHighlight: (selectorId: string | null) => void;
+  onHighlight: (selectorId: string | null, color?: string) => void;
 };
 
 type TabKind = 'owned' | 'conflicting';
@@ -33,7 +39,7 @@ const PANEL_STYLE: React.CSSProperties = {
   background: 'var(--color-background-default)',
   borderLeft: '1px solid var(--color-border-muted)',
   borderRadius: '12px 0 0 12px',
-  font: '13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace',
+  font: '14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace',
   color: 'var(--color-text-default)',
   display: 'flex',
   flexDirection: 'column',
@@ -289,7 +295,7 @@ const PinnedRow = ({
               data-testid=&quot;{pin.uncoveredTestId}&quot;
             </div>
           )}
-          <div style={{ opacity: 0.6, marginTop: 4, fontSize: 11 }}>
+          <div style={{ opacity: 0.6, marginTop: 4, fontSize: 12 }}>
             Consider adding a locator to a page object.
           </div>
         </div>
@@ -321,12 +327,15 @@ const PinnedRow = ({
           {pin.ownerClassName}
         </span>
         <span style={{ opacity: 0.7 }}>.{pin.selector.propertyName}</span>
+        {pin.isAncestorFallback && (
+          <span style={{ opacity: 0.55 }}> (nearest ancestor)</span>
+        )}
       </div>
       <div style={{ marginBottom: 4, wordBreak: 'break-all', opacity: 0.85 }}>
         {describeSelector(pin.selector)}
         <KindBadge selector={pin.selector} />
       </div>
-      <div style={{ opacity: 0.6, fontSize: 11 }}>
+      <div style={{ opacity: 0.6, fontSize: 12 }}>
         {pin.relativePath}:{pin.selector.line}
       </div>
       {pin.conflictingClassNames.length > 1 && (
@@ -350,10 +359,56 @@ const PinnedRow = ({
 type ListPanelItem = {
   label: string;
   detail: string;
-  extra?: string;
+  conflictors?: string[];
   selectorId?: string;
   needsMigration: boolean;
+  matchCount: number;
 };
+
+const COUNT_BADGE_STYLE: React.CSSProperties = {
+  ...BADGE_BASE,
+  background:
+    'color-mix(in srgb, var(--color-primary-default) 18%, transparent)',
+  color: 'var(--color-primary-default)',
+};
+
+function collectUniqueListItems(tab: TabKind): {
+  items: ListPanelItem[];
+  totalCount: number;
+} {
+  const cssSelector =
+    tab === 'conflicting'
+      ? `[${CONFLICT_ATTRIBUTE}]`
+      : `[${OWNER_ATTRIBUTE}]`;
+  const elements = document.querySelectorAll(cssSelector);
+  const byKey = new Map<string, ListPanelItem>();
+
+  elements.forEach((el) => {
+    const owner = el.getAttribute(OWNER_ATTRIBUTE) ?? '';
+    const selectorId = el.getAttribute(SELECTOR_ID_ATTRIBUTE) ?? '';
+    const dedupeKey = selectorId || `${owner}::${el.tagName}`;
+    const existing = byKey.get(dedupeKey);
+    if (existing) {
+      existing.matchCount += 1;
+      return;
+    }
+
+    const conflict = el.getAttribute(CONFLICT_ATTRIBUTE);
+    const testId = el.getAttribute('data-testid') ?? '';
+
+    byKey.set(dedupeKey, {
+      label: selectorId || owner,
+      detail: testId ? `data-testid="${testId}"` : el.tagName.toLowerCase(),
+      conflictors:
+        tab === 'conflicting' && conflict ? conflict.split(',') : undefined,
+      selectorId,
+      needsMigration: !testId,
+      matchCount: 1,
+    });
+  });
+
+  return { items: [...byKey.values()], totalCount: elements.length };
+}
 
 function tabButtonStyle(active: boolean, variant: TabKind): React.CSSProperties {
   return {
@@ -382,12 +437,14 @@ function tabButtonStyle(active: boolean, variant: TabKind): React.CSSProperties 
 }
 
 const TabStrip = ({
-  result,
+  ownedCount,
+  conflictingCount,
   activeTab,
   isOpen,
   onSelect,
 }: {
-  result: StampResult;
+  ownedCount: number;
+  conflictingCount: number;
   activeTab: TabKind;
   isOpen: boolean;
   onSelect: (tab: TabKind) => void;
@@ -397,14 +454,14 @@ const TabStrip = ({
       style={tabButtonStyle(isOpen && activeTab === 'owned', 'owned')}
       onClick={() => onSelect('owned')}
     >
-      {result.stamped} owned
+      {ownedCount} owned
     </button>
-    {result.conflicts > 0 && (
+    {conflictingCount > 0 && (
       <button
         style={tabButtonStyle(isOpen && activeTab === 'conflicting', 'conflicting')}
         onClick={() => onSelect('conflicting')}
       >
-        {result.conflicts} conflicting
+        {conflictingCount} conflicting
       </button>
     )}
   </div>
@@ -413,58 +470,24 @@ const TabStrip = ({
 const SlidingLeftPanel = ({
   isOpen,
   activeTab,
-  result,
+  items,
+  totalCount,
   onClose,
   onHighlight,
 }: {
   isOpen: boolean;
   activeTab: TabKind;
-  result: StampResult;
+  items: ListPanelItem[];
+  totalCount: number;
   onClose: () => void;
-  onHighlight: (selectorId: string | null) => void;
+  onHighlight: (selectorId: string | null, color?: string) => void;
 }) => {
-  const items: ListPanelItem[] = [];
-
-  if (isOpen) {
-    const cssSelector =
-      activeTab === 'conflicting'
-        ? '[data-po-conflict]'
-        : '[data-po-owner]';
-    const elements = document.querySelectorAll(cssSelector);
-    const seen = new Set<string>();
-
-    elements.forEach((el) => {
-      const owner = el.getAttribute('data-po-owner') ?? '';
-      const selectorId = el.getAttribute('data-po-selector-id') ?? '';
-      const dedupeKey = selectorId || `${owner}::${el.tagName}`;
-      if (seen.has(dedupeKey)) {
-        return;
-      }
-      seen.add(dedupeKey);
-
-      const conflict = el.getAttribute('data-po-conflict');
-      const testId = el.getAttribute('data-testid') ?? '';
-
-      let extra: string | undefined;
-      if (activeTab === 'conflicting' && conflict) {
-        const conflictors = conflict.split(',');
-        extra = `Conflict: ${conflictors.length} page objects claim this same element (${conflictors.join(', ')}). Only one should own it.`;
-      }
-
-      items.push({
-        label: selectorId || owner,
-        detail: testId ? `data-testid="${testId}"` : el.tagName.toLowerCase(),
-        extra,
-        selectorId,
-        needsMigration: !testId,
-      });
-    });
-  }
-
   const title =
     activeTab === 'owned'
-      ? `Owned Selectors (${items.length})`
-      : `Conflicting Selectors (${items.length})`;
+      ? `Owned Selectors (${totalCount})`
+      : `Conflicting Selectors (${totalCount})`;
+
+  const highlightColorForTab = 'cyan';
 
   return (
     <div
@@ -504,29 +527,43 @@ const SlidingLeftPanel = ({
           &times;
         </button>
       </div>
+      {activeTab === 'conflicting' && (
+        <div style={{ padding: '8px 16px', opacity: 0.6, fontSize: 12, borderBottom: '1px solid var(--color-border-muted)' }}>
+          Multiple page objects claim the same element. Only one should own it.
+        </div>
+      )}
       <div style={{ flex: 1, overflow: 'auto', padding: '8px 0' }}>
         {items.map((item, idx) => (
           <div
             key={idx}
             style={{
-              padding: '8px 16px',
+              padding: '10px 16px',
               borderBottom: '1px solid var(--color-border-muted)',
               background: item.needsMigration ? TODO_ROW_BG : undefined,
               cursor: item.selectorId ? 'pointer' : undefined,
             }}
-            onMouseEnter={() => item.selectorId && onHighlight(item.selectorId)}
+            onMouseEnter={() =>
+              item.selectorId && onHighlight(item.selectorId, highlightColorForTab)
+            }
             onMouseLeave={() => onHighlight(null)}
           >
-            <div style={{ fontWeight: 600 }}>
+            <div style={{ fontWeight: 700, fontSize: 13 }}>
               {item.label}
+              {item.matchCount > 1 && (
+                <span style={COUNT_BADGE_STYLE}>×{item.matchCount}</span>
+              )}
               {item.needsMigration && (
                 <span style={TODO_BADGE_STYLE}>TODO - Migrate to data-testid</span>
               )}
             </div>
-            <div style={{ opacity: 0.6, fontSize: 11 }}>{item.detail}</div>
-            {item.extra && (
-              <div style={{ opacity: 0.7, fontSize: 11, marginTop: 4, color: 'var(--color-error-default)' }}>
-                {item.extra}
+            <div style={{ opacity: 0.6, fontSize: 12, marginTop: 2 }}>{item.detail}</div>
+            {item.conflictors && item.conflictors.length > 0 && (
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                {item.conflictors.map((name) => (
+                  <div key={name} style={{ paddingLeft: 8, marginTop: 2 }}>
+                    &bull; <span style={{ fontWeight: 700 }}>{name}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -551,6 +588,24 @@ export function InspectArea({
   const [activeTab, setActiveTab] = useState<TabKind>('owned');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
+  const owned = useMemo(
+    () =>
+      result
+        ? collectUniqueListItems('owned')
+        : { items: [], totalCount: 0 },
+    [result],
+  );
+  const conflicting = useMemo(
+    () =>
+      result
+        ? collectUniqueListItems('conflicting')
+        : { items: [], totalCount: 0 },
+    [result],
+  );
+  const panelItems = activeTab === 'owned' ? owned.items : conflicting.items;
+  const panelTotal =
+    activeTab === 'owned' ? owned.totalCount : conflicting.totalCount;
+
   const handleTabSelect = (tab: TabKind) => {
     if (isPanelOpen && activeTab === tab) {
       setIsPanelOpen(false);
@@ -565,7 +620,8 @@ export function InspectArea({
       {result && (
         <>
           <TabStrip
-            result={result}
+            ownedCount={owned.totalCount}
+            conflictingCount={conflicting.totalCount}
             activeTab={activeTab}
             isOpen={isPanelOpen}
             onSelect={handleTabSelect}
@@ -573,7 +629,8 @@ export function InspectArea({
           <SlidingLeftPanel
             isOpen={isPanelOpen}
             activeTab={activeTab}
-            result={result}
+            items={panelItems}
+            totalCount={panelTotal}
             onClose={() => setIsPanelOpen(false)}
             onHighlight={onHighlight}
           />
@@ -609,7 +666,7 @@ export function InspectArea({
                 displayIndex={idx + 1}
                 actualIndex={idx}
                 onUnpin={onUnpin}
-                onMouseEnter={() => onHighlight(pin.selector.id || null)}
+                onMouseEnter={() => onHighlight(pin.selector.id || null, 'cyan')}
                 onMouseLeave={() => onHighlight(null)}
               />
             ))
