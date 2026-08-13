@@ -1277,24 +1277,40 @@ export class LegacyBackgroundApiService {
     }
 
     return new Promise((resolve) => {
-      // Safety net so a missing enablement can't hang `addNetwork`.
-      const timer = setTimeout(resolve, timeout);
+      // Boxed so `onStateChange` (declared first) and the timeout can both
+      // reference the timer without a forward reference.
+      const timer: { id?: ReturnType<typeof setTimeout> } = {};
 
-      // `subscribeOnce` unsubscribes itself once the condition passes.
-      this.#messenger.subscribeOnce(
-        'NetworkEnablementController:stateChange',
-        () => {
-          clearTimeout(timer);
+      const onStateChange = () => {
+        if (
+          this.#messenger.call(
+            'NetworkEnablementController:isNetworkEnabled',
+            chainId,
+          )
+        ) {
+          clearTimeout(timer.id);
+          this.#messenger.unsubscribe(
+            'NetworkEnablementController:stateChange',
+            onStateChange,
+          );
           resolve();
-        },
-        {
-          condition: () =>
-            this.#messenger.call(
-              'NetworkEnablementController:isNetworkEnabled',
-              chainId,
-            ),
-        },
+        }
+      };
+
+      this.#messenger.subscribe(
+        'NetworkEnablementController:stateChange',
+        onStateChange,
       );
+
+      // Safety net so a missing enablement can't hang `addNetwork`. Unsubscribe
+      // here too so the listener never dangles once we stop waiting.
+      timer.id = setTimeout(() => {
+        this.#messenger.unsubscribe(
+          'NetworkEnablementController:stateChange',
+          onStateChange,
+        );
+        resolve();
+      }, timeout);
     });
   }
 
