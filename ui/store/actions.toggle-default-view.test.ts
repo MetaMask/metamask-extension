@@ -17,6 +17,9 @@ jest.mock('webextension-polyfill', () => ({
     tabs: {
       query: jest.fn(),
     },
+    action: {
+      setPopup: jest.fn(),
+    },
     sidePanel: {
       open: jest.fn(),
     },
@@ -40,6 +43,7 @@ const mockGetIsSidePanelFeatureEnabled = jest.mocked(
 
 const browserMock = browser as unknown as {
   tabs: { query: jest.Mock };
+  action: { setPopup: jest.Mock };
   sidePanel: { open: jest.Mock };
 };
 
@@ -75,6 +79,7 @@ describe('toggleDefaultView', () => {
 
     mockGetIsSidePanelFeatureEnabled.mockReturnValue(true);
     browserMock.tabs.query.mockResolvedValue([{ windowId: 1 }]);
+    browserMock.action.setPopup.mockResolvedValue(undefined);
     browserMock.sidePanel.open.mockResolvedValue(undefined);
   });
 
@@ -105,6 +110,9 @@ describe('toggleDefaultView', () => {
         'useSidePanelAsDefault',
         false,
       ]);
+      expect(browserMock.action.setPopup).toHaveBeenCalledWith({
+        popup: 'popup-init.html',
+      });
       expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
       expect(closeSpy).toHaveBeenCalled();
     });
@@ -118,6 +126,7 @@ describe('toggleDefaultView', () => {
       await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).toHaveBeenCalledWith({ windowId: 1 });
+      expect(browserMock.action.setPopup).toHaveBeenCalledWith({ popup: '' });
       expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
         'useSidePanelAsDefault',
         true,

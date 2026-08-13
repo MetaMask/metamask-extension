@@ -300,6 +300,7 @@ function applyEarlySidePanelToolbarBehavior() {
   }
   browser.sidePanel
     .setPanelBehavior({ openPanelOnActionClick: true })
+    .then(() => browser.action?.setPopup?.({ popup: '' }))
     .catch(() => {
       // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
     });
@@ -2320,6 +2321,9 @@ async function applyToolbarSidePanelBehavior() {
   await browser.sidePanel.setPanelBehavior({
     openPanelOnActionClick: useSidePanelAsDefault,
   });
+  await browser.action?.setPopup?.({
+    popup: useSidePanelAsDefault ? '' : 'popup-init.html',
+  });
 }
 
 /**
@@ -2343,6 +2347,11 @@ const setupSidePanelToolbarBehavior = async () => {
             .setPanelBehavior({
               openPanelOnActionClick: useSidePanelAsDefault,
             })
+            .then(() =>
+              browser.action?.setPopup?.({
+                popup: useSidePanelAsDefault ? '' : 'popup-init.html',
+              }),
+            )
             .catch((error) =>
               console.error('Error updating panel behavior:', error),
             );

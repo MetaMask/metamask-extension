@@ -4343,10 +4343,13 @@ export function toggleDefaultView(): ThunkAction<
     const currentEnvironment = getEnvironmentType();
     const isSidepanel = currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL;
     const isPopup = currentEnvironment === ENVIRONMENT_TYPE_POPUP;
+    const setActionPopup = (popup: string) =>
+      chrome.action?.setPopup({ popup });
 
     try {
       if (isSidepanel) {
         await dispatch(setUseSidePanelAsDefault(false));
+        await setActionPopup('popup-init.html');
         window.close();
         return;
       }
@@ -4391,6 +4394,7 @@ export function toggleDefaultView(): ThunkAction<
         // honors the side panel choice and the background toolbar-behavior
         // subscription flips to open-on-click.
         await dispatch(setUseSidePanelAsDefault(true));
+        await setActionPopup('');
         window.close();
       }
     } catch (error) {
