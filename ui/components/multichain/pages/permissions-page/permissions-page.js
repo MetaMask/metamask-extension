@@ -29,7 +29,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
-  GATOR_PERMISSIONS,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
