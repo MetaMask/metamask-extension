@@ -14,6 +14,7 @@ export {
   PERPS_MARKET_LIST_ROUTE,
   SHIELD_PLAN_ROUTE,
   SETTINGS_ROUTE,
+  PRIVACY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
