@@ -662,10 +662,10 @@ export const MultichainAccountsConnectPage = ({
         <Footer>
           <Box
             className={`flex w-full gap-4 ${
-              !isDangerousTrustSignal ? 'flex-col' : 'flex-row'
+              isDangerousTrustSignal ? 'flex-col' : 'flex-row'
             }`}
           >
-            {!isDangerousTrustSignal ? (
+            {isDangerousTrustSignal ? (
               <>
                 <Button
                   size={ButtonSize.Lg}
