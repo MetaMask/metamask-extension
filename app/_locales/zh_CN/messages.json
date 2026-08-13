@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "这是高级功能，请谨慎使用。"
   },
-  "editPermissions": {
-    "message": "编辑许可"
-  },
   "editSpendingCap": {
     "message": "编辑支出上限"
   },
@@ -6881,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "您将授予支出者许可，才能从您的账户花费这些代币。"
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 可以访问 $2。"
-  },
   "perps": {
     "message": "永续合约"
   },
@@ -9272,9 +9266,6 @@
   },
   "select": {
     "message": "选择"
-  },
-  "selectAccountToConnect": {
-    "message": "选择要连接的账户"
   },
   "selectAll": {
     "message": "全部选择"
