@@ -2,14 +2,15 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { type CaipAssetType } from '@metamask/utils';
 import { FontWeight, Text, TextColor } from '@metamask/design-system-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { useTokenSearchResults } from '../../../../../hooks/bridge/useTokenSearchResults';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Column } from '../../../layout';
-import { useInitialBridgeTokens } from '../../../../../hooks/bridge/useInitialBridgeTokens';
-import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
-import { filterOutArcNativeAsset } from '../../../../../components/app/assets/enablement/arc';
+import { assetIdsMatch } from '@metamask/bridge-controller';
+import { type BridgeToken } from '../../../ducks/bridge/types';
+import { useTokenSearchResults } from '../../../hooks/bridge/useTokenSearchResults';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Column } from '../layout';
+import { useInitialBridgeTokens } from '../../../hooks/bridge/useInitialBridgeTokens';
+import { usePopularTokens } from '../../../hooks/bridge/usePopularTokens';
+import { filterOutArcNativeAsset } from '../../../components/app/assets/enablement/arc';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -150,9 +151,7 @@ export const BridgeAssetList = ({
               onClick={() => {
                 onAssetChange(token);
               }}
-              selected={
-                selectedAssetId.toLowerCase() === token?.assetId?.toLowerCase()
-              }
+              selected={assetIdsMatch(selectedAssetId, token?.assetId)}
               isDestination={isDestination}
             />
           );
