@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import * as ActionsModule from '../../store/actions';
 import * as NotificationSelectorsModule from '../../selectors/metamask-notifications/metamask-notifications';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
@@ -51,23 +51,25 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
       throw new Error('Mock Error');
     });
 
-    const act = async (testEnableOrDisable: boolean) => {
+    const runChange = async (testEnableOrDisable: boolean) => {
       const hook = renderHookWithProviderTyped(
         () => useSwitchAccountNotificationsChange(),
         {},
       );
-      try {
-        await hook.result.current.onChange(['0x1'], testEnableOrDisable);
-      } catch {
-        // onChange rethrows after setting error state — expected here
-      }
+      await act(async () => {
+        try {
+          await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+        } catch {
+          // onChange rethrows after setting error state — expected here
+        }
+      });
       return hook.result.current.error;
     };
 
-    const enableError = await act(true);
+    const enableError = await runChange(true);
     expect(enableError).toBeDefined();
 
-    const disableError = await act(false);
+    const disableError = await runChange(false);
     expect(disableError).toBeDefined();
   });
 });
@@ -124,7 +126,13 @@ describe('useAccountSettingsProps() tests', () => {
       {},
     );
 
-    await hook.result.current.update(['0x1', '0x2']);
+    await waitFor(() => {
+      expect(mocks.mockCheckAccountsPresence).toHaveBeenCalled();
+    });
+
+    await act(async () => {
+      await hook.result.current.update(['0x1', '0x2']);
+    });
     await waitFor(() => {
       expect(mocks.mockCheckAccountsPresence).toHaveBeenCalledWith([
         '0x1',

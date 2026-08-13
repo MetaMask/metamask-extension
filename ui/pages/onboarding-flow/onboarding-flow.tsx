@@ -401,7 +401,8 @@ export default function OnboardingFlow() {
     }
     if (
       pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
-      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE)
+      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE) ||
+      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE)
     ) {
       return 'var(--color-background-default)';
     }

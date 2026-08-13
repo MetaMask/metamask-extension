@@ -49,6 +49,21 @@ export const getIsTronSupportEnabled = createSelector(
 );
 
 /**
+ * Get the state of the `stellarAccounts` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns The state of the `stellarAccounts` remote feature flag.
+ */
+export const getIsStellarSupportEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ stellarAccounts }) => {
+    let enabled = false;
+    enabled = isMultichainFeatureEnabled(stellarAccounts);
+    return enabled;
+  },
+);
+
+/**
  * Get the state of the `solanaTestnetsEnabled` remote feature flag.
  *
  * @param _state - The MetaMask state object
@@ -169,4 +184,15 @@ export const getIsSecurityTrustTdpEnabled = createSelector(
       remoteFeatureFlags[EXTENSION_TRUST_AND_SECURITY_TDP_FLAG],
       false,
     ),
+);
+
+/**
+ * Get the state of the `extensionUXSearch` remote feature flag.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsDiscoverSearchEnabled = createSelector(
+  getRemoteFeatureFlags,
+  ({ extensionUXSearch }) => getBooleanFeatureFlag(extensionUXSearch, false),
 );

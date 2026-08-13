@@ -29,6 +29,26 @@ export type SerializedLedgerError = {
 };
 
 /**
+ * Type guard for `SerializedLedgerError`.
+ *
+ * Validates the minimal shape (`message` is the only required field; other
+ * fields are optional and re-checked by consumers).
+ *
+ * @param value - The untyped value to test.
+ * @returns `true` if `value` is a `SerializedLedgerError`-shaped object.
+ */
+export function isSerializedLedgerError(
+  value: unknown,
+): value is SerializedLedgerError {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'message' in value &&
+    typeof value.message === 'string'
+  );
+}
+
+/**
  * Serializes a plain error (or non-Error value) into a JSON-safe shape.
  *
  * Preserves `statusCode` when present (used by `TransportStatusError`).

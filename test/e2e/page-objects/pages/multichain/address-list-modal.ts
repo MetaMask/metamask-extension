@@ -1,7 +1,20 @@
-import assert from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
+/**
+ * Multichain per-network address rows: copy, QR, and explorer links.
+ *
+ * Screen: `#/multichain-account-address-list` (named "modal" in tests; it is
+ * the address-list page).
+ * Owns: address rows by network, copy feedback, opening QR for a row, view on
+ * explorer, and back navigation.
+ * Boundaries: the address list. The QR / single-address overlay is
+ * `AccountAddressModal`; account details that open this list are
+ * `MultichainAccountDetailsPage`.
+ * Related: `AccountAddressModal`, `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.tsx
+ */
 class AddressListModal {
   private readonly accountAddress =
     '[data-testid="multichain-address-row-address"]';
@@ -99,16 +112,19 @@ class AddressListModal {
   async checkQrPopupShowsAddress(expectedAddress: string): Promise<void> {
     console.log(`Check QR popup shows address "${expectedAddress}"`);
     await this.driver.waitForSelector(this.qrModalAddress);
-    const addressElement = await this.driver.findElement(this.qrModalAddress);
-    const displayedAddress = (await addressElement.getText()).replace(
-      /\s+/gu,
-      '',
+    await this.driver.waitUntil(
+      async () => {
+        const addressElement = await this.driver.findElement(
+          this.qrModalAddress,
+        );
+        const displayedAddress = (await addressElement.getText()).replace(
+          /\s+/gu,
+          '',
+        );
+        return displayedAddress === expectedAddress;
+      },
+      { interval: 100, timeout: this.driver.timeout },
     );
-    if (displayedAddress !== expectedAddress) {
-      throw new Error(
-        `Expected QR popup address "${expectedAddress}" but got "${displayedAddress}"`,
-      );
-    }
   }
 
   async checkQuickCopyAddressIsDisplayedForNetwork({
@@ -182,10 +198,7 @@ class AddressListModal {
     expectedAddress: string;
   }): Promise<void> {
     await this.clickCopyButtonForNetwork(networkName);
-    assert.strictEqual(
-      await this.driver.getClipboardContent(),
-      expectedAddress,
-    );
+    await this.driver.waitForClipboardContent(expectedAddress);
   }
 
   async clickQRbutton(addressIndex: number = 0): Promise<void> {
@@ -205,11 +218,9 @@ class AddressListModal {
 
   async clickQrCopyAddressLink(expectedAddress: string): Promise<void> {
     console.log('Click copy address button in QR popup');
+    await this.driver.waitForSelector(this.qrModalCopyButton);
     await this.driver.clickElement(this.qrModalCopyButton);
-    assert.strictEqual(
-      await this.driver.getClipboardContent(),
-      expectedAddress,
-    );
+    await this.driver.waitForClipboardContent(expectedAddress);
   }
 
   async clickQuickCopyButtonForNetwork({
@@ -224,10 +235,7 @@ class AddressListModal {
       this.quickCopyRowByNetworkName(networkName),
     );
     await row.click();
-    assert.strictEqual(
-      await this.driver.getClipboardContent(),
-      expectedAddress,
-    );
+    await this.driver.waitForClipboardContent(expectedAddress);
   }
 
   async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {

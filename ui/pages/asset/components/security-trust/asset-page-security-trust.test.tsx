@@ -18,6 +18,19 @@ jest.mock('../../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const { useTokenSecurityData } = jest.requireMock(
   '../../../../hooks/useTokenSecurityData',
 );

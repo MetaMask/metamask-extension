@@ -61,6 +61,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
@@ -89,6 +90,7 @@ import {
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
@@ -128,6 +130,7 @@ import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/mult
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -166,6 +169,7 @@ const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
 );
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
@@ -291,6 +295,16 @@ export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
 };
 
+export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <DiscoverSearchPage />;
+};
+
 export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
@@ -358,6 +372,14 @@ export const routeConfig = [
         element: (
           <GlobalMenuRouteTransition>
             <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
           </GlobalMenuRouteTransition>
         ),
       },
@@ -690,6 +712,8 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  useNavigateRouteListener();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

@@ -43,11 +43,18 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   })),
 }));
 
+jest.mock(
+  '../../../../hooks/multichain-accounts/usePermittedNetworkToast',
+  () => ({
+    usePermittedNetworkToast: () => ({
+      dismissPermittedNetworkToast: jest.fn(),
+      showPermittedNetworkToast: jest.fn(),
+    }),
+  }),
+);
+
 jest.mock('../../../../store/actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
-  hidePermittedNetworkToast: jest.fn(() => ({
-    type: 'HIDE_PERMITTED_NETWORK_TOAST',
-  })),
   removePermissionsFor: jest.fn(() => ({ type: 'REMOVE_PERMISSIONS_FOR' })),
   requestAccountsAndChainPermissionsWithId: jest.fn(() =>
     Promise.resolve('test-request-id'),
@@ -342,11 +349,13 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.manageConnectedAccounts.message),
+      ).toBeInTheDocument();
     });
 
-    it('returns to connections page and triggers disconnect flow when deselecting all accounts', async () => {
-      const { getAllByTestId, getByTestId, getAllByRole } = render();
+    it('disables Save button when all accounts are deselected', async () => {
+      const { getAllByTestId, getByTestId } = render();
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -356,23 +365,15 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      const checkboxes = getAllByRole('checkbox');
-      const firstCheckbox = checkboxes[0] as HTMLInputElement;
-
-      expect(firstCheckbox).toBeChecked();
-
-      // To deselect all accounts.
-      fireEvent.change(firstCheckbox, { target: { checked: false } });
+      // Click on the account cell to deselect it
+      const accountCell = getByTestId(
+        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
+      );
+      fireEvent.click(accountCell);
 
       await waitFor(() => {
-        expect(firstCheckbox).not.toBeChecked();
-      });
-
-      const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
+        const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
+        expect(submitButton).toBeDisabled();
       });
     });
 

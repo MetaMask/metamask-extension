@@ -3,9 +3,18 @@ import { Driver } from '../../../webdriver/driver';
 const OTP_LENGTH = 6;
 
 /**
- * Page object for Settings → Sync accounts (QrSync) flow.
+ * Sync accounts (QrSync): password, QR, OTP, wallet selection, success.
  *
- * Selectors match `data-testid` values on sync-accounts components.
+ * Screen: `#/sync-accounts`, reached from
+ * `SettingsPage.goToSyncAccountsSettings`.
+ * Owns: sync page shell, password continue, QR code / regenerate, OTP entry,
+ * wallet rows, sync/done/back, and success / expiry assertions.
+ * Boundaries: QR sync flow only. Backup-and-sync toggles belong to
+ * `BackupAndSyncSettings`.
+ * Related: `SettingsPage`, `BackupAndSyncSettings`.
+ *
+ * @see ui/pages/settings/sync-accounts/sync-accounts-settings.tsx
+ * @see ui/pages/settings/sync-accounts/sync-accounts-tab.tsx
  */
 class SyncAccountsSettingsPage {
   private readonly backButton = '[data-testid="sync-accounts-back-button"]';

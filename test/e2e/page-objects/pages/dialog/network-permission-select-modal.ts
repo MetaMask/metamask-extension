@@ -2,6 +2,22 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Edit-networks permission modal for a connected site.
+ *
+ * Screen: modal layered over the site permissions / connection review UI,
+ * opened via the networks "Edit" control on `SitePermissionPage`.
+ * Owns: network list rows and checkbox selection state, validation of which
+ * networks are selected, and the "Update" confirm control.
+ * Boundaries: stops at the modal edge. Opening it belongs to
+ * `SitePermissionPage` / `permissions.flow.ts`. Does not cover account
+ * permission editing (`EditConnectedAccountsModal`).
+ * Related: `SitePermissionPage`, `EditConnectedAccountsModal`,
+ * `flows/permissions.flow.ts`. A page-shaped sibling
+ * `MultichainEditNetworksPage` exists but is not wired as the opener here.
+ *
+ * @see ui/components/multichain/edit-networks-modal/edit-networks-modal.js
+ */
 class NetworkPermissionSelectModal {
   private readonly checkBox = 'input[type="checkbox"]';
 

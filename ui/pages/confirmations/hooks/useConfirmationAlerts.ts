@@ -11,6 +11,7 @@ import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useAccountNoFundsAlert } from './alerts/transactions/useAccountNoFundsAlert';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
@@ -19,7 +20,6 @@ import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuo
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { usePayHardwareAccountAlert } from './alerts/transactions/usePayHardwareAccountAlert';
-import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
@@ -45,6 +45,7 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountNoFundsAlerts = useAccountNoFundsAlert();
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
@@ -64,7 +65,6 @@ function useTransactionAlerts(): Alert[] {
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const payHardwareAccountAlerts = usePayHardwareAccountAlert();
-  const resimulationAlert = useResimulationAlert();
   const shieldCoverageAlert = useShieldCoverageAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
@@ -73,6 +73,7 @@ function useTransactionAlerts(): Alert[] {
 
   return useMemo(
     () => [
+      ...accountNoFundsAlerts,
       ...accountTypeUpgradeAlerts,
       ...addressPoisoningAlert,
       ...burnAddressAlert,
@@ -90,7 +91,6 @@ function useTransactionAlerts(): Alert[] {
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...payHardwareAccountAlerts,
-      ...resimulationAlert,
       ...shieldCoverageAlert,
       ...signingOrSubmittingAlerts,
       ...suggestedGasFeeHighAlert,
@@ -98,6 +98,7 @@ function useTransactionAlerts(): Alert[] {
       ...tokenTrustSignalAlerts,
     ],
     [
+      accountNoFundsAlerts,
       accountTypeUpgradeAlerts,
       addressPoisoningAlert,
       burnAddressAlert,
@@ -115,7 +116,6 @@ function useTransactionAlerts(): Alert[] {
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       payHardwareAccountAlerts,
-      resimulationAlert,
       shieldCoverageAlert,
       signingOrSubmittingAlerts,
       suggestedGasFeeHighAlert,
