@@ -2865,6 +2865,9 @@
   "connectAccounts": {
     "message": "Connect accounts"
   },
+  "connectAnyway": {
+    "message": "Connect anyway"
+  },
   "connectHardwareDevice": {
     "message": "Connect $1",
     "description": "$1 is the hardware wallet device name"
@@ -9246,6 +9249,9 @@
   "securityTrustMalicious": {
     "message": "Malicious"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Malicious—flagged as unsafe"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Malicious"
   },
@@ -11563,6 +11569,9 @@
   },
   "trustSignalContinueAnyway": {
     "message": "Connect Anyway"
+  },
+  "trustSignalPhishingWarning": {
+    "message": "This site shows signs of phishing or wallet-draining activity. It may request transactions designed to steal your funds."
   },
   "tryAgain": {
     "message": "Try again"
