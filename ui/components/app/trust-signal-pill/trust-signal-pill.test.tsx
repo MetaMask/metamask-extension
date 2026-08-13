@@ -1,6 +1,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalPill, getTrustSignalPillConfig } from './trust-signal-pill';
 
@@ -66,7 +68,9 @@ describe('TrustSignalPill', () => {
         <TrustSignalPill state={TrustSignalDisplayState.Verified} />,
       );
 
-      expect(screen.getByText('Verified')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.securityTrustVerified.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('trust-signal-pill')).toBeInTheDocument();
     });
 
@@ -75,7 +79,9 @@ describe('TrustSignalPill', () => {
         <TrustSignalPill state={TrustSignalDisplayState.Warning} />,
       );
 
-      expect(screen.getByText('Suspicious')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.securityTrustSuspicious.message),
+      ).toBeInTheDocument();
     });
 
     it('renders malicious pill with correct content', () => {
@@ -84,7 +90,7 @@ describe('TrustSignalPill', () => {
       );
 
       expect(
-        screen.getByText('Malicious—flagged as unsafe'),
+        screen.getByText(messages.securityTrustMaliciousDappConnection.message),
       ).toBeInTheDocument();
     });
 
