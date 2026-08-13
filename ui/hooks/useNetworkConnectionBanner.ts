@@ -15,8 +15,8 @@ import {
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
-import { useMessenger } from './useMessenger';
 import { useDispatch } from '../store/hooks';
+import { useMessenger } from './useMessenger';
 import { useAnalytics } from './useAnalytics';
 
 const {
