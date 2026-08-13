@@ -72,21 +72,19 @@ export function setupLedgerModeOffscreenBridge(
   // The offscreen router emits this after registering its mode listener.
   // This second handshake covers createOffscreen() resolving via its timeout
   // before the offscreen document has actually finished booting.
-  browser.runtime.onMessage.addListener(
-    (message: unknown): undefined => {
-      if (
-        message &&
-        typeof message === 'object' &&
-        'target' in message &&
-        'event' in message &&
-        message.target === OffscreenCommunicationTarget.extensionMain &&
-        message.event === OffscreenCommunicationEvents.ledgerModeReady
-      ) {
-        sendSwitchLedgerModeMessage(getLedgerMode());
-      }
-      return undefined;
-    },
-  );
+  browser.runtime.onMessage.addListener((message: unknown): undefined => {
+    if (
+      message &&
+      typeof message === 'object' &&
+      'target' in message &&
+      'event' in message &&
+      message.target === OffscreenCommunicationTarget.extensionMain &&
+      message.event === OffscreenCommunicationEvents.ledgerModeReady
+    ) {
+      sendSwitchLedgerModeMessage(getLedgerMode());
+    }
+    return undefined;
+  });
 
   // The initial message must wait for the offscreen router to register its
   // listener. Reading the mode after that wait also captures flag changes that
