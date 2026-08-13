@@ -26,14 +26,19 @@ function calcTokenValue(value: string, decimals: number): BigNumber {
   return new BigNumber(String(value)).times(multiplier);
 }
 
+type PendingAmountUpdate = {
+  transactionId: string;
+  fromAmountRaw: string;
+};
+
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const transactionId = transactionMeta?.id ?? '';
-  const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();
-  const [prevTransactionId, setPrevTransactionId] = useState(transactionId);
+  const [pendingUpdate, setPendingUpdate] =
+    useState<PendingAmountUpdate | null>(null);
 
   const {
     data,
@@ -66,14 +71,9 @@ export function useUpdateTokenAmount() {
   }, [data]);
 
   const isUpdating =
-    Boolean(previousAmountRaw) && amountRaw === previousAmountRaw;
-
-  if (transactionId !== prevTransactionId) {
-    setPrevTransactionId(transactionId);
-    setPreviousAmountRaw(undefined);
-  } else if (!isUpdating && previousAmountRaw !== undefined) {
-    setPreviousAmountRaw(undefined);
-  }
+    pendingUpdate !== null &&
+    pendingUpdate.transactionId === transactionId &&
+    amountRaw === pendingUpdate.fromAmountRaw;
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
@@ -98,7 +98,7 @@ export function useUpdateTokenAmount() {
         `0x${newAmountRaw.toString(16)}`,
       ]) as Hex;
 
-      setPreviousAmountRaw(amountRaw);
+      setPendingUpdate({ transactionId, fromAmountRaw: amountRaw });
 
       if (nestedCallIndex !== undefined) {
         updateAtomicBatchData({

@@ -126,6 +126,13 @@ const PageNavigation = ({
   );
 };
 
+type ModalUiState = {
+  isOpen: boolean;
+  alertKeys: string;
+  currentIndex: number;
+  viewedKeys: Set<string>;
+};
+
 export const SendAlertModal = ({
   isOpen,
   alerts,
@@ -134,40 +141,80 @@ export const SendAlertModal = ({
   acknowledgeLabel,
 }: SendAlertModalProps) => {
   const t = useI18nContext();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [viewedKeys, setViewedKeys] = useState<Set<string>>(() => new Set());
-  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const alertKeys = alerts.map((alert) => alert.key).join('|');
-  const [prevAlertKeys, setPrevAlertKeys] = useState(alertKeys);
+  const [uiState, setUiState] = useState<ModalUiState>(() => ({
+    isOpen,
+    alertKeys,
+    currentIndex: 0,
+    viewedKeys: new Set(),
+  }));
 
-  if (isOpen !== prevIsOpen) {
-    setPrevIsOpen(isOpen);
-    setCurrentIndex(0);
-    setViewedKeys(new Set());
+  // React-documented prop→state reset. Open changes clear viewed keys; alert
+  // identity changes only rewind the index (preserve previously viewed keys).
+  // Viewed-key marking happens in event handlers, not during render.
+  if (isOpen !== uiState.isOpen) {
+    setUiState({
+      isOpen,
+      alertKeys,
+      currentIndex: 0,
+      viewedKeys: new Set(),
+    });
+  } else if (alertKeys !== uiState.alertKeys) {
+    setUiState({
+      ...uiState,
+      alertKeys,
+      currentIndex: 0,
+    });
   }
 
-  if (alertKeys !== prevAlertKeys) {
-    setPrevAlertKeys(alertKeys);
-    setCurrentIndex(0);
-  }
-
-  const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
+  const safeIndex = Math.min(
+    uiState.currentIndex,
+    Math.max(alerts.length - 1, 0),
+  );
   const currentAlert = alerts[safeIndex];
   const hasMultiple = alerts.length > 1;
+  const { viewedKeys } = uiState;
 
-  if (isOpen && currentAlert && !viewedKeys.has(currentAlert.key)) {
-    const next = new Set(viewedKeys);
-    next.add(currentAlert.key);
-    setViewedKeys(next);
-  }
+  const withCurrentViewed = useCallback(
+    (base: Set<string>) => {
+      const next = new Set(base);
+      if (currentAlert) {
+        next.add(currentAlert.key);
+      }
+      return next;
+    },
+    [currentAlert],
+  );
 
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
-  }, []);
+    const nextIndex = Math.max(safeIndex - 1, 0);
+    const nextViewed = withCurrentViewed(viewedKeys);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      nextViewed.add(destination.key);
+    }
+    setUiState((prev) => ({
+      ...prev,
+      currentIndex: nextIndex,
+      viewedKeys: nextViewed,
+    }));
+  }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
-  }, [alerts.length]);
+    const nextIndex = Math.min(safeIndex + 1, alerts.length - 1);
+    // Mark both the alert being left and the destination so a mid-flow alert
+    // identity change still preserves keys the user already stepped onto.
+    const nextViewed = withCurrentViewed(viewedKeys);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      nextViewed.add(destination.key);
+    }
+    setUiState((prev) => ({
+      ...prev,
+      currentIndex: nextIndex,
+      viewedKeys: nextViewed,
+    }));
+  }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
 
@@ -175,14 +222,30 @@ export const SendAlertModal = ({
     if (!currentAlert) {
       return;
     }
+    const acknowledged = withCurrentViewed(viewedKeys);
     if (isOnLastAlert) {
-      const acknowledged = new Set(viewedKeys);
-      acknowledged.add(currentAlert.key);
       onAcknowledge(Array.from(acknowledged));
       return;
     }
-    goToNext();
-  }, [currentAlert, goToNext, isOnLastAlert, onAcknowledge, viewedKeys]);
+    const nextIndex = Math.min(safeIndex + 1, alerts.length - 1);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      acknowledged.add(destination.key);
+    }
+    setUiState((prev) => ({
+      ...prev,
+      currentIndex: nextIndex,
+      viewedKeys: acknowledged,
+    }));
+  }, [
+    alerts,
+    currentAlert,
+    isOnLastAlert,
+    onAcknowledge,
+    safeIndex,
+    viewedKeys,
+    withCurrentViewed,
+  ]);
 
   if (!currentAlert) {
     return null;

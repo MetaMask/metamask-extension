@@ -5,6 +5,11 @@ import { useSendContext } from '../../../context/send';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
 import { SendAlertModal } from '../send-alert-modal';
 
+type NetworkAlertUiState = {
+  epochKey: string;
+  userClosed: boolean;
+};
+
 export const SendAlerts = () => {
   const t = useI18nContext();
   const { chainId } = useSendContext();
@@ -14,29 +19,27 @@ export const SendAlerts = () => {
     navigateToEditNetwork,
   } = useUnreliableNetworkRpc();
 
-  const [isNetworkAlertOpen, setIsNetworkAlertOpen] = useState(false);
-  const [lastAutoOpenedChainId, setLastAutoOpenedChainId] = useState<
-    string | undefined
-  >();
+  // Keyed by chain + reliability so open/close is derived; user dismiss is the
+  // only explicit state write (no render-phase setters).
+  const epochKey = isNetworkUnreliable
+    ? `${chainId}|open`
+    : `${chainId}|closed`;
+  const [uiState, setUiState] = useState<NetworkAlertUiState>({
+    epochKey,
+    userClosed: false,
+  });
 
-  if (isNetworkUnreliable) {
-    if (lastAutoOpenedChainId !== chainId) {
-      setLastAutoOpenedChainId(chainId);
-      setIsNetworkAlertOpen(true);
-    }
-  } else if (lastAutoOpenedChainId !== undefined || isNetworkAlertOpen) {
-    setLastAutoOpenedChainId(undefined);
-    setIsNetworkAlertOpen(false);
-  }
+  const userClosed = uiState.epochKey === epochKey ? uiState.userClosed : false;
+  const isNetworkAlertOpen = Boolean(isNetworkUnreliable && !userClosed);
 
   const handleNetworkClose = useCallback(() => {
-    setIsNetworkAlertOpen(false);
-  }, []);
+    setUiState({ epochKey, userClosed: true });
+  }, [epochKey]);
 
   const handleNetworkAcknowledge = useCallback(() => {
-    setIsNetworkAlertOpen(false);
+    setUiState({ epochKey, userClosed: true });
     navigateToEditNetwork();
-  }, [navigateToEditNetwork]);
+  }, [epochKey, navigateToEditNetwork]);
 
   const networkAlerts = useMemo(
     () => [

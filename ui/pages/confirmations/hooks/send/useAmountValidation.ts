@@ -24,12 +24,10 @@ export const useAmountValidation = () => {
   const { asset, value } = useSendContext();
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
-  const [asyncAmountError, setAsyncAmountError] = useState<
-    string | undefined
-  >();
-  const [prevValidationKey, setPrevValidationKey] = useState(
-    `${value ?? ''}|${isNonEvmSendType}`,
-  );
+  const [asyncAmountErrorState, setAsyncAmountErrorState] = useState<{
+    key: string;
+    error: string | undefined;
+  }>({ key: '', error: undefined });
 
   const syncAmountError = useMemo(() => {
     if (!value) {
@@ -52,10 +50,10 @@ export const useAmountValidation = () => {
 
   const validationKey = `${value ?? ''}|${isNonEvmSendType}|${syncAmountError ?? ''}`;
 
-  if (validationKey !== prevValidationKey) {
-    setPrevValidationKey(validationKey);
-    setAsyncAmountError(undefined);
-  }
+  const asyncAmountError =
+    asyncAmountErrorState.key === validationKey
+      ? asyncAmountErrorState.error
+      : undefined;
 
   const validateNonEvmAmount = useCallback(
     async (amount: string): Promise<string | undefined> => {
@@ -83,10 +81,13 @@ export const useAmountValidation = () => {
     [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric],
   );
 
-  const setAndReturnError = useCallback((errorMessage: string | undefined) => {
-    setAsyncAmountError(errorMessage);
-    return errorMessage;
-  }, []);
+  const setAndReturnError = useCallback(
+    (errorMessage: string | undefined) => {
+      setAsyncAmountErrorState({ key: validationKey, error: errorMessage });
+      return errorMessage;
+    },
+    [validationKey],
+  );
 
   // This callback is needed for non-EVM validation when nothing is typed into amount
   const validateNonEvmAmountAsync = useCallback(async () => {
@@ -103,14 +104,20 @@ export const useAmountValidation = () => {
 
     validateNonEvmAmount(normalizeAmount(value)).then((error) => {
       if (!cancelled) {
-        setAsyncAmountError(error);
+        setAsyncAmountErrorState({ key: validationKey, error });
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [syncAmountError, value, isNonEvmSendType, validateNonEvmAmount]);
+  }, [
+    syncAmountError,
+    value,
+    isNonEvmSendType,
+    validateNonEvmAmount,
+    validationKey,
+  ]);
 
   const amountError = syncAmountError ?? asyncAmountError;
 

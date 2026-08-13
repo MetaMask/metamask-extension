@@ -1,6 +1,7 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
   useMemo,
   useState,
@@ -21,6 +22,12 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
   undefined,
 );
 
+type DappSwapState = {
+  confirmationId: string | undefined;
+  selectedQuote: QuoteResponseV1 | undefined;
+  isQuotedSwapDisplayedInInfo: boolean;
+};
+
 export const DappSwapContextProvider = ({
   children,
 }: React.PropsWithChildren<{
@@ -28,18 +35,56 @@ export const DappSwapContextProvider = ({
 }>) => {
   const { currentConfirmation } = useCurrentConfirmation();
   const confirmationId = currentConfirmation?.id;
-  const [selectedQuote, setSelectedQuote] = useState<
-    QuoteResponseV1 | undefined
-  >(undefined);
-  const [isQuotedSwapDisplayedInInfoState, setQuotedSwapDisplayedInInfo] =
-    useState(false);
-  const [prevConfirmationId, setPrevConfirmationId] = useState(confirmationId);
+  // Keyed by confirmationId so a confirmation change drops quote/display state
+  // without render-phase setters.
+  const [swapState, setSwapState] = useState<DappSwapState>({
+    confirmationId,
+    selectedQuote: undefined,
+    isQuotedSwapDisplayedInInfo: false,
+  });
 
-  if (confirmationId !== prevConfirmationId) {
-    setPrevConfirmationId(confirmationId);
-    setSelectedQuote(undefined);
-    setQuotedSwapDisplayedInInfo(false);
-  }
+  const selectedQuote =
+    swapState.confirmationId === confirmationId
+      ? swapState.selectedQuote
+      : undefined;
+
+  const isQuotedSwapDisplayedInInfoState =
+    swapState.confirmationId === confirmationId
+      ? swapState.isQuotedSwapDisplayedInInfo
+      : false;
+
+  const setSelectedQuote = useCallback(
+    (quote: QuoteResponseV1 | undefined) => {
+      setSwapState((prev) => {
+        // Clear the display flag when the quote is removed so a later quote
+        // does not auto-show without an explicit user toggle.
+        let isQuotedSwapDisplayedInInfo = false;
+        if (quote !== undefined && prev.confirmationId === confirmationId) {
+          isQuotedSwapDisplayedInInfo = prev.isQuotedSwapDisplayedInInfo;
+        }
+        return {
+          confirmationId,
+          selectedQuote: quote,
+          isQuotedSwapDisplayedInInfo,
+        };
+      });
+    },
+    [confirmationId],
+  );
+
+  const setQuotedSwapDisplayedInInfo = useCallback(
+    (displayed: boolean) => {
+      setSwapState((prev) => ({
+        confirmationId,
+        selectedQuote:
+          prev.confirmationId === confirmationId
+            ? prev.selectedQuote
+            : undefined,
+        isQuotedSwapDisplayedInInfo: displayed,
+      }));
+    },
+    [confirmationId],
+  );
 
   const isQuotedSwapDisplayedInInfo = Boolean(
     selectedQuote && isQuotedSwapDisplayedInInfoState,

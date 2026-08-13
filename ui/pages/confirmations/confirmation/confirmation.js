@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -363,14 +364,16 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
-  const [lastConfirmationType, setLastConfirmationType] = useState(null);
-
-  if (
-    pendingConfirmation?.type &&
-    pendingConfirmation.type !== lastConfirmationType
-  ) {
-    setLastConfirmationType(pendingConfirmation.type);
+  // Write-through ref for the last non-null confirmation type (needed after
+  // pendingConfirmation clears for Activity-tab redirect). Prefer a ref over
+  // render-phase useState so render stays free of setState.
+  const lastConfirmationTypeRef = useRef(null);
+  /* eslint-disable react-hooks/refs -- intentional previous-value write-through */
+  if (pendingConfirmation?.type) {
+    lastConfirmationTypeRef.current = pendingConfirmation.type;
   }
+  const lastConfirmationType = lastConfirmationTypeRef.current;
+  /* eslint-enable react-hooks/refs */
 
   // send-tron.spec expects Activity tab
   const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);

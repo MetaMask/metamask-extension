@@ -57,9 +57,14 @@ export const useTransactionFocusEffect = () => {
       if (focusedConfirmationId) {
         setTransactionFocus(focusedConfirmationId, false);
       }
-      // Set the focused confirmation to the current one
-      focusedConfirmationIdRef.current = id ?? null;
-      setTransactionFocus(id, true);
+      // Only activate when we have a real transaction id (currentConfirmation
+      // can be null, which would otherwise pass undefined into setTransactionActive).
+      if (id) {
+        focusedConfirmationIdRef.current = id;
+        setTransactionFocus(id, true);
+      } else {
+        focusedConfirmationIdRef.current = null;
+      }
     } else if (!isFocused && focusedConfirmationId) {
       // If the window is not focused (and not sidepanel) and there is a focused confirmation,
       // we need to unfocus the focused confirmation
