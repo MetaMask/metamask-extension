@@ -2275,6 +2275,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: { enabled: true },
     status: FeatureFlagStatus.Active,
   },
+  sentry: {
+    name: 'sentry',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {},
+    status: FeatureFlagStatus.Active,
+  },
   gasFeesSponsoredNetwork: {
     name: 'gasFeesSponsoredNetwork',
     type: FeatureFlagType.Remote,
