@@ -186,7 +186,7 @@
   },
   "ui/hooks/bridge/useRewards.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 2
+      "count": 1
     }
   },
   "ui/hooks/bridge/useTokenSearchResults.ts": {
