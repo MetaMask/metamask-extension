@@ -24,10 +24,6 @@ import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
-import { KnownCaipNamespace } from '@metamask/utils';
-import { toBridgeToken } from '../../../ducks/bridge/utils';
-import { merge } from 'lodash';
-import { DEFAULT_VALIDATION_ERRORS } from '../../../../test/data/bridge/mock-bridge-store';
 
 jest.mock('../../../hooks/useI18nContext');
 jest.mock('../../../hooks/useMultichainSelector');
