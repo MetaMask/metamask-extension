@@ -524,13 +524,12 @@ export type LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationActio
   };
 
 /**
- * Exports a seed phrase after passkey verification and returns JSON-safe UTF-8
- * bytes.
+ * Exports and JSON-encodes a seed phrase after passkey verification.
  *
  * @param params - Passkey seed export parameters.
- * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+ * @param params.authenticationResponse - WebAuthn authentication response.
  * @param params.keyringId - Optional HD keyring id.
- * @returns UTF-8 seed phrase bytes as a number array.
+ * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
  */
 export type LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction = {
   type: `LegacyBackgroundApiService:exportSeedPhraseWithPasskey`;
