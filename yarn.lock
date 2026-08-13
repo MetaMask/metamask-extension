@@ -6049,9 +6049,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@79.2.0-preview-9c0f91815":
-  version: 79.2.0-preview-9c0f91815
-  resolution: "@metamask-previews/bridge-controller@npm:79.2.0-preview-9c0f91815"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@79.2.0-preview-9efd0b754":
+  version: 79.2.0-preview-9efd0b754
+  resolution: "@metamask-previews/bridge-controller@npm:79.2.0-preview-9efd0b754"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -6078,7 +6078,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/c11c57c3aa2267a794a3805d42281d8da792792e7e4acffe765a7f4304e34d4dc9c2536b38680f78455c9acde18e8fac4551eac56948b97fb8a9e72d4ec9f6d8
+  checksum: 10/8841a7a517a92448c8a45b376575a09074a5fdfec6f2a6292aa4b7dffcf92119424e032798b6e048d1642ddfeda840cfe319bcd20d9c078132dd63be4767630f
   languageName: node
   linkType: hard
 
@@ -6115,9 +6115,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@75.1.0-preview-9c0f91815":
-  version: 75.1.0-preview-9c0f91815
-  resolution: "@metamask-previews/bridge-status-controller@npm:75.1.0-preview-9c0f91815"
+"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@75.1.0-preview-9efd0b754":
+  version: 75.1.0-preview-9efd0b754
+  resolution: "@metamask-previews/bridge-status-controller@npm:75.1.0-preview-9efd0b754"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.1.0"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -6135,7 +6135,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/ffd6dc6cc80c4a411b1bc1109add403718eadd707012bf072eff1a877e02d5b6e73125671adb858f887f3993c6eb45cfe1b53c3a914211fff9345d83b2ccff86
+  checksum: 10/498b04291cd2ab8cc4864e30350d08168dee436a75661136c92ec9f7d50aef0a485305b54e96c53250cf657571357d2bc250bd6c7bd704e206d655d8eddc312f
   languageName: node
   linkType: hard
 
