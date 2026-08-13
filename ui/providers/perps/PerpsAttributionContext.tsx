@@ -325,11 +325,48 @@ export function PerpsAttributionProvider({
     }
   }, []);
 
-  useEffect(() => {
+  const [prevLocationSearch, setPrevLocationSearch] = useState(locationSearch);
+
+  // Sync React state from locationSearch during render; session/background
+  // persistence stays in the effect below (and in the public sync helper).
+  if (locationSearch !== prevLocationSearch) {
+    setPrevLocationSearch(locationSearch);
     if (locationSearch) {
-      syncUtmAttributionFromSearch(locationSearch);
+      const utmContext = parseUtmAttribution(locationSearch);
+      if (utmContext) {
+        setUtmAttribution((prev) => ({ ...prev, ...utmContext }));
+      }
+
+      const source = new URLSearchParams(locationSearch).get('source');
+      if (source === 'deeplink') {
+        setIsDeeplinkEntry(true);
+      }
+      const nextFlowAttribution =
+        computeFlowAttributionFromSearch(locationSearch);
+      if (nextFlowAttribution.discoverySource) {
+        setFlowAttributionState((prev) => ({
+          ...prev,
+          ...nextFlowAttribution,
+        }));
+      }
     }
-  }, [locationSearch, syncUtmAttributionFromSearch]);
+  }
+
+  useEffect(() => {
+    if (!locationSearch) {
+      return;
+    }
+
+    const utmContext = parseUtmAttribution(locationSearch);
+    if (!utmContext) {
+      return;
+    }
+
+    const mergedSessionUtm = rememberSessionUtm(utmContext);
+    submitRequestToBackground('perpsSetAttributionContext', [
+      mergedSessionUtm,
+    ]).catch(captureException);
+  }, [locationSearch]);
 
   // A fresh UI session that carries no UTM anywhere must not inherit the
   // previous session's campaign from the background singleton: replace the

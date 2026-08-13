@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
@@ -57,35 +58,41 @@ export function createSidepanelOpener() {
 
   const pendingOpens = new Map<string, PendingOpen>();
 
-  browser.runtime.onMessage.addListener((message, sender) => {
-    if (message?.type !== EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
-      return undefined;
-    }
+  browser.runtime.onMessage.addListener(
+    (message: unknown, sender: browser.Runtime.MessageSender) => {
+      if (
+        !isObject(message) ||
+        message.type !== EXTENSION_MESSAGES.OPEN_SIDEPANEL ||
+        typeof message.nonce !== 'string'
+      ) {
+        return undefined;
+      }
 
-    const entry = pendingOpens.get(message.nonce);
-    if (!entry) {
-      return undefined;
-    }
-    clearTimeout(entry.timer);
-    pendingOpens.delete(message.nonce);
+      const entry = pendingOpens.get(message.nonce);
+      if (!entry) {
+        return undefined;
+      }
+      clearTimeout(entry.timer);
+      pendingOpens.delete(message.nonce);
 
-    const tabId = sender?.tab?.id;
-    if (!tabId || !chrome.sidePanel?.open) {
-      entry.resolve(false);
-      return undefined;
-    }
-
-    // open() must run synchronously to consume the gesture the content script just forwarded
-    chrome.sidePanel
-      .open({ tabId })
-      .then(() => entry.resolve(true))
-      .catch((err: unknown) => {
+      const tabId = sender?.tab?.id;
+      if (!tabId || !chrome.sidePanel?.open) {
         entry.resolve(false);
-        log.warn('Failed to open sidepanel', err);
-      });
+        return undefined;
+      }
 
-    return undefined;
-  });
+      // open() must run synchronously to consume the gesture the content script just forwarded
+      chrome.sidePanel
+        .open({ tabId })
+        .then(() => entry.resolve(true))
+        .catch((err: unknown) => {
+          entry.resolve(false);
+          log.warn('Failed to open sidepanel', err);
+        });
+
+      return undefined;
+    },
+  );
 
   function requestOpenSidePanel(tabId: number): Promise<boolean> {
     const nonce = `${Date.now()}:${Math.random()}`;
