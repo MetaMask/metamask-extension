@@ -1454,6 +1454,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "No funds available. Use a different account."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Insufficient funds"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
@@ -1870,9 +1876,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"
-  },
-  "backupApprovalInfo": {
-    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
     "message": "Back up your Secret Recovery Phrase to keep your wallet and funds secure."
@@ -3503,17 +3506,17 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllDescriptionText": {
-    "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
-  },
   "disconnectAllSites": {
-    "message": "Disconnect All"
+    "message": "Disconnect all"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "If you disconnect from all sites, you'll need to reconnect your accounts and networks to use them again."
+    "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
     "message": "Some dapps couldn't be disconnected. Please try again."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
@@ -3523,6 +3526,13 @@
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
+  },
+  "disconnectQuestion": {
+    "message": "Disconnect?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
@@ -5172,6 +5182,9 @@
   "manage": {
     "message": "Manage"
   },
+  "manageConnectedAccounts": {
+    "message": "Manage connected accounts"
+  },
   "manageDefaultSettings": {
     "message": "Manage default settings"
   },
@@ -6639,6 +6652,10 @@
   "payWith": {
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithEmptySelection": {
+    "message": "Select payment method",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
   },
   "payWithModalTitle": {
     "message": "Pay with",
@@ -9360,6 +9377,9 @@
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
+  "selectAccounts": {
+    "message": "Select accounts"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -10142,6 +10162,12 @@
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
+  "showTickerWidget": {
+    "message": "Show web widget on X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Displays a MetaMask widget with token details when you’re browsing X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask now opens in the side panel by default. $1 any time from the menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."
@@ -10242,6 +10268,10 @@
   },
   "singleNetwork": {
     "message": "1 network"
+  },
+  "sitePermissionsBanner": {
+    "message": "$1 can see your connected accounts and suggest transactions.",
+    "description": "$1 is the site hostname"
   },
   "sites": {
     "message": "Sites"

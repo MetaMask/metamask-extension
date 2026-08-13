@@ -198,6 +198,34 @@ export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
 };
 
 /**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, without waiting for the
+ * transaction to be published.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAction = {
+  type: `LegacyBackgroundApiService:addTransaction`;
+  handler: LegacyBackgroundApiService['addTransaction'];
+};
+
+/**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, waiting for the
+ * transaction to be published and returning the final transaction metadata.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The final transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction = {
+  type: `LegacyBackgroundApiService:addTransactionAndWaitForPublish`;
+  handler: LegacyBackgroundApiService['addTransactionAndWaitForPublish'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -253,6 +281,19 @@ export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
 export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
   type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
   handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
+};
+
+/**
+ * Resets the wallet to a clean state, clearing sensitive controller state and
+ * signing the user out.
+ *
+ * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+ * restore-vault flow); when `false`, onboarding is also reset and the wallet
+ * reset progress flag is set.
+ */
+export type LegacyBackgroundApiServiceResetWalletAction = {
+  type: `LegacyBackgroundApiService:resetWallet`;
+  handler: LegacyBackgroundApiService['resetWallet'];
 };
 
 /**
@@ -970,11 +1011,14 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
+  | LegacyBackgroundApiServiceAddTransactionAction
+  | LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceLookupSelectedNetworksAction
   | LegacyBackgroundApiServiceSetEnabledNetworksAction
   | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
+  | LegacyBackgroundApiServiceResetWalletAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction
   | LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction

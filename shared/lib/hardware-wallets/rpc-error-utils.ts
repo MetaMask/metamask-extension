@@ -882,6 +882,24 @@ function tryFromLedgerErrorMessage(
 
   // Status code may be in the message, e.g. "Device is locked (... (0x5515))"
   const errorMessage = getErrorMessage(error);
+  const normalizedMessage = errorMessage.toLowerCase();
+
+  // Chrome runtime / offscreen bridge unavailable (DMK or legacy path).
+  // Map to ErrorCode only; user-facing copy is localized in the UI via
+  // buildErrorContent(ErrorCode.ConnectionTransportMissing).
+  if (
+    normalizedMessage.includes('receiving end does not exist') ||
+    normalizedMessage.includes('could not establish connection') ||
+    normalizedMessage.includes('offscreen document is not available')
+  ) {
+    return createHardwareWalletError(
+      ErrorCode.ConnectionTransportMissing,
+      walletType,
+      errorMessage,
+      { cause: getErrorCause(error) },
+    );
+  }
+
   const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
   if (!hexStatusCode) {
     return null;

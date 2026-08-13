@@ -7,6 +7,7 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
   isValidTransactionHash,
@@ -136,6 +137,70 @@ describe('Transactions utils', () => {
 
       expect(hasTransactionType(transactionMeta, [TransactionType.swap])).toBe(
         false,
+      );
+    });
+  });
+
+  describe('getTransactionType', () => {
+    it('returns undefined for undefined input', () => {
+      expect(getTransactionType(undefined)).toBeUndefined();
+    });
+
+    it('returns direct type for regular transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns nested type when nested transactions exist', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns direct type when nested transactions have no type', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [{}],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns first nested type that has a type', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          {},
+          { type: TransactionType.perpsWithdraw },
+          { type: TransactionType.predictWithdraw },
+        ],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns direct type when nestedTransactions is empty', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        nestedTransactions: [],
+      } as unknown as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
       );
     });
   });
