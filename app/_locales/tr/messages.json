@@ -11431,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask başlatılırken sorun oluştu."
   },
-  "trustSignalBlockDescription": {
-    "message": "Bu siteye bağlanırsanız varlıklarınızın tamamını kaybedebilirsiniz."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Kötü amaçlı site algılandı"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Yine de Bağlan"
-  },
   "tryAgain": {
     "message": "Tekrar deneyin"
   },
