@@ -1,4 +1,22 @@
-/* Injected into the page. Tiny light-DOM chrome — hardcoded, no design tokens. */
+/* Injected into the page. Token values scoped to the pill — not the full sheet. */
+
+a[data-mm-cashtag] {
+  --color-border-muted: #b4b4b566;
+  --color-background-muted: #b4b4b528;
+  --color-background-default: #ffffff;
+  --color-text-default: #131416;
+  --color-success-default: #457a39;
+  --color-error-default: #ca3542;
+}
+
+html[data-theme='dark'] a[data-mm-cashtag],
+html[data-theme='dim'] a[data-mm-cashtag] {
+  --color-border-muted: #ffffff14;
+  --color-background-default: #000000;
+  --color-text-default: #ffffff;
+  --color-success-default: #baf24a;
+  --color-error-default: #ff7584;
+}
 
 a[data-mm-cashtag],
 a[data-mm-cashtag]:link,
@@ -13,9 +31,9 @@ a[data-mm-cashtag]:active {
   margin: 0 2px;
   padding: 2px 10px 2px 3px;
   border-radius: 999px;
-  border: 1px solid #ffffff14;
-  background: #ffffff0a;
-  color: #fff !important;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-background-muted);
+  color: var(--color-text-default) !important;
   font-size: 13px;
   font-weight: 500 !important;
   line-height: 1.2;
@@ -24,16 +42,22 @@ a[data-mm-cashtag]:active {
   white-space: nowrap;
 }
 
-@media (prefers-color-scheme: light) {
-  a[data-mm-cashtag],
-  a[data-mm-cashtag]:link,
-  a[data-mm-cashtag]:visited,
-  a[data-mm-cashtag]:hover,
-  a[data-mm-cashtag]:active {
-    border-color: #b4b4b566;
-    background: #b4b4b528;
-    color: #131416 !important;
-  }
+html[data-theme='dark'] a[data-mm-cashtag],
+html[data-theme='dim'] a[data-mm-cashtag],
+html[data-theme='dark'] a[data-mm-cashtag]:link,
+html[data-theme='dim'] a[data-mm-cashtag]:link,
+html[data-theme='dark'] a[data-mm-cashtag]:visited,
+html[data-theme='dim'] a[data-mm-cashtag]:visited,
+html[data-theme='dark'] a[data-mm-cashtag]:hover,
+html[data-theme='dim'] a[data-mm-cashtag]:hover,
+html[data-theme='dark'] a[data-mm-cashtag]:active,
+html[data-theme='dim'] a[data-mm-cashtag]:active {
+  background: var(--color-background-default);
+}
+
+a[data-mm-cashtag] .mm-cashtag-pill-label,
+a[data-mm-cashtag] .mm-cashtag-pill-label > span:not(.mm-cashtag-pill-price) {
+  color: inherit !important;
 }
 
 a[data-mm-cashtag] .mm-cashtag-pill-icon {
@@ -53,9 +77,9 @@ a[data-mm-cashtag] .mm-cashtag-pill-label {
 }
 
 a[data-mm-cashtag] .mm-cashtag-pill-price--up {
-  color: #457a39 !important;
+  color: var(--color-success-default) !important;
 }
 
 a[data-mm-cashtag] .mm-cashtag-pill-price--down {
-  color: #ca3542 !important;
+  color: var(--color-error-default) !important;
 }

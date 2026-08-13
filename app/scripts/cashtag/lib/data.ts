@@ -49,7 +49,7 @@ function toAssetData(hit: SearchHit, ticker: string): AssetData {
     price: num(hit.price),
     change24hPercent: num(hit.pricePercentChange1d),
     marketCap: num(hit.marketCap),
-    liquidity: num(hit.liquidity),
+    liquidity: num(hit.liquidity) || null,
     volume24h: num(hit.aggregatedUsdVolume),
   };
 }

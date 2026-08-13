@@ -19,6 +19,10 @@ export function scopeDesignTokensForShadow(css: string) {
   // would make light always win and dark never apply.
   return css
     .replaceAll(
+      '[data-theme=dark][data-pure-black=true]{',
+      ':host([data-theme=dark]){',
+    )
+    .replaceAll(
       '.light,:root,[data-theme=light]{',
       ':host([data-theme=light]){',
     )
@@ -26,14 +30,36 @@ export function scopeDesignTokensForShadow(css: string) {
     .replaceAll(':root', ':host');
 }
 
+function readPageTheme(): 'light' | 'dark' {
+  const pageTheme = document.documentElement.getAttribute('data-theme');
+  if (pageTheme === 'dark' || pageTheme === 'dim') {
+    return 'dark';
+  }
+  if (pageTheme === 'light') {
+    return 'light';
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 export function bindHostColorScheme(host: HTMLElement) {
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
   const sync = () => {
-    host.dataset.theme = media.matches ? 'dark' : 'light';
+    host.dataset.theme = readPageTheme();
   };
   sync();
+
+  const observer = new MutationObserver(sync);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
   media.addEventListener('change', sync);
+
   return () => {
+    observer.disconnect();
     media.removeEventListener('change', sync);
   };
 }

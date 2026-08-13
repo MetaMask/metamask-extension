@@ -3,6 +3,8 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  IconName,
+  IconSize,
   Label,
   TextButton,
   TextButtonSize,
@@ -53,7 +55,7 @@ export function TokenDetail({
       : null;
 
   return (
-    <div className="flex h-full flex-col p-6">
+    <div className="flex flex-col p-6">
       <header className="mb-7 flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />
@@ -72,7 +74,7 @@ export function TokenDetail({
         </div>
         <div className="flex shrink-0 items-center gap-4">
           <img
-            className="block size-7 shrink-0 rounded-full bg-section object-contain"
+            className="block size-7 shrink-0 object-contain"
             src={foxSrc}
             alt="MetaMask"
             width={28}
@@ -132,7 +134,7 @@ export function TokenDetail({
         </dl>
       </section>
 
-      <div className="flex-1">
+      <div className="mb-2">
         <PriceChart
           caipAssetId={data.caipAssetId}
           currentPrice={data.price}
@@ -163,10 +165,11 @@ export function TokenDetail({
         <div className="mt-4 flex justify-end">
           <TextButton
             size={TextButtonSize.BodySm}
+            endIconName={IconName.ArrowRight}
+            endIconProps={{ size: IconSize.Xs }}
             onClick={onWidgetClick(onViewSimilar)}
           >
             View similar tokens
-            <span aria-hidden="true">›</span>
           </TextButton>
         </div>
       ) : null}
