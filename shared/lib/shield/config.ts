@@ -10,12 +10,6 @@ const SHIELD_GATEWAY_URL = {
   [ShieldEnv.PRD]: 'https://shield-gateway.api.cx.metamask.io',
 } as const;
 
-const SHIELD_RULE_ENGINE_URL = {
-  [ShieldEnv.DEV]: 'https://ruleset-engine.dev-api.cx.metamask.io',
-  [ShieldEnv.UAT]: 'https://ruleset-engine.uat-api.cx.metamask.io',
-  [ShieldEnv.PRD]: 'https://ruleset-engine.api.cx.metamask.io',
-} as const;
-
 const BUILD_TYPE = {
   experimental: 'experimental',
   main: 'main',
@@ -33,42 +27,36 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
     claimsEnv: ClaimsEnv.PRD,
     shieldEnv: ShieldEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
     shieldEnv: ShieldEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.beta]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
     shieldEnv: ShieldEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.UAT],
   },
   [BUILD_TYPE.experimental]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
     shieldEnv: ShieldEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
     claimsEnv: ClaimsEnv.DEV,
     shieldEnv: ShieldEnv.DEV,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.DEV],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
     shieldEnv: ShieldEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
-    ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ShieldEnv.UAT],
   },
 };
 
