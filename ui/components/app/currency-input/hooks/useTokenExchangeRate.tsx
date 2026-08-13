@@ -25,7 +25,7 @@ import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 export default function useTokenExchangeRate(
   uncheckedTokenAddress?: string,
   overrideChainId?: Hex,
-) {
+): Numeric | undefined {
   const tokenAddress = uncheckedTokenAddress
     ? toChecksumAddress(uncheckedTokenAddress)
     : undefined;
@@ -52,24 +52,28 @@ export default function useTokenExchangeRate(
     ? crossChainTokenExchangeRates[chainId]?.[tokenAddress]
     : undefined;
 
+  // Cache key includes chainId to prevent cross-chain rate contamination
+  const cacheKey = ['tokenExchangeRate', chainId, tokenAddress, nativeCurrency];
+
   const { data: fetchedTokenRate } = useQuery({
-    queryKey: ['tokenExchangeRate', chainId, tokenAddress, nativeCurrency],
+    queryKey: cacheKey,
     queryFn: async () => {
       if (!tokenAddress || !nativeCurrency) {
         return null;
       }
 
-      const addressToExchangeRate = await fetchTokenExchangeRates(
+      const exchangeRates = await fetchTokenExchangeRates(
         nativeCurrency,
         [tokenAddress],
         chainId,
       );
-      return addressToExchangeRate[tokenAddress] ?? null;
+      return exchangeRates[tokenAddress] ?? null;
     },
     enabled: Boolean(
       tokenAddress && nativeCurrency && reduxTokenRate === undefined,
     ),
     retry: false,
+    staleTime: Infinity,
   });
 
   return useMemo(() => {

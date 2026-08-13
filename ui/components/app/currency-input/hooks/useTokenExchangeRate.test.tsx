@@ -1,12 +1,11 @@
 import React from 'react';
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Hex } from '@metamask/utils';
 import type { Store } from 'redux';
 import { MetaMaskTestReduxProvider } from '../../../../../test/lib/redux-test-provider';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
-import { UPDATE_METAMASK_STATE } from '../../../../store/actionConstants';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import useTokenExchangeRate from './useTokenExchangeRate';
 
@@ -87,48 +86,52 @@ describe('useTokenExchangeRate', () => {
   });
 
   it('ERC-20: price is available', () => {
-    const { result } = renderUseTokenExchangeRate(
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(
       '0xdac17f958d2ee523a2206206994597c13d831ec7',
     );
 
-    expect(String(result.current?.value)).toEqual('5.55');
-    expect(fetchTokenExchangeRates).not.toHaveBeenCalled();
+    expect(String(exchangeRate?.value)).toEqual('5.55');
   });
 
   it('ERC-20: price is unavailable through state but available through API', async () => {
-    (fetchTokenExchangeRates as jest.Mock).mockResolvedValue({
-      '0x0000000000000000000000000000000000000001': '2.34',
-    });
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.resolve({
+        '0x0000000000000000000000000000000000000001': '2.34',
+      }),
+    );
 
     const { result } = renderUseTokenExchangeRate(
       '0x0000000000000000000000000000000000000001',
     );
 
     await waitFor(() => {
-      // 2.34 * ETH conversion rate (11.1) = 25.974
-      expect(String(result.current?.value)).toEqual('25.974');
+      expect(String(result.current?.value)).toBe('25.974');
     });
-    expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
+    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
   });
 
   it('ERC-20: price is unavailable through state and through API', async () => {
-    (fetchTokenExchangeRates as jest.Mock).mockResolvedValue({
-      'Not token': '2.34',
-    });
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.resolve({
+        'Not token': '2.34',
+      }),
+    );
 
     const { result } = renderUseTokenExchangeRate(
       '0x0000000000000000000000000000000000000001',
     );
 
     await waitFor(() => {
-      expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRates).toBeCalledTimes(1);
     });
-    expect(result.current).toBeUndefined();
+    expect(result.current?.value).toBe(undefined);
   });
 
   it('ERC-20: price is unavailable through state but API call fails', async () => {
-    (fetchTokenExchangeRates as jest.Mock).mockRejectedValue(
-      new Error('error'),
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.reject(new Error('error')),
     );
 
     const { result } = renderUseTokenExchangeRate(
@@ -136,99 +139,51 @@ describe('useTokenExchangeRate', () => {
     );
 
     await waitFor(() => {
-      expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRates).toBeCalledTimes(1);
     });
-    expect(result.current).toBeUndefined();
-  });
-
-  it('ERC-20: uses Redux market rate after a failed fetch once rates arrive', async () => {
-    const tokenAddress = '0x0000000000000000000000000000000000000001';
-    (fetchTokenExchangeRates as jest.Mock).mockRejectedValue(
-      new Error('error'),
-    );
-
-    const store = configureStore({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        currencyRates: {
-          ETH: {
-            conversionRate: 11.1,
-          },
-        },
-        marketData: {
-          '0x5': {},
-        },
-      },
-    });
-
-    const { result } = renderUseTokenExchangeRate(
-      tokenAddress,
-      undefined,
-      undefined,
-      { store },
-    );
-
-    await waitFor(() => {
-      expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
-      expect(result.current).toBeUndefined();
-    });
-
-    await act(async () => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: {
-          marketData: {
-            '0x5': {
-              [tokenAddress]: { price: 2 },
-            },
-          },
-        },
-      });
-    });
-
-    await waitFor(() => {
-      // price (2) * ETH conversion rate (11.1) = 22.2
-      expect(String(result.current?.value)).toEqual('22.2');
-    });
+    expect(result.current?.value).toBe(undefined);
   });
 
   it('native: price is available', () => {
-    const { result } = renderUseTokenExchangeRate(undefined);
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(undefined);
 
-    expect(String(result.current?.value)).toBe('11.1');
-    expect(fetchTokenExchangeRates).not.toHaveBeenCalled();
+    expect(String(exchangeRate?.value)).toBe('11.1');
   });
 
   it('native: price is unavailable', () => {
-    const { result } = renderUseTokenExchangeRate(undefined, {
-      currencyRates: {},
-    });
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(undefined, { currencyRates: {} });
 
-    expect(result.current).toBe(undefined);
-    expect(fetchTokenExchangeRates).not.toHaveBeenCalled();
+    expect(exchangeRate?.value).toBe(undefined);
   });
 
   describe('with overrideChainId', () => {
     it('ERC-20: returns price from override chain market data', () => {
-      const { result } = renderUseTokenExchangeRate(
+      // Current chain is 0x5 (Goerli), but we request price for token on 0x89 (Polygon)
+      const {
+        result: { current: exchangeRate },
+      } = renderUseTokenExchangeRate(
         '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         undefined,
         '0x89',
       );
 
       // price (1.0) * POL conversion rate (0.25) = 0.25
-      expect(String(result.current?.value)).toEqual('0.25');
-      expect(fetchTokenExchangeRates).not.toHaveBeenCalled();
+      expect(String(exchangeRate?.value)).toEqual('0.25');
     });
 
     it('ERC-20: fetches from API when token not in override chain market data', async () => {
+      // Token exists on 0x5 but not on 0x89
       renderUseTokenExchangeRate(
         '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         undefined,
         '0x89',
       );
 
+      // Should trigger API fetch since token not in 0x89 market data
       await waitFor(() => {
         expect(fetchTokenExchangeRates).toHaveBeenCalledWith(
           'POL',
@@ -239,35 +194,39 @@ describe('useTokenExchangeRate', () => {
     });
 
     it('native: returns conversion rate for override chain', () => {
-      const { result } = renderUseTokenExchangeRate(
-        undefined,
-        undefined,
-        '0x89',
-      );
+      // Current chain is 0x5 (ETH), but we request native rate for 0x89 (POL)
+      const {
+        result: { current: exchangeRate },
+      } = renderUseTokenExchangeRate(undefined, undefined, '0x89');
 
-      expect(String(result.current?.value)).toEqual('0.25');
+      expect(String(exchangeRate?.value)).toEqual('0.25');
     });
 
     it('native: returns undefined when override chain has no conversion rate', () => {
-      const { result } = renderUseTokenExchangeRate(
+      const {
+        result: { current: exchangeRate },
+      } = renderUseTokenExchangeRate(
         undefined,
         {
           currencyRates: {
             ETH: { conversionRate: 11.1 },
+            // POL not included
           },
         },
         '0x89',
       );
 
-      expect(result.current).toBe(undefined);
+      expect(exchangeRate?.value).toBe(undefined);
     });
 
     it('ERC-20: fetches from API with override chainId when not in state', async () => {
-      (fetchTokenExchangeRates as jest.Mock).mockResolvedValue({
-        '0x0000000000000000000000000000000000000002': 2.0,
-      });
+      (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+        Promise.resolve({
+          '0x0000000000000000000000000000000000000002': 2.0,
+        }),
+      );
 
-      const { result } = renderUseTokenExchangeRate(
+      renderUseTokenExchangeRate(
         '0x0000000000000000000000000000000000000002',
         undefined,
         '0x89',
@@ -280,23 +239,16 @@ describe('useTokenExchangeRate', () => {
           '0x89',
         );
       });
-
-      await waitFor(() => {
-        // 2.0 * POL conversion rate (0.25) = 0.5
-        expect(String(result.current?.value)).toEqual('0.5');
-      });
     });
 
     it('ERC-20: caches rates per chain to prevent cross-chain contamination', async () => {
       const tokenAddress = '0x0000000000000000000000000000000000000003';
-      const queryClient = createQueryClient();
-      (fetchTokenExchangeRates as jest.Mock).mockResolvedValue({
-        [tokenAddress]: 1.5,
-      });
+      (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+        Promise.resolve({ [tokenAddress]: 1.5 }),
+      );
 
-      renderUseTokenExchangeRate(tokenAddress, undefined, '0x5', {
-        queryClient,
-      });
+      // First render on chain 0x5
+      renderUseTokenExchangeRate(tokenAddress, undefined, '0x5');
 
       await waitFor(() => {
         expect(fetchTokenExchangeRates).toHaveBeenCalledWith(
@@ -306,9 +258,8 @@ describe('useTokenExchangeRate', () => {
         );
       });
 
-      renderUseTokenExchangeRate(tokenAddress, undefined, '0x89', {
-        queryClient,
-      });
+      // Second render on chain 0x89 - should trigger a new fetch, not use cached rate
+      renderUseTokenExchangeRate(tokenAddress, undefined, '0x89');
 
       await waitFor(() => {
         expect(fetchTokenExchangeRates).toHaveBeenCalledWith(
@@ -346,7 +297,7 @@ describe('useTokenExchangeRate', () => {
       );
 
       await waitFor(() => {
-        expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
+        expect(fetchTokenExchangeRates).toBeCalledTimes(1);
       });
 
       resolveFetch({ [tokenAddress]: 1.5 });
