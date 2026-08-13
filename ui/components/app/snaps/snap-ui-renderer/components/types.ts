@@ -20,7 +20,7 @@ export type UIComponentParams<T extends JSXElement> = {
   componentMap: COMPONENT_MAPPING;
   isScrollableContainer?: boolean;
   setScroll: () => void;
-  scrollableContainerRef: React.Ref<HTMLDivElement>;
+  scrollableContainerRef: React.RefObject<HTMLDivElement>;
 };
 
 export type UIComponent = {

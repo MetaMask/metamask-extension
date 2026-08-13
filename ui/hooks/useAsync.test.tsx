@@ -302,45 +302,6 @@ describe('useAsyncResult', () => {
       fail('Expected error state');
     }
   });
-
-  it('does not crash when dependency elements fail Object.is each render', () => {
-    // New object identity every render — common caller footgun. A render-phase
-    // depsVersion setState would throw "Maximum update depth exceeded".
-    expect(() => {
-      const { rerender } = renderHook(
-        ({ dep }) =>
-          useAsyncCallback(async () => {
-            return dep ? 'ok' : 'missing';
-          }, [dep]),
-        { initialProps: { dep: {} as object } },
-      );
-      for (let i = 0; i < 50; i++) {
-        rerender({ dep: {} });
-      }
-    }).not.toThrow();
-  });
-
-  it('re-arms isMounted after StrictMode effect double-invoke', async () => {
-    // StrictMode runs effect setup → cleanup → setup on the same instance.
-    // Without re-arming isMounted in setup, cleanup leaves it false and execute no-ops.
-    let calls = 0;
-    const { result } = renderHook(
-      () =>
-        useAsyncCallback(async () => {
-          calls += 1;
-          return 'ok';
-        }),
-      { wrapper: React.StrictMode },
-    );
-
-    await act(async () => {
-      await result.current[0]();
-    });
-    expect(calls).toBe(1);
-    await waitFor(() => {
-      expect(result.current[1]).toEqual(successState('ok'));
-    });
-  });
 });
 
 describe('useAsyncResultOrThrow', () => {

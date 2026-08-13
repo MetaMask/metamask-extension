@@ -90,6 +90,10 @@ exports[`CollapsibleSection can expand 1`] = `
         </div>
       </div>
     </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
   </div>
 </div>
 `;

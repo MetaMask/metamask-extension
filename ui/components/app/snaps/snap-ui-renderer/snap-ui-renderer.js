@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -29,6 +36,29 @@ import {
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
 
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+// Increments in layout effect (not during render) for React Compiler.
+// `renderSignal` must change with interface content so this child re-runs.
+const PerformanceTracker = ({ renderSignal }) => {
+  const elementRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const node = elementRef.current;
+    if (!node) {
+      return;
+    }
+    const previous = Number(node.getAttribute('data-renders') || '0');
+    node.setAttribute('data-renders', String(previous + 1));
+  }, [renderSignal]);
+
+  return <span ref={elementRef} data-testid="performance" data-renders="0" />;
+};
+
+PerformanceTracker.propTypes = {
+  renderSignal: PropTypes.object.isRequired,
+};
+
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
@@ -42,6 +72,7 @@ const SnapUIRendererComponent = ({
   useFooter = false,
   onCancel,
   contentBackgroundColor,
+  PERF_DEBUG,
 }) => {
   const scrollHost = useMemo(() => {
     const host = {
@@ -178,6 +209,7 @@ const SnapUIRendererComponent = ({
             }}
           >
             <MetaMaskTemplateRenderer sections={sections} />
+            {PERF_DEBUG && <PerformanceTracker renderSignal={content} />}
           </Box>
         </LocalizationProvider>
       </ThemeProvider>
@@ -202,4 +234,5 @@ SnapUIRendererComponent.propTypes = {
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
+  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };

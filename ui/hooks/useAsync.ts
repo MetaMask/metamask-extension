@@ -1,7 +1,3 @@
-// Structural React Compiler bail: useAsyncCallback forwards a caller-supplied
-// DependencyList into useCallback (not an array literal). Disposition tracked
-// in MetaMask/MetaMask-planning#7541 — until that lands, keep the opt-out rather
-// than mirroring deps into a version counter (unsafe with unstable elements).
 'use no memo';
 
 import {
@@ -88,7 +84,6 @@ export function createErrorResult(error: Error): ResultError {
  * @param asyncFn - The async function to execute
  * @param deps - Dependencies that trigger recreation of the callback
  */
-// react-compiler-bailout: UseMemo — deps forwarded from caller, not a literal (#7541)
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAsyncCallback<T>(
@@ -123,7 +118,7 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
+    // eslint-disable-next-line react-hooks/use-memo
   }, deps);
 
   return [execute, result];

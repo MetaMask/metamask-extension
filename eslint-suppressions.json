@@ -216,7 +216,7 @@
   },
   "ui/hooks/useAsync.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 2
+      "count": 4
     }
   },
   "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
