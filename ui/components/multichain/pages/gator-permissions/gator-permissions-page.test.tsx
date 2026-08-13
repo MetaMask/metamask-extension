@@ -65,7 +65,9 @@ const createStore = ({
 describe('Gator Permissions Page', () => {
   describe('render', () => {
     it('renders page container', () => {
-      const store = createStore({ grantedPermissions: [MOCK_GATOR_PERMISSION] });
+      const store = createStore({
+        grantedPermissions: [MOCK_GATOR_PERMISSION],
+      });
       const { getByTestId } = renderWithProvider(
         <GatorPermissionsPage />,
         store,
@@ -104,10 +106,7 @@ describe('Gator Permissions Page', () => {
         grantedPermissions: [MOCK_GATOR_PERMISSION],
         subjects: MOCK_SITE_PERMISSION,
       });
-      const { getByText } = renderWithProvider(
-        <GatorPermissionsPage />,
-        store,
-      );
+      const { getByText } = renderWithProvider(<GatorPermissionsPage />, store);
 
       expect(getByText('Dapps')).toBeInTheDocument();
       expect(getByText('Connections')).toBeInTheDocument();
