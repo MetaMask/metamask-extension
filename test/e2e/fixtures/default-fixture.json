@@ -1171,7 +1171,8 @@
         "stxMigrationBatchStatus": "sentinel on",
         "stxMigrationCancel": "sentinel on",
         "stxMigrationGetFees": "sentinel on",
-        "stxMigrationSubmitTransactions": "sentinel on"
+        "stxMigrationSubmitTransactions": "sentinel on",
+        "swapsSWAPS4827AbtestChainValueOrder": "control"
       },
       "localOverrides": {},
       "remoteFeatureFlags": {

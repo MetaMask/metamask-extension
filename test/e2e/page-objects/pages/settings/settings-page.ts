@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings hub: search, tab navigation, and a few in-hub toggles/actions.
+ *
+ * Screen: `#/settings`, usually opened from `HeaderNavbar.openSettingsPage`.
+ * Owns: settings search, navigation into child tabs (privacy, assets,
+ * developer tools, notifications, Transaction Shield, etc.), auto-lock entry,
+ * and closing settings back toward home.
+ * Boundaries: the hub and its nav only. Once a child tab or sub-page opens,
+ * that page object takes over (e.g. `PrivacySettings`,
+ * `PreferencesAndDisplaySettings`, `ShieldDetailPage`).
+ * Related: child page objects under `pages/settings/`;
+ * `flows/settings.flow.ts` for common journeys.
+ *
+ * @see ui/pages/settings/settings.tsx
+ * @see ui/pages/settings/tab-bar.tsx
+ */
 class SettingsPage {
   private readonly aboutViewButton =
     '[data-testid="settings-tab-item-about-us"]';
