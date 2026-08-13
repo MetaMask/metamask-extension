@@ -1,5 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Wallet-ready / completion step at the end of onboarding (and optional
+ * download-app continue).
+ *
+ * Screen: `#/onboarding/completion`; also covers continuing past
+ * `#/onboarding/download-app` when that step is shown.
+ * Owns: wallet-ready / keep-SRP-safe messaging, Done, manage default
+ * settings entry, and download-app continue.
+ * Boundaries: completion CTAs only. Default privacy settings are
+ * `OnboardingPrivacySettingsPage` after `navigateToDefaultPrivacySettings`.
+ * Related: preceded by `OnboardingMetricsPage` (or earlier steps on Firefox);
+ * optional detour to `OnboardingPrivacySettingsPage`; then home via Done;
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/creation-successful/creation-successful.tsx
+ * @see ui/pages/onboarding-flow/download-app/download-app.tsx
+ */
 class OnboardingCompletePage {
   private readonly downloadAppContinueButton =
     '[data-testid="download-app-continue"]';

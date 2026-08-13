@@ -2,6 +2,21 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../../constants';
 
+/**
+ * Create-password step shared by create-wallet and import-SRP onboarding.
+ *
+ * Screen: `#/onboarding/create-password`
+ * Owns: new/confirm password inputs, terms checkbox, submit, and mismatch
+ * validation messaging.
+ * Boundaries: password creation only. Does not continue into passkey, SRP
+ * backup, or metrics.
+ * Related: preceded by `StartOnboardingPage` (create) or `OnboardingSrpPage`
+ * (import); next is usually `SetupPasskeyPage` (Chrome) then
+ * `SecureWalletPage` (create) or `OnboardingMetricsPage` (import);
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/create-password/create-password.tsx
+ */
 class OnboardingPasswordPage {
   private readonly confirmPasswordInput =
     '[data-testid="create-password-confirm-input"]';

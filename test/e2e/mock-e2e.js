@@ -2097,13 +2097,27 @@ async function setupMocking(
         const coin = (parsed && parsed.req && parsed.req.coin) || 'BTC';
         const prices = { BTC: '50000', ETH: '3000', AVAX: '25' };
         const price = prices[coin] || '100';
-        const now = Date.now();
+        // Respect endTime so load-more fetches don't overlap with existing candles.
+        // Use 40 candles (> DEFAULT_CANDLES=30 + EDGE_DETECTION_THRESHOLD=5) so the
+        // chart's initial visible range starts above the edge-detection threshold and
+        // onNeedMoreHistory does not fire immediately on first render.
+        //
+        // Place the LAST candle one full interval before endTime: endTime is
+        // oldestExistingCandle.time - 1 ms, which truncates to the same second as
+        // the oldest existing candle. Placing the last returned candle at
+        // endTime - interval guarantees at least one full period gap between the
+        // "older" batch and the existing candles so setData never receives
+        // duplicate second-level timestamps.
+        const endTime =
+          (parsed && parsed.req && parsed.req.endTime) || Date.now();
         const interval = 300000; // 5m in ms
+        const count = 40;
+        const lastCandleTime = endTime - interval;
         const candles = [];
-        for (let i = 4; i >= 0; i--) {
+        for (let i = count - 1; i >= 0; i--) {
           candles.push({
-            t: now - i * interval,
-            T: now - i * interval + interval - 1,
+            t: lastCandleTime - i * interval,
+            T: lastCandleTime - i * interval + interval - 1,
             s: coin,
             i: (parsed && parsed.req && parsed.req.interval) || '5m',
             o: price,
