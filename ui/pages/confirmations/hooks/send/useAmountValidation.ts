@@ -135,7 +135,7 @@ export const useAmountValidation = () => {
       unmountedRef.current = true;
       debouncedSnapValidation.cancel();
     };
-  }, [isNonEvmSendType, debouncedSnapValidation]);
+  }, [isNonEvmSendType, debouncedSnapValidation, validateAmountAsync]);
 
   return { amountError, validateNonEvmAmountAsync };
 };
