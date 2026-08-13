@@ -2,10 +2,31 @@ import namehash from 'eth-ens-namehash';
 import contentHash from '@ensdomains/content-hash';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import type { NetworkController } from '@metamask/network-controller';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
-export default async function resolveEnsToIpfsContentId({ provider, name }) {
+/**
+ * Provider used for ENS → IPFS resolution.
+ *
+ * Derived from NetworkController so it stays aligned with
+ * `controller.provider` (from `getProviderAndBlockTracker().provider`).
+ */
+export type EthProvider = NonNullable<
+  ReturnType<NetworkController['getProviderAndBlockTracker']>['provider']
+>;
+
+export default async function resolveEnsToIpfsContentId(
+  {
+    provider,
+    name,
+  }: {
+    provider: EthProvider;
+    name: string;
+  },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
   const hash = namehash.hash(name);
 
   // lookup registry
@@ -67,7 +88,9 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
   );
 }
 
-function hexValueIsEmpty(value) {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hexValueIsEmpty(value: any): boolean {
   return [
     undefined,
     null,
@@ -80,10 +103,10 @@ function hexValueIsEmpty(value) {
 /**
  * Returns the registry address for the given chain ID
  *
- * @param {number} chainId - the chain ID
- * @returns {string|null} the registry address if known, null otherwise
+ * @param chainId - the chain ID
+ * @returns the registry address if known, null otherwise
  */
-function getRegistryForChainId(chainId) {
+function getRegistryForChainId(chainId: number): string | null {
   switch (chainId) {
     case 1:
     case 3:

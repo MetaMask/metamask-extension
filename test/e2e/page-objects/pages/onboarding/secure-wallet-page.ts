@@ -23,9 +23,6 @@ class SecureWalletPage {
   private readonly confirmPasswordButton =
     '[data-testid="reveal-recovery-phrase-continue"]';
 
-  private readonly confirmRecoveryPhraseButton =
-    '[data-testid="recovery-phrase-confirm"]';
-
   private readonly confirmSecretRecoveryPhraseMessage = {
     text: 'Confirm your Secret Recovery Phrase',
     tag: 'h2',
@@ -132,8 +129,7 @@ class SecureWalletPage {
     await this.driver.clickElement(quizInputSelector1);
     await this.driver.clickElement(quizInputSelector2);
 
-    await this.driver.clickElement(this.confirmRecoveryPhraseButton);
-
+    // Modal opens automatically after all three quiz words are selected
     await this.driver.waitForMultipleSelectors([
       this.confirmSrpSuccessMessage,
       this.confirmSrpConfirmButton,
