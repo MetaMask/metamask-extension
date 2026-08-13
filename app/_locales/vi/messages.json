@@ -11431,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
   },
-  "trustSignalBlockDescription": {
-    "message": "Nếu bạn kết nối với trang web này, bạn có thể mất toàn bộ tài sản của mình."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Vẫn kết nối"
-  },
   "tryAgain": {
     "message": "Thử lại"
   },

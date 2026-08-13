@@ -61,6 +61,7 @@ type PaySelectorContentProps = {
   balanceText: string;
   showBalance: boolean;
   showArrow: boolean;
+  isMoneyAccountSelected?: boolean;
 };
 
 function PaySelectorContent({
@@ -69,6 +70,7 @@ function PaySelectorContent({
   balanceText,
   showBalance,
   showArrow,
+  isMoneyAccountSelected = false,
 }: PaySelectorContentProps) {
   return (
     <>
@@ -79,12 +81,22 @@ function PaySelectorContent({
             alignItems={AlignItems.center}
             marginRight={1}
           >
-            <TokenIcon
-              chainId={displayToken.chainId as `0x${string}`}
-              tokenAddress={displayToken.address as `0x${string}`}
-              symbol={displayToken.symbol}
-              size="xs"
-            />
+            {isMoneyAccountSelected ? (
+              <img
+                src="./images/money.png"
+                alt=""
+                width={16}
+                height={16}
+                data-testid="pay-with-money-account-icon"
+              />
+            ) : (
+              <TokenIcon
+                chainId={displayToken.chainId as `0x${string}`}
+                tokenAddress={displayToken.address as `0x${string}`}
+                symbol={displayToken.symbol}
+                size="xs"
+              />
+            )}
           </Box>
           <Text data-testid="pay-with-symbol">
             {displayToken.symbol}
@@ -131,6 +143,7 @@ export function PayWithRow({
     from,
     ownerId,
     isPerpsWithdraw,
+    isMoneyAccountSelected,
     openModal,
     modal,
   } = usePayWithToken();
@@ -171,6 +184,7 @@ export function PayWithRow({
             balanceText={` (${balanceUsdFormatted})`}
             showBalance={Boolean(displayToken) && !isPerpsWithdraw}
             showArrow={canEdit && Boolean(from)}
+            isMoneyAccountSelected={isMoneyAccountSelected}
           />
         </Box>
       </ConfirmInfoAlertRow>
