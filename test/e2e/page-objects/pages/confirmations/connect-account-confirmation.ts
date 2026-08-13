@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Dapp connect / account permission confirmation (multichain connect page).
+ *
+ * Screen: `#/connect/:id` (connect flow, not `#/confirmation`).
+ * Owns: connect title/origin, account list presence, edit-accounts entry,
+ * and confirm/cancel connect actions.
+ * Boundaries: reviewing or editing permitted networks after connect is
+ * `ReviewPermissionsConfirmation`. Snap install/update connect routes are
+ * outside this object.
+ * Related: `ReviewPermissionsConfirmation`.
+ *
+ * @see ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx
+ */
 class ConnectAccountConfirmation {
   private readonly accountListItem = (accountName: string) => ({
     testId: `multichain-account-cell-name-${accountName}`,

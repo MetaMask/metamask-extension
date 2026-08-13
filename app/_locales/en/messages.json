@@ -1458,6 +1458,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "No funds available. Use a different account."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Insufficient funds"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
@@ -3719,9 +3725,6 @@
   },
   "editNonceMessage": {
     "message": "This is an advanced feature, use cautiously."
-  },
-  "editPermissions": {
-    "message": "Edit permissions"
   },
   "editSpendingCap": {
     "message": "Edit spending cap"
@@ -6660,6 +6663,10 @@
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithEmptySelection": {
+    "message": "Select payment method",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
@@ -6993,9 +7000,6 @@
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 has access to $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -7116,6 +7120,9 @@
   },
   "perpsClosePosition": {
     "message": "Close position"
+  },
+  "perpsClosePrice": {
+    "message": "Close price"
   },
   "perpsClosePriceUnavailable": {
     "message": "Current price is unavailable. Try again in a moment."
@@ -7434,6 +7441,15 @@
   "perpsOrderBookGroupBy": {
     "message": "Group by"
   },
+  "perpsOrderBookLayout": {
+    "message": "Order book layout"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Left"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Right"
+  },
   "perpsOrderBookListedBy": {
     "message": "Listed by"
   },
@@ -7493,6 +7509,9 @@
   "perpsOrderFailed": {
     "message": "Order could not be placed. Try again."
   },
+  "perpsOrderFilled": {
+    "message": "Filled"
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
@@ -7501,6 +7520,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Total fee"
+  },
+  "perpsOrderType": {
+    "message": "Order type"
   },
   "perpsOrderValue": {
     "message": "Order value"
