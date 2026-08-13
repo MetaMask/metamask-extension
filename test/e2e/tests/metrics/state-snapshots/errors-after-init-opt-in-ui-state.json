@@ -48,7 +48,6 @@
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
-    "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "singleExceptions": "object",
     "smartTransactionsError": null,
@@ -161,6 +160,7 @@
     "eventQueue": "object",
     "events": "object",
     "fcmToken": "string",
+    "featureFlagThresholdGroups": "object",
     "featureFlags": {},
     "fiatCurrency": "usd",
     "firstTimeFlowType": "import",
@@ -352,7 +352,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupA", "value": "valueA" }
+      "feature3": "valueA"
     },
     "requests": "object",
     "rewardsAccounts": "object",

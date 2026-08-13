@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Dies ist eine erweiterte Funktion, verwenden Sie diese vorsichtig."
   },
-  "editPermissions": {
-    "message": "Genehmigungen bearbeiten"
-  },
   "editSpendingCap": {
     "message": "Ausgabenobergrenze bearbeiten"
   },
@@ -6881,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Sie erteilen dem Spender die Genehmigung, diese Menge an Tokens von Ihrem Konto auszugeben."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 hat Zugang zu $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -9273,9 +9267,6 @@
   "select": {
     "message": "Auswählen"
   },
-  "selectAccountToConnect": {
-    "message": "Ein zu verbindendes Konto auswählen"
-  },
   "selectAll": {
     "message": "Alle auswählen"
   },
@@ -11431,15 +11422,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask hat Probleme beim Starten."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Wenn Sie diese Website besuchen, könnten Sie all Ihre Assets verlieren."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Schadhafte Website erkannt"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Trotzdem verbinden"
   },
   "tryAgain": {
     "message": "Erneut versuchen"

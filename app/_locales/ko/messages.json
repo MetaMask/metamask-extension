@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "이는 고급 기능으로, 주의해서 사용해야 합니다."
   },
-  "editPermissions": {
-    "message": "권한 수정"
-  },
   "editSpendingCap": {
     "message": "지출 한도 편집"
   },
@@ -6885,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "지출자에게 내 계정에서 이 정도의 토큰을 지출할 수 있는 권한을 부여합니다."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1은(는) $2에 액세스 할 수 있습니다."
-  },
   "perps": {
     "message": "무기한 선물"
   },
@@ -9281,9 +9275,6 @@
   "select": {
     "message": "선택"
   },
-  "selectAccountToConnect": {
-    "message": "연결할 계정 선택"
-  },
   "selectAll": {
     "message": "전체 선택"
   },
@@ -11439,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask 시작 중 문제가 발생했습니다."
-  },
-  "trustSignalBlockDescription": {
-    "message": "이 사이트에 연결하면 모든 자산을 잃을 수 있습니다."
-  },
-  "trustSignalBlockTitle": {
-    "message": "악성 사이트 감지됨"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "연결 계속"
   },
   "tryAgain": {
     "message": "다시 시도"

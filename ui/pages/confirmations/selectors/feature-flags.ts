@@ -241,6 +241,46 @@ export const selectIsPayHardwareEnabled = createSelector(
   (flag): boolean => flag?.enabled ?? false,
 );
 
+type PayExtendedFlag = {
+  enableMoneyAccountTransactions?: Record<string, boolean>;
+};
+
+const selectPayExtendedFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_extended?: PayExtendedFlag;
+      }
+    ).confirmations_pay_extended,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+/**
+ * Map of transaction types that may use Money Account as a pay method, from
+ * `confirmations_pay_extended.enableMoneyAccountTransactions`.
+ */
+export const selectEnableMoneyAccountTransactions = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, boolean> => flag?.enableMoneyAccountTransactions ?? {},
+);
+
+/**
+ * Whether Money Account pay is enabled for a given transaction type.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectIsMoneyAccountTransactionEnabled = createSelector(
+  [
+    selectEnableMoneyAccountTransactions,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (enableMoneyAccountTransactions, transactionType): boolean =>
+    Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
 function getPreferredTokensForTransaction(
   config?: PreferredTokensConfig,
   transactionType?: string,
