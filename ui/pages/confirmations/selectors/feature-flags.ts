@@ -6,7 +6,6 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
-import { getDepositLimits } from '../utils/pay-deposit-limit';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
@@ -68,6 +67,12 @@ type HardwareWalletConfig = {
   enabled?: boolean;
 };
 
+type ConfirmationsPayFlag = {
+  depositLimit?: Record<string, number>;
+};
+
+const EMPTY_DEPOSIT_LIMITS: Record<string, number> = {};
+
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
@@ -118,6 +123,18 @@ const selectPayHardwareFlag = createSelector(
         confirmations_pay_hardware?: HardwareWalletConfig;
       }
     ).confirmations_pay_hardware,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+const selectConfirmationsPayFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay?: ConfirmationsPayFlag;
+      }
+    ).confirmations_pay,
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
@@ -177,9 +194,15 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
  * `confirmations_pay.depositLimit`. Empty map when unset.
  */
 export const selectDepositLimits = createSelector(
-  getRemoteFeatureFlags,
-  (remoteFeatureFlags): Record<string, number> =>
-    getDepositLimits({ remoteFeatureFlags }),
+  selectConfirmationsPayFlag,
+  (flag): Record<string, number> => {
+    const depositLimit = flag?.depositLimit;
+    if (!depositLimit || typeof depositLimit !== 'object') {
+      return EMPTY_DEPOSIT_LIMITS;
+    }
+
+    return depositLimit;
+  },
 );
 
 /**

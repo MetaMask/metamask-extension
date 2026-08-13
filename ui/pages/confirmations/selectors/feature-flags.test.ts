@@ -478,6 +478,12 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectDepositLimits(state)).toStrictEqual({});
     });
 
+    it('returns the default empty map when depositLimit is absent', () => {
+      const state = getMockPayState({});
+
+      expect(selectDepositLimits(state)).toStrictEqual({});
+    });
+
     it('returns deposit limits from the feature flag', () => {
       const state = getMockPayState({
         depositLimit: {
