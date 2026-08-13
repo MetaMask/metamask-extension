@@ -88,9 +88,7 @@ describe('UIMessenger', () => {
           expect(() =>
             // @ts-expect-error Calling an excluded action on purpose.
             delegatee.call('KeyringController:addNewKeyring'),
-          ).toThrow(
-            `The action "${action}" has not been exposed to the UI.`,
-          );
+          ).toThrow(`The action "${action}" has not been exposed to the UI.`);
           expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
         },
       );

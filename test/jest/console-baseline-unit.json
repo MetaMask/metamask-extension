@@ -831,9 +831,6 @@
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 881
     },
-    "ui/pages/multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.test.tsx": {
-      "React: Missing key props in lists": 1
-    },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
       "React: DOM nesting violations": 3
