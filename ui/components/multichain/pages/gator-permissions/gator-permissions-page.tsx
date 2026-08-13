@@ -34,6 +34,9 @@ import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-me
 import { transitionForward } from '../../../ui/transition';
 import { PermissionListItem, PermissionsEmptyState } from './components';
 
+const buildRouteWithFrom = (route: string, from: string): string =>
+  `${route}?from=${encodeURIComponent(from)}`;
+
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const [searchParams] = useSearchParams();
@@ -46,19 +49,20 @@ export const GatorPermissionsPage = () => {
   const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
   const { loading } = useGatorPermissions();
 
+  const from = searchParams.get('from') ?? DEFAULT_ROUTE;
+
   // If only sites permissions exist, redirect to sites page directly
   const shouldRedirect =
     !loading && totalSitesConnections > 0 && totalGatorPermissions === 0;
 
   useEffect(() => {
     if (shouldRedirect) {
-      const from = searchParams.get('from') ?? DEFAULT_ROUTE;
-      navigate(`${PERMISSIONS}?from=${from}`, { replace: true });
+      navigate(buildRouteWithFrom(PERMISSIONS, from), { replace: true });
     }
-  }, [shouldRedirect, navigate, searchParams]);
+  }, [shouldRedirect, navigate, from]);
 
   const handleBack = () => {
-    if (searchParams.get('from') === DEFAULT_ROUTE) {
+    if (from === DEFAULT_ROUTE) {
       runCloseTransition(() => navigate(-1));
     } else {
       navigate(DEFAULT_ROUTE);
@@ -89,6 +93,7 @@ export const GatorPermissionsPage = () => {
         </Header>
         <Content padding={0}>
           <Box
+            data-testid="gator-permissions-loading"
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Center}
@@ -149,7 +154,11 @@ export const GatorPermissionsPage = () => {
                 <PermissionListItem
                   total={totalSitesConnections}
                   permissionGroupName={t('connections')}
-                  onClick={() => transitionForward(() => navigate(PERMISSIONS))}
+                  onClick={() =>
+                    transitionForward(() =>
+                      navigate(buildRouteWithFrom(PERMISSIONS, from)),
+                    )
+                  }
                 />
               </>
             )}
@@ -172,7 +181,9 @@ export const GatorPermissionsPage = () => {
                   total={totalGatorPermissions}
                   permissionGroupName={t('tokenTransfer')}
                   onClick={() =>
-                    transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE))
+                    transitionForward(() =>
+                      navigate(buildRouteWithFrom(TOKEN_TRANSFER_ROUTE, from)),
+                    )
                   }
                 />
               </>

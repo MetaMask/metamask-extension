@@ -26,6 +26,9 @@ export const openPermissionsPageFlow = async (
   const isGatorPage = await gatorPermissionsPage.isPageDisplayed();
 
   if (isGatorPage) {
+    // Wait for loading to complete before checking for buttons
+    await gatorPermissionsPage.waitForLoadingComplete();
+
     // If only dapp connections exist (no gator permissions), the page auto-redirects to Permissions page
     const hasConnectionsButton =
       await gatorPermissionsPage.isConnectionsButtonPresent();
@@ -33,7 +36,7 @@ export const openPermissionsPageFlow = async (
       console.log(
         'Detected Gator Permissions Page "Connections" section, clicking to navigate to Permissions Page',
       );
-      await gatorPermissionsPage.clickSites();
+      await gatorPermissionsPage.clickConnections();
     } else {
       console.log(
         'Gator Permissions Page detected - no Connections button means auto-redirect to Permissions page is happening',

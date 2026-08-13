@@ -26,6 +26,9 @@ class GatorPermissionsPage {
   private readonly gatorPermissionsPage =
     '[data-testid="gator-permissions-page"]';
 
+  private readonly loadingIndicator =
+    '[data-testid="gator-permissions-loading"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -65,7 +68,7 @@ class GatorPermissionsPage {
   /**
    * Click on Connections to navigate to Permissions page
    */
-  async clickSites(): Promise<void> {
+  async clickConnections(): Promise<void> {
     console.log('Click Connections on Gator Permissions page');
     await this.driver.clickElement(this.connectionsButton);
   }
@@ -73,9 +76,16 @@ class GatorPermissionsPage {
   /**
    * Check if the Connections button is present on the page.
    * The button may not be present if there are no site connections.
+   *
+   * @param timeout - Timeout in ms. Use a short timeout (1-2s) after
+   * waitForLoadingComplete() to avoid burning the full driver timeout
+   * when the button doesn't exist (auto-redirect case).
    */
-  async isConnectionsButtonPresent(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(this.connectionsButton);
+  async isConnectionsButtonPresent(timeout = 2000): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.connectionsButton,
+      timeout,
+    );
   }
 
   /**
@@ -86,6 +96,18 @@ class GatorPermissionsPage {
     return await this.driver.isElementPresentAndVisible(
       this.gatorPermissionsPage,
     );
+  }
+
+  /**
+   * Wait for the loading spinner to disappear.
+   * Call this before checking for buttons to avoid race conditions.
+   */
+  async waitForLoadingComplete(): Promise<void> {
+    console.log('Waiting for Gator Permissions page to finish loading');
+    await this.driver.assertElementNotPresent(this.loadingIndicator, {
+      timeout: 10000,
+    });
+    console.log('Gator Permissions page finished loading');
   }
 }
 
