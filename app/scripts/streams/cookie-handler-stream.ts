@@ -5,6 +5,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
@@ -209,11 +210,10 @@ const onDisconnectDestroyCookieStreams = () => {
   }
 };
 
-const onMessageSetUpCookieHandlerStreams = (msg: {
-  name: string;
-  origin: string;
-}): Promise<string | undefined> | undefined => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+const onMessageSetUpCookieHandlerStreams = (
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!cookieHandlerExtStream) {
       setupCookieHandlerExtStreams();
     }
@@ -221,6 +221,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 
