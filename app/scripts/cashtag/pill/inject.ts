@@ -15,18 +15,25 @@ function buildPillContents(data: AssetData) {
   }
 
   const ticker = document.createElement('span');
-  ticker.className = 'mm-cashtag-pill-ticker';
   ticker.textContent = data.ticker;
-
-  const priceEl = document.createElement('span');
-  priceEl.className = 'mm-cashtag-pill-price';
-  if (data.price !== null) {
-    priceEl.textContent = formatUsd(data.price);
-  }
 
   const label = document.createElement('span');
   label.className = 'mm-cashtag-pill-label';
-  label.append(ticker, priceEl);
+  label.append(ticker);
+
+  if (data.price !== null) {
+    const priceEl = document.createElement('span');
+    priceEl.className = 'mm-cashtag-pill-price';
+    if (data.change24hPercent !== null) {
+      priceEl.classList.add(
+        data.change24hPercent >= 0
+          ? 'mm-cashtag-pill-price--up'
+          : 'mm-cashtag-pill-price--down',
+      );
+    }
+    priceEl.textContent = formatUsd(data.price);
+    label.append(priceEl);
+  }
 
   const fragment = document.createDocumentFragment();
   fragment.append(icon, label);

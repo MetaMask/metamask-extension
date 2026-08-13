@@ -1,10 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
 import type { AssetData, ResolvedTicker } from '../lib/types';
 import {
+  bindHostColorScheme,
   injectPageStyles,
   loadCss,
   removePageStyles,
@@ -22,23 +23,6 @@ type WidgetHandle = {
   show: (resolved: ResolvedTicker) => void;
   stop: () => void;
 };
-
-function applyWidgetTheme(host: HTMLElement) {
-  const page = document.documentElement;
-  const isLight =
-    page.classList.contains('light') ||
-    page.getAttribute('data-theme') === 'light' ||
-    page.getAttribute('data-color-mode') === 'light';
-  host.dataset.theme = isLight ? 'light' : 'dark';
-}
-
-function openPortfolioExplore(ticker: string) {
-  window.open(
-    `https://portfolio.metamask.io/explore/tokens?search=${encodeURIComponent(ticker)}`,
-    '_blank',
-    'noopener,noreferrer',
-  );
-}
 
 function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
   if (!asset.caipAssetId) {
@@ -58,18 +42,14 @@ export async function injectWidget() {
     widgetPageStyleAttr,
   );
 
-  // Single page-level widget host. Cashtag anchors target this id via popovertarget.
   const host = document.createElement('div');
   host.id = 'mm-cashtag-popover';
   host.setAttribute('popover', 'auto');
   host.popover = 'auto';
   host.style.setProperty(positionAnchorProp, activeAnchorVar);
-  applyWidgetTheme(host);
 
   const shadowRoot = host.attachShadow({ mode: 'open' });
 
-  // Fetch built CSS (not import): HtmlBundler strips CSS imported from JS to
-  // an empty module, which broke shadow styles and aborted injectWidget().
   const widgetCss = await loadCss('scripts/cashtag/widget/widget.css');
   if (widgetCss) {
     const style = document.createElement('style');
@@ -81,6 +61,8 @@ export async function injectWidget() {
   shadowRoot.appendChild(mountPoint);
 
   document.documentElement.appendChild(host);
+
+  const unbindColorScheme = bindHostColorScheme(host);
   const root = createRoot(mountPoint);
 
   return {
@@ -103,11 +85,11 @@ export async function injectWidget() {
               })
               .catch(() => undefined);
           }}
-          onFlag={() => openPortfolioExplore(resolved.primary.ticker)}
         />,
       );
     },
     stop() {
+      unbindColorScheme();
       root.unmount();
       host.remove();
       removePageStyles(widgetPageStyleAttr);
@@ -124,15 +106,19 @@ export function bindWidgetTriggers(
   const popoverId = widget.shadowHost.id;
   let lastSource: HTMLElement | null = null;
 
-  const onInvokerClick = (event: MouseEvent) => {
-    const source = event.currentTarget;
-    if (!(source instanceof HTMLAnchorElement)) {
+  // interestfor shows/hides the popover. We only fill content when it opens.
+  const onBeforeToggle = (event: Event) => {
+    const toggle = event as ToggleEvent;
+    if (toggle.newState !== 'open') {
       return;
     }
 
-    // Keep the X cashtag navigation from firing while opening the widget.
-    event.preventDefault();
-    event.stopPropagation();
+    const source = document.querySelector<HTMLAnchorElement>(
+      `a[interestfor="${popoverId}"]:interest-source`,
+    );
+    if (!source) {
+      return;
+    }
 
     if (lastSource && lastSource !== source) {
       lastSource.style.removeProperty(anchorNameProp);
@@ -143,24 +129,21 @@ export function bindWidgetTriggers(
 
     resolveTicker(symbolFromCashtagAnchor(source))
       .then((resolved) => {
-        if (!resolved) {
+        if (!resolved || !source.isConnected || lastSource !== source) {
           return;
         }
         widget.show(resolved);
-        if (!widget.shadowHost.matches(':popover-open')) {
-          widget.shadowHost.showPopover();
-        }
       })
       .catch(() => undefined);
   };
+
+  widget.shadowHost.addEventListener('beforetoggle', onBeforeToggle);
 
   const bind = (element: HTMLAnchorElement) => {
     if (mounted.has(element)) {
       return;
     }
-    element.setAttribute('popovertarget', popoverId);
-    element.setAttribute('popovertargetaction', 'show');
-    element.addEventListener('click', onInvokerClick);
+    element.setAttribute('interestfor', popoverId);
     mounted.add(element);
   };
 
@@ -192,9 +175,7 @@ export function bindWidgetTriggers(
         lastSource = null;
       }
       invoker.style.removeProperty(anchorNameProp);
-      invoker.removeAttribute('popovertarget');
-      invoker.removeAttribute('popovertargetaction');
-      invoker.removeEventListener('click', onInvokerClick);
+      invoker.removeAttribute('interestfor');
       mounted.delete(invoker);
     }
   };
@@ -225,11 +206,10 @@ export function bindWidgetTriggers(
   return {
     stop() {
       observer.disconnect();
+      widget.shadowHost.removeEventListener('beforetoggle', onBeforeToggle);
       for (const invoker of mounted) {
         invoker.style.removeProperty(anchorNameProp);
-        invoker.removeAttribute('popovertarget');
-        invoker.removeAttribute('popovertargetaction');
-        invoker.removeEventListener('click', onInvokerClick);
+        invoker.removeAttribute('interestfor');
       }
       mounted.clear();
       lastSource = null;

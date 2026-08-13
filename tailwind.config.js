@@ -9,7 +9,6 @@ module.exports = {
   ],
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
-    // X ticker widget
     './app/scripts/cashtag/**/*.{js,jsx,ts,tsx}',
     // Ensures tailwind classnames are generated for design system components
     './node_modules/@metamask/design-system-react/**/*.{mjs,cjs}',

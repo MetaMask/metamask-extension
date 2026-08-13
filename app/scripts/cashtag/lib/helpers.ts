@@ -1,9 +1,11 @@
 import type { CaipChainId } from '@metamask/utils';
 import { isCaipChainId } from '@metamask/utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import { createFormatters } from '@metamask/client-utils';
+import browser from 'webextension-polyfill';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '#shared/constants/multichain/networks';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '#shared/constants/network';
+import { isEvmChainId } from '#shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '#shared/lib/network.utils';
 
 // X cashtag links look like:
 // <a href="/search?q=%24BTC&src=cashtag_click">$BTC</a>
@@ -13,10 +15,10 @@ const cashtagAnchorSelector =
 const tweetAncestorSelector = '[data-testid="tweet"]';
 const cashtagHrefPattern = /[?&]q=(?:%24|\$)([A-Z0-9]+)/iu;
 
-// Content-script pages can't load extension image URLs without WAR; map the
-// shared relative paths (./images/...) onto the public CDN mirror instead.
-const appImageCdn =
-  'https://cdn.jsdelivr.net/gh/MetaMask/metamask-extension@main/app';
+const { formatCurrency, formatCurrencyCompact, formatCurrencyTokenPrice } =
+  createFormatters({
+    locale: 'en-US',
+  });
 
 const chainImageMap: Record<string, string> = {
   ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -50,45 +52,19 @@ export function getChainImageUrl(chainId: string | null | undefined) {
     return null;
   }
 
-  return `${appImageCdn}/${relative.replace(/^\.\//u, '')}`;
+  return browser.runtime.getURL(relative.replace(/^\.\//u, ''));
 }
 
 export function formatUsd(amount: number) {
-  if (!Number.isFinite(amount)) {
-    return '—';
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: amount >= 1 ? 2 : 4,
-  }).format(amount);
+  return formatCurrencyTokenPrice(amount, 'USD') || '—';
 }
 
 export function formatUsdCompact(amount: number) {
-  if (!Number.isFinite(amount)) {
-    return '—';
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return formatCurrencyCompact(amount, 'USD') || '—';
 }
 
 export function formatSignedUsd(amount: number) {
-  if (!Number.isFinite(amount)) {
-    return '—';
-  }
-  const absolute = formatUsd(Math.abs(amount));
-  if (amount > 0) {
-    return `+${absolute}`;
-  }
-  if (amount < 0) {
-    return `-${absolute}`;
-  }
-  return absolute;
+  return formatCurrency(amount, 'USD', { signDisplay: 'always' }) || '—';
 }
 
 export function formatPercent(amount: number) {
@@ -109,7 +85,7 @@ export function formatChartTime(timestamp: number) {
 
 export function symbolFromCashtagAnchor(element: HTMLAnchorElement) {
   const href = element.getAttribute('href') ?? '';
-  return (href.match(cashtagHrefPattern)?.[1] ?? element.textContent ?? '')
+  return (cashtagHrefPattern.exec(href)?.[1] ?? element.textContent ?? '')
     .replace(/^\$/u, '')
     .trim()
     .toUpperCase();

@@ -272,7 +272,7 @@ ${Object.entries(env)
       'scripts/cashtag/pill/page.css',
       'scripts/cashtag/widget/widget.css',
       'scripts/cashtag/widget/page.css',
-      'images/logo/metamask-fox.svg',
+      'images/*',
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
@@ -453,7 +453,7 @@ ${Object.entries(env)
       'scripts/cashtag/pill/page.css',
       'scripts/cashtag/widget/widget.css',
       'scripts/cashtag/widget/page.css',
-      'images/logo/metamask-fox.svg',
+      'images/*',
     ]);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);

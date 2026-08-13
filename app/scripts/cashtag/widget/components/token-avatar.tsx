@@ -16,7 +16,7 @@ type Props = {
 
 const tokenSize = {
   sm: AvatarTokenSize.Md,
-  lg: AvatarTokenSize.Lg,
+  lg: AvatarTokenSize.Xl, // 48px
 } as const;
 
 export function TokenAvatar({ asset, size = 'sm' }: Props) {
@@ -25,7 +25,8 @@ export function TokenAvatar({ asset, size = 'sm' }: Props) {
 
   return (
     <BadgeWrapper
-      className="shrink-0"
+      // DS default includes `self-start`, which beats parent `items-center`.
+      className="shrink-0 self-center"
       badge={
         chainSrc ? (
           <AvatarNetwork

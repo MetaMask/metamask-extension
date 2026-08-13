@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { formatUsd, formatUsdCompact } from '../../lib/helpers';
 import type { AssetData } from '../../lib/types';
 import { TokenAvatar } from './token-avatar';
@@ -10,58 +15,39 @@ type Props = {
   onSelect: (asset: AssetData) => void;
 };
 
-const BackIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M12.5 4.5L7 10l5.5 5.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 function formatCell(value: number | null) {
   return value === null ? '—' : formatUsdCompact(value);
 }
 
 export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
   return (
-    <>
-      <header className="mb-5 flex items-center gap-3">
-        <button
-          type="button"
-          className="inline-flex size-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent p-0 text-icon-default hover:bg-muted-hover"
-          aria-label="Back"
+    <div className="flex h-full flex-col py-6">
+      <header className="mb-5 flex items-center gap-3 px-6">
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          size={ButtonIconSize.Md}
+          ariaLabel="Back"
+          className="text-icon-default hover:bg-muted-hover"
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
             onBack();
           }}
-        >
-          <BackIcon />
-        </button>
+        />
         <h2 className="m-0 text-s-heading-sm font-medium text-default">
           {ticker} results
         </h2>
       </header>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left">
+      <div className="min-h-0 flex-1 overflow-x-auto">
+        <table className="w-full table-fixed border-collapse text-left">
           <thead>
             <tr className="text-s-body-sm font-medium text-alternative">
-              <th className="pb-3 pr-3 font-medium">Name</th>
-              <th className="pb-3 pr-3 font-medium">Price</th>
-              <th className="pb-3 pr-3 font-medium">Market cap</th>
-              <th className="pb-3 pr-3 font-medium">Liquidity</th>
-              <th className="pb-3 font-medium">24h volume</th>
+              <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
+              <th className="pb-3 pr-3 text-right font-medium">Price</th>
+              <th className="pb-3 pr-3 text-right font-medium">Market cap</th>
+              <th className="pb-3 pr-3 text-right font-medium">Liquidity</th>
+              <th className="pb-3 pr-6 text-right font-medium">24h volume</th>
             </tr>
           </thead>
           <tbody>
@@ -73,24 +59,32 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   className="cursor-pointer border-t border-muted text-s-body-sm text-default hover:bg-muted-hover"
                   onClick={() => onSelect(asset)}
                 >
-                  <td className="py-3 pr-3">
-                    <div className="flex items-center gap-2">
+                  <td className="py-3 pl-6 pr-3">
+                    <div className="flex min-w-0 items-center gap-2">
                       <TokenAvatar asset={asset} />
-                      <span className="font-medium">{asset.ticker}</span>
+                      <span className="truncate font-medium">
+                        {asset.ticker}
+                      </span>
                     </div>
                   </td>
-                  <td className="py-3 pr-3">
+                  <td className="py-3 pr-3 text-right tabular-nums">
                     {asset.price === null ? '—' : formatUsd(asset.price)}
                   </td>
-                  <td className="py-3 pr-3">{formatCell(asset.marketCap)}</td>
-                  <td className="py-3 pr-3">{formatCell(asset.liquidity)}</td>
-                  <td className="py-3">{formatCell(asset.volume24h)}</td>
+                  <td className="py-3 pr-3 text-right tabular-nums">
+                    {formatCell(asset.marketCap)}
+                  </td>
+                  <td className="py-3 pr-3 text-right tabular-nums">
+                    {formatCell(asset.liquidity)}
+                  </td>
+                  <td className="py-3 pr-6 text-right tabular-nums">
+                    {formatCell(asset.volume24h)}
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }

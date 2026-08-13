@@ -149,13 +149,10 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
-            // X widget is a sibling content script in the same extension isolated world. Scuttling here removes globals
-            // Keep compartment wrapping for contentscript modules, but do not scuttle the shared world.
+            // Same-extension content scripts share one world; scuttling here
+            // breaks the React-based X widget that runs alongside this bundle.
             scuttleGlobalThis: {
               enabled: false,
-              // enabled: true,
-              // Globals used by the contentscript
-              // exceptions: ['browser', 'chrome', 'btoa'],
             },
           },
         };

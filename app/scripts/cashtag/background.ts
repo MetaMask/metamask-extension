@@ -1,19 +1,23 @@
 import type { CaipAssetType } from '@metamask/utils';
 import browser from 'webextension-polyfill';
-import { POPUP_FILE, SIDEPANEL_FILE } from '../../../shared/constants/app';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { POPUP_FILE, SIDEPANEL_FILE } from '#shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '#shared/constants/metametrics';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { buildAssetRoutePath } from '#shared/lib/asset-route';
+import { getManifestFlags } from '#shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
 
 const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const popupResetDelayMs = 1000;
-// Side panel must not use a hash in setOptions — Chrome reuses that path on
-// reopen and leaves the user stuck on swap/asset. Cold open uses OPEN_ROUTE
-// retries instead once the panel document mounts.
+// Retry delays for broadcasting OPEN_ROUTE after a cold open,
+// since the panel document may not have mounted
 const openRouteRetryDelaysMs = [0, 150, 400];
 
 let registered = false;
@@ -34,7 +38,7 @@ async function broadcastTickerWidgetEnabled(enabled: boolean) {
       ),
     );
   } catch {
-    // Tabs without the content script (or query failures) are ignored.
+    // Tabs without the content script are ignored
   }
 }
 
@@ -60,6 +64,21 @@ function shouldUseSidePanel(controller: Controller | undefined) {
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? true;
   return preferred && Boolean(globalThis.chrome?.sidePanel?.open);
+}
+
+function isCashtagInjectionFlagEnabled(controller: Controller | undefined) {
+  const flags = {
+    ...controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags,
+    ...getManifestFlags().remoteFeatureFlags,
+  };
+  return getBooleanFeatureFlag(flags.cashtagInjection, false);
+}
+
+function isTickerWidgetEnabled(controller: Controller | undefined) {
+  const preferenceEnabled =
+    controller?.preferencesController?.state?.preferences?.showTickerWidget ??
+    true;
+  return isCashtagInjectionFlagEnabled(controller) && preferenceEnabled;
 }
 
 function broadcastOpenRoute(path: string, search?: `?${string}`) {
@@ -98,7 +117,8 @@ async function resetSidePanelPath(tabId?: number) {
     return;
   }
 
-  // Clear both global and tab-scoped options — either may retain a prior hash.
+  // Tab-scoped options override the global default, so reset both to ensure
+  // the panel opens at SIDEPANEL_FILE rather than a path set by a prior open.
   await sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true });
   if (typeof tabId === 'number') {
     await sidePanel.setOptions({
@@ -137,14 +157,13 @@ async function openSidePanel(sender: {
 
 async function openPopupWithRoute(hash: string) {
   const action = globalThis.chrome?.action;
-  const openPopupFn = action?.openPopup;
-  if (!action?.setPopup || typeof openPopupFn !== 'function') {
+  if (!action?.setPopup || typeof action.openPopup !== 'function') {
     throw new Error('popup-unavailable');
   }
 
   await action.setPopup({ popup: `${POPUP_FILE}${hash}` });
   try {
-    await openPopupFn.call(action);
+    await action.openPopup();
   } finally {
     // Delay reset so the popup document can start loading the hash URL.
     globalThis.setTimeout(() => {
@@ -201,50 +220,49 @@ export function registerCashtagBackgroundBridge({
 
   getController()?.controllerMessenger?.subscribe(
     'PreferencesController:stateChange',
-    (enabled) => {
-      broadcastTickerWidgetEnabled(enabled).catch(() => undefined);
+    () => {
+      broadcastTickerWidgetEnabled(
+        isTickerWidgetEnabled(getController()),
+      ).catch(() => undefined);
     },
     (state) => state?.preferences?.showTickerWidget ?? true,
   );
 
   browser.runtime.onMessage.addListener((message, sender) => {
-    if (message?.type === EXTENSION_MESSAGES.GET_REMOTE_FEATURE_FLAG) {
-      const flagName = bodyString(message, 'flagName');
-      if (!flagName) {
-        return undefined;
-      }
-      const controller = getController();
-      const flags = {
-        ...controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags,
-        ...getManifestFlags().remoteFeatureFlags,
-      };
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.GET_REMOTE_FEATURE_FLAG,
-        body: {
-          flagName,
-          enabled: getBooleanFeatureFlag(flags[flagName], false),
-        },
-      });
-    }
-
     if (message?.type === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
-      const controller = getController();
-      const enabled =
-        controller?.preferencesController?.state?.preferences
-          ?.showTickerWidget ?? true;
       return Promise.resolve({
         type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
-        body: { enabled },
+        body: { enabled: isTickerWidgetEnabled(getController()) },
       });
     }
 
     if (message?.type === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED) {
       const controller = getController();
       const enabled = message.body?.enabled === true;
+      const previous =
+        controller?.preferencesController?.state?.preferences
+          ?.showTickerWidget ?? true;
       controller?.preferencesController?.setPreference?.(
         'showTickerWidget',
         enabled,
       );
+      if (previous !== enabled) {
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+            .addCategory(MetaMetricsEventCategory.Settings)
+            .addProperties({
+              /* eslint-disable @typescript-eslint/naming-convention */
+              settings_group: 'preferences_and_display',
+              settings_type: 'show_metamask_widget_on_x',
+              old_value: previous,
+              new_value: enabled,
+              show_metamask_widget_on_x: enabled,
+              /* eslint-enable @typescript-eslint/naming-convention */
+              location: 'x_widget',
+            })
+            .build(),
+        );
+      }
       return Promise.resolve({
         type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
         body: { enabled },
@@ -252,6 +270,13 @@ export function registerCashtagBackgroundBridge({
     }
 
     if (message?.type === EXTENSION_MESSAGES.GET_DATA) {
+      if (!isTickerWidgetEnabled(getController())) {
+        return Promise.resolve({
+          type: EXTENSION_MESSAGES.GET_DATA,
+          body: { asset: null, similar: [], priceHistory: null },
+        });
+      }
+
       const fields = Array.isArray(message.body?.fields)
         ? message.body.fields.filter(
             (field: unknown): field is string => typeof field === 'string',
@@ -299,6 +324,13 @@ export function registerCashtagBackgroundBridge({
     }
 
     if (message?.type === EXTENSION_MESSAGES.OPEN_EXTENSION) {
+      if (!isTickerWidgetEnabled(getController())) {
+        return Promise.resolve({
+          type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+          body: { ok: false, reason: 'disabled' },
+        });
+      }
+
       const page = bodyString(message, 'page');
       const caipAssetId = bodyString(message, 'caipAssetId');
 

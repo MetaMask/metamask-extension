@@ -1,16 +1,18 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
+import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
 import type { AssetData, ResolvedTicker } from './types';
 
-const tokenSearchUrl = 'https://token.api.cx.metamask.io/tokens/search';
+const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
 const historicalPricesUrl =
   'https://price.api.cx.metamask.io/v3/historical-prices';
-const iconBase = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
+const clientIdHeader = { 'X-Client-Id': 'extension' };
 
 type SearchHit = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
+  isVerified?: boolean;
   price?: string | number | null;
   marketCap?: string | number | null;
   aggregatedUsdVolume?: string | number | null;
@@ -35,18 +37,15 @@ function chainIdFromAssetId(assetId: string): CaipChainId | null {
 }
 
 function toAssetData(hit: SearchHit, ticker: string): AssetData {
-  const chainId = chainIdFromAssetId(hit.assetId);
   return {
     ticker,
     name: hit.name,
-    iconUrl:
-      (chainId ? getAssetImageUrl(hit.assetId, chainId) : null) ??
-      `${iconBase}/${hit.assetId.replaceAll(':', '/')}.png`,
+    iconUrl: getCaipAssetImageUrl(hit.assetId) ?? null,
     color: null,
     caipAssetId: hit.assetId,
-    chainId,
+    chainId: chainIdFromAssetId(hit.assetId),
     isNative: hit.assetId.includes('/slip44:'),
-    verified: true,
+    verified: hit.isVerified === true,
     price: num(hit.price),
     change24hPercent: num(hit.pricePercentChange1d),
     marketCap: num(hit.marketCap),
@@ -74,7 +73,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
   });
   const response = await globalThis.fetch(`${tokenSearchUrl}?${params}`, {
     method: 'GET',
-    headers: { 'X-Client-Id': 'extension' },
+    headers: clientIdHeader,
   });
   if (!response.ok) {
     return [];
@@ -109,7 +108,7 @@ export async function fetchPriceHistory(
       `${historicalPricesUrl}/${caipChainId}/${assetType}?${params}`,
       {
         method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
+        headers: clientIdHeader,
       },
     );
     if (!response.ok) {

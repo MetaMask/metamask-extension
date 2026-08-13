@@ -25,15 +25,6 @@ export type WidgetModel = {
   onSwap: (asset: AssetData) => void;
   onViewDetails: (asset: AssetData) => void;
   onDisable: () => void;
-  onFlag: () => void;
-};
-
-export type InterestAnchor = HTMLAnchorElement & {
-  interestForElement: Element | null;
-};
-
-export type InterestEvent = Event & {
-  source: Element | null;
 };
 
 export type Controller = {

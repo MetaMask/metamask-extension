@@ -15,8 +15,9 @@ a[data-mm-cashtag]:active {
   border-radius: 999px;
   border: 1px solid #ffffff14;
   background: #ffffff0a;
-  color: #fff;
+  color: #fff !important;
   font-size: 13px;
+  font-weight: 500 !important;
   line-height: 1.2;
   vertical-align: middle;
   text-decoration: none;
@@ -31,7 +32,7 @@ a[data-mm-cashtag]:active {
   a[data-mm-cashtag]:active {
     border-color: #b4b4b566;
     background: #b4b4b528;
-    color: #131416;
+    color: #131416 !important;
   }
 }
 
@@ -51,6 +52,10 @@ a[data-mm-cashtag] .mm-cashtag-pill-label {
   min-width: 0;
 }
 
-a[data-mm-cashtag] .mm-cashtag-pill-price:empty {
-  display: none;
+a[data-mm-cashtag] .mm-cashtag-pill-price--up {
+  color: #457a39 !important;
+}
+
+a[data-mm-cashtag] .mm-cashtag-pill-price--down {
+  color: #ca3542 !important;
 }

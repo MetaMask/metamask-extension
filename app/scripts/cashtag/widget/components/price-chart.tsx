@@ -8,7 +8,7 @@ import {
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../../../../shared/constants/messages';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { formatChartTime, formatUsd } from '../../lib/helpers';
 
 type Props = {
@@ -17,9 +17,8 @@ type Props = {
   positive: boolean;
 };
 
-function readCssColor(element: Element, name: string, fallback: string) {
-  const value = getComputedStyle(element).getPropertyValue(name).trim();
-  return value || fallback;
+function readCssColor(element: Element, name: string) {
+  return getComputedStyle(element).getPropertyValue(name).trim();
 }
 
 function toSeriesData(values: number[], currentPrice: number | null) {
@@ -97,27 +96,13 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
       return;
     }
 
-    // Chart canvas API needs concrete colors; prefer CSS vars when present.
-    /* eslint-disable @metamask/design-tokens/color-no-hex */
+    // Chart canvas API needs concrete colors resolved from design-token CSS vars.
     const lineColor = positive
-      ? readCssColor(container, '--color-success-default', '#28a745')
-      : readCssColor(container, '--color-error-default', '#d73a49');
-    const textColor = readCssColor(
-      container,
-      '--color-text-alternative',
-      '#848c96',
-    );
-    const baselineColor = readCssColor(
-      container,
-      '--color-border-muted',
-      '#3c3c3c',
-    );
-    const crosshairColor = readCssColor(
-      container,
-      '--color-border-default',
-      '#848c96',
-    );
-    /* eslint-enable @metamask/design-tokens/color-no-hex */
+      ? readCssColor(container, '--color-success-default')
+      : readCssColor(container, '--color-error-default');
+    const textColor = readCssColor(container, '--color-text-alternative');
+    const baselineColor = readCssColor(container, '--color-border-muted');
+    const crosshairColor = readCssColor(container, '--color-border-default');
 
     const chart = createChart(container, {
       width: container.clientWidth,
@@ -135,7 +120,6 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
         borderVisible: false,
         scaleMargins: { top: 0.12, bottom: 0.12 },
       },
-      leftPriceScale: { visible: false },
       timeScale: {
         borderVisible: false,
         timeVisible: true,
@@ -149,18 +133,12 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
         timeFormatter: (time: number) => formatChartTime(time * 1000),
       },
       crosshair: {
-        mode: 1,
         vertLine: {
-          visible: true,
           labelVisible: false,
-          width: 1,
           style: LineStyle.Dotted,
           color: crosshairColor,
         },
         horzLine: {
-          visible: true,
-          labelVisible: true,
-          width: 1,
           style: LineStyle.Dotted,
           color: crosshairColor,
         },
@@ -174,9 +152,7 @@ export function PriceChart({ caipAssetId, currentPrice, positive }: Props) {
     const series = chart.addSeries(LineSeries, {
       color: lineColor,
       lineWidth: 2,
-      lastValueVisible: true,
       priceLineVisible: false,
-      crosshairMarkerVisible: true,
       crosshairMarkerRadius: 5,
       crosshairMarkerBorderColor: lineColor,
       crosshairMarkerBackgroundColor: lineColor,

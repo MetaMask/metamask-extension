@@ -1,8 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 
 type Props = {
   onDisable: () => void;
-  onFlag: () => void;
 };
 
 const menuId = 'mm-cashtag-more-menu';
@@ -21,38 +25,7 @@ const BanIcon = () => (
   </svg>
 );
 
-const FlagIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M5 3.5v13M5 4.5h8.5l-1.5 3.5 1.5 3.5H5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const MoreIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <circle cx="10" cy="4.5" r="1.4" fill="currentColor" />
-    <circle cx="10" cy="10" r="1.4" fill="currentColor" />
-    <circle cx="10" cy="15.5" r="1.4" fill="currentColor" />
-  </svg>
-);
-
-export function MoreMenu({ onDisable, onFlag }: Props) {
+export function MoreMenu({ onDisable }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -71,19 +44,17 @@ export function MoreMenu({ onDisable, onFlag }: Props) {
 
   return (
     <div className="inline-flex items-center">
-      <button
+      <ButtonIcon
         ref={triggerRef}
-        type="button"
-        className="inline-flex size-7 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent p-0 text-icon-alternative hover:bg-muted-hover hover:text-icon-default"
-        aria-label="More options"
-      >
-        <MoreIcon />
-      </button>
+        iconName={IconName.MoreVertical}
+        size={ButtonIconSize.Md}
+        ariaLabel="More options"
+        className="text-icon-alternative hover:bg-muted-hover hover:text-icon-default"
+      />
       <div
         ref={menuRef}
         id={menuId}
-        className="mm-cashtag-menu dark min-w-[255px] animate-mm-cashtag-fade-in rounded-xl border border-muted bg-default py-2 font-sans text-default shadow-sm"
-        data-theme="dark"
+        className="mm-cashtag-menu min-w-[255px] rounded-xl border border-muted bg-default py-2 font-sans text-default shadow-sm"
       >
         <button
           type="button"
@@ -92,14 +63,6 @@ export function MoreMenu({ onDisable, onFlag }: Props) {
         >
           <BanIcon />
           <span>Disable this feature</span>
-        </button>
-        <button
-          type="button"
-          className="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-4 py-4 text-left text-s-body-md font-medium text-default hover:bg-muted-hover"
-          onClick={onFlag}
-        >
-          <FlagIcon />
-          <span>Flag this token as unsafe</span>
         </button>
       </div>
     </div>

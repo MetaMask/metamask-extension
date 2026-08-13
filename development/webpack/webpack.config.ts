@@ -69,11 +69,11 @@ const webAccessibleResources = [
   ...(args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : []),
-  // Fetched by X widget content script via runtime.getURL
+  // Fetched via runtime.getURL (cashtag page/shadow CSS + chain badges)
   'scripts/cashtag/pill/page.css',
   'scripts/cashtag/widget/widget.css',
   'scripts/cashtag/widget/page.css',
-  'images/logo/metamask-fox.svg',
+  'images/*',
 ];
 
 // #region cache
@@ -155,7 +155,7 @@ const manifestPlugin = new ManifestPlugin({
 });
 
 async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
-  // Inline design-tokens (package exports break postcss-import resolution).
+  // Inline design-tokens
   const tokens = readFileSync(
     join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
     'utf8',

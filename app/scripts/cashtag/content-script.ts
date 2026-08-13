@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import type { ResolvedTicker } from './lib/types';
 import { injectPills } from './pill/inject';
 import { bindWidgetTriggers, injectWidget } from './widget/inject';
@@ -11,10 +11,9 @@ async function isWidgetEnabled() {
     const response = await browser.runtime.sendMessage({
       type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
     });
-    // Default to enabled unless the preference is explicitly turned off.
-    return response?.body?.enabled !== false;
+    return response?.body?.enabled === true;
   } catch {
-    return true;
+    return false;
   }
 }
 
@@ -33,7 +32,7 @@ function createTickerResolver() {
     }
 
     const inFlight = pending.get(ticker);
-    if (inFlight) {
+    if (inFlight !== undefined) {
       return inFlight;
     }
 
@@ -106,7 +105,7 @@ browser.runtime.onMessage.addListener((message) => {
   if (message?.type !== EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED) {
     return undefined;
   }
-  setEnabled(message.body?.enabled !== false).catch(() => undefined);
+  setEnabled(message.body?.enabled === true).catch(() => undefined);
   return undefined;
 });
 

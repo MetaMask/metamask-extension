@@ -11,7 +11,6 @@ export function Widget({
   onSwap,
   onViewDetails,
   onDisable,
-  onFlag,
 }: WidgetModel) {
   const [view, setView] = useState<WidgetView>('detail');
   const [active, setActive] = useState<AssetData>(data);
@@ -27,17 +26,12 @@ export function Widget({
   ];
 
   return (
-    <div
-      className="box-border h-[503px] w-[576px] animate-mm-cashtag-fade-in overflow-y-auto rounded-xl border border-muted bg-default p-6 text-default shadow-lg"
-      role="dialog"
-      aria-label={`${active.ticker} price widget`}
-    >
+    <div className="h-[503px] w-[576px] animate-mm-cashtag-fade-in overflow-y-auto rounded-xl border border-muted bg-default text-default shadow-lg">
       {view === 'detail' ? (
         <TokenDetail
           data={active}
           onSwap={() => onSwap(active)}
           onDisable={onDisable}
-          onFlag={onFlag}
           onViewDetails={() => onViewDetails(active)}
           onViewSimilar={results.length > 1 ? () => setView('results') : null}
         />
