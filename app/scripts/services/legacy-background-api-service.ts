@@ -849,10 +849,7 @@ export class LegacyBackgroundApiService {
       currencyCode,
     );
 
-    // Write operation: the runtime rollout flag is treated as always-on, so the
-    // unified AssetsController currency is kept in sync whenever it is included
-    // in the build (which is also what registers the controller).
-    if (getIsAssetsUnifiedStateIncludedInBuild()) {
+    if (this.isAssetsUnifyStateEnabled()) {
       this.#messenger.call(
         'AssetsController:setSelectedCurrency',
         currencyCode,
