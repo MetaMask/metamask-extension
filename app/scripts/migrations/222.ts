@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import {
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
@@ -13,8 +11,6 @@ import {
 import type { Migrate } from './types';
 
 export const version = 222;
-
-const FALLBACK_MARKER_STORAGE_KEY = `${STORAGE_KEY_PREFIX}${STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE}:${STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY}`;
 
 /**
  * Moves legacy StorageService data from browser.storage.local to IndexedDB.
@@ -32,10 +28,6 @@ export const migrate = (async (versionedData, _changedKeys) => {
   let allStorage: Record<string, unknown>;
   if (typeof storageLocal.getKeys === 'function') {
     const allKeys = await storageLocal.getKeys();
-    if (allKeys.includes(FALLBACK_MARKER_STORAGE_KEY)) {
-      return;
-    }
-
     const storageServiceKeys = allKeys.filter((key) =>
       key.startsWith(STORAGE_KEY_PREFIX),
     );
@@ -46,10 +38,6 @@ export const migrate = (async (versionedData, _changedKeys) => {
     allStorage = await storageLocal.get(storageServiceKeys);
   } else {
     allStorage = await storageLocal.get(null);
-  }
-
-  if (FALLBACK_MARKER_STORAGE_KEY in allStorage) {
-    return;
   }
 
   const storageServiceEntries = Object.entries(allStorage).filter(([key]) => {
@@ -68,7 +56,6 @@ export const migrate = (async (versionedData, _changedKeys) => {
       );
     } catch (error) {
       if (isIndexedDBMutationBlockedError(error)) {
-        await storageLocal.set({ [FALLBACK_MARKER_STORAGE_KEY]: true });
         console.warn(
           `Migration #${version}: IndexedDB is unavailable; keeping StorageService data in browser.storage.local.`,
         );

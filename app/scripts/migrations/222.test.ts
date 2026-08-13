@@ -2,8 +2,6 @@ import { jest } from '@jest/globals';
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import {
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
@@ -17,7 +15,6 @@ jest.mock('webextension-polyfill', () => ({
       get: jest.fn(),
       getKeys: jest.fn(),
       remove: jest.fn(),
-      set: jest.fn(),
     },
   },
 }));
@@ -25,7 +22,6 @@ jest.mock('webextension-polyfill', () => ({
 const mockBrowser = jest.mocked(browser);
 const STORAGE_SERVICE_KEY = `${STORAGE_KEY_PREFIX}TokenListController:tokensChainsCache:0x1`;
 const SECOND_STORAGE_SERVICE_KEY = `${STORAGE_KEY_PREFIX}SnapController:sourceCode:npm:test-snap`;
-const FALLBACK_MARKER_STORAGE_KEY = `${STORAGE_KEY_PREFIX}${STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE}:${STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY}`;
 
 function buildVersionedData() {
   return { meta: { version: version - 1 }, data: {} };
@@ -70,7 +66,6 @@ describe(`migration #${version}`, () => {
     mockBrowser.storage.local.get.mockResolvedValue({});
     mockBrowser.storage.local.getKeys.mockResolvedValue([]);
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
-    mockBrowser.storage.local.set.mockResolvedValue(undefined);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -186,20 +181,7 @@ describe(`migration #${version}`, () => {
     expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps using browser storage when a fallback marker exists', async () => {
-    mockStorage({
-      [STORAGE_SERVICE_KEY]: 'fallback-value',
-      [FALLBACK_MARKER_STORAGE_KEY]: true,
-    });
-
-    await migrate(buildVersionedData(), new Set());
-
-    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
-    expect(database.open).not.toHaveBeenCalled();
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-  });
-
-  it('pins browser storage when IndexedDB is blocked during open', async () => {
+  it('keeps legacy data when IndexedDB is blocked during open', async () => {
     database.open.mockRejectedValueOnce(createBlockedError());
     mockStorage({
       [STORAGE_SERVICE_KEY]: 'legacy-value',
@@ -209,24 +191,6 @@ describe(`migration #${version}`, () => {
     await migrate(oldStorage, new Set());
 
     expect(oldStorage.meta.version).toBe(version);
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      [FALLBACK_MARKER_STORAGE_KEY]: true,
-    });
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-  });
-
-  it('fails when the fallback marker cannot be persisted', async () => {
-    const markerError = new Error('fallback marker write failed');
-    database.open.mockRejectedValueOnce(createBlockedError());
-    mockStorage({
-      [STORAGE_SERVICE_KEY]: 'legacy-value',
-    });
-    mockBrowser.storage.local.set.mockRejectedValueOnce(markerError);
-
-    await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
-      markerError,
-    );
-
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
 

@@ -6,8 +6,6 @@ import type {
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import { BrowserStorageAdapter } from './browser-storage-adapter';
 import {
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
@@ -30,8 +28,7 @@ type IndexedDBStorageAdapterOptions = {
  * Extension StorageService adapter backed by IndexedDB.
  *
  * Falls back to browser.storage.local if IndexedDB is unavailable, as can
- * happen in Firefox private browsing mode. The fallback choice is persisted so
- * later browser-mode changes cannot silently switch to a different data source.
+ * happen in Firefox private browsing mode.
  */
 export class IndexedDBStorageAdapter implements StorageAdapter {
   readonly #database: StorageDatabase;
@@ -53,19 +50,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   async #selectStorage(): Promise<boolean> {
-    const fallbackMarker = await this.#fallbackStorage.getItem(
-      STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-      STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-    );
-
-    if (fallbackMarker.result === true) {
-      return false;
-    }
-
-    if (fallbackMarker.error) {
-      throw fallbackMarker.error;
-    }
-
     try {
       await this.#database.open(
         STORAGE_SERVICE_INDEXED_DB_NAME,
@@ -76,12 +60,6 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
       if (!isIndexedDBMutationBlockedError(error)) {
         throw error;
       }
-
-      await this.#fallbackStorage.setItem(
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-        true,
-      );
 
       console.warn(
         'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',

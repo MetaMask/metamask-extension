@@ -4,8 +4,6 @@ import type {
 } from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import {
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-  STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
@@ -104,12 +102,12 @@ describe('IndexedDBStorageAdapter', () => {
   });
 
   describe('when IndexedDB is blocked during open', () => {
-    it('pins and delegates all operations to fallback storage', async () => {
+    it('delegates all operations to fallback storage', async () => {
       const { adapter, database, fallbackStorage } = createAdapter();
       database.open.mockRejectedValue(createBlockedError());
-      fallbackStorage.getItem
-        .mockResolvedValueOnce({})
-        .mockResolvedValueOnce({ result: 'fallback-value' });
+      fallbackStorage.getItem.mockResolvedValueOnce({
+        result: 'fallback-value',
+      });
       fallbackStorage.getAllKeys.mockResolvedValueOnce(['fallback-key']);
 
       await adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value');
@@ -118,11 +116,6 @@ describe('IndexedDBStorageAdapter', () => {
       const keys = await adapter.getAllKeys(TEST_NAMESPACE);
       await adapter.clear(TEST_NAMESPACE);
 
-      expect(fallbackStorage.setItem).toHaveBeenCalledWith(
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-        true,
-      );
       expect(fallbackStorage.setItem).toHaveBeenCalledWith(
         TEST_NAMESPACE,
         TEST_KEY,
@@ -138,42 +131,22 @@ describe('IndexedDBStorageAdapter', () => {
       expect(database.open).toHaveBeenCalledTimes(1);
       expect(database.set).not.toHaveBeenCalled();
     });
+  });
 
-    it('continues using persisted fallback storage after restart', async () => {
-      const database = createDatabase();
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getItem
-        .mockResolvedValueOnce({ result: true })
-        .mockResolvedValueOnce({ result: 'fallback-value' });
-      const { adapter } = createAdapter({ database, fallbackStorage });
-
-      const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
-
-      expect(result).toStrictEqual({ result: 'fallback-value' });
-      expect(database.open).not.toHaveBeenCalled();
-    });
-
-    it('retries selection when the fallback marker cannot be written', async () => {
-      const markerError = new Error('marker write failed');
-      const database = createDatabase();
-      database.open.mockRejectedValue(createBlockedError());
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.setItem.mockRejectedValue(markerError);
-      const { adapter } = createAdapter({ database, fallbackStorage });
+  describe('when IndexedDB open fails unexpectedly', () => {
+    it('retries storage selection on the next operation', async () => {
+      const databaseError = new Error('IndexedDB open failed');
+      const { adapter, database, fallbackStorage } = createAdapter();
+      database.open.mockRejectedValueOnce(databaseError);
 
       await expect(
         adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
-      ).rejects.toBe(markerError);
-      await expect(
-        adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
-      ).rejects.toBe(markerError);
+      ).rejects.toBe(databaseError);
+      await adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value');
 
       expect(database.open).toHaveBeenCalledTimes(2);
-      expect(fallbackStorage.setItem).not.toHaveBeenCalledWith(
-        TEST_NAMESPACE,
-        TEST_KEY,
-        'value',
-      );
+      expect(database.set).toHaveBeenCalledWith({ [FULL_KEY]: 'value' });
+      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
@@ -186,7 +159,7 @@ describe('IndexedDBStorageAdapter', () => {
       const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
 
       expect(result).toStrictEqual({ error: databaseError });
-      expect(fallbackStorage.getItem).toHaveBeenCalledTimes(1);
+      expect(fallbackStorage.getItem).not.toHaveBeenCalled();
     });
 
     it('does not switch to fallback storage after a write fails', async () => {
