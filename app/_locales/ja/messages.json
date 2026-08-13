@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "これは高度な機能であり、慎重に使用してください。"
   },
-  "editPermissions": {
-    "message": "アクセス許可を編集"
-  },
   "editSpendingCap": {
     "message": "使用上限の編集"
   },
@@ -6884,9 +6881,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "アカウントからこの量のトークンを使用する、使用者権限を付与しようとしています。"
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1は$2にアクセスできます。"
   },
   "perps": {
     "message": "パーペチュアル"

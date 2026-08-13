@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
   },
-  "editPermissions": {
-    "message": "Editar permisos"
-  },
   "editSpendingCap": {
     "message": "Editar límite de gasto"
   },
@@ -6884,9 +6881,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Le está dando permiso al gastador para gastar esta cantidad de tokens de su cuenta."
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 tiene acceso a $2."
   },
   "perps": {
     "message": "Perps"

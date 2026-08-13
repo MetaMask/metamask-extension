@@ -3637,9 +3637,6 @@
   "editNonceMessage": {
     "message": "यह एक एडवांस्ड सुविधा है, सावधानी से इस्तेमाल करें।"
   },
-  "editPermissions": {
-    "message": "अनुमतियाँ बदलें"
-  },
   "editSpendingCap": {
     "message": "खर्च करने की लिमिट बदलें"
   },
@@ -6874,9 +6871,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 की पहुंच $2 तक है।"
   },
   "perps": {
     "message": "पर्प्स"

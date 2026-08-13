@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
   },
-  "editPermissions": {
-    "message": "Edit izin"
-  },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
   },
@@ -6884,9 +6881,6 @@
   },
   "permitSimulationDetailInfo": {
     "message": "Anda memberi izin kepada spender untuk menggunakan sejumlah token ini dari akun Anda."
-  },
-  "permittedChainToastUpdate": {
-    "message": "$1 memiliki akses ke $2."
   },
   "perps": {
     "message": "Perps"
