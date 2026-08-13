@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   TransactionMeta,
   TransactionType,
@@ -21,7 +21,7 @@ import { useConfirmContext } from '../../../../pages/confirmations/context/confi
 import type { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
 import type { ScamQuestionnaireProps } from './scam-questionnaire';
 import {
-  ScamQuestionnaireLocation,
+  ScamQuestionnaireTrigger,
   SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY,
 } from './scam-questionnaire.constants';
 
@@ -122,6 +122,11 @@ export function useScamQuestionnaire({
   const [isScamQuestionnaireVisible, setVisible] = useState(false);
   const [hasPassed, setHasPassed] = useState(false);
 
+  useEffect(() => {
+    setHasPassed(false);
+    setVisible(false);
+  }, [currentConfirmation?.id]);
+
   // Send-flow branch
   const { variant } = useABTest(
     SCAM_QUESTIONNAIRE_FLAG_KEY,
@@ -182,9 +187,9 @@ export function useScamQuestionnaire({
       onBypass: onScamComplete,
       onReject: onScamReject,
       onDismiss: hideScamQuestionnaire,
-      location: isMMSend
-        ? ScamQuestionnaireLocation.SendFlow
-        : ScamQuestionnaireLocation.ConfirmationsFlow,
+      trigger: isSendBranchRequired
+        ? ScamQuestionnaireTrigger.SecurityAlert
+        : ScamQuestionnaireTrigger.DomainList,
     },
   };
 }

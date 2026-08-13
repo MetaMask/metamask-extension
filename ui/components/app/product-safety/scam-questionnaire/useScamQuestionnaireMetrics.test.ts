@@ -21,7 +21,7 @@ import { useBalanceChanges } from '../../../../pages/confirmations/components/si
 import { useTransactionMetadataRequest } from '../../../../pages/confirmations/hooks/transactions/useTransactionMetadataRequest';
 import {
   Q1_OPTIONS,
-  ScamQuestionnaireLocation,
+  ScamQuestionnaireTrigger,
 } from './scam-questionnaire.constants';
 import { useScamQuestionnaireMetrics } from './useScamQuestionnaireMetrics';
 
@@ -71,7 +71,7 @@ function setup(balanceChanges: BalanceChange[] = []) {
   useTransactionMetadataRequestMock.mockReturnValue(TRANSACTION_META);
 
   const { result } = renderHook(() =>
-    useScamQuestionnaireMetrics(ScamQuestionnaireLocation.SendFlow),
+    useScamQuestionnaireMetrics(ScamQuestionnaireTrigger.SecurityAlert),
   );
   return { metrics: result.current, trackEvent };
 }

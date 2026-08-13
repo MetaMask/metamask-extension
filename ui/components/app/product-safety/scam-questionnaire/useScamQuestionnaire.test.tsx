@@ -17,7 +17,7 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { useABTest } from '../../../../hooks/useABTest';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
-  ScamQuestionnaireLocation,
+  ScamQuestionnaireTrigger,
   SCAM_QUESTIONNAIRE_DOMAIN_LIST_FLAG_KEY,
 } from './scam-questionnaire.constants';
 import { useScamQuestionnaire } from './useScamQuestionnaire';
@@ -249,10 +249,10 @@ describe('useScamQuestionnaire', () => {
       expect(setAlertConfirmed).not.toHaveBeenCalled();
     });
 
-    it('reports location as send_flow', () => {
+    it('reports trigger as security_alert', () => {
       const { result } = setupSendBranch();
-      expect(result.current.scamQuestionnaireProps.location).toBe(
-        ScamQuestionnaireLocation.SendFlow,
+      expect(result.current.scamQuestionnaireProps.trigger).toBe(
+        ScamQuestionnaireTrigger.SecurityAlert,
       );
     });
   });
@@ -326,10 +326,31 @@ describe('useScamQuestionnaire', () => {
       expect(result.current.isScamQuestionnaireVisible).toBe(false);
     });
 
-    it('reports location as confirmations_flow', () => {
+    it('resets pass state when the confirmation changes', () => {
       const { result } = setupDomainBranch();
-      expect(result.current.scamQuestionnaireProps.location).toBe(
-        ScamQuestionnaireLocation.ConfirmationsFlow,
+      act(() => result.current.showScamQuestionnaire());
+      act(() => result.current.scamQuestionnaireProps.onCleanPass());
+      expect(result.current.isScamQuestionnaireRequired).toBe(false);
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-2',
+          origin: 'https://aurum.foundation',
+          type: TransactionType.contractInteraction,
+          securityAlertResponse: { result_type: BlockaidResultType.Benign },
+        },
+      } as unknown as ReturnType<typeof useConfirmContext>);
+
+      act(() => {});
+
+      expect(result.current.isScamQuestionnaireRequired).toBe(true);
+      expect(result.current.isScamQuestionnaireVisible).toBe(false);
+    });
+
+    it('reports trigger as domain_list', () => {
+      const { result } = setupDomainBranch();
+      expect(result.current.scamQuestionnaireProps.trigger).toBe(
+        ScamQuestionnaireTrigger.DomainList,
       );
     });
   });
