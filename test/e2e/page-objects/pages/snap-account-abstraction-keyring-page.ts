@@ -1,6 +1,19 @@
 import { ERC_4337_ACCOUNT_SNAP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * External ERC-4337 account-abstraction keyring snap test site.
+ *
+ * Screen: hosted snap site (`ERC_4337_ACCOUNT_SNAP_URL`), not a MetaMask route.
+ * Owns: connect, create-account (private key/salt), chain config (bundler,
+ * entry point, factory, paymaster), and dialog confirmations for adding the
+ * AA account.
+ * Boundaries: the snap site + its immediate MetaMask dialogs only. Account
+ * list / home after creation belong to extension page objects.
+ * Related: confirmation/dialog page objects for snap install and account add.
+ *
+ * @see node_modules/@metamask/snap-account-abstraction-keyring-site/public/index.html
+ */
 class SnapAccountAbstractionKeyringPage {
   private readonly addAccountButton = {
     tag: 'button',

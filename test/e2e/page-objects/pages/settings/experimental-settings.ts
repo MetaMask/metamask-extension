@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings → Experimental: beta account Snap and watch-account toggles.
+ *
+ * Screen: `#/settings/experimental`, reached from
+ * `SettingsPage.goToExperimentalSettings`.
+ * Owns: page load check, Add account Snap toggle, and Watch account toggle
+ * (including reading toggle state).
+ * Boundaries: experimental toggles only. Preinstalled Snap settings UI belongs
+ * to `PreinstalledExampleSettings`; developer/debug options belong to
+ * `SettingsPage` / developer-tools surfaces.
+ * Related: `SettingsPage`.
+ *
+ * @see ui/pages/settings/experimental-tab/experimental-tab.tsx
+ */
 class ExperimentalSettings {
   // Locators
   private readonly addAccountSnapToggle =
