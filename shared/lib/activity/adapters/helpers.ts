@@ -2,10 +2,7 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
-import {
-  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
-  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
-} from '../../../constants/bridge';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
@@ -91,10 +88,9 @@ function getKnownTokenMetadata(
     (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
       ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
       : undefined) ??
-    [
-      ...Object.values(BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN),
-      ...Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR),
-    ].find((token) => token?.assetId === assetId);
+    Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR).find(
+      (token) => token?.assetId === assetId,
+    );
 
   return tokenMetadata
     ? { ...tokenMetadata, ...(assetId ? { assetId } : {}) }

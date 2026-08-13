@@ -1,10 +1,12 @@
-import { filterOutArcNativeAsset } from './arc';
+import { filterOutArcERC20USDAsset } from './arc';
 
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ARC_NATIVE_ASSET_ID =
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
+const ARC_ERC20_ASSET_ID =
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
 const ARC_ERC20_USDC_ADDRESS = '0x3600000000000000000000000000000000000000';
 
 type Asset = {
@@ -14,7 +16,7 @@ type Asset = {
   isNative?: boolean;
 };
 
-describe('filterOutArcNativeAsset', () => {
+describe('filterOutArcERC20USDAsset', () => {
   const arcNativeByAddress = {
     chainId: ARC_NATIVE_HEX_CHAIN_ID,
     address: ARC_NATIVE_ADDRESS,
@@ -33,15 +35,23 @@ describe('filterOutArcNativeAsset', () => {
     chainId: ARC_NATIVE_CAIP_CHAIN_ID,
     assetId: `${ARC_NATIVE_CAIP_CHAIN_ID}/erc20:${ARC_ERC20_USDC_ADDRESS}`,
   };
-  const arcNativeUpperAddress = {
+  // const arcNativeUpperAddress = {
+  //   chainId: ARC_NATIVE_HEX_CHAIN_ID.toUpperCase(),
+  //   address: ARC_NATIVE_ADDRESS.toUpperCase(),
+  //   isNative: true,
+  // };
+  // const arcNativeUpperAssetId = {
+  //   chainId: ARC_NATIVE_CAIP_CHAIN_ID.toUpperCase(),
+  //   assetId: ARC_NATIVE_ASSET_ID.toUpperCase(),
+  //   isNative: true,
+  // };
+  const arcERC20UpperAddress = {
     chainId: ARC_NATIVE_HEX_CHAIN_ID.toUpperCase(),
-    address: ARC_NATIVE_ADDRESS.toUpperCase(),
-    isNative: true,
+    address: ARC_ERC20_USDC_ADDRESS.toUpperCase(),
   };
-  const arcNativeUpperAssetId = {
+  const arcERC20UpperAssetId = {
     chainId: ARC_NATIVE_CAIP_CHAIN_ID.toUpperCase(),
-    assetId: ARC_NATIVE_ASSET_ID.toUpperCase(),
-    isNative: true,
+    assetId: ARC_ERC20_ASSET_ID.toUpperCase(),
   };
   const nonArcNativeAddress = {
     chainId: 'eip155:1',
@@ -65,19 +75,20 @@ describe('filterOutArcNativeAsset', () => {
     },
     {
       description:
-        'filters out the Arc native asset matched by address on the hex chainId',
+        'filters out the Arc ERC20 asset matched by address on the hex chainId',
       assets: [arcNativeByAddress, arcErc20UsdcByAddress],
-      expected: [arcErc20UsdcByAddress],
+      expected: [arcNativeByAddress],
     },
     {
       description:
-        'filters out the Arc native asset matched by assetId on the CAIP chainId',
+        'filters out the Arc ERC20 asset matched by assetId on the CAIP chainId',
       assets: [arcNativeByAssetId, arcErc20UsdcByAssetId],
-      expected: [arcErc20UsdcByAssetId],
+      expected: [arcNativeByAssetId],
     },
     {
-      description: 'matches the Arc native asset case-insensitively',
-      assets: [arcNativeUpperAddress, arcNativeUpperAssetId],
+      // Less relevant as containing numbers, but future-proof.
+      description: 'matches the Arc ERC20 asset case-insensitively',
+      assets: [arcERC20UpperAddress, arcERC20UpperAssetId],
       expected: [],
     },
     {
@@ -100,7 +111,7 @@ describe('filterOutArcNativeAsset', () => {
       description: 'preserves the order of the remaining assets',
       assets: [
         { chainId: 'eip155:1', address: '0xaaa' },
-        arcNativeByAddress,
+        arcErc20UsdcByAddress,
         { chainId: 'eip155:10', address: '0xbbb' },
       ],
       expected: [
@@ -114,7 +125,7 @@ describe('filterOutArcNativeAsset', () => {
   it.each(testCases)(
     '$description',
     ({ assets, expected }: { assets: Asset[]; expected: Asset[] }) => {
-      expect(filterOutArcNativeAsset(assets)).toStrictEqual(expected);
+      expect(filterOutArcERC20USDAsset(assets)).toStrictEqual(expected);
     },
   );
 });
