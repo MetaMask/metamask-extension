@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Multichain wallet details: accounts in a wallet and add-account entry.
+ *
+ * Screen: `#/multichain-wallet-details-page`, reached from the account list.
+ * Owns: wallet details container, account items/balances, and add-account
+ * type modal (Ethereum / Solana options).
+ * Boundaries: wallet details only. Account list and per-account details
+ * belong to `AccountListPage` / `MultichainAccountDetailsPage`.
+ * Related: `AccountListPage`, `MultichainAccountDetailsPage`.
+ *
+ * @see ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx
+ */
 class WalletDetailsPage {
   private readonly accountItems =
     '[data-testid^="wallet-details-account-item-"]';

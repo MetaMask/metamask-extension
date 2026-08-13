@@ -33,6 +33,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
@@ -78,6 +79,7 @@ export default function useSubmitBridgeTransaction(
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     variantName: chainValueOrderVariantName,
@@ -195,6 +197,7 @@ export default function useSubmitBridgeTransaction(
 
     try {
       if (
+        !inE2e &&
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
