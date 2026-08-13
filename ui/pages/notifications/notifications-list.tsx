@@ -1,4 +1,4 @@
-import React, { startTransition, useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
@@ -123,23 +123,6 @@ const NotificationsListStates = ({
 };
 
 export const NotificationsList = (props: NotificationsListProps) => {
-  // Keep loading/error urgent; defer the expensive list body when Redux
-  // notification data changes (e.g. after deleteExpiredNotifications).
-  const [deferredNotifications, setDeferredNotifications] = useState(
-    props.notifications,
-  );
-
-  useEffect(() => {
-    startTransition(() => {
-      setDeferredNotifications(props.notifications);
-    });
-  }, [props.notifications]);
-
-  const listProps = {
-    ...props,
-    notifications: deferredNotifications,
-  };
-
   return (
     <Box
       data-testid="notifications-list"
@@ -148,11 +131,11 @@ export const NotificationsList = (props: NotificationsListProps) => {
       className="notifications__list"
     >
       {/* Actual list (handling all states) */}
-      <NotificationsListStates {...listProps} />
+      <NotificationsListStates {...props} />
 
       {/* Read All Button */}
-      {deferredNotifications.length > 0 && props.notificationsCount > 0 ? (
-        <NotificationsListReadAllButton notifications={deferredNotifications} />
+      {props.notifications.length > 0 && props.notificationsCount > 0 ? (
+        <NotificationsListReadAllButton notifications={props.notifications} />
       ) : null}
     </Box>
   );

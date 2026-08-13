@@ -8,6 +8,7 @@ import {
 } from '@metamask/notification-services-controller/notification-services';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useDeferredValue } from '../../hooks/useDeferredValue';
 import {
   IconName,
   IconSize,
@@ -185,10 +186,11 @@ export default function Notifications() {
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const combinedNotifications = useCombinedNotifications();
+  const deferredCombinedNotifications = useDeferredValue(combinedNotifications);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
-    () => filterNotifications(activeTab, combinedNotifications),
-    [activeTab, combinedNotifications],
+    () => filterNotifications(activeTab, deferredCombinedNotifications),
+    [activeTab, deferredCombinedNotifications],
   );
 
   let hasNotifySnaps = false;
