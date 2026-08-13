@@ -2876,7 +2876,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getLedgerAppConfiguration',
       ),
-      getLedgerMode: this.getLedgerMode.bind(this),
+      getLedgerMode: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerMode',
+      ),
       getTrezorFeatures: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getTrezorFeatures',
@@ -7240,20 +7243,5 @@ export default class MetamaskController extends EventEmitter {
       isSupported,
       upgradeContractAddress,
     };
-  }
-
-  /**
-   * Get the active Ledger handler mode based on the remote feature flag.
-   *
-   * Delegates to `LegacyBackgroundApiService:getLedgerMode`, which merges
-   * remote flags with manifest overrides so `.manifest-overrides.json` can
-   * flip the flag for local/E2E builds.
-   *
-   * @returns {import('../../shared/constants/offscreen-communication').LedgerHandlerMode}
-   */
-  getLedgerMode() {
-    return this.controllerMessenger.call(
-      'LegacyBackgroundApiService:getLedgerMode',
-    );
   }
 }

@@ -12,8 +12,10 @@ type RemoteFeatureFlagState = {
 };
 
 type LedgerModeController = {
-  getLedgerMode: () => LedgerHandlerMode;
   controllerMessenger: {
+    call: (
+      action: 'LegacyBackgroundApiService:getLedgerMode',
+    ) => LedgerHandlerMode;
     subscribe: (
       action: 'RemoteFeatureFlagController:stateChange',
       handler: (isDmkEnabled: boolean) => void,
@@ -51,7 +53,7 @@ export function sendSwitchLedgerModeMessage(mode: LedgerHandlerMode): void {
  *
  * No-op on MV2 (no offscreen document).
  *
- * @param controller - Controller exposing getLedgerMode and messenger subscribe.
+ * @param controller - Controller exposing messenger call/subscribe.
  * @param offscreenReady - Resolves once the offscreen listener is registered.
  */
 export function setupLedgerModeOffscreenBridge(
@@ -62,6 +64,11 @@ export function setupLedgerModeOffscreenBridge(
     return;
   }
 
+  const getLedgerMode = (): LedgerHandlerMode =>
+    controller.controllerMessenger.call(
+      'LegacyBackgroundApiService:getLedgerMode',
+    );
+
   // The offscreen router emits this after registering its mode listener.
   // This second handshake covers createOffscreen() resolving via its timeout
   // before the offscreen document has actually finished booting.
@@ -71,7 +78,7 @@ export function setupLedgerModeOffscreenBridge(
         message.target === OffscreenCommunicationTarget.extensionMain &&
         message.event === OffscreenCommunicationEvents.ledgerModeReady
       ) {
-        sendSwitchLedgerModeMessage(controller.getLedgerMode());
+        sendSwitchLedgerModeMessage(getLedgerMode());
       }
       return undefined;
     },
@@ -82,7 +89,7 @@ export function setupLedgerModeOffscreenBridge(
   // occurred while the offscreen document was booting.
   Promise.resolve(offscreenReady)
     .then(() => {
-      sendSwitchLedgerModeMessage(controller.getLedgerMode());
+      sendSwitchLedgerModeMessage(getLedgerMode());
     })
     .catch(() => {
       // The offscreen document is unavailable, so there is no receiver.
@@ -93,8 +100,8 @@ export function setupLedgerModeOffscreenBridge(
   controller.controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     () => {
-      // Resolve through the controller so manifest overrides remain applied.
-      sendSwitchLedgerModeMessage(controller.getLedgerMode());
+      // Resolve through the service so manifest overrides remain applied.
+      sendSwitchLedgerModeMessage(getLedgerMode());
     },
     (state) => isDmkFeatureEnabled(state.remoteFeatureFlags),
   );
