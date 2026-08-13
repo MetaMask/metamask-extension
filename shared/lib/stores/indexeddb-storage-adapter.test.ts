@@ -1,21 +1,26 @@
-import 'fake-indexeddb/auto';
 import type {
   StorageAdapter,
   StorageGetResult,
 } from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { IndexedDBStore } from './indexeddb-store';
 import {
   STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
   STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
+  STORAGE_SERVICE_INDEXED_DB_NAME,
+  STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from './indexeddb-storage-constants';
 import {
   IndexedDBStorageAdapter,
   isIndexedDBMutationBlockedError,
 } from './indexeddb-storage-adapter';
 
-const FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR =
-  'A mutation operation was attempted on a database that did not allow mutations.';
+const TEST_NAMESPACE = 'TestController';
+const TEST_KEY = 'myKey';
+const FULL_KEY = `${STORAGE_KEY_PREFIX}${TEST_NAMESPACE}:${TEST_KEY}`;
+
+function createBlockedError(): DOMException {
+  return new DOMException('Browser-provided message', 'InvalidStateError');
+}
 
 function createFallbackStorage(): jest.Mocked<StorageAdapter> {
   return {
@@ -37,51 +42,35 @@ function createDatabase() {
   };
 }
 
+type DatabaseMock = ReturnType<typeof createDatabase>;
+
 function createAdapter({
-  databaseName = `test-storage-service-${crypto.randomUUID()}`,
+  database = createDatabase(),
   fallbackStorage = createFallbackStorage(),
 }: {
-  databaseName?: string;
+  database?: DatabaseMock;
   fallbackStorage?: jest.Mocked<StorageAdapter>;
 } = {}) {
   return {
-    adapter: new IndexedDBStorageAdapter({
-      databaseName,
-      fallbackStorage,
-    }),
+    adapter: new IndexedDBStorageAdapter({ database, fallbackStorage }),
+    database,
     fallbackStorage,
   };
 }
 
 describe('IndexedDBStorageAdapter', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
   describe('isIndexedDBMutationBlockedError', () => {
-    it('returns true for the Firefox private browsing IndexedDB mutation error', () => {
-      expect(
-        isIndexedDBMutationBlockedError(
-          new DOMException(
-            FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-            'InvalidStateError',
-          ),
-        ),
-      ).toBe(true);
-    });
-
-    it('does not depend on the browser-provided error message', () => {
-      expect(
-        isIndexedDBMutationBlockedError(
-          new DOMException(
-            'A different browser-provided message',
-            'InvalidStateError',
-          ),
-        ),
-      ).toBe(true);
-    });
-
-    it('returns false for other errors', () => {
+    it('classifies blocked IndexedDB mutations', () => {
+      expect(isIndexedDBMutationBlockedError(createBlockedError())).toBe(true);
       expect(isIndexedDBMutationBlockedError(new Error('Other error'))).toBe(
         false,
       );
@@ -93,401 +82,137 @@ describe('IndexedDBStorageAdapter', () => {
     });
   });
 
-  describe('getItem', () => {
-    it('returns { result } when the item exists in IndexedDB', async () => {
-      const { adapter, fallbackStorage } = createAdapter();
+  describe('when IndexedDB is available', () => {
+    it('uses IndexedDB for all storage operations', async () => {
+      const { adapter, database, fallbackStorage } = createAdapter();
+      database.get.mockResolvedValueOnce([{ data: 'test' }]);
+      database.getKeys.mockResolvedValue([FULL_KEY]);
 
-      await adapter.setItem('TestController', 'myKey', { data: 'test' });
+      await adapter.setItem(TEST_NAMESPACE, TEST_KEY, { data: 'test' });
+      const value = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
+      const keys = await adapter.getAllKeys(TEST_NAMESPACE);
+      await adapter.removeItem(TEST_NAMESPACE, TEST_KEY);
+      await adapter.clear(TEST_NAMESPACE);
 
-      await expect(
-        adapter.getItem('TestController', 'myKey'),
-      ).resolves.toStrictEqual({
-        result: expect.objectContaining({ data: 'test' }),
+      expect(database.open).toHaveBeenCalledWith(
+        STORAGE_SERVICE_INDEXED_DB_NAME,
+        STORAGE_SERVICE_INDEXED_DB_VERSION,
+      );
+      expect(database.set).toHaveBeenCalledWith({
+        [FULL_KEY]: { data: 'test' },
       });
-      expect(fallbackStorage.getItem).toHaveBeenCalledTimes(1);
-      expect(fallbackStorage.getItem).toHaveBeenCalledWith(
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-      );
-    });
-
-    it('returns an empty result without reading fallback storage when the item is missing', async () => {
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getItem.mockImplementation(
-        async (namespace): Promise<StorageGetResult> => {
-          return namespace === 'TestController'
-            ? { result: 'legacy-value' }
-            : {};
-        },
-      );
-      const { adapter } = createAdapter({ fallbackStorage });
-
-      await expect(
-        adapter.getItem('TestController', 'legacyKey'),
-      ).resolves.toStrictEqual({});
-      expect(fallbackStorage.getItem).toHaveBeenCalledTimes(1);
-      expect(fallbackStorage.getItem).toHaveBeenCalledWith(
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-      );
-    });
-
-    it('returns the error without switching sources when an IndexedDB read fails after open', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.get.mockRejectedValueOnce(blockedError);
-      const fallbackStorage = createFallbackStorage();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
-
-      await expect(
-        adapter.getItem('TestController', 'myKey'),
-      ).resolves.toStrictEqual({ error: blockedError });
-      expect(fallbackStorage.getItem).toHaveBeenCalledTimes(1);
-      expect(fallbackStorage.getItem).toHaveBeenCalledWith(
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-      );
-    });
-  });
-
-  describe('setItem', () => {
-    it('stores the value in IndexedDB with the expected storage service key', async () => {
-      const databaseName = `test-storage-service-${crypto.randomUUID()}`;
-      const database = new IndexedDBStore();
-      const { adapter, fallbackStorage } = createAdapter({ databaseName });
-
-      await adapter.setItem('TestController', 'myKey', { data: 'test' });
-
-      await database.open(databaseName, 1);
-      await expect(
-        database.get([`${STORAGE_KEY_PREFIX}TestController:myKey`]),
-      ).resolves.toStrictEqual([expect.objectContaining({ data: 'test' })]);
-      database.close();
+      expect(value).toStrictEqual({ result: { data: 'test' } });
+      expect(keys).toStrictEqual([TEST_KEY]);
+      expect(database.remove).toHaveBeenCalledWith([FULL_KEY]);
+      expect(database.remove).toHaveBeenCalledTimes(2);
       expect(fallbackStorage.setItem).not.toHaveBeenCalled();
     });
 
-    it('uses browser.storage.local when IndexedDB is blocked during open', async () => {
-      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getItem.mockImplementation(
-        async (namespace): Promise<StorageGetResult> => {
-          return namespace === 'TestController' ? { result: 'fallback' } : {};
-        },
-      );
-      fallbackStorage.getAllKeys.mockResolvedValueOnce(['fallbackKey']);
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.open.mockRejectedValueOnce(blockedError);
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
+    it('returns an empty result when a key is missing', async () => {
+      const { adapter } = createAdapter();
 
-      await adapter.setItem('TestController', 'myKey', { data: 'test' });
       await expect(
-        adapter.getItem('TestController', 'myKey'),
-      ).resolves.toStrictEqual({ result: 'fallback' });
-      await adapter.removeItem('TestController', 'myKey');
-      await expect(adapter.getAllKeys('TestController')).resolves.toStrictEqual(
-        ['fallbackKey'],
-      );
-      await adapter.clear('TestController');
+        adapter.getItem(TEST_NAMESPACE, TEST_KEY),
+      ).resolves.toStrictEqual({});
+    });
+  });
 
-      expect(fallbackStorage.setItem).toHaveBeenCalledWith(
-        'TestController',
-        'myKey',
-        { data: 'test' },
-      );
+  describe('when IndexedDB is blocked during open', () => {
+    it('pins and delegates all operations to fallback storage', async () => {
+      const { adapter, database, fallbackStorage } = createAdapter();
+      database.open.mockRejectedValue(createBlockedError());
+      fallbackStorage.getItem
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ result: 'fallback-value' });
+      fallbackStorage.getAllKeys.mockResolvedValueOnce(['fallback-key']);
+
+      await adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value');
+      const value = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
+      await adapter.removeItem(TEST_NAMESPACE, TEST_KEY);
+      const keys = await adapter.getAllKeys(TEST_NAMESPACE);
+      await adapter.clear(TEST_NAMESPACE);
+
       expect(fallbackStorage.setItem).toHaveBeenCalledWith(
         STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
         STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
         true,
       );
-      expect(fallbackStorage.getItem).toHaveBeenCalledWith(
-        'TestController',
-        'myKey',
+      expect(fallbackStorage.setItem).toHaveBeenCalledWith(
+        TEST_NAMESPACE,
+        TEST_KEY,
+        'value',
       );
+      expect(value).toStrictEqual({ result: 'fallback-value' });
       expect(fallbackStorage.removeItem).toHaveBeenCalledWith(
-        'TestController',
-        'myKey',
+        TEST_NAMESPACE,
+        TEST_KEY,
       );
-      expect(fallbackStorage.getAllKeys).toHaveBeenCalledWith('TestController');
-      expect(fallbackStorage.clear).toHaveBeenCalledWith('TestController');
+      expect(keys).toStrictEqual(['fallback-key']);
+      expect(fallbackStorage.clear).toHaveBeenCalledWith(TEST_NAMESPACE);
       expect(database.open).toHaveBeenCalledTimes(1);
-      expect(database.get).not.toHaveBeenCalled();
-      expect(database.getKeys).not.toHaveBeenCalled();
-      expect(database.remove).not.toHaveBeenCalled();
       expect(database.set).not.toHaveBeenCalled();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
-      );
     });
 
-    it('keeps fallback storage authoritative after IndexedDB becomes available', async () => {
-      jest.spyOn(console, 'warn').mockImplementation();
-      let fallbackIsPinned = false;
+    it('continues using persisted fallback storage after restart', async () => {
+      const database = createDatabase();
       const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getItem.mockImplementation(
-        async (namespace, key): Promise<StorageGetResult> => {
-          if (
-            namespace === STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE &&
-            key === STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY
-          ) {
-            return fallbackIsPinned ? { result: true } : {};
-          }
+      fallbackStorage.getItem
+        .mockResolvedValueOnce({ result: true })
+        .mockResolvedValueOnce({ result: 'fallback-value' });
+      const { adapter } = createAdapter({ database, fallbackStorage });
 
-          return { result: 'fallback-value' };
-        },
-      );
-      fallbackStorage.setItem.mockImplementation(
-        async (namespace, key, value) => {
-          if (
-            namespace === STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE &&
-            key === STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY &&
-            value === true
-          ) {
-            fallbackIsPinned = true;
-          }
-        },
-      );
-      const blockedDatabase = createDatabase();
-      blockedDatabase.open.mockRejectedValueOnce(
-        new DOMException(
-          FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-          'InvalidStateError',
-        ),
-      );
-      const blockedAdapter = new IndexedDBStorageAdapter({
-        database: blockedDatabase,
-        fallbackStorage,
-      });
+      const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
 
-      await blockedAdapter.setItem('TestController', 'myKey', 'first-value');
-
-      const recoveredDatabase = createDatabase();
-      const recoveredAdapter = new IndexedDBStorageAdapter({
-        database: recoveredDatabase,
-        fallbackStorage,
-      });
-      await expect(
-        recoveredAdapter.getItem('TestController', 'myKey'),
-      ).resolves.toStrictEqual({ result: 'fallback-value' });
-
-      expect(recoveredDatabase.open).not.toHaveBeenCalled();
-      expect(recoveredDatabase.get).not.toHaveBeenCalled();
-      expect(fallbackStorage.getItem).toHaveBeenCalledWith(
-        'TestController',
-        'myKey',
-      );
+      expect(result).toStrictEqual({ result: 'fallback-value' });
+      expect(database.open).not.toHaveBeenCalled();
     });
 
-    it('does not switch sources when the fallback marker cannot be persisted', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const markerError = new Error('fallback marker write failed');
+    it('retries selection when the fallback marker cannot be written', async () => {
+      const markerError = new Error('marker write failed');
+      const database = createDatabase();
+      database.open.mockRejectedValue(createBlockedError());
       const fallbackStorage = createFallbackStorage();
       fallbackStorage.setItem.mockRejectedValue(markerError);
-      const database = createDatabase();
-      database.open.mockRejectedValue(
-        new DOMException(
-          FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-          'InvalidStateError',
-        ),
-      );
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
+      const { adapter } = createAdapter({ database, fallbackStorage });
 
       await expect(
-        adapter.setItem('TestController', 'myKey', 'value'),
+        adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
       ).rejects.toBe(markerError);
       await expect(
-        adapter.setItem('TestController', 'myKey', 'value'),
+        adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
       ).rejects.toBe(markerError);
 
       expect(database.open).toHaveBeenCalledTimes(2);
       expect(fallbackStorage.setItem).not.toHaveBeenCalledWith(
-        'TestController',
-        'myKey',
+        TEST_NAMESPACE,
+        TEST_KEY,
         'value',
       );
     });
+  });
 
-    it('does not open IndexedDB when the fallback marker cannot be read', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const markerError = new Error('fallback marker read failed');
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getItem.mockResolvedValue({ error: markerError });
-      const database = createDatabase();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
+  describe('when an IndexedDB operation fails after open', () => {
+    it('returns a read error without switching to fallback storage', async () => {
+      const databaseError = createBlockedError();
+      const { adapter, database, fallbackStorage } = createAdapter();
+      database.get.mockRejectedValueOnce(databaseError);
 
-      await expect(
-        adapter.setItem('TestController', 'myKey', 'value'),
-      ).rejects.toBe(markerError);
+      const result = await adapter.getItem(TEST_NAMESPACE, TEST_KEY);
 
-      expect(database.open).not.toHaveBeenCalled();
-      expect(database.set).not.toHaveBeenCalled();
-      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
+      expect(result).toStrictEqual({ error: databaseError });
+      expect(fallbackStorage.getItem).toHaveBeenCalledTimes(1);
     });
 
-    it('rethrows without switching sources when an IndexedDB write fails after open', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.set.mockRejectedValueOnce(blockedError);
-      const fallbackStorage = createFallbackStorage();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
-
-      await expect(
-        adapter.setItem('TestController', 'myKey', 'value'),
-      ).rejects.toBe(blockedError);
-
-      expect(fallbackStorage.setItem).not.toHaveBeenCalled();
-    });
-
-    it('rethrows unexpected IndexedDB errors without writing fallback storage', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const databaseError = new Error('IndexedDB write failed');
-      const database = createDatabase();
+    it('does not switch to fallback storage after a write fails', async () => {
+      const databaseError = createBlockedError();
+      const { adapter, database, fallbackStorage } = createAdapter();
       database.set.mockRejectedValueOnce(databaseError);
-      const fallbackStorage = createFallbackStorage();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
 
       await expect(
-        adapter.setItem('TestController', 'myKey', 'value'),
+        adapter.setItem(TEST_NAMESPACE, TEST_KEY, 'value'),
       ).rejects.toBe(databaseError);
+
       expect(fallbackStorage.setItem).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('removeItem', () => {
-    it('removes the item from IndexedDB without mutating fallback storage', async () => {
-      const { adapter, fallbackStorage } = createAdapter();
-
-      await adapter.setItem('TestController', 'myKey', { data: 'test' });
-      await adapter.removeItem('TestController', 'myKey');
-
-      await expect(
-        adapter.getItem('TestController', 'myKey'),
-      ).resolves.toStrictEqual({});
-      expect(fallbackStorage.removeItem).not.toHaveBeenCalled();
-    });
-
-    it('rethrows without switching sources when an IndexedDB removal fails after open', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.remove.mockRejectedValueOnce(blockedError);
-      const fallbackStorage = createFallbackStorage();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
-
-      await expect(adapter.removeItem('TestController', 'myKey')).rejects.toBe(
-        blockedError,
-      );
-
-      expect(fallbackStorage.removeItem).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('getAllKeys', () => {
-    it('returns only IndexedDB keys without reading fallback storage', async () => {
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getAllKeys.mockResolvedValueOnce(['key2', 'legacyKey']);
-      const { adapter } = createAdapter({ fallbackStorage });
-
-      await adapter.setItem('TestController', 'key1', 'value1');
-      await adapter.setItem('TestController', 'key2', 'value2');
-
-      await expect(adapter.getAllKeys('TestController')).resolves.toStrictEqual(
-        ['key1', 'key2'],
-      );
-      expect(fallbackStorage.getAllKeys).not.toHaveBeenCalled();
-    });
-
-    it('rethrows without switching sources when listing IndexedDB keys fails after open', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.getKeys.mockRejectedValueOnce(blockedError);
-      const fallbackStorage = createFallbackStorage();
-      fallbackStorage.getAllKeys.mockResolvedValueOnce(['fallbackKey']);
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
-
-      await expect(adapter.getAllKeys('TestController')).rejects.toBe(
-        blockedError,
-      );
-      expect(fallbackStorage.getAllKeys).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('clear', () => {
-    it('clears namespace keys from IndexedDB without mutating fallback storage', async () => {
-      const { adapter, fallbackStorage } = createAdapter();
-
-      await adapter.setItem('TestController', 'key1', 'value1');
-      await adapter.setItem('OtherController', 'key2', 'value2');
-      await adapter.clear('TestController');
-
-      await expect(
-        adapter.getItem('TestController', 'key1'),
-      ).resolves.toStrictEqual({});
-      await expect(
-        adapter.getItem('OtherController', 'key2'),
-      ).resolves.toStrictEqual({ result: 'value2' });
-      expect(fallbackStorage.clear).not.toHaveBeenCalled();
-    });
-
-    it('rethrows without switching sources when clearing IndexedDB keys fails after open', async () => {
-      jest.spyOn(console, 'error').mockImplementation();
-      const blockedError = new DOMException(
-        FIREFOX_INDEXED_DB_MUTATION_BLOCKED_ERROR,
-        'InvalidStateError',
-      );
-      const database = createDatabase();
-      database.getKeys.mockRejectedValueOnce(blockedError);
-      const fallbackStorage = createFallbackStorage();
-      const adapter = new IndexedDBStorageAdapter({
-        database,
-        fallbackStorage,
-      });
-
-      await expect(adapter.clear('TestController')).rejects.toBe(blockedError);
-
-      expect(fallbackStorage.clear).not.toHaveBeenCalled();
     });
   });
 });

@@ -9,7 +9,6 @@ jest.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: jest.fn(),
-      getKeys: jest.fn(),
       set: jest.fn(),
       remove: jest.fn(),
     },
@@ -19,7 +18,6 @@ jest.mock('webextension-polyfill', () => ({
 describe('BrowserStorageAdapter', () => {
   let adapter: typeof BrowserStorageAdapter;
   const mockGet = jest.mocked(browser.storage.local.get);
-  const mockGetKeys = jest.mocked(browser.storage.local.getKeys);
   const mockSet = jest.mocked(browser.storage.local.set);
   const mockRemove = jest.mocked(browser.storage.local.remove);
 
@@ -99,12 +97,12 @@ describe('BrowserStorageAdapter', () => {
 
   describe('getAllKeys', () => {
     it('returns only keys for the namespace', async () => {
-      mockGetKeys.mockResolvedValue([
-        `${STORAGE_KEY_PREFIX}TestController:key1`,
-        `${STORAGE_KEY_PREFIX}TestController:key2`,
-        `${STORAGE_KEY_PREFIX}OtherController:key3`,
-        'unrelatedKey',
-      ]);
+      mockGet.mockResolvedValue({
+        [`${STORAGE_KEY_PREFIX}TestController:key1`]: 'value1',
+        [`${STORAGE_KEY_PREFIX}TestController:key2`]: 'value2',
+        [`${STORAGE_KEY_PREFIX}OtherController:key3`]: 'value3',
+        unrelatedKey: 'value4',
+      });
 
       const keys = await adapter.getAllKeys('TestController');
 
@@ -112,39 +110,16 @@ describe('BrowserStorageAdapter', () => {
     });
 
     it('returns empty array when no keys exist', async () => {
-      mockGetKeys.mockResolvedValue([]);
+      mockGet.mockResolvedValue({});
 
       const keys = await adapter.getAllKeys('TestController');
 
       expect(keys).toStrictEqual([]);
     });
 
-    it('falls back to get(null) when getKeys is unavailable', async () => {
-      const storageLocalWithoutGetKeys = browser.storage.local as {
-        get: typeof browser.storage.local.get;
-        getKeys?: typeof browser.storage.local.getKeys;
-      };
-      const originalGetKeys = storageLocalWithoutGetKeys.getKeys;
-      storageLocalWithoutGetKeys.getKeys = undefined;
-
-      try {
-        mockGet.mockResolvedValue({
-          [`${STORAGE_KEY_PREFIX}TestController:key1`]: 'value1',
-          [`${STORAGE_KEY_PREFIX}OtherController:key2`]: 'value2',
-        });
-
-        const keys = await adapter.getAllKeys('TestController');
-
-        expect(mockGet).toHaveBeenCalledWith(null);
-        expect(keys).toStrictEqual(['key1']);
-      } finally {
-        storageLocalWithoutGetKeys.getKeys = originalGetKeys;
-      }
-    });
-
     it('throws on failure', async () => {
       const error = new Error('Storage error');
-      mockGetKeys.mockRejectedValue(error);
+      mockGet.mockRejectedValue(error);
 
       await expect(adapter.getAllKeys('TestController')).rejects.toThrow(
         'Storage error',
@@ -154,10 +129,10 @@ describe('BrowserStorageAdapter', () => {
 
   describe('clear', () => {
     it('removes all keys for the namespace', async () => {
-      mockGetKeys.mockResolvedValue([
-        `${STORAGE_KEY_PREFIX}TestController:key1`,
-        `${STORAGE_KEY_PREFIX}TestController:key2`,
-      ]);
+      mockGet.mockResolvedValue({
+        [`${STORAGE_KEY_PREFIX}TestController:key1`]: 'value1',
+        [`${STORAGE_KEY_PREFIX}TestController:key2`]: 'value2',
+      });
       mockRemove.mockResolvedValue(undefined);
 
       await adapter.clear('TestController');
@@ -169,7 +144,7 @@ describe('BrowserStorageAdapter', () => {
     });
 
     it('does not call remove when no keys exist', async () => {
-      mockGetKeys.mockResolvedValue([]);
+      mockGet.mockResolvedValue({});
 
       await adapter.clear('TestController');
 
@@ -177,9 +152,9 @@ describe('BrowserStorageAdapter', () => {
     });
 
     it('throws on failure', async () => {
-      mockGetKeys.mockResolvedValue([
-        `${STORAGE_KEY_PREFIX}TestController:key1`,
-      ]);
+      mockGet.mockResolvedValue({
+        [`${STORAGE_KEY_PREFIX}TestController:key1`]: 'value1',
+      });
       const error = new Error('Storage error');
       mockRemove.mockRejectedValue(error);
 

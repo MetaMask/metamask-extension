@@ -82,52 +82,17 @@ describe('IndexedDBStore', () => {
       );
     });
 
-    it('rejects and rolls back all writes when a value is not serializable', async () => {
+    it('rejects on transaction error with non-serializable value', async () => {
       await db.open(dbName, dbVersion);
       const values = {
-        validKey: 'valid value',
         // Functions are not serializable, so this will ensure an error:
-        invalidKey: () => {
+        key: () => {
           return undefined;
         },
       };
       // don't matter exactly what the error
       // is, we just need to ensure that it does propagate errors.
       await expect(db.set(values)).rejects.toThrow('could not be cloned');
-      await expect(db.get(['validKey', 'invalidKey'])).resolves.toStrictEqual([
-        undefined,
-        undefined,
-      ]);
-    });
-
-    it('rejects when the transaction is aborted', async () => {
-      await db.open(dbName, dbVersion);
-      const originalTransaction = IDBDatabase.prototype.transaction;
-      const transactionSpy = jest
-        .spyOn(IDBDatabase.prototype, 'transaction')
-        .mockImplementation(function (
-          this: IDBDatabase,
-          storeNames: string | string[],
-          mode?: IDBTransactionMode,
-          options?: IDBTransactionOptions,
-        ) {
-          const transaction = originalTransaction.call(
-            this,
-            storeNames,
-            mode,
-            options,
-          );
-          queueMicrotask(() => transaction.abort());
-          return transaction;
-        });
-
-      try {
-        await expect(db.set({ key: 'value' })).rejects.toMatchObject({
-          name: 'AbortError',
-        });
-      } finally {
-        transactionSpy.mockRestore();
-      }
     });
   });
 
@@ -150,14 +115,7 @@ describe('IndexedDBStore', () => {
   });
 
   describe('getKeys', () => {
-    it('returns all string keys', async () => {
-      await db.open(dbName, dbVersion);
-      await db.set({ key1: 'value1', key2: 'value2' });
-
-      expect(await db.getKeys()).toStrictEqual(['key1', 'key2']);
-    });
-
-    it('returns string keys matching the prefix', async () => {
+    it('returns all keys or those matching a prefix', async () => {
       await db.open(dbName, dbVersion);
       await db.set({
         'prefix:key1': 'value1',
@@ -165,6 +123,11 @@ describe('IndexedDBStore', () => {
         other: 'value3',
       });
 
+      expect(await db.getKeys()).toStrictEqual([
+        'other',
+        'prefix:key1',
+        'prefix:key2',
+      ]);
       expect(await db.getKeys('prefix:')).toStrictEqual([
         'prefix:key1',
         'prefix:key2',

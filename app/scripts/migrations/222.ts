@@ -55,30 +55,10 @@ async function getStorageServiceEntriesFromStorageLocal(
   return getStorageServiceEntries(allStorage);
 }
 
-function getBrowserStorageLocal(): BrowserStorageLocal | undefined {
-  const storageLocal = browser.storage?.local;
-
-  if (
-    typeof storageLocal?.get !== 'function' ||
-    typeof storageLocal.remove !== 'function' ||
-    typeof storageLocal.set !== 'function'
-  ) {
-    return undefined;
-  }
-
-  return storageLocal as BrowserStorageLocal;
-}
-
 /**
- * Moves existing StorageService data from browser.storage.local to IndexedDB.
- *
- * StorageService now uses IndexedDB for extension storage, but earlier
- * migrations and releases wrote externalized StorageService values into
- * browser.storage.local. Users who already ran those migrations need this
- * follow-up migration because old migrations are not rerun.
- *
- * @param versionedData - The persisted state being migrated.
- * @param _changedKeys - The set of changed state keys.
+ * Moves legacy StorageService data from browser.storage.local to IndexedDB.
+ * @param versionedData
+ * @param _changedKeys
  */
 export const migrate = (async (versionedData, _changedKeys) => {
   versionedData.meta.version = version;
@@ -86,10 +66,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
   let database: IndexedDBStore | undefined;
 
   try {
-    const storageLocal = getBrowserStorageLocal();
-    if (!storageLocal) {
-      return;
-    }
+    const storageLocal: BrowserStorageLocal = browser.storage.local;
 
     const storageServiceEntries =
       await getStorageServiceEntriesFromStorageLocal(storageLocal);
@@ -101,9 +78,9 @@ export const migrate = (async (versionedData, _changedKeys) => {
     const hasFallbackMarker = storageServiceEntries.some(([key]) => {
       return key === FALLBACK_MARKER_STORAGE_KEY;
     });
-    const entriesToConsider = storageServiceEntries.filter(([key]) => {
-      return key !== FALLBACK_MARKER_STORAGE_KEY;
-    });
+    if (hasFallbackMarker) {
+      return;
+    }
 
     database = new IndexedDBStore();
 
@@ -114,9 +91,7 @@ export const migrate = (async (versionedData, _changedKeys) => {
       );
     } catch (error) {
       if (isIndexedDBMutationBlockedError(error)) {
-        if (!hasFallbackMarker) {
-          await storageLocal.set({ [FALLBACK_MARKER_STORAGE_KEY]: true });
-        }
+        await storageLocal.set({ [FALLBACK_MARKER_STORAGE_KEY]: true });
         console.warn(
           `Migration #${version}: IndexedDB is unavailable; keeping StorageService data in browser.storage.local.`,
         );
@@ -126,29 +101,17 @@ export const migrate = (async (versionedData, _changedKeys) => {
       throw error;
     }
 
-    const storageServiceKeys = entriesToConsider.map(([key]) => key);
+    const storageServiceKeys = storageServiceEntries.map(([key]) => key);
     const existingValues = await database.get(storageServiceKeys);
-    const entriesToMigrate = hasFallbackMarker
-      ? entriesToConsider
-      : entriesToConsider.filter((_, index) => {
-          return existingValues[index] === undefined;
-        });
+    const entriesToMigrate = storageServiceEntries.filter((_, index) => {
+      return existingValues[index] === undefined;
+    });
 
     if (entriesToMigrate.length > 0) {
       await database.set(Object.fromEntries(entriesToMigrate));
     }
 
-    await storageLocal.remove(
-      hasFallbackMarker
-        ? [...storageServiceKeys, FALLBACK_MARKER_STORAGE_KEY]
-        : storageServiceKeys,
-    );
-  } catch (error) {
-    console.error(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      error,
-    );
-    throw error;
+    await storageLocal.remove(storageServiceKeys);
   } finally {
     database?.close();
   }

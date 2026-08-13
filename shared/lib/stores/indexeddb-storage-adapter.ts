@@ -13,13 +13,13 @@ import {
 } from './indexeddb-storage-constants';
 import { IndexedDBStore } from './indexeddb-store';
 
+type StorageDatabase = Pick<
+  IndexedDBStore,
+  'get' | 'getKeys' | 'open' | 'remove' | 'set'
+>;
+
 type IndexedDBStorageAdapterOptions = {
-  database?: Pick<
-    IndexedDBStore,
-    'get' | 'getKeys' | 'open' | 'remove' | 'set'
-  >;
-  databaseName?: string;
-  databaseVersion?: number;
+  database?: StorageDatabase;
   fallbackStorage?: StorageAdapter;
 };
 
@@ -42,14 +42,7 @@ export function isIndexedDBMutationBlockedError(error: unknown): boolean {
  * later browser-mode changes cannot silently switch to a different data source.
  */
 export class IndexedDBStorageAdapter implements StorageAdapter {
-  readonly #database: Pick<
-    IndexedDBStore,
-    'get' | 'getKeys' | 'open' | 'remove' | 'set'
-  >;
-
-  readonly #databaseName: string;
-
-  readonly #databaseVersion: number;
+  readonly #database: StorageDatabase;
 
   readonly #fallbackStorage: StorageAdapter;
 
@@ -57,32 +50,14 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
 
   #useFallbackStorageOnly = false;
 
-  #switchToFallbackStorage(message: string): void {
-    if (!this.#useFallbackStorageOnly) {
-      this.#useFallbackStorageOnly = true;
-      console.warn(message);
-    }
-  }
-
   constructor({
     database = new IndexedDBStore(),
-    databaseName = STORAGE_SERVICE_INDEXED_DB_NAME,
-    databaseVersion = STORAGE_SERVICE_INDEXED_DB_VERSION,
     fallbackStorage = new BrowserStorageAdapter(),
   }: IndexedDBStorageAdapterOptions = {}) {
     this.#database = database;
-    this.#databaseName = databaseName;
-    this.#databaseVersion = databaseVersion;
     this.#fallbackStorage = fallbackStorage;
   }
 
-  /**
-   * Build the full storage key.
-   *
-   * @param namespace - Controller namespace.
-   * @param key - Data key.
-   * @returns Full key: storageService:{namespace}:{key}
-   */
   #makeKey(namespace: string, key: string): string {
     return `${STORAGE_KEY_PREFIX}${namespace}:${key}`;
   }
@@ -94,7 +69,8 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
     );
 
     if (fallbackMarker.result === true) {
-      this.#switchToFallbackStorage(
+      this.#useFallbackStorageOnly = true;
+      console.warn(
         'StorageService: Continuing to use browser.storage.local because it contains fallback data.',
       );
       return false;
@@ -105,28 +81,24 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
     }
 
     try {
-      await this.#database.open(this.#databaseName, this.#databaseVersion);
+      await this.#database.open(
+        STORAGE_SERVICE_INDEXED_DB_NAME,
+        STORAGE_SERVICE_INDEXED_DB_VERSION,
+      );
       return true;
     } catch (error) {
       if (!isIndexedDBMutationBlockedError(error)) {
         throw error;
       }
 
-      try {
-        await this.#fallbackStorage.setItem(
-          STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
-          STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
-          true,
-        );
-      } catch (markerError) {
-        console.error(
-          'StorageService: Failed to persist the browser.storage.local fallback marker.',
-          markerError,
-        );
-        throw markerError;
-      }
+      await this.#fallbackStorage.setItem(
+        STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE,
+        STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY,
+        true,
+      );
 
-      this.#switchToFallbackStorage(
+      this.#useFallbackStorageOnly = true;
+      console.warn(
         'StorageService: IndexedDB is unavailable; falling back to browser.storage.local.',
       );
 
@@ -146,16 +118,13 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
       });
     }
 
-    return await this.#openPromise;
+    return this.#openPromise;
   }
 
   /**
-   * Retrieve an item from IndexedDB, or from the fallback adapter when
-   * IndexedDB is unavailable.
-   *
-   * @param namespace - Controller namespace.
-   * @param key - Data key.
-   * @returns StorageGetResult: { result } if found, {} if not found, { error } on failure.
+   * Retrieve an item from the selected storage backend.
+   * @param namespace
+   * @param key
    */
   async getItem(namespace: string, key: string): Promise<StorageGetResult> {
     try {
@@ -176,103 +145,62 @@ export class IndexedDBStorageAdapter implements StorageAdapter {
   }
 
   /**
-   * Store an item in IndexedDB, or in the fallback adapter when IndexedDB is
-   * unavailable.
-   *
-   * @param namespace - Controller namespace.
-   * @param key - Data key.
-   * @param value - JSON value to store.
+   * Store an item in the selected storage backend.
+   * @param namespace
+   * @param key
+   * @param value
    */
   async setItem(namespace: string, key: string, value: Json): Promise<void> {
-    try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        await this.#database.set({ [fullKey]: value });
-        return;
-      }
-
-      await this.#fallbackStorage.setItem(namespace, key, value);
-    } catch (error) {
-      console.error(
-        `StorageService: Failed to set item: ${namespace}:${key}`,
-        error,
-      );
-      throw error;
+    if (await this.#canUseIndexedDB()) {
+      const fullKey = this.#makeKey(namespace, key);
+      await this.#database.set({ [fullKey]: value });
+      return;
     }
+
+    await this.#fallbackStorage.setItem(namespace, key, value);
   }
 
   /**
-   * Remove an item from IndexedDB, or from the fallback adapter when
-   * IndexedDB is unavailable.
-   *
-   * @param namespace - Controller namespace.
-   * @param key - Data key.
+   * Remove an item from the selected storage backend.
+   * @param namespace
+   * @param key
    */
   async removeItem(namespace: string, key: string): Promise<void> {
-    try {
-      if (await this.#canUseIndexedDB()) {
-        const fullKey = this.#makeKey(namespace, key);
-        await this.#database.remove([fullKey]);
-        return;
-      }
-
-      await this.#fallbackStorage.removeItem(namespace, key);
-    } catch (error) {
-      console.error(
-        `StorageService: Failed to remove item: ${namespace}:${key}`,
-        error,
-      );
-      throw error;
+    if (await this.#canUseIndexedDB()) {
+      const fullKey = this.#makeKey(namespace, key);
+      await this.#database.remove([fullKey]);
+      return;
     }
+
+    await this.#fallbackStorage.removeItem(namespace, key);
   }
 
   /**
-   * Get all keys for a namespace from IndexedDB, or from the fallback adapter
-   * when IndexedDB is unavailable.
-   *
-   * @param namespace - The namespace to get keys for.
-   * @returns Array of keys without prefix.
+   * Get all keys for a namespace from the selected storage backend.
+   * @param namespace
    */
   async getAllKeys(namespace: string): Promise<string[]> {
-    try {
-      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+    const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
 
-      if (await this.#canUseIndexedDB()) {
-        const indexedDbKeys = await this.#database.getKeys(prefix);
-        return indexedDbKeys.map((key) => key.slice(prefix.length));
-      }
-
-      return await this.#fallbackStorage.getAllKeys(namespace);
-    } catch (error) {
-      console.error(
-        `StorageService: Failed to get keys for ${namespace}`,
-        error,
-      );
-      throw error;
+    if (await this.#canUseIndexedDB()) {
+      const indexedDbKeys = await this.#database.getKeys(prefix);
+      return indexedDbKeys.map((key) => key.slice(prefix.length));
     }
+
+    return this.#fallbackStorage.getAllKeys(namespace);
   }
 
   /**
-   * Clear all items for a namespace from IndexedDB, or from the fallback
-   * adapter when IndexedDB is unavailable.
-   *
-   * @param namespace - The namespace to clear.
+   * Clear a namespace in the selected storage backend.
+   * @param namespace
    */
   async clear(namespace: string): Promise<void> {
-    try {
-      if (await this.#canUseIndexedDB()) {
-        const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
-        await this.#database.remove(await this.#database.getKeys(prefix));
-        return;
-      }
-
-      await this.#fallbackStorage.clear(namespace);
-    } catch (error) {
-      console.error(
-        `StorageService: Failed to clear namespace ${namespace}`,
-        error,
-      );
-      throw error;
+    if (await this.#canUseIndexedDB()) {
+      const prefix = `${STORAGE_KEY_PREFIX}${namespace}:`;
+      await this.#database.remove(await this.#database.getKeys(prefix));
+      return;
     }
+
+    await this.#fallbackStorage.clear(namespace);
   }
 }

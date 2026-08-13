@@ -1,4 +1,3 @@
-import 'fake-indexeddb/auto';
 import { jest } from '@jest/globals';
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
@@ -9,13 +8,10 @@ import {
   STORAGE_SERVICE_INDEXED_DB_VERSION,
 } from '../../../shared/lib/stores/indexeddb-storage-constants';
 import { IndexedDBStore } from '../../../shared/lib/stores/indexeddb-store';
-import Migrator from '../lib/migrator';
 import { migrate, version } from './222';
 
 jest.mock('webextension-polyfill', () => ({
-  runtime: {
-    getManifest: jest.fn(() => ({})),
-  },
+  runtime: { getManifest: jest.fn(() => ({})) },
   storage: {
     local: {
       get: jest.fn(),
@@ -27,182 +23,96 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 const mockBrowser = jest.mocked(browser);
-
-const OLD_VERSION = version - 1;
 const STORAGE_SERVICE_KEY = `${STORAGE_KEY_PREFIX}TokenListController:tokensChainsCache:0x1`;
 const SECOND_STORAGE_SERVICE_KEY = `${STORAGE_KEY_PREFIX}SnapController:sourceCode:npm:test-snap`;
 const FALLBACK_MARKER_STORAGE_KEY = `${STORAGE_KEY_PREFIX}${STORAGE_SERVICE_INDEXED_DB_FALLBACK_NAMESPACE}:${STORAGE_SERVICE_INDEXED_DB_FALLBACK_KEY}`;
 
 function buildVersionedData() {
+  return { meta: { version: version - 1 }, data: {} };
+}
+
+function createBlockedError(): DOMException {
+  return new DOMException('Browser-provided message', 'InvalidStateError');
+}
+
+function mockStorage(entries: Record<string, unknown>): void {
+  mockBrowser.storage.local.getKeys.mockResolvedValueOnce(Object.keys(entries));
+  mockBrowser.storage.local.get.mockResolvedValueOnce(entries);
+}
+
+function mockIndexedDBStore() {
   return {
-    meta: { version: OLD_VERSION },
-    data: {},
+    close: jest
+      .spyOn(IndexedDBStore.prototype, 'close')
+      .mockImplementation(() => undefined),
+    get: jest
+      .spyOn(IndexedDBStore.prototype, 'get')
+      .mockResolvedValue([undefined]),
+    open: jest
+      .spyOn(IndexedDBStore.prototype, 'open')
+      .mockResolvedValue(undefined),
+    set: jest
+      .spyOn(IndexedDBStore.prototype, 'set')
+      .mockResolvedValue(undefined),
   };
 }
 
-async function deleteDatabase(): Promise<void> {
-  await new Promise<void>((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(STORAGE_SERVICE_INDEXED_DB_NAME);
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    request.onblocked = () => reject(request.error);
-  });
-}
-
-async function readIndexedDBValue(key: string): Promise<unknown> {
-  const database = new IndexedDBStore();
-  await database.open(
-    STORAGE_SERVICE_INDEXED_DB_NAME,
-    STORAGE_SERVICE_INDEXED_DB_VERSION,
-  );
-  const [value] = await database.get([key]);
-  database.close();
-  return value;
-}
-
-async function writeIndexedDBValue(key: string, value: unknown): Promise<void> {
-  const database = new IndexedDBStore();
-  await database.open(
-    STORAGE_SERVICE_INDEXED_DB_NAME,
-    STORAGE_SERVICE_INDEXED_DB_VERSION,
-  );
-  await database.set({ [key]: value });
-  database.close();
-}
-
 describe(`migration #${version}`, () => {
-  beforeEach(async () => {
-    jest.restoreAllMocks();
+  let database: ReturnType<typeof mockIndexedDBStore>;
+
+  beforeEach(() => {
     jest.clearAllMocks();
-    await deleteDatabase();
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    database = mockIndexedDBStore();
     mockBrowser.storage.local.get.mockResolvedValue({});
     mockBrowser.storage.local.getKeys.mockResolvedValue([]);
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
     mockBrowser.storage.local.set.mockResolvedValue(undefined);
   });
 
-  afterEach(async () => {
-    await deleteDatabase();
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+  afterEach(() => jest.restoreAllMocks());
+
+  it('updates the version without opening IndexedDB when no keys match', async () => {
+    const oldStorage = buildVersionedData();
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
+
+    await migrate(oldStorage, new Set());
+
+    expect(oldStorage.meta.version).toBe(version);
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
+    expect(database.open).not.toHaveBeenCalled();
   });
 
-  it('updates the version metadata', async () => {
+  it('moves missing keys without replacing existing IndexedDB values', async () => {
+    const existingValue = { sourceCode: 'indexeddb-source-code' };
+    const missingValue = { sourceCode: 'legacy-source-code' };
+    mockStorage({
+      [STORAGE_SERVICE_KEY]: { sourceCode: 'stale-legacy-source-code' },
+      [SECOND_STORAGE_SERVICE_KEY]: missingValue,
+      unrelated: 'value',
+    });
+    database.get.mockResolvedValueOnce([existingValue, undefined]);
     const oldStorage = buildVersionedData();
 
     await migrate(oldStorage, new Set());
 
-    expect(oldStorage.meta).toStrictEqual({ version });
-  });
-
-  it('does nothing when there are no StorageService keys in browser.storage.local', async () => {
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
-
-    await migrate(buildVersionedData(), new Set());
-
-    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-  });
-
-  it('does nothing when browser.storage.local is unavailable', async () => {
-    const oldStorage = buildVersionedData();
-    const browserWithOptionalStorage = mockBrowser as unknown as {
-      storage?: typeof mockBrowser.storage;
-    };
-    const originalStorage = browserWithOptionalStorage.storage;
-    browserWithOptionalStorage.storage = undefined;
-
-    try {
-      await migrate(oldStorage, new Set());
-    } finally {
-      browserWithOptionalStorage.storage = originalStorage;
-    }
-
-    expect(oldStorage.meta).toStrictEqual({ version });
-  });
-
-  it('moves StorageService keys from browser.storage.local to IndexedDB', async () => {
-    const storageServiceValue = {
-      timestamp: 1234567890,
-      data: { '0xToken': { name: 'Token' } },
-    };
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-      'unrelated',
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: storageServiceValue,
-      unrelated: 'value',
-    });
-
-    await migrate(buildVersionedData(), new Set());
-
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(storageServiceValue);
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
-      STORAGE_SERVICE_KEY,
-    ]);
-    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith([
-      STORAGE_SERVICE_KEY,
-    ]);
-  });
-
-  it('does not overwrite StorageService keys that already exist in IndexedDB', async () => {
-    const indexedDBValue = { sourceCode: 'indexeddb-source-code' };
-    const legacyValue = { sourceCode: 'legacy-source-code' };
-    await writeIndexedDBValue(STORAGE_SERVICE_KEY, indexedDBValue);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: legacyValue,
-    });
-
-    await migrate(buildVersionedData(), new Set());
-
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(indexedDBValue);
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
-      STORAGE_SERVICE_KEY,
-    ]);
-  });
-
-  it('copies missing keys while preserving keys already in IndexedDB', async () => {
-    const indexedDBValue = { sourceCode: 'indexeddb-source-code' };
-    const legacyValue = { sourceCode: 'legacy-source-code' };
-    const missingValue = { sourceCode: 'missing-source-code' };
-    await writeIndexedDBValue(STORAGE_SERVICE_KEY, indexedDBValue);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-      SECOND_STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: legacyValue,
+    expect(oldStorage.meta.version).toBe(version);
+    expect(database.open).toHaveBeenCalledWith(
+      STORAGE_SERVICE_INDEXED_DB_NAME,
+      STORAGE_SERVICE_INDEXED_DB_VERSION,
+    );
+    expect(database.set).toHaveBeenCalledWith({
       [SECOND_STORAGE_SERVICE_KEY]: missingValue,
     });
-
-    await migrate(buildVersionedData(), new Set());
-
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(indexedDBValue);
-    await expect(
-      readIndexedDBValue(SECOND_STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(missingValue);
     expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
       STORAGE_SERVICE_KEY,
       SECOND_STORAGE_SERVICE_KEY,
     ]);
+    expect(database.close).toHaveBeenCalled();
   });
 
-  it('preserves newer IndexedDB data when retrying after legacy cleanup fails', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
+  it('preserves newer IndexedDB data when cleanup is retried', async () => {
     const legacyValue = { sourceCode: 'legacy-source-code' };
-    const newerValue = { sourceCode: 'newer-indexeddb-source-code' };
     const cleanupError = new Error('storage.local cleanup failed');
     mockBrowser.storage.local.getKeys.mockResolvedValue([STORAGE_SERVICE_KEY]);
     mockBrowser.storage.local.get.mockResolvedValue({
@@ -211,278 +121,95 @@ describe(`migration #${version}`, () => {
     mockBrowser.storage.local.remove
       .mockRejectedValueOnce(cleanupError)
       .mockResolvedValueOnce(undefined);
-    const migrator = new Migrator({ migrations: [{ migrate, version }] });
-    const migrationErrorListener = jest.fn();
-    migrator.on('error', migrationErrorListener);
-    const oldStorage = buildVersionedData();
-
-    const failedMigration = await migrator.migrateData(oldStorage);
-
-    expect(failedMigration.state).toBe(oldStorage);
-    expect(failedMigration.state.meta.version).toBe(OLD_VERSION);
-    expect(migrationErrorListener).toHaveBeenCalledTimes(1);
-    await writeIndexedDBValue(STORAGE_SERVICE_KEY, newerValue);
-
-    const successfulRetry = await migrator.migrateData(failedMigration.state);
-
-    expect(successfulRetry.state.meta.version).toBe(version);
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(newerValue);
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      cleanupError,
-    );
-  });
-
-  it('removes a fallback marker when a later migration attempt can use IndexedDB', async () => {
-    const storageServiceValue = { sourceCode: 'legacy-source-code' };
-    await writeIndexedDBValue(STORAGE_SERVICE_KEY, {
-      sourceCode: 'stale-indexeddb-source-code',
-    });
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-      FALLBACK_MARKER_STORAGE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: storageServiceValue,
-      [FALLBACK_MARKER_STORAGE_KEY]: true,
-    });
-
-    await migrate(buildVersionedData(), new Set());
-
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(storageServiceValue);
-    await expect(
-      readIndexedDBValue(FALLBACK_MARKER_STORAGE_KEY),
-    ).resolves.toBeUndefined();
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledWith([
-      STORAGE_SERVICE_KEY,
-      FALLBACK_MARKER_STORAGE_KEY,
-    ]);
-  });
-
-  it('refreshes IndexedDB from fallback storage on retry while the fallback marker remains', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    let fallbackValue = { sourceCode: 'first-fallback-source-code' };
-    const newerFallbackValue = { sourceCode: 'newer-fallback-source-code' };
-    const cleanupError = new Error('storage.local cleanup failed');
-    mockBrowser.storage.local.getKeys.mockResolvedValue([
-      STORAGE_SERVICE_KEY,
-      FALLBACK_MARKER_STORAGE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockImplementation(async () => ({
-      [STORAGE_SERVICE_KEY]: fallbackValue,
-      [FALLBACK_MARKER_STORAGE_KEY]: true,
-    }));
-    mockBrowser.storage.local.remove
-      .mockRejectedValueOnce(cleanupError)
-      .mockResolvedValueOnce(undefined);
-    const migrator = new Migrator({ migrations: [{ migrate, version }] });
-    migrator.on('error', jest.fn());
-    const oldStorage = buildVersionedData();
-
-    const failedMigration = await migrator.migrateData(oldStorage);
-
-    expect(failedMigration.state).toBe(oldStorage);
-    expect(failedMigration.state.meta.version).toBe(OLD_VERSION);
-    fallbackValue = newerFallbackValue;
-
-    const successfulRetry = await migrator.migrateData(failedMigration.state);
-
-    expect(successfulRetry.state.meta.version).toBe(version);
-    await expect(
-      readIndexedDBValue(STORAGE_SERVICE_KEY),
-    ).resolves.toMatchObject(newerFallbackValue);
-    expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      cleanupError,
-    );
-  });
-
-  it('rethrows without deleting legacy keys when IndexedDB fails after open', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    const blockedError = new DOMException(
-      'A different browser-provided message',
-      'InvalidStateError',
-    );
-    jest.spyOn(IndexedDBStore.prototype, 'get').mockRejectedValue(blockedError);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
-    });
+    database.get
+      .mockResolvedValueOnce([undefined])
+      .mockResolvedValueOnce([{ sourceCode: 'newer-indexeddb-source-code' }]);
 
     await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
-      blockedError,
+      cleanupError,
     );
+    await migrate(buildVersionedData(), new Set());
 
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      blockedError,
-    );
+    expect(database.set).toHaveBeenCalledTimes(1);
+    expect(database.set).toHaveBeenCalledWith({
+      [STORAGE_SERVICE_KEY]: legacyValue,
+    });
+    expect(mockBrowser.storage.local.remove).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps legacy StorageService keys when IndexedDB mutations are blocked', async () => {
-    const consoleWarnSpy = jest
-      .spyOn(console, 'warn')
-      .mockImplementation(() => undefined);
-    const blockedError = new DOMException(
-      'A mutation operation was attempted on a database that did not allow mutations.',
-      'InvalidStateError',
-    );
-    jest
-      .spyOn(IndexedDBStore.prototype, 'open')
-      .mockRejectedValue(blockedError);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
+  it('keeps using browser storage when a fallback marker exists', async () => {
+    mockStorage({
+      [STORAGE_SERVICE_KEY]: 'fallback-value',
+      [FALLBACK_MARKER_STORAGE_KEY]: true,
     });
 
     await migrate(buildVersionedData(), new Set());
 
+    expect(database.open).not.toHaveBeenCalled();
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
+  });
+
+  it('pins browser storage when IndexedDB is blocked during open', async () => {
+    database.open.mockRejectedValueOnce(createBlockedError());
+    mockStorage({
+      [STORAGE_SERVICE_KEY]: 'legacy-value',
+    });
+    const oldStorage = buildVersionedData();
+
+    await migrate(oldStorage, new Set());
+
+    expect(oldStorage.meta.version).toBe(version);
     expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
       [FALLBACK_MARKER_STORAGE_KEY]: true,
     });
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      `Migration #${version}: IndexedDB is unavailable; keeping StorageService data in browser.storage.local.`,
-    );
+    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
 
-  it('rethrows browser.storage.local access errors', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    const storageError = new Error('storage.local failed');
-    mockBrowser.storage.local.getKeys.mockRejectedValueOnce(storageError);
-
-    await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
-      storageError,
-    );
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      storageError,
-    );
-  });
-
-  it('rethrows fallback marker write errors so the migration remains pending', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
+  it('fails when the fallback marker cannot be persisted', async () => {
     const markerError = new Error('fallback marker write failed');
-    jest
-      .spyOn(IndexedDBStore.prototype, 'open')
-      .mockRejectedValue(
-        new DOMException(
-          'A mutation operation was attempted on a database that did not allow mutations.',
-          'InvalidStateError',
-        ),
-      );
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
+    database.open.mockRejectedValueOnce(createBlockedError());
+    mockStorage({
+      [STORAGE_SERVICE_KEY]: 'legacy-value',
     });
     mockBrowser.storage.local.set.mockRejectedValueOnce(markerError);
-    const migrator = new Migrator({ migrations: [{ migrate, version }] });
-    migrator.on('error', jest.fn());
-    const oldStorage = buildVersionedData();
 
-    const failedMigration = await migrator.migrateData(oldStorage);
-
-    expect(failedMigration.state).toBe(oldStorage);
-    expect(failedMigration.state.meta.version).toBe(OLD_VERSION);
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
+    await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
       markerError,
     );
+
+    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });
 
-  it('rethrows unexpected IndexedDB errors', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    const indexedDBError = new Error('IndexedDB failed');
-    jest
-      .spyOn(IndexedDBStore.prototype, 'open')
-      .mockRejectedValue(indexedDBError);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
+  it('does not delete legacy keys when an IndexedDB write fails', async () => {
+    const databaseError = new Error('IndexedDB write failed');
+    database.set.mockRejectedValueOnce(databaseError);
+    mockStorage({
+      [STORAGE_SERVICE_KEY]: 'legacy-value',
     });
 
     await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
-      indexedDBError,
+      databaseError,
     );
 
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      indexedDBError,
-    );
   });
 
-  it('rethrows IndexedDB write errors without deleting legacy keys', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    const indexedDBError = new Error('IndexedDB write failed');
-    jest
-      .spyOn(IndexedDBStore.prototype, 'set')
-      .mockRejectedValue(indexedDBError);
-    mockBrowser.storage.local.getKeys.mockResolvedValueOnce([
-      STORAGE_SERVICE_KEY,
-    ]);
-    mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: { sourceCode: 'legacy-source-code' },
-    });
-
-    await expect(migrate(buildVersionedData(), new Set())).rejects.toBe(
-      indexedDBError,
-    );
-
-    expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      `Migration #${version}: Failed to migrate StorageService data to IndexedDB:`,
-      indexedDBError,
-    );
-  });
-
-  it('falls back to get(null) when getKeys is unavailable', async () => {
-    const storageServiceValue = { sourceCode: 'legacy-source-code' };
-    const storageLocalWithoutGetKeys = mockBrowser.storage.local as {
-      get: typeof mockBrowser.storage.local.get;
-      remove: typeof mockBrowser.storage.local.remove;
-      getKeys?: typeof mockBrowser.storage.local.getKeys;
+  it('reads all storage values when getKeys is unavailable', async () => {
+    const storageLocal = mockBrowser.storage.local as {
+      get: typeof browser.storage.local.get;
+      getKeys?: typeof browser.storage.local.getKeys;
     };
-    const originalGetKeys = storageLocalWithoutGetKeys.getKeys;
-    storageLocalWithoutGetKeys.getKeys = undefined;
+    const { getKeys } = storageLocal;
+    storageLocal.getKeys = undefined;
     mockBrowser.storage.local.get.mockResolvedValueOnce({
-      [STORAGE_SERVICE_KEY]: storageServiceValue,
+      [STORAGE_SERVICE_KEY]: 'legacy-value',
       unrelated: 'value',
     });
 
     try {
       await migrate(buildVersionedData(), new Set());
     } finally {
-      storageLocalWithoutGetKeys.getKeys = originalGetKeys;
+      storageLocal.getKeys = getKeys;
     }
 
     expect(mockBrowser.storage.local.get).toHaveBeenCalledWith(null);

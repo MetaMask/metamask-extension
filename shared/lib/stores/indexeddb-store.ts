@@ -6,16 +6,8 @@
 function transactionPromise(tx: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve();
-    tx.onerror = () => {
-      if (tx.error) {
-        reject(tx.error);
-      }
-    };
-    tx.onabort = () =>
-      reject(
-        tx.error ??
-          new DOMException('IndexedDB transaction aborted.', 'AbortError'),
-      );
+    tx.onerror = () =>
+      reject(tx.error ?? new Error('IndexedDB transaction failed.'));
   });
 }
 
@@ -67,19 +59,10 @@ export class IndexedDBStore {
     const keys = Object.keys(values);
     const tx = this.#db.transaction('store', 'readwrite');
     const store = tx.objectStore('store');
-    const completion = transactionPromise(tx);
-
-    try {
-      for (const key of keys) {
-        store.put(values[key], key);
-      }
-    } catch (error) {
-      tx.abort();
-      await completion.catch(() => undefined);
-      throw error;
+    for (const key of keys) {
+      store.put(values[key], key);
     }
-
-    await completion;
+    await transactionPromise(tx);
   }
 
   /**
@@ -127,7 +110,8 @@ export class IndexedDBStore {
     const request = store.getAllKeys(query);
     const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onerror = () =>
+        reject(request.error ?? new Error('Failed to list IndexedDB keys.'));
     });
     await transactionPromise(tx);
     return keys.filter((key): key is string => typeof key === 'string');
