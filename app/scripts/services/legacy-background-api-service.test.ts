@@ -2299,6 +2299,7 @@ describe('LegacyBackgroundApiService', () => {
      * Registers no-op handlers for every action `resetWallet` invokes.
      *
      * @param rootMessenger - The root messenger to register the handlers on.
+     * @param performSignOutHandler - The handler fn to signout from authentication service after wallet reset.
      */
     function registerResetWalletHandlers(
       rootMessenger: RootMessenger,

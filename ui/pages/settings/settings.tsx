@@ -507,6 +507,11 @@ const Settings = () => {
                 <SettingsLayout>
                   {messengerCapabilities ? (
                     <RouteWithMessenger
+                      // Remount when the settings sub-route changes. Sibling
+                      // routes share this component type, so without a key
+                      // React reuses the instance and keeps the previous
+                      // route's messenger capabilities.
+                      key={path}
                       path={path}
                       capabilities={messengerCapabilities}
                     >

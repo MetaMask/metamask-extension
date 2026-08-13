@@ -51,6 +51,15 @@ export default class ChangePasswordPage {
     await this.driver.waitForSelector(this.passwordChangedWarning);
   }
 
+  async clickUsePasswordForPasskeyVerification(): Promise<void> {
+    console.log(
+      'Switch change-password verification from passkey to current password',
+    );
+    await this.driver.waitForSelector(this.verifyPasskeyUsePasswordButton);
+    await this.driver.clickElement(this.verifyPasskeyUsePasswordButton);
+    await this.driver.waitForSelector(this.currentPasswordInput);
+  }
+
   async confirmChangePasswordWarning(): Promise<void> {
     console.log('Confirm change password warning');
     await this.driver.clickElementAndWaitToDisappear(this.confirmWarningButton);
@@ -60,15 +69,6 @@ export default class ChangePasswordPage {
     console.log('Confirm current password');
     await this.driver.fill(this.currentPasswordInput, password);
     await this.driver.clickElement(this.verifyCurrentPasswordButton);
-  }
-
-  async clickUsePasswordForPasskeyVerification(): Promise<void> {
-    console.log(
-      'Switch change-password verification from passkey to current password',
-    );
-    await this.driver.waitForSelector(this.verifyPasskeyUsePasswordButton);
-    await this.driver.clickElement(this.verifyPasskeyUsePasswordButton);
-    await this.driver.waitForSelector(this.currentPasswordInput);
   }
 
   async waitForPasskeyVerificationToComplete(): Promise<void> {
