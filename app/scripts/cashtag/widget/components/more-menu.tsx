@@ -54,12 +54,15 @@ export function MoreMenu({ onDisable }: Props) {
       <div
         ref={menuRef}
         id={menuId}
-        className="mm-cashtag-menu min-w-[255px] rounded-xl border border-muted bg-default py-2 font-sans text-default shadow-sm"
+        className="mm-cashtag-menu min-w-[255px] rounded-xl border border-muted bg-default px-0 py-2 font-sans text-default shadow-sm"
       >
         <button
           type="button"
           className="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-4 py-4 text-left text-s-body-md font-medium text-default hover:bg-muted-hover"
-          onClick={onDisable}
+          onClick={() => {
+            menuRef.current?.hidePopover?.();
+            onDisable();
+          }}
         >
           <BanIcon />
           <span>Disable this feature</span>

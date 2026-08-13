@@ -68,6 +68,7 @@ describe('bindHostColorScheme', () => {
   let matches: boolean;
 
   beforeEach(() => {
+    document.documentElement.removeAttribute('data-theme');
     listeners = [];
     matches = false;
     jest.spyOn(window, 'matchMedia').mockImplementation(() => {
@@ -97,6 +98,7 @@ describe('bindHostColorScheme', () => {
   });
 
   afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
     jest.restoreAllMocks();
   });
 
