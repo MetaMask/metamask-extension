@@ -15,6 +15,7 @@ jest.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: jest.fn(),
+      getKeys: jest.fn(),
       remove: jest.fn(),
       set: jest.fn(),
     },
@@ -38,7 +39,8 @@ function createBlockedError(): DOMException {
 }
 
 function mockStorage(entries: Record<string, unknown>): void {
-  mockBrowser.storage.local.get.mockResolvedValueOnce(entries);
+  mockBrowser.storage.local.getKeys.mockResolvedValue(Object.keys(entries));
+  mockBrowser.storage.local.get.mockResolvedValue(entries);
 }
 
 function mockIndexedDBStore() {
@@ -66,6 +68,7 @@ describe(`migration #${version}`, () => {
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     database = mockIndexedDBStore();
     mockBrowser.storage.local.get.mockResolvedValue({});
+    mockBrowser.storage.local.getKeys.mockResolvedValue([]);
     mockBrowser.storage.local.remove.mockResolvedValue(undefined);
     mockBrowser.storage.local.set.mockResolvedValue(undefined);
   });
@@ -74,11 +77,12 @@ describe(`migration #${version}`, () => {
 
   it('updates the version without opening IndexedDB when no keys match', async () => {
     const oldStorage = buildVersionedData();
-    mockBrowser.storage.local.get.mockResolvedValueOnce({ unrelated: 'value' });
+    mockBrowser.storage.local.getKeys.mockResolvedValueOnce(['unrelated']);
 
     await migrate(oldStorage, new Set());
 
     expect(oldStorage.meta.version).toBe(version);
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
     expect(database.open).not.toHaveBeenCalled();
   });
 
@@ -118,6 +122,11 @@ describe(`migration #${version}`, () => {
       STORAGE_SERVICE_INDEXED_DB_NAME,
       STORAGE_SERVICE_INDEXED_DB_VERSION,
     );
+    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith([
+      STORAGE_SERVICE_KEY,
+      SECOND_STORAGE_SERVICE_KEY,
+    ]);
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalledWith(null);
     expect(database.set).toHaveBeenCalledWith({
       [SECOND_STORAGE_SERVICE_KEY]: missingValue,
     });
@@ -128,10 +137,34 @@ describe(`migration #${version}`, () => {
     expect(database.close).toHaveBeenCalled();
   });
 
+  it('reads all values when getKeys is unavailable', async () => {
+    const storageLocalWithoutGetKeys = mockBrowser.storage.local as {
+      get: typeof mockBrowser.storage.local.get;
+      getKeys?: typeof mockBrowser.storage.local.getKeys;
+    };
+    const originalGetKeys = storageLocalWithoutGetKeys.getKeys;
+    storageLocalWithoutGetKeys.getKeys = undefined;
+    const legacyValue = { sourceCode: 'legacy-source-code' };
+    mockBrowser.storage.local.get.mockResolvedValueOnce({
+      [STORAGE_SERVICE_KEY]: legacyValue,
+    });
+
+    try {
+      await migrate(buildVersionedData(), new Set());
+    } finally {
+      storageLocalWithoutGetKeys.getKeys = originalGetKeys;
+    }
+
+    expect(mockBrowser.storage.local.get).toHaveBeenCalledWith(null);
+    expect(database.set).toHaveBeenCalledWith({
+      [STORAGE_SERVICE_KEY]: legacyValue,
+    });
+  });
+
   it('preserves newer IndexedDB data when cleanup is retried', async () => {
     const legacyValue = { sourceCode: 'legacy-source-code' };
     const cleanupError = new Error('storage.local cleanup failed');
-    mockBrowser.storage.local.get.mockResolvedValue({
+    mockStorage({
       [STORAGE_SERVICE_KEY]: legacyValue,
     });
     mockBrowser.storage.local.remove
@@ -161,6 +194,7 @@ describe(`migration #${version}`, () => {
 
     await migrate(buildVersionedData(), new Set());
 
+    expect(mockBrowser.storage.local.get).not.toHaveBeenCalled();
     expect(database.open).not.toHaveBeenCalled();
     expect(mockBrowser.storage.local.remove).not.toHaveBeenCalled();
   });

@@ -29,7 +29,25 @@ export const migrate = (async (versionedData, _changedKeys) => {
     return;
   }
 
-  const allStorage = await storageLocal.get(null);
+  let allStorage: Record<string, unknown>;
+  if (typeof storageLocal.getKeys === 'function') {
+    const allKeys = await storageLocal.getKeys();
+    if (allKeys.includes(FALLBACK_MARKER_STORAGE_KEY)) {
+      return;
+    }
+
+    const storageServiceKeys = allKeys.filter((key) =>
+      key.startsWith(STORAGE_KEY_PREFIX),
+    );
+    if (storageServiceKeys.length === 0) {
+      return;
+    }
+
+    allStorage = await storageLocal.get(storageServiceKeys);
+  } else {
+    allStorage = await storageLocal.get(null);
+  }
+
   if (FALLBACK_MARKER_STORAGE_KEY in allStorage) {
     return;
   }
