@@ -29,6 +29,7 @@ import { useSafeState } from '../../hooks/metamask-notifications/useNotification
 import { getNotifySnaps } from '../../selectors';
 import {
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
@@ -47,8 +48,11 @@ import { NewFeatureTag } from './NewFeatureTag';
 
 const useFeatureAnnouncementsEnabled = () => {
   const dispatch = useDispatch();
+  const featureAnnouncementsEnabledInState = useSelector(
+    selectIsFeatureAnnouncementsEnabled,
+  );
   const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
-    useSafeState(false);
+    useSafeState(featureAnnouncementsEnabledInState);
 
   useEffect(() => {
     const loadPreferences = async () => {

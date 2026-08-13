@@ -295,7 +295,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/components/app/srp-input/srp-input.test.js": {
-      "React: Act warnings (component updates not wrapped)": 51678
+      "React: Act warnings (component updates not wrapped)": 51702
     },
     "ui/components/app/update-modal/update-modal.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
@@ -869,7 +869,7 @@
       "error: Warning: Encountered two children with": 1
     },
     "ui/pages/notifications/notifications.test.tsx": {
-      "Reselect: Input stability warnings": 2
+      "Reselect: Input stability warnings": 3
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 212
