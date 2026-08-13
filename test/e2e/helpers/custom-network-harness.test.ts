@@ -79,8 +79,8 @@ describe('custom-network-harness', () => {
     });
 
     it('rejects ERC-20 scenarios on networks that do not seed TST', () => {
-      expect(() => prepareCustomNetwork('base', 'nativeAndErc20')).toThrow(
-        'nativeAndErc20 is only defined for xdc, not base',
+      expect(() => prepareCustomNetwork('injective', 'nativeAndErc20')).toThrow(
+        'nativeAndErc20 is only defined for xdc, not injective',
       );
     });
   });
