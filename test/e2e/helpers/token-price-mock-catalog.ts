@@ -69,7 +69,9 @@ function assetMatches(asset: CatalogAsset, requestedId: string): boolean {
   if (asset.assetIds?.includes(requestedId)) {
     return true;
   }
-  return Boolean(asset.idPrefixes?.some((prefix) => requestedId.startsWith(prefix)));
+  return Boolean(
+    asset.idPrefixes?.some((prefix) => requestedId.startsWith(prefix)),
+  );
 }
 
 function matchingAssets(
@@ -78,7 +80,9 @@ function matchingAssets(
 ): { requestedId: string; asset: CatalogAsset }[] {
   const matches: { requestedId: string; asset: CatalogAsset }[] = [];
   for (const requestedId of requestedAssetIds) {
-    const asset = assets.find((candidate) => assetMatches(candidate, requestedId));
+    const asset = assets.find((candidate) =>
+      assetMatches(candidate, requestedId),
+    );
     if (asset) {
       matches.push({ requestedId, asset });
     }

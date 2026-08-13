@@ -4,7 +4,9 @@ import {
   prepareCustomNetwork,
 } from './custom-network-harness';
 
-function networkController(fixtures: ReturnType<typeof prepareCustomNetwork>['fixtures']) {
+function networkController(
+  fixtures: ReturnType<typeof prepareCustomNetwork>['fixtures'],
+) {
   return fixtures.data.NetworkController as {
     selectedNetworkClientId: string;
     networkConfigurationsByChainId: Record<
@@ -14,7 +16,9 @@ function networkController(fixtures: ReturnType<typeof prepareCustomNetwork>['fi
   };
 }
 
-function enabledEip155(fixtures: ReturnType<typeof prepareCustomNetwork>['fixtures']) {
+function enabledEip155(
+  fixtures: ReturnType<typeof prepareCustomNetwork>['fixtures'],
+) {
   return (
     fixtures.data.NetworkEnablementController as {
       enabledNetworkMap: { eip155: Record<string, boolean> };

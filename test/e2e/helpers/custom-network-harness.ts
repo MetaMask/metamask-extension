@@ -286,16 +286,18 @@ function applyScenarioState(
         chainId: network.chainIdDecimal,
       });
     case 'dualNetworkWithErc20':
-      return builder.withTokensControllerERC20({
-        chainId: network.chainIdDecimal,
-      }).withAssetsController({
-        assetsBalance: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
-            [network.nativeAssetId]: { amount: '25' },
+      return builder
+        .withTokensControllerERC20({
+          chainId: network.chainIdDecimal,
+        })
+        .withAssetsController({
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+              [network.nativeAssetId]: { amount: '25' },
+            },
           },
-        },
-      });
+        });
     default: {
       const exhaustive: never = scenario;
       throw new Error(`Unknown scenario: ${String(exhaustive)}`);
