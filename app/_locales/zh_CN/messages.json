@@ -11423,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask 启动时出现问题。"
   },
-  "trustSignalBlockDescription": {
-    "message": "如果您访问此网站，您可能会损失所有资产。"
-  },
-  "trustSignalBlockTitle": {
-    "message": "检测到恶意网站"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "仍然连接"
-  },
   "tryAgain": {
     "message": "重试"
   },
