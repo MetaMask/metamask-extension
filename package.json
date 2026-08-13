@@ -173,6 +173,11 @@
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
+    "@ledgerhq/device-management-kit@npm:^1.7.1": "patch:@ledgerhq/device-management-kit@npm%3A1.7.1#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.7.1-c85615f09e.patch",
+    "@ledgerhq/device-transport-kit-web-hid@npm:^1.2.4": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch",
+    "reflect-metadata@npm:0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
+    "reflect-metadata@npm:^0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
+    "@inversifyjs/reflect-metadata-utils@npm:1.1.0": "patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch",
     "@metamask/network-controller": "35.0.0",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.3.1",
