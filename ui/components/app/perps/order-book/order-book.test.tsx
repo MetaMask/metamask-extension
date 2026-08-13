@@ -5,13 +5,20 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { PerpsOrderBook } from './order-book';
 
 jest.mock('../../../../hooks/perps/stream', () => ({
   usePerpsLiveOrderBook: jest.fn(),
 }));
 
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
 const mockUsePerpsLiveOrderBook = jest.mocked(usePerpsLiveOrderBook);
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 const mockOrderBook = {
   bids: [
@@ -53,16 +60,22 @@ const mockOrderBook = {
   maxTotal: '0.62',
 };
 
-const mockStore = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
-});
+function makeStore(orderBookPosition?: 'left' | 'right') {
+  return configureStore({
+    metamask: {
+      ...mockState.metamask,
+      ...(orderBookPosition && {
+        proLayoutPreferences: { orderBookPosition },
+      }),
+    },
+  });
+}
 
 function renderOrderBook(props?: {
   isOpen?: boolean;
   marketPrice?: number;
   onSelectPrice?: (price: string) => void;
+  orderBookPosition?: 'left' | 'right';
 }) {
   return renderWithProvider(
     <PerpsOrderBook
@@ -71,7 +84,7 @@ function renderOrderBook(props?: {
       marketPrice={props?.marketPrice ?? 73776}
       onSelectPrice={props?.onSelectPrice}
     />,
-    mockStore,
+    makeStore(props?.orderBookPosition),
   );
 }
 
@@ -244,6 +257,92 @@ describe('PerpsOrderBook', () => {
       ).toHaveTextContent('$2,967');
     });
 
+    // The depth bar fills away from the outer edge of the window, so it is
+    // anchored to whichever side the panel itself is pinned to.
+    const depthBarOf = (rowTestId: string) =>
+      screen
+        .getByTestId(rowTestId)
+        .querySelector('[aria-hidden="true"]') as HTMLElement;
+
+    it('grows depth bars from the right when the order book is on the right', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      const bar = depthBarOf('perps-order-book-bid-row-0');
+      expect(bar.className).toContain('right-0');
+      expect(bar.className).not.toContain('left-0');
+    });
+
+    it('grows depth bars from the left when the order book is on the left', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      const bar = depthBarOf('perps-order-book-bid-row-0');
+      expect(bar.className).toContain('left-0');
+      expect(bar.className).not.toContain('right-0');
+    });
+
+    it('anchors ask and bid depth bars to the same side', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(depthBarOf('perps-order-book-ask-row-0').className).toContain(
+        'left-0',
+      );
+      expect(depthBarOf('perps-order-book-bid-row-0').className).toContain(
+        'left-0',
+      );
+    });
+
+    // Columns mirror with the panel so the value stays on the outer edge, at the
+    // end the depth bar grows from.
+    const rowCellOrder = (rowTestId: string) =>
+      Array.from(
+        screen
+          .getByTestId(rowTestId)
+          .querySelectorAll('[data-testid$="-price"], [data-testid$="-value"]'),
+      ).map((cell) => cell.getAttribute('data-testid')?.split('-').pop());
+
+    const headerOrder = () =>
+      Array.from(
+        (
+          screen.getByText(messages.perpsOrderBookPrice.message)
+            .parentElement as HTMLElement
+        ).children,
+      ).map((child) => child.textContent);
+
+    it('renders price then value when the order book is on the right', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      expect(rowCellOrder('perps-order-book-bid-row-0')).toStrictEqual([
+        'price',
+        'value',
+      ]);
+      expect(headerOrder()).toStrictEqual([
+        messages.perpsOrderBookPrice.message,
+        `${messages.perpsOrderBookTotal.message} (USD)`,
+      ]);
+    });
+
+    it('renders value then price when the order book is on the left', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(rowCellOrder('perps-order-book-bid-row-0')).toStrictEqual([
+        'value',
+        'price',
+      ]);
+      expect(headerOrder()).toStrictEqual([
+        `${messages.perpsOrderBookTotal.message} (USD)`,
+        messages.perpsOrderBookPrice.message,
+      ]);
+    });
+
+    it('keeps the ask rows mirrored in step with the bid rows', () => {
+      renderOrderBook({ orderBookPosition: 'left' });
+
+      expect(rowCellOrder('perps-order-book-ask-row-0')).toStrictEqual([
+        'value',
+        'price',
+      ]);
+    });
+
     it('renders the compact spread row with a percentage', () => {
       renderOrderBook({ marketPrice: 73776 });
 
@@ -319,6 +418,87 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByText(`${messages.perpsOrderBookTotal.message} (BTC)`),
       ).toBeInTheDocument();
+    });
+
+    it('renders the layout section with Left selected by default', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'true');
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      ).toHaveAttribute('aria-checked', 'false');
+    });
+
+    it('seeds the layout pills from the persisted position', () => {
+      renderOrderBook({ orderBookPosition: 'right' });
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      ).toHaveAttribute('aria-checked', 'true');
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'false');
+    });
+
+    it('persists the chosen layout to the controller on apply', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
+
+      // A patch, so sibling preferences like orderFormPosition survive.
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookPosition: 'right' }],
+      );
+      expect(
+        screen.queryByText(messages.perpsOrderBookConfigTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not persist a layout the user did not change', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-close'),
+      );
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        expect.anything(),
+      );
+    });
+
+    it('discards layout draft when the modal is dismissed', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-layout-right'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-close'),
+      );
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-layout-left'),
+      ).toHaveAttribute('aria-checked', 'true');
     });
 
     it('keeps the applied grouping selected when the modal is reopened', () => {

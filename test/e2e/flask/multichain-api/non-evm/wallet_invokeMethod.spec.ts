@@ -9,6 +9,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Multichain API - Non EVM', function () {
   describe('Calling `wallet_invokeMethod`', function () {
@@ -23,13 +24,13 @@ describe('Multichain API - Non EVM', function () {
           async ({ driver, extensionId }) => {
             await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -63,13 +64,13 @@ describe('Multichain API - Non EVM', function () {
           async ({ driver, extensionId }) => {
             await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
