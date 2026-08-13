@@ -72,46 +72,97 @@ export const GatorPermissionsPage = () => {
     return null;
   }
 
-  // Loading state
-  if (loading) {
-    return (
-      <Page className="main-container" data-testid="gator-permissions-page">
-        <Header
-          className="bg-background-default"
-          startAccessory={
-            <ButtonIcon
-              ariaLabel={t('back')}
-              iconName={IconName.ArrowLeft}
-              color={IconColor.IconDefault}
-              onClick={handleBack}
-              size={ButtonIconSize.Md}
-            />
-          }
-        >
-          {t('permissions')}
-        </Header>
-        <Content padding={0}>
-          <Box
-            data-testid="gator-permissions-loading"
-            flexDirection={BoxFlexDirection.Column}
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Center}
-            padding={4}
-            className="h-full"
-          >
-            <Icon
-              name={IconName.Loading}
-              color={IconColor.IconMuted}
-              size={IconSize.Lg}
-              className="animate-spin"
-            />
-          </Box>
-        </Content>
-      </Page>
-    );
-  }
+  const hasPermissions =
+    !loading && (totalGatorPermissions > 0 || totalSitesConnections > 0);
 
-  const hasPermissions = totalGatorPermissions > 0 || totalSitesConnections > 0;
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <Box
+          data-testid="gator-permissions-loading"
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
+          padding={4}
+          className="h-full"
+        >
+          <Icon
+            name={IconName.Loading}
+            color={IconColor.IconMuted}
+            size={IconSize.Lg}
+            className="animate-spin"
+          />
+        </Box>
+      );
+    }
+
+    if (hasPermissions) {
+      return (
+        <Box
+          data-testid="permission-list"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Baseline}
+          paddingVertical={4}
+          gap={4}
+          className="w-full bg-background-default"
+        >
+          {totalSitesConnections > 0 && (
+            <>
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+                className="pl-4"
+              >
+                {t('dapps')}
+              </Text>
+              <PermissionListItem
+                total={totalSitesConnections}
+                permissionGroupName={t('connections')}
+                onClick={() => transitionForward(() => navigate(PERMISSIONS))}
+              />
+            </>
+          )}
+          {totalSitesConnections > 0 && totalGatorPermissions > 0 && (
+            <Box className="w-full px-4">
+              <hr className="m-0 w-full border-0 border-t border-muted" />
+            </Box>
+          )}
+          {totalGatorPermissions > 0 && (
+            <>
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+                className="pl-4"
+              >
+                {t('assets')}
+              </Text>
+              <PermissionListItem
+                total={totalGatorPermissions}
+                permissionGroupName={t('tokenTransfer')}
+                onClick={() =>
+                  transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE))
+                }
+              />
+            </>
+          )}
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        data-testid="no-connections"
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        padding={4}
+        className="h-full"
+      >
+        <PermissionsEmptyState />
+      </Box>
+    );
+  };
 
   return (
     <Page className="main-container" data-testid="gator-permissions-page">
@@ -130,70 +181,7 @@ export const GatorPermissionsPage = () => {
       >
         {t('permissions')}
       </Header>
-      <Content padding={0}>
-        {hasPermissions ? (
-          <Box
-            data-testid="permission-list"
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Baseline}
-            paddingVertical={4}
-            gap={4}
-            className="w-full bg-background-default"
-          >
-            {totalSitesConnections > 0 && (
-              <>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  className="pl-4"
-                >
-                  {t('dapps')}
-                </Text>
-                <PermissionListItem
-                  total={totalSitesConnections}
-                  permissionGroupName={t('connections')}
-                  onClick={() => transitionForward(() => navigate(PERMISSIONS))}
-                />
-              </>
-            )}
-            {totalSitesConnections > 0 && totalGatorPermissions > 0 && (
-              <Box className="w-full px-4">
-                <hr className="m-0 w-full border-0 border-t border-muted" />
-              </Box>
-            )}
-            {totalGatorPermissions > 0 && (
-              <>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  className="pl-4"
-                >
-                  {t('assets')}
-                </Text>
-                <PermissionListItem
-                  total={totalGatorPermissions}
-                  permissionGroupName={t('tokenTransfer')}
-                  onClick={() =>
-                    transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE))
-                  }
-                />
-              </>
-            )}
-          </Box>
-        ) : (
-          <Box
-            data-testid="no-connections"
-            flexDirection={BoxFlexDirection.Column}
-            justifyContent={BoxJustifyContent.Center}
-            padding={4}
-            className="h-full"
-          >
-            <PermissionsEmptyState />
-          </Box>
-        )}
-      </Content>
+      <Content padding={0}>{renderContent()}</Content>
     </Page>
   );
 };

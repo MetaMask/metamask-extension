@@ -1,10 +1,10 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Gator permissions hub: Dapps and Token transfer categories.
+ * Gator permissions hub: Connections and Token transfer categories.
  *
  * Screen: `#/gator-permissions` when the Gator permissions feature is enabled.
- * Owns: page-loaded / displayed checks, navigating into Dapps (Connections) or Token
+ * Owns: page-loaded / displayed checks, navigating into Connections (Dapps) or Token
  * transfer (Assets), and back toward home.
  * Boundaries: the category hub only. Site list and per-site management are
  * `PermissionListPage` / `SitePermissionPage`.
@@ -21,7 +21,7 @@ class GatorPermissionsPage {
 
   private readonly connectionsButton = { text: 'Connections', tag: 'p' };
 
-  private driver: Driver;
+  private readonly driver: Driver;
 
   private readonly gatorPermissionsPage =
     '[data-testid="gator-permissions-page"]';
@@ -50,7 +50,7 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Click on Assets/Token transfer to navigate to Token Transfer page
+   * Click on Assets/Token transfer to navigate to Token Transfer Permissions page
    */
   async clickAssets(): Promise<void> {
     console.log('Click Assets on Gator Permissions page');
@@ -66,7 +66,7 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Click on Connections to navigate to Permissions page
+   * Click on Connections to navigate to Dapp Permissions page
    */
   async clickConnections(): Promise<void> {
     console.log('Click Connections on Gator Permissions page');
@@ -74,7 +74,7 @@ class GatorPermissionsPage {
   }
 
   /**
-   * Check if the Connections button is present on the page.
+   * Check if the Connections (Dapps) button is present on the page.
    * The button may not be present if there are no site connections.
    *
    * @param timeout - Timeout in ms. Use a short timeout (1-2s) after
