@@ -1,5 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Installed Snaps list and per-snap management (enable, remove, home page).
+ *
+ * Screen: `#/snaps`, usually opened from settings / global menu snaps entry.
+ * Owns: empty-state messaging, snap list items, enable toggle, remove-snap
+ * confirmation, update link, and opening example snap home pages.
+ * Boundaries: snaps list and remove modal only. Snap install confirmations
+ * and snap UI dialogs belong to dialog/confirmation page objects.
+ * Related: `SnapInstall`, settings / header entry points.
+ *
+ * @see ui/pages/snaps/snaps-list/snap-list.js
+ */
 class SnapListPage {
   private readonly backButton = 'button[aria-label="Back"]';
 
