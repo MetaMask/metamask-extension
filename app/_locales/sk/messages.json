@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
-  "gasUsed": {
-    "message": "GAS použitý"
-  },
   "general": {
     "message": "Všeobecne"
   },
@@ -540,9 +537,6 @@
   },
   "unapproved": {
     "message": "Neschváleno"
-  },
-  "units": {
-    "message": "jednotky"
   },
   "unknown": {
     "message": "Neznámé"

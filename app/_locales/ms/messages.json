@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Had gas mestilah sekurang-kurangnya 21000"
   },
-  "gasUsed": {
-    "message": "Gas Digunakan"
-  },
   "general": {
     "message": "Am"
   },
@@ -555,9 +552,6 @@
   },
   "unapproved": {
     "message": "Belum Diluluskan"
-  },
-  "units": {
-    "message": "unit"
   },
   "unknown": {
     "message": "Tidak diketahui"

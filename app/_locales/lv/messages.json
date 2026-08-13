@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
   },
-  "gasUsed": {
-    "message": "Izlietotie Gas"
-  },
   "general": {
     "message": "Vispārīgi"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "Nav apstiprināts"
-  },
-  "units": {
-    "message": "vienības"
   },
   "unknown": {
     "message": "Nezināma"

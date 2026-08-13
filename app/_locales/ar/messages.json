@@ -234,9 +234,6 @@
   "gasLimitTooLow": {
     "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
   },
-  "gasUsed": {
-    "message": "وحدات جاس المستخدمة"
-  },
   "general": {
     "message": "عام"
   },
@@ -575,9 +572,6 @@
   },
   "unapproved": {
     "message": "تم الرفض"
-  },
-  "units": {
-    "message": "وحدات"
   },
   "unknown": {
     "message": "غير معروف"

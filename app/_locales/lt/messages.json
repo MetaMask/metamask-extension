@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
   },
-  "gasUsed": {
-    "message": "Sunaudotos dujos"
-  },
   "general": {
     "message": "Bendra"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "Nepatvirtinta"
-  },
-  "units": {
-    "message": "vienetai"
   },
   "unknown": {
     "message": "Nežinoma"

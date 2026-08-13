@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
   },
-  "gasUsed": {
-    "message": "Brukt datakraft "
-  },
   "general": {
     "message": "Generell"
   },
@@ -559,9 +556,6 @@
   },
   "unapproved": {
     "message": "Ikke godkjent "
-  },
-  "units": {
-    "message": "enheter "
   },
   "unknown": {
     "message": "Ukjent"

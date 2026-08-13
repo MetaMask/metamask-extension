@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Gas-rajan tulee olla vähintään 21 000"
   },
-  "gasUsed": {
-    "message": "Käytetty bensaa"
-  },
   "general": {
     "message": "Yleistä"
   },
@@ -571,9 +568,6 @@
   },
   "unapproved": {
     "message": "Ei hyväksytty"
-  },
-  "units": {
-    "message": "yksikköä"
   },
   "unknown": {
     "message": "Tuntematon"

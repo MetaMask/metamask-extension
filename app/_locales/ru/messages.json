@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
-  "advancedGasPriceTitle": {
-    "message": "Цена газа"
-  },
   "advancedPermissionSmallCase": {
     "message": "расширенное разрешение"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "Сумма"
-  },
-  "amountReceived": {
-    "message": "Полученная сумма"
-  },
-  "amountSent": {
-    "message": "Отправленная сумма"
   },
   "andForListItems": {
     "message": "$1, и $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Использовано газа"
   },
   "gatorNoJustificationProvided": {
     "message": "Обоснование для выдачи разрешения не было предоставлено"
@@ -11151,27 +11139,6 @@
   "transactionFlowNetwork": {
     "message": "Сеть"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Базовая комиссия (Гвей)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Итого платы за газ L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Лимит газа L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Цена газа L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Макс. комиссия на газ"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Плата за приоритет (Гвей)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Итого платы за газ"
-  },
   "transactionIdCopied": {
     "message": "ID транзакции скопирован"
   },
@@ -11348,9 +11315,6 @@
   "unifiedSwapFromTo": {
     "message": "Выполнить своп $1 $2 на $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "единицы"
   },
   "unknown": {
     "message": "Неизвестно"

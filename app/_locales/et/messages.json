@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Gaasi ülemmäär peab olema vähemalt 21 000"
   },
-  "gasUsed": {
-    "message": "Kasutatud gaasihulk"
-  },
   "general": {
     "message": "Üldine teave"
   },
@@ -568,9 +565,6 @@
   },
   "unapproved": {
     "message": "Kinnitamata"
-  },
-  "units": {
-    "message": "ühikud"
   },
   "unknown": {
     "message": "Teadmata"

@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Brændstofgrænsen skal være mindst 21000"
   },
-  "gasUsed": {
-    "message": "Gas brugt"
-  },
   "general": {
     "message": "Generelt"
   },
@@ -550,9 +547,6 @@
   },
   "unapproved": {
     "message": "Ikke godkendt"
-  },
-  "units": {
-    "message": "enheder"
   },
   "unknown": {
     "message": "ukendt"

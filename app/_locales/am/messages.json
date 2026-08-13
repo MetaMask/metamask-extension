@@ -221,9 +221,6 @@
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
   },
-  "gasUsed": {
-    "message": "ጥቅም ላይ የዋለ ነዳጅ"
-  },
   "general": {
     "message": "አጠቃላይ"
   },
@@ -559,9 +556,6 @@
   },
   "unapproved": {
     "message": "ያልተፈቀደ"
-  },
-  "units": {
-    "message": "መለኪያዎች"
   },
   "unknown": {
     "message": "ያልታወቀ"

@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Phí mạng nâng cao"
   },
-  "advancedGasPriceTitle": {
-    "message": "Giá gas"
-  },
   "advancedPermissionSmallCase": {
     "message": "quyền nâng cao"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "Số lượng"
-  },
-  "amountReceived": {
-    "message": "Số tiền đã nhận"
-  },
-  "amountSent": {
-    "message": "Số tiền đã gửi"
   },
   "andForListItems": {
     "message": "$1, và $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Gas đã dùng"
   },
   "gatorNoJustificationProvided": {
     "message": "Không có lý do nào được đưa ra cho quyền này"
@@ -11159,27 +11147,6 @@
   "transactionFlowNetwork": {
     "message": "Mạng"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Phí cơ sở (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Tổng phí gas L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Hạn mức phí gas L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Giá gas L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Mức phí tối đa mỗi gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Phí ưu tiên (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Tổng phí gas"
-  },
   "transactionIdCopied": {
     "message": "Đã sao chép ID giao dịch"
   },
@@ -11356,9 +11323,6 @@
   "unifiedSwapFromTo": {
     "message": "Hoán đổi $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "đơn vị"
   },
   "unknown": {
     "message": "Không xác định"

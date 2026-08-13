@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "A gáz határértéke legyen legalább 21000"
   },
-  "gasUsed": {
-    "message": "Használt gáz"
-  },
   "general": {
     "message": "Általános"
   },
@@ -568,9 +565,6 @@
   },
   "unapproved": {
     "message": "Jóvá nem hagyott"
-  },
-  "units": {
-    "message": "egységek"
   },
   "unknown": {
     "message": "Ismeretlen"

@@ -224,9 +224,6 @@
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
   },
-  "gasUsed": {
-    "message": "Gesi iliyotumika"
-  },
   "general": {
     "message": "Jumla"
   },
@@ -556,9 +553,6 @@
   },
   "unapproved": {
     "message": "Haijaidhinishwa"
-  },
-  "units": {
-    "message": "vizio"
   },
   "unknown": {
     "message": "Haijulikani"

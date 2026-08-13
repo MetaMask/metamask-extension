@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
   },
-  "gasUsed": {
-    "message": "Użyty gaz"
-  },
   "general": {
     "message": "Ogólne"
   },
@@ -562,9 +559,6 @@
   },
   "unapproved": {
     "message": "Niezatwierdzone"
-  },
-  "units": {
-    "message": "jednostki"
   },
   "unknown": {
     "message": "Nieznane"

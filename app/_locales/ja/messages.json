@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
-  "advancedGasPriceTitle": {
-    "message": "ガス価格"
-  },
   "advancedPermissionSmallCase": {
     "message": "高度なアクセス許可"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "金額"
-  },
-  "amountReceived": {
-    "message": "受取額"
-  },
-  "amountSent": {
-    "message": "送金額"
   },
   "andForListItems": {
     "message": "$1、および$2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "ガス使用量"
   },
   "gatorNoJustificationProvided": {
     "message": "アクセス許可の正当な理由が提供されませんでした"
@@ -11155,27 +11143,6 @@
   "transactionFlowNetwork": {
     "message": "ネットワーク:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "基本料金 (Gwei)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "L1ガス代合計"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2ガスリミット"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2ガス価格"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "ガス1単位あたりの最大手数料"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "優先手数料 (gwei)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "ガス代合計"
-  },
   "transactionIdCopied": {
     "message": "トランザクションIDがコピーされました"
   },
@@ -11352,9 +11319,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2を$3にスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "単位"
   },
   "unknown": {
     "message": "不明"

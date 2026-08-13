@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Ліміт газу має бути не менше 21000"
   },
-  "gasUsed": {
-    "message": "Пального використано"
-  },
   "general": {
     "message": "Загальні"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "Не затверджено"
-  },
-  "units": {
-    "message": "одиниці"
   },
   "unknown": {
     "message": "невідомо"

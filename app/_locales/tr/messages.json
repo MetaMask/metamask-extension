@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Gelişmiş ağ ücreti"
   },
-  "advancedGasPriceTitle": {
-    "message": "Gaz fiyatı"
-  },
   "advancedPermissionSmallCase": {
     "message": "gelişmiş izin"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "Tutar"
-  },
-  "amountReceived": {
-    "message": "Alınan tutar"
-  },
-  "amountSent": {
-    "message": "Gönderilen tutar"
   },
   "andForListItems": {
     "message": "$1 ve $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 sn",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Kullanılan gaz"
   },
   "gatorNoJustificationProvided": {
     "message": "İzin için gerekçe sağlanmadı"
@@ -11159,27 +11147,6 @@
   "transactionFlowNetwork": {
     "message": "Ağ:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Baz ücret (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Toplam L1 gaz ücreti"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gaz limiti"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gaz fiyatı"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Gaz başına maks. ücret"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Öncelik ücreti (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Toplam gaz ücreti"
-  },
   "transactionIdCopied": {
     "message": "İşlem kimliği kopyalandı"
   },
@@ -11356,9 +11323,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2 ile $3 takas işlemi gerçekleştir",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "birim"
   },
   "unknown": {
     "message": "Bilinmeyen"

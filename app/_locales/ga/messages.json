@@ -302,9 +302,6 @@
   "advancedDetailsNonceTooltip": {
     "message": "Seo uimhir idirbhirt cuntais. Is é 0 an uimhir neamh-uaire don chéad idirbheart agus méadaíonn sé in ord seicheamhach."
   },
-  "advancedGasPriceTitle": {
-    "message": "Praghas gáis"
-  },
   "airDropPatternDescription": {
     "message": "Nochtann stair ar an slabhra an chomhartha cásanna roimhe seo de ghníomhaíochtaí amhrasacha aerthráchta."
   },
@@ -466,12 +463,6 @@
   },
   "amount": {
     "message": "Méid"
-  },
-  "amountReceived": {
-    "message": "Méid a Fuarthas"
-  },
-  "amountSent": {
-    "message": "Méid Seolta"
   },
   "andForListItems": {
     "message": "$1, agus $2",
@@ -2096,9 +2087,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 soicind",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Gás a úsáidtear"
   },
   "general": {
     "message": "Ginearálta"
@@ -5727,27 +5715,6 @@
   "transactionFlowNetwork": {
     "message": "Líonra"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Táille bhunúsach (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Táille iomlán gáis L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Teorainn gáis L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Praghas gáis L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Uasmhéid táille in aghaidh an gháis"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Táille tosaíochta (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Táille iomlán gáis"
-  },
   "transactionIdLabel": {
     "message": "Aitheantas Idirbhirt",
     "description": "Label for the source transaction ID field."
@@ -5846,9 +5813,6 @@
   "unifiedSwapFromTo": {
     "message": "Malartaigh $1 $2 go $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "aonaid"
   },
   "unknown": {
     "message": "Anaithnid"

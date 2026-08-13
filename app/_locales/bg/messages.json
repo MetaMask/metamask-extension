@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "Ограничението за газ трябва да бъде поне 21000"
   },
-  "gasUsed": {
-    "message": "Използван газ"
-  },
   "general": {
     "message": "Общ"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "Неодобрено"
-  },
-  "units": {
-    "message": "елементи"
   },
   "unknown": {
     "message": "Неизвестно"

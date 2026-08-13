@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "حدود گاز باید حد اقل 21000 باشد"
   },
-  "gasUsed": {
-    "message": "گاز استفاده شد"
-  },
   "general": {
     "message": "عمومی"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "تصدیق ناشده"
-  },
-  "units": {
-    "message": "واحد ها"
   },
   "unknown": {
     "message": "ناشناس"

@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
   },
-  "gasUsed": {
-    "message": "Gas utilitzat"
-  },
   "goerli": {
     "message": "Xarxa de test Goerli"
   },
@@ -553,9 +550,6 @@
   },
   "unapproved": {
     "message": "Pendent d'aprovació"
-  },
-  "units": {
-    "message": "unitats"
   },
   "unknown": {
     "message": "Desconegut"

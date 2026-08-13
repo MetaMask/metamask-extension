@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "고급 네트워크 수수료"
   },
-  "advancedGasPriceTitle": {
-    "message": "가스 가격"
-  },
   "advancedPermissionSmallCase": {
     "message": "고급 승인"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "수량"
-  },
-  "amountReceived": {
-    "message": "수취 금액"
-  },
-  "amountSent": {
-    "message": "송금액"
   },
   "andForListItems": {
     "message": "$1, 그리고 $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 초",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "가스 사용됨"
   },
   "gatorNoJustificationProvided": {
     "message": "권한에 대한 근거가 제공되지 않았습니다"
@@ -11159,27 +11147,6 @@
   "transactionFlowNetwork": {
     "message": "네트워크:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "기본 수수료 (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "총 L1 가스비"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 가스 한도"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 가스 가격"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "가스당 최대 수수료"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "우선 수수료 (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "가스비 합계"
-  },
   "transactionIdCopied": {
     "message": "트랜잭션 ID 복사됨"
   },
@@ -11356,9 +11323,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2를 $3(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "단위"
   },
   "unknown": {
     "message": "알 수 없음"

@@ -435,9 +435,6 @@
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
   },
-  "gasUsed": {
-    "message": "Gas 用量"
-  },
   "general": {
     "message": "一般"
   },
@@ -953,9 +950,6 @@
   },
   "unapproved": {
     "message": "未批准"
-  },
-  "units": {
-    "message": "單位"
   },
   "unknown": {
     "message": "未知"

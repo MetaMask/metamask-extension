@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
   },
-  "advancedGasPriceTitle": {
-    "message": "गैस प्राइस"
-  },
   "advancedPermissionSmallCase": {
     "message": "एडवांस्डअनुमति"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "अमाउंट"
-  },
-  "amountReceived": {
-    "message": "प्राप्त की गई राशि"
-  },
-  "amountSent": {
-    "message": "भेजी गई राशि"
   },
   "andForListItems": {
     "message": "$1, और $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 सेकंड",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "इस्तेमाल की गई गैस"
   },
   "gatorNoJustificationProvided": {
     "message": "अनुमति के लिए कोई वजह नहीं बताई गई"
@@ -11148,27 +11136,6 @@
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
   },
-  "transactionHistoryBaseFee": {
-    "message": "बेस फी (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "कुल L1 गैस फ़ीस"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 गैस लिमिट"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 गैस कीमत"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "प्रति गैस अधिकतम फीस"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "प्रायोरिटी फी (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "कुल गैस फीस"
-  },
   "transactionIdCopied": {
     "message": "Transaction ID कॉपी किया गया"
   },
@@ -11345,9 +11312,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2 से $3 में स्वैप करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "यूनिट्स"
   },
   "unknown": {
     "message": "अज्ञात"

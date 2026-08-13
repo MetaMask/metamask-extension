@@ -230,9 +230,6 @@
   "gasLimitTooLow": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
   },
-  "gasUsed": {
-    "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
-  },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
   },
@@ -574,9 +571,6 @@
   },
   "unapproved": {
     "message": "ಅನುಮೋದಿಸದಿರುವುದು"
-  },
-  "units": {
-    "message": "ಘಟಕಗಳು"
   },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"

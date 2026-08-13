@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
   },
-  "gasUsed": {
-    "message": "গ্যাস ব্যবহার করা হয়েছে"
-  },
   "general": {
     "message": "সাধারণ"
   },
@@ -571,9 +568,6 @@
   },
   "unapproved": {
     "message": "অননুমোদিত"
-  },
-  "units": {
-    "message": "ইউনিটসমূহ"
   },
   "unknown": {
     "message": "অজানা"

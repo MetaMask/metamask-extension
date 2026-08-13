@@ -227,9 +227,6 @@
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
   },
-  "gasUsed": {
-    "message": "Korišćen gas"
-  },
   "general": {
     "message": "Opšte"
   },
@@ -562,9 +559,6 @@
   },
   "unapproved": {
     "message": "Neodobren"
-  },
-  "units": {
-    "message": "jedinice"
   },
   "unknown": {
     "message": "Непознато"

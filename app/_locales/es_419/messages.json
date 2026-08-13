@@ -1335,9 +1335,6 @@
   "advancedGasPriceModalTitle": {
     "message": "Tarifa de red avanzada"
   },
-  "advancedGasPriceTitle": {
-    "message": "Precio del gas"
-  },
   "advancedPermissionSmallCase": {
     "message": "permiso avanzado"
   },
@@ -1558,12 +1555,6 @@
   },
   "amount": {
     "message": "Cantidad"
-  },
-  "amountReceived": {
-    "message": "Monto recibido"
-  },
-  "amountSent": {
-    "message": "Monto enviado"
   },
   "andForListItems": {
     "message": "$1, y $2",
@@ -4045,9 +4036,6 @@
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasUsed": {
-    "message": "Gas usado"
   },
   "gatorNoJustificationProvided": {
     "message": "No se proporcionó ninguna justificación para el permiso"
@@ -11159,27 +11147,6 @@
   "transactionFlowNetwork": {
     "message": "Red"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Tarifa base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Tarifa total de gas L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Límite de gas L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Precio de gas L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Tarifa máxima por gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Tarifa de prioridad (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Tarifa de gas total"
-  },
   "transactionIdCopied": {
     "message": "ID de la transacción copiado"
   },
@@ -11356,9 +11323,6 @@
   "unifiedSwapFromTo": {
     "message": "Canjear $1 $2 por $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconocida"
