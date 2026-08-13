@@ -349,21 +349,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/alerts/transactions/useGasFeeLowAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/alerts/transactions/useNoGasPriceAlerts.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1

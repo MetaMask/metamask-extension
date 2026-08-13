@@ -37,5 +37,5 @@ export function useGasFeeLowAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isLowEstimate]);
+  }, [isLowEstimate, t]);
 }
