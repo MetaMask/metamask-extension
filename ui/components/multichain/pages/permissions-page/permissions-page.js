@@ -58,15 +58,11 @@ const PermissionsPage = () => {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
+      // Came directly from home via auto-redirect - close with animation
       runCloseTransition(() => navigate(-1));
-    } else if (fromPath) {
-      navigate(-1);
     } else {
-      navigate(
-        isGatorPermissionsRevocationFeatureEnabled()
-          ? GATOR_PERMISSIONS
-          : DEFAULT_ROUTE,
-      );
+      // Came from Gator hub or other navigation - just go back through history
+      navigate(-1);
     }
   };
   const [totalConnections, setTotalConnections] = useState(0);

@@ -14,21 +14,11 @@ import { useTheme } from '../../../../../hooks/useTheme';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 
-type PermissionsEmptyStateProps = {
-  // Optional description text. Defaults to the 'permissionsPageEmptyDescription' i18n key.
-  description?: string;
-  // Optional test ID for the description element.
-  descriptionTestId?: string;
-};
-
-export const PermissionsEmptyState = ({
-  description,
-  descriptionTestId,
-}: PermissionsEmptyStateProps) => {
+export const PermissionsEmptyState = () => {
   const t = useI18nContext();
   const theme = useTheme();
 
-  const descriptionText = description ?? t('permissionsPageEmptyDescription');
+  const descriptionText = t('permissionsPageEmptyDescription');
   const imageSrc =
     theme === ThemeType.dark
       ? '/images/empty-state-permissions-dark.png'
@@ -50,7 +40,6 @@ export const PermissionsEmptyState = ({
         variant={TextVariant.BodyMd}
         color={TextColor.TextAlternative}
         textAlign={TextAlign.Center}
-        data-testid={descriptionTestId}
       >
         {descriptionText}
       </Text>

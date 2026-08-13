@@ -34,9 +34,6 @@ import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-me
 import { transitionForward } from '../../../ui/transition';
 import { PermissionListItem, PermissionsEmptyState } from './components';
 
-const buildRouteWithFrom = (route: string, from: string): string =>
-  `${route}?from=${encodeURIComponent(from)}`;
-
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const [searchParams] = useSearchParams();
