@@ -172,8 +172,8 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false,
-      "consentDecisionMade": true
+      "consentDecisionMade": true,
+      "optedIn": false
     },
     "AnnouncementController": {
       "announcements": {}
@@ -1146,7 +1146,6 @@
       }
     },
     "RampsController": {
-      "userRegion": null,
       "countries": {
         "data": [],
         "error": null,
@@ -1155,10 +1154,26 @@
         "selected": null
       },
       "orders": [],
-      "providerAutoSelected": false
+      "providerAutoSelected": false,
+      "userRegion": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "featureFlagThresholdGroups": {
+        "assetsAccountsApiV6": "feature is OFF",
+        "assetsEnableNotificationsByDefaultV2": "feature is ON",
+        "backendWebSocketConnection": "feature is ON",
+        "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
+        "coreExtensionUxCeux1141AbtestBottomNav": "control",
+        "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
+        "perpsTAT3382AbtestTabBadge": "control",
+        "platformSplitStateGradualRollout": "feature is ON",
+        "stxMigrationBatchStatus": "sentinel on",
+        "stxMigrationCancel": "sentinel on",
+        "stxMigrationGetFees": "sentinel on",
+        "stxMigrationSubmitTransactions": "sentinel on",
+        "swapsSWAPS4827AbtestChainValueOrder": "control"
+      },
       "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
