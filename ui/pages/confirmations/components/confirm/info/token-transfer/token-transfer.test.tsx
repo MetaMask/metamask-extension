@@ -7,6 +7,7 @@ import {
 } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { Confirmation } from '../../../../types/confirm';
 import TokenTransferInfo from './token-transfer';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
@@ -67,7 +68,7 @@ describe('TokenTransferInfo', () => {
     const state = getMockConfirmStateForTransaction({
       ...genUnapprovedTokenTransferConfirmation({ chainId: '0x5' }),
       containerTypes: [TransactionContainerType.EnforcedSimulations],
-    });
+    } as Confirmation);
     const mockStore = configureMockStore()(state);
     const { getByTestId } = renderWithConfirmContextProvider(
       <TokenTransferInfo />,
