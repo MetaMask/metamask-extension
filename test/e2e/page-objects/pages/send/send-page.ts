@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Multichain send flow: asset, recipient, amount, and continue.
+ *
+ * Screen: `#/send` / `#/send/:page?`.
+ * Owns: recipient and amount inputs, network/token pickers, Max, validation
+ * and fee errors, hex data, alert acknowledge, and continue-enabled checks.
+ * Boundaries: the send form through Continue. Confirmation / review screens
+ * (including Bitcoin snap review) belong to confirmation or
+ * `BitcoinReviewTxPage`.
+ * Related: `BitcoinReviewTxPage`, `flows/send-transaction.flow.ts`,
+ * `flows/bitcoin-send.flow.ts`.
+ *
+ * @see ui/pages/confirmations/send/send.tsx
+ * @see ui/pages/confirmations/send/send-inner.tsx
+ * @see test/e2e/page-objects/flows/send-transaction.flow.ts
+ */
 class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
@@ -138,6 +154,25 @@ class SendPage {
   async checkAmountRequiredError(): Promise<void> {
     console.log('Checking for amount required error');
     await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
+  /**
+   * Waits until the "available" balance shown on the amount screen matches the
+   * expected token amount.
+   *
+   * @param expectedAmount - The expected available balance amount.
+   */
+  async checkAvailableBalance(expectedAmount: string): Promise<void> {
+    console.log(`Waiting for available balance to be ${expectedAmount}`);
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(this.amountBalance);
+        const text = await element.getText();
+        const numeric = parseFloat(text.replace(/[^0-9.]/gu, ''));
+        return numeric === parseFloat(expectedAmount);
+      },
+      { interval: 100, timeout: 15000 },
+    );
   }
 
   /**

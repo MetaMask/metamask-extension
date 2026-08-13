@@ -634,6 +634,16 @@ export const TokenManagementPage = () => {
     useExternalServices,
   ]);
 
+  const managedAssetsByKey = useMemo(() => {
+    const assetsByKey = new Map<string, ManagedAsset>();
+
+    visibleTokens.forEach((token) => {
+      assetsByKey.set(getManagedTokenListOrderKey(token), token);
+    });
+
+    return assetsByKey;
+  }, [visibleTokens]);
+
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const immediateNormalizedQuery = searchQuery.trim();
   const deferredNormalizedQuery = deferredSearchQuery.trim();
@@ -1216,6 +1226,9 @@ export const TokenManagementPage = () => {
       const evmImportedKey = payload.hexChainId
         ? `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`
         : undefined;
+      const ownedAsset = managedAssetsByKey.get(
+        getSearchResultListOrderKey(result),
+      );
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
@@ -1249,15 +1262,18 @@ export const TokenManagementPage = () => {
           assetId={payload.assetId}
           primaryLabel={payload.name || payload.symbol}
           secondaryLabel={
-            networkConfigurations?.[payload.hexChainId as Hex]?.name ??
-            allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
-            payload.caipChainId
+            ownedAsset
+              ? `${ownedAsset.balance} ${ownedAsset.symbol}`
+              : (networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+                allMultichainNetworkConfigurations?.[payload.caipChainId]
+                  ?.name ??
+                payload.caipChainId)
           }
           isOn={isPending || (isImported && !isHidden) || payload.isNative}
           disabled={payload.isNative || isPending}
           isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
-          showToggle={!payload.isNative}
+          showToggle
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );
@@ -1270,6 +1286,7 @@ export const TokenManagementPage = () => {
       handleSearchResultToggle,
       ignoredEvmAssetIds,
       importedAssetIds,
+      managedAssetsByKey,
       networkConfigurations,
       pendingKeys,
       stagedHideKeys,

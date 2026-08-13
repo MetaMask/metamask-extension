@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Edit connected accounts modal for a site's account permissions.
+ *
+ * Screen: modal/page layered over site permissions or connection review,
+ * opened via the accounts "Edit" control on `SitePermissionPage` (or connect
+ * flows that reuse the same edit-accounts UI).
+ * Owns: account cells and checkboxes, add-account control, connect/update
+ * footer, and selection status waits.
+ * Boundaries: stops at this edit-accounts surface. Opening it belongs to
+ * `SitePermissionPage` / permissions flows. Network permission editing belongs
+ * to `NetworkPermissionSelectModal`.
+ * Related: `SitePermissionPage`, `NetworkPermissionSelectModal`,
+ * `flows/permissions.flow.ts`.
+ *
+ * @see ui/components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page.tsx
+ */
 class EditConnectedAccountsModal {
   private readonly accountCell = '.multichain-account-cell';
 
@@ -24,9 +40,8 @@ class EditConnectedAccountsModal {
 
   driver: Driver;
 
-  private readonly editAccountsModalTitle = {
-    text: 'Edit accounts',
-    tag: 'h4',
+  private readonly editAccountsModalHeader = {
+    testId: 'edit-accounts-modal-header',
   };
 
   constructor(driver: Driver) {
@@ -87,7 +102,7 @@ class EditConnectedAccountsModal {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.editAccountsModalTitle,
+      this.editAccountsModalHeader,
       this.connectAccountsButton,
     ]);
     console.log('Edit connected accounts modal is loaded');
@@ -96,6 +111,12 @@ class EditConnectedAccountsModal {
   async clickOnConnect(): Promise<void> {
     console.log('Click on Connect');
     await this.driver.clickElement(this.connectAccountsButton);
+  }
+
+  async isConnectButtonEnabled(): Promise<boolean> {
+    console.log('Check if Connect button is enabled');
+    const button = await this.driver.findElement(this.connectAccountsButton);
+    return await button.isEnabled();
   }
 
   /**

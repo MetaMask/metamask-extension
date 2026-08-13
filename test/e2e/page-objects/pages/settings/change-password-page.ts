@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Change-password flow under Security and password.
+ *
+ * Screen: `#/settings/security-and-password/password`, reached from
+ * `PrivacySettings.openChangePassword` (after
+ * `SettingsPage.goToSecurityAndPasswordSettings` /
+ * `flows/settings.flow.ts` `navigateToSecurityAndPassword`).
+ * Owns: current-password verify, new/confirm password inputs, terms, save,
+ * and the cross-device lock warning confirm.
+ * Boundaries: password change only. Passkey register/turn-off and SRP reveal
+ * stay on `PrivacySettings`; login after change belongs to `LoginPage`.
+ * Related: `PrivacySettings`, `SettingsPage`, `flows/settings.flow.ts`.
+ *
+ * @see ui/components/app/change-password/change-password.tsx
+ * @see ui/pages/settings/security-and-password-tab/password-sub-page.tsx
+ */
 export default class ChangePasswordPage {
   private readonly confirmNewPasswordInput =
     '[data-testid="change-password-confirm-input"]';

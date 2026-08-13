@@ -7,14 +7,10 @@ import {
 
 const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'AccountTreeController:getAccountsFromSelectedAccountGroup',
+  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
   'NetworkEnablementController:getState',
   'NetworkController:getState',
   'NetworkController:getNetworkClientById',
-  'BackendWebSocketService:subscribe',
-  'BackendWebSocketService:getConnectionInfo',
-  'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-  'BackendWebSocketService:addChannelCallback',
-  'BackendWebSocketService:removeChannelCallback',
   'SnapController:handleRequest',
   'SnapController:getRunnableSnaps',
   'PermissionController:getPermissions',
@@ -34,7 +30,6 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'NetworkController:networkDidChange',
   'NetworkController:networkRemoved',
   'NetworkController:networkAdded',
-  'BackendWebSocketService:connectionStateChanged',
   'AccountsController:accountBalancesUpdated',
   'PermissionController:stateChange',
   'SnapController:snapInstalled',
@@ -42,7 +37,16 @@ const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
   'AccountActivityService:balanceUpdated',
+  'AccountActivityService:statusChanged',
   'RemoteFeatureFlagController:stateChange',
+] as const;
+
+const ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS = [
+  'AuthenticationController:getBearerToken',
+  'SnapController:handleRequest',
+  'PreferencesController:getState',
+  'OnboardingController:getState',
+  'RemoteFeatureFlagController:getState',
 ] as const;
 
 describe('getAssetsControllerMessenger', () => {
@@ -60,125 +64,39 @@ describe('getAssetsControllerMessenger', () => {
     expect(assetsControllerMessenger).toBeDefined();
   });
 
-  it('delegates required actions for AssetsController', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(ASSETS_CONTROLLER_DELEGATED_ACTIONS)(
+    'delegates %s action',
+    (action: string) => {
+      const messenger = getRootMessenger<never, never>();
+      const delegateSpy = jest.spyOn(messenger, 'delegate');
 
-    getAssetsControllerMessenger(messenger);
+      getAssetsControllerMessenger(messenger);
 
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        actions: expect.arrayContaining([
-          ...ASSETS_CONTROLLER_DELEGATED_ACTIONS,
-        ]),
-      }),
-    );
-  });
+      expect(delegateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          actions: expect.arrayContaining([action]),
+        }),
+      );
+    },
+  );
 
-  it('delegates AccountsController accountBalancesUpdated event', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(ASSETS_CONTROLLER_DELEGATED_EVENTS)(
+    'delegates %s event',
+    (event: string) => {
+      const messenger = getRootMessenger<never, never>();
+      const delegateSpy = jest.spyOn(messenger, 'delegate');
 
-    getAssetsControllerMessenger(messenger);
+      getAssetsControllerMessenger(messenger);
 
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining([
-          'AccountsController:accountBalancesUpdated',
-        ]),
-      }),
-    );
-  });
-
-  it('delegates AccountActivityService balanceUpdated event', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining([
-          'AccountActivityService:balanceUpdated',
-        ]),
-      }),
-    );
-  });
-
-  it('delegates core#9388 account-group and network-enablement events', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining([
-          'AccountTreeController:selectedAccountGroupChange',
-          'AccountTreeController:stateChange',
-          'NetworkEnablementController:stateChange',
-        ]),
-      }),
-    );
-  });
-
-  it('delegates NetworkController networkDidChange event', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining(['NetworkController:networkDidChange']),
-      }),
-    );
-  });
-
-  it('delegates NetworkController stateChange event', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining(['NetworkController:stateChange']),
-      }),
-    );
-  });
-
-  it('delegates BackendWebsocketDataSource WebSocket actions', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        actions: expect.arrayContaining([
-          'BackendWebSocketService:subscribe',
-          'BackendWebSocketService:getConnectionInfo',
-          'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-          'BackendWebSocketService:addChannelCallback',
-          'BackendWebSocketService:removeChannelCallback',
-        ]),
-      }),
-    );
-  });
-
-  it('delegates required events for AssetsController', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-    getAssetsControllerMessenger(messenger);
-
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        events: expect.arrayContaining([...ASSETS_CONTROLLER_DELEGATED_EVENTS]),
-      }),
-    );
-  });
+      expect(delegateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          events: expect.arrayContaining([event]),
+        }),
+      );
+    },
+  );
 });
 
 describe('getAssetsControllerInitMessenger', () => {
@@ -198,22 +116,20 @@ describe('getAssetsControllerInitMessenger', () => {
     expect(assetsControllerInitMessenger).toBeDefined();
   });
 
-  it('delegates required actions for initialization', () => {
-    const messenger = getRootMessenger<never, never>();
-    const delegateSpy = jest.spyOn(messenger, 'delegate');
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS)(
+    'delegates %s action for initialization',
+    (action: string) => {
+      const messenger = getRootMessenger<never, never>();
+      const delegateSpy = jest.spyOn(messenger, 'delegate');
 
-    getAssetsControllerInitMessenger(messenger);
+      getAssetsControllerInitMessenger(messenger);
 
-    expect(delegateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        actions: expect.arrayContaining([
-          'AuthenticationController:getBearerToken',
-          'SnapController:handleRequest',
-          'PreferencesController:getState',
-          'OnboardingController:getState',
-          'RemoteFeatureFlagController:getState',
-        ]),
-      }),
-    );
-  });
+      expect(delegateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          actions: expect.arrayContaining([action]),
+        }),
+      );
+    },
+  );
 });

@@ -1,10 +1,21 @@
 import { PerpsPositionsBase } from '../perps/perps-positions-base';
 
 /**
- * Page object for the Perps tab (wallet home with Perps tab selected).
- * Use this when the user is already on the Perps tab and interacting with
- * balance, positions, explore markets, and tutorial content.
- * To open the Perps tab from the account overview, call `navigateToPerpsHome()`.
+ * The Perps home tab: balance, positions, watchlist, explore markets, and
+ * tutorial entry points.
+ *
+ * Screen: `#/perps` / `#/perps-home`, reached from the account overview via
+ * `navigateToPerpsHome()` or the bottom-nav Perps tab.
+ * Owns: the balance dropdown (add funds / withdraw), position cards (via
+ * `PerpsPositionsBase`), watchlist, explore-markets and recent-activity
+ * links, geo-block dismiss, and the tutorial modal.
+ * Boundaries: the home surface only. Market list, market detail, activity,
+ * withdraw, and confirmations belong to their own page objects; methods here
+ * only navigate or open dropdowns.
+ * Related: `PerpsMarketListPage` (`clickExploreMarketsRow`),
+ * `PerpsActivityPage` (`clickRecentActivitySeeAll`), `PerpsWithdrawPage`
+ * (`clickWithdraw`), `PerpsMarketDetailPage` (via `clickPositionCard`),
+ * `flows/perps-activity-close-fill.flow.ts` for multi-screen journeys.
  *
  * @see ui/components/app/perps/perps-view.tsx
  */
@@ -171,8 +182,17 @@ export class PerpsTab extends PerpsPositionsBase {
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab);
+    console.log('Navigate to Perps home');
+    const isBottomNav = await this.driver.isElementPresentAndVisible(
+      this.bottomNavPerpsButton,
+      3000,
+    );
+    if (isBottomNav) {
+      await this.driver.clickElement(this.bottomNavPerpsButton);
+    } else {
+      await this.driver.waitForSelector(this.accountOverviewPerpsTab);
+      await this.driver.clickElement(this.accountOverviewPerpsTab);
+    }
     await this.checkPageIsLoaded();
   }
 

@@ -65,6 +65,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
@@ -400,6 +401,7 @@ export class MetaMetricsController extends BaseController<
 
     // Register A/B test analytics mappings so that matching events are
     // enriched with their `active_ab_tests` assignment.
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
     registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
     this.messenger.registerMethodActionHandlers(
