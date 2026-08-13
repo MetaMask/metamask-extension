@@ -33,7 +33,6 @@ import {
   setPermittedChains,
 } from '../../../../store/actions';
 import { toast, ToastContent } from '../../../ui/toast/toast';
-import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
