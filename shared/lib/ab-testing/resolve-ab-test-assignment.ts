@@ -26,8 +26,13 @@ export function resolveABTestAssignment(
   featureFlags: Record<string, unknown> | null | undefined,
   flagKey: string,
   validVariants: readonly string[],
+  thresholdGroups?: Record<string, string> | null,
 ): ABTestResolution {
-  const variantName = getFlagVariantName(featureFlags?.[flagKey]);
+  // Read the variant name from the flag value first (a local override can force
+  // a variant), then fall back to the selected group name in
+  // `featureFlagThresholdGroups` when the value carries no name.
+  const variantName =
+    getFlagVariantName(featureFlags?.[flagKey]) ?? thresholdGroups?.[flagKey];
   const isActive = Boolean(variantName && validVariants.includes(variantName));
 
   return {

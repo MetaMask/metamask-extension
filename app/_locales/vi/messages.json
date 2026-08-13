@@ -3643,9 +3643,6 @@
   "editNonceMessage": {
     "message": "Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
   },
-  "editPermissions": {
-    "message": "Chỉnh sửa quyền"
-  },
   "editSpendingCap": {
     "message": "Chỉnh sửa hạn mức chi tiêu"
   },
@@ -6885,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cho phép người chi tiêu sử dụng số lượng token này từ tài khoản của bạn."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 có quyền truy cập vào $2."
-  },
   "perps": {
     "message": "Vĩnh cửu"
   },
@@ -9281,9 +9275,6 @@
   "select": {
     "message": "Chọn"
   },
-  "selectAccountToConnect": {
-    "message": "Chọn tài khoản để kết nối"
-  },
   "selectAll": {
     "message": "Chọn tất cả"
   },
@@ -11439,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Nếu bạn kết nối với trang web này, bạn có thể mất toàn bộ tài sản của mình."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Vẫn kết nối"
   },
   "tryAgain": {
     "message": "Thử lại"
