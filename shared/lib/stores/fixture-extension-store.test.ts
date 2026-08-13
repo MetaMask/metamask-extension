@@ -150,12 +150,14 @@ describe('FixtureExtensionStore', () => {
         ...MOCK_STATE,
         storageServiceData: storageServiceEntries,
       });
-      jest.spyOn(IndexedDBStore.prototype, 'open').mockRejectedValueOnce(
-        new DOMException(
-          'A mutation operation was attempted on a database that did not allow mutations.',
-          'InvalidStateError',
-        ),
-      );
+      jest
+        .spyOn(IndexedDBStore.prototype, 'open')
+        .mockRejectedValueOnce(
+          new DOMException(
+            'A mutation operation was attempted on a database that did not allow mutations.',
+            'InvalidStateError',
+          ),
+        );
       const indexedDBSetSpy = jest.spyOn(IndexedDBStore.prototype, 'set');
       const browserStorageSetSpy = jest.spyOn(browser.storage.local, 'set');
       const store = new FixtureExtensionStore({ initialize: true });
