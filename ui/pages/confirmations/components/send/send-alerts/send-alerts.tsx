@@ -19,8 +19,8 @@ export const SendAlerts = () => {
     navigateToEditNetwork,
   } = useUnreliableNetworkRpc();
 
-  // Keyed by chain + reliability so open/close is derived; user dismiss is the
-  // only explicit state write (no render-phase setters).
+  // Keyed by chain + reliability. Persist epoch resets into state so a later
+  // unreliable flap (same chain) does not reuse a stale userClosed=true.
   const epochKey = isNetworkUnreliable
     ? `${chainId}|open`
     : `${chainId}|closed`;
@@ -29,7 +29,12 @@ export const SendAlerts = () => {
     userClosed: false,
   });
 
-  const userClosed = uiState.epochKey === epochKey ? uiState.userClosed : false;
+  if (uiState.epochKey !== epochKey) {
+    setUiState({ epochKey, userClosed: false });
+  }
+
+  const userClosed =
+    uiState.epochKey === epochKey ? uiState.userClosed : false;
   const isNetworkAlertOpen = Boolean(isNetworkUnreliable && !userClosed);
 
   const handleNetworkClose = useCallback(() => {
