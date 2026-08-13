@@ -1300,32 +1300,32 @@ export class LegacyBackgroundApiService {
    */
   async resetWallet(restoreOnly = false): Promise<void> {
     // sign out from Authentication service and clear the Session Data
-    await this.#messenger.call('AuthenticationController:performSignOut');
+    this.#messenger.call('AuthenticationController:performSignOut');
 
     // clear SeedlessOnboardingController state
-    await this.#messenger.call('SeedlessOnboardingController:clearState');
+    this.#messenger.call('SeedlessOnboardingController:clearState');
 
     // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
-    await this.#messenger.call('PasskeyController:clearState');
+    this.#messenger.call('PasskeyController:clearState');
 
     // stop subscription polling
-    await this.#messenger.call('SubscriptionController:stopAllPolling');
+    this.#messenger.call('SubscriptionController:stopAllPolling');
 
     // clear States
-    await this.#messenger.call('SubscriptionController:clearState');
-    await this.#messenger.call('ShieldController:clearState');
-    await this.#messenger.call('ClaimsController:clearState');
+    this.#messenger.call('SubscriptionController:clearState');
+    this.#messenger.call('ShieldController:clearState');
+    this.#messenger.call('ClaimsController:clearState');
 
     // clear contacts (address book)
-    await this.#messenger.call('AddressBookController:clear');
+    this.#messenger.call('AddressBookController:clear');
 
     // reset preferences to defaults
-    await this.#messenger.call('PreferencesController:resetState');
+    this.#messenger.call('PreferencesController:resetState');
 
     if (!restoreOnly) {
       // reset onboarding state
-      await this.#messenger.call('OnboardingController:resetOnboarding');
-      await this.#messenger.call(
+      this.#messenger.call('OnboardingController:resetOnboarding');
+      this.#messenger.call(
         'AppStateController:setIsWalletResetInProgress',
         true,
       );

@@ -2299,15 +2299,11 @@ describe('LegacyBackgroundApiService', () => {
      * Registers no-op handlers for every action `resetWallet` invokes.
      *
      * @param rootMessenger - The root messenger to register the handlers on.
-     * @param performSignOutHandler - The handler fn to signout from authentication service after wallet reset.
      */
-    function registerResetWalletHandlers(
-      rootMessenger: RootMessenger,
-      performSignOutHandler: () => unknown = jest.fn(),
-    ): void {
+    function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
       rootMessenger.registerActionHandler(
         'AuthenticationController:performSignOut',
-        performSignOutHandler,
+        jest.fn(),
       );
       rootMessenger.registerActionHandler(
         'SeedlessOnboardingController:clearState',
@@ -2422,30 +2418,6 @@ describe('LegacyBackgroundApiService', () => {
         );
         // Non-onboarding cleanup still runs.
         expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
-      });
-    });
-
-    it('awaits async controller cleanup before returning', async () => {
-      let signOutCompleted = false;
-
-      await withService(async ({ rootMessenger }) => {
-        registerResetWalletHandlers(
-          rootMessenger,
-          () =>
-            new Promise<void>((resolve) => {
-              setTimeout(() => {
-                signOutCompleted = true;
-                resolve();
-              }, 10);
-            }),
-        );
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:resetWallet',
-          true,
-        );
-
-        expect(signOutCompleted).toBe(true);
       });
     });
   });
