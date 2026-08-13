@@ -24,6 +24,7 @@ import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/const
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { useSendingAssetsFiatTotal } from './useSendingAssetsFiatTotal';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -98,6 +99,7 @@ function getAlertSkipReason(
 export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+  const sendingFiatTotal = useSendingAssetsFiatTotal();
 
   const { alertSkipReason, tokenAddressOverride } = useMemo(() => {
     const reason = getAlertSkipReason(currentConfirmation);
@@ -221,8 +223,12 @@ export function useSpenderAlerts(): Alert[] {
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
+        message: sendingFiatTotal
+          ? t('alertMessageAddressTrustSignalMaliciousWithAmount', [
+              sendingFiatTotal,
+            ])
+          : t('alertMessageAddressTrustSignalMalicious'),
+        reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -231,12 +237,20 @@ export function useSpenderAlerts(): Alert[] {
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
+        message: sendingFiatTotal
+          ? t('alertMessageAddressTrustSignalWithAmount', [sendingFiatTotal])
+          : t('alertMessageAddressTrustSignal'),
+        reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }
 
     return alerts;
-  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
+  }, [
+    spenderAddress,
+    isSafeToSkipAlert,
+    trustSignalDisplayState,
+    sendingFiatTotal,
+    t,
+  ]);
 }
