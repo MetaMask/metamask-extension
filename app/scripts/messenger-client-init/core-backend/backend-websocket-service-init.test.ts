@@ -176,6 +176,39 @@ describe('BackendWebSocketServiceInit', () => {
       expect(isEnabled?.()).toBe(true);
     });
 
+    it('returns true when feature flag resolves to a bare boolean (threshold shape)', () => {
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
+      baseMessenger.registerActionHandler(
+        'RemoteFeatureFlagController:getState',
+        () =>
+          ({
+            remoteFeatureFlags: {
+              backendWebSocketConnection: true,
+            },
+          }) as never,
+      );
+
+      const requestMock = {
+        ...buildControllerInitRequestMock(),
+        controllerMessenger: getBackendWebSocketServiceMessenger(baseMessenger),
+        initMessenger: getBackendWebSocketServiceInitMessenger(baseMessenger),
+      };
+
+      BackendWebSocketServiceInit(requestMock);
+
+      const { isEnabled } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
+
+      expect(isEnabled).toBeDefined();
+      expect(isEnabled?.()).toBe(true);
+    });
+
     it('returns false when feature flag object does not have value property', () => {
       const baseMessenger = new Messenger<
         MockAnyNamespace,

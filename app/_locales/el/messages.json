@@ -3637,9 +3637,6 @@
   "editNonceMessage": {
     "message": "Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε την με προσοχή."
   },
-  "editPermissions": {
-    "message": "Επεξεργασία αδειών"
-  },
   "editSpendingCap": {
     "message": "Επεξεργασία ανώτατου ορίου δαπανών"
   },
@@ -6875,9 +6872,6 @@
   "permitSimulationDetailInfo": {
     "message": "Δίνετε στον χρήστη την άδεια να ξοδέψει αυτά τα token από τον λογαριασμό σας."
   },
-  "permittedChainToastUpdate": {
-    "message": "Το $1 έχει πρόσβαση στο $2."
-  },
   "perps": {
     "message": "Συμβ.αορ."
   },
@@ -9267,9 +9261,6 @@
   "select": {
     "message": "Επιλογή"
   },
-  "selectAccountToConnect": {
-    "message": "Επιλέξτε έναν λογαριασμό για σύνδεση"
-  },
   "selectAll": {
     "message": "Επιλογή όλων"
   },
@@ -11422,15 +11413,6 @@
   },
   "troubleStartingTitle": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Εάν συνδεθείτε σε αυτόν τον ιστότοπο, ενδέχεται να χάσετε όλα τα περιουσιακά σας στοιχεία."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Εντοπίστηκε κακόβουλος ιστότοπος"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Σύνδεση ούτως ή άλλως"
   },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"

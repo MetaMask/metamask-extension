@@ -3637,9 +3637,6 @@
   "editNonceMessage": {
     "message": "これは高度な機能であり、慎重に使用してください。"
   },
-  "editPermissions": {
-    "message": "アクセス許可を編集"
-  },
   "editSpendingCap": {
     "message": "使用上限の編集"
   },
@@ -6879,9 +6876,6 @@
   "permitSimulationDetailInfo": {
     "message": "アカウントからこの量のトークンを使用する、使用者権限を付与しようとしています。"
   },
-  "permittedChainToastUpdate": {
-    "message": "$1は$2にアクセスできます。"
-  },
   "perps": {
     "message": "パーペチュアル"
   },
@@ -9271,9 +9265,6 @@
   "select": {
     "message": "選択"
   },
-  "selectAccountToConnect": {
-    "message": "接続するアカウントを選択します"
-  },
   "selectAll": {
     "message": "すべて選択"
   },
@@ -11426,15 +11417,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMaskの起動中に問題が発生しました。"
-  },
-  "trustSignalBlockDescription": {
-    "message": "このサイトに接続すると、資産をすべて失う可能性があります。"
-  },
-  "trustSignalBlockTitle": {
-    "message": "悪質なサイトが検出されました"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "それでも接続する"
   },
   "tryAgain": {
     "message": "再試行してください"

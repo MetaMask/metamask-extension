@@ -3637,9 +3637,6 @@
   "editNonceMessage": {
     "message": "Il s’agit d’une fonction avancée, à utiliser avec précaution."
   },
-  "editPermissions": {
-    "message": "Modifier les autorisations"
-  },
   "editSpendingCap": {
     "message": "Modifier le plafond des dépenses"
   },
@@ -6875,9 +6872,6 @@
   "permitSimulationDetailInfo": {
     "message": "Vous donnez au dépenseur l’autorisation de retirer ce nombre de jetons de votre compte."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 a accès à $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -9267,9 +9261,6 @@
   "select": {
     "message": "Sélectionner"
   },
-  "selectAccountToConnect": {
-    "message": "Sélectionner un compte à connecter"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },
@@ -11422,15 +11413,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask a rencontré des difficultés à démarrer."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Si vous vous connectez à ce site, vous risquez de perdre tous vos actifs."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Site malveillant détecté"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Se connecter quand même"
   },
   "tryAgain": {
     "message": "Réessayer"
