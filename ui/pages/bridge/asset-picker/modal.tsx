@@ -7,16 +7,16 @@ import {
   ModalHeader,
   ButtonIconSize,
   ModalContentSize,
-} from '../../../../../components/component-library';
+} from '../../../components/component-library';
 import {
   BlockSize,
   Display,
   FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import {
   BridgeAssetPickerContent,
   type BridgeAssetPickerContentHandle,
-} from './bridge-asset-picker-content';
+} from './content';
 
 export const BridgeAssetPicker = ({
   isOpen,

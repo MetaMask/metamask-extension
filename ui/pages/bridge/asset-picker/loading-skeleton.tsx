@@ -2,13 +2,13 @@ import React from 'react';
 import {
   Skeleton,
   SkeletonProps,
-} from '../../../../../components/component-library/skeleton';
+} from '../../../components/component-library/skeleton';
 import {
   BlockSize,
   BorderRadius,
-} from '../../../../../helpers/constants/design-system';
-import { PolymorphicRef } from '../../../../../components/component-library';
-import { Column, Row } from '../../../layout';
+} from '../../../helpers/constants/design-system';
+import { PolymorphicRef } from '../../../components/component-library';
+import { Column, Row } from '../layout';
 
 export const LoadingSkeleton = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(

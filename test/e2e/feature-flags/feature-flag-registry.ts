@@ -1068,6 +1068,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           gaslessEnabled: false,
         },
       },
+      depositLimit: {
+        moneyAccountDeposit: 500000,
+      },
       perpsWithdrawAnyToken: false,
       predictWithdrawAnyToken: true,
       relayDisabledGasStationChains: [],

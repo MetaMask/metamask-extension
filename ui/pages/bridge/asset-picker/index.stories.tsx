@@ -5,15 +5,15 @@ import {
   getFromAccount,
   getFromChains,
   getFromToken,
-} from '../../../../../ducks/bridge/selectors';
-import { setFromToken } from '../../../../../ducks/bridge/actions';
-import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+} from '../../../ducks/bridge/selectors';
+import { setFromToken } from '../../../ducks/bridge/actions';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import configureStore from '../../../../../store/store';
-import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
-import { BridgeAssetPicker } from '.';
-import { useDispatch } from '../../../../../store/hooks';
+import configureStore from '../../../store/store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { BridgeAssetPicker } from './modal';
+import { useDispatch } from '../../../store/hooks';
 
 const storybook = {
   title: 'Pages/Bridge/AssetPicker',
@@ -58,6 +58,7 @@ export const BridgeAssetPickerStory = () => {
     <>
       <BridgeAssetPicker
         selectedAsset={token}
+        isDestination={false}
         header={'Swap'}
         isOpen={isAssetPickerOpen}
         onClose={() => setIsAssetPickerOpen(false)}
