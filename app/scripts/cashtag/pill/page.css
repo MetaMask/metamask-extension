@@ -1,18 +1,17 @@
 /* Injected into the page. Token values scoped to the pill — not the full sheet. */
 
 a[data-mm-cashtag] {
-  --color-border-muted: #b4b4b566;
-  --color-background-muted: #b4b4b528;
-  --color-background-default: #ffffff;
-  --color-text-default: #131416;
+  --color-border-muted: #b7bbc866;
+  --color-background-muted: #f3f5f9;
+  --color-text-default: #121314;
   --color-success-default: #457a39;
   --color-error-default: #ca3542;
 }
 
 html[data-theme='dark'] a[data-mm-cashtag],
 html[data-theme='dim'] a[data-mm-cashtag] {
-  --color-border-muted: #ffffff14;
-  --color-background-default: #000000;
+  --color-border-muted: #858b9a33;
+  --color-background-muted: #1c1d1f;
   --color-text-default: #ffffff;
   --color-success-default: #baf24a;
   --color-error-default: #ff7584;
@@ -32,7 +31,7 @@ a[data-mm-cashtag]:active {
   padding: 2px 10px 2px 3px;
   border-radius: 999px;
   border: 1px solid var(--color-border-muted);
-  background: var(--color-background-muted);
+  background-color: var(--color-background-muted);
   color: var(--color-text-default) !important;
   font-size: 13px;
   font-weight: 500 !important;
@@ -40,19 +39,6 @@ a[data-mm-cashtag]:active {
   vertical-align: middle;
   text-decoration: none;
   white-space: nowrap;
-}
-
-html[data-theme='dark'] a[data-mm-cashtag],
-html[data-theme='dim'] a[data-mm-cashtag],
-html[data-theme='dark'] a[data-mm-cashtag]:link,
-html[data-theme='dim'] a[data-mm-cashtag]:link,
-html[data-theme='dark'] a[data-mm-cashtag]:visited,
-html[data-theme='dim'] a[data-mm-cashtag]:visited,
-html[data-theme='dark'] a[data-mm-cashtag]:hover,
-html[data-theme='dim'] a[data-mm-cashtag]:hover,
-html[data-theme='dark'] a[data-mm-cashtag]:active,
-html[data-theme='dim'] a[data-mm-cashtag]:active {
-  background: var(--color-background-default);
 }
 
 a[data-mm-cashtag] .mm-cashtag-pill-label,
