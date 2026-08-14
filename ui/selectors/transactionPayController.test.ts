@@ -1,4 +1,5 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
@@ -9,6 +10,7 @@ import {
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
+  selectPaymentOverrideByTransactionId,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -291,6 +293,32 @@ describe('transactionPayController selectors', () => {
       const result = selectTransactionPayAccountOverrideByTransactionId(
         state,
         'non-existent-id',
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectPaymentOverrideByTransactionId', () => {
+    it('returns paymentOverride when present', () => {
+      const state = createMockState({
+        paymentOverride: PaymentOverride.MoneyAccount,
+      });
+
+      const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(PaymentOverride.MoneyAccount);
+    });
+
+    it('returns undefined when paymentOverride is absent', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
       );
 
       expect(result).toBeUndefined();
