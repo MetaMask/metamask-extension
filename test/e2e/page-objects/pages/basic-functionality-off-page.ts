@@ -1,5 +1,19 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Gate shown when Basic functionality is off and a feature requires it.
+ *
+ * Screen: `#/basic-functionality-off`, reached when navigating to a feature
+ * that requires Basic functionality while the preference is disabled.
+ * Owns: the explanation copy, Basic functionality toggle, open-feature CTA,
+ * and go-home link on this gate.
+ * Boundaries: the gate page only. Turning the preference on elsewhere (e.g.
+ * privacy settings) and the destination feature page are out of scope.
+ * Related: `PrivacySettings` (preference source), feature pages that require
+ * Basic functionality (perps, etc.).
+ *
+ * @see ui/pages/basic-functionality-required/basic-functionality-required.tsx
+ */
 export default class BasicFunctionalityOffPage {
   private readonly descriptionBox =
     '[data-testid="basic-functionality-off-description"]';

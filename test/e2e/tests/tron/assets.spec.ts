@@ -57,7 +57,7 @@ function tronAssetsTestConfig(
 
 async function landOnTronHome(driver: Driver): Promise<void> {
   await login(driver, { validateBalance: false });
-  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+  await switchToNetworkFromNetworkSelect(driver, 'Tron');
   // Refresh re-hydrates the UI from background state so asynchronously-fetched
   // Snap balances appear reliably in the token list.
   await driver.refresh();

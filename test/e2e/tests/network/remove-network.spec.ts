@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SECOND_NODE_NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -55,9 +55,9 @@ describe('Remove Network', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.deleteNetwork('eip155:1338');
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.deleteNetwork('eip155:1338');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
@@ -139,19 +139,19 @@ describe('Remove Network', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openNetworkListOptions('eip155:1338');
-        await selectNetworkDialog.openEditNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openNetworkListOptions('eip155:1338');
+        await networksPage.openEditNetworkPage();
 
         // Remove the second RPC
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.checkPageIsLoaded();
-        await editNetworkModal.removeRPCInEditNetworkModal(2);
-        await editNetworkModal.checkRpcIsDisplayed('127.0.0.1:8546', false);
+        const editNetworkPage = new AddEditNetworkPage(driver);
+        await editNetworkPage.checkPageIsLoaded();
+        await editNetworkPage.removeRpcUrl(2);
+        await editNetworkPage.checkRpcIsDisplayed('127.0.0.1:8546', false);
 
         // Save the edited network
-        await editNetworkModal.saveEditedNetwork();
+        await editNetworkPage.saveEditedNetwork();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

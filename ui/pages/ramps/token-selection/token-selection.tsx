@@ -8,11 +8,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
-import LoadingScreen from '../../../components/ui/loading-screen';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { Asset, type AssetType } from '../../../components/app/asset-picker';
 import {
   RampsSelectionCenteredMessage,
+  RampsSelectionCenteredSpinner,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import {
@@ -122,22 +122,49 @@ export function RampsTokenSelectionScreen() {
     setShowAllTokens(true);
   }, []);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   const title = t('swapSelectToken');
 
-  if (error) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-token-selection-error"
-        backButtonTestId="ramps-token-selection-back"
-      >
-        <RampsSelectionCenteredMessage message={t('rampsErrorLoadingTokens')} />
-      </RampsSelectionPage>
+  let testId = 'ramps-token-selection-screen';
+  let body: React.ReactNode;
+
+  if (isLoading) {
+    testId = 'ramps-token-selection-loading';
+    body = <RampsSelectionCenteredSpinner />;
+  } else if (error) {
+    testId = 'ramps-token-selection-error';
+    body = (
+      <RampsSelectionCenteredMessage message={t('rampsErrorLoadingTokens')} />
+    );
+  } else {
+    body = (
+      <>
+        <ScrollContainer className="flex-1 overflow-y-auto">
+          <Asset
+            tokens={sourceTokens}
+            nfts={[]}
+            hideNfts
+            hideBalances
+            disableMetrics
+            searchPlaceholder={t('enterTokenNameOrAddress')}
+            emptyStateMessage={emptyStateMessage}
+            onAssetSelect={handleAssetSelect}
+            onSearchQueryChange={setSearchQuery}
+            onSelectedChainIdChange={setSelectedChainId}
+          />
+        </ScrollContainer>
+
+        {canExpandTokenList && (
+          <Box className="border-t border-border-muted px-4 py-3">
+            <TextButton
+              size={TextButtonSize.BodyMd}
+              onClick={handleExpandTokens}
+              data-testid="ramps-show-all-tokens"
+            >
+              {t('rampsShowAllTokens')}
+            </TextButton>
+          </Box>
+        )}
+      </>
     );
   }
 
@@ -145,35 +172,10 @@ export function RampsTokenSelectionScreen() {
     <RampsSelectionPage
       title={title}
       onBack={handleBack}
-      testId="ramps-token-selection-screen"
+      testId={testId}
       backButtonTestId="ramps-token-selection-back"
     >
-      <ScrollContainer className="flex-1 overflow-y-auto">
-        <Asset
-          tokens={sourceTokens}
-          nfts={[]}
-          hideNfts
-          hideBalances
-          disableMetrics
-          searchPlaceholder={t('enterTokenNameOrAddress')}
-          emptyStateMessage={emptyStateMessage}
-          onAssetSelect={handleAssetSelect}
-          onSearchQueryChange={setSearchQuery}
-          onSelectedChainIdChange={setSelectedChainId}
-        />
-      </ScrollContainer>
-
-      {canExpandTokenList && (
-        <Box className="border-t border-border-muted px-4 py-3">
-          <TextButton
-            size={TextButtonSize.BodyMd}
-            onClick={handleExpandTokens}
-            data-testid="ramps-show-all-tokens"
-          >
-            {t('rampsShowAllTokens')}
-          </TextButton>
-        </Box>
-      )}
+      {body}
     </RampsSelectionPage>
   );
 }

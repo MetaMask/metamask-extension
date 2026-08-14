@@ -274,4 +274,73 @@ describe('useHwSwapConnectionMonitoring', () => {
 
     expect(result.current.isDeviceDisconnectedRef.current).toBe(true);
   });
+
+  describe('e2e mode', () => {
+    let originalInTest: string | undefined;
+    let originalJestWorkerId: string | undefined;
+
+    beforeEach(() => {
+      originalInTest = process.env.IN_TEST;
+      originalJestWorkerId = process.env.JEST_WORKER_ID;
+      process.env.IN_TEST = 'true';
+      process.env.JEST_WORKER_ID = 'undefined';
+    });
+
+    afterEach(() => {
+      if (originalInTest === undefined) {
+        delete process.env.IN_TEST;
+      } else {
+        process.env.IN_TEST = originalInTest;
+      }
+
+      if (originalJestWorkerId === undefined) {
+        delete process.env.JEST_WORKER_ID;
+      } else {
+        process.env.JEST_WORKER_ID = originalJestWorkerId;
+      }
+    });
+
+    it('does not dispatch when the device appears disconnected', () => {
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useHwSwapConnectionMonitoring({
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+          }),
+        {},
+      );
+
+      expect(mockDispatchSignatureEvent).not.toHaveBeenCalled();
+      expect(result.current.isDeviceDisconnectedRef.current).toBe(false);
+    });
+
+    it('does not dispatch on connection errors', () => {
+      const error = new Error('device disconnected');
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.ErrorState, error },
+      });
+      mockGetHardwareWalletErrorCode.mockReturnValue(
+        ErrorCode.DeviceDisconnected,
+      );
+
+      renderHookWithProvider(
+        () =>
+          useHwSwapConnectionMonitoring({
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+          }),
+        {},
+      );
+
+      expect(mockDispatchSignatureEvent).not.toHaveBeenCalled();
+    });
+  });
 });

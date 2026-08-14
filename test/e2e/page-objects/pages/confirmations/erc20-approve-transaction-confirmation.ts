@@ -2,6 +2,23 @@ import { tEn } from '../../../../lib/i18n-helpers';
 import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * ERC-20 approve / spending-cap confirmation on the redesigned confirm
+ * screen.
+ *
+ * Screen: `#/confirmation` for approve / revoke-approve transaction types.
+ * Owns: spending-cap title/sections, edit/custom spending-cap controls,
+ * estimated-changes / simulation rows, and spender/request-from/method
+ * advanced sections.
+ * Boundaries: inherits gas/simulations chrome from
+ * `TransactionConfirmation`. Set-approval-for-all NFT approvals are
+ * `SetApprovalForAllTransactionConfirmation`. Gas overlays remain
+ * `GasFeeModal` / `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `SetApprovalForAllTransactionConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/approve/approve.tsx
+ * @see ui/pages/confirmations/components/confirm/info/approve/edit-spending-cap-modal/edit-spending-cap-modal.tsx
+ */
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly customSpendingCapInput: RawLocator =
     '[data-testid="custom-spending-cap-input"]';

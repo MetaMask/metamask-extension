@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Penarikan prediksi"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Dari: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
-  },
-  "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -3402,14 +3443,14 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
-  },
   "disconnectAllSites": {
     "message": "Putuskan semua koneksi"
   },
   "disconnectAllSitesError": {
     "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Putuskan semua koneksi?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
@@ -3419,6 +3460,9 @@
   },
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
+  },
+  "disconnectQuestion": {
+    "message": "Putuskan koneksi?"
   },
   "disconnectThisAccount": {
     "message": "Putuskan koneksi akun ini"
@@ -3598,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
-  "editPermissions": {
-    "message": "Edit izin"
   },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
@@ -6841,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Anda memberi izin kepada spender untuk menggunakan sejumlah token ini dari akun Anda."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 memiliki akses ke $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -8141,6 +8179,80 @@
     "message": "pada $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Detail transfer bank"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Beli lagi"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Biaya"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ID Order"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Dibayar dengan",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Biaya $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Lihat di $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Pembelian gagal",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Pembelian sedang berlangsung",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Penjualan gagal",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Penjualan sedang berlangsung",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Dana Anda sedang dikirim.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Penjualan berhasil",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Kripto Anda sedang dikirim.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Pembelian berhasil",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "Opsi lainnya"
   },
@@ -9162,9 +9274,6 @@
   },
   "select": {
     "message": "Pilih"
-  },
-  "selectAccountToConnect": {
-    "message": "Pilih akun yang akan dihubungkan"
   },
   "selectAll": {
     "message": "Pilih semua"
@@ -11321,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Situs berbahaya terdeteksi"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Tetap Terhubung"
   },
   "tryAgain": {
     "message": "Coba lagi"

@@ -6591,7 +6591,7 @@ SOFTWARE.
 ******************************
 
 dompurify
-3.4.13 <https://github.com/cure53/DOMPurify>
+3.4.12 <https://github.com/cure53/DOMPurify>
 
                                  Apache License
                            Version 2.0, January 2004
@@ -29291,7 +29291,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 nanoid
-3.3.18 <https://github.com/ai/nanoid>
+3.3.16 <https://github.com/ai/nanoid>
 The MIT License (MIT)
 
 Copyright 2017 Andrey Sitnik <andrey@sitnik.ru>

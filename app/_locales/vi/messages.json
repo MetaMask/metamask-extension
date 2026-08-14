@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Rút tiền dự đoán"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Mua thất bại"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Mua thất bại"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Đang mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Bán thất bại"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Bán thất bại"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Đang bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Đã bán $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "Từ: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
-  },
-  "backupApprovalInfo": {
-    "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
   "backupApprovalNotice": {
     "message": "Sao lưu Cụm từ khôi phục bí mật để đảm bảo an toàn cho ví và tiền của bạn."
@@ -3402,14 +3443,14 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bạn có chắc chắn muốn ngắt kết nối không? Bạn có thể bị mất chức năng của trang web."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Nếu bạn ngắt kết nối khỏi trang web này, bạn sẽ cần kết nối lại tài khoản và mạng của bạn để sử dụng lại trang web này."
-  },
   "disconnectAllSites": {
     "message": "Ngắt kết nối tất cả"
   },
   "disconnectAllSitesError": {
     "message": "Không thể ngắt kết nối một số dapp. Vui lòng thử lại."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Ngắt kết nối tất cả?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
@@ -3419,6 +3460,9 @@
   },
   "disconnectPrompt": {
     "message": "Ngắt kết nối $1"
+  },
+  "disconnectQuestion": {
+    "message": "Ngắt kết nối?"
   },
   "disconnectThisAccount": {
     "message": "Ngắt kết nối tài khoản này"
@@ -3598,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Đây là tính năng nâng cao, hãy dùng một cách thận trọng."
-  },
-  "editPermissions": {
-    "message": "Chỉnh sửa quyền"
   },
   "editSpendingCap": {
     "message": "Chỉnh sửa hạn mức chi tiêu"
@@ -6841,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cho phép người chi tiêu sử dụng số lượng token này từ tài khoản của bạn."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 có quyền truy cập vào $2."
-  },
   "perps": {
     "message": "Vĩnh cửu"
   },
@@ -8141,6 +8179,80 @@
     "message": "trên $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Chi tiết chuyển khoản ngân hàng"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Mua lại"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Phí"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Mã lệnh"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Đã thanh toán bằng",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Phí $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Tổng cộng"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Xem trên $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Đã xảy ra lỗi với lệnh của bạn.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Mua thất bại",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Lệnh của bạn đang được xử lý.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Đang mua",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Đã xảy ra lỗi với lệnh của bạn.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Bán thất bại",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Lệnh của bạn đang được xử lý.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Đang bán",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Tiền của bạn đang được chuyển đến.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Bán thành công",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Tiền mã hóa của bạn đang được chuyển đến.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Mua thành công",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "Tùy chọn khác"
   },
@@ -9162,9 +9274,6 @@
   },
   "select": {
     "message": "Chọn"
-  },
-  "selectAccountToConnect": {
-    "message": "Chọn tài khoản để kết nối"
   },
   "selectAll": {
     "message": "Chọn tất cả"
@@ -11321,15 +11430,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask gặp sự cố khi khởi động."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Nếu bạn kết nối với trang web này, bạn có thể mất toàn bộ tài sản của mình."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Vẫn kết nối"
   },
   "tryAgain": {
     "message": "Thử lại"

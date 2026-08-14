@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Saque de previsões"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Comprar falhou"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Comprar falhou"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Comprando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Comprando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Comprou $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Comprou $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Vender falhou"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Vender falhou"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Vendendo $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Vendendo $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Vendido $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Vendido $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "De: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Saiba como protegemos sua privacidade"
-  },
-  "backupApprovalInfo": {
-    "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
   "backupApprovalNotice": {
     "message": "Faça backup da Frase de Recuperação Secreta para manter sua carteira e seus fundos em segurança."
@@ -3402,14 +3443,14 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Quer mesmo desconectar? Você pode perder a funcionalidade do site."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Se você se desconectar deste site, precisará reconectar suas contas e redes para usar este site novamente."
-  },
   "disconnectAllSites": {
     "message": "Desconectar todas"
   },
   "disconnectAllSitesError": {
     "message": "Não foi possível desconectar alguns dos dapps. Tente novamente."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Desconectar todas?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Todos os dapps foram desconectados com sucesso."
@@ -3419,6 +3460,9 @@
   },
   "disconnectPrompt": {
     "message": "Desconectar $1"
+  },
+  "disconnectQuestion": {
+    "message": "Desconectar?"
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta conta"
@@ -3598,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Esse é um recurso avançado; use com cautela."
-  },
-  "editPermissions": {
-    "message": "Editar permissões"
   },
   "editSpendingCap": {
     "message": "Editar limite de gastos"
@@ -6837,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Você está autorizando o consumidor a gastar esta quantidade de tokens de sua conta."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 tem acesso a $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -8133,6 +8171,80 @@
     "message": "em $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Dados para transferência bancária"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Comprar novamente"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Taxas"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ID do pedido"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Paga com",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Taxa de $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Visualizar em $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Algo deu errado com a sua ordem.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Comprar falhou",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Sua ordem está sendo processada.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Compra em andamento",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Algo deu errado com a sua ordem.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Vender falhou",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Sua ordem está sendo processada.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Venda em andamento",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Seus fundos estão a caminho.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Venda realizada com sucesso",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Suas criptomoedas estão a caminho.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Compra realizada com sucesso",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "Outras opções"
   },
@@ -9154,9 +9266,6 @@
   },
   "select": {
     "message": "Selecione"
-  },
-  "selectAccountToConnect": {
-    "message": "Selecione uma conta para se conectar"
   },
   "selectAll": {
     "message": "Selecionar tudo"
@@ -11313,15 +11422,6 @@
   },
   "troubleStartingTitle": {
     "message": "A MetaMask teve problemas para iniciar."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Se você se conectar a este site, poderá perder todos os seus ativos."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Site malicioso detectado"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Conectar mesmo assim"
   },
   "tryAgain": {
     "message": "Tente novamente"

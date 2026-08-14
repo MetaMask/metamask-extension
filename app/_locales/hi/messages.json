@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "प्रेडिक्शन्स विदड्रॉवल"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "खरीदना नहीं हो पाया"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "खरीदना नहीं हो पाया"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 खरीद रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 खरीद रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "बेचना नहीं हो पाया"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "बेचना नहीं हो पाया"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 बेचा जा रहा है",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 बेचा जा रहा है",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 बेचा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 बेचा गया",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "भेजने वाले: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "जानें कि हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं"
-  },
-  "backupApprovalInfo": {
-    "message": "यदि आप अपना डिवाइस खो देते हैं, अपना पासवर्ड भूल जाते हैं, MetaMask को फिर से इनस्टॉल करना हो या दूसरे डिवाइस पर अपने वॉलेट को एक्सेस करना चाहते हों, तो आपके वॉलेट को रिकवर करने के लिए यह सीक्रेट कोड आवश्यक है।"
   },
   "backupApprovalNotice": {
     "message": "अपने वॉलेट और फंड्स को सुरक्षित रखने के लिए अपने सीक्रेट रिकवरी फ्रेज़ का बैकअप लें।"
@@ -3402,9 +3443,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "क्या आप वाकई डिस्कनेक्ट करना चाहते हैं? आप साइट की फंक्शनलिटी खो सकते हैं।"
   },
-  "disconnectAllDescriptionText": {
-    "message": "यदि आप इस साइट से डिस्कनेक्ट हो जाते हैं, तो आपको इस साइट का दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
-  },
   "disconnectAllSites": {
     "message": "सभी को डिस्कनेक्ट करें"
   },
@@ -3598,9 +3636,6 @@
   },
   "editNonceMessage": {
     "message": "यह एक एडवांस्ड सुविधा है, सावधानी से इस्तेमाल करें।"
-  },
-  "editPermissions": {
-    "message": "अनुमतियाँ बदलें"
   },
   "editSpendingCap": {
     "message": "खर्च करने की लिमिट बदलें"
@@ -6837,9 +6872,6 @@
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 की पहुंच $2 तक है।"
-  },
   "perps": {
     "message": "पर्प्स"
   },
@@ -8133,6 +8165,80 @@
     "message": "$1 पर",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "बैंक ट्रांसफर की जानकारी"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "फिर से खरीदें"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "फीस"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ऑर्डर ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "के साथ भुगतान किया गया",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 शुल्क",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "कुल"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1 पर देखें"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "आपके ऑर्डर में कुछ समस्या हुई।",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "खरीदना नहीं हो पाया",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "आपके ऑर्डर को प्रोसेस किया जा रहा है।",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "खरीद प्रगति पर है",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "आपके ऑर्डर में कुछ समस्या हुई।",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "बेचना नहीं हो पाया",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "आपके ऑर्डर को प्रोसेस किया जा रहा है।",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "बिक्री प्रगति पर है",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "आपका पैसा आप तक भेजा रहा है।",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "बिक्री सफल रही",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "आपकी क्रिप्टो आप तक पहुंच रही है।",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "खरीद सफल रही",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "अन्य विकल्प"
   },
@@ -9154,9 +9260,6 @@
   },
   "select": {
     "message": "चयन करें"
-  },
-  "selectAccountToConnect": {
-    "message": "कनेक्ट करने के लिए एक अकाउंट चुनें"
   },
   "selectAll": {
     "message": "सभी को चुनें"
@@ -11313,15 +11416,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask को शुरू करने में परेशानी हुई।"
-  },
-  "trustSignalBlockDescription": {
-    "message": "अगर आप इस साइट से कनेक्ट होते हैं, तो आप अपने सभी एसेट खो सकते हैं।"
-  },
-  "trustSignalBlockTitle": {
-    "message": "बुरी नीयत वाली साइट का पता चला"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "तब भी कनेक्ट करें"
   },
   "tryAgain": {
     "message": "फिर से प्रयास करें"
