@@ -432,13 +432,13 @@ describe('Trace', () => {
       const [optedIn] = startSpanMock.mock.calls[0];
       const [optedOut] = startSpanMock.mock.calls[1];
 
-      expect(optedIn).toEqual(
+      expect(optedIn).toStrictEqual(
         expect.objectContaining({
           parentSpan: activeSpanMock,
           forceTransaction: true,
         }),
       );
-      expect(optedOut).toEqual(
+      expect(optedOut).toStrictEqual(
         expect.objectContaining({
           parentSpan: null,
         }),
@@ -542,7 +542,7 @@ describe('Trace', () => {
 
       const [spanOptions] = startSpanManualMock.mock.calls[0];
       expect(spanOptions).not.toHaveProperty('forceTransaction');
-      expect(spanOptions).toEqual(
+      expect(spanOptions).toStrictEqual(
         expect.objectContaining({ parentSpan: null }),
       );
     });
@@ -557,7 +557,7 @@ describe('Trace', () => {
       trace({ name: NAME_MOCK, id: ID_MOCK, allowActiveSpanFallback: true });
 
       const [spanOptions] = startSpanManualMock.mock.calls[0];
-      expect(spanOptions).toEqual(
+      expect(spanOptions).toStrictEqual(
         expect.objectContaining({
           parentSpan: activeSpanMock,
           forceTransaction: true,
