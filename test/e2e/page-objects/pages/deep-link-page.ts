@@ -44,6 +44,39 @@ export default class DeepLink {
     });
   }
 
+  /**
+   * Waits for the extension-owned loading route and verifies that the tab has
+   * left the public deep-link host while background verification is pending.
+   *
+   * @param sourceUrl - The intercepted deep-link URL.
+   */
+  async checkLoadingPageWasOpened(sourceUrl: string): Promise<void> {
+    const source = new URL(sourceUrl);
+    await this.driver.waitUntil(
+      async () => {
+        const currentUrl = new URL(await this.driver.getCurrentUrl());
+        const [hashPath, hashQuery = ''] = currentUrl.hash.split('?');
+        const hashParams = new URLSearchParams(hashQuery);
+
+        return (
+          currentUrl.pathname === '/home.html' &&
+          hashPath === '#/link' &&
+          hashParams.get('u') === `${source.pathname}${source.search}`
+        );
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
+
+    const currentUrl = new URL(await this.driver.getCurrentUrl());
+    const [hashPath, hashQuery = ''] = currentUrl.hash.split('?');
+    const hashParams = new URLSearchParams(hashQuery);
+
+    assert.equal(currentUrl.pathname, '/home.html');
+    assert.equal(hashPath, '#/link');
+    assert.equal(hashParams.get('u'), `${source.pathname}${source.search}`);
+    await this.driver.waitForSelector(this.loadingIndicator);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.descriptionBox);

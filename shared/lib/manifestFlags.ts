@@ -88,6 +88,11 @@ export type ManifestFlags = {
      */
     deepLinkPublicKey?: string;
     /**
+     * Number of milliseconds to delay background deep-link verification. Used
+     * to assert loading-page behavior in E2E tests.
+     */
+    simulatedDeepLinkVerificationDelay?: number;
+    /**
      * Whether to disable the smart transactions override (migration 135)
      */
     disableSmartTransactionsOverride?: boolean;

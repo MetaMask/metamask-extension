@@ -236,7 +236,7 @@ describe('AppStateController', () => {
   });
 
   describe('pendingDeepLinkRequestIds', () => {
-    it('adds and removes pending deep link request ids', async () => {
+    it('adds unique pending deep link request ids', async () => {
       await withController(({ controller }) => {
         controller.addPendingDeepLinkRequestId('request-1');
         controller.addPendingDeepLinkRequestId('request-1');
@@ -246,6 +246,13 @@ describe('AppStateController', () => {
           'request-1',
           'request-2',
         ]);
+      });
+    });
+
+    it('removes pending deep link request ids', async () => {
+      await withController(({ controller }) => {
+        controller.addPendingDeepLinkRequestId('request-1');
+        controller.addPendingDeepLinkRequestId('request-2');
 
         controller.removePendingDeepLinkRequestId('request-1');
 

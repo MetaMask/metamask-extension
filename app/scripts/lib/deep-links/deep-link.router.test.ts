@@ -183,6 +183,26 @@ describe('DeepLinkRouter', () => {
       }
     });
 
+    it('emits navigation details after parsing succeeds', async () => {
+      const parsed = {
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink;
+      const navigateListener = jest.fn();
+      parseMock.mockResolvedValue(parsed);
+      router.on('navigate', navigateListener);
+
+      await handleRequestAndWaitForNavigation({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(navigateListener).toHaveBeenCalledWith({
+        url: new URL('https://link.metamask.io/buy'),
+        parsed,
+      });
+    });
+
     it('finishes the MV3 loading redirect before navigating to an approved destination', async () => {
       const loadingPageRedirect =
         createDeferredPromise<
@@ -235,7 +255,31 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(response).toEqual({ cancel: true });
-      expect(browser.tabs.update).not.toHaveBeenCalled();
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+
+      await flushPromises();
+    });
+
+    it('redirects MV2 requests to the loading page before verification finishes', async () => {
+      mockIsManifestV3.mockReturnValue(false);
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: `chrome-extension://extension-id/home.html#/link?u=%2Fbuy&id=${TEST_REQUEST_ID}`,
+      });
+      expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+      expect(removeId).not.toHaveBeenCalled();
 
       verification.resolve({
         destination: {},
@@ -245,9 +289,7 @@ describe('DeepLinkRouter', () => {
       await flushPromises();
 
       expect(browser.tabs.update).toHaveBeenCalledTimes(1);
-      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-        url: 'chrome-extension://extension-id/home.html#/link?u=%2Fbuy',
-      });
+      expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
     });
 
     // test return values for MV2 and MV3 behavior

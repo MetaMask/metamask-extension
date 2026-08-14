@@ -1803,6 +1803,11 @@ export class AppStateController extends BaseController<
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 
+  /**
+   * Marks a deep-link request as pending background verification.
+   *
+   * @param id - The request identifier shared with the interstitial route.
+   */
   addPendingDeepLinkRequestId(id: string): void {
     this.update((state) => {
       if (!state.pendingDeepLinkRequestIds.includes(id)) {
@@ -1814,6 +1819,11 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Marks a deep-link request as no longer pending background verification.
+   *
+   * @param id - The request identifier shared with the interstitial route.
+   */
   removePendingDeepLinkRequestId(id: string): void {
     this.update((state) => {
       state.pendingDeepLinkRequestIds = state.pendingDeepLinkRequestIds.filter(
