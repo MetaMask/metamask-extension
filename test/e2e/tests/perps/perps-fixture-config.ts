@@ -106,9 +106,6 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   // is on in production (registry value), so it stays registered; tests that
   // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
   perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
-  // Pin bottom-nav AB test to control so Perps home is reached via
-  // account-overview__perps-tab (prod default is a multivariate threshold
-  // array that can resolve to treatment and hide that tab).
   [BOTTOM_NAV_AB_TEST_KEY]: 'control',
 };
 
@@ -293,8 +290,6 @@ async function mockEligibleFeatureFlags(
     // market submit disabled without order-book estimates.
     perpsSlippageConfig2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
-    // Keep bottom-nav pinned to control after the flags refetch (same reason
-    // as slippage above — prod default is a multivariate threshold array).
     [BOTTOM_NAV_AB_TEST_KEY]:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
     ...overrides,

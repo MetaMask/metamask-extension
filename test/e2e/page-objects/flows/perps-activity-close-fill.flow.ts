@@ -5,13 +5,9 @@ import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
 /**
- * After a simulated position change in E2E, navigates back to Perps home,
- * pushes a `userFills` snapshot via `pushUserFills`, then opens Perps Activity
- * and asserts a trade row appears with the expected title fragment.
- *
- * `pushUserFills` runs after Perps home is loaded: the default WS mock answers
- * `userFills` subscribe with an empty snapshot, so pushing earlier (on market
- * detail) is often wiped when home remounts and re-subscribes.
+ * After a simulated position change in E2E, pushes a `userFills` snapshot via
+ * `pushUserFills`, then opens Perps Activity and asserts a trade row appears
+ * with the expected title fragment (same navigation pattern as other lifecycle tests).
  *
  * @param options
  * @param options.driver
@@ -40,12 +36,7 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
   await perpsTab.checkPageIsLoaded();
-
-  // After home mount/subscribe (empty default snapshot), push the close fill.
   pushUserFills();
-
-  // See All only renders once fills have populated the section (not on
-  // loading skeleton or empty state).
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 

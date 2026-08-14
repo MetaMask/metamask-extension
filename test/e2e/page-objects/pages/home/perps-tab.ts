@@ -140,8 +140,6 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Only rendered when the section has transactions; empty/loading states omit it.
-   * Prefer `waitForRecentActivitySection()` before calling this.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -178,11 +176,8 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to Perps Home via bottom-nav Perps or the account-overview Perps tab.
-   * Requires the account overview / home chrome to be visible (e.g. after login).
-   * Waits until either entry point is present (avoids a short bottom-nav poll that
-   * false-negatives into waiting for an overview tab that never renders under
-   * bottom-nav treatment), clicks it, then waits for the Perps Home view to load.
+   * Navigates to Perps Home by clicking the Perps tab on the account overview
+   * or the bottom-nav Perps button when present.
    */
   async navigateToPerpsHome(): Promise<void> {
     console.log('Navigate to Perps home');
@@ -277,7 +272,7 @@ export class PerpsTab extends PerpsPositionsBase {
    * Waits for the Recent Activity list (non-empty) to be visible.
    * When there is no history, the section uses `perps-recent-activity-empty` instead.
    *
-   * @param timeout - Max wait time in ms (default 20 000; Firefox CI is slower).
+   * @param timeout - Max wait time in ms (default 20 000).
    */
   async waitForRecentActivitySection(timeout = 20000): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivity, { timeout });
