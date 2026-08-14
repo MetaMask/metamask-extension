@@ -153,7 +153,7 @@
       "error: Error: Migration 197: Infura project": 1,
       "error: Error: Migration 197: Invalid NetworkController": 6
     },
-    "app/scripts/services/subscription/subscription-service.test.ts": {
+    "app/scripts/services/subscription/shield-subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
     },
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
@@ -543,7 +543,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 581,
+      "React: Act warnings (component updates not wrapped)": 656,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
     },
