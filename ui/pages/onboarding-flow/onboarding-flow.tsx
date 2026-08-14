@@ -82,7 +82,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
@@ -344,7 +343,12 @@ export default function OnboardingFlow() {
           navigate(DEFAULT_ROUTE, { replace: true });
         } else {
           await dispatch(setCompletedOnboarding());
-          navigate(getRedirectAfterUnlock(location.state), { replace: true });
+          let redirectTo = DEFAULT_ROUTE;
+          const fromLocation = location.state?.from;
+          if (fromLocation?.pathname) {
+            redirectTo = fromLocation.pathname + (fromLocation.search || '');
+          }
+          navigate(redirectTo, { replace: true });
         }
       } else if (
         hasSeenOnboardingCompletionPage &&
