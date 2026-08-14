@@ -19,10 +19,8 @@ This list is a **complementary signal** for the AI risk model. It does **not** r
 
 | Secret | Purpose |
 |--------|---------|
-| `AI_ANALYZER_TOKEN` | Checkout private `MetaMask/ai-analyzer` (temporary until direct `uses:` works from this public repo) |
+| `AI_ANALYZER_TOKEN` | Checkout private `MetaMask/ai-analyzer` |
 | `AI_ANALYZER_LITELLM_KEY` | LiteLLM endpoint for analysis |
-
-Preferred end state: `uses: MetaMask/ai-analyzer@<sha>` with org Actions access (no checkout token). Checkout + local `uses` is a temporary workaround.
 
 ## Pin bump
 
