@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Вывод средств прогнозов"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Ошибка покупки"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Ошибка покупки"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Покупка $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Куплено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Куплено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Ошибка продажи"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Ошибка продажи"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Продажа $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Продано $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "От: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Узнайте, как мы защищаем вашу конфиденциальность"
-  },
-  "backupApprovalInfo": {
-    "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
   "backupApprovalNotice": {
     "message": "Создайте резервную копию своей секретной фразы для восстановления, чтобы обезопасить свой кошелек и средства."
@@ -3402,14 +3443,14 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Уверены, что хотите отключить? Вы можете потерять доступ к функциям сайта."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Если вы отключитесь от этого сайта, вам придется повторно подключить свои счета и сети, чтобы снова использовать этот сайт."
-  },
   "disconnectAllSites": {
     "message": "Отключить все"
   },
   "disconnectAllSitesError": {
     "message": "Не удалось отключить приложения dapp. Повторите попытку."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Отключить все?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
@@ -3419,6 +3460,9 @@
   },
   "disconnectPrompt": {
     "message": "Отключить $1"
+  },
+  "disconnectQuestion": {
+    "message": "Отключить?"
   },
   "disconnectThisAccount": {
     "message": "Отключить этот счет"
@@ -3598,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Это продвинутая функция, используйте ее с осторожностью."
-  },
-  "editPermissions": {
-    "message": "Изменить разрешения"
   },
   "editSpendingCap": {
     "message": "Изменить лимит расходов"
@@ -6837,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Вы даете отправителю разрешение потратить такое количество токенов с вашего счета."
   },
-  "permittedChainToastUpdate": {
-    "message": "У $1 есть доступ к $2."
-  },
   "perps": {
     "message": "Перпы"
   },
@@ -8133,6 +8171,80 @@
     "message": "в $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Реквизиты банковского перевода"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Купить снова"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Комиссии"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Ид. ордера"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Оплачено с помощью",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Комиссия $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Итого"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Смотреть в $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Что-то пошло не так с вашим ордером.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Ошибка покупки",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Ваш ордер обрабатывается.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Покупка выполняется",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Что-то пошло не так с вашим ордером.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Ошибка продажи",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Ваш ордер обрабатывается.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Продажа выполняется",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Ваши средства в пути.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Успешная продажа",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Ваша криптовалюта в пути.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Успешная покупка",
+    "description": "Title for the successful ramp buy order toast"
+  },
   "rampsOtherOptions": {
     "message": "Другие варианты"
   },
@@ -9154,9 +9266,6 @@
   },
   "select": {
     "message": "Выбрать"
-  },
-  "selectAccountToConnect": {
-    "message": "Выберите счет для подключения"
   },
   "selectAll": {
     "message": "Выбрать все"
@@ -11313,15 +11422,6 @@
   },
   "troubleStartingTitle": {
     "message": "У MetaMask возникли проблемы с запуском."
-  },
-  "trustSignalBlockDescription": {
-    "message": "Если вы подключитесь к этому сайту, вы можете потерять все свои активы."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Обнаружен вредоносный сайт"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Все равно подключить"
   },
   "tryAgain": {
     "message": "Повторить попытку"

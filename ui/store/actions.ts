@@ -14,7 +14,6 @@ import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   bytesToString,
   CaipAccountId,
-  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -58,7 +57,6 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -1284,9 +1282,11 @@ export function protectVaultKeyWithPasskey(
   password?: string,
 ): Promise<void> {
   return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
+    {
+      registrationResponse,
+      authenticationResponse,
+      password,
+    },
   ]);
 }
 
@@ -1333,9 +1333,11 @@ export function changePasswordWithPasskeyVerification(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
+      {
+        newPassword,
+        authenticationResponse,
+        options,
+      },
     ]);
   };
 }
@@ -2592,7 +2594,8 @@ export function setSelectedMultichainAccount(
   return async (dispatch, _getState) => {
     log.debug(`background.setSelectedMultichainAccount`);
     try {
-      dispatch(showLoadingIndication());
+      // Fullscreen loading indication removed; callers are responsible for pending UX
+      // (e.g. component-local state, or `useTransition` where appropriate).
       await submitRequestToBackground('setSelectedMultichainAccount', [
         accountGroupId,
       ]);
@@ -2601,8 +2604,6 @@ export function setSelectedMultichainAccount(
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -3827,18 +3828,6 @@ export function hideImportNftsModal(): Action {
   };
 }
 
-export function hidePermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
-  };
-}
-
-export function showPermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
-  };
-}
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function setConfirmationExchangeRates(value: Record<string, any>) {
@@ -4246,6 +4235,10 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
+}
+
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
 }
 
 export function setDismissSmartAccountSuggestionEnabled(
@@ -7780,33 +7773,6 @@ function applyPatches(
   immer.setAutoFreeze(false);
 
   return immer.applyPatches(oldState, patches);
-}
-
-export async function sendMultichainTransaction(
-  snapId: string,
-  {
-    account,
-    scope,
-    assetType,
-  }: {
-    account: string;
-    scope: string;
-    assetType?: CaipAssetType;
-  },
-) {
-  await handleSnapRequest({
-    snapId,
-    origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      method: 'startSendTransactionFlow',
-      params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
-    },
-  });
 }
 
 export async function getCode(address: Hex, networkClientId: string) {

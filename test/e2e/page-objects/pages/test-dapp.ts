@@ -18,6 +18,20 @@ export enum SignatureType {
   SIWE_BadDomain,
 }
 
+/**
+ * Canonical EVM test dapp for connect, sign, send, tokens, and chain APIs.
+ *
+ * Screen: `DAPP_URL` (`http://127.0.0.1:8080`) served from `@metamask/test-dapp`.
+ * Owns: connect/accounts/network display, signature triggers, eth_send
+ * transactions, ERC-20/721/1155 helpers, encryption/decrypt, and related
+ * dapp button interactions.
+ * Boundaries: the test dapp page only. MetaMask confirmations, permissions,
+ * and network switch UI belong to confirmation/dialog page objects.
+ * Related: `TestDappIndividualRequest` for single-method `/request` URLs;
+ * confirmation page objects under `pages/confirmations/`.
+ *
+ * @see node_modules/@metamask/test-dapp/dist/index.html
+ */
 class TestDapp {
   private readonly addNetworkButton = '#addEthereumChain';
 
@@ -33,8 +47,7 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectDappButton = {
-    text: 'Connect',
-    tag: 'button',
+    testId: 'confirm-btn',
   };
 
   private readonly connectedAccount = '#accounts';

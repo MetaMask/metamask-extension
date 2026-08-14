@@ -6,25 +6,14 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import HomeNetworkFilter from '../../page-objects/pages/home-network-filter';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from './mocks/common-tron';
 
 const TRON_NILE_NAME = 'Tron Nile';
 const TRON_SHASTA_NAME = 'Tron Shasta';
-
-const NETWORK_MANAGEMENT_FLAGS = {
-  manifestFlags: {
-    remoteFeatureFlags: {
-      extensionUxNetworkManagement: {
-        enabled: true,
-        minimumVersion: '13.36.0',
-      },
-      tronTestnetsEnabled: true,
-    },
-  },
-};
 
 function buildTronNetworkFixture() {
   // Nile/Shasta appear in the home network filter testnets section when
@@ -52,13 +41,14 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed('Tron');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsListed('Tron');
       },
     );
   });
@@ -76,16 +66,17 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const tokensTab = new TokensTab(driver);
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.selectNetworkByChainId(TRON_CHAIN_ID);
-        await tokensTab.checkNetworkFilterText('Tron');
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(TRON_CHAIN_ID);
+        await networkFilter.checkLabelIs('Tron');
       },
     );
   });
@@ -105,10 +96,7 @@ describe('Tron - Network', function (this: Suite) {
         ],
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxNetworkManagement: {
-              enabled: true,
-              minimumVersion: '13.36.0',
-            },
+            // Production does not enable the discover button for Tron yet.
             neNetworkDiscoverButton: {
               [TRON_CHAIN_ID]: true,
             },
@@ -118,13 +106,13 @@ describe('Tron - Network', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
-        const selectNetwork = new SelectNetwork(driver);
+        const networksPage = new NetworksPage(driver);
 
         await headerNavbar.openGlobalNetworksMenu();
-        await selectNetwork.checkPageIsLoaded();
-        await selectNetwork.fillNetworkSearchInput('Tron');
-        await selectNetwork.openNetworkListOptions(TRON_CHAIN_ID);
-        await selectNetwork.checkDiscoverButtonIsVisible();
+        await networksPage.checkPageIsLoaded();
+        await networksPage.fillNetworkSearchInput('Tron');
+        await networksPage.openNetworkListOptions(TRON_CHAIN_ID);
+        await networksPage.checkDiscoverButtonIsVisible();
       },
     );
   });
@@ -142,13 +130,14 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed(TRON_NILE_NAME);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsListed(TRON_NILE_NAME);
       },
     );
   });
@@ -166,13 +155,14 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed(TRON_SHASTA_NAME);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsListed(TRON_SHASTA_NAME);
       },
     );
   });
@@ -190,16 +180,17 @@ describe('Tron - Network', function (this: Suite) {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockTronFeatureFlags(mockServer),
         ],
-        ...NETWORK_MANAGEMENT_FLAGS,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const home = new HomePage(driver);
         await home.goToTokensTab();
-        const homeNetworkFilter = new HomeNetworkFilter(driver);
-        await homeNetworkFilter.open();
-        await homeNetworkFilter.checkNetworkIsListed('Tron');
-        await homeNetworkFilter.close();
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.checkNetworkIsListed('Tron');
+        await selectNetworkModal.close();
       },
     );
   });
