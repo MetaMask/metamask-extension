@@ -140,28 +140,35 @@ export const useTokenSearchResults = ({
 
   const searchResetKey = `${searchQuery}|${stableMinimalAssetsString}|${Array.from(chainIds).join(',')}|${jwt ?? ''}`;
 
-  const [prevSearchResetKey, setPrevSearchResetKey] = useState('');
-  if (searchResetKey !== prevSearchResetKey) {
-    setPrevSearchResetKey(searchResetKey);
-    setSearchResultCursor(undefined);
-    setHasMoreResults(false);
-    if (searchQuery.length > 0) {
-      setSearchResultsWithBalance(filteredAssetsToInclude);
-      setIsSearchResultsLoading(Boolean(jwt));
-    } else {
-      setSearchResultsWithBalance([]);
-      setIsSearchResultsLoading(false);
-    }
-  }
+  const filteredAssetsToIncludeRef = useRef(filteredAssetsToInclude);
+  useEffect(() => {
+    filteredAssetsToIncludeRef.current = filteredAssetsToInclude;
+  }, [filteredAssetsToInclude]);
 
   useEffect(() => {
-    if (searchQuery.length === 0 || !jwt) {
-      return;
+    const assetsToIncludeForSearch = filteredAssetsToIncludeRef.current;
+
+    abortControllerRef.current.abort('Search reset key changed');
+    debouncedFetchSearchResults.cancel();
+
+    queueMicrotask(() => {
+      setSearchResultCursor(undefined);
+      setHasMoreResults(false);
+
+      if (searchQuery.length === 0 || !jwt) {
+        setSearchResultsWithBalance([]);
+        setIsSearchResultsLoading(false);
+        return;
+      }
+
+      setSearchResultsWithBalance(assetsToIncludeForSearch);
+      setIsSearchResultsLoading(true);
+    });
+
+    if (searchQuery.length > 0 && jwt) {
+      debouncedFetchSearchResults(searchQuery, assetsToIncludeForSearch);
     }
-    abortControllerRef.current.abort('Search query changed');
-    // Debounce the initial fetch until the user stops typing
-    debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
-  }, [searchQuery, stableMinimalAssetsString, chainIds, jwt]);
+  }, [searchResetKey, searchQuery, jwt, debouncedFetchSearchResults]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;
