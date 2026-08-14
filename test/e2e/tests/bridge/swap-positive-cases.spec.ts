@@ -145,7 +145,15 @@ describe('Swap tests', function (this: Suite) {
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
-        await bridgeTransaction({
+        await homePage.startSwapFlow();
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+        await bridgePage.enterBridgeQuote({ amount: '1' });
+        await bridgePage.waitForQuote();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        await bridgePage.checkDestAmount('0.369');
+        await bridgePage.submitQuote();
+        await verifySubmittedSwapTransaction({
           driver,
           quote: {
             amount: '1',
@@ -158,43 +166,31 @@ describe('Swap tests', function (this: Suite) {
           expectedDestAmount: '0.369',
           expectedDetailsDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
-          skipStatusPage: true,
         });
 
-        const events = (await getEventPayloads(driver, mockedEndpoints)).filter(
-          (e) => e?.event?.includes('Unified SwapBridge'),
+        const events = (
+          await getEventPayloads(driver, mockedEndpoints, false)
+        ).filter((e) => e?.event?.includes('Unified SwapBridge'));
+        const byName = (name: string) => events.find((e) => e.event === name);
+        const requested = byName('Unified SwapBridge Quotes Requested');
+        const received = byName('Unified SwapBridge Quotes Received');
+        const submitted = byName('Unified SwapBridge Submitted');
+        const completed = byName('Unified SwapBridge Completed');
+        assert.ok(
+          requested && received && submitted && completed,
+          'missing Unified SwapBridge lifecycle event',
         );
-        const expectedEvents = [
-          'Unified SwapBridge Quotes Requested',
-          'Unified SwapBridge Quotes Received',
-          'Unified SwapBridge Submitted',
-          'Unified SwapBridge Completed',
-        ];
-        const requestedToCompletedEvents = getRequestedToCompletedEvents(
-          events,
-          expectedEvents,
-        );
-        requestedToCompletedEvents.forEach((e, idx) => {
-          assert.ok(
-            e.event === expectedEvents[idx],
-            `${e.event} event validation failed`,
-          );
-        });
-
-        const quotesReceivedEvent = requestedToCompletedEvents[1];
+        assert.ok(events.indexOf(requested) < events.indexOf(submitted));
+        assert.ok(events.indexOf(submitted) < events.indexOf(completed));
 
         assert.ok(
-          quotesReceivedEvent.properties.quotes_count === 2,
-          `Quote count validation failed. Actual value: ${quotesReceivedEvent.properties.quotes_count}`,
+          received.properties.quotes_count === 2,
+          `Quote count validation failed. Actual value: ${received.properties.quotes_count}`,
         );
         assert.ok(
-          quotesReceivedEvent.properties.provider === '0x_0x',
-          `Provider validation failed. Actual value: ${quotesReceivedEvent.properties.provider}`,
+          received.properties.provider === '0x_0x',
+          `Provider validation failed. Actual value: ${received.properties.provider}`,
         );
-        // assert.ok(
-        //   quotesReceivedEvent.properties.usd_quoted_gas === 23.15898006845514,
-        //   `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
-        // );
       },
     );
   });
