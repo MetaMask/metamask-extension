@@ -53,7 +53,7 @@ describe('DeepLink', () => {
     mockUseNavigate.mockReturnValue(mockNavigate);
     mockUseSelector.mockImplementation((selector) =>
       selector({
-        appState: { pendingDeepLinkRequestIds },
+        metamask: { pendingDeepLinkRequestIds },
       } as never),
     );
     globalThis.platform = {

@@ -121,7 +121,6 @@ type AppState = {
     descriptionKey: string;
     titleKey: string;
   } | null;
-  pendingDeepLinkRequestIds: string[];
 };
 
 export type AppSliceState = {
@@ -204,7 +203,6 @@ const initialState: AppState = {
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
   homeDeepLinkQrCode: null,
-  pendingDeepLinkRequestIds: [],
 };
 
 export default function reduceApp(

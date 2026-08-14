@@ -902,9 +902,13 @@ async function initialize(backup) {
   new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
-    setId: controller.appStateController.addPendingDeepLinkRequestId.bind(
-      controller.appStateController,
-    ),
+    setId: (id) => {
+      controller.appStateController.addPendingDeepLinkRequestId(id);
+      // Controller-to-UI patches are normally debounced. A deep-link redirect
+      // can be a same-document hash navigation, so flush this update before
+      // tabs.update changes the route and the existing UI reads the request ID.
+      controller.sendUpdate.flush();
+    },
     removeId: controller.appStateController.removePendingDeepLinkRequestId.bind(
       controller.appStateController,
     ),
