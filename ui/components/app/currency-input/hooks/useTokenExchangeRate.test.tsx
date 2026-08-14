@@ -1,9 +1,10 @@
 import React from 'react';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { MetaMaskTestReduxProvider } from '../../../../../test/lib/redux-test-provider';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
+import { UPDATE_METAMASK_STATE } from '../../../../store/actionConstants';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import useTokenExchangeRate from './useTokenExchangeRate';
 
@@ -122,6 +123,61 @@ describe('useProcessNewDecimalValue', () => {
       expect(exchangeRate?.value).toBe(undefined);
     });
     expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+  });
+
+  it('ERC-20: uses Redux market rate after a failed fetch once rates arrive', async () => {
+    const tokenAddress = '0x0000000000000000000000000000000000000001';
+    (fetchTokenExchangeRates as jest.Mock).mockRejectedValue(
+      new Error('error'),
+    );
+
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        currencyRates: {
+          ETH: {
+            conversionRate: 11.1,
+          },
+        },
+        marketData: {
+          '0x5': {},
+        },
+      },
+    };
+    const store = configureStore(state);
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <MetaMaskTestReduxProvider store={store}>
+        {children}
+      </MetaMaskTestReduxProvider>
+    );
+
+    const { result } = renderHook(() => useTokenExchangeRate(tokenAddress), {
+      wrapper,
+    });
+
+    await waitFor(() => {
+      expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(1);
+      expect(result.current).toBeUndefined();
+    });
+
+    await act(async () => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: {
+          marketData: {
+            '0x5': {
+              [tokenAddress]: { price: 2 },
+            },
+          },
+        },
+      });
+    });
+
+    await waitFor(() => {
+      // price (2) * ETH conversion rate (11.1) = 22.2
+      expect(String(result.current?.value)).toEqual('22.2');
+    });
   });
 
   it('native: price is available', () => {
