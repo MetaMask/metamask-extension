@@ -54,10 +54,6 @@ export class PerpsTab extends PerpsPositionsBase {
     testId: 'perps-recent-activity-empty',
   };
 
-  private readonly perpsRecentActivityLoading = {
-    testId: 'perps-recent-activity-loading',
-  };
-
   private readonly perpsRecentActivitySeeAll = {
     testId: 'perps-recent-activity-see-all',
   };
@@ -269,24 +265,6 @@ export class PerpsTab extends PerpsPositionsBase {
         return elements.length === expectedCount;
       },
       { timeout, interval: 500 },
-    );
-  }
-
-  /**
-   * Waits until the recent-activity loading skeleton is gone.
-   *
-   * @param timeout - Max wait time in ms (default 15 000).
-   */
-  async waitForRecentActivityIdle(timeout = 15000): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        const isLoading = await this.driver.isElementPresentAndVisible(
-          this.perpsRecentActivityLoading,
-          300,
-        );
-        return !isLoading;
-      },
-      { timeout, interval: 300 },
     );
   }
 

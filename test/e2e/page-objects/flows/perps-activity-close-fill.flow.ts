@@ -24,6 +24,8 @@ export async function assertPerpsActivityShowsCloseFill({
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
 }): Promise<void> {
+  pushUserFills();
+
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
 
@@ -45,10 +47,6 @@ export async function assertPerpsActivityShowsCloseFill({
     await perpsTab.navigateToPerpsHome();
   }
   await perpsTab.checkPageIsLoaded();
-  await perpsTab.waitForRecentActivityIdle();
-
-  pushUserFills();
-
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 

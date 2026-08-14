@@ -18,6 +18,7 @@ import {
   buildSubscribedConfirmation,
   buildWsPostResponse,
   parseWsPost,
+  setPendingUserFills,
 } from './websocketDefaultMocks';
 
 /**
@@ -612,12 +613,13 @@ export function pushUserFillsClosePositionSnapshot(
     twapId: null,
   };
 
+  setPendingUserFills([fill]);
   server.sendMessage(
     JSON.stringify({
       channel: 'userFills',
       data: {
         user,
-        isSnapshot: false,
+        isSnapshot: true,
         fills: [fill],
       },
     }),
