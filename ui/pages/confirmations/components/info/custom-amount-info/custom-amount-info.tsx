@@ -1,5 +1,8 @@
 import React, { ReactNode, useCallback } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -25,7 +28,14 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  PercentageButtons,
+  PercentageButtonsSkeleton,
+} from '../../percentage-buttons';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -41,11 +51,20 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { useMoneyNoFeeTokens } from '../../../hooks/pay/useMoneyNoFeeTokens';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 /* eslint-disable @typescript-eslint/naming-convention */
+
+// Deposits and withdrawals are batches, so the money-account type sits on a
+// nested transaction and needs `hasTransactionType` rather than a `type` check.
+const MONEY_ACCOUNT_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+];
 
 export type CustomAmountInfoProps = {
   /**
@@ -74,6 +93,12 @@ export type CustomAmountInfoProps = {
    * letting the user choose which account funds the transaction.
    */
   displayAccountRow?: boolean;
+  /**
+   * When true, the last percentage shortcut is Max instead of 90%, unless the
+   * pay token is native (gas reserve). Also shown automatically for no-fee
+   * money-account tokens. Matches mobile `CustomAmountInfo` `hasMax`.
+   */
+  hasMax?: boolean;
   hidePayTokenAmount?: boolean;
   /**
    * When true, pre-fills the amount field with the max balance on load.
@@ -93,6 +118,7 @@ export const CustomAmountInfo = React.memo(
     disableAutomaticToken,
     disablePay,
     displayAccountRow,
+    hasMax,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -128,12 +154,25 @@ export const CustomAmountInfo = React.memo(
       hasInput,
       isDepositPrefillLoading,
       updatePendingAmount,
+      updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
       balanceUsdOverride,
       currency,
       disableUpdate,
       prefillMaxOnLoad,
     });
+
+    const { isNative: isNativePayToken } = useTransactionPayToken();
+    const { isMoneyNoFeeToken } = useMoneyNoFeeTokens();
+    // The shortcuts are a Money Account affordance; other flows sharing this
+    // component (Perps, mUSD conversion) keep the plain amount input.
+    const isMoneyAccountTransaction = hasTransactionType(
+      currentConfirmation,
+      MONEY_ACCOUNT_TRANSACTION_TYPES,
+    );
+    const showMax =
+      (Boolean(hasMax) || isMoneyNoFeeToken) &&
+      (isWithdraw || !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -173,6 +212,13 @@ export const CustomAmountInfo = React.memo(
           {children}
         </CenterContainer>
         <AlertMessage />
+        {isMoneyAccountTransaction && (
+          <PercentageButtons
+            disabled={!hasTokens}
+            hasMax={showMax}
+            onPercentageClick={updatePendingAmountPercentage}
+          />
+        )}
         {overrideBottomContent?.(hasInput) ?? (
           <BottomContainer
             amountFiat={amountFiat}
@@ -276,6 +322,7 @@ function CenterContainerSkeleton() {
     >
       <CustomAmountSkeleton />
       <PayTokenAmountSkeleton />
+      <PercentageButtonsSkeleton />
     </Box>
   );
 }
