@@ -12,9 +12,14 @@ import type {
   TokensControllerGetStateAction,
   Token,
 } from '@metamask/assets-controllers';
+import type {
+  AssetsControllerGetStateAction,
+  AssetsControllerAddCustomAssetAction,
+} from '@metamask/assets-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
@@ -60,7 +65,9 @@ export type StaticAssetsControllerEvents =
 export type AllowedActions =
   | TokensControllerAddTokensAction
   | TokensControllerGetStateAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | AssetsControllerGetStateAction
+  | AssetsControllerAddCustomAssetAction;
 
 export type StaticAssetsControllerMessenger = Messenger<
   typeof CONTROLLER,
@@ -78,6 +85,8 @@ export type StaticAssetsControllerOptions = {
   getCacheExpirationTime: () => number;
   /** The top X assets to fetch. */
   getTopX: () => number;
+  /** Whether the assets-unify-state feature flag is enabled. */
+  getIsAssetsUnifyStateEnabled: () => boolean;
 };
 
 /**
@@ -149,6 +158,7 @@ function buildImageUrl(assetId: CaipAssetType, extension: string): string {
 export class StaticAssetsController extends StaticIntervalPollingController<{
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }>()<
   typeof CONTROLLER,
   StaticAssetsControllerState,
@@ -163,12 +173,16 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
 
+  /** Whether the assets-unify-state feature flag is enabled. */
+  readonly #getIsAssetsUnifyStateEnabled: () => boolean;
+
   constructor({
     messenger,
     interval = DEFAULT_INTERVAL_MS,
     getSupportedChains,
     getCacheExpirationTime,
     getTopX,
+    getIsAssetsUnifyStateEnabled,
   }: StaticAssetsControllerOptions) {
     super({
       name: CONTROLLER,
@@ -183,6 +197,8 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     this.#getCacheExpirationTime = getCacheExpirationTime;
 
     this.#getTopX = getTopX;
+
+    this.#getIsAssetsUnifyStateEnabled = getIsAssetsUnifyStateEnabled;
   }
 
   /**
@@ -191,22 +207,29 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * @param params - The parameters for the poll.
    * @param params.chainIds - The chain IDs to poll.
    * @param params.selectedAccountAddress - The selected account address.
+   * @param params.selectedAccountId - The selected account's internal ID.
    */
   async _executePoll({
     chainIds,
     selectedAccountAddress,
+    selectedAccountId,
   }: {
     chainIds: string[];
     selectedAccountAddress: string;
+    selectedAccountId: string;
   }): Promise<void> {
-    if (!selectedAccountAddress) {
+    if (!selectedAccountAddress || !selectedAccountId) {
       return;
     }
     // Use Promise.allSettled to wait for all the promises to settle,
     // even if some of chains are rejected.
     await Promise.allSettled(
       chainIds.map((chainId) =>
-        this.#addTokensByChainId(chainId, selectedAccountAddress),
+        this.#addTokensByChainId(
+          chainId,
+          selectedAccountAddress,
+          selectedAccountId,
+        ),
       ),
     );
   }
@@ -231,14 +254,16 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   }
 
   /**
-   * Fetch top assets for a chain and add them to the TokensController.
+   * Fetch top assets for a chain and add them to the appropriate controller.
    *
    * @param chainId - The chain ID.
    * @param selectedAccountAddress - The selected account address.
+   * @param selectedAccountId - The selected account's internal ID.
    */
   async #addTokensByChainId(
     chainId: string,
     selectedAccountAddress: string,
+    selectedAccountId: string,
   ): Promise<void> {
     if (!(await this.#isValidChainId(chainId))) {
       return;
@@ -250,55 +275,92 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
         tokens,
         chainId,
         selectedAccountAddress,
+        selectedAccountId,
       );
     }
   }
 
   /**
-   * Add the tokens to the TokensController after filtering out tokens that are already in the ignore state.
+   * Add the tokens to the appropriate controller after filtering out tokens that are already ignored/hidden.
+   * When the assetsUnifyState flag is enabled, tokens are added to AssetsController as custom assets.
+   * Otherwise, tokens are added to TokensController.
    *
    * @param tokens - The tokens to add.
    * @param chainId - The chain ID.
    * @param selectedAccountAddress - The selected account address.
+   * @param selectedAccountId - The selected account's internal ID.
    */
   async #addTokensToTokensController(
     tokens: Token[],
     chainId: string,
     selectedAccountAddress: string,
+    selectedAccountId: string,
   ): Promise<void> {
     try {
       if (!isStrictHexString(chainId)) {
         return;
       }
 
-      const [networkClientId, filteredTokens] = await Promise.all([
-        this.messenger.call(
+      const filteredTokens = await this.#filterIgnoredTokens(
+        tokens,
+        chainId,
+        selectedAccountAddress,
+      );
+
+      if (this.#getIsAssetsUnifyStateEnabled()) {
+        if (!selectedAccountId) {
+          return;
+        }
+        await Promise.all(
+          filteredTokens.map(async (token) => {
+            const assetId = toAssetId(token.address, chainId);
+            if (!assetId) {
+              return;
+            }
+            await this.messenger.call(
+              'AssetsController:addCustomAsset',
+              selectedAccountId,
+              assetId,
+              {
+                address: token.address,
+                symbol: token.symbol,
+                name: token.name ?? token.symbol,
+                decimals: token.decimals,
+                iconUrl: token.image,
+                aggregators: token.aggregators,
+                chainId,
+              },
+            );
+          }),
+        );
+      } else {
+        const networkClientId = await this.messenger.call(
           'NetworkController:findNetworkClientIdByChainId',
           chainId,
-        ),
-        this.#filterIgnoredTokens(tokens, chainId, selectedAccountAddress),
-      ]);
-
-      // Since we only support EVM chains,
-      // we can safely expect the selectedAccountAddress will not change,
-      // even user switches account / switches network.
-      // Hence, even TokensController:addTokens internally will get the selected account address again,
-      // it will be the same address.
-      await this.messenger.call(
-        'TokensController:addTokens',
-        filteredTokens,
-        networkClientId,
-      );
+        );
+        // Since we only support EVM chains,
+        // we can safely expect the selectedAccountAddress will not change,
+        // even user switches account / switches network.
+        // Hence, even TokensController:addTokens internally will get the selected account address again,
+        // it will be the same address.
+        await this.messenger.call(
+          'TokensController:addTokens',
+          filteredTokens,
+          networkClientId,
+        );
+      }
     } catch (error) {
       console.error(
-        `[StaticAssetsController] Error adding tokens to TokensController for chainId ${chainId}`,
+        `[StaticAssetsController] Error adding tokens for chainId ${chainId}`,
         error,
       );
     }
   }
 
   /**
-   * Filter out tokens that are in the ignored tokens set.
+   * Filter out tokens that are ignored (TokensController) or hidden (AssetsController).
+   * When the assetsUnifyState flag is enabled, checks AssetsController assetPreferences for
+   * hidden assets. Otherwise, checks TokensController allIgnoredTokens.
    *
    * @param tokens - The tokens to filter.
    * @param chainId - The chain ID.
@@ -310,8 +372,17 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     chainId: Hex,
     selectedAccountAddress: string,
   ): Promise<Token[]> {
-    // TODO: Handle returning correct state based on the feature flag at TokensController level
-    const tokensControllerState = await this.messenger.call(
+    if (this.#getIsAssetsUnifyStateEnabled()) {
+      const { assetPreferences } = this.messenger.call(
+        'AssetsController:getState',
+      );
+      return tokens.filter((token) => {
+        const assetId = toAssetId(token.address, chainId);
+        return !assetId || assetPreferences[assetId]?.hidden !== true;
+      });
+    }
+
+    const tokensControllerState = this.messenger.call(
       'TokensController:getState',
     );
 

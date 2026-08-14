@@ -5,11 +5,13 @@ import {
   calculateMarginRequired,
   calculatePositionSize,
   formatFundingRate,
+  formatLargeNumber,
   formatPercentage,
   formatPerpsFiat,
   formatPerpsPrice,
   formatPnl,
   formatPositionSize,
+  formatVolume,
   formatWithSignificantDigits,
 } from './perps-formatters';
 
@@ -466,6 +468,77 @@ describe('perps-formatters', () => {
 
     it('handles empty string amount', () => {
       expect(calculateMarginRequired({ amount: '', leverage: 5 })).toBe('0.00');
+    });
+  });
+
+  describe('formatLargeNumber', () => {
+    it('formats trillions with the T suffix', () => {
+      expect(formatLargeNumber(1_200_000_000_000)).toBe('1T');
+    });
+
+    it('formats billions with the B suffix (default 0 decimals)', () => {
+      expect(formatLargeNumber(2_300_000_000)).toBe('2B');
+    });
+
+    it('honors per-call decimals override for suffixed ranges', () => {
+      expect(formatLargeNumber(2_300_000_000, { decimals: 2 })).toBe('2.30B');
+      expect(formatLargeNumber(12_345_678, { decimals: 2 })).toBe('12.35M');
+    });
+
+    it('honors rawDecimals for values below 1K', () => {
+      expect(formatLargeNumber(999, { rawDecimals: 0 })).toBe('999');
+      expect(formatLargeNumber(12.5, { rawDecimals: 2 })).toBe('12.50');
+    });
+
+    it('preserves sign for negative values', () => {
+      expect(formatLargeNumber(-2_500_000_000, { decimals: 1 })).toBe('-2.5B');
+    });
+
+    it('returns "0" for NaN input', () => {
+      expect(formatLargeNumber(Number.NaN)).toBe('0');
+    });
+
+    it('accepts string input', () => {
+      expect(formatLargeNumber('1500', { decimals: 1 })).toBe('1.5K');
+    });
+  });
+
+  describe('formatVolume', () => {
+    it('shows 2 decimals for billions (matches mobile "$2.30B")', () => {
+      expect(formatVolume(2_300_000_000)).toBe('$2.30B');
+    });
+
+    it('does NOT strip trailing .0 on round billions (regression: extension used to show "$2B")', () => {
+      expect(formatVolume(2_000_000_000)).toBe('$2.00B');
+    });
+
+    it('shows 2 decimals for millions', () => {
+      expect(formatVolume(12_345_678)).toBe('$12.35M');
+    });
+
+    it('shows 0 decimals for thousands', () => {
+      expect(formatVolume(123_456)).toBe('$123K');
+    });
+
+    it('shows 2 decimals below 1K', () => {
+      expect(formatVolume(987.654)).toBe('$987.65');
+    });
+
+    it('honors explicit decimals override', () => {
+      expect(formatVolume(2_300_000_000, 1)).toBe('$2.3B');
+    });
+
+    it('inserts the dollar sign after the negative for negative values', () => {
+      expect(formatVolume(-4_500_000_000)).toBe('-$4.50B');
+    });
+
+    it('returns "$---" for NaN / non-finite input', () => {
+      expect(formatVolume(Number.NaN)).toBe('$---');
+      expect(formatVolume(Number.POSITIVE_INFINITY)).toBe('$---');
+    });
+
+    it('accepts string input', () => {
+      expect(formatVolume('1100000000')).toBe('$1.10B');
     });
   });
 });

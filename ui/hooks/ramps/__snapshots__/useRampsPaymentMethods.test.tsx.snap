@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsPaymentMethods matches snapshot when idle 1`] = `
+{
+  "error": null,
+  "isFetching": false,
+  "isLoading": false,
+  "isSuccess": false,
+  "paymentMethods": [],
+  "selectedPaymentMethod": null,
+  "setSelectedPaymentMethod": [Function],
+  "status": "idle",
+}
+`;

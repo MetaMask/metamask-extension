@@ -1,11 +1,17 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TxData } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionContainerType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Hex, add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../../../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -14,12 +20,18 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
-import { toHex } from '../../../../../../../shared/lib/delegation/utils';
-import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getCurrencyRates,
+} from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { selectConversionRateByChainId } from '../../../../../../selectors';
-import { useDappSwapContextOptional } from '../../../../context/dapp-swap';
+import {
+  // eslint-disable-next-line no-restricted-syntax
+  getUSDConversionRateByChainId,
+  selectConversionRateByChainId,
+} from '../../../../../../selectors';
+import { useTransactionGasLimit } from '../../../../hooks/gas/useTransactionGasLimit';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -28,6 +40,52 @@ import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 const EMPTY_FEE = '';
 
 const MIN_NATIVE_FEE_THRESHOLD = 0.0001;
+
+const ETH_CONVERSION_RATE_FALLBACK_CHAIN_IDS = [
+  CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.LINEA_SEPOLIA,
+];
+
+function getValidConversionRate(
+  conversionRate: number | null | undefined,
+): number | undefined {
+  return Number.isFinite(conversionRate) && Number(conversionRate) > 0
+    ? Number(conversionRate)
+    : undefined;
+}
+
+function shouldUseEthConversionRateFallback(chainId?: Hex): boolean {
+  if (!chainId) {
+    return false;
+  }
+
+  return ETH_CONVERSION_RATE_FALLBACK_CHAIN_IDS.some(
+    (fallbackChainId) =>
+      fallbackChainId.toLowerCase() === chainId.toLowerCase(),
+  );
+}
+
+function getOriginalGasLimit(
+  transactionMeta: TransactionMeta,
+  quotedGasLimit?: Hex,
+): Hex | undefined {
+  return (transactionMeta.txParamsOriginal?.gas ||
+    transactionMeta.defaultGasEstimates?.gas ||
+    transactionMeta.dappSuggestedGasFees?.gas ||
+    quotedGasLimit ||
+    transactionMeta.gasUsed ||
+    transactionMeta.gasLimitNoBuffer) as Hex | undefined;
+}
+
+function getGasLimitDelta(gasLimit: Hex, originalGasLimit: string): Hex | null {
+  const gasLimitDelta = new Numeric(gasLimit, 16).minus(originalGasLimit, 16);
+
+  if (!gasLimitDelta.greaterThan(0, 10)) {
+    return null;
+  }
+
+  return gasLimitDelta.toPrefixedHexString() as Hex;
+}
 
 function applySmallNativeFeeThreshold(nativeFee: string, hexFee: Hex): string {
   if (nativeFee === '0' && new Numeric(hexFee, 16).greaterThan(0, 10)) {
@@ -40,43 +98,27 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
-  const dappSwapContext = useDappSwapContextOptional();
-  const selectedQuote = dappSwapContext?.selectedQuote;
-  const isQuotedSwapDisplayedInInfo =
-    dappSwapContext?.isQuotedSwapDisplayedInInfo ?? false;
 
-  const conversionRate = useSelector((state) =>
+  const chainConversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
-  const hasValidConversionRate =
-    Number.isFinite(conversionRate) && Number(conversionRate) > 0;
+  const chainUsdConversionRate = useSelector((state) =>
+    getUSDConversionRateByChainId(chainId)(state),
+  );
+  const currencyRates = useSelector(getCurrencyRates);
+  const fallbackCurrencyRate = shouldUseEthConversionRateFallback(chainId)
+    ? currencyRates?.[CURRENCY_SYMBOLS.ETH]
+    : undefined;
+  const conversionRate =
+    getValidConversionRate(chainConversionRate) ??
+    getValidConversionRate(fallbackCurrencyRate?.conversionRate);
+  const usdConversionRate =
+    getValidConversionRate(chainUsdConversionRate) ??
+    getValidConversionRate(fallbackCurrencyRate?.usdConversionRate);
+  const hasValidConversionRate = conversionRate !== undefined;
 
-  let quotedGasLimit;
-  if (isQuotedSwapDisplayedInInfo) {
-    quotedGasLimit = toHex(
-      ((selectedQuote?.approval as TxData)?.gasLimit ?? 0) +
-        ((selectedQuote?.trade as TxData)?.gasLimit ?? 0),
-    ) as Hex;
-  }
-
-  // When container types are set, the gas limit has been re-estimated for the
-  // wrapped transaction, so we should use `txParams.gas` directly. Otherwise,
-  // prefer the optimized values from simulation.
-  const hasContainerTypes = (transactionMeta?.containerTypes?.length ?? 0) > 0;
-
-  // `gasUsed` is the gas limit actually used by the transaction in the
-  // simulation environment.
-  const optimizedGasLimit = hasContainerTypes
-    ? transactionMeta?.txParams?.gas || HEX_ZERO
-    : quotedGasLimit ||
-      transactionMeta?.gasUsed ||
-      // While estimating gas for the transaction we add 50% gas limit buffer.
-      // With `gasLimitNoBuffer` that buffer is removed. see PR
-      // https://github.com/MetaMask/metamask-extension/pull/29502 for more
-      // details.
-      transactionMeta?.gasLimitNoBuffer ||
-      transactionMeta?.txParams?.gas ||
-      HEX_ZERO;
+  const { gasLimit: optimizedGasLimit, quotedGasLimit } =
+    useTransactionGasLimit(transactionMeta);
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
@@ -153,6 +195,38 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   // Max fee
   const gasPrice = transactionMeta?.txParams?.gasPrice ?? HEX_ZERO;
 
+  const getEstimatedFeeForGasLimit = useCallback(
+    (gasLimit: Hex) => {
+      if (!supportsEIP1559) {
+        return multiplyHexes(gasPrice as Hex, gasLimit) as Hex;
+      }
+
+      let minimumFeePerGas = addHexes(
+        decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
+        decimalToHex(maxPriorityFeePerGas),
+      );
+
+      // `minimumFeePerGas` should never be higher than the `maxFeePerGas`
+      if (
+        new Numeric(minimumFeePerGas, 16).greaterThan(
+          decimalToHex(maxFeePerGas),
+          16,
+        )
+      ) {
+        minimumFeePerGas = decimalToHex(maxFeePerGas);
+      }
+
+      return multiplyHexes(minimumFeePerGas as Hex, gasLimit) as Hex;
+    },
+    [
+      estimatedBaseFee,
+      gasPrice,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      supportsEIP1559,
+    ],
+  );
+
   const maxFee = useMemo(() => {
     return addHexes(
       layer1GasFee ?? HEX_ZERO,
@@ -191,40 +265,72 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       return getFeesFromHex(estimatedTotalFeesForL2);
     }
 
-    // Logic for any network without L1 and L2 fee components
-    let minimumFeePerGas = addHexes(
-      decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
-      decimalToHex(maxPriorityFeePerGas),
-    );
-
-    // `minimumFeePerGas` should never be higher than the `maxFeePerGas`
-    if (
-      new Numeric(minimumFeePerGas, 16).greaterThan(
-        decimalToHex(maxFeePerGas),
-        16,
-      )
-    ) {
-      minimumFeePerGas = decimalToHex(maxFeePerGas);
-    }
-
-    const estimatedFee = multiplyHexes(
-      supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
-      optimizedGasLimit as Hex,
-    );
-
-    return getFeesFromHex(estimatedFee);
+    return getFeesFromHex(getEstimatedFeeForGasLimit(optimizedGasLimit));
   }, [
-    estimatedBaseFee,
     gasFeeEstimate,
-    gasPrice,
+    getEstimatedFeeForGasLimit,
     getFeesFromHex,
     hasLayer1GasFee,
     layer1GasFee,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     optimizedGasLimit,
-    supportsEIP1559,
   ]);
+
+  const hasEnforcedSimulations = Boolean(
+    transactionMeta.containerTypes?.includes(
+      TransactionContainerType.EnforcedSimulations,
+    ),
+  );
+
+  const originalGasLimit = getOriginalGasLimit(transactionMeta, quotedGasLimit);
+
+  const addedProtectionFee = useMemo(() => {
+    if (!hasEnforcedSimulations || !originalGasLimit) {
+      return null;
+    }
+
+    const gasLimitDelta = getGasLimitDelta(optimizedGasLimit, originalGasLimit);
+
+    if (!gasLimitDelta) {
+      return null;
+    }
+
+    const fee = getEstimatedFeeForGasLimit(gasLimitDelta);
+
+    return new Numeric(fee, 16).greaterThan(0, 10) ? fee : null;
+  }, [
+    getEstimatedFeeForGasLimit,
+    hasEnforcedSimulations,
+    optimizedGasLimit,
+    originalGasLimit,
+  ]);
+
+  const addedProtectionFeeFiat = useMemo(
+    () =>
+      addedProtectionFee
+        ? getFeesFromHex(addedProtectionFee).currentCurrencyFee || null
+        : null,
+    [addedProtectionFee, getFeesFromHex],
+  );
+
+  const addedProtectionFeeUsd = useMemo(() => {
+    if (!hasEnforcedSimulations || !usdConversionRate) {
+      return null;
+    }
+
+    if (!addedProtectionFee) {
+      return 0;
+    }
+
+    return Number(
+      getValueFromWeiHex({
+        value: addedProtectionFee,
+        conversionRate: usdConversionRate,
+        fromCurrency: EtherDenomination.GWEI,
+        toCurrency: 'usd',
+        numberOfDecimals: 18,
+      }),
+    );
+  }, [addedProtectionFee, hasEnforcedSimulations, usdConversionRate]);
 
   const calculateGasEstimateCallback = useCallback(
     ({
@@ -284,6 +390,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   return {
+    addedProtectionFeeFiat,
+    addedProtectionFeeUsd,
     calculateGasEstimate: calculateGasEstimateCallback,
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:

@@ -15,22 +15,19 @@ import {
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/lib/conversion.utils';
-import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
 } from '../../selectors/selectors';
-import {
-  getProviderConfig,
-  getSelectedNetworkClientId,
-} from '../../../shared/lib/selectors/networks';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getProviderConfig } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
-import { updateTransactionGasFees } from '../../store/actions';
+import { updateTransactionGasFees } from '../../store/actions/update-transaction-gas-fees';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { EMPTY_ARRAY } from '../../selectors/shared';
+import { getIsUnlocked } from './base-selectors';
 
 const initialState = {
   isInitialized: false,
@@ -53,9 +50,12 @@ const initialState = {
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
   knownMethodData: {},
   use4ByteResolution: true,
-  participateInMetaMetrics: null,
+  analyticsId: null,
+  optedIn: false,
+  consentDecisionMade: false,
   dataCollectionForMarketing: null,
   currencyRates: {
     ETH: {
@@ -140,7 +140,8 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        participateInMetaMetrics: action.value,
+        consentDecisionMade: action.value !== null,
+        optedIn: action.value === true,
       };
 
     case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
@@ -164,18 +165,27 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_HAS_SEEN_ONBOARDING_COMPLETION_PAGE: {
+      return {
+        ...metamaskState,
+        hasSeenOnboardingCompletionPage: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
         isInitialized: false,
         completedOnboarding: false,
+        hasSeenOnboardingCompletionPage: false,
         firstTimeFlowType: null,
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
-        // reset metametrics optin status
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
+        // reset analytics opt-in status
+        analyticsId: null,
+        optedIn: false,
+        consentDecisionMade: false,
       };
     }
 
@@ -282,7 +292,7 @@ export const getNfts = (state) => {
 
   const { chainId } = getProviderConfig(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getAllNfts = (state) => {
@@ -291,7 +301,7 @@ export const getAllNfts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress] ?? [];
+  return allNfts?.[selectedAddress] ?? EMPTY_ARRAY;
 };
 
 export const getNFTsByChainId = (state, chainId) => {
@@ -300,7 +310,7 @@ export const getNFTsByChainId = (state, chainId) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export const getNftContracts = (state) => {
@@ -309,19 +319,11 @@ export const getNftContracts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
 export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;
-}
-
-export function getConversionRate(state) {
-  return (
-    getCurrencyRateControllerCurrencyRates(state)[
-      getProviderConfig(state).ticker
-    ]?.conversionRate ?? undefined
-  );
 }
 
 export function getConversionRateByTicker(state, ticker) {
@@ -338,35 +340,6 @@ export function getSendToAccounts(state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state);
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
-}
-
-/**
- * Function returns true if network details are fetched and it is found to not support EIP-1559
- *
- * @param state
- */
-export function isNotEIP1559Network(state) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  return (
-    state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
-    false
-  );
-}
-
-/**
- * Function returns true if network details are fetched and it is found to support EIP-1559
- *
- * @param state
- * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
- */
-export function isEIP1559Network(state, networkClientId) {
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
-
-  return (
-    state.metamask.networksMetadata?.[
-      networkClientId ?? selectedNetworkClientId
-    ]?.EIPS[1559] === true
-  );
 }
 
 function getGasFeeControllerEstimateType(state) {
@@ -527,6 +500,11 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
+export function getHasSeenOnboardingCompletionPage(state) {
+  return state.metamask.hasSeenOnboardingCompletionPage;
+}
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
@@ -539,10 +517,6 @@ export function getIsInitialized(state) {
  */
 export function getIsWalletResetInProgress(state) {
   return state.metamask.isWalletResetInProgress;
-}
-
-export function getIsUnlocked(state) {
-  return state.metamask.isUnlocked;
 }
 
 export function getSeedPhraseBackedUp(state) {
@@ -577,49 +551,6 @@ export function getIsSeedlessPasswordOutdated(state) {
 }
 
 /**
- * Given the redux state object and an address, finds a keyring that contains that address, if one exists
- *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among the keyring addresses
- * @returns {object | undefined} The keyring which contains the passed address, or undefined
- */
-export function findKeyringForAddress(state, address) {
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return kr.accounts.some((account) => {
-      return (
-        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
-        isEqualCaseInsensitive(account, stripHexPrefix(address))
-      );
-    });
-  });
-
-  return keyring;
-}
-
-/**
- * Given the redux state object, returns the users preferred ledger transport type
- *
- * @param {object} state - the redux state object
- * @returns {string} The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
- */
-export function getLedgerTransportType(state) {
-  return state.metamask.ledgerTransportType;
-}
-
-/**
- * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
- *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among all keyring addresses
- * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
- */
-export function isAddressLedger(state, address) {
-  const keyring = findKeyringForAddress(state, address);
-
-  return keyring?.type === KeyringType.ledger;
-}
-
-/**
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *
@@ -642,4 +573,34 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
  */
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
+}
+
+/**
+ * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
+ *
+ * @param {object} state - Redux root state
+ * @returns {boolean}
+ */
+export function getPasskeyAutoUnlockSuppressed(state) {
+  return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}
+
+/**
+ * True when a locked user should unlock before resuming the onboarding
+ * completion page (return visit without tapping Done).
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} Whether the user must unlock before onboarding completion
+ */
+export function getShouldUnlockBeforeOnboardingCompletion(state) {
+  const { hasSeenOnboardingCompletionPage, completedOnboarding } =
+    state.metamask;
+
+  return (
+    hasSeenOnboardingCompletionPage &&
+    !completedOnboarding &&
+    !getIsUnlocked(state) &&
+    getIsInitialized(state) &&
+    !getIsWalletResetInProgress(state)
+  );
 }

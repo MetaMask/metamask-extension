@@ -1,7 +1,25 @@
-import { Driver } from '../../webdriver/driver';
+import { until } from 'selenium-webdriver';
+import { Driver, PAGES } from '../../webdriver/driver';
+import { WINDOW_TITLES } from '../../constants';
 
+/**
+ * Fatal startup failure UI when MetaMask cannot boot normally.
+ *
+ * Screen: critical-error HTML rendered in place of the normal UI (not a hash
+ * route), shown when background/UI init fails.
+ * Owns: trouble-starting title/details, reinstall link, attempt-recovery link
+ * (when a vault backup exists), and post-reload window reattachment helpers.
+ * Boundaries: the critical-error shell only. Confirmed recovery button flows
+ * that specialize this UI belong to `VaultRecoveryPage`.
+ * Related: `VaultRecoveryPage` (extends this when recovery UI is available).
+ *
+ * @see ui/helpers/utils/display-critical-error.ts
+ * @see shared/lib/error-utils.ts
+ */
 class CriticalErrorPage {
   protected readonly driver: Driver;
+
+  protected readonly errorMessage = '.critical-error__details';
 
   // Locators
   protected readonly errorPageTitle: object = {
@@ -9,7 +27,9 @@ class CriticalErrorPage {
     css: 'h1',
   };
 
-  protected readonly errorMessage = '.critical-error__details';
+  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
+
+  protected readonly restoreAccountsLink = '#critical-error-restore-link';
 
   protected readonly troubleStartingDescription =
     'This error could be intermittent, so try restarting the extension.';
@@ -20,10 +40,15 @@ class CriticalErrorPage {
 
   /**
    * Check that the page has loaded.
+   *
+   * @param timeoutMs - Optional timeout in ms. Use a long value (e.g. 60s) when
+   * waiting for the page after init/state sync timeout, to allow phase timeouts to fire.
    */
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeoutMs?: number): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.errorPageTitle);
+      const options =
+        timeoutMs === undefined ? undefined : { timeout: timeoutMs };
+      await this.driver.waitForSelector(this.errorPageTitle, options);
     } catch (e) {
       console.log(
         'Timeout while waiting for critical error page to be loaded',
@@ -35,12 +60,69 @@ class CriticalErrorPage {
   }
 
   /**
-   * Validate that the description on the page is for the "trouble starting" scenario.
+   * Click Attempt recovery (backup exists) and handle the confirmation alert.
+   *
+   * @param options - Options for the attempt recovery action.
+   * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
    */
-  async validateTroubleStartingDescription(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: this.troubleStartingDescription,
-    });
+  async clickAttemptRecoveryLink({
+    confirm,
+  }: {
+    confirm: boolean;
+  }): Promise<void> {
+    console.log(
+      `Click Attempt recovery link and ${confirm ? 'confirm' : 'dismiss'} the alert`,
+    );
+
+    await this.driver.waitForSelector(this.restoreAccountsLink);
+    await this.driver.clickElement(this.restoreAccountsLink);
+
+    await this.driver.driver.wait(until.alertIsPresent(), 20000);
+    const alert = await this.driver.driver.switchTo().alert();
+
+    if (confirm) {
+      await alert.accept();
+
+      // runtime.reload() kills extension tabs, so the driver's current window
+      // handle is stale. Wait for the reload, then reattach to a surviving tab.
+      await this.driver.delay(3000);
+      const handles = await this.driver.driver.getAllWindowHandles();
+      await this.driver.driver.switchTo().window(handles[0]);
+
+      await this.waitForPageAfterExtensionReload({
+        timeoutMs: 30_000,
+        waitForLoadingLogoToDisappear: false,
+      });
+
+      // The service worker handoff runs asynchronously after runtime.reload():
+      // it reads the restore session from storage.local, converts the
+      // metamask.io/restoring tab to home.html, then clears the key. We must
+      // wait for that key to be cleared before closing extra tabs — otherwise
+      // we kill the restoring tab before the service worker can hand it off,
+      // causing a fallback that opens a second home.html tab.
+      await this.driver.waitUntil(
+        async () => {
+          const cleared = await this.driver.executeScript(`
+              return new Promise(resolve => {
+                const b = globalThis.browser ?? globalThis.chrome;
+                b.storage.local.get('criticalErrorRestore', (data) => {
+                  resolve(!data.criticalErrorRestore);
+                });
+              });
+            `);
+          return Boolean(cleared);
+        },
+        { interval: 300, timeout: 30_000 },
+      );
+
+      // Wait for the UI to receive state and finish launching.
+      await this.driver.delay(5000);
+      await this.driver.waitForControllersLoaded();
+      // Now safe to close extra tabs (service worker has finished handoff / fallback).
+      await this.driver.closeAllOtherTabs();
+    } else {
+      await alert.dismiss();
+    }
   }
 
   /**
@@ -53,6 +135,61 @@ class CriticalErrorPage {
       text: errorMessage,
       css: this.errorMessage,
     });
+  }
+
+  /**
+   * Validate that the "Reinstall MetaMask" link is present on the page and
+   * points to the SRP recovery support article.
+   */
+  async validateReinstallMetamaskLink(): Promise<void> {
+    await this.driver.waitForSelector(this.reinstallMetamaskLink);
+  }
+
+  /**
+   * Validate that the description on the page is for the "trouble starting" scenario.
+   */
+  async validateTroubleStartingDescription(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: this.troubleStartingDescription,
+    });
+  }
+
+  /**
+   * Wait for the critical error page to be available after reloading the extension.
+   * Since reloading the background restarts the extension, the UI isn't
+   * available immediately. This method keeps reloading until it is.
+   *
+   * @param options - Options.
+   * @param options.timeoutMs - How long to wait. Use a long value (e.g. 60s) for
+   * init/state-sync timeout flows; vault recovery uses 10s. Default 10000.
+   * @param options.waitForLoadingLogoToDisappear - If true (default), assert the
+   * loading logo is not present before returning. Set to false for init/state-sync
+   * timeout flows, where the UI shows a ~15s loading spinner before the critical error.
+   */
+  async waitForPageAfterExtensionReload({
+    timeoutMs = 10000,
+    waitForLoadingLogoToDisappear = true,
+  }: {
+    timeoutMs?: number;
+    waitForLoadingLogoToDisappear?: boolean;
+  } = {}): Promise<void> {
+    console.log('Wait for critical error page after extension reload');
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
+        const title = await this.driver.driver.getTitle();
+        // the browser will return an error message for our UI's HOME page until
+        // the extension has restarted
+        return title === WINDOW_TITLES.ExtensionInFullScreenView;
+      },
+      // reload and check title as quickly as possible
+      { interval: 100, timeout: timeoutMs },
+    );
+    if (waitForLoadingLogoToDisappear) {
+      await this.driver.assertElementNotPresent('.loading-logo', {
+        timeout: 10000,
+      });
+    }
   }
 }
 

@@ -61,11 +61,29 @@ async function setupPerpsWebsocketMocks(
 
           const delay = mock.delay || 100;
           setTimeout(() => {
-            const payload = getResponsePayload(mock);
-            socket.send(JSON.stringify(payload));
-            console.log(
-              `[Perps] Simulated message sent to the client for: ${includes.join(' + ')}`,
-            );
+            const payload = mock.dynamicResponse
+              ? mock.dynamicResponse(message)
+              : getResponsePayload(mock);
+
+            if (payload) {
+              socket.send(JSON.stringify(payload));
+              console.log(
+                `[Perps] Simulated message sent to the client for: ${includes.join(' + ')}`,
+              );
+            }
+
+            const followUp = mock.dynamicFollowUp
+              ? mock.dynamicFollowUp(message)
+              : mock.followUpResponse;
+            if (followUp) {
+              const followUpDelay = mock.followUpDelay ?? 50;
+              setTimeout(() => {
+                socket.send(JSON.stringify(followUp));
+                console.log(
+                  `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
+                );
+              }, followUpDelay);
+            }
           }, delay);
           break;
         }

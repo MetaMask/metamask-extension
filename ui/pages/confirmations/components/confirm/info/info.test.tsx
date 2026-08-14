@@ -15,8 +15,9 @@ import {
   renderWithConfirmContextProvider,
   renderWithConfirmContext,
 } from '../../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedTypedSignMsgV4WithPermission } from '../../../../../../test/data/confirmations/typed_sign';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -45,25 +46,37 @@ jest.mock('../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+  getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
+    standard: 'ERC721',
+  }),
 }));
 
 jest.mock('../../../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../../../hooks/useAssetDetails'),
-  useAssetDetails: jest.fn().mockResolvedValue({
+  useAssetDetails: jest.fn(() => ({
     decimals: '4',
-  }),
+  })),
+}));
+
+jest.mock('./approve/hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({
+    isNFT: true,
+    pending: false,
+  })),
 }));
 
 jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment'),
-  getEnabledAdvancedPermissions: jest
-    .fn()
-    .mockReturnValue(['native-token-stream']),
-}));
+jest.mock(
+  '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions',
+  () => ({
+    useEnabledAdvancedPermissions: jest
+      .fn()
+      .mockReturnValue(['native-token-stream']),
+  }),
+);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -94,9 +107,63 @@ jest.mock('../../../context/confirm', () => {
   };
 });
 
+jest.mock('../../../hooks/gas/useIsGaslessSupported', () => ({
+  useIsGaslessSupported: jest.fn(() => ({
+    isSupported: false,
+    isSmartTransaction: false,
+    pending: false,
+  })),
+}));
+
+jest.mock('../../../hooks/gas/useGasSponsorshipPreference', () => ({
+  useGasSponsorshipPreference: jest.fn(() => ({
+    isSponsorshipOptedOut: false,
+    setSponsorshipOptedOut: jest.fn(),
+  })),
+}));
+
+/**
+ * Tippy assigns incrementing IDs; normalize so snapshots are order-stable.
+ *
+ * @param container - Rendered DOM container to clone and normalize.
+ * @returns A clone of the container with Tippy aria IDs normalized.
+ */
+const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
+  const clone = container.cloneNode(true) as HTMLElement;
+  clone
+    .querySelectorAll('[aria-describedby^="tippy-tooltip-"]')
+    .forEach((el) => {
+      el.setAttribute('aria-describedby', 'tippy-tooltip');
+    });
+  return clone;
+};
+
+/**
+ * Asserts that a render callback throws, while suppressing React's
+ * "The above error occurred in ..." console.error noise so it does not
+ * pollute the console baseline.
+ *
+ * @param render - Render callback that is expected to throw.
+ * @param expectedError - Expected error message or matcher.
+ */
+function expectRenderToThrow(render: () => void, expectedError: string): void {
+  const consoleError = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => undefined);
+
+  try {
+    expect(render).toThrow(expectedError);
+  } finally {
+    consoleError.mockRestore();
+  }
+}
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
+  const mockedUseEnabledAdvancedPermissions = jest.mocked(
+    useEnabledAdvancedPermissions,
+  );
   const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
@@ -106,6 +173,9 @@ describe('Info', () => {
       decimals: '4' as any,
     }));
     mockedUseParams.mockReturnValue({});
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([
+      'native-token-stream',
+    ]);
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
@@ -124,7 +194,9 @@ describe('Info', () => {
   });
 
   it('renders info section for typed sign request with permission', () => {
-    const state = getMockTypedSignPermissionConfirmState();
+    const state = getMockTypedSignPermissionConfirmState(
+      unapprovedTypedSignMsgV4WithPermission.decodedPermission,
+    );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
@@ -132,24 +204,24 @@ describe('Info', () => {
 
   it('throws an error if gator permissions feature is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
   it('throws an error if the specific permission type is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest
-      .mocked(getEnabledAdvancedPermissions)
-      .mockReturnValue(['erc20-token-stream']);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue(['erc20-token-stream']);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContext(<Info />, mockStore)).toThrow(
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
       'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
@@ -168,9 +240,14 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      // useIsNFT pending renders Container loader (advanced-details-data-section);
+      // wait for the settled simulation before snapshotting.
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for setApprovalForAll request', async () => {
@@ -180,9 +257,12 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for addEthereumChain request', () => {

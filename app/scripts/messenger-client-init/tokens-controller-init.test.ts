@@ -4,7 +4,10 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { TokensController } from '@metamask/assets-controllers';
+import {
+  TokensController,
+  TokensControllerMessenger,
+} from '@metamask/assets-controllers';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
@@ -16,7 +19,6 @@ import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
   TokensControllerInitMessenger,
-  TokensControllerMessenger,
 } from './messengers';
 import { TokensControllerInit } from './tokens-controller-init';
 
@@ -93,6 +95,7 @@ describe('TokensControllerInit', () => {
       state: undefined,
       chainId: '0x1',
       provider: MOCK_PROVIDER,
+      tokenListService: expect.any(Object),
     });
   });
 });

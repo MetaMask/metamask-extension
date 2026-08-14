@@ -1,5 +1,30 @@
 import type { Browser, Manifest } from '../../helpers';
 
+export type BundleSizeCategory =
+  | 'background'
+  | 'ui'
+  | 'other'
+  | 'contentScripts';
+
+export type BundleSizeStatsOptions = {
+  /**
+   * Output file path template for the emitted summary, relative to webpack's
+   * output directory. Must include `[browser]` and end with `.json`, for example
+   * `bundle-size/[browser].json`.
+   */
+  outFile: string;
+
+  /**
+   * Whether to emit a sibling debug artifact with the raw classified entrypoint graph.
+   */
+  debug?: boolean;
+};
+
+export type HtmlEntrypointOptions = {
+  directory: string;
+  category: BundleSizeCategory;
+};
+
 export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
    * The browsers to build for.
@@ -75,6 +100,16 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
    * when it has changed.
    */
   setBuildId?: boolean;
+
+  /**
+   * Optional bundle-size reporting configuration.
+   */
+  stats?: BundleSizeStatsOptions | false;
+
+  /**
+   * HTML entrypoint directories to collect and classify for bundle-size stats.
+   */
+  html?: readonly HtmlEntrypointOptions[];
 };
 
 export type ZipOptions = {

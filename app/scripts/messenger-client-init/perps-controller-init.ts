@@ -1,12 +1,13 @@
 import {
+  PERPS_ERROR_CODES,
   PerpsController,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
-import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
+import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
@@ -50,11 +51,11 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const storageNamespace = 'PerpsController';
-  const trackEvent = (payload: MetaMetricsEventPayload) => {
-    controllerMessenger.call('MetaMetricsController:trackEvent', payload);
-  };
+  let isDisconnecting = false;
+  // Ref so metrics can close over the controller after construction
+  // (trackPerpsEvent runs only after init; infrastructure is created first).
+  const messengerClientRef: { current?: PerpsController } = {};
   const infrastructure = createPerpsInfrastructure({
-    trackEvent,
     getStorageItem: (key: string) =>
       controllerMessenger.call(
         `${STORAGE_SERVICE_NAME}:getItem`,
@@ -74,6 +75,17 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         storageNamespace,
         key,
       ),
+    isDisconnecting: () => isDisconnecting,
+    getPerpsDiscountForAccount: (caipAccountId, baseFeeBips) =>
+      controllerMessenger.call(
+        'RewardsController:getPerpsDiscountForAccount',
+        caipAccountId,
+        baseFeeBips,
+      ),
+    mergeAttributionContext: (properties) =>
+      messengerClientRef.current
+        ? messengerClientRef.current.mergeAttributionContext(properties)
+        : (properties ?? {}),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -83,8 +95,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const messengerClient = new PerpsController({
-    // TODO: Remove cast once @metamask/perps-controller adds
-    // MetaMetricsController:trackEvent to its allowed-actions union.
+    // TODO: Remove cast once @metamask/perps-controller updates its allowed-actions union.
     // The extension messenger is a superset of the package messenger type;
     // the cast is safe until the package type catches up.
     messenger: controllerMessenger as PackagePerpsControllerMessenger,
@@ -105,8 +116,17 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
+  messengerClientRef.current = messengerClient;
 
-  const api = getApi(messengerClient);
+  const api = getApi(
+    messengerClient,
+    () => {
+      isDisconnecting = true;
+    },
+    () => {
+      isDisconnecting = false;
+    },
+  );
 
   return { messengerClient, api };
 };
@@ -167,6 +187,10 @@ type PerpsActionName =
   | 'perpsClearPendingTransactionRequests'
   | 'perpsSaveOrderBookGrouping'
   | 'perpsGetOrderBookGrouping'
+  | 'perpsGetProLayoutPreferences'
+  | 'perpsSetProLayoutPreferences'
+  | 'perpsGetMaxSlippage'
+  | 'perpsSetMaxSlippage'
   | 'perpsGetUserHistory'
   | 'perpsClearDepositResult'
   | 'perpsClearWithdrawResult'
@@ -177,7 +201,8 @@ type PerpsActionName =
   | 'perpsToggleWatchlistMarket'
   | 'perpsIsWatchlistMarket'
   | 'perpsReconnect'
-  | 'perpsGetConnectionState';
+  | 'perpsGetConnectionState'
+  | 'perpsSetAttributionContext';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -216,29 +241,36 @@ type PerpsBackgroundApi = {
 };
 
 /**
- * Wrap a controller method so that CLIENT_NOT_INITIALIZED /
- * CLIENT_REINITIALIZING errors trigger `controller.init()` and a retry.
- *
- * During account switches, `perpsDisconnect → perpsInit` runs async.
- * Any provider-dependent call during that gap throws one of these errors.
- * This wrapper catches them once, re-initializes, and retries — making
- * every wrapped method self-healing without any UI-side awareness.
+ * Returns true when the error proves the request never left the client.
+ * Both codes are thrown before any frame is written to the socket, so
+ * retrying is idempotent for reads and writes alike.
+ * @param err
+ */
+function isPreSendInitError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  return (
+    message.includes('CLIENT_NOT_INITIALIZED') ||
+    message.includes('CLIENT_REINITIALIZING')
+  );
+}
+
+/**
+ * Core retry wrapper: calls `controller.init()` then retries once when
+ * `shouldRetry` matches the thrown error.
  * @param controller
  * @param fn
+ * @param shouldRetry
  */
 function withAutoInit<TArgs extends unknown[], TResult>(
   controller: PerpsController,
   fn: (...args: TArgs) => TResult,
+  shouldRetry: (err: unknown) => boolean,
 ): (...args: TArgs) => Promise<Awaited<TResult>> {
   return async (...args: TArgs): Promise<Awaited<TResult>> => {
     try {
       return await fn(...args);
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      if (
-        message.includes('CLIENT_NOT_INITIALIZED') ||
-        message.includes('CLIENT_REINITIALIZING')
-      ) {
+      if (shouldRetry(err)) {
         await controller.init();
         return await fn(...args);
       }
@@ -247,53 +279,151 @@ function withAutoInit<TArgs extends unknown[], TResult>(
   };
 }
 
-function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
-  const guard = <TArgs extends unknown[], TResult>(
+/**
+ * Guard for read-only / idempotent methods.
+ *
+ * Retries on both pre-send init errors (`CLIENT_NOT_INITIALIZED` /
+ * `CLIENT_REINITIALIZING`) and benign WS disconnect-race errors
+ * (`TERMINATED_BY_USER`, in-flight queue drained on socket close).
+ * Re-submitting a fetch after `init()` rebinds the provider is always safe.
+ * @param controller
+ * @param fn
+ */
+function guardRead<TArgs extends unknown[], TResult>(
+  controller: PerpsController,
+  fn: (...args: TArgs) => TResult,
+) {
+  return withAutoInit(
+    controller,
+    fn,
+    (err) => isPreSendInitError(err) || isBenignDisconnectError(err),
+  );
+}
+
+/**
+ * Guard for write / mutation methods (orders, withdrawals, margin, deposits).
+ *
+ * Only retries on `CLIENT_NOT_INITIALIZED` / `CLIENT_REINITIALIZING`, which
+ * are thrown *before* any frame reaches the broker.
+ *
+ * `WebSocketRequestError("WebSocket connection closed")` and
+ * `TERMINATED_BY_USER` errors can be thrown *after* the request was written
+ * to the socket. Retrying those could:
+ * - Submit the same trade, withdrawal, or margin change twice.
+ * - Submit against a different account if `init()` rebinds the provider.
+ *
+ * Benign disconnect-race errors are therefore intentionally excluded here.
+ * @param controller
+ * @param fn
+ */
+function guardWrite<TArgs extends unknown[], TResult>(
+  controller: PerpsController,
+  fn: (...args: TArgs) => TResult,
+) {
+  return withAutoInit(controller, fn, isPreSendInitError);
+}
+
+/**
+ * Guard for `cancelOrder`, which additionally recovers from an unhydrated
+ * symbol → asset map.
+ *
+ * The HyperLiquid provider validates the order symbol against that map *before*
+ * it prepares the exchange client, so `ORDER_UNKNOWN_COIN` is returned without
+ * anything reaching the socket. It means the map has not been (re)built yet —
+ * a service worker restart, a provider re-init, or an undiscovered HIP-3 dex —
+ * rather than that the market is invalid. `init()` rebuilds the map, so a
+ * single retry is both safe and usually sufficient.
+ *
+ * The provider returns this as a failed result instead of throwing, so the
+ * check is on the resolved value rather than in `withAutoInit`.
+ * @param controller
+ * @param fn
+ */
+function guardCancelOrder<
+  TArgs extends unknown[],
+  TResult extends { success: boolean; error?: string },
+>(controller: PerpsController, fn: (...args: TArgs) => Promise<TResult>) {
+  const guarded = guardWrite(controller, fn);
+
+  return async (...args: TArgs): Promise<TResult> => {
+    const result = await guarded(...args);
+
+    if (
+      result?.success === false &&
+      result.error === PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN
+    ) {
+      // The retry sits on top of an already-resolved failure, so a throwing
+      // `init()` must not turn a resolved result into a rejection for the
+      // caller. Fall back to the original result instead. The retried cancel is
+      // deliberately outside this guard: a throw from it is the real failure and
+      // must reach the caller rather than be masked by `ORDER_UNKNOWN_COIN`.
+      try {
+        await controller.init();
+      } catch {
+        return result;
+      }
+
+      return await fn(...args);
+    }
+
+    return result;
+  };
+}
+
+function getApi(
+  messengerClient: PerpsController,
+  onDisconnectStart: () => void,
+  onDisconnectEnd: () => void,
+): PerpsBackgroundApi {
+  const read = <TArgs extends unknown[], TResult>(
     fn: (...args: TArgs) => TResult,
-  ) => withAutoInit(messengerClient, fn);
+  ) => guardRead(messengerClient, fn);
+
+  const write = <TArgs extends unknown[], TResult>(
+    fn: (...args: TArgs) => TResult,
+  ) => guardWrite(messengerClient, fn);
 
   return {
     // -- Lifecycle (no guard — IS the init itself) --
     perpsInit: messengerClient.init.bind(messengerClient),
-    perpsDisconnect: messengerClient.disconnect.bind(messengerClient),
+    perpsDisconnect: async (
+      ...args: Parameters<typeof messengerClient.disconnect>
+    ) => {
+      onDisconnectStart();
+      try {
+        return await messengerClient.disconnect(...args);
+      } finally {
+        onDisconnectEnd();
+      }
+    },
 
-    // -- Trading mutations (guarded) --
-    perpsPlaceOrder: guard(messengerClient.placeOrder.bind(messengerClient)),
-    perpsClosePosition: guard(
+    // -- Trading mutations (write-guard: no benign-disconnect retry) --
+    perpsPlaceOrder: write(messengerClient.placeOrder.bind(messengerClient)),
+    perpsClosePosition: write(
       messengerClient.closePosition.bind(messengerClient),
     ),
-    perpsClosePositions: guard(
+    perpsClosePositions: write(
       messengerClient.closePositions.bind(messengerClient),
     ),
-    perpsEditOrder: guard(messengerClient.editOrder.bind(messengerClient)),
-    perpsCancelOrder: guard(messengerClient.cancelOrder.bind(messengerClient)),
-    perpsCancelOrders: guard(
+    perpsEditOrder: write(messengerClient.editOrder.bind(messengerClient)),
+    perpsCancelOrder: guardCancelOrder(
+      messengerClient,
+      messengerClient.cancelOrder.bind(messengerClient),
+    ),
+    perpsCancelOrders: write(
       messengerClient.cancelOrders.bind(messengerClient),
     ),
-    perpsUpdatePositionTPSL: guard(
+    perpsUpdatePositionTPSL: write(
       messengerClient.updatePositionTPSL.bind(messengerClient),
     ),
-    perpsUpdateMargin: guard(
+    perpsUpdateMargin: write(
       messengerClient.updateMargin.bind(messengerClient),
     ),
-    perpsFlipPosition: guard(
+    perpsFlipPosition: write(
       messengerClient.flipPosition.bind(messengerClient),
     ),
-    perpsWithdraw: guard(messengerClient.withdraw.bind(messengerClient)),
-    perpsValidateWithdrawal: guard(
-      messengerClient.validateWithdrawal.bind(messengerClient),
-    ),
-    perpsGetWithdrawalRoutes:
-      messengerClient.getWithdrawalRoutes.bind(messengerClient),
-    perpsUpdateWithdrawalStatus: guard(
-      messengerClient.updateWithdrawalStatus.bind(messengerClient),
-    ),
-    perpsUpdateWithdrawalProgress: guard(
-      messengerClient.updateWithdrawalProgress.bind(messengerClient),
-    ),
-    perpsGetWithdrawalProgress:
-      messengerClient.getWithdrawalProgress.bind(messengerClient),
-    perpsDepositWithConfirmation: guard(
+    perpsWithdraw: write(messengerClient.withdraw.bind(messengerClient)),
+    perpsDepositWithConfirmation: write(
       async (
         ...args: Parameters<typeof messengerClient.depositWithConfirmation>
       ) => {
@@ -304,38 +434,53 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
       },
     ),
 
-    // -- Data fetches (guarded) --
-    perpsGetPositions: guard(
-      messengerClient.getPositions.bind(messengerClient),
+    // -- Withdrawal helpers --
+    // validateWithdrawal is a read (no side effect on broker)
+    perpsValidateWithdrawal: read(
+      messengerClient.validateWithdrawal.bind(messengerClient),
     ),
-    perpsGetMarkets: guard(messengerClient.getMarkets.bind(messengerClient)),
-    perpsGetMarketDataWithPrices: guard(
+    perpsGetWithdrawalRoutes:
+      messengerClient.getWithdrawalRoutes.bind(messengerClient),
+    // updateWithdrawalStatus / updateWithdrawalProgress post to the broker
+    perpsUpdateWithdrawalStatus: write(
+      messengerClient.updateWithdrawalStatus.bind(messengerClient),
+    ),
+    perpsUpdateWithdrawalProgress: write(
+      messengerClient.updateWithdrawalProgress.bind(messengerClient),
+    ),
+    perpsGetWithdrawalProgress:
+      messengerClient.getWithdrawalProgress.bind(messengerClient),
+
+    // -- Data fetches (read-guard: init errors + benign disconnect) --
+    perpsGetPositions: read(messengerClient.getPositions.bind(messengerClient)),
+    perpsGetMarkets: read(messengerClient.getMarkets.bind(messengerClient)),
+    perpsGetMarketDataWithPrices: read(
       messengerClient.getMarketDataWithPrices.bind(messengerClient),
     ),
-    perpsGetOrderFills: guard(
+    perpsGetOrderFills: read(
       messengerClient.getOrderFills.bind(messengerClient),
     ),
-    perpsGetOrders: guard(messengerClient.getOrders.bind(messengerClient)),
-    perpsGetOpenOrders: guard(
+    perpsGetOrders: read(messengerClient.getOrders.bind(messengerClient)),
+    perpsGetOpenOrders: read(
       messengerClient.getOpenOrders.bind(messengerClient),
     ),
-    perpsGetFunding: guard(messengerClient.getFunding.bind(messengerClient)),
-    perpsGetAccountState: guard(
+    perpsGetFunding: read(messengerClient.getFunding.bind(messengerClient)),
+    perpsGetAccountState: read(
       messengerClient.getAccountState.bind(messengerClient),
     ),
-    perpsGetHistoricalPortfolio: guard(
+    perpsGetHistoricalPortfolio: read(
       messengerClient.getHistoricalPortfolio.bind(messengerClient),
     ),
-    perpsFetchHistoricalCandles: guard(
+    perpsFetchHistoricalCandles: read(
       messengerClient.fetchHistoricalCandles.bind(messengerClient),
     ),
-    perpsCalculateFees: guard(
+    perpsCalculateFees: read(
       messengerClient.calculateFees.bind(messengerClient),
     ),
-    perpsCalculateLiquidationPrice: guard(
+    perpsCalculateLiquidationPrice: read(
       messengerClient.calculateLiquidationPrice.bind(messengerClient),
     ),
-    perpsGetAvailableDexs: guard(
+    perpsGetAvailableDexs: read(
       messengerClient.getAvailableDexs.bind(messengerClient),
     ),
 
@@ -381,9 +526,15 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
       messengerClient.saveOrderBookGrouping.bind(messengerClient),
     perpsGetOrderBookGrouping:
       messengerClient.getOrderBookGrouping.bind(messengerClient),
+    perpsGetProLayoutPreferences:
+      messengerClient.getProLayoutPreferences.bind(messengerClient),
+    perpsSetProLayoutPreferences:
+      messengerClient.setProLayoutPreferences.bind(messengerClient),
+    perpsGetMaxSlippage: messengerClient.getMaxSlippage.bind(messengerClient),
+    perpsSetMaxSlippage: messengerClient.setMaxSlippage.bind(messengerClient),
 
-    // -- Provider passthrough (guarded) --
-    perpsGetUserHistory: guard(
+    // -- Provider passthrough (read-guard) --
+    perpsGetUserHistory: read(
       async (params: {
         startTime?: number;
         endTime?: number;
@@ -392,7 +543,7 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
         return messengerClient.getActiveProvider().getUserHistory(params);
       },
     ),
-    perpsGetUserNonFundingLedgerUpdates: guard(
+    perpsGetUserNonFundingLedgerUpdates: read(
       async (params?: {
         startTime?: number;
         endTime?: number;
@@ -426,5 +577,13 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
     perpsReconnect: messengerClient.reconnect.bind(messengerClient),
     perpsGetConnectionState: () =>
       messengerClient.getWebSocketConnectionState(),
+
+    // -- Analytics attribution --
+    // Only the setter is exposed: the UI writes the UTM context here, and the
+    // merge back into controller-emitted events happens through the
+    // `mergeAttributionContext` closure passed to createPerpsInfrastructure
+    // above, not through a background action.
+    perpsSetAttributionContext:
+      messengerClient.setAttributionContext.bind(messengerClient),
   };
 }

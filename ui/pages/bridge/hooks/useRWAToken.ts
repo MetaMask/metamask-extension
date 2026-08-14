@@ -80,7 +80,7 @@ export const isStockRWAToken = (token?: RWATokenLike): boolean =>
  * re-render (e.g. the home token list or asset detail page).
  *
  * On the bridge page, prefer the selector-based `getIsStockMarketClosed`
- * (which uses `Date.now()` inline, like `getIsQuoteExpired`) because that
+ * (which uses `Date.now()` inline, because that
  * page already re-renders frequently from quote polling and user interaction.
  */
 export function useRWAToken() {

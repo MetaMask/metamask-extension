@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "addAlias": {
     "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "ಸ್ವಯಂ-ಲಾಗ್ಔಟ್‌ ಟೈಮರ್ (ನಿಮಿಷಗಳು)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
-  },
   "average": {
     "message": "ಸರಾಸರಿ"
   },
   "back": {
     "message": "ಹಿಂದೆ"
-  },
-  "backupApprovalInfo": {
-    "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, MetaMask ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
   },
   "backupApprovalNotice": {
     "message": "ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಮತ್ತು ನಿಧಿಗಳನ್ನು ಭದ್ರವಾಗಿರಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಮರುಪಡೆದುಕೊಳ್ಳುವಿಕೆಯ ಕೋಡ್ ಅನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ."
@@ -181,23 +172,11 @@
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
   },
-  "currencyConversion": {
-    "message": "ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ"
-  },
-  "currentLanguage": {
-    "message": "ಪ್ರಸ್ತುತ ಭಾಷೆ"
-  },
   "custom": {
     "message": "ಸುಧಾರಿತ"
   },
-  "customToken": {
-    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
-  },
   "decimal": {
     "message": "ನಿಖರತೆಯ ದಶಮಾಂಶಗಳು"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
@@ -207,9 +186,6 @@
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
@@ -268,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಸಂಪರ್ಕಿಸಿ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -339,12 +312,6 @@
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "links": {
-    "message": "ಲಿಂಕ್‌ಗಳು"
-  },
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
   },
@@ -369,9 +336,6 @@
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },
-  "mustSelectOne": {
-    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
@@ -381,12 +345,6 @@
   },
   "networks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
-  },
-  "nevermind": {
-    "message": "ಪರವಾಗಿಲ್ಲ"
-  },
-  "newAccount": {
-    "message": "ಹೊಸ ಖಾತೆ"
   },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
@@ -406,9 +364,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ"
-  },
-  "notEnoughGas": {
-    "message": "ಸಾಕಷ್ಟು ಗ್ಯಾಸ್ ಇಲ್ಲ"
   },
   "ofTextNofM": {
     "message": "ರಲ್ಲಿ"
@@ -493,9 +448,6 @@
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },
-  "revealSeedWords": {
-    "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
-  },
   "revealSeedWordsWarning": {
     "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +494,6 @@
   "showFiatConversionInTestnets": {
     "message": "Testnets ನಲ್ಲಿ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಿ"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Testnets ನಲ್ಲಿ ಫಿಯೆಟ್ ಪರಿವರ್ತನೆಯನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "showHexData": {
     "message": "ಹೆಕ್ಸ್ ಡೇಟಾವನ್ನು ತೋರಿಸಿ"
   },
@@ -553,9 +502,6 @@
   },
   "sign": {
     "message": "ಸಹಿ"
-  },
-  "signatureRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
@@ -574,9 +520,6 @@
   },
   "stateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು"
-  },
-  "stateLogsDescription": {
-    "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಖಾತೆಯ ವಿಳಾಸಗಳು ಮತ್ತು ಕಳುಹಿಸಲಾದ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ."
   },
   "submitted": {
     "message": "ಸಲ್ಲಿಸಲಾಗಿದೆ"

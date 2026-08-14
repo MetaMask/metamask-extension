@@ -129,7 +129,7 @@ export class Anvil {
     });
     const balanceFormatted = Number(balance) / 10 ** 18;
 
-    // Round to four decimal places, so we return the same value as ganache does
+    // Round to four decimal places to keep balance comparisons stable across tests.
     const balanceRounded = parseFloat(balanceFormatted.toFixed(4));
     return balanceRounded;
   }

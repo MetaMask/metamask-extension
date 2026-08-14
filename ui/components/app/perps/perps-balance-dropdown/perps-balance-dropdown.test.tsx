@@ -3,11 +3,37 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { mockAccountState } from '../mocks';
+import { mockAccountState, mockPositions } from '../mocks';
 import {
   PerpsBalanceDropdown,
   invokePerpsBalanceAction,
 } from './perps-balance-dropdown';
+
+const mockUsePureBlack = jest.fn().mockReturnValue(false);
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: () => mockUsePureBlack(),
+}));
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
@@ -210,6 +236,30 @@ describe('PerpsBalanceDropdown', () => {
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
   });
 
+  it('uses the single position RoE when provided', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: {
+        ...mockAccountState,
+        returnOnEquity: '1',
+      },
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(
+      <PerpsBalanceDropdown
+        hasPositions
+        singlePosition={{
+          ...mockPositions[0],
+          returnOnEquity: '0.42',
+        }}
+      />,
+      mockStore,
+    );
+
+    expect(screen.getByText(/42\.00%/u)).toBeInTheDocument();
+    expect(screen.queryByText(/1\.00%/u)).not.toBeInTheDocument();
+  });
+
   describe('geo-blocking', () => {
     it('shows geo-block modal and does not call onAddFunds when user is not eligible', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
@@ -224,6 +274,88 @@ describe('PerpsBalanceDropdown', () => {
 
       expect(onAddFunds).not.toHaveBeenCalled();
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the total balance when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown />, privacyStore);
+
+      expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+      expect(screen.getByText('••••••')).toBeInTheDocument();
+    });
+
+    it('masks the P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+      expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
+      expect(screen.getAllByText('••••••')).toHaveLength(3);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      const pnl = screen.getByTestId('perps-balance-dropdown-pnl-value');
+      const roe = screen.getByTestId('perps-balance-dropdown-roe-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
+    });
+  });
+
+  it('uses the success color for a profitable P&L outside of privacy mode', () => {
+    renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
+
+    expect(screen.getByTestId('perps-balance-dropdown-pnl-value')).toHaveClass(
+      'text-success-default',
+    );
+  });
+
+  describe('pure black mode', () => {
+    beforeEach(() => {
+      mockUsePureBlack.mockReturnValue(false);
+    });
+
+    it('uses bg-background-default for the dropdown panel in normal dark mode', () => {
+      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+
+      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
+        'bg-background-default',
+      );
+      expect(
+        screen.getByTestId('perps-balance-dropdown-panel'),
+      ).not.toHaveClass('bg-background-alternative');
+    });
+
+    it('uses bg-background-alternative for the dropdown panel in pure black mode', () => {
+      mockUsePureBlack.mockReturnValue(true);
+
+      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+
+      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
+        'bg-background-alternative',
+      );
+      expect(
+        screen.getByTestId('perps-balance-dropdown-panel'),
+      ).not.toHaveClass('bg-background-default');
     });
   });
 });

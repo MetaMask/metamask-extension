@@ -72,7 +72,7 @@ function wrapElementWithAPI(element, driver) {
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
-        return await driver.wait(until.stalenessOf(element), timeout);
+        return await driver.wait(until.elementIsNotVisible(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
       case 'disabled':
@@ -190,7 +190,147 @@ class Driver {
   }
 
   async executeScript(script, ...args) {
+    // When tsx/esbuild transpiles TypeScript, it injects __name() calls to
+    // preserve function names. If a function passed here references __name,
+    // define it in the browser context so it doesn't throw.
+    if (typeof script === 'function') {
+      const src = script.toString();
+      if (src.includes('__name')) {
+        const wrapped = `var __name = (fn) => fn; return (${src}).apply(null, arguments);`;
+        return this.driver.executeScript(wrapped, args);
+      }
+    }
     return this.driver.executeScript(script, args);
+  }
+
+  /**
+   * Opens a Chrome DevTools Protocol (CDP) connection attached to the
+   * extension's service worker target.
+   *
+   * The returned connection implements `Symbol.asyncDispose`, so callers
+   * should use `await using` to guarantee the CDP session is detached — no
+   * manual cleanup required. Dispose is best-effort and swallows detach
+   * errors.
+   *
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<import('selenium-webdriver/devtools/CDPConnection').CdpConnection & AsyncDisposable>} The attached CDP
+   * connection (with `sessionId` set to the attached service worker session).
+   * Disposing it detaches from the target.
+   * @throws {Error} If the service worker target cannot be resolved within
+   * `timeout`, or if attaching to the resolved target fails.
+   */
+  async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
+    const cdpConnection = await this.driver.createCDPConnection('browser');
+    let attachedSessionId = null;
+    let targetInfo;
+
+    try {
+      await this.waitUntil(
+        async () => {
+          const { result } = await cdpConnection.send('Target.getTargets');
+          const targetInfos = result?.targetInfos ?? [];
+          targetInfo = targetInfos.find(
+            (info) =>
+              info.type === 'service_worker' &&
+              typeof info.url === 'string' &&
+              info.url.startsWith(this.extensionUrl),
+          );
+          return Boolean(targetInfo);
+        },
+        { interval: 250, timeout },
+      );
+    } catch (error) {
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const knownTargets = result?.targetInfos ?? [];
+
+      const errorMessage =
+        error instanceof Error && error.message ? `${error.message}. ` : '';
+
+      throw new Error(
+        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${JSON.stringify(knownTargets, null, 2)}`,
+      );
+    }
+
+    const { result: attachResult } = await cdpConnection.send(
+      'Target.attachToTarget',
+      {
+        targetId: targetInfo.targetId,
+        flatten: true,
+      },
+    );
+
+    attachedSessionId = attachResult?.sessionId ?? null;
+    if (!attachedSessionId) {
+      throw new Error(
+        `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+      );
+    }
+
+    cdpConnection.sessionId = attachedSessionId;
+
+    cdpConnection[Symbol.asyncDispose] = async () => {
+      if (!attachedSessionId) {
+        return;
+      }
+
+      cdpConnection.sessionId = null;
+      try {
+        await cdpConnection.send('Target.detachFromTarget', {
+          sessionId: attachedSessionId,
+        });
+      } catch (_) {
+        // Best-effort cleanup.
+      }
+    };
+
+    return cdpConnection;
+  }
+
+  /**
+   * Evaluates a script inside the extension's service worker context.
+   *
+   * The `script` is wrapped in an `async` IIFE and evaluated with
+   * `Runtime.evaluate` (`awaitPromise: true`, `returnByValue: true`), so
+   * `await` and returning a serializable value both work. Use `return` inside
+   * `script` to surface a value. Exceptions raised in the service worker are
+   * rethrown here with the remote description.
+   *
+   * @param {string} script - Body of the async IIFE to evaluate in the
+   * service worker. Any value must be returned explicitly (e.g. `'return true;'`).
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<unknown>} The `returnByValue` result of the evaluation,
+   * or `undefined` if the script returned nothing.
+   * @throws {Error} If the service worker target cannot be resolved or
+   * attached to within `timeout`, or if the evaluated script throws.
+   */
+  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+    await using cdpConnection = await this.#createServiceWorkerConnection({
+      timeout,
+    });
+
+    await cdpConnection.send('Runtime.enable');
+
+    const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+      expression: `(async () => {\n${script}\n})()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+
+    const evaluationResult = evaluationResponse?.result ?? {};
+    if (evaluationResult.exceptionDetails) {
+      const { description } = evaluationResult.exceptionDetails.exception ?? {};
+      throw new Error(
+        description ??
+          evaluationResult.exceptionDetails.text ??
+          'Runtime evaluation failed in extension service worker',
+      );
+    }
+
+    return evaluationResult.result?.value;
   }
 
   /**
@@ -718,13 +858,17 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @param {object} [options] - Click options
+   * @param {number} [options.retries] - The number of times to retry the click action if it fails
+   * @param {number} [options.timeout] - How long (ms) to wait for the element to be clickable on each attempt
    * @returns {Promise} promise that resolves to the WebElement
    */
-  async clickElement(rawLocator, retries = 3) {
+  async clickElement(rawLocator, { retries = 3, timeout = this.timeout } = {}) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
-        const element = await this.findClickableElement(rawLocator);
+        const element = await this.findClickableElement(rawLocator, {
+          timeout,
+        });
         await element.click();
         return;
       } catch (error) {
@@ -740,6 +884,19 @@ class Driver {
               error.name
             }`,
           );
+
+          // When another element (e.g. a toast banner) overlaps the target,
+          // scrolling it to the viewport center usually moves it clear of the
+          // obstruction so the next attempt can succeed.
+          if (error.name === 'ElementClickInterceptedError') {
+            try {
+              const el = await this.findElement(rawLocator, timeout);
+              await this.scrollToElement(el);
+            } catch {
+              // Element may have gone stale; the next iteration will re-find it.
+            }
+          }
+
           await this.delay(1000);
         } else {
           throw error;
@@ -755,16 +912,35 @@ class Driver {
    * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
    */
   async isElementMoving(rawLocator) {
-    const element = await this.findElement(rawLocator);
-    const initialPosition = await element.getRect();
+    let initialPosition;
+    try {
+      const element = await this.findElement(rawLocator);
+      initialPosition = await element.getRect();
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React replaced the DOM node immediately after findElement — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
 
-    const newPosition = await element.getRect();
+    try {
+      const freshElement = await this.findElement(rawLocator);
+      const newPosition = await freshElement.getRect();
 
-    return (
-      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
-    );
+      return (
+        initialPosition.x !== newPosition.x ||
+        initialPosition.y !== newPosition.y
+      );
+    } catch (error) {
+      if (error.name === 'StaleElementReferenceError') {
+        // React re-rendered during the animation window — treat as still moving.
+        return true;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -775,7 +951,7 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when the element stops moving.
    * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
    */
-  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+  async waitForElementToStopMoving(rawLocator, timeout = 6000) {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -821,7 +997,10 @@ class Driver {
   async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
-    await element.waitForElementState('hidden', timeout);
+    // Wait for staleness on the clicked node reference. Do not re-find by locator
+    // here: after route navigation the element is already gone and findElement
+    // would wait for it to appear again (default driver timeout).
+    await this.driver.wait(until.stalenessOf(element), timeout);
   }
 
   /**
@@ -836,17 +1015,7 @@ class Driver {
    */
   async clickElementSafe(rawLocator, timeout = 2000) {
     try {
-      const locator = this.buildLocator(rawLocator);
-      const elements = await this.driver.wait(
-        until.elementsLocated(locator),
-        timeout,
-      );
-
-      await Promise.all([
-        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
-        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
-      ]);
-      await elements[0].click();
+      await this.clickElement(rawLocator, { timeout });
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -874,15 +1043,38 @@ class Driver {
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
+   * @param retries
    */
-  async clickElementUsingMouseMove(rawLocator) {
-    const element = await this.findClickableElement(rawLocator);
-    await this.scrollToElement(element);
-    await this.driver
-      .actions()
-      .move({ origin: element, x: 1, y: 1 })
-      .click()
-      .perform();
+  async clickElementUsingMouseMove(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await this.scrollToElement(element);
+        await this.driver
+          .actions()
+          .move({ origin: element, x: 1, y: 1 })
+          .click()
+          .perform();
+        return;
+      } catch (error) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying mouse-move click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**
@@ -939,7 +1131,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block:"center"})',
       element,
     );
   }
@@ -981,7 +1173,6 @@ class Driver {
     const endTime = startTime + timeout;
 
     // Loop indefinitely until condition met or timeout
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const result = await condition();
       if (result === true) {
@@ -1070,6 +1261,30 @@ class Driver {
   }
 
   /**
+   * Waits until the clipboard contains the expected text.
+   * Clipboard writes from the extension are async; reading immediately after
+   * a copy click can race and return stale or empty content.
+   *
+   * @param {string} expectedContent - The expected clipboard text.
+   * @param {object} [options] - Wait options.
+   * @param {number} [options.interval] - Poll interval in milliseconds.
+   * @param {number} [options.timeout] - Maximum wait time in milliseconds.
+   * @returns {Promise<void>}
+   */
+  async waitForClipboardContent(
+    expectedContent,
+    { interval = 100, timeout = this.timeout } = {},
+  ) {
+    await this.waitUntil(
+      async () => {
+        const content = await this.getClipboardContent();
+        return content === expectedContent;
+      },
+      { interval, timeout },
+    );
+  }
+
+  /**
    * Paste a string into a field.
    *
    * @param {string | object} rawLocator  - Element locator
@@ -1079,11 +1294,9 @@ class Driver {
   async pasteIntoField(rawLocator, contentToPaste) {
     // Click to focus the field
     await this.clickElement(rawLocator);
-    await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste.replace(
-        /"/gu,
-        '\\"',
-      )}")`,
+    await this.driver.executeScript(
+      'navigator.clipboard.writeText(arguments[0])',
+      contentToPaste,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
@@ -1275,7 +1488,7 @@ class Driver {
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
     const handle = await this.driver.getWindowHandle();
-    await this.clickElement(rawLocator, retries);
+    await this.clickElement(rawLocator, { retries });
     await this.waitForWindowToClose(handle);
   }
 
@@ -1290,7 +1503,7 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
@@ -1544,6 +1757,24 @@ class Driver {
   }
 
   /**
+   * Closes every browser tab/window except the currently focused one.
+   *
+   * @returns {Promise<void>} promise resolving after all other windows are closed
+   */
+  async closeAllOtherTabs() {
+    const handles = await this.getAllWindowHandles();
+    const current = await this.driver.getWindowHandle();
+    for (const h of handles) {
+      if (h !== current) {
+        await this.driver.switchTo().window(h);
+        await this.driver.close();
+      }
+    }
+    await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
+  }
+
+  /**
    * Closes specific window tab identified by its window handle.
    *
    * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
@@ -1641,6 +1872,26 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
+  }
+
+  /**
+   * Wait for a browser alert, validate its text, then click OK (accept).
+   * Call this while focused on a live window (not a closed dialog).
+   *
+   * @param {string} expectedText - Expected alert message.
+   * @param {number} [timeout]
+   * @returns {Promise<void>}
+   */
+  async validateAlertTextAndClose(expectedText, timeout = this.timeout) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const text = await alert.getText();
+    if (text !== expectedText) {
+      throw new Error(
+        `Expected alert text to be "${expectedText}", but got "${text}".`,
+      );
+    }
+    await alert.accept();
   }
 
   // Error handling
@@ -1754,6 +2005,10 @@ class Driver {
       // Null/empty URLs that Chrome blocks before reaching the proxy
       'net::ERR_BLOCKED_BY_CLIENT',
       'null is blocked',
+      // AuthenticationController race: in-flight auth (#snapSignMessage,
+      // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
+      // a lock fires mid-flight. No user impact; tracked in #37459.
+      'unable to proceed, wallet is locked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

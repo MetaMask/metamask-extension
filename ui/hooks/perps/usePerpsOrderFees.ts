@@ -1,10 +1,15 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import type {
   FeeCalculationResult,
   OrderType,
 } from '@metamask/perps-controller';
 
+import { PERPS_FALLBACK_FEE_RATES } from '../../../shared/constants/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
+
+/** Basis-point denominator: 10000 bips = 100%. */
+export const BASIS_POINTS_DIVISOR = 10000;
 
 type UsePerpsOrderFeesOptions = {
   /** Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA') */
@@ -19,16 +24,31 @@ type UsePerpsOrderFeesOptions = {
 
 type UsePerpsOrderFeesReturn = {
   /**
-   * Combined fee rate (protocol + MetaMask).
-   * `undefined` while loading or when the call failed entirely (error state).
+   * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
+   * `undefined` during the initial load. Refetches retain the last resolved rate
+   * until the replacement request completes.
    * When the call succeeds, the provider's own internal fallback to base rates
    * guarantees a numeric value even if the fee-tier API is down.
    */
   feeRate: number | undefined;
+  /**
+   * Combined fee rate **before** the MetaMask VIP discount is applied.
+   * Equals `feeRate` when no discount is in effect. Consumers use this to
+   * display a struck-through "original" fee alongside the discounted one.
+   */
+  undiscountedFeeRate: number | undefined;
   /** Protocol (exchange) fee rate, if available */
   protocolFeeRate?: number;
   /** MetaMask builder fee rate, if available */
   metamaskFeeRate?: number;
+  /** MetaMask builder fee rate before any VIP discount, if available */
+  originalMetamaskFeeRate?: number;
+  /**
+   * Fee discount in whole percentage points .
+   * `undefined` when no discount is in effect or when the lookup hasn't completed yet,
+   * so callers can skip rendering the badge entirely.
+   */
+  metamaskFeeRateDiscountPercentage: number | undefined;
   /** Full result from the controller, if available */
   feeResult?: FeeCalculationResult;
   /** Whether the async fee fetch is in progress */
@@ -37,21 +57,35 @@ type UsePerpsOrderFeesReturn = {
   hasError: boolean;
 };
 
-const FALLBACK_FEE_RATES = {
-  feeRate: 0.00145,
-  protocolFeeRate: 0.00045,
-  metamaskFeeRate: 0.001,
-} as const;
+/**
+ * Un-discounted MetaMask builder fee expressed in basis points. Derived from
+ * the shared fallback rate so the two stay in sync (0.001 decimal = 10 bps).
+ */
+export const ORIGINAL_METAMASK_FEE_BIPS =
+  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
+
+/**
+ * Format a decimal fee rate as a percentage, matching Mobile's perps tooltip.
+ *
+ * @param rate - Decimal fee rate, e.g. 0.00045 for 0.045%.
+ * @returns Formatted percentage or "N/A" when no valid rate is available.
+ */
+export function formatPerpsFeeRate(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null || Number.isNaN(rate)) {
+    return 'N/A';
+  }
+  return `${(rate * 100).toFixed(3)}%`;
+}
 
 function createFallbackFeeResult(amount?: string): FeeCalculationResult {
   const parsedAmount = Number.parseFloat(amount ?? '');
   const notional = Number.isFinite(parsedAmount) ? parsedAmount : 0;
 
   return {
-    ...FALLBACK_FEE_RATES,
-    feeAmount: notional * FALLBACK_FEE_RATES.feeRate,
-    protocolFeeAmount: notional * FALLBACK_FEE_RATES.protocolFeeRate,
-    metamaskFeeAmount: notional * FALLBACK_FEE_RATES.metamaskFeeRate,
+    ...PERPS_FALLBACK_FEE_RATES,
+    feeAmount: notional * PERPS_FALLBACK_FEE_RATES.feeRate,
+    protocolFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+    metamaskFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
   };
 }
 
@@ -91,6 +125,14 @@ export function usePerpsOrderFees({
   const [hasError, setHasError] = useState(false);
 
   const requestIdRef = useRef(0);
+  const feeRequestKey = `${symbol}|${orderType}|${amount ?? ''}|${isMaker}`;
+  const [prevFeeRequestKey, setPrevFeeRequestKey] = useState(feeRequestKey);
+
+  if (feeRequestKey !== prevFeeRequestKey) {
+    setPrevFeeRequestKey(feeRequestKey);
+    setIsLoading(true);
+    setHasError(false);
+  }
 
   useEffect(() => {
     requestIdRef.current += 1;
@@ -102,10 +144,6 @@ export function usePerpsOrderFees({
         setIsLoading(false);
       }
     }, 1500);
-
-    setFeeResult(undefined);
-    setIsLoading(true);
-    setHasError(false);
 
     submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
       { orderType, isMaker, amount, symbol },
@@ -132,11 +170,65 @@ export function usePerpsOrderFees({
     };
   }, [symbol, orderType, amount, isMaker]);
 
+  const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
+    ORIGINAL_METAMASK_FEE_BIPS,
+  );
+
+  // The core perps-controller only applies the MetaMask fee discount inside
+  // trading operations (placeOrder, closePosition, ...); its `calculateFees`
+  // returns un-discounted rates. Apply the discount here so consumers see a
+  // consistent fee — matching the `-X%` badge surfaced via
+  // `metamaskFeeRateDiscountPercentage`.
+  const discountedFeeResult = useMemo<FeeCalculationResult | undefined>(() => {
+    if (!feeResult) {
+      return feeResult;
+    }
+    if (
+      metamaskFeeDiscountBips === undefined ||
+      metamaskFeeDiscountBips <= 0 ||
+      feeResult.metamaskFeeRate === undefined
+    ) {
+      return feeResult;
+    }
+    const factor = 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR;
+    const discountedMetamaskFeeRate = feeResult.metamaskFeeRate * factor;
+    const discountedMetamaskFeeAmount =
+      feeResult.metamaskFeeAmount === undefined
+        ? undefined
+        : feeResult.metamaskFeeAmount * factor;
+    const discountedFeeRate =
+      feeResult.protocolFeeRate === undefined
+        ? discountedMetamaskFeeRate
+        : feeResult.protocolFeeRate + discountedMetamaskFeeRate;
+    const discountedFeeAmount =
+      feeResult.protocolFeeAmount !== undefined &&
+      discountedMetamaskFeeAmount !== undefined
+        ? feeResult.protocolFeeAmount + discountedMetamaskFeeAmount
+        : discountedMetamaskFeeAmount;
+    return {
+      ...feeResult,
+      feeRate: discountedFeeRate,
+      feeAmount: discountedFeeAmount,
+      metamaskFeeRate: discountedMetamaskFeeRate,
+      metamaskFeeAmount: discountedMetamaskFeeAmount,
+    };
+  }, [feeResult, metamaskFeeDiscountBips]);
+
+  // Convert bips to a whole-percentage value at the display boundary only —
+  // PerpsFeesDisplay and analogous consumers render `-X%` in the discount badge.
+  const metamaskFeeRateDiscountPercentage =
+    metamaskFeeDiscountBips === undefined
+      ? undefined
+      : metamaskFeeDiscountBips / 100;
+
   return {
-    feeRate: feeResult?.feeRate,
-    protocolFeeRate: feeResult?.protocolFeeRate,
-    metamaskFeeRate: feeResult?.metamaskFeeRate,
-    feeResult,
+    feeRate: discountedFeeResult?.feeRate,
+    undiscountedFeeRate: feeResult?.feeRate,
+    protocolFeeRate: discountedFeeResult?.protocolFeeRate,
+    metamaskFeeRate: discountedFeeResult?.metamaskFeeRate,
+    originalMetamaskFeeRate: feeResult?.metamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+    feeResult: discountedFeeResult,
     isLoading,
     hasError,
   };

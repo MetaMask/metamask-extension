@@ -2,6 +2,7 @@ import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import {
   ERROR_CODE_TO_I18N_KEY,
   API_ERROR_PATTERNS,
+  CANCEL_ORDER_I18N_KEY_OVERRIDES,
   translatePerpsError,
   handlePerpsError,
 } from './translate-perps-error';
@@ -41,6 +42,21 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_LEVERAGE_INVALID: 'ORDER_LEVERAGE_INVALID',
     ORDER_LEVERAGE_BELOW_POSITION: 'ORDER_LEVERAGE_BELOW_POSITION',
     ORDER_MAX_VALUE_EXCEEDED: 'ORDER_MAX_VALUE_EXCEEDED',
+    ORDER_TRIGGER_PRICE_REQUIRED: 'ORDER_TRIGGER_PRICE_REQUIRED',
+    ORDER_TRIGGER_PRICE_POSITIVE: 'ORDER_TRIGGER_PRICE_POSITIVE',
+    ORDER_TRIGGER_PRICE_NOT_SUPPORTED: 'ORDER_TRIGGER_PRICE_NOT_SUPPORTED',
+    ORDER_TRIGGER_TPSL_UNSUPPORTED: 'ORDER_TRIGGER_TPSL_UNSUPPORTED',
+    ORDER_TPSL_SIZE_INVALID: 'ORDER_TPSL_SIZE_INVALID',
+    ORDER_TPSL_LINKAGE_CONFLICT: 'ORDER_TPSL_LINKAGE_CONFLICT',
+    ORDER_TPSL_POSITION_LINKAGE_UNSUPPORTED:
+      'ORDER_TPSL_POSITION_LINKAGE_UNSUPPORTED',
+    ORDER_TPSL_LINKAGE_REQUIRED: 'ORDER_TPSL_LINKAGE_REQUIRED',
+    ORDER_TIME_IN_FORCE_NOT_SUPPORTED: 'ORDER_TIME_IN_FORCE_NOT_SUPPORTED',
+    ORDER_EDIT_TRIGGER_UNSUPPORTED: 'ORDER_EDIT_TRIGGER_UNSUPPORTED',
+    ORDER_EDIT_ORDER_UNVERIFIABLE: 'ORDER_EDIT_ORDER_UNVERIFIABLE',
+    EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
+    EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
+    EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
     EXCHANGE_CLIENT_NOT_AVAILABLE: 'EXCHANGE_CLIENT_NOT_AVAILABLE',
     INFO_CLIENT_NOT_AVAILABLE: 'INFO_CLIENT_NOT_AVAILABLE',
     SUBSCRIPTION_CLIENT_NOT_AVAILABLE: 'SUBSCRIPTION_CLIENT_NOT_AVAILABLE',
@@ -51,6 +67,7 @@ jest.mock('@metamask/perps-controller', () => ({
     SWAP_FAILED: 'SWAP_FAILED',
     SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
     PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
+    UNSUPPORTED_COLLATERAL: 'UNSUPPORTED_COLLATERAL',
     BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
     BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
     INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
@@ -147,6 +164,18 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.INSUFFICIENT_MARGIN]).toBe(
       'perpsInsufficientMargin',
     );
+  });
+
+  it('maps UNSUPPORTED_COLLATERAL to perpsUnsupportedCollateral', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL],
+    ).toBe('perpsUnsupportedCollateral');
+  });
+
+  it('maps EXCHANGE_ACCOUNT_NOT_FOUND to perpsExchangeAccountNotFound', () => {
+    expect(
+      ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND],
+    ).toBe('perpsExchangeAccountNotFound');
   });
 });
 
@@ -270,6 +299,39 @@ describe('translatePerpsError', () => {
       code: PERPS_ERROR_CODES.BATCH_CANCEL_FAILED,
     });
     expect(translatePerpsError(error, mockT)).toBe('[perpsBatchCancelFailed]');
+  });
+
+  describe('with CANCEL_ORDER_I18N_KEY_OVERRIDES', () => {
+    it('remaps placement copy to cancel copy for a code lookup', () => {
+      const error = Object.assign(new Error('unknown coin'), {
+        code: PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+      });
+      expect(translatePerpsError(error, mockT)).toBe('[perpsOrderFailed]');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('remaps for a message-as-code lookup', () => {
+      const error = new Error('ORDER_UNKNOWN_COIN');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('remaps for a pattern match', () => {
+      const error = new Error('cancel 0: asset not found');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsCancelOrderFailed]');
+    });
+
+    it('leaves keys outside the override map alone', () => {
+      const error = new Error('network error');
+      expect(
+        translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsNetworkError]');
+    });
   });
 });
 

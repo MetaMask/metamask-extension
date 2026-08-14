@@ -21,8 +21,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.initMessenger
- * @param request.getMessengerClient
+ * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
 export const PermissionControllerInit: MessengerClientInitFunction<
@@ -32,15 +31,7 @@ export const PermissionControllerInit: MessengerClientInitFunction<
   >,
   PermissionControllerMessenger,
   PermissionControllerInitMessenger
-> = ({
-  controllerMessenger,
-  persistedState,
-  initMessenger,
-  getMessengerClient,
-}) => {
-  const approvalController = getMessengerClient('ApprovalController');
-  const keyringController = getMessengerClient('KeyringController');
-
+> = ({ controllerMessenger, persistedState, initMessenger }) => {
   const messengerClient = new PermissionController({
     state: persistedState.PermissionController,
     // @ts-expect-error PermissionController messenger parameter type is incompatible with our messenger alias (handler unions).
@@ -68,11 +59,7 @@ export const PermissionControllerInit: MessengerClientInitFunction<
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),
-      ...getSnapPermissionSpecifications(initMessenger, {
-        addAndShowApprovalRequest:
-          approvalController.addAndShowApprovalRequest.bind(approvalController),
-        addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
-      }),
+      ...getSnapPermissionSpecifications(initMessenger),
     },
     unrestrictedMethods,
   });

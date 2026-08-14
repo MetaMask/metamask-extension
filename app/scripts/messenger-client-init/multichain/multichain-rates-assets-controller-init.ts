@@ -1,6 +1,8 @@
-import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
+import {
+  MultichainAssetsRatesController,
+  MultichainAssetsRatesControllerMessenger,
+} from '@metamask/assets-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
 
 /**
  * Initialize the Multichain Assets Rate controller.

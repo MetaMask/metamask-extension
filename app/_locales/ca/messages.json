@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Has de seleccionar un compte!"
   },
-  "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
-  },
   "addAlias": {
     "message": "Afegeix un àlies"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
-  },
   "average": {
     "message": "Mitjana"
   },
   "back": {
     "message": "Enrere"
-  },
-  "backupApprovalInfo": {
-    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
   "backupApprovalNotice": {
     "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
@@ -178,23 +169,11 @@
   "createPassword": {
     "message": "Crear Contrasenya"
   },
-  "currencyConversion": {
-    "message": "Conversió de divisa"
-  },
-  "currentLanguage": {
-    "message": "Llengua Actual"
-  },
   "custom": {
     "message": "Configuració avançada"
   },
-  "customToken": {
-    "message": "Fitxa a Mida"
-  },
   "decimal": {
     "message": "Decimals de precisió"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
   "delete": {
     "message": "Suprimeix"
@@ -204,9 +183,6 @@
   },
   "done": {
     "message": "Fet"
-  },
-  "downloadGoogleChrome": {
-    "message": "Descarrega Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Descarregar Registres d'Estat"
@@ -259,9 +235,6 @@
   },
   "hardwareWallets": {
     "message": "Connectar un moneder hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
   },
   "here": {
     "message": "aquí",
@@ -330,12 +303,6 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineaGoerli": {
-    "message": "Xarxa de test Linea Goerli"
-  },
-  "links": {
-    "message": "Enllaços"
-  },
   "loading": {
     "message": "S'està carregant..."
   },
@@ -357,9 +324,6 @@
   "metamaskVersion": {
     "message": "Versió MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Has de seleccionar "
-  },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"
@@ -369,12 +333,6 @@
   },
   "networks": {
     "message": "Xarxes"
-  },
-  "nevermind": {
-    "message": "No importa"
-  },
-  "newAccount": {
-    "message": "Nou compte"
   },
   "newAccountNumberName": {
     "message": "Compte $1",
@@ -394,9 +352,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Càmera web no trobada"
-  },
-  "notEnoughGas": {
-    "message": "Gas Insuficient"
   },
   "ofTextNofM": {
     "message": "de"
@@ -478,9 +433,6 @@
   "restore": {
     "message": "Restaura"
   },
-  "revealSeedWords": {
-    "message": "Revelar Paraules de Recuperació"
-  },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -527,9 +479,6 @@
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Selecciona aquest per mostrar conversió Fiat a Testnets"
-  },
   "showHexData": {
     "message": "Mostra les dades Hex"
   },
@@ -538,9 +487,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signatureRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "signed": {
     "message": "Signat"
@@ -559,9 +505,6 @@
   },
   "stateLogs": {
     "message": "Registres d'estat"
-  },
-  "stateLogsDescription": {
-    "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
   },
   "submitted": {
     "message": "Enviat"

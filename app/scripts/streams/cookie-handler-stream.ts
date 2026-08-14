@@ -1,11 +1,11 @@
 import browser from 'webextension-polyfill';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
@@ -205,18 +205,15 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
 };
 
-const onMessageSetUpCookieHandlerStreams = (msg: {
-  name: string;
-  origin: string;
-}): Promise<string | undefined> | undefined => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+const onMessageSetUpCookieHandlerStreams = (
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!cookieHandlerExtStream) {
       setupCookieHandlerExtStreams();
     }
@@ -224,6 +221,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 

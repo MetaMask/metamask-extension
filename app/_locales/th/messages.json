@@ -81,14 +81,8 @@
   "create": {
     "message": "สร้าง"
   },
-  "currencyConversion": {
-    "message": "การแปลงสกุลเงิน"
-  },
   "decimal": {
     "message": "ตำแหน่งของทศนิยม"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
   },
   "delete": {
     "message": "ลบ"
@@ -194,18 +188,12 @@
   "message": {
     "message": "ข้อความ"
   },
-  "mustSelectOne": {
-    "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
-  },
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
   },
   "networks": {
     "message": "เครือข่าย"
-  },
-  "newAccount": {
-    "message": "บัญชีใหม่"
   },
   "newAccountNumberName": {
     "message": "บัญชี $1",
@@ -258,9 +246,6 @@
   "required": {
     "message": "จำเป็น"
   },
-  "revealSeedWords": {
-    "message": "เปิดเผยกลุ่มคำชีด"
-  },
   "revealSeedWordsWarning": {
     "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -292,17 +277,11 @@
   "sign": {
     "message": "เซ็นชื่อ"
   },
-  "signatureRequest": {
-    "message": "ขอลายเซ็น"
-  },
   "signed": {
     "message": "ลงชื่อแล้ว"
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
-  },
-  "stateLogsDescription": {
-    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"

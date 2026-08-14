@@ -8,10 +8,9 @@ import {
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useTransactionDetails } from '../transaction-details-context';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsHero() {
   const { transactionMeta } = useTransactionDetails();
-  const fiatFormatter = useFiatFormatter();
+  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { metamaskPay } = transactionMeta;
   const { targetFiat } = metamaskPay || {};

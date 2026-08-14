@@ -1,11 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
-import {
-  getGasFeesSponsoredNetworkEnabled,
-  isHardwareWallet,
-} from '../selectors';
+import { getGasFeesSponsoredNetworkEnabled } from '../selectors';
 import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
+import { useIsHardwareWalletAccount } from './useIsHardwareWalletAccount';
 
 export const useIsNetworkGasSponsored = (
   networkChainId: string | undefined,
@@ -15,7 +13,8 @@ export const useIsNetworkGasSponsored = (
   const gasFeesSponsoredNetworkEnabledMap = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useIsHardwareWalletAccount();
+
   // Check if a network has gas sponsorship enabled
   return useMemo(() => {
     if (!networkChainId || isHardwareWalletAccount) {

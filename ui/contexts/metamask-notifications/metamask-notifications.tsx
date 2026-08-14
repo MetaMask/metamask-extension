@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
 } from 'react';
 import { useSelector } from 'react-redux';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
@@ -15,9 +16,12 @@ import {
   getIsNotificationEnabledByDefaultFeatureFlag,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { getNotificationPreferences } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { useDispatch } from '../../store/hooks';
+
 import {
   hasNotificationSubscriptionExpired,
   hasUserTurnedOffNotificationsOnce,
@@ -73,8 +77,13 @@ export function useBasicFunctionalityDisableEffect() {
   const disableAndRefresh = useDisableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
           await disableAndRefresh();
         }
@@ -82,11 +91,17 @@ export function useBasicFunctionalityDisableEffect() {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [disableAndRefresh, isBasicFunctionalityEnabled, isNotificationsEnabled]);
 }
 
 export function useFetchInitialNotificationsEffect() {
+  const dispatch = useDispatch();
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -98,24 +113,51 @@ export function useFetchInitialNotificationsEffect() {
   const enableAndRefresh = useEnableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
+    const shouldEnableNotificationsOnStartup = async () => {
+      if (await hasNotificationSubscriptionExpired()) {
+        return true;
+      }
+
+      try {
+        const preferences = (await dispatch(
+          getNotificationPreferences(),
+        )) as unknown;
+
+        return preferences === null || preferences === undefined;
+      } catch {
+        return false;
+      }
+    };
+
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (
           isBasicFunctionalityEnabled &&
           shouldFetchNotifications &&
           isUnlocked
         ) {
-          await enableAndRefresh(await hasNotificationSubscriptionExpired());
+          await enableAndRefresh(await shouldEnableNotificationsOnStartup());
         }
       } catch {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     shouldFetchNotifications,
     isBasicFunctionalityEnabled,
     isUnlocked,
+    dispatch,
     enableAndRefresh,
   ]);
 }
@@ -132,8 +174,13 @@ export function useEnableNotificationsByDefaultEffect() {
   const enableAndRefresh = useEnableAndRefresh();
 
   useEffect(() => {
+    let cancelled = false;
+
     const run = async () => {
       try {
+        if (cancelled) {
+          return;
+        }
         if (
           !isNotificationsEnabled &&
           isBasicFunctionalityEnabled &&
@@ -141,6 +188,9 @@ export function useEnableNotificationsByDefaultEffect() {
           isNotificationsEnabledByDefaultFeatureFlag
         ) {
           if (!(await hasUserTurnedOffNotificationsOnce())) {
+            if (cancelled) {
+              return;
+            }
             await enableAndRefresh();
           }
         }
@@ -148,7 +198,12 @@ export function useEnableNotificationsByDefaultEffect() {
         // Do nothing
       }
     };
+
     run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     enableAndRefresh,
     isBasicFunctionalityEnabled,
@@ -158,7 +213,9 @@ export function useEnableNotificationsByDefaultEffect() {
   ]);
 }
 
-export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
+export const MetamaskNotificationsProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
@@ -171,12 +228,22 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
 
+  const listNotificationsCallback = useCallback(() => {
+    listNotifications();
+  }, [listNotifications]);
+
+  const contextValue = useMemo(
+    () => ({
+      listNotifications: listNotificationsCallback,
+      notificationsData,
+      isLoading,
+      error,
+    }),
+    [listNotificationsCallback, notificationsData, isLoading, error],
+  );
+
   return (
-    <MetamaskNotificationsContext.Provider
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      value={{ listNotifications, notificationsData, isLoading, error }}
-    >
+    <MetamaskNotificationsContext.Provider value={contextValue}>
       {children}
     </MetamaskNotificationsContext.Provider>
   );

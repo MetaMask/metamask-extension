@@ -22,12 +22,11 @@ export type TotalRowProps = {
   variant?: ConfirmInfoRowSize;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TotalRow({
   variant = ConfirmInfoRowSize.Default,
 }: TotalRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter();
+  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayLoading();
   const totals = useTransactionPayTotals();
 

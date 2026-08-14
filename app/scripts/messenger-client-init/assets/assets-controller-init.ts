@@ -1,22 +1,26 @@
 import {
   AssetsController,
+  type AssetsControllerMessenger,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import {
-  isAssetsUnifyStateFeatureEnabled,
-  ASSETS_UNIFY_STATE_VERSION_1,
-  type AssetsUnifyStateFeatureFlag,
-  ASSETS_UNIFY_STATE_FLAG,
-} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import type {
+  TraceCallback as ControllerTraceCallback,
+  TraceContext as ControllerTraceContext,
+  TraceRequest as ControllerTraceRequest,
+} from '@metamask/controller-utils';
 import { type MessengerClientInitFunction } from '../types';
-import {
-  type AssetsControllerMessenger,
-  type AssetsControllerInitMessenger,
-} from '../messengers/assets/assets-controller-messenger';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import {
+  ASSETS_UNIFY_STATE_FLAG,
+  ASSETS_UNIFY_STATE_VERSION_1,
+  isAssetsUnifyStateTracesEnabled,
+  type AssetsUnifyStateFeatureFlag,
+} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 /**
  * Cached API client instance.
@@ -89,6 +93,55 @@ function getIsBasicFunctionality(
 }
 
 /**
+ * Whether AssetsController Sentry tracing is enabled via
+ * `assetsUnifyState.tracesEnabled` (requires unify itself to be enabled).
+ *
+ * @param initMessenger - The initialization messenger.
+ * @returns True when tracing should run, false otherwise.
+ */
+function isAssetsControllerTracesEnabled(
+  initMessenger: AssetsControllerInitMessenger,
+): boolean {
+  try {
+    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+      return false;
+    }
+    const { remoteFeatureFlags } = initMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    return isAssetsUnifyStateTracesEnabled(
+      remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
+        | AssetsUnifyStateFeatureFlag
+        | undefined,
+      ASSETS_UNIFY_STATE_VERSION_1,
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Trace callback gated by `assetsUnifyState.tracesEnabled`.
+ * When the flag is off, runs `fn` (if provided) without creating a Sentry span.
+ *
+ * @param initMessenger - The initialization messenger used to read the flag.
+ * @returns A {@link ControllerTraceCallback} suitable for AssetsController.
+ */
+function createAssetsControllerTrace(
+  initMessenger: AssetsControllerInitMessenger,
+): ControllerTraceCallback {
+  return <Result>(
+    req: ControllerTraceRequest,
+    fn?: (ctx?: ControllerTraceContext) => Result,
+  ): Promise<Result> => {
+    if (!isAssetsControllerTracesEnabled(initMessenger)) {
+      return Promise.resolve(fn?.() as Result);
+    }
+    return traceAsControllerCallback(req, fn);
+  };
+}
+
+/**
  * Gets or creates the API platform client.
  *
  * @param initMessenger - The initialization messenger.
@@ -100,6 +153,7 @@ function getApiClient(
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
+      clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
@@ -113,7 +167,7 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getMessengerClient - Function to get a controller by name.
+ * @param request.getMessengerClient - The function to get a messenger client.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
@@ -126,28 +180,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   initMessenger,
   getMessengerClient,
 }) => {
-  /**
-   * Check if the AssetsController feature is enabled based on the remote feature flag.
-   *
-   * @returns True if the feature is enabled, false otherwise.
-   */
-  const isEnabled = (): boolean => {
-    try {
-      const remoteFeatureFlagController = getMessengerClient(
-        'RemoteFeatureFlagController',
-      );
-      const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
-        ASSETS_UNIFY_STATE_FLAG
-      ] as AssetsUnifyStateFeatureFlag | undefined;
-
-      return isAssetsUnifyStateFeatureEnabled(
-        featureFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      );
-    } catch {
-      return false;
-    }
-  };
+  const clientController = () => getMessengerClient('ClientController');
 
   // Get token detection preference
   const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
@@ -156,6 +189,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
@@ -188,7 +222,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled,
+    isEnabled: () => clientController().state.isUiOpen,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
@@ -204,7 +238,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    trace: traceAsControllerCallback,
     isOnboarded: () => {
       try {
         const { completedOnboarding } = initMessenger.call(
@@ -215,6 +248,12 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         return false;
       }
     },
+    // TEMPORARY (ASSETS-3346): legacy state slices used to heal wiped `assetsInfo` metadata.
+    tempMigrateAssetsInfoMetadataAssets3346: () => ({
+      TokensController: persistedState.TokensController,
+      AccountsController: persistedState.AccountsController,
+    }),
+    trace: createAssetsControllerTrace(initMessenger),
   });
 
   return { messengerClient };

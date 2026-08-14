@@ -1,4 +1,8 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -12,6 +16,12 @@ export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
   TransactionType.signTypedData,
 ];
+
+// DelegationFramework caveat enforcers revert with `Error(string)` messages of
+// the form `<EnforcerName>:<reason>` (Solidity convention).
+const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
+
+const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
 
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
@@ -119,3 +129,36 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
 export const stripProtocol = (urlString: string): string => {
   return urlString.replace(/^\w+:\/\//u, '');
 };
+
+/**
+ * Detect whether a transaction was reverted on-chain by an enforced-simulations
+ * caveat enforcer (the DelegationFramework "protection" mechanism).
+ *
+ * Returns true when the transaction failed AND its `txParams.data` is a
+ * `redeemDelegations` call AND its decoded receipt revert reason matches the
+ * Solidity `<EnforcerName>:<reason>` revert format.
+ *
+ * @param transactionMeta - The transaction metadata. May be undefined.
+ * @returns Whether the transaction was reverted by an enforced-simulations caveat enforcer.
+ */
+export function isProtectedByEnforcedSimulations(
+  transactionMeta?: TransactionMeta,
+): boolean {
+  if (!transactionMeta || transactionMeta.status !== TransactionStatus.failed) {
+    return false;
+  }
+
+  const data = transactionMeta.txParams?.data;
+  const revertMessage = transactionMeta.revert?.receipt?.message;
+
+  if (
+    !data ||
+    !data.toLowerCase().startsWith(REDEEM_DELEGATIONS_SELECTOR) ||
+    !revertMessage ||
+    !CAVEAT_ENFORCER_REVERT_PATTERN.test(revertMessage)
+  ) {
+    return false;
+  }
+
+  return true;
+}

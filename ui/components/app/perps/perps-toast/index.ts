@@ -2,6 +2,7 @@ export {
   PERPS_TOAST_KEYS,
   PerpsToastProvider,
   usePerpsToast,
+  type PerpsPendingOrder,
   type PerpsToastConfig,
   type PerpsToastKey,
   type PerpsToastKeyConfig,

@@ -45,11 +45,6 @@ export type AppStateControllerSetRecoveryPhraseReminderHasBeenShownAction = {
   handler: AppStateController['setRecoveryPhraseReminderHasBeenShown'];
 };
 
-export type AppStateControllerSetSurveyLinkLastClickedOrClosedAction = {
-  type: `AppStateController:setSurveyLinkLastClickedOrClosed`;
-  handler: AppStateController['setSurveyLinkLastClickedOrClosed'];
-};
-
 export type AppStateControllerSetOnboardingDateAction = {
   type: `AppStateController:setOnboardingDate`;
   handler: AppStateController['setOnboardingDate'];
@@ -60,9 +55,14 @@ export type AppStateControllerSetLastViewedUserSurveyAction = {
   handler: AppStateController['setLastViewedUserSurvey'];
 };
 
-export type AppStateControllerSetRampCardClosedAction = {
-  type: `AppStateController:setRampCardClosed`;
-  handler: AppStateController['setRampCardClosed'];
+/**
+ * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+ *
+ * @param suppressed - When true, auto passkey unlock is suppressed.
+ */
+export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
+  type: `AppStateController:setPasskeyAutoUnlockSuppressed`;
+  handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
@@ -266,36 +266,6 @@ export type AppStateControllerClearPollingTokensAction = {
 };
 
 /**
- * Sets whether the testnet dismissal link should be shown in the network dropdown
- *
- * @param showTestnetMessageInDropdown
- */
-export type AppStateControllerSetShowTestnetMessageInDropdownAction = {
-  type: `AppStateController:setShowTestnetMessageInDropdown`;
-  handler: AppStateController['setShowTestnetMessageInDropdown'];
-};
-
-/**
- * Sets whether the beta notification heading on the home page
- *
- * @param showBetaHeader
- */
-export type AppStateControllerSetShowBetaHeaderAction = {
-  type: `AppStateController:setShowBetaHeader`;
-  handler: AppStateController['setShowBetaHeader'];
-};
-
-/**
- * Sets whether the permissions tour should be shown to the user
- *
- * @param showPermissionsTour
- */
-export type AppStateControllerSetShowPermissionsTourAction = {
-  type: `AppStateController:setShowPermissionsTour`;
-  handler: AppStateController['setShowPermissionsTour'];
-};
-
-/**
  * Sets whether the multichain intro modal has been shown to the user
  *
  * @param hasShown - Whether the modal has been shown
@@ -303,6 +273,17 @@ export type AppStateControllerSetShowPermissionsTourAction = {
 export type AppStateControllerSetHasShownMultichainAccountsIntroModalAction = {
   type: `AppStateController:setHasShownMultichainAccountsIntroModal`;
   handler: AppStateController['setHasShownMultichainAccountsIntroModal'];
+};
+
+/**
+ * Sets whether the user has seen (and therefore dismissed) the Perps tab
+ * "New" badge.
+ *
+ * @param value - Whether the Perps tab badge has been seen
+ */
+export type AppStateControllerSetPerpsTabBadgeSeenAction = {
+  type: `AppStateController:setPerpsTabBadgeSeen`;
+  handler: AppStateController['setPerpsTabBadgeSeen'];
 };
 
 /**
@@ -337,16 +318,6 @@ export type AppStateControllerSetProductTourAction = {
 };
 
 /**
- * Sets whether the Network Banner should be shown
- *
- * @param showNetworkBanner
- */
-export type AppStateControllerSetShowNetworkBannerAction = {
-  type: `AppStateController:setShowNetworkBanner`;
-  handler: AppStateController['setShowNetworkBanner'];
-};
-
-/**
  * Updates the network connection banner state
  *
  * @param networkConnectionBanner - The new banner state
@@ -354,16 +325,6 @@ export type AppStateControllerSetShowNetworkBannerAction = {
 export type AppStateControllerUpdateNetworkConnectionBannerAction = {
   type: `AppStateController:updateNetworkConnectionBanner`;
   handler: AppStateController['updateNetworkConnectionBanner'];
-};
-
-/**
- * Sets whether the Account Banner should be shown
- *
- * @param showAccountBanner
- */
-export type AppStateControllerSetShowAccountBannerAction = {
-  type: `AppStateController:setShowAccountBanner`;
-  handler: AppStateController['setShowAccountBanner'];
 };
 
 /**
@@ -407,7 +368,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
@@ -467,7 +429,11 @@ export type AppStateControllerCompleteQrCodeScanAction = {
  * Cancels the current QR code scan, if one is in progress.
  * This will reject the promise with an error.
  *
- * @param error - The error to reject the promise with.
+ * @param error - The error (or serialized form) to reject the promise with.
+ * Callers across the extension-port boundary may pass a plain string or a
+ * serialized `HardwareWalletError` JSON shape because `Error` instances do
+ * not survive port serialization. Missing payloads default to
+ * `ErrorCode.UserCancelled`.
  * @throws If no QR code scan is in progress.
  */
 export type AppStateControllerCancelQrCodeScanAction = {
@@ -518,6 +484,19 @@ export type AppStateControllerSetShowShieldEntryModalOnceAction = {
 export type AppStateControllerSetPendingRedirectRouteAction = {
   type: `AppStateController:setPendingRedirectRoute`;
   handler: AppStateController['setPendingRedirectRoute'];
+};
+
+/**
+ * Records the last visited feature route with the current timestamp, or
+ * clears it. Feature UIs read this on home page mount to resume a recent
+ * route after a brief close/reopen.
+ *
+ * @param name - The feature route namespace.
+ * @param path - The route path to persist, or `null` to clear.
+ */
+export type AppStateControllerSetLastVisitedRouteAction = {
+  type: `AppStateController:setLastVisitedRoute`;
+  handler: AppStateController['setLastVisitedRoute'];
 };
 
 export type AppStateControllerSetPendingShieldCohortAction = {
@@ -606,10 +585,9 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AppStateControllerSetConnectedStatusPopoverHasBeenShownAction
   | AppStateControllerSetRecoveryPhraseReminderHasBeenShownAction
-  | AppStateControllerSetSurveyLinkLastClickedOrClosedAction
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
-  | AppStateControllerSetRampCardClosedAction
+  | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetPna25AcknowledgedAction
@@ -632,16 +610,12 @@ export type AppStateControllerMethodActions =
   | AppStateControllerAddPollingTokenAction
   | AppStateControllerRemovePollingTokenAction
   | AppStateControllerClearPollingTokensAction
-  | AppStateControllerSetShowTestnetMessageInDropdownAction
-  | AppStateControllerSetShowBetaHeaderAction
-  | AppStateControllerSetShowPermissionsTourAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
+  | AppStateControllerSetPerpsTabBadgeSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction
-  | AppStateControllerSetShowNetworkBannerAction
   | AppStateControllerUpdateNetworkConnectionBannerAction
-  | AppStateControllerSetShowAccountBannerAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
   | AppStateControllerUpdateNftDropDownStateAction
@@ -660,6 +634,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearAppActiveTabAction
   | AppStateControllerSetShowShieldEntryModalOnceAction
   | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction

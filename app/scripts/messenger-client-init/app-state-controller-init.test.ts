@@ -38,7 +38,6 @@ describe('AppStateControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       extension: expect.any(Object),
-      onInactiveTimeout: expect.any(Function),
     });
   });
 });

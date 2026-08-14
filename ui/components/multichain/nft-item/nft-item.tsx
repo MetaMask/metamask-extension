@@ -29,8 +29,7 @@ import {
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 
 type NftItemProps = {
   nft?: NFT;
@@ -163,8 +162,6 @@ export const NftItem = ({
             <>
               <span>{nft?.name}</span>
               <br />
-              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-              {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
               <span>{nft?.collection?.name || name}</span>
             </>
           }
@@ -182,8 +179,6 @@ export const NftItem = ({
             color={TextColor.textAlternative}
             ellipsis
           >
-            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
             {nft?.collection?.name || name}
           </Text>
         </Tooltip>

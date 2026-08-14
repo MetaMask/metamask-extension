@@ -58,10 +58,43 @@ describe('AuthenticationControllerInit', () => {
       metametrics: {
         getMetaMetricsId: expect.any(Function),
         agent: 'extension',
+        getAppVersion: expect.any(Function),
       },
       config: {
         env: Env.PRD,
       },
     });
+  });
+
+  it('wires getAppVersion to process.env.METAMASK_VERSION', () => {
+    const originalVersion = process.env.METAMASK_VERSION;
+    process.env.METAMASK_VERSION = '12.34.5';
+
+    try {
+      const requestMock = buildInitRequestMock();
+      AuthenticationControllerInit(requestMock);
+
+      const constructorArgs =
+        AuthenticationControllerClassMock.mock.calls[0][0];
+      expect(constructorArgs.metametrics.getAppVersion?.()).toBe('12.34.5');
+    } finally {
+      process.env.METAMASK_VERSION = originalVersion;
+    }
+  });
+
+  it('returns undefined from getAppVersion when METAMASK_VERSION is unset', () => {
+    const originalVersion = process.env.METAMASK_VERSION;
+    delete process.env.METAMASK_VERSION;
+
+    try {
+      const requestMock = buildInitRequestMock();
+      AuthenticationControllerInit(requestMock);
+
+      const constructorArgs =
+        AuthenticationControllerClassMock.mock.calls[0][0];
+      expect(constructorArgs.metametrics.getAppVersion?.()).toBeUndefined();
+    } finally {
+      process.env.METAMASK_VERSION = originalVersion;
+    }
   });
 });

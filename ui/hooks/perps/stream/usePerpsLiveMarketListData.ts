@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { formatPerpsFiatUniversal } from '../../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   usePerpsLiveMarketData,
   type UsePerpsLiveMarketDataReturn,
@@ -10,6 +11,7 @@ const DEFAULT_REFRESH_INTERVAL_MS = 30000;
 
 export type UsePerpsLiveMarketListDataOptions = {
   refreshIntervalMs?: number;
+  activateStream?: boolean;
 };
 
 export type UsePerpsLiveMarketListDataReturn = Pick<
@@ -22,7 +24,10 @@ export type UsePerpsLiveMarketListDataReturn = Pick<
 export function usePerpsLiveMarketListData(
   options: UsePerpsLiveMarketListDataOptions = {},
 ): UsePerpsLiveMarketListDataReturn {
-  const { refreshIntervalMs = DEFAULT_REFRESH_INTERVAL_MS } = options;
+  const {
+    refreshIntervalMs = DEFAULT_REFRESH_INTERVAL_MS,
+    activateStream = true,
+  } = options;
   const {
     markets,
     cryptoMarkets,
@@ -30,7 +35,7 @@ export function usePerpsLiveMarketListData(
     isInitialLoading,
     error,
     refresh,
-  } = usePerpsLiveMarketData();
+  } = usePerpsLiveMarketData({ autoSubscribe: activateStream });
 
   const marketSymbols = useMemo(
     () =>
@@ -47,12 +52,12 @@ export function usePerpsLiveMarketListData(
 
   const { prices } = usePerpsLivePrices({
     symbols: marketSymbols,
-    activateStream: true,
+    activateStream,
     includeMarketData: false,
   });
 
   useEffect(() => {
-    if (!marketSymbolsKey) {
+    if (!activateStream || !marketSymbolsKey) {
       return undefined;
     }
 
@@ -61,7 +66,7 @@ export function usePerpsLiveMarketListData(
     }, refreshIntervalMs);
 
     return () => globalThis.clearInterval(intervalId);
-  }, [marketSymbolsKey, refresh, refreshIntervalMs]);
+  }, [activateStream, marketSymbolsKey, refresh, refreshIntervalMs]);
 
   const liveMarkets = useMemo(() => {
     if (Object.keys(prices).length === 0) {
@@ -76,7 +81,9 @@ export function usePerpsLiveMarketListData(
 
       return {
         ...market,
-        price: liveUpdate.price ?? market.price,
+        price: liveUpdate.price
+          ? formatPerpsFiatUniversal(liveUpdate.price)
+          : market.price,
         change24hPercent:
           liveUpdate.percentChange24h ?? market.change24hPercent,
       };

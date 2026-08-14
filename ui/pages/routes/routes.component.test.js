@@ -1,9 +1,19 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import {
+  createMemoryRouter,
+  matchRoutes,
+  RouterProvider,
+} from 'react-router-dom';
+import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
@@ -12,7 +22,8 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes from '.';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
 
@@ -66,6 +77,30 @@ jest.mock('../../ducks/domains', () => ({
 jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
+jest.mock('../token-management/index.ts', () => ({
+  __esModule: true,
+  default: () => <div data-testid="token-management-route" />,
+}));
+
+// React 18 can defer React.lazy resolution in CI; resolve token-management synchronously.
+jest.mock('../../helpers/utils/mm-lazy', () => {
+  // eslint-disable-next-line n/global-require
+  const reactModule = require('react');
+
+  return {
+    mmLazy: (importFn) => {
+      if (importFn.toString().includes('token-management')) {
+        const { default: TokenManagementMock } = jest.requireMock(
+          '../token-management/index.ts',
+        );
+        return TokenManagementMock;
+      }
+
+      return reactModule.lazy(importFn);
+    },
   };
 });
 
@@ -196,6 +231,17 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
 
+  it('registers the hardware wallet signing page outside guarded swap routes', () => {
+    const path = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+    const matches = matchRoutes(routeConfig, path);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      path,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
   describe('render during send flow', () => {
     it('should render when send transaction is not active', () => {
       const state = {
@@ -251,13 +297,50 @@ describe('Routes Component', () => {
       expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
+
+  it('renders token management route when the legacy feature flag is disabled', async () => {
+    const store = configureMockStore(middlewares)({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          extensionUxTokenManagementFilter: { enabled: false },
+        },
+      },
+    });
+    const router = createMemoryRouter(
+      [
+        {
+          path: TOKEN_MANAGEMENT_ROUTE,
+          element: <TokenManagementFeatureRoute />,
+        },
+      ],
+      { initialEntries: [TOKEN_MANAGEMENT_ROUTE] },
+    );
+
+    rtlRender(
+      <Provider store={store}>
+        <React.Suspense fallback={null}>
+          <RouterProvider
+            router={router}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          />
+        </React.Suspense>
+      </Provider>,
+    );
+
+    expect(
+      await screen.findByTestId('token-management-route'),
+    ).toBeInTheDocument();
+  });
 });
 
 describe('toast display', () => {
   const getToastDisplayTestState = (date) => ({
     ...mockState,
     rewards: {
-      onboardingModalOpen: false,
+      rewardsModalOpen: false,
     },
     metamask: {
       ...mockState.metamask,

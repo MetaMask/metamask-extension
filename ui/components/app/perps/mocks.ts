@@ -26,7 +26,8 @@ import type { PerpsTransaction } from './types';
  */
 export const mockAccountState: AccountState = {
   totalBalance: '15250.00',
-  availableBalance: '10125.00',
+  spendableBalance: '10125.00',
+  withdrawableBalance: '10125.00',
   marginUsed: '5125.00',
   unrealizedPnl: '375.00',
   returnOnEquity: '7.32',
@@ -160,7 +161,7 @@ export const mockPositions: Position[] = [
     takeProfitCount: 0,
     stopLossCount: 0,
   },
-  // HIP-3 Equity positions (stocks)
+  // HIP-3 stock positions
   {
     symbol: 'xyz:TSLA',
     size: '10.0',
@@ -362,7 +363,7 @@ export const mockOrders: Order[] = [
     timestamp: Date.now() - 10800000, // 3 hours ago
     lastUpdated: Date.now() - 10800000,
   },
-  // HIP-3 Equity orders (stocks)
+  // HIP-3 stock orders
   {
     orderId: 'order-007',
     symbol: 'xyz:AAPL',
@@ -540,10 +541,10 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
 
 /**
  * Mock HIP-3 markets data
- * Includes equity (stocks), commodity, and forex markets from HIP-3 DEXs
+ * Includes stock, commodity, and forex markets from HIP-3 DEXs
  */
 export const mockHip3Markets: PerpsMarketData[] = [
-  // Equity markets (stocks)
+  // Stock markets
   {
     symbol: 'xyz:TSLA',
     name: 'Tesla',
@@ -557,7 +558,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00015,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AAPL',
@@ -572,7 +573,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00012,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:MSFT',
@@ -587,7 +588,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.0001,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:NVDA',
@@ -602,7 +603,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00018,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AMZN',
@@ -617,7 +618,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00011,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:GOOGL',
@@ -632,7 +633,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00009,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   // Commodity markets
   {
@@ -781,6 +782,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '25 SOL @ $95.00',
     timestamp: Date.now() - 14400000, // 4 hours ago
     order: {
+      orderId: 'order-004',
       text: PerpsOrderTransactionStatus.Open,
       statusType: PerpsOrderTransactionStatusType.Pending,
       type: 'limit',
@@ -798,6 +800,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '0.1 BTC @ $45,000.00',
     timestamp: Date.now() - 16200000, // 4.5 hours ago
     order: {
+      orderId: 'order-004b',
       text: PerpsOrderTransactionStatus.Filled,
       statusType: PerpsOrderTransactionStatusType.Filled,
       type: 'market',
@@ -815,6 +818,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '500 ARB @ $1.10',
     timestamp: Date.now() - 18000000, // 5 hours ago
     order: {
+      orderId: 'order-004c',
       text: PerpsOrderTransactionStatus.Canceled,
       statusType: PerpsOrderTransactionStatusType.Canceled,
       type: 'market',

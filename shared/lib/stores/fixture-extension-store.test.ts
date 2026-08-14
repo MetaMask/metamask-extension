@@ -1,11 +1,12 @@
 import log from 'loglevel';
 import nock from 'nock';
 import browser from 'webextension-polyfill';
+import * as manifestFlagsModule from '../manifestFlags';
 import { FixtureExtensionStore } from './fixture-extension-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';
-const FIXTURE_SERVER_PORT = 12345;
-const FIXTURE_SERVER_ORIGIN = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}`;
+const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const FIXTURE_SERVER_ORIGIN = `http://${FIXTURE_SERVER_HOST}:${DEFAULT_FIXTURE_SERVER_PORT}`;
 const FIXTURE_SERVER_PATH = '/state.json';
 
 const DEFAULT_INITIAL_STATE = {
@@ -196,6 +197,61 @@ describe('FixtureExtensionStore', () => {
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
+    });
+  });
+
+  describe('dynamic port resolution', () => {
+    it('fetches from manifest flag port when fixtureServerPort is set', async () => {
+      const customPort = 52860;
+      jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({
+        testing: { fixtureServerPort: customPort },
+      });
+      nock(`http://${FIXTURE_SERVER_HOST}:${customPort}`)
+        .get(FIXTURE_SERVER_PATH)
+        .reply(200, MOCK_STATE);
+
+      const store = new FixtureExtensionStore({ initialize: true });
+      const result = await store.get();
+
+      expect(result).toStrictEqual(MOCK_STATE);
+    });
+
+    it('falls back to default port when fixtureServerPort is absent', async () => {
+      jest
+        .spyOn(manifestFlagsModule, 'getManifestFlags')
+        .mockReturnValue({ testing: {} });
+      setMockFixtureServerReply(MOCK_STATE);
+
+      const store = new FixtureExtensionStore({ initialize: true });
+      const result = await store.get();
+
+      expect(result).toStrictEqual(MOCK_STATE);
+    });
+
+    it('falls back to default port when fixtureServerPort is invalid', async () => {
+      jest.spyOn(manifestFlagsModule, 'getManifestFlags').mockReturnValue({
+        testing: { fixtureServerPort: -1 },
+      });
+      setMockFixtureServerReply(MOCK_STATE);
+
+      const store = new FixtureExtensionStore({ initialize: true });
+      const result = await store.get();
+
+      expect(result).toStrictEqual(MOCK_STATE);
+    });
+
+    it('falls back to default port when getManifestFlags throws', async () => {
+      jest
+        .spyOn(manifestFlagsModule, 'getManifestFlags')
+        .mockImplementation(() => {
+          throw new Error('manifest not available');
+        });
+      setMockFixtureServerReply(MOCK_STATE);
+
+      const store = new FixtureExtensionStore({ initialize: true });
+      const result = await store.get();
+
+      expect(result).toStrictEqual(MOCK_STATE);
     });
   });
 });

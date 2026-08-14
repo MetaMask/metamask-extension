@@ -12,6 +12,19 @@ import configureStore from '../../../store/store';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
@@ -36,6 +49,7 @@ jest.mock('../../../store/actions.ts', () => {
       });
       return Promise.resolve([value]);
     }),
+    setPna25Acknowledged: jest.fn(() => () => Promise.resolve()),
   };
 });
 
@@ -45,7 +59,8 @@ describe('Onboarding Metametrics Component', () => {
   const mockState = {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
-      participateInMetaMetrics: null,
+      consentDecisionMade: false,
+      optedIn: false,
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -84,7 +99,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -119,7 +134,7 @@ describe('Onboarding Metametrics Component', () => {
       messages.onboardingMetametricCheckboxTitleOne.message,
     );
     const description = queryByText(
-      messages.onboardingMetametricCheckboxDescriptionOne.message,
+      messages.onboardingMetametricCheckboxDescriptionOneUpdated.message,
     );
 
     expect(title).toBeInTheDocument();
@@ -138,7 +153,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(checkbox).toBeChecked();
     expect(checkbox).toBeInTheDocument();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -180,7 +195,7 @@ describe('Onboarding Metametrics Component', () => {
     ) as HTMLElement;
 
     // Opt out of MetaMetrics; this should clear marketing consent
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 
@@ -222,7 +237,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
-    await act(() => {
+    act(() => {
       fireEvent.click(marketingContainer);
     });
 
@@ -230,7 +245,7 @@ describe('Onboarding Metametrics Component', () => {
       expect(marketingCheckbox).toBeChecked();
     });
 
-    await act(() => {
+    act(() => {
       fireEvent.click(participateContainer);
     });
 

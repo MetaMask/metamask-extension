@@ -4,11 +4,14 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import {
@@ -27,7 +30,8 @@ export function useInsufficientPayTokenBalanceAlert({
   pendingAmountUsd?: string;
 } = {}): Alert[] {
   const t = useI18nContext();
-  const { payToken, isNative: isPayTokenNative } = useTransactionPayToken();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
   const isLoading = useIsTransactionPayLoading();
@@ -35,7 +39,15 @@ export function useInsufficientPayTokenBalanceAlert({
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
   const isMax = useTransactionPayIsMaxAmount();
 
-  const sourceChainId = (payToken?.chainId ?? '0x0') as Hex;
+  // Post-quote (perps withdraw): `payToken` is the destination, not the
+  // source — skip input/fees checks; gas check runs against the tx chain.
+  const isPostQuote = isPerpsWithdrawTransaction(currentConfirmation);
+
+  const sourceChainId = (
+    isPostQuote
+      ? (currentConfirmation?.chainId ?? '0x0')
+      : (payToken?.chainId ?? '0x0')
+  ) as Hex;
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -49,6 +61,23 @@ export function useInsufficientPayTokenBalanceAlert({
 
   const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
   const nativeToken = useTokenWithBalance(nativeTokenAddress, sourceChainId);
+
+  // For post-quote, `payToken` is the destination so its native-ness has
+  // no bearing on source gas — force false so the source-network check
+  // evaluates against the user's actual native balance vs. the gas fee.
+  // For non-post-quote, also gate on `chainId === sourceChainId` so a
+  // native destination on a different chain can't suppress the check.
+  // Use `nativeTokenAddress` (always defined for the source chain) rather
+  // than `nativeToken?.address` (from `useTokenWithBalance`, undefined during
+  // loading) so a real native pay token isn't briefly classified as
+  // non-native and false-positive the source-network gas check.
+  const isPayTokenNative =
+    !isPostQuote &&
+    Boolean(
+      payToken &&
+      payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
+      payToken.chainId === sourceChainId,
+    );
 
   const { balanceUsd, balanceRaw } = payToken ?? {};
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
@@ -91,19 +120,24 @@ export function useInsufficientPayTokenBalanceAlert({
   }, [isLoading, totals]);
 
   const isInsufficientForInput = useMemo(
-    () => payToken && totalAmountUsd.gt(balanceUsd ?? '0'),
-    [balanceUsd, payToken, totalAmountUsd],
+    () => !isPostQuote && payToken && totalAmountUsd.gt(balanceUsd ?? '0'),
+    [balanceUsd, isPostQuote, payToken, totalAmountUsd],
   );
 
   const isInsufficientForFees = useMemo(
     () =>
-      !isPendingAlert && payToken && totalSourceAmountRaw.gt(balanceRaw ?? '0'),
-    [balanceRaw, isPendingAlert, payToken, totalSourceAmountRaw],
+      !isPostQuote &&
+      !isPendingAlert &&
+      payToken &&
+      totalSourceAmountRaw.gt(balanceRaw ?? '0'),
+    [balanceRaw, isPendingAlert, isPostQuote, payToken, totalSourceAmountRaw],
   );
 
+  // Post-quote can run before `payToken` is set (auto-selection skipped);
+  // gas check is independent of `payToken`.
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      payToken &&
+      (payToken || isPostQuote) &&
       !isPayTokenNative &&
       !isPendingAlert &&
       !isSourceGasFeeToken &&
@@ -111,6 +145,7 @@ export function useInsufficientPayTokenBalanceAlert({
     [
       isPayTokenNative,
       isPendingAlert,
+      isPostQuote,
       isSourceGasFeeToken,
       nativeBalanceRaw,
       payToken,
@@ -130,6 +165,7 @@ export function useInsufficientPayTokenBalanceAlert({
         {
           ...baseAlert,
           key: AlertsName.InsufficientPayTokenBalance,
+          reason: t('alertInsufficientPayTokenBalance'),
           message: t('alertInsufficientPayTokenBalance'),
         },
       ];

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
-  },
   "addAlias": {
     "message": "Добавете псевдоним"
   },
@@ -78,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
-  },
   "average": {
     "message": "Средно аритметично"
   },
   "back": {
     "message": "Назад"
-  },
-  "backupApprovalInfo": {
-    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
   },
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
@@ -181,23 +172,11 @@
   "createPassword": {
     "message": "Създаване на парола"
   },
-  "currencyConversion": {
-    "message": "Конвертиране на валута"
-  },
-  "currentLanguage": {
-    "message": "Настоящ език"
-  },
   "custom": {
     "message": "Разширени"
   },
-  "customToken": {
-    "message": "Персонализиран маркер"
-  },
   "decimal": {
     "message": "Точност до десетични знаци"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
   },
   "delete": {
     "message": "Изтриване"
@@ -207,9 +186,6 @@
   },
   "done": {
     "message": "Готово"
-  },
-  "downloadGoogleChrome": {
-    "message": "Изтеглете Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Изтеглете държавни дневници"
@@ -268,9 +244,6 @@
   },
   "hardwareWallets": {
     "message": "Свържете хардуерен портфейл"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
   },
   "here": {
     "message": "тук",
@@ -339,12 +312,6 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineaGoerli": {
-    "message": "Тестова мрежа на Linea Goerli"
-  },
-  "links": {
-    "message": "Връзки"
-  },
   "loading": {
     "message": "Зарежда се..."
   },
@@ -369,9 +336,6 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Трябва да изберете поне 1 жетон."
-  },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"
@@ -381,12 +345,6 @@
   },
   "networks": {
     "message": "Mрежи"
-  },
-  "nevermind": {
-    "message": "Няма значение"
-  },
-  "newAccount": {
-    "message": "Нов акаунт"
   },
   "newAccountNumberName": {
     "message": "Акаунт $1",
@@ -406,9 +364,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Уебкамерата не е намерена"
-  },
-  "notEnoughGas": {
-    "message": "Няма достатъчно газ"
   },
   "ofTextNofM": {
     "message": "на"
@@ -493,9 +448,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "revealSeedWords": {
-    "message": "Разкрий думите зародиш"
-  },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +494,6 @@
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Изберете това, за да покажете фиат  преобразуване на Testnets"
-  },
   "showHexData": {
     "message": "Показване на шестнадесетични данни"
   },
@@ -553,9 +502,6 @@
   },
   "sign": {
     "message": "Подпис"
-  },
-  "signatureRequest": {
-    "message": "Заявка за подпис"
   },
   "signed": {
     "message": "Подписан"
@@ -574,9 +520,6 @@
   },
   "stateLogs": {
     "message": "Държавни дневници"
-  },
-  "stateLogsDescription": {
-    "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
   },
   "submitted": {
     "message": "Изпратен"

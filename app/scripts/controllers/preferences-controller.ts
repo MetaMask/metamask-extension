@@ -17,9 +17,14 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import type {
+  AdvancedGasFeePreferences,
+  AdvancedGasFeePreferencesByChain,
+} from '../../../shared/constants/gas';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import type { Preferences } from '../../../shared/types/preferences';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -79,34 +84,6 @@ type PreferencesControllerOptions = {
   messenger: PreferencesControllerMessenger;
 };
 
-export type Preferences = {
-  autoLockTimeLimit?: number;
-  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
-  defaultAddressScope: DefaultAddressScope;
-  dismissSmartAccountSuggestionEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  hideZeroBalanceTokens: boolean;
-  privacyMode: boolean;
-  showConfirmationAdvancedDetails: boolean;
-  showDefaultAddress: boolean;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showMultiRpcModal: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  showTestNetworks: boolean;
-  skipDeepLinkInterstitial: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  tokenNetworkFilter: Record<string, boolean>;
-  tokenSortConfig: {
-    key: string;
-    order: string;
-    sortCallback: string;
-  };
-  useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean;
-};
-
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
@@ -123,10 +100,9 @@ export type PreferencesControllerState = Omit<
   | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
-  advancedGasFee: Record<string, Record<string, string>>;
+  advancedGasFee: AdvancedGasFeePreferencesByChain;
   currentLocale: string;
   dismissSeedBackUpReminder: boolean;
-  enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
@@ -161,7 +137,6 @@ export const getDefaultPreferencesControllerState =
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
-    enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
     // ENS decentralized website resolution
@@ -182,12 +157,14 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
+      isBasicFunctionalityConsolidatedEnabled: false,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
+      showTickerWidget: true,
       showMultiRpcModal: false,
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,
@@ -202,6 +179,7 @@ export const getDefaultPreferencesControllerState =
       },
       useNativeCurrencyAsPrimaryCurrency: true,
       useSidePanelAsDefault: true,
+      gasSponsorshipOptOutByChainId: {},
     },
     securityAlertsEnabled: true,
     showSidePanelMigrationToast: false,
@@ -261,12 +239,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   dismissSeedBackUpReminder: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableMV3TimestampSave: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -486,7 +458,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDismissSeedBackUpReminder',
   'setOverrideContentSecurityPolicyHeader',
   'setManageInstitutionalWallets',
-  'setServiceWorkerKeepAlivePreference',
   'setUseSidePanelAsDefault',
   'setShowDefaultAddress',
   'setDefaultAddressScope',
@@ -724,20 +695,42 @@ export class PreferencesController extends BaseController<
    *
    * @param options
    * @param options.chainId - The chainId the advancedGasFees should be set on
+   * @param options.account - The account the advancedGasFees should be set for
    * @param options.gasFeePreferences - The advancedGasFee options to set
    */
   setAdvancedGasFee({
+    account,
     chainId,
     gasFeePreferences,
   }: {
+    account: string;
     chainId: string;
-    gasFeePreferences: Record<string, string>;
+    gasFeePreferences?: AdvancedGasFeePreferences;
   }): void {
-    const { advancedGasFee } = this.state;
     this.update((state) => {
+      const normalizedAccount = account.toLowerCase();
+      const chainPreferences = state.advancedGasFee[chainId] ?? {};
+
+      if (!gasFeePreferences) {
+        const {
+          [normalizedAccount]: _removedPreference,
+          ...remainingChainPreferences
+        } = chainPreferences;
+
+        state.advancedGasFee = {
+          ...state.advancedGasFee,
+          [chainId]: remainingChainPreferences,
+        };
+
+        return;
+      }
+
       state.advancedGasFee = {
-        ...advancedGasFee,
-        [chainId]: gasFeePreferences,
+        ...state.advancedGasFee,
+        [chainId]: {
+          ...chainPreferences,
+          [normalizedAccount]: gasFeePreferences,
+        },
       };
     });
   }
@@ -986,12 +979,6 @@ export class PreferencesController extends BaseController<
   setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
       state.manageInstitutionalWallets = manageInstitutionalWallets;
-    });
-  }
-
-  setServiceWorkerKeepAlivePreference(value: boolean): void {
-    this.update((state) => {
-      state.enableMV3TimestampSave = value;
     });
   }
 

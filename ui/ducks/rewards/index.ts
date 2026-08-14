@@ -4,13 +4,11 @@ import type {
   SeasonStatusState,
   RewardsErrorToastState,
 } from '../../../shared/types/rewards';
-import { CandidateSubscriptionId, OnboardingStep } from './types';
+import { CandidateSubscriptionId } from './types';
 
 export type RewardsState = {
-  // Onboarding state
-  onboardingModalOpen: boolean;
-  onboardingActiveStep: OnboardingStep;
-  onboardingModalRendered: boolean;
+  // Modal + onboarding state
+  rewardsModalOpen: boolean;
   onboardingReferralCode: string | null;
 
   // Geolocation state
@@ -33,12 +31,12 @@ export type RewardsState = {
   rewardsBadgeHidden: boolean;
   // Account linked timestamp (when an account is linked to a subscription)
   accountLinkedTimestamp: number | null;
+  // Full deeplink URL stored when user arrives via a rewards deeplink, used as QR code value
+  rewardsDeeplinkUrl: string | null;
 };
 
 export const initialState: RewardsState = {
-  onboardingModalOpen: false,
-  onboardingActiveStep: OnboardingStep.INTRO,
-  onboardingModalRendered: true,
+  rewardsModalOpen: false,
   onboardingReferralCode: '',
 
   geoLocation: null,
@@ -66,6 +64,7 @@ export const initialState: RewardsState = {
   rewardsBadgeHidden: true,
   // Account linked timestamp
   accountLinkedTimestamp: null,
+  rewardsDeeplinkUrl: null,
 };
 
 const rewardsSlice = createSlice({
@@ -79,16 +78,8 @@ const rewardsSlice = createSlice({
       };
     },
 
-    setOnboardingModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.onboardingModalOpen = action.payload;
-    },
-
-    setOnboardingActiveStep: (state, action: PayloadAction<OnboardingStep>) => {
-      state.onboardingActiveStep = action.payload;
-    },
-
-    setOnboardingModalRendered: (state, action: PayloadAction<boolean>) => {
-      state.onboardingModalRendered = action.payload;
+    setRewardsModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.rewardsModalOpen = action.payload;
     },
 
     setOnboardingReferralCode: (
@@ -179,14 +170,16 @@ const rewardsSlice = createSlice({
     ) => {
       state.accountLinkedTimestamp = action.payload;
     },
+
+    setRewardsDeeplinkUrl: (state, action: PayloadAction<string | null>) => {
+      state.rewardsDeeplinkUrl = action.payload;
+    },
   },
 });
 
 export const {
   resetRewardsState,
-  setOnboardingModalOpen,
-  setOnboardingActiveStep,
-  setOnboardingModalRendered,
+  setRewardsModalOpen,
   setOnboardingReferralCode,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
@@ -198,6 +191,7 @@ export const {
   setErrorToast,
   setRewardsBadgeHidden,
   setRewardsAccountLinkedTimestamp,
+  setRewardsDeeplinkUrl,
 } = rewardsSlice.actions;
 
 export default rewardsSlice.reducer;

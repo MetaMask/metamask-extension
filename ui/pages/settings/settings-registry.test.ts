@@ -1,0 +1,232 @@
+import {
+  DEVELOPER_OPTIONS_ROUTE,
+  ASSETS_ROUTE,
+  CURRENCY_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  PRIVACY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
+  SETTINGS_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
+  THEME_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
+import {
+  getSettingsRouteMeta,
+  SETTINGS_TABS,
+  SETTINGS_RENDERABLE_ROUTES,
+} from './settings-registry';
+
+describe('settings-registry', () => {
+  describe('getSettingsRouteMeta', () => {
+    it('returns null for unknown routes', () => {
+      expect(getSettingsRouteMeta('/unknown/route')).toBeNull();
+      expect(getSettingsRouteMeta('')).toBeNull();
+    });
+
+    it('returns metadata for settings root', () => {
+      const meta = getSettingsRouteMeta(SETTINGS_ROUTE);
+
+      expect(meta).toEqual(
+        expect.objectContaining({
+          labelKey: 'settings',
+        }),
+      );
+      expect(meta?.parentPath).toBeUndefined();
+    });
+
+    it('adds a separate debug route in test builds', () => {
+      const meta = getSettingsRouteMeta(DEVELOPER_OPTIONS_ROUTE);
+
+      expect(meta).toEqual(
+        expect.objectContaining({
+          labelKey: 'debug',
+        }),
+      );
+    });
+
+    it('matches transaction shield sub-pages', () => {
+      expect(
+        getSettingsRouteMeta(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldManagePlan',
+          parentPath: TRANSACTION_SHIELD_ROUTE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldPastPlansTitle',
+          parentPath: TRANSACTION_SHIELD_ROUTE,
+        }),
+      );
+    });
+
+    it('matches dynamic transaction shield claim routes', () => {
+      expect(
+        getSettingsRouteMeta(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldClaimsListTitle',
+          parentPath: TRANSACTION_SHIELD_ROUTE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldClaim',
+          parentPath: TRANSACTION_SHIELD_CLAIM_ROUTES.BASE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(
+          `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/draft-id`,
+        ),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldClaimsListTitle',
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(
+          `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL}/claim-id`,
+        ),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldClaimsListTitle',
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(
+          `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL}/claim-id`,
+        ),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'shieldClaimsListTitle',
+        }),
+      );
+    });
+
+    it('matches notification section sub-pages', () => {
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsWalletActivityTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsMarketingTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
+    });
+  });
+
+  describe('SETTINGS_TABS', () => {
+    it('all tabs have required properties', () => {
+      for (const tab of SETTINGS_TABS) {
+        expect(tab.id).toEqual(expect.any(String));
+        expect(tab.path).toEqual(expect.any(String));
+        expect(tab.labelKey).toEqual(expect.any(String));
+        expect(tab.iconName).toEqual(expect.any(String));
+        expect(tab.component).toBeDefined();
+      }
+    });
+
+    it('does not include sub-pages', () => {
+      const tabPaths = SETTINGS_TABS.map((tab) => tab.path);
+
+      expect(tabPaths).not.toContain(CURRENCY_ROUTE);
+      expect(tabPaths).not.toContain(THEME_ROUTE);
+      expect(tabPaths).not.toContain(THIRD_PARTY_APIS_ROUTE);
+    });
+  });
+
+  describe('external routes (sync accounts)', () => {
+    const loadRegistryWithSyncEnabled = () => {
+      let registry: typeof import('./settings-registry');
+      jest.isolateModules(() => {
+        jest.doMock('../../../shared/lib/environment', () => ({
+          ...jest.requireActual('../../../shared/lib/environment'),
+          getIsQrSyncEnabled: () => true,
+        }));
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        registry = require('./settings-registry');
+      });
+      // @ts-expect-error assigned within isolateModules callback
+      return registry;
+    };
+
+    afterEach(() => {
+      jest.dontMock('../../../shared/lib/environment');
+    });
+
+    it('exposes sync accounts as a tab', () => {
+      const { SETTINGS_TABS: tabs } = loadRegistryWithSyncEnabled();
+      const tabPaths = tabs.map((tab) => tab.path);
+
+      expect(tabPaths).toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+
+    it('excludes the top-level sync accounts route from nested settings routes', () => {
+      const { SETTINGS_RENDERABLE_ROUTES: renderable } =
+        loadRegistryWithSyncEnabled();
+      const paths = renderable.map((route) => route.path);
+
+      expect(paths).not.toContain(SYNC_ACCOUNTS_ROUTE);
+    });
+  });
+
+  describe('SETTINGS_RENDERABLE_ROUTES', () => {
+    it('includes both tabs and sub-pages', () => {
+      const paths = SETTINGS_RENDERABLE_ROUTES.map((r) => r.path);
+
+      // Tabs
+      expect(paths).toContain(ASSETS_ROUTE);
+      expect(paths).toContain(PRIVACY_ROUTE);
+
+      // Sub-pages
+      expect(paths).toContain(CURRENCY_ROUTE);
+      expect(paths).toContain(THEME_ROUTE);
+      expect(paths).toContain(MANAGE_WALLET_RECOVERY_ROUTE);
+      expect(paths).toContain(SECURITY_PASSWORD_CHANGE_V2_ROUTE);
+      expect(paths).toContain(SECURITY_REGISTER_PASSKEY_ROUTE);
+      expect(paths).toContain(SECURITY_TURN_OFF_PASSKEY_ROUTE);
+      expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
+      expect(paths).toContain(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
+      expect(paths).toContain(`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE);
+    });
+
+    it('does not include settings root', () => {
+      const paths = SETTINGS_RENDERABLE_ROUTES.map((r) => r.path);
+
+      expect(paths).not.toContain(SETTINGS_ROUTE);
+    });
+  });
+});

@@ -10,23 +10,15 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 
 const log = createProjectLogger('approval-utils');
 
-export function rejectAllApprovals({
+export function getAttentionRequiredApprovalCount({
   approvalController,
-  deleteInterface,
 }: {
   approvalController: ApprovalController;
-  deleteInterface?: (id: string) => void;
 }) {
-  const approvalRequestsById = approvalController.state.pendingApprovals;
+  const approvalRequestsById = approvalController.state.pendingApprovals ?? {};
   const approvalRequests = Object.values(approvalRequestsById);
 
-  for (const approvalRequest of approvalRequests) {
-    rejectApproval({
-      approvalController,
-      approvalRequest,
-      deleteInterface,
-    });
-  }
+  return approvalRequests.length;
 }
 
 export function rejectOriginApprovals({

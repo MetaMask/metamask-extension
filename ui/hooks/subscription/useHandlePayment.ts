@@ -19,7 +19,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
-import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { useAsyncResult } from '../useAsync';
 import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
 import {

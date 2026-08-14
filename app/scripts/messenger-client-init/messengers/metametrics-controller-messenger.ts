@@ -20,10 +20,19 @@ export function getMetaMetricsControllerMessenger(
   messenger.delegate({
     messenger: metaMetricsControllerMessenger,
     actions: [
+      'AnalyticsController:getState',
+      'AnalyticsController:identify',
+      'AnalyticsController:optIn',
+      'AnalyticsController:optOut',
+      'AnalyticsController:resetConsentDecision',
+      'AnalyticsController:trackEvent',
+      'AnalyticsController:trackView',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'MultichainNetworkController:getState',
+      'SeedlessOnboardingController:getState',
     ],
     events: [
       'PreferencesController:stateChange',

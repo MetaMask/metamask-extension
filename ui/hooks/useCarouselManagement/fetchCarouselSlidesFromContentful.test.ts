@@ -7,6 +7,9 @@ import {
 
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
+  sentryLogger: {
+    extend: jest.fn(() => jest.fn()),
+  },
 }));
 
 jest.mock('../../../shared/lib/environment', () => ({

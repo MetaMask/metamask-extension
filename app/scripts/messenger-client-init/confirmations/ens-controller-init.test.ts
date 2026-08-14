@@ -1,9 +1,11 @@
-import { EnsController } from '@metamask/ens-controller';
+import {
+  EnsController,
+  EnsControllerMessenger,
+} from '@metamask/ens-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEnsControllerMessenger,
-  EnsControllerMessenger,
   getEnsControllerInitMessenger,
   EnsControllerInitMessenger,
 } from '../messengers';

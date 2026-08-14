@@ -1,5 +1,16 @@
 import React, { useRef, useCallback, useState } from 'react';
 import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  TextAlign,
+  Icon,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
@@ -39,14 +50,14 @@ export type EditMarginModalProps = {
  * @param options0.currentPrice
  * @param options0.mode
  */
-export const EditMarginModal: React.FC<EditMarginModalProps> = ({
+export const EditMarginModal = ({
   isOpen,
   onClose,
   position,
   account,
   currentPrice,
   mode,
-}) => {
+}: EditMarginModalProps) => {
   const t = useI18nContext();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -80,7 +91,21 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
     >
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm}>
-        <ModalHeader onClose={onClose}>{title}</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+          >
+            <Icon
+              name={mode === 'add' ? IconName.AddCircle : IconName.RemoveMinus}
+              size={IconSize.Xl}
+            />
+            <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
+              {title}
+            </Text>
+          </Box>
+        </ModalHeader>
         <ModalBody>
           <EditMarginModalContent
             position={position}

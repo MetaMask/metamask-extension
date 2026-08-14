@@ -1,0 +1,262 @@
+import { fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import type { MetaMaskReduxState } from '../../../store/store';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { createToggleItem, ToggleItemConfig } from './create-toggle-item';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+const mockAction = jest.fn((value: boolean) => ({
+  type: 'MOCK_TOGGLE_ACTION',
+  payload: value,
+}));
+
+const createMockStore = (overrides = {}) =>
+  configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      testToggleValue: false,
+      isDisabled: false,
+      ...overrides,
+    },
+  });
+
+const testConfig: ToggleItemConfig = {
+  name: 'TestToggleItem',
+  titleKey: 'showExtensionInFullSizeView',
+  descriptionKey: 'showExtensionInFullSizeViewDescription',
+  selector: (state: MetaMaskReduxState) =>
+    (state.metamask as Record<string, unknown>).testToggleValue as boolean,
+  action: mockAction,
+  dataTestId: 'test-toggle',
+};
+
+const TestToggleItem = createToggleItem(testConfig);
+
+describe('createToggleItem', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders title from translation key', () => {
+    const mockStore = createMockStore();
+    renderWithProvider(<TestToggleItem />, mockStore);
+
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeView.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders description from translation key', () => {
+    const mockStore = createMockStore();
+    renderWithProvider(<TestToggleItem />, mockStore);
+
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeViewDescription.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders toggle with value from selector', () => {
+    const mockStore = createMockStore({ testToggleValue: true });
+    renderWithProvider(<TestToggleItem />, mockStore);
+
+    expect(screen.getByTestId('test-toggle')).toHaveAttribute('value', 'true');
+  });
+
+  it('dispatches action with inverted value when toggled', () => {
+    const mockStore = createMockStore({ testToggleValue: false });
+    renderWithProvider(<TestToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('test-toggle'));
+
+    expect(mockAction).toHaveBeenCalledWith(true);
+  });
+
+  it('dispatches action with false when toggling off', () => {
+    const mockStore = createMockStore({ testToggleValue: true });
+    renderWithProvider(<TestToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('test-toggle'));
+
+    expect(mockAction).toHaveBeenCalledWith(false);
+  });
+
+  describe('with disabledSelector', () => {
+    const configWithDisabled: ToggleItemConfig = {
+      ...testConfig,
+      dataTestId: 'test-toggle-with-disabled',
+      disabledSelector: (state: MetaMaskReduxState) =>
+        (state.metamask as Record<string, unknown>).isDisabled as boolean,
+    };
+
+    const TestToggleWithDisabled = createToggleItem(configWithDisabled);
+
+    it('is enabled when disabledSelector returns false', () => {
+      const mockStore = createMockStore({ isDisabled: false });
+      renderWithProvider(<TestToggleWithDisabled />, mockStore);
+
+      const toggle = screen.getByTestId('test-toggle-with-disabled');
+      expect(
+        toggle.closest('.toggle-button--disabled'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('is disabled when disabledSelector returns true', () => {
+      const mockStore = createMockStore({ isDisabled: true });
+      renderWithProvider(<TestToggleWithDisabled />, mockStore);
+
+      const toggle = screen.getByTestId('test-toggle-with-disabled');
+      expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+    });
+  });
+
+  it('sets displayName from config name', () => {
+    expect(TestToggleItem.displayName).toBe('TestToggleItem');
+  });
+
+  it('renders without description when descriptionKey is not provided', () => {
+    const configWithoutDescription: ToggleItemConfig = {
+      ...testConfig,
+      descriptionKey: undefined,
+      dataTestId: 'test-toggle-no-description',
+    };
+
+    const TestToggleWithoutDescription = createToggleItem(
+      configWithoutDescription,
+    );
+    const mockStore = createMockStore();
+
+    renderWithProvider(<TestToggleWithoutDescription />, mockStore);
+
+    expect(
+      screen.getByText(messages.showExtensionInFullSizeView.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.showExtensionInFullSizeViewDescription.message,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  describe('with trackEvent', () => {
+    const configWithTracking: ToggleItemConfig = {
+      ...testConfig,
+      dataTestId: 'test-toggle-with-tracking',
+      trackEvent: {
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: (newValue) => ({ settingName: 'testToggle', newValue }),
+      },
+    };
+
+    const TestToggleWithTracking = createToggleItem(configWithTracking);
+
+    it('tracks event when toggled', () => {
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithProvider(<TestToggleWithTracking />, mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          settingName: 'testToggle',
+          newValue: true,
+        },
+        sensitiveProperties: {},
+      });
+    });
+
+    it('takes precedence over trackEventProperty', () => {
+      const configWithTrackingAndProperty: ToggleItemConfig = {
+        ...configWithTracking,
+        trackEventProperty: 'test_setting_enabled',
+      };
+      const TestToggleWithTrackingAndProperty = createToggleItem(
+        configWithTrackingAndProperty,
+      );
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithProvider(<TestToggleWithTrackingAndProperty />, mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          settingName: 'testToggle',
+          newValue: true,
+        },
+        sensitiveProperties: {},
+      });
+    });
+  });
+
+  describe('with trackEventProperty', () => {
+    const configWithPropertyTracking: ToggleItemConfig = {
+      ...testConfig,
+      dataTestId: 'test-toggle-with-property-tracking',
+      trackEventProperty: 'test_setting_enabled',
+    };
+
+    const TestToggleWithPropertyTracking = createToggleItem(
+      configWithPropertyTracking,
+    );
+
+    it('tracks SettingsUpdated event with property name when toggled on', () => {
+      const mockStore = createMockStore({ testToggleValue: false });
+      renderWithProvider(<TestToggleWithPropertyTracking />, mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-property-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          test_setting_enabled: true,
+        },
+        sensitiveProperties: {},
+      });
+    });
+
+    it('tracks SettingsUpdated event with property name when toggled off', () => {
+      const mockStore = createMockStore({ testToggleValue: true });
+      renderWithProvider(<TestToggleWithPropertyTracking />, mockStore);
+
+      fireEvent.click(screen.getByTestId('test-toggle-with-property-tracking'));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          test_setting_enabled: false,
+        },
+        sensitiveProperties: {},
+      });
+    });
+  });
+});

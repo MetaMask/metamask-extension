@@ -49,8 +49,10 @@ export const WalletInitiatedHeader = () => {
     }
 
     if (
+      currentConfirmation.type === TransactionType.moneyAccountDeposit ||
       currentConfirmation.type === TransactionType.musdClaim ||
-      currentConfirmation.type === TransactionType.perpsDeposit
+      currentConfirmation.type === TransactionType.perpsDeposit ||
+      currentConfirmation.type === TransactionType.perpsWithdraw
     ) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
@@ -84,11 +86,17 @@ export const WalletInitiatedHeader = () => {
     ) {
       return t('shieldConfirmMembership');
     }
+    if (currentConfirmation?.type === TransactionType.moneyAccountDeposit) {
+      return t('addFunds');
+    }
     if (currentConfirmation?.type === TransactionType.musdClaim) {
       return null;
     }
     if (currentConfirmation?.type === TransactionType.perpsDeposit) {
       return t('perpsDepositFundsTitle');
+    }
+    if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
+      return t('perpsWithdrawFundsTitle');
     }
     return t('review');
   };
@@ -111,8 +119,6 @@ export const WalletInitiatedHeader = () => {
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleBackButtonClick}
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}

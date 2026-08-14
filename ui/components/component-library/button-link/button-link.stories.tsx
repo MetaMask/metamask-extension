@@ -11,7 +11,7 @@ export default {
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Use [`TextButton` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-textbutton--docs) for inline links, or [`Button`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs) with `variant={ButtonVariant.Tertiary}` for standalone link-style actions. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component) for migration details.',
       },
     },
   },

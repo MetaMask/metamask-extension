@@ -257,6 +257,22 @@ describe('LimitPriceInput', () => {
   });
 
   describe('liquidation price warnings', () => {
+    it('does not show a liquidation warning before a limit price is entered', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice=""
+          currentPrice={100}
+          liquidationPrice={200}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows liquidation warning when current price is at or below liquidation price for long', () => {
       renderWithProvider(
         <LimitPriceInput
@@ -327,6 +343,43 @@ describe('LimitPriceInput', () => {
       expect(
         screen.queryByTestId('limit-price-liquidation-warning'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('auto-focus and select-all', () => {
+    it('auto-focuses the limit price input when autoFocus is true', () => {
+      renderWithProvider(
+        <LimitPriceInput {...defaultProps} autoFocus />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).toHaveFocus();
+    });
+
+    it('does not auto-focus the limit price input when autoFocus is false', () => {
+      renderWithProvider(
+        <LimitPriceInput {...defaultProps} autoFocus={false} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toHaveFocus();
+    });
+
+    it('selects existing limit price value on focus', () => {
+      renderWithProvider(
+        <LimitPriceInput {...defaultProps} limitPrice="45000" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
     });
   });
 });

@@ -1,14 +1,27 @@
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Token / coin asset overview: send, swap, receive, and explorer actions.
+ *
+ * Screen: `#/asset/:chainId/:asset?...` asset details page.
+ * Owns: send/swap/receive/more actions, view-in-explorer, and back navigation
+ * on the token overview.
+ * Boundaries: the asset overview only. Send/swap destinations and confirmation
+ * flows belong to their page objects after leaving this screen.
+ * Related: `TokensTab` (entry), `SendPage`, `SwapPage`.
+ *
+ * @see ui/pages/asset/components/asset-page.tsx
+ */
 class TokenOverviewPage {
-  private driver: Driver;
-
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly receiveButton = {
-    text: 'Receive',
-    css: '.icon-button',
-  };
+  private readonly backButton = '.asset-page__back-button';
+
+  private driver: Driver;
+
+  private readonly moreButton = '[data-testid="coin-overview-more"]';
+
+  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   private readonly sendButton = {
     text: 'Send',
@@ -25,18 +38,34 @@ class TokenOverviewPage {
     tag: 'div',
   };
 
-  private readonly backButton = '.asset-page__back-button';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    // Try send button check
     try {
-      await this.driver.waitForMultipleSelectors([
+      const sendButtonFound = await this.driver.waitForSelector(
         this.sendButton,
-        // this.swapButton,
-      ]);
+      );
+
+      if (sendButtonFound) {
+        console.log('Token overview page is loaded');
+        return;
+      }
+    } catch (e) {
+      console.log('Failed to find send button, trying swap button', e);
+    }
+
+    // Fallback to swap button check
+    try {
+      const swapButtonFound = await this.driver.waitForSelector(
+        this.swapButton,
+      );
+
+      if (swapButtonFound) {
+        console.log('Token overview page is loaded');
+      }
     } catch (e) {
       console.log(
         'Timeout while waiting for Token overview page to be loaded',
@@ -44,10 +73,15 @@ class TokenOverviewPage {
       );
       throw e;
     }
-    console.log('Token overview page is loaded');
+  }
+
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
   }
 
   async clickReceive(): Promise<void> {
+    await this.driver.clickElement(this.moreButton);
+    await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);
   }
 
@@ -68,10 +102,6 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
-  }
-
-  async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
   }
 }
 

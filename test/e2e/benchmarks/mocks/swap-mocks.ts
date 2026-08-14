@@ -14,7 +14,11 @@
 
 import type { Mockttp } from 'mockttp';
 import { setPassThroughInterceptor } from '../../mock-e2e-pass-through';
-import { BRIDGE_FEATURE_FLAGS, CLIENT_CONFIG_FLAGS } from './mock-responses';
+import {
+  BRIDGE_FEATURE_FLAGS,
+  CLIENT_CONFIG_FLAGS,
+  solanaGetBalanceResponse,
+} from './mock-responses';
 import swapQuoteSolUsdc from './swap-quote-sol-usdc.json';
 
 /**
@@ -43,6 +47,10 @@ export function registerSwapInterceptor(mockServer: Mockttp): void {
   const sseBody = buildSseResponseBody([swapQuoteSolUsdc]);
 
   setPassThroughInterceptor(mockServer, (req) => {
+    if (req.url.includes('solana-mainnet.infura.io')) {
+      return { response: solanaGetBalanceResponse() };
+    }
+
     // Bridge feature flags (enables SSE + Solana chain)
     if (req.url.includes('bridge.api.cx.metamask.io/featureFlags')) {
       return {

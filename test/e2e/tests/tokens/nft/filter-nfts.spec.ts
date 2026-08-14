@@ -4,17 +4,18 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import NetworkManager, {
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
+import SelectNetworkModal, {
   NetworkId,
-} from '../../../page-objects/pages/network-manager';
+} from '../../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../../page-objects/pages/networks/network-filter';
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 
-describe('View NFT details', function () {
+describe('Filter NFTs by network', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  it('user should be able to view ERC721 NFT details', async function () {
+  it('displays NFTs matching the selected network filter', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -98,39 +99,33 @@ describe('View NFT details', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const networkManager = new NetworkManager(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
 
-        // Click to open the NFT details page and check title
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 
         // Show Ethereum NFTs
-        const nftListPage = new NftListPage(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await nftListPage.checkNumberOfNftsDisplayed(2);
+        const nftsTab = new NftsTab(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await nftsTab.checkNumberOfNftsDisplayed(2);
 
-        await nftListPage.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #1 on mainnet',
-        );
-        await nftListPage.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #2 on mainnet',
-        );
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
 
         // Show All NFTs
-        await networkManager.openNetworkManager();
-        await networkManager.selectAllNetworks();
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectAllNetworks();
 
-        await nftListPage.checkNumberOfNftsDisplayed(3);
+        await nftsTab.checkNumberOfNftsDisplayed(3);
 
-        await nftListPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1');
 
-        await nftListPage.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #1 on mainnet',
-        );
-        await nftListPage.checkNftNameIsDisplayed(
-          'Test Dapp NFTs #2 on mainnet',
-        );
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
+        await nftsTab.checkNftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
       },
     );
   });

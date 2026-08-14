@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
@@ -29,9 +29,8 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
-  estimateRewardsPoints,
+  getCustomerServiceToken,
   getRewardsHasAccountOptedIn,
-  getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -43,12 +42,9 @@ import {
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { useDispatch } from '../../store/hooks';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,
@@ -71,7 +67,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getMetaMetricsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -85,12 +80,14 @@ import {
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
+import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -106,7 +103,7 @@ import {
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
@@ -164,7 +161,7 @@ export const useUserLastSubscriptionByProduct = (
 };
 
 export const useCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldMembershipCancelledEvent } = useSubscriptionMetrics();
 
   const latestSubscriptionDuration = useMemo(() => {
@@ -228,7 +225,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldSubscriptionRestartRequestEvent } =
     useSubscriptionMetrics();
 
@@ -274,7 +271,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -312,7 +309,7 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   subscription?: Subscription;
   newRecurringInterval?: RecurringInterval;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -502,7 +499,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
  * @returns An object with the getSubscriptionEligibility function.
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
   const evmInternalAccount = useSelector((state) =>
@@ -586,7 +583,7 @@ export const useHandleSubscription = ({
   useTestClock?: boolean;
   rewardPoints?: number;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
@@ -735,28 +732,21 @@ export const useHandleSubscription = ({
 
 export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const metaMetricsId = useSelector(getMetaMetricsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', version);
-    if (profileId) {
-      url.searchParams.append('metamask_profile_id', profileId);
-    }
-    if (metaMetricsId) {
-      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
-    }
-    if (shieldCustomerId) {
-      url.searchParams.append('shield_id', shieldCustomerId);
-    }
-
-    const supportLinkWithUserId = url.toString();
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
+    const supportLinkWithUserId = buildSupportLinkWithUserData(
+      SUPPORT_LINK as string,
+      {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
+      },
+    );
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, metaMetricsId, shieldCustomerId]);
+  }, [version, shieldCustomerId]);
 
   return {
     handleClickContactSupport,
@@ -768,7 +758,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 }: {
   subscription?: Subscription;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
     | Pick<
         TokenWithApprovalAmount,
@@ -851,7 +841,7 @@ export const useShieldRewards = (): {
   isRewardsSeason: boolean;
   hasAccountOptedIn: boolean;
 } => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -902,78 +892,12 @@ export const useShieldRewards = (): {
     monthly: number | null;
     yearly: number | null;
   }>(async () => {
-    if (!caipAccountId) {
-      return { monthly: null, yearly: null };
-    }
+    return { monthly: null, yearly: null };
+  }, []);
 
-    try {
-      const [monthlyPointsData, yearlyPointsData] = await Promise.all([
-        dispatch(
-          estimateRewardsPoints({
-            activityType: 'SHIELD',
-            account: caipAccountId,
-            activityContext: {
-              shieldContext: {
-                recurringInterval: 'month',
-              },
-            },
-          }),
-        ),
-        dispatch(
-          estimateRewardsPoints({
-            activityType: 'SHIELD',
-            account: caipAccountId,
-            activityContext: {
-              shieldContext: {
-                recurringInterval: 'year',
-              },
-            },
-          }),
-        ),
-      ]);
-
-      return {
-        monthly: monthlyPointsData?.pointsEstimate ?? null,
-        yearly: yearlyPointsData?.pointsEstimate ?? null,
-      };
-    } catch {
-      // Points estimation may fail if no active rewards season - return null values gracefully
-      return { monthly: null, yearly: null };
-    }
-  }, [dispatch, caipAccountId]);
-
-  const {
-    value: isRewardsSeason,
-    pending: seasonPending,
-    error: seasonError,
-  } = useAsyncResult<boolean>(async () => {
-    try {
-      const seasonMetadata = await dispatch(
-        getRewardsSeasonMetadata('current'),
-      );
-
-      if (!seasonMetadata) {
-        return false;
-      }
-
-      const currentTimestamp = Date.now();
-      return (
-        currentTimestamp >= seasonMetadata.startDate &&
-        currentTimestamp <= seasonMetadata.endDate
-      );
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        // if the error is because the current season metadata is not found, return false
-        error.message.includes(
-          'No valid season metadata could be found for type',
-        )
-      ) {
-        return false;
-      }
-      throw error;
-    }
-  }, [dispatch]);
+  const isRewardsSeason = false;
+  const seasonPending = false;
+  const seasonError: Error | null = null;
 
   // if there is an error, return null values for points and season so it will not block the UI
   if (pointsError || seasonError || hasAccountOptedInResultError) {

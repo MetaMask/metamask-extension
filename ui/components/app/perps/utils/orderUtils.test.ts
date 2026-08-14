@@ -1,9 +1,14 @@
-import type { Order, Position } from '@metamask/perps-controller';
+import type { Order, OrderParams, Position } from '@metamask/perps-controller';
 import {
   isOrderAssociatedWithFullPosition,
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   normalizeMarketDetailsOrders,
+  derivePositionTpslPricesFromOrders,
+  willFlipPosition,
+  formatOrderLabel,
+  getOrderStatusI18nKey,
+  isOrderNoLongerOpenError,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -65,13 +70,34 @@ describe('orderUtils', () => {
       expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
     });
 
-    it('returns false when isPositionTpsl is explicitly false', () => {
+    it('returns false when isPositionTpsl is explicitly false on a non-trigger order', () => {
       const order = makeOrder({
         reduceOnly: true,
         isPositionTpsl: false,
         symbol: 'ETH',
         side: 'sell',
         size: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
+    });
+
+    it('returns false for a TP/SL trigger with isPositionTpsl=false even when size matches the position (limit-order child)', () => {
+      // A limit-order's TP/SL children also carry isPositionTpsl=false with
+      // isTrigger=true. If the limit size coincidentally equals the active
+      // position size, size-matching would misclassify them as full-position
+      // and hide them from the Orders section. The explicit `false` flag is
+      // authoritative — trust the provider over size coincidence.
+      const order = makeOrder({
+        reduceOnly: true,
+        isPositionTpsl: false,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3300',
+        detailedOrderType: 'Take Profit Limit',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
@@ -115,27 +141,24 @@ describe('orderUtils', () => {
   });
 
   describe('shouldDisplayOrderInMarketDetailsOrders', () => {
-    it('shows non-reduce-only orders', () => {
-      const order = makeOrder({ reduceOnly: false });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
+    it('includes non-reduce-only and limit orders', () => {
+      expect(shouldDisplayOrderInMarketDetailsOrders(makeOrder())).toBe(true);
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(
+          makeOrder({ orderType: 'limit', reduceOnly: false }),
+        ),
+      ).toBe(true);
     });
 
-    it('shows limit orders', () => {
-      const order = makeOrder({ orderType: 'limit', reduceOnly: false });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
-    });
-
-    it('shows trigger orders that are not position-attached', () => {
-      const order = makeOrder({
+    it('includes trigger orders and partial reduce-only closes', () => {
+      const triggerOrder = makeOrder({
         isTrigger: true,
         reduceOnly: false,
         triggerPrice: '3200.00',
       });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(true);
-    });
+      expect(shouldDisplayOrderInMarketDetailsOrders(triggerOrder)).toBe(true);
 
-    it('shows reduce-only orders not associated with full position', () => {
-      const order = makeOrder({
+      const partialClose = makeOrder({
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -143,13 +166,14 @@ describe('orderUtils', () => {
         originalSize: '0.5',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order, position)).toBe(
-        true,
-      );
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(partialClose, position),
+      ).toBe(true);
     });
 
-    it('hides reduce-only orders associated with full position', () => {
-      const order = makeOrder({
+    it('includes full-position plain reduce-only limit closes', () => {
+      const fullClose = makeOrder({
+        orderType: 'limit',
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -157,17 +181,224 @@ describe('orderUtils', () => {
         originalSize: '1.0',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order, position)).toBe(
-        false,
+      expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
+        true,
       );
     });
 
-    it('hides orders with isPositionTpsl true', () => {
-      const order = makeOrder({
+    it('excludes orders flagged as position TP/SL', () => {
+      const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
-      expect(shouldDisplayOrderInMarketDetailsOrders(order)).toBe(false);
+      expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+    });
+
+    it('excludes full-position TP/SL identified by detailed order type', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const positionTpsl = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        detailedOrderType: 'Take Profit Limit',
+      });
+
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpsl, position),
+      ).toBe(false);
+    });
+
+    it('excludes zero-size reduce-only trigger orders matching the position even without isPositionTpsl flag', () => {
+      // Hyperliquid positionTPSL trigger orders carry size '0' (whole-position
+      // trigger). WebSocket order updates omit isPositionTpsl, so the UI must
+      // still recognise the order as full-position when size is zero and the
+      // trigger matches the active position.
+      const positionTpslNoFlag = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Market',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpslNoFlag, position),
+      ).toBe(false);
+    });
+
+    it('keeps a flag-less zero-size reduce-only trigger visible when no matching position exists', () => {
+      const orphanTpsl = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '3200.00',
+      });
+      expect(shouldDisplayOrderInMarketDetailsOrders(orphanTpsl)).toBe(true);
+    });
+
+    it('keeps a flag-less zero-size reduce-only order without isTrigger visible (cannot infer position binding)', () => {
+      const zeroSizeNonTrigger = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(zeroSizeNonTrigger, position),
+      ).toBe(true);
+    });
+  });
+
+  describe('willFlipPosition', () => {
+    const makeParams = (overrides: Partial<OrderParams> = {}): OrderParams =>
+      ({
+        symbol: 'ETH',
+        isBuy: false,
+        size: '2.0',
+        orderType: 'market',
+        ...overrides,
+      }) as OrderParams;
+
+    it('returns false for reduce-only orders', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ reduceOnly: true }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for limit orders', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ orderType: 'limit' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when order direction matches position direction', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: true, size: '5.0' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true when opposing market order exceeds the position size', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: false, size: '2.0' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when opposing market order matches the position size (full close, no flip)', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: false, size: '1.0' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('strips thousand separators from position and order sizes before comparing', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '2,000' }),
+        ),
+      ).toBe(true);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '500' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the current position size is zero (no phantom direction)', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: false, size: '1.0' }),
+        ),
+      ).toBe(false);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: true, size: '1.0' }),
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe('derivePositionTpslPricesFromOrders', () => {
+    it('returns empty when no position is provided', () => {
+      const order = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: true,
+        triggerPrice: '3200',
+        detailedOrderType: 'Take Profit Market',
+      });
+      expect(derivePositionTpslPricesFromOrders([order])).toEqual({});
+    });
+
+    it('returns TP and SL prices from positionTPSL trigger orders matching the position', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const tp = makeOrder({
+        orderId: 'tp',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: true,
+        symbol: 'ETH',
+        side: 'sell',
+        triggerPrice: '3200',
+        detailedOrderType: 'Take Profit Market',
+      });
+      const sl = makeOrder({
+        orderId: 'sl',
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '2800',
+        detailedOrderType: 'Stop Market',
+      });
+      expect(derivePositionTpslPricesFromOrders([tp, sl], position)).toEqual({
+        takeProfitPrice: '3200',
+        stopLossPrice: '2800',
+      });
+    });
+
+    it('ignores non-positionTPSL trigger orders', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const limitTrigger = makeOrder({
+        reduceOnly: false,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        triggerPrice: '3300',
+        detailedOrderType: 'Stop Limit',
+      });
+      expect(
+        derivePositionTpslPricesFromOrders([limitTrigger], position),
+      ).toEqual({});
     });
   });
 
@@ -254,6 +485,65 @@ describe('orderUtils', () => {
       expect(syntheticOrders).toHaveLength(0);
     });
 
+    it('does not add synthetic row when a real trigger shares the parent order id', () => {
+      // perps-controller v11 populates `parentOrderId` on real TP/SL children
+      // streamed over the WebSocket, where previously only client-built
+      // synthetic rows carried it. The parent here has no takeProfitOrderId and
+      // the real trigger has an unrelated orderId, so the child-link path is the
+      // only thing that can suppress the duplicate row.
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const realTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-1',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        realTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(0);
+      expect(result.map((o) => o.orderId)).toStrictEqual([
+        'parent-1',
+        'real-tp-9',
+      ]);
+    });
+
+    it('adds synthetic row when a real trigger does not share the parent order id', () => {
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const unrelatedTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-2',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        unrelatedTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(1);
+    });
+
     it('skips synthetic rows for trigger orders (no recursion)', () => {
       const triggerOrder = makeOrder({
         isTrigger: true,
@@ -289,7 +579,7 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
-    it('hides full-position TP/SL reduce-only orders', () => {
+    it('excludes full-position TP/SL reduce-only orders flagged as positionTpsl', () => {
       const tpslOrder = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
@@ -298,6 +588,25 @@ describe('orderUtils', () => {
         detailedOrderType: 'Take Profit Limit',
       });
       const result = normalizeMarketDetailsOrders({ orders: [tpslOrder] });
+      expect(result).toHaveLength(0);
+    });
+
+    it('excludes reduce-only TP/SL whose size matches the full position', () => {
+      const tpslOrder = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        isTrigger: true,
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Limit',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [tpslOrder],
+        existingPosition: position,
+      });
       expect(result).toHaveLength(0);
     });
 
@@ -317,7 +626,25 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
-    it('adds synthetic TP/SL rows and filters them through position check', () => {
+    it('shows full-position plain limit-close orders', () => {
+      const fullClose = makeOrder({
+        orderType: 'limit',
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [fullClose],
+        existingPosition: position,
+      });
+
+      expect(result).toHaveLength(1);
+    });
+
+    it('adds synthetic TP/SL rows and keeps them in the list', () => {
       const limitOrder = makeOrder({
         orderType: 'limit',
         reduceOnly: false,
@@ -328,6 +655,185 @@ describe('orderUtils', () => {
         orders: [limitOrder],
       });
       expect(result).toHaveLength(3);
+    });
+  });
+
+  describe('formatOrderLabel', () => {
+    it('returns "Limit long" for a plain buy limit order', () => {
+      const order = makeOrder({ side: 'buy', orderType: 'limit' });
+      expect(formatOrderLabel(order)).toBe('Limit long');
+    });
+
+    it('returns "Limit short" for a plain sell limit order', () => {
+      const order = makeOrder({ side: 'sell', orderType: 'limit' });
+      expect(formatOrderLabel(order)).toBe('Limit short');
+    });
+
+    it('returns "Market long" for a plain buy market order', () => {
+      const order = makeOrder({ side: 'buy', orderType: 'market' });
+      expect(formatOrderLabel(order)).toBe('Market long');
+    });
+
+    it('returns "Market short" for a plain sell market order', () => {
+      const order = makeOrder({ side: 'sell', orderType: 'market' });
+      expect(formatOrderLabel(order)).toBe('Market short');
+    });
+
+    it('returns "Limit close long" for a reduce-only sell limit order', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Limit close long');
+    });
+
+    it('returns "Limit close short" for a reduce-only buy limit order', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'limit',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Limit close short');
+    });
+
+    it('returns "Market close long" for a reduce-only sell market order', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Market close long');
+    });
+
+    it('returns "Market close short" for a reduce-only buy market order', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        reduceOnly: true,
+      });
+      expect(formatOrderLabel(order)).toBe('Market close short');
+    });
+
+    it('returns "Take profit limit close long" for a TP trigger (sell)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Limit',
+      });
+      expect(formatOrderLabel(order)).toBe('Take profit limit close long');
+    });
+
+    it('returns "Take profit market close short" for a TP trigger (buy)', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Take Profit Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Take profit market close short');
+    });
+
+    it('returns "Stop limit close long" for a SL trigger (sell)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'limit',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Stop Limit',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop limit close long');
+    });
+
+    it('returns "Stop market close short" for a SL trigger (buy)', () => {
+      const order = makeOrder({
+        side: 'buy',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: true,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market close short');
+    });
+
+    it('treats a non-reduce-only trigger as an opening order', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market short');
+    });
+
+    it('treats a position TP/SL order as closing', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: false,
+        isPositionTpsl: true,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market close long');
+    });
+  });
+
+  describe('getOrderStatusI18nKey', () => {
+    // @ts-expect-error: each is a valid test function in jest
+    it.each([
+      ['Open', 'perpsStatusOpen'],
+      ['open', 'perpsStatusOpen'],
+      ['Filled', 'perpsStatusFilled'],
+      ['Canceled', 'perpsStatusCanceled'],
+      ['Queued', 'perpsStatusQueued'],
+      ['Rejected', 'perpsStatusRejected'],
+      ['Triggered', 'perpsStatusTriggered'],
+    ])(
+      'maps status text "%s" to i18n key "%s"',
+      (statusText: string, expectedKey: string) => {
+        expect(getOrderStatusI18nKey(statusText)).toBe(expectedKey);
+      },
+    );
+
+    it('defaults to the "open" i18n key for an unrecognized status', () => {
+      expect(getOrderStatusI18nKey('SomeUnknownStatus')).toBe(
+        'perpsStatusOpen',
+      );
+    });
+
+    it('defaults to the "open" i18n key when status text is undefined', () => {
+      expect(getOrderStatusI18nKey(undefined)).toBe('perpsStatusOpen');
+    });
+  });
+
+  describe('isOrderNoLongerOpenError', () => {
+    it('matches the provider rejection for an order that is already gone', () => {
+      const error = new Error(
+        'cancel 0: Order was never placed, already canceled, or filled. asset=4',
+      );
+
+      expect(isOrderNoLongerOpenError(error)).toBe(true);
+    });
+
+    it('matches the rejection when it arrives as a plain string', () => {
+      expect(
+        isOrderNoLongerOpenError(
+          'Order 0: Order was never placed, already canceled, or filled',
+        ),
+      ).toBe(true);
+    });
+
+    it('does not match an unrelated failure', () => {
+      expect(isOrderNoLongerOpenError(new Error('Network error'))).toBe(false);
+    });
+
+    it('does not match a missing error', () => {
+      expect(isOrderNoLongerOpenError(undefined)).toBe(false);
     });
   });
 });

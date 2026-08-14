@@ -14,6 +14,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  Skeleton,
 } from '@metamask/design-system-react';
 import {
   Modal,
@@ -24,11 +25,17 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '../../../components/component-library';
-import { Skeleton } from '../../../components/component-library/skeleton';
 
 import { EditGasModes } from '../../../../shared/constants/gas';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
+import {
+  getAppIsLoading,
+  getSelectedAccount,
+  getShouldShowFiat,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import { isBalanceSufficient } from '../send-utils/send.utils';
 import {
   GasFeeModalContextProvider,
   GasFeeModalWrapper,
@@ -37,10 +44,9 @@ import {
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
 import {
-  getAppIsLoading,
-  getShouldShowFiat,
   selectNetworkConfigurationByChainId,
-} from '../../../selectors';
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 import { ConfirmInfoSection } from '../../../components/app/confirm/info/row/section';
 import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxFees';
@@ -85,8 +91,9 @@ const NetworkFeeRow = ({
 }: NetworkFeeRowProps) => {
   const t = useI18nContext();
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const source =
@@ -144,6 +151,7 @@ const NetworkFeeRow = ({
 
 type SpeedRowProps = {
   chainId: string;
+  networkClientId?: string;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
   userFeeLevelOverride?: string;
@@ -151,6 +159,7 @@ type SpeedRowProps = {
 
 const SpeedRow = ({
   chainId,
+  networkClientId,
   maxFeePerGas,
   maxPriorityFeePerGas,
   userFeeLevelOverride,
@@ -161,6 +170,7 @@ const SpeedRow = ({
       <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
+          networkClientId={networkClientId}
           maxFeePerGas={maxFeePerGas}
           maxPriorityFeePerGas={maxPriorityFeePerGas}
           userFeeLevelOverride={userFeeLevelOverride}
@@ -196,6 +206,7 @@ const GasFeesSection = ({ transaction }: GasFeesSectionProps) => {
 
       <SpeedRow
         chainId={transaction.chainId}
+        networkClientId={transaction.networkClientId}
         maxFeePerGas={maxFeePerGas}
         maxPriorityFeePerGas={maxPriorityFeePerGas}
         userFeeLevelOverride={transaction.userFeeLevel}
@@ -224,9 +235,11 @@ const DescriptionSection = ({ isCancel }: { isCancel: boolean }) => {
 const ConfirmButton = ({
   onClick,
   disabled,
+  hasInsufficientBalance,
 }: {
   onClick: () => void;
   disabled?: boolean;
+  hasInsufficientBalance?: boolean;
 }) => {
   const t = useI18nContext();
   return (
@@ -237,7 +250,7 @@ const ConfirmButton = ({
       disabled={disabled}
       data-testid="cancel-speedup-confirm-button"
     >
-      {t('confirm')}
+      {hasInsufficientBalance ? t('insufficientFundsSend') : t('confirm')}
     </Button>
   );
 };
@@ -281,6 +294,22 @@ const CancelSpeedupModal = ({
   const t = useI18nContext();
   const isCancel = mode === EditGasModes.cancel;
 
+  const selectedAccount = useSelector(getSelectedAccount);
+
+  const hasEnoughBalance = isInitialGasReady
+    ? isBalanceSufficient({
+        amount: '0x0',
+        gasTotal: getMaximumGasTotalInHexWei({
+          gasLimit:
+            effectiveTransaction.txParams?.gas ??
+            effectiveTransaction.txParams?.gasLimit,
+          gasPrice: effectiveTransaction.txParams?.gasPrice,
+          maxFeePerGas: effectiveTransaction.txParams?.maxFeePerGas,
+        }),
+        balance: selectedAccount?.balance,
+      })
+    : true;
+
   const handleSubmit = () => {
     const action = isCancel ? cancelTransaction : speedUpTransaction;
     submitTransaction(action, isCancel);
@@ -309,7 +338,11 @@ const CancelSpeedupModal = ({
           <DescriptionSection isCancel={isCancel} />
         </Box>
         <ModalFooter>
-          <ConfirmButton onClick={handleSubmit} disabled={!isInitialGasReady} />
+          <ConfirmButton
+            onClick={handleSubmit}
+            disabled={!isInitialGasReady || !hasEnoughBalance}
+            hasInsufficientBalance={isInitialGasReady && !hasEnoughBalance}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>

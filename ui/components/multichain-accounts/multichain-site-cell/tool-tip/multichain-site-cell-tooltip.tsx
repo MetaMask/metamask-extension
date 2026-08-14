@@ -1,26 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 import { Tooltip } from 'react-tippy';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-} from '@metamask/design-system-react';
-import {
-  AlignItems,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
   Text,
-} from '../../../component-library';
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
@@ -69,20 +65,17 @@ const TooltipContent = React.memo<TooltipContentProps>(
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
         data-test-id="site-cell-tooltip"
       >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column}>
           {displayAccountGroups.map((acc) => (
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
-              textAlign={TextAlign.Left}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
               key={acc.id}
               padding={1}
-              paddingInline={2}
+              paddingHorizontal={2}
               gap={2}
             >
               <AvatarAccount
@@ -91,9 +84,11 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 variant={avatarAccountVariant}
               />
               <Text
-                color={TextColor.overlayInverse}
-                variant={TextVariant.bodyMdMedium}
+                color={TextColor.OverlayInverse}
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
                 data-testid="accounts-list-item-connected-account-name"
+                textAlign={TextAlign.Left}
                 ellipsis
               >
                 {acc.metadata.name}
@@ -102,25 +97,25 @@ const TooltipContent = React.memo<TooltipContentProps>(
           ))}
           {displayNetworks.map((network) => (
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
-              textAlign={TextAlign.Left}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
               key={network.chainId}
               padding={1}
-              paddingInline={2}
+              paddingHorizontal={2}
               gap={2}
             >
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                 name={network.name}
-                borderStyle={BorderStyle.none}
+                className="border-0"
               />
               <Text
-                color={TextColor.overlayInverse}
-                variant={TextVariant.bodyMdMedium}
+                color={TextColor.OverlayInverse}
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
                 data-testid="accounts-list-item-connected-account-name"
+                textAlign={TextAlign.Left}
                 ellipsis
               >
                 {network.name}
@@ -132,15 +127,16 @@ const TooltipContent = React.memo<TooltipContentProps>(
             hasMoreAccounts &&
             moreAccountsText && (
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                textAlign={TextAlign.Left}
-                paddingInline={2}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                paddingHorizontal={2}
               >
                 <Text
-                  color={TextColor.textMuted}
-                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.TextMuted}
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
                   data-testid="accounts-list-item-plus-more-tooltip"
+                  textAlign={TextAlign.Left}
                 >
                   {moreAccountsText}
                 </Text>
@@ -151,15 +147,16 @@ const TooltipContent = React.memo<TooltipContentProps>(
             hasMoreNetworks &&
             moreNetworksText && (
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                textAlign={TextAlign.Left}
-                paddingInline={2}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                paddingHorizontal={2}
               >
                 <Text
-                  color={TextColor.textMuted}
-                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.TextMuted}
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
                   data-testid="networks-list-item-plus-more-tooltip"
+                  textAlign={TextAlign.Left}
                 >
                   {moreNetworksText}
                 </Text>
@@ -178,9 +175,12 @@ export const MultichainSiteCellTooltip =
     const t = useI18nContext();
     const avatarAccountVariant = useSelector(getAvatarType);
 
-    const seedAddresses = useSelector((state: MultichainAccountsState) =>
-      getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
+    const selectSeedAddresses = useCallback(
+      (state: MultichainAccountsState) =>
+        getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
+      [accountGroups],
     );
+    const seedAddresses = useSelector(selectSeedAddresses, isEqual);
 
     const avatarAccountsData = useMemo(() => {
       return (

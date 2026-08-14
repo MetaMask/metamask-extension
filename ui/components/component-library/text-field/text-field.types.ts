@@ -22,8 +22,10 @@ export enum TextFieldType {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface TextFieldStyleUtilityProps
-  extends Omit<StyleUtilityProps, 'type'> {
+export interface TextFieldStyleUtilityProps extends Omit<
+  StyleUtilityProps,
+  'type'
+> {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
    */

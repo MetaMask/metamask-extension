@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -15,6 +15,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Modal,
   ModalContent,
@@ -24,29 +25,48 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getSocialLoginType } from '../../../selectors';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
+import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
+import { resetWallet } from '../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
+const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
+
 type LoginErrorModalProps = {
-  onDone: () => void;
+  onClose: () => void;
   loginError: LoginErrorType;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+/**
+ * Modal component to display social login error messages.
+ * Upon acknowledgement, the modal is closed and the wallet is reset for the un-recoverable errors.
+ * User will be redirected to the onboarding start page and restart the onboarding flow.
+ * So that the user can re-login with the same social login method and access the same account.
+ *
+ * @param props - The component props
+ * @param props.onClose - The function to call when the modal is closed
+ * @param props.loginError - The type of login error that occurred
+ */
 export default function LoginErrorModal({
-  onDone,
+  onClose,
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
   const socialLoginType = useSelector(getSocialLoginType);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isTelegramOutdated = loginError === LOGIN_ERROR.TELEGRAM_OUTDATED;
 
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {
@@ -54,6 +74,9 @@ export default function LoginErrorModal({
     }
     if (loginError === LOGIN_ERROR.SESSION_EXPIRED) {
       return t('loginErrorSessionExpiredTitle');
+    }
+    if (isTelegramOutdated) {
+      return t('loginErrorTelegramOutdatedTitle');
     }
     return t('loginErrorGenericTitle');
   };
@@ -68,6 +91,9 @@ export default function LoginErrorModal({
     if (loginError === LOGIN_ERROR.RESET_WALLET && socialLoginType) {
       return t('loginErrorResetWalletDescription', [socialLoginType]);
     }
+    if (isTelegramOutdated) {
+      return t('loginErrorTelegramOutdatedDescription');
+    }
 
     return t('loginErrorGenericDescription', [
       <TextButton
@@ -75,19 +101,13 @@ export default function LoginErrorModal({
         size={TextButtonSize.BodyMd}
         onClick={() => {
           trackEvent(
-            {
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
+            createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+              .addCategory(MetaMetricsEventCategory.Onboarding)
+              .addProperties({
                 url: SUPPORT_LINK,
-                location: 'Welcome page',
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
+                location: segmentContext.page?.title ?? 'Welcome page',
+              })
+              .build(),
           );
         }}
         asChild
@@ -110,11 +130,41 @@ export default function LoginErrorModal({
     return t('loginErrorGenericButton');
   };
 
+  const handleConfirm = async () => {
+    onClose();
+
+    // reset wallet for the un-recoverable errors
+    if (loginError === LOGIN_ERROR.RESET_WALLET) {
+      const isPopupOrSidePanel = isPopupOrSidePanelEnvironment();
+      await dispatch(resetWallet());
+
+      if (isPopupOrSidePanel) {
+        globalThis.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+      } else {
+        navigate(DEFAULT_ROUTE, { replace: true });
+      }
+    }
+  };
+
+  const handleUpdateTelegramClick = () => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          url: TELEGRAM_DESKTOP_UPDATE_URL,
+          location: 'Telegram outdated modal',
+        })
+        .build(),
+    );
+    globalThis.platform.openTab({ url: TELEGRAM_DESKTOP_UPDATE_URL });
+    onClose();
+  };
+
   return (
-    <Modal isOpen onClose={onDone} data-testid="login-error-modal">
+    <Modal isOpen onClose={onClose} data-testid="login-error-modal">
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
-        <ModalHeader onClose={onDone}>
+        <ModalHeader onClose={onClose}>
           <Box className="text-center">
             <Icon
               name={IconName.Danger}
@@ -133,15 +183,27 @@ export default function LoginErrorModal({
         <Box paddingLeft={4} paddingRight={4}>
           <Text variant={TextVariant.BodyMd}>{getDescription()}</Text>
           <Box marginTop={6}>
-            <Button
-              data-testid="login-error-modal-button"
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              onClick={onDone}
-              className="w-full"
-            >
-              {getButtonText()}
-            </Button>
+            {isTelegramOutdated ? (
+              <Button
+                data-testid="login-error-modal-update-telegram-button"
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={handleUpdateTelegramClick}
+                className="w-full"
+              >
+                {t('loginErrorTelegramOutdatedButton')}
+              </Button>
+            ) : (
+              <Button
+                data-testid="login-error-modal-button"
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={handleConfirm}
+                className="w-full"
+              >
+                {getButtonText()}
+              </Button>
+            )}
           </Box>
         </Box>
       </ModalContent>

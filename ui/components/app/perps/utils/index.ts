@@ -21,6 +21,9 @@ export {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
+  derivePositionTpslPricesFromOrders,
+  willFlipPosition,
+  formatOrderLabel,
 } from './orderUtils';
 
 export { formatPerpsPrice, type PerpsPriceRange } from './formatPerpsPrice';

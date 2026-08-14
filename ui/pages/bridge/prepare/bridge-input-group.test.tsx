@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import {
+  FeatureId,
   RequestStatus,
+  UnifiedSwapBridgeEventName,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { CaipAssetType } from '@metamask/utils';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
+import { SWAP_PATH } from '../../../helpers/constants/routes';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -21,13 +27,29 @@ import {
 } from '../../../ducks/bridge/selectors';
 import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import BridgeAssetPickerPage from '../asset-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 
 /** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
 const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
 
 const mockUseVirtualizer = jest.fn();
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+
+const mockTrackUnifiedSwapBridgeEvent = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 jest.mock('lodash/debounce', () => ({
   ...jest.requireActual('lodash/debounce'),
@@ -125,7 +147,7 @@ const InputGroup = ({
     <BridgeInputGroup
       header={'Swap'}
       token={getFromToken(mockState)}
-      onAssetChange={(asset) => {
+      onAssetChange={(asset: BridgeToken) => {
         actions.setFromToken(asset);
       }}
       networks={getFromChains(mockState)}
@@ -152,6 +174,37 @@ const renderBridgeInputGroup = (
 
   return renderWithProvider(
     <InputGroup mockState={mockState} {...props} />,
+    configureStore(mockState),
+  );
+};
+
+// When the network management feature flag is enabled, token selection happens
+// on a dedicated page instead of the modal. This renders that page directly,
+// mirroring how `BridgeInputGroup` navigates to it. The picker's "source vs
+// destination" mode is derived from the bridge slice flags.
+const renderAssetPickerPage = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  {
+    isDestination = false,
+    isSrcAssetPickerOpen,
+    isDestAssetPickerOpen,
+  }: {
+    isDestination?: boolean;
+    isSrcAssetPickerOpen?: boolean;
+    isDestAssetPickerOpen?: boolean;
+  } = {},
+) => {
+  const mockState = createBridgeMockStore({
+    ...stateOverrides,
+    bridgeSliceOverrides: {
+      ...stateOverrides.bridgeSliceOverrides,
+      isSrcAssetPickerOpen: isSrcAssetPickerOpen ?? !isDestination,
+      isDestAssetPickerOpen: isDestAssetPickerOpen ?? isDestination,
+    },
+  });
+
+  return renderWithProvider(
+    <BridgeAssetPickerPage />,
     configureStore(mockState),
   );
 };
@@ -201,6 +254,11 @@ describe('BridgeInputGroup', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
+    setBackgroundConnection({
+      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      getStatePatches: jest.fn(),
+    } as never);
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -211,6 +269,100 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'default',
+    });
+  });
+
+  // @ts-expect-error - each is a valid test function
+  it.each([
+    [false, 'source'],
+    [true, 'destination'],
+  ] as const)(
+    'tracks opening the %s asset picker',
+    async (isDestination: boolean, assetLocation: 'source' | 'destination') => {
+      renderBridgeInputGroup(
+        {
+          featureFlagOverrides: {
+            // @ts-expect-error - the mock store type only declares bridgeConfig
+            extensionUxNetworkManagement: {
+              enabled: true,
+              minimumVersion: '0.0.0',
+            },
+          },
+        },
+        { isDestination },
+      );
+
+      await act(async () => {
+        await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
+      });
+      await flushPromises();
+
+      expect(mockTrackUnifiedSwapBridgeEvent).toHaveBeenCalledWith(
+        UnifiedSwapBridgeEventName.AssetPickerOpened,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_location: assetLocation,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+        },
+      );
+    },
+  );
+
+  it('passes fetched security metadata to the selected asset button', () => {
+    const { getByTestId } = renderBridgeInputGroup(
+      {},
+      { tokenSecurityData: { isVerified: true } },
+    );
+
+    expect(
+      getByTestId('bridge-selected-asset-verified-badge'),
+    ).toBeInTheDocument();
+  });
+
+  it('leaves the selected asset button unchanged without fetched metadata', () => {
+    const { queryByTestId } = renderBridgeInputGroup();
+
+    expect(
+      queryByTestId('bridge-selected-asset-verified-badge'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('moves the caret only when the input denomination changes', () => {
+    const mockState = createBridgeMockStore();
+    const view = renderWithProvider(
+      <InputGroup mockState={mockState} />,
+      configureStore(mockState),
+    );
+    const input = view.getByTestId('from-amount') as HTMLInputElement;
+    const setSelectionRangeSpy = jest.spyOn(input, 'setSelectionRange');
+
+    act(() => {
+      view.rerender(
+        <InputGroup
+          mockState={mockState}
+          amountFieldProps={{
+            testId: 'from-amount',
+            autoFocus: true,
+            value: '12',
+          }}
+        />,
+      );
+    });
+
+    expect(setSelectionRangeSpy).not.toHaveBeenCalled();
+
+    act(() => {
+      view.rerender(<InputGroup mockState={mockState} amountInputPrefix="$" />);
+    });
+
+    expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should search for tokens', async () => {
@@ -370,6 +522,110 @@ describe('BridgeInputGroup', () => {
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
+  it('replaces the asset picker route when closing the page', async () => {
+    setupFetchMock();
+
+    renderAssetPickerPage();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
+    });
+
+    await userEvent.click(screen.getByLabelText(messages.back.message));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      { pathname: SWAP_PATH, search: '' },
+      { replace: true, state: { token: undefined } },
+    );
+  });
+
+  it('clears picker flags when browser navigation unmounts the page', async () => {
+    setupFetchMock();
+    const setDestinationPickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsDestAssetPickerOpen',
+    );
+    const setSourcePickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsSrcAssetPickerOpen',
+    );
+
+    const { unmount } = renderAssetPickerPage(
+      {
+        metamaskStateOverrides: {
+          featureFlagOverrides: {
+            extensionUxNetworkManagement: false,
+          },
+        },
+      },
+      {
+        isSrcAssetPickerOpen: true,
+        isDestAssetPickerOpen: false,
+      },
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
+    });
+
+    unmount();
+
+    expect(setDestinationPickerOpenSpy).not.toHaveBeenCalled();
+    expect(setSourcePickerOpenSpy).not.toHaveBeenCalled();
+    setDestinationPickerOpenSpy.mockRestore();
+    setSourcePickerOpenSpy.mockRestore();
+  });
+
+  it('uses the source picker when both picker flags are stale-open', async () => {
+    setupFetchMock(
+      undefined,
+      false,
+      tokens.slice(0, 2).concat(tokensWithBalance),
+    );
+
+    const stateOverrides = {
+      featureFlagOverrides: {
+        extensionUxNetworkManagement: true,
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: MultichainNetworks.BITCOIN },
+            { chainId: formatChainIdToCaip(1) },
+            { chainId: formatChainIdToCaip(10) },
+            { chainId: formatChainIdToCaip(137) },
+            { chainId: formatChainIdToCaip(56) },
+            { chainId: MultichainNetworks.TRON },
+          ],
+        },
+      },
+    };
+
+    const { getByTestId } = renderAssetPickerPage(stateOverrides, {
+      isSrcAssetPickerOpen: true,
+      isDestAssetPickerOpen: true,
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+    });
+
+    await act(async () => {
+      await getByTestId('multichain-asset-picker__network').click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('bridge-network-picker-popover')).toBeVisible();
+    });
+
+    expect(
+      screen.getAllByTestId(/bridge-network-picker-popover-item-/u),
+    ).toHaveLength(6);
+  });
+
   // @ts-expect-error - each is a valid test function
   it.each([
     [
@@ -378,7 +634,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 7 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 6 },
     ],
     [
       'destination',
@@ -390,7 +646,7 @@ describe('BridgeInputGroup', () => {
       },
       getToChains,
       true,
-      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 8 },
+      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 7 },
     ],
   ])(
     'should render %s networks',
@@ -398,7 +654,7 @@ describe('BridgeInputGroup', () => {
       _description: string,
       getToken: typeof getFromToken,
       enabledNetworkMap: Record<string, Record<string, boolean>>,
-      getChains: typeof getFromChains,
+      _getChains: typeof getFromChains,
       isDestination: boolean,
       {
         expectedDefaultToken,
@@ -411,11 +667,19 @@ describe('BridgeInputGroup', () => {
         tokens.slice(0, 2).concat(tokensWithBalance),
       );
 
+      mockUseLocation.mockReturnValue({
+        pathname: '/',
+        search: isDestination ? '?field=dest' : '',
+        hash: '',
+        state: null,
+        key: 'default',
+      });
       const stateOverrides = {
         metamaskStateOverrides: {
           enabledNetworkMap,
         },
         featureFlagOverrides: {
+          extensionUxNetworkManagement: true,
           bridgeConfig: {
             chainRanking: [
               { chainId: MultichainNetworks.SOLANA },
@@ -430,18 +694,17 @@ describe('BridgeInputGroup', () => {
         },
       };
       const mockState = createBridgeMockStore(stateOverrides);
+      // Ensure the default token is what we expect for this picker mode.
+      expect(getToken(mockState).symbol).toBe(expectedDefaultToken);
 
-      const { getByTestId } = renderBridgeInputGroup(stateOverrides, {
+      const { getByTestId } = renderAssetPickerPage(stateOverrides, {
         isDestination,
-        token: getToken(mockState),
-        networks: getChains(mockState),
       });
 
-      expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent(
-        expectedDefaultToken,
-      );
-
-      await openAssetPicker();
+      await waitFor(() => {
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+      });
+      await flushPromises();
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
@@ -457,20 +720,29 @@ describe('BridgeInputGroup', () => {
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
-      expect(
-        networkPickerPopover.getElementsByTagName('p').length,
-      ).toStrictEqual(expectedNetworkCount);
 
-      await act(async () => {
-        await userEvent.click(
-          networkPickerPopover.getElementsByTagName('p')[1],
-        );
-      });
+      const networkItems = screen.getAllByTestId(
+        /bridge-network-picker-popover-item-/u,
+      );
+      expect(networkItems).toHaveLength(expectedNetworkCount);
+
+      const solanaNetworkItem = screen.getByTestId(
+        'network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+      // `mousedown` reproduces the real-browser sequence: the asset picker's
+      // outside-click handler runs on `mousedown` (before `click`) and must not
+      // close the asset picker when selecting a network.
+      fireEvent.mouseDown(solanaNetworkItem);
+      fireEvent.click(solanaNetworkItem);
       await waitFor(() => {
-        expect(networkPickerPopover).not.toBeVisible();
+        // The asset picker stays open; only the network picker closes.
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+        expect(
+          screen.queryByTestId('bridge-network-picker-popover'),
+        ).not.toBeInTheDocument();
         expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',
@@ -484,6 +756,8 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
+                isVerified: undefined,
+                securityData: undefined,
               },
               {
                 accountType: 'solana:data-account',
@@ -498,14 +772,16 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
+                isVerified: undefined,
+                securityData: undefined,
               },
             ],
-            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
+            fetchTokens: expect.any(Function),
           }),
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',

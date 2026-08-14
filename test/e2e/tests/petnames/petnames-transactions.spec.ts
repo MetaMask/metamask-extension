@@ -5,7 +5,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { Driver } from '../../webdriver/driver';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
@@ -21,6 +21,8 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
+        // TODO: Remove once the issue #32084 is fixed: Transaction with id _ID_ not found
+        ignoredConsoleErrors: ['Transaction with id'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -67,6 +69,8 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
+        // TODO: Remove once the issue #32084 is fixed: Transaction with id _ID_ not found
+        ignoredConsoleErrors: ['Transaction with id'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

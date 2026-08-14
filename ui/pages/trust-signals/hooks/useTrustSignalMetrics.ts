@@ -3,27 +3,29 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useConfirmContext } from '../../confirmations/context/confirm';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isSignatureTransactionType } from '../../confirmations/utils';
 import type {
   Confirmation,
   SignatureRequestType,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../../confirmations/types/confirm';
 import {
   ResultType,
   createCacheKey,
   mapChainIdToSupportedEVMChain,
 } from '../../../../shared/lib/trust-signals';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
 
 export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   address_alert_response?: ResultType;
-};
-
-export type TrustSignalMetricsAnonProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   address_label?: string;
@@ -77,25 +79,18 @@ export function useTrustSignalMetrics() {
     return getAddressSecurityAlertResponse(state, cacheKey);
   });
 
-  const { properties, anonymousProperties } = useMemo((): {
-    properties: TrustSignalMetricsProperties;
-    anonymousProperties: TrustSignalMetricsAnonProperties;
-  } => {
+  const properties = useMemo((): TrustSignalMetricsProperties => {
     if (!addressSecurityAlertResponse) {
-      return { properties: {}, anonymousProperties: {} };
+      return {};
     }
 
     return {
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        address_alert_response: addressSecurityAlertResponse.result_type,
-      },
-      anonymousProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        address_label: addressSecurityAlertResponse.label || undefined,
-      },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: addressSecurityAlertResponse.result_type,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_label: addressSecurityAlertResponse.label || undefined,
     };
   }, [addressSecurityAlertResponse]);
 
@@ -108,25 +103,13 @@ export function useTrustSignalMetrics() {
 
     if (isSignatureTransactionType(currentConfirmation)) {
       updateSignatureEventFragment({ properties });
-      if (anonymousProperties.address_label) {
-        updateSignatureEventFragment({
-          sensitiveProperties: anonymousProperties,
-        });
-      }
     } else {
       updateTransactionEventFragment({ properties }, ownerId);
-      if (anonymousProperties.address_label) {
-        updateTransactionEventFragment(
-          { sensitiveProperties: anonymousProperties },
-          ownerId,
-        );
-      }
     }
   }, [
     addressSecurityAlertResponse,
     currentConfirmation,
     properties,
-    anonymousProperties,
     updateSignatureEventFragment,
     updateTransactionEventFragment,
   ]);

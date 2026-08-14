@@ -13,15 +13,12 @@ import {
   IconName,
   IconSize,
   IconColor,
+  TextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo } from 'react';
 
-import {
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../../../component-library';
 import type { OrderDirection } from '../../order-entry.types';
 import {
   isLimitPriceUnfavorable,
@@ -45,6 +42,8 @@ export type LimitPriceInputProps = {
   direction: OrderDirection;
   /** Raw estimated liquidation price (for proximity warning) */
   liquidationPrice?: number | null;
+  /** Auto-focus the input on mount (used for keyboard-first order entry) */
+  autoFocus?: boolean;
 };
 
 /**
@@ -56,17 +55,22 @@ export type LimitPriceInputProps = {
  * @param options0.midPrice
  * @param options0.direction
  * @param options0.liquidationPrice
+ * @param options0.autoFocus
  */
-export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
+export const LimitPriceInput = ({
   limitPrice,
   onLimitPriceChange,
   currentPrice,
   midPrice: midPriceProp,
   direction,
   liquidationPrice,
-}) => {
+  autoFocus = false,
+}: LimitPriceInputProps) => {
   const t = useI18nContext();
   const midPrice = midPriceProp ?? currentPrice;
+  const parsedLimitPrice = Number.parseFloat(limitPrice);
+  const hasValidLimitPrice =
+    Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0;
 
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,11 +113,14 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   }, [limitPrice, currentPrice, direction, t]);
 
   const liquidationWarning = useMemo(() => {
+    if (!hasValidLimitPrice) {
+      return null;
+    }
     if (!isNearLiquidationPrice(currentPrice, liquidationPrice, direction)) {
       return null;
     }
     return t('perpsLimitPriceNearLiquidation');
-  }, [currentPrice, liquidationPrice, direction, t]);
+  }, [currentPrice, liquidationPrice, direction, hasValidLimitPrice, t]);
 
   return (
     <Box
@@ -133,13 +140,14 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         size={TextFieldSize.Md}
         value={limitPrice}
         onChange={handlePriceChange}
+        onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+          event.target.select()
+        }
         onBlur={handlePriceBlur}
         placeholder="0.00"
-        borderRadius={BorderRadius.MD}
-        borderWidth={0}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className="w-full"
+        className="w-full rounded-lg border-0 bg-muted"
         data-testid="limit-price-input"
+        autoFocus={autoFocus}
         inputProps={{ inputMode: 'decimal' }}
         startAccessory={
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
@@ -148,6 +156,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         }
         endAccessory={
           <ButtonBase
+            type="button"
             size={ButtonBaseSize.Sm}
             onClick={handleMidClick}
             className="bg-transparent rounded-none px-2 min-w-0 h-auto"

@@ -3,8 +3,6 @@ name: Publish prerelease
 on:
   workflow_call:
     secrets:
-      PR_COMMENT_TOKEN:
-        required: true
       E2E_OPENAI_API_KEY:
         required: false
       E2E_CLAUDE_API_KEY:
@@ -22,6 +20,9 @@ on:
         type: string
 
 jobs:
+  # This is a separate job from `publish-prerelease` because it runs in the
+  # `release-ci` environment for AI test-plan secrets. Keeping it separate
+  # avoids exposing those secrets to the PR comment publishing job.
   generate-test-plan:
     name: Generate AI test plan
     if: ${{ startsWith(github.head_ref || github.ref_name, 'release/') }}
@@ -52,14 +53,22 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const prs = await github.rest.pulls.list({
+            const prs = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`,
               base: 'stable',
+              state: 'open',
+              per_page: 100,
             });
-            if (prs.data.length > 0) {
-              core.exportVariable("PR_NUMBER", prs.data[0].number);
+
+            const headRepository = `${context.repo.owner}/${context.repo.repo}`;
+            const pr = prs.find((candidate) =>
+              candidate.head.ref === process.env.BRANCH &&
+              candidate.head.repo.full_name === headRepository
+            );
+
+            if (pr) {
+              core.exportVariable("PR_NUMBER", pr.number);
             }
 
       - name: Generate test plan
@@ -109,8 +118,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      id-token: write
     env:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       RUN_ID: ${{ github.run_id }}
@@ -120,9 +131,10 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
+      BUNDLE_SIZE_BASELINE_COMMIT_HASHES: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ inputs.builds-from-run }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       BENCHMARK_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id || github.run_id }}
       BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
       BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
@@ -133,35 +145,89 @@ jobs:
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
-          fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+
+      - name: Fetch full history for cherry-picks section
+        if: ${{ startsWith(env.BRANCH, 'release/') }}
+        continue-on-error: true
+        run: |
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --unshallow
+          fi
+
+          git fetch origin main:refs/remotes/origin/main --tags
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v8
         with:
           script: |
-            const prs = await github.rest.pulls.list({
+            const prs = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`,
               base: 'stable',
+              state: 'open',
+              per_page: 100,
             });
-            if (prs.data.length > 0) {
-              core.exportVariable("PR_NUMBER", prs.data[0].number);
-              core.exportVariable("BASE_COMMIT_HASH", prs.data[0].base.sha);
-              core.exportVariable("HEAD_COMMIT_HASH", prs.data[0].head.sha);
+
+            const headRepository = `${context.repo.owner}/${context.repo.repo}`;
+            const pr = prs.find((candidate) =>
+              candidate.head.ref === process.env.BRANCH &&
+              candidate.head.repo.full_name === headRepository
+            );
+
+            if (pr) {
+              core.exportVariable("PR_NUMBER", pr.number);
+              core.exportVariable("BASE_COMMIT_HASH", pr.base.sha);
+              core.exportVariable("HEAD_COMMIT_HASH", pr.head.sha);
               core.info(`The pull request number is '${process.env.PR_NUMBER}', the base commit hash is '${process.env.BASE_COMMIT_HASH}', and the head commit hash is '${process.env.HEAD_COMMIT_HASH}'`);
             } else {
               core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
             }
-
-      - name: Get merge base commit hash
-        if: ${{ env.BASE_COMMIT_HASH && env.HEAD_COMMIT_HASH }}
+      - name: Get bundle-size baseline commit hashes
+        if: ${{ env.BUILDS_FROM_SHA }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
-          echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
-          echo "The merge base commit hash is '${merge_base_commit_hash}'"
+          baseline_commit_hashes=""
+
+          merge_base_commit_hash="$(
+            gh api \
+              "/repos/${GITHUB_REPOSITORY}/compare/main...${BUILDS_FROM_SHA}?per_page=1" \
+              --jq '.merge_base_commit.sha' 2>/dev/null || true
+          )"
+
+          if [[ -z "${merge_base_commit_hash}" || "${merge_base_commit_hash}" == "null" ]]; then
+            echo "::warning::Could not determine bundle-size baseline merge base via GitHub API."
+          else
+            if ! baseline_commit_hashes="$(
+              for page in 1 2; do
+                gh api \
+                  "/repos/${GITHUB_REPOSITORY}/commits?sha=${merge_base_commit_hash}&per_page=100&page=${page}" \
+                  --jq '.[].sha' || exit 1
+              done
+            )"; then
+              echo "::warning::Could not fetch bundle-size baseline commit history."
+              baseline_commit_hashes=""
+            fi
+          fi
+
+          {
+            echo "BUNDLE_SIZE_BASELINE_COMMIT_HASHES<<EOF"
+            echo "${baseline_commit_hashes}"
+            echo "EOF"
+          } >> "${GITHUB_ENV}"
+
+      - name: Get token
+        id: token
+        if: ${{ env.PR_NUMBER && vars.AWS_CLOUDFRONT_URL }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
 
       - name: Publish prerelease
-        if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
+        if: ${{ env.PR_NUMBER && steps.token.outputs.token && vars.AWS_CLOUDFRONT_URL }}
+        env:
+          BUILD_ANNOUNCE_TOKEN: ${{ steps.token.outputs.token }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts

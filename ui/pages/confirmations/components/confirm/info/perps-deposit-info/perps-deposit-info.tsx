@@ -12,6 +12,10 @@ export const PerpsDepositInfo = () => {
   });
 
   return (
-    <CustomAmountInfo currency={PERPS_CURRENCY} hasMax hidePayTokenAmount />
+    <CustomAmountInfo
+      autoFocusAmount
+      currency={PERPS_CURRENCY}
+      hidePayTokenAmount
+    />
   );
 };

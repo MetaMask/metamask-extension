@@ -26,7 +26,7 @@ async function mockNotificationsEndpoint(
 ): Promise<MockedEndpoint[]> {
   return [
     await mockServer
-      .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+      .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
       .thenCallback(() => ({
         statusCode: 200,
         json: [],
@@ -153,8 +153,6 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

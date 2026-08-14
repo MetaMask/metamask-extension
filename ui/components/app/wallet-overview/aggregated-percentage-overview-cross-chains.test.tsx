@@ -5,11 +5,11 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getPreferences,
   getMarketData,
   getAllTokens,
   getChainIdsToPoll,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
@@ -32,12 +32,16 @@ jest.mock('../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../selectors', () => ({
   getSelectedAccount: jest.fn(),
-  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getMarketData: jest.fn(),
   getAllTokens: jest.fn(),
   getChainIdsToPoll: jest.fn(),
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
+  getPreferences: jest.fn(),
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({

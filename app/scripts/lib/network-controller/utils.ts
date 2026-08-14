@@ -1,12 +1,4 @@
-import { isConnectionError } from '@metamask/network-controller';
-import { generateDeterministicRandomNumber } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../../development/build/constants';
-
-/**
- * We capture Segment events for degraded or unavailable RPC endpoints for 1%
- * of our userbase.
- */
-const SAMPLING_RATE = 0.01;
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 
 /**
  * Environments that are expected to resemble production, or production itself.
@@ -17,52 +9,26 @@ export const PRODUCTION_LIKE_ENVIRONMENTS = [
 ];
 
 /**
- * Events should only be created in Segment when an RPC endpoint is detected to
- * be degraded or unavailable if:
+ * The proportion of RPC service events (degraded/unavailable) that
+ * `NetworkController` should emit, passed as the `rpcServiceEventsSampleRate`
+ * analytics option.
  *
- * - The RPC endpoint is slow
- * - The user does not have local connectivity issues
- * - The user is in the MetaMetrics sample
+ * In production and for a release candidate we sample only 1% of events; in
+ * development and testing we emit every event; when the environment is unknown
+ * we emit none. The controller applies this rate deterministically per user, so
+ * the same user is consistently in or out of the sample.
  *
- * @param args - The arguments.
- * @param args.error - The connection or response error encountered after making
- * a request to the RPC endpoint.
- * @param args.metaMetricsId - The MetaMetrics ID of the user.
- * @returns True if Segment events should be created, false otherwise.
+ * @returns The sample rate, between 0 and 1.
  */
-export function shouldCreateRpcServiceEvents({
-  error,
-  metaMetricsId,
-}: {
-  error?: unknown;
-  metaMetricsId: string | null | undefined;
-}) {
-  return (
-    (!error || !isConnectionError(error)) &&
-    metaMetricsId !== undefined &&
-    metaMetricsId !== null &&
-    isSamplingMetaMetricsUser(metaMetricsId)
-  );
-}
-
-/**
- * Determines whether the user is included in the sample for MetaMetrics.
- *
- * In production and for a release candidate, we sample only 1% of the available
- * events; in development and testing we create every event.
- *
- * @param metaMetricsId - The MetaMetrics ID of the user.
- * @returns True if the user is included in the sample for MetaMetrics, false
- * otherwise.
- */
-function isSamplingMetaMetricsUser(metaMetricsId: string) {
+export function getRpcServiceEventsSampleRate(): number {
   if (process.env.METAMASK_ENVIRONMENT === undefined) {
-    return false;
+    return 0;
   }
 
   if (PRODUCTION_LIKE_ENVIRONMENTS.includes(process.env.METAMASK_ENVIRONMENT)) {
-    return generateDeterministicRandomNumber(metaMetricsId) < SAMPLING_RATE;
+    // Sample 1% of users in production-like environments.
+    return 0.01;
   }
 
-  return true;
+  return 1;
 }

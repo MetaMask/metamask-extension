@@ -18,7 +18,7 @@ import type {
   WildcardTokenList,
   GeoBlockingConfig,
 } from '../../pages/musd/types';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   DEFAULT_MUSD_BOOLEAN_FLAG,
   DEFAULT_MUSD_WILDCARD_TOKEN_LIST,

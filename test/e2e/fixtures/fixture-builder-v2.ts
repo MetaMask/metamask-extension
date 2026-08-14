@@ -1,14 +1,17 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
+  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
+  TokenRatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -19,11 +22,13 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
   type NetworkState,
@@ -36,13 +41,14 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type {
-  Preferences,
-  PreferencesControllerState,
-} from '../../../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../../../shared/types/preferences';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,
@@ -51,6 +57,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
@@ -62,6 +69,7 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -120,6 +128,15 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  consentDecisionMade?: boolean;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
@@ -149,6 +166,13 @@ type MultichainAssetsRatesControllerFixturePatch = Partial<
   >;
 };
 
+/**
+ * Partial persisted {@link AssetsControllerState} merged by
+ * {@link FixtureBuilderV2.withAssetsController}. Matches every key on the controller
+ * state from `@metamask/assets-controller` (`customAssets`, `assetPreferences`, etc.).
+ */
+type AssetsControllerFixturePatch = Partial<AssetsControllerState>;
+
 class FixtureBuilderV2 {
   fixture: FixtureType;
 
@@ -173,6 +197,20 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
+    merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
+  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
+    const fixtureData = this.fixture.data as Record<string, unknown>;
+    if (!fixtureData.AccountTracker) {
+      fixtureData.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -180,6 +218,63 @@ class FixtureBuilderV2 {
       };
     }
     merge(this.fixture.data.AddressBookController, data);
+    return this;
+  }
+
+  /**
+   * Merges persisted AssetsController state on the fixture. Shapes match
+   * `AssetsControllerState` from `@metamask/assets-controller`.
+   *
+   * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   * @param opts - Options for the AssetsController state.
+   * @param opts.overwrite - Whether to overwrite the partial AssetsController state.
+   */
+  withAssetsController(
+    patch: AssetsControllerFixturePatch = {},
+    opts = { overwrite: false },
+  ): this {
+    const { overwrite } = opts;
+    const {
+      assetsBalance,
+      assetsPrice,
+      assetsInfo,
+      customAssets,
+      assetPreferences,
+      selectedCurrency,
+    } = patch;
+    if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
+      (this.fixture.data as Record<string, unknown>).AssetsController = {};
+    }
+    const ac = (this.fixture.data as Record<string, unknown>)
+      .AssetsController as Partial<AssetsControllerState>;
+    ac.assetsBalance ??= {};
+    ac.assetsPrice ??= {};
+    ac.assetsInfo ??= {};
+    ac.customAssets ??= {};
+    ac.assetPreferences ??= {};
+
+    const applyOverwriteOrMerge = <
+      AssetsControllerStateKey extends keyof AssetsControllerState,
+    >(
+      key: AssetsControllerStateKey,
+      value: AssetsControllerState[AssetsControllerStateKey] | undefined,
+    ): void => {
+      if (overwrite && value) {
+        ac[key] = value;
+      } else {
+        ac[key] = merge(ac[key], value);
+      }
+    };
+
+    applyOverwriteOrMerge('assetsBalance', assetsBalance);
+    applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    applyOverwriteOrMerge('assetsInfo', assetsInfo);
+    applyOverwriteOrMerge('customAssets', customAssets);
+    applyOverwriteOrMerge('assetPreferences', assetPreferences);
+
+    if (selectedCurrency !== undefined) {
+      ac.selectedCurrency = selectedCurrency;
+    }
     return this;
   }
 
@@ -203,8 +298,42 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
+  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      ...metaMetricsControllerPatch
+    } = data;
+
+    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
+
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined
+    ) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (analyticsId !== undefined) {
+        analyticsPatch.analyticsId = analyticsId;
+      }
+      if (optedIn !== undefined) {
+        analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 
@@ -254,10 +383,33 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
@@ -299,6 +451,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
+    return this;
+  }
+
   withTokensController(data: Partial<TokensControllerState>): this {
     merge(this.fixture.data.TokensController, data);
     return this;
@@ -325,11 +482,85 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withUserStorageController(data: Partial<UserStorageControllerState>): this {
+    merge(this.fixture.data.UserStorageController, data);
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
   */
   withAccountsControllerAdditionalAccountVault(): this {
+    // Account sorting for permitted accounts (e.g. `eth_accounts`) now reads
+    // `lastSelected` from the matching `AccountGroup` in `AccountTreeController`
+    // rather than from `InternalAccount.metadata.lastSelected`.
+    //
+    // Two things are needed for this to work end-to-end in fixtures:
+    //   1. `accountGroupsMetadata[groupId].lastSelected` — hydrated into
+    //      `group.metadata.lastSelected` when `AccountTreeController.init()`
+    //      runs (post-unlock).
+    //   2. `accountTree.wallets` — the controller's constructor builds its
+    //      reverse `accountId -> { walletId, groupId }` map from the persisted
+    //      tree, so locked-wallet lookups (e.g. `eth_accounts` while locked)
+    //      also have the correct groups/metadata available.
+    //
+    // Without (2), `getAccountContext` returns undefined pre-unlock and
+    // `sortAddressesByLastSelected` degrades to caveat order.
+    const entropyWalletId = 'entropy:01KGHBJCECE5PTNHY84ZAE2V9Y';
+    const account1GroupId = `${entropyWalletId}/0` as const;
+    const account2GroupId = `${entropyWalletId}/1` as const;
+    const account1Id = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+    const account2Id = 'e9976a84-110e-46c3-9811-e2da7b5528d3';
+    const account1LastSelected = 1665507600000;
+    const account2LastSelected = 1665507800000;
+
+    this.withAccountTreeController({
+      accountGroupsMetadata: {
+        [account1GroupId]: { lastSelected: account1LastSelected },
+        [account2GroupId]: { lastSelected: account2LastSelected },
+      },
+      accountTree: {
+        wallets: {
+          [entropyWalletId]: {
+            id: entropyWalletId,
+            type: 'entropy',
+            status: 'ready',
+            groups: {
+              [account1GroupId]: {
+                id: account1GroupId,
+                type: 'multichain-account',
+                accounts: [account1Id],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: { groupIndex: 0 },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: account1LastSelected,
+                },
+              },
+              [account2GroupId]: {
+                id: account2GroupId,
+                type: 'multichain-account',
+                accounts: [account2Id],
+                metadata: {
+                  name: 'Account 2',
+                  entropy: { groupIndex: 1 },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: account2LastSelected,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: { id: '01KGHBJCECE5PTNHY84ZAE2V9Y' },
+            },
+          },
+        },
+      },
+    } as Partial<AccountTreeControllerState>);
+
     return this.withAccountsController({
       internalAccounts: {
         selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
@@ -547,55 +778,68 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    }).withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
               },
             },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: ledgerAddressLower,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
               },
             },
           },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:1': { amount: '25' },
+          },
           [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: ledgerAddressLower,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Ledger 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Ledger Hardware',
-              },
-              lastSelected: 1724486729083,
+            'eip155:1337/slip44:1': {
+              amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
             },
           },
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    });
+      });
     return this;
   }
 
@@ -669,6 +913,38 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
+  }
+
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
   withNetworkControllerOnSei(): this {
     const seiChainId = '0x531';
@@ -678,7 +954,7 @@ class FixtureBuilderV2 {
       selectedNetworkClientId: seiClientId,
       networkConfigurationsByChainId: {
         [seiChainId]: {
-          blockExplorerUrls: ['https://seitrace.com'],
+          blockExplorerUrls: ['https://seiscan.io'],
           chainId: seiChainId,
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
@@ -1095,77 +1371,106 @@ class FixtureBuilderV2 {
     });
   }
 
-  withTokensControllerERC20({ chainId = 1337 } = {}): this {
-    return this.withTokensController({
-      allTokens: {
-        [toHex(chainId)]: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-              symbol: 'TST',
-              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
-              isERC721: false,
-              decimals: 4,
-              aggregators: ['Metamask', 'Aave'],
-              name: 'test',
-            },
-          ],
-        },
-      },
-      allIgnoredTokens: {},
+  withSyncDisabled(): this {
+    return this.withUserStorageController({
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
     });
   }
 
-  withTrezorAccount(): this {
-    return this.withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01KGHAX3WXGMX9H76THHSSV553',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01KGHAX3WXGMX9H76THHSSV553',
-                derivationPath: "m/44'/60'/0'/0/0",
-                groupIndex: 0,
-              },
-            },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
-              },
+  withTokensControllerERC20({ chainId = 1337 } = {}): this {
+    const tokenAddress: Hex = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+    const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
+    return (
+      this
+        // When `assetsUnifyState` is enabled the asset list is derived from the
+        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
+        // not from TokensController/TokenBalancesController.
+        .withAssetsController({
+          customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [assetId]: { amount: '10' },
             },
           },
-          [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: TREZOR_ADDRESS,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Trezor 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Trezor Hardware',
-              },
-              lastSelected: 1724486729083,
+          assetsInfo: {
+            [assetId]: {
+              aggregators: ['Metamask', 'Aave'],
+              decimals: 4,
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              name: 'TST',
+              symbol: 'TST',
+              type: 'erc20',
             },
+          },
+        })
+    );
+  }
+
+  withTrezorAccount(): this {
+    return this.withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1337/slip44:1': { amount: '25' },
+        },
+        [HARDWARE_WALLET_ACCOUNT_ID]: {
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
           },
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
-    }).withKeyringController({ vault: TREZOR_VAULT });
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01KGHAX3WXGMX9H76THHSSV553',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KGHAX3WXGMX9H76THHSSV553',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: TREZOR_ADDRESS,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Trezor 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Trezor Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+        },
+      })
+      .withKeyringController({ vault: TREZOR_VAULT });
   }
 
   withTransactionControllerApprovedTransaction(): this {

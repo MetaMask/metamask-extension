@@ -8,8 +8,8 @@ export function isBridgeComplete({
 }: BridgeHistoryItem): boolean {
   return Boolean(
     isCrossChain(quote.srcChainId, quote.destChainId) &&
-      status.srcChain.txHash &&
-      status.status === StatusTypes.COMPLETE,
+    status.srcChain.txHash &&
+    status.status === StatusTypes.COMPLETE,
   );
 }
 
@@ -19,7 +19,7 @@ export function isBridgeFailed(
 ) {
   const bridgeFailed = Boolean(
     isCrossChain(quote.srcChainId, quote.destChainId) &&
-      status.status === StatusTypes.FAILED,
+    status.status === StatusTypes.FAILED,
   );
 
   return bridgeFailed || transaction.status === TransactionStatus.Failed;

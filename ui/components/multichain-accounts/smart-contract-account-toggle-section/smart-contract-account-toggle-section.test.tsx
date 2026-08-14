@@ -44,12 +44,6 @@ const mockIsUpgraded = jest.fn();
 
 const mockAddress = '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e';
 
-const mockState = {
-  appState: {
-    accountDetailsAddress: mockAddress,
-  },
-};
-
 const mockNetworksData: EIP7702NetworkConfiguration[] = [
   {
     chainId: 'eip155:1' as const,
@@ -77,7 +71,6 @@ const mockNetworksData: EIP7702NetworkConfiguration[] = [
 
 const render = (stateOverride = {}) => {
   const store = configureStore({
-    ...mockState,
     ...stateOverride,
   });
   return renderWithProvider(

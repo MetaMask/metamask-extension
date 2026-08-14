@@ -16,7 +16,9 @@ import { Icon, IconName } from '../icon';
 import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 /**
- * @deprecated Please update your code to use `Checkbox` from `@metamask/design-system-react`
+ * @deprecated Please update your code to use `Checkbox` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#checkbox-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-checkbox--docs | Storybook Documentation}
  */
 export const Checkbox: CheckboxComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -49,8 +51,6 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
 
     // If no title is provided, use the label as the title only if the label is a string
     const sanitizedTitle =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       !title && typeof label === 'string' ? label : title || id;
 
     return (
@@ -88,15 +88,11 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             margin={0}
             marginRight={label ? 2 : 0}
             backgroundColor={
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               isChecked || isIndeterminate
                 ? BackgroundColor.primaryDefault
                 : BackgroundColor.backgroundDefault
             }
             borderColor={
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               isChecked || isIndeterminate
                 ? BorderColor.primaryDefault
                 : BorderColor.borderDefault
@@ -116,8 +112,6 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
               },
             )}
           />
-          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {(isChecked || isIndeterminate) && (
             <Icon
               color={IconColor.primaryInverse}

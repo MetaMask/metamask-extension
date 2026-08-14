@@ -21,8 +21,9 @@ import {
   resolveAutoJobs,
   resolveAutoThreads,
 } from './loaders/threadLoader';
+import { getDefaultZipMtime } from './plugins/ManifestPlugin/zip-mtime';
 
-const ENV_PREFIX = 'BUNDLE';
+const ENV_PREFIX = 'BUNDLE_';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
@@ -370,7 +371,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     })
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `BUNDLE_`
-    // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
+    // TODO: choose a better name than `BUNDLE_` (it looks like `MM` is already being used in CI for ✨something✨)
     .env(ENV_PREFIX)
     // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // enable the `completion` command, which outputs a bash completion script
@@ -529,7 +530,8 @@ function getOptions(
       alias: 'z',
       array: false,
       default: false,
-      description: 'Generate a zip file of the build',
+      description:
+        'Generate a zip file of the build. Zip entry mtimes use SOURCE_DATE_EPOCH when set, otherwise the latest git commit timestamp, falling back to a deterministic default.',
       group: toOrange('Build options:'),
       type: 'boolean',
     },
@@ -558,7 +560,7 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    manifest_version: {
+    manifestVersion: {
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
@@ -668,7 +670,7 @@ function getOptions(
     stats: {
       array: false,
       default: false,
-      description: 'Display build stats after building',
+      description: 'Emit the bundle-size summary artifact',
       group: toOrange('Options:'),
       type: 'boolean',
     },
@@ -689,6 +691,13 @@ function getOptions(
  * @param features - The active and available features
  */
 export function getDryRunMessage(args: Args, features: Features) {
+  const zipMtime = args.zip ? getDefaultZipMtime() : null;
+  const zipMtimeMessage =
+    zipMtime === null
+      ? ''
+      : `Zip mtime: ${zipMtime} (${new Date(zipMtime).toISOString()})
+`;
+
   return `🦊 Build Config 🦊
 
 Mode: ${args.mode}
@@ -698,7 +707,7 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-LavaMoat: ${args.lavamoat}
+${zipMtimeMessage}LavaMoat: ${args.lavamoat}
 LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}
@@ -709,7 +718,7 @@ Threads: ${args.threads}
 Jobs per thread: ${args.jobsPerThread}
 Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
-Manifest version: ${args.manifest_version}
+Manifest version: ${args.manifestVersion}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
 Devtool: ${args.devtool}

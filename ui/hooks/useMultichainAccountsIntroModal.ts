@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { lt as semverLt, parse as semverParse } from 'semver';
-import { useAppSelector } from '../store/store';
+import { useAppSelector } from '../store/hooks';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 // Version threshold for BIP-44 multichain accounts introduction
@@ -45,7 +45,7 @@ export function useMultichainAccountsIntroModal(
     // Check if this is an upgrade from a version lower than BIP-44 introduction version
     const isUpgradeFromLowerThanBip44Version = Boolean(
       strippedLastVersion &&
-        semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+      semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
     );
 
     // Show modal only for upgrades from versions < BIP-44 introduction version

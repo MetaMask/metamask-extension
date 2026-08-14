@@ -8,7 +8,9 @@ import {
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
 import { ResultType } from '../../../../shared/lib/trust-signals';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import * as useTransactionEventFragmentHook from '../../confirmations/hooks/useTransactionEventFragment';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import * as useSignatureEventFragmentHook from '../../confirmations/hooks/useSignatureEventFragment';
 import { useTrustSignalMetrics } from './useTrustSignalMetrics';
 
@@ -109,20 +111,14 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
       };
 
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
         { properties: expectedProperties },
-        OWNER_ID_MOCK,
-      );
-      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
-        { sensitiveProperties: expectedAnonymousProperties },
         OWNER_ID_MOCK,
       );
       expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
@@ -145,9 +141,6 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
@@ -158,11 +151,9 @@ describe('useTrustSignalMetrics', () => {
         SIGNATURE_STATE_MOCK,
       );
 
+      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
         properties: expectedProperties,
-      });
-      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
-        sensitiveProperties: expectedAnonymousProperties,
       });
       expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
     });

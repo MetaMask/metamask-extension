@@ -58,6 +58,18 @@ describe('TotalRow', () => {
     expect(queryByText(messages.total.message)).not.toBeInTheDocument();
   });
 
+  it('always renders total in USD even when user currency is EUR', () => {
+    const state = getMockPersonalSignConfirmState({
+      metamask: { currentCurrency: 'eur' },
+    });
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('total-value')).toHaveTextContent('$123.46');
+  });
+
   it('renders total value with ConfirmInfoRowText for Default variant', () => {
     const { getByTestId } = render();
 

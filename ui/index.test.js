@@ -5,7 +5,7 @@ import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import * as actions from './store/actions';
 import * as selectors from './selectors';
-import * as metamaskSelectors from './ducks/metamask/metamask';
+import * as metamaskBaseSelectors from './ducks/metamask/base-selectors';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { getCleanAppState, runInitialActions } from '.';
 
@@ -55,8 +55,8 @@ jest.mock('./selectors', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
 
-jest.mock('./ducks/metamask/metamask', () => ({
-  ...jest.requireActual('./ducks/metamask/metamask'),
+jest.mock('./ducks/metamask/base-selectors', () => ({
+  ...jest.requireActual('./ducks/metamask/base-selectors'),
   getIsUnlocked: jest.fn(),
 }));
 
@@ -130,6 +130,44 @@ describe('Index Tests', () => {
     });
   });
 
+  it('should remove QR sync state from downloaded state logs', async () => {
+    const mockVersion = '1.0.0';
+    const mockUserAgent = 'test-user-agent';
+
+    jest.spyOn(global.platform, 'getVersion').mockReturnValue(mockVersion);
+    jest
+      .spyOn(window.navigator, 'userAgent', 'get')
+      .mockReturnValue(mockUserAgent);
+
+    const mockState = {
+      metamask: {
+        currentLocale: 'en',
+        qrSyncPhase: 'displaying-qr',
+        qrSyncConnectionStatus: 'connected',
+        qrSyncSessionId: 'session-123',
+        qrSyncQrPayload: 'qr-payload',
+        syncOffer: { isOnboardingCompleted: true },
+        qrSyncSelectedAccountGroupIds: ['entropy-1/0'],
+        qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
+        qrSyncCreatedAt: 1,
+        qrSyncUpdatedAt: 2,
+      },
+    };
+    const store = configureMockStore([thunk])({
+      ...mockState,
+    });
+
+    const cleanAppState = await getCleanAppState(store);
+    expect(cleanAppState).toStrictEqual({
+      metamask: {
+        currentLocale: 'en',
+        socialLoginEmail: undefined,
+      },
+      version: mockVersion,
+      browser: mockUserAgent,
+    });
+  });
+
   describe('runInitialActions', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -138,7 +176,7 @@ describe('Index Tests', () => {
         .spyOn(browserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
       selectors.getNetworkToAutomaticallySwitchTo.mockReturnValue(undefined);
-      metamaskSelectors.getIsUnlocked.mockImplementation(
+      metamaskBaseSelectors.getIsUnlocked.mockImplementation(
         (state) => state.metamask.isUnlocked,
       );
       selectors.getFirstTimeFlowType.mockImplementation(

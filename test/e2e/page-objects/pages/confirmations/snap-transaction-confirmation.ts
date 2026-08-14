@@ -1,7 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-and-send transaction confirmation (snap custom UI
+ * footer).
+ *
+ * Screen: snap confirmation dialog with "Transaction request" header (not
+ * redesigned MetaMask `#/confirmation`).
+ * Owns: header/footer loaded checks, snap address and network display,
+ * security-alerts error copy, and confirm/cancel snap footer actions.
+ * Boundaries: snap sign-only transaction is `SnapSignTransactionConfirmation`.
+ * MetaMask redesigned txs are `TransactionConfirmation` and subclasses.
+ * Related: `SnapSignTransactionConfirmation`, `TransactionConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapTransactionConfirmation {
-  protected driver: Driver;
+  private addressTestId = 'snap-ui-address';
 
   private cancelButton = {
     testId: 'confirm-sign-and-send-transaction-cancel-snap-footer-button',
@@ -13,19 +28,12 @@ class SnapTransactionConfirmation {
     text: 'Confirm',
   };
 
-  private getNetworkDisplayLocator(networkName: string) {
-    return {
-      text: networkName,
-      tag: 'p',
-    };
-  }
+  protected driver: Driver;
 
   private header = {
     text: 'Transaction request',
     tag: 'h2',
   };
-
-  private addressTestId = 'snap-ui-address';
 
   private securityAlertsError = {
     tag: 'p',
@@ -43,13 +51,24 @@ class SnapTransactionConfirmation {
     });
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(
+      this.getNetworkDisplayLocator(networkName),
+    );
+  }
+
+  async checkPageIsLoaded({
+    timeout,
+  }: { timeout?: number } = {}): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.header,
-        this.cancelButton,
-        this.confirmButton,
-      ]);
+      const waitOptions = timeout === undefined ? undefined : { timeout };
+      await this.driver.waitForMultipleSelectors(
+        [this.header, this.cancelButton, this.confirmButton],
+        waitOptions,
+      );
     } catch (e) {
       console.log(
         'Timeout while waiting for snap transaction confirmation page to be loaded',
@@ -60,21 +79,19 @@ class SnapTransactionConfirmation {
     console.log('Snap transaction confirmation page is loaded');
   }
 
-  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Checking network ${networkName} is displayed on snap transaction confirmation page.`,
-    );
-    await this.driver.waitForSelector(
-      this.getNetworkDisplayLocator(networkName),
-    );
-  }
-
   async checkSecurityAlertsErrorIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.securityAlertsError);
   }
 
   async clickFooterCancelButton() {
     await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
+  }
+
+  async clickFooterCancelButtonAndWaitForWindowToClose() {
+    console.log(
+      'Clicking footer cancel button and waiting for window to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
   async clickFooterConfirmButton() {
@@ -89,11 +106,11 @@ class SnapTransactionConfirmation {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 
-  async clickFooterCancelButtonAndWaitForWindowToClose() {
-    console.log(
-      'Clicking footer cancel button and waiting for window to close',
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
+  private getNetworkDisplayLocator(networkName: string) {
+    return {
+      text: networkName,
+      tag: 'p',
+    };
   }
 }
 export default SnapTransactionConfirmation;

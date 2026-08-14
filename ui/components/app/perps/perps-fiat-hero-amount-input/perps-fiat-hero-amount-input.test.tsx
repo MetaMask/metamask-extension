@@ -28,6 +28,16 @@ describe('isValidPartialFiatAmountInput', () => {
 });
 
 describe('PerpsFiatHeroAmountInput', () => {
+  it('renders symbol and input for the given value', () => {
+    render(<PerpsFiatHeroAmountInput value="2.707414" onChange={jest.fn()} />);
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-symbol'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '2.707414',
+    );
+  });
+
   it('renders symbol and forwards input changes', () => {
     const onChange = jest.fn();
     render(<PerpsFiatHeroAmountInput value="" onChange={onChange} />);
@@ -46,11 +56,41 @@ describe('PerpsFiatHeroAmountInput', () => {
       <PerpsFiatHeroAmountInput value="1" onChange={jest.fn()} isLoading />,
     );
 
-    expect(
-      screen.getByTestId('perps-fiat-hero-amount-skeleton'),
-    ).toBeInTheDocument();
+    const skeleton = screen.getByTestId('perps-fiat-hero-amount-skeleton');
+    expect(skeleton).toBeInTheDocument();
     expect(
       screen.queryByTestId('perps-fiat-hero-amount-input'),
     ).not.toBeInTheDocument();
+  });
+
+  it('auto-focuses the input when autoFocus is true', () => {
+    render(
+      <PerpsFiatHeroAmountInput value="0" onChange={jest.fn()} autoFocus />,
+    );
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveFocus();
+  });
+
+  it('does not focus when autoFocus is omitted', () => {
+    render(<PerpsFiatHeroAmountInput value="0" onChange={jest.fn()} />);
+
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-input'),
+    ).not.toHaveFocus();
+  });
+
+  it('does not focus when autoFocus is true but disabled', () => {
+    render(
+      <PerpsFiatHeroAmountInput
+        value="0"
+        onChange={jest.fn()}
+        autoFocus
+        disabled
+      />,
+    );
+
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-input'),
+    ).not.toHaveFocus();
   });
 });

@@ -5,11 +5,18 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import {
+  createERC1155BalanceChangeTerms,
+  createERC20BalanceChangeTerms,
+  createERC721BalanceChangeTerms,
+  createNativeBalanceChangeTerms,
+  BalanceChangeType,
+} from '@metamask/delegation-core';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
-  createCaveatBuilder,
   getDeleGatorEnvironment,
+  type Caveat,
   type DeleGatorEnvironment,
 } from '../../../../../shared/lib/delegation';
 import {
@@ -18,6 +25,7 @@ import {
 } from '../delegation';
 
 const log = createProjectLogger('enforced-simulations');
+const args: Hex = '0x';
 
 const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b' as Hex;
@@ -45,7 +53,11 @@ export async function enforceSimulations({
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
-  const slippage = getEnforcedSimulationsSlippage();
+
+  const remoteFeatureFlagState = messenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
+  const slippage = getEnforcedSimulationsSlippage(remoteFeatureFlagState);
 
   const caveats = generateCaveats(
     from,
@@ -54,23 +66,33 @@ export async function enforceSimulations({
     slippage,
   );
 
-  const { data, to } = await convertTransactionToRedeemDelegations({
-    transaction: transactionMeta,
-    messenger: messenger as DelegationMessenger,
-    caveats,
-    delegatee: from,
-    delegationSignature: useRealSignature
-      ? undefined
-      : MOCK_DELEGATION_SIGNATURE,
-  });
+  const { authorizationList, data, to, type } =
+    await convertTransactionToRedeemDelegations({
+      transaction: transactionMeta,
+      messenger: messenger as DelegationMessenger,
+      caveats,
+      delegatee: from,
+      delegationSignature: useRealSignature
+        ? undefined
+        : MOCK_DELEGATION_SIGNATURE,
+      authorization: transactionMeta.delegationAddress
+        ? undefined
+        : { minimal: true },
+    });
 
   log('Data', data);
 
   return {
+    slippage,
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.txParams.data = data;
       transaction.txParams.to = to;
       transaction.txParams.value = '0x0';
+      transaction.txParams.type = type;
+
+      if (authorizationList) {
+        transaction.txParams.authorizationList = authorizationList;
+      }
     },
   };
 }
@@ -81,12 +103,22 @@ function generateCaveats(
   simulationData: SimulationData,
   slippage: number,
 ) {
-  const caveatBuilder = createCaveatBuilder(environment);
+  const caveats: Caveat[] = [];
+
   const { nativeBalanceChange, tokenBalanceChanges = [] } = simulationData;
 
   if (nativeBalanceChange) {
-    const { difference, isDecrease: enforceDecrease } = nativeBalanceChange;
-    const delta = applySlippage(difference, slippage, enforceDecrease);
+    const {
+      difference,
+      isDecrease: enforceDecrease,
+      previousBalance,
+    } = nativeBalanceChange;
+    const delta = applySlippage(
+      difference,
+      slippage,
+      enforceDecrease,
+      previousBalance,
+    );
 
     log('Caveat - Native Balance Change', {
       enforceDecrease,
@@ -96,12 +128,15 @@ function generateCaveats(
       deltaWithSlippage: delta,
     });
 
-    caveatBuilder.addCaveat(
-      'nativeBalanceChange',
-      enforceDecrease,
-      recipient,
-      delta,
-    );
+    caveats.push({
+      enforcer: environment.caveatEnforcers.NativeBalanceChangeEnforcer,
+      terms: createNativeBalanceChangeTerms({
+        recipient,
+        balance: delta,
+        changeType: getBalanceChangeType(enforceDecrease),
+      }),
+      args,
+    });
   }
 
   for (const tokenChange of tokenBalanceChanges) {
@@ -111,6 +146,7 @@ function generateCaveats(
       address: token,
       standard,
       id: tokenIdHex,
+      previousBalance,
     } = tokenChange;
 
     const delta = BigInt(difference);
@@ -119,6 +155,7 @@ function generateCaveats(
       difference,
       slippage,
       enforceDecrease,
+      previousBalance,
     );
 
     const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
@@ -134,34 +171,44 @@ function generateCaveats(
 
     switch (standard) {
       case SimulationTokenStandard.erc20:
-        caveatBuilder.addCaveat(
-          'erc20BalanceChange',
-          enforceDecrease,
-          token,
-          recipient,
-          deltaWithSlippage,
-        );
+        caveats.push({
+          enforcer: environment.caveatEnforcers.ERC20BalanceChangeEnforcer,
+          terms: createERC20BalanceChangeTerms({
+            tokenAddress: token,
+            recipient,
+            balance: deltaWithSlippage,
+            changeType: getBalanceChangeType(enforceDecrease),
+          }),
+          args,
+        });
+
         break;
 
       case SimulationTokenStandard.erc721:
-        caveatBuilder.addCaveat(
-          'erc721BalanceChange',
-          enforceDecrease,
-          token,
-          recipient,
-          delta,
-        );
+        caveats.push({
+          enforcer: environment.caveatEnforcers.ERC721BalanceChangeEnforcer,
+          terms: createERC721BalanceChangeTerms({
+            tokenAddress: token,
+            recipient,
+            amount: delta,
+            changeType: getBalanceChangeType(enforceDecrease),
+          }),
+          args,
+        });
         break;
 
       case SimulationTokenStandard.erc1155:
-        caveatBuilder.addCaveat(
-          'erc1155BalanceChange',
-          enforceDecrease,
-          token,
-          recipient,
-          tokenId,
-          delta,
-        );
+        caveats.push({
+          enforcer: environment.caveatEnforcers.ERC1155BalanceChangeEnforcer,
+          terms: createERC1155BalanceChangeTerms({
+            tokenAddress: token,
+            recipient,
+            tokenId,
+            balance: delta,
+            changeType: getBalanceChangeType(enforceDecrease),
+          }),
+          args,
+        });
         break;
 
       default:
@@ -170,15 +217,35 @@ function generateCaveats(
     }
   }
 
-  return caveatBuilder.build();
+  if (caveats.length === 0) {
+    throw new Error('No caveats generated for enforced simulations');
+  }
+
+  return caveats;
+}
+
+function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {
+  return enforceDecrease
+    ? BalanceChangeType.Decrease
+    : BalanceChangeType.Increase;
 }
 
 function applySlippage(
   value: Hex,
   slippage: number,
   isDecrease: boolean,
+  previousBalance: Hex,
 ): bigint {
   const valueBN = new BigNumber(value);
   const slippageMultiplier = (100 + (isDecrease ? slippage : -slippage)) / 100;
-  return BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
+  const valueWithSlippage = BigInt(valueBN.mul(slippageMultiplier).toFixed(0));
+
+  if (!isDecrease) {
+    return valueWithSlippage;
+  }
+
+  const maximumDecrease = BigInt(previousBalance);
+  return valueWithSlippage > maximumDecrease
+    ? maximumDecrease
+    : valueWithSlippage;
 }

@@ -1,4 +1,8 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import {
   orderSignatureMsg,
@@ -9,6 +13,7 @@ import { SignatureRequestType } from '../types/confirm';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
+  isProtectedByEnforcedSimulations,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
@@ -142,6 +147,93 @@ describe('confirm util', () => {
       expect(stripProtocol('http://localhost:8545')).toStrictEqual(
         'localhost:8545',
       );
+    });
+  });
+
+  describe('isProtectedByEnforcedSimulations', () => {
+    const REDEEM_DELEGATIONS_DATA = '0xcef6d20900000000';
+
+    function makeFailedTx(
+      overrides: {
+        revertMessage?: string;
+        data?: string;
+        status?: TransactionStatus;
+      } = {},
+    ): TransactionMeta {
+      const {
+        revertMessage = 'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+        data = REDEEM_DELEGATIONS_DATA,
+        status = TransactionStatus.failed,
+      } = overrides;
+      return {
+        status,
+        revert: revertMessage
+          ? { receipt: { message: revertMessage } }
+          : undefined,
+        txParams: { data },
+      } as unknown as TransactionMeta;
+    }
+
+    it('returns true when status is failed, receipt revert matches an enforcer prefix and data has the redeemDelegations selector', () => {
+      expect(isProtectedByEnforcedSimulations(makeFailedTx())).toBe(true);
+    });
+
+    it('returns true regardless of the enforcer name (generic match)', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'SomeNewEnforcer:reason' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('matches the redeemDelegations selector case-insensitively', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ data: '0xCEF6D20900000000' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when status is not failed', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ status: TransactionStatus.confirmed }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when transactionMeta is undefined', () => {
+      expect(isProtectedByEnforcedSimulations(undefined)).toBe(false);
+    });
+
+    it('returns false when the data does not start with the redeemDelegations selector', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ data: '0xa9059cbb00000000' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when receipt revert reason lacks an enforcer prefix', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'insufficient funds' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when revert.receipt is missing', () => {
+      expect(
+        isProtectedByEnforcedSimulations(makeFailedTx({ revertMessage: '' })),
+      ).toBe(false);
+    });
+
+    it('does not match a revert reason starting with a lowercase letter', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'nativeBalanceChangeEnforcer:reason' }),
+        ),
+      ).toBe(false);
     });
   });
 });
