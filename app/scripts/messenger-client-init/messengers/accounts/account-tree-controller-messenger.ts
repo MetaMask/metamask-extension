@@ -49,6 +49,8 @@ export function getAccountTreeControllerMessenger(
       'MultichainAccountService:createMultichainAccountGroup',
       'MultichainAccountService:createMultichainAccountGroups',
       'MultichainAccountService:createMultichainAccountWallet',
+      'KeyringController:verifyPassword',
+      'KeyringController:withController',
       'KeyringController:withKeyringV2',
       'KeyringController:withKeyringV2Unsafe',
       'SnapController:getSnap',

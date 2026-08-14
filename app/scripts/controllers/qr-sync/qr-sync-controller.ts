@@ -170,8 +170,7 @@ export class QrSyncController extends BaseController<
 
     let snapshot = await this.messenger.call(
       "AccountTreeController:exportState",
-      // FIXME: Maybe we should also enforce password validation here (in :exportState action).
-      { includeSecrets: true, password } as ExportStateOptions,
+      { includeSecrets: true, password },
     );
 
     const selectedPayloadIds = new Set(

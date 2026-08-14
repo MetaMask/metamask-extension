@@ -334,8 +334,8 @@
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@13.0.1-preview-4e64b66e8",
-    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@7.6.1-preview-4e64b66e8"
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@13.0.1-preview-0f21c08",
+    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@7.6.1-preview-0f21c08"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
