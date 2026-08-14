@@ -1037,9 +1037,14 @@
       }
     },
     "@metamask/claims-controller": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/react-data-query>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
@@ -2311,7 +2316,8 @@
     },
     "@metamask/shield-controller": {
       "globals": {
-        "AbortController": true
+        "AbortController": true,
+        "fetch": true
       },
       "meta": {
         "webpack-optimization": [
@@ -2320,9 +2326,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/react-data-query>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/shield-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2513,13 +2520,23 @@
     },
     "@metamask/subscription-controller": {
       "globals": {
-        "URL": true
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/subscription-controller>bignumber.js": true
+        "@metamask/subscription-controller>bignumber.js": true,
+        "cockatiel": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2705,6 +2722,7 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
+        "@metamask/claims-controller": true,
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
@@ -2714,7 +2732,9 @@
         "@metamask/passkey-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/seedless-onboarding-controller": true,
+        "@metamask/shield-controller": true,
         "@metamask/storage-service": true,
+        "@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
