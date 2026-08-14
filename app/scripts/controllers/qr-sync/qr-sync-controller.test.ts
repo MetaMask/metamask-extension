@@ -7,32 +7,39 @@
 import {
   ErrorCode as MwpCoreErrorCode,
   SessionError as MwpCoreSessionError,
-} from "@metamask/mobile-wallet-protocol-core";
+} from '@metamask/mobile-wallet-protocol-core';
 import {
   AccountGroupType,
   AccountWalletType,
   toAccountWalletId,
   type AccountGroupId,
-} from "@metamask/account-api";
-import type { AccountGroupObject, AccountWalletObject } from "@metamask/account-tree-controller";
+} from '@metamask/account-api';
+import type {
+  AccountGroupObject,
+  AccountWalletObject,
+} from '@metamask/account-tree-controller';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
   MessengerActions,
   MessengerEvents,
   MockAnyNamespace,
-} from "@metamask/messenger";
+} from '@metamask/messenger';
 
 import {
   QR_SYNC_PHASES,
   QR_SYNC_TIMEOUT_MS,
   QrSyncErrorCodes,
-} from "../../../../shared/constants/qr-sync";
-import { QrSyncActionTypes, QrSyncConnectionStatus, QrSyncErrorMessages } from "./constants";
-import { getDefaultQrSyncControllerState } from "./metadata";
-import { QrSyncController } from "./qr-sync-controller";
-import type { KeyManager } from "./key-manager";
-import type { QrSyncControllerMessenger } from "./types";
+} from '../../../../shared/constants/qr-sync';
+import {
+  QrSyncActionTypes,
+  QrSyncConnectionStatus,
+  QrSyncErrorMessages,
+} from './constants';
+import { getDefaultQrSyncControllerState } from './metadata';
+import { QrSyncController } from './qr-sync-controller';
+import type { KeyManager } from './key-manager';
+import type { QrSyncControllerMessenger } from './types';
 
 type RootMessenger = Messenger<
   MockAnyNamespace,
@@ -40,15 +47,19 @@ type RootMessenger = Messenger<
   MessengerEvents<QrSyncControllerMessenger>
 >;
 
-const TEST_RELAY_URL = "wss://test-relay.example/connection/websocket";
-const TEST_SESSION_ID = "session-abc";
-const TEST_ENTROPY_ID = "entropy-primary";
-const TEST_SECONDARY_ENTROPY_ID = "entropy-secondary";
-const TEST_PASSWORD = "test-password";
+const TEST_RELAY_URL = 'wss://test-relay.example/connection/websocket';
+const TEST_SESSION_ID = 'session-abc';
+const TEST_ENTROPY_ID = 'entropy-primary';
+const TEST_SECONDARY_ENTROPY_ID = 'entropy-secondary';
+const TEST_PASSWORD = 'test-password';
 const TEST_SEED_PHRASE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const TEST_ACCOUNT_ID = "test-account-id";
+const TEST_ACCOUNT_ID = 'test-account-id';
 
-function createEntropyWalletFixture(entropyId: string, walletName: string, groupIndex = 0) {
+function createEntropyWalletFixture(
+  entropyId: string,
+  walletName: string,
+  groupIndex = 0,
+) {
   const walletId = toAccountWalletId(AccountWalletType.Entropy, entropyId);
   const groupId = `${walletId}/${groupIndex}` as AccountGroupId;
   const group = {
@@ -66,7 +77,7 @@ function createEntropyWalletFixture(entropyId: string, walletName: string, group
   const wallet = {
     type: AccountWalletType.Entropy,
     id: walletId,
-    status: "ready",
+    status: 'ready',
     groups: { [groupId]: group },
     metadata: {
       name: walletName,
@@ -77,8 +88,14 @@ function createEntropyWalletFixture(entropyId: string, walletName: string, group
   return { walletId, groupId, group, wallet };
 }
 
-const primaryEntropyFixture = createEntropyWalletFixture(TEST_ENTROPY_ID, "Wallet 1");
-const secondaryEntropyFixture = createEntropyWalletFixture(TEST_SECONDARY_ENTROPY_ID, "Wallet 2");
+const primaryEntropyFixture = createEntropyWalletFixture(
+  TEST_ENTROPY_ID,
+  'Wallet 1',
+);
+const secondaryEntropyFixture = createEntropyWalletFixture(
+  TEST_SECONDARY_ENTROPY_ID,
+  'Wallet 2',
+);
 
 const mockMwp = {
   dappClient: null as {
@@ -90,8 +107,8 @@ const mockMwp = {
   connect: jest.fn().mockResolvedValue(undefined),
 };
 
-jest.mock("@metamask/mobile-wallet-protocol-core", () => {
-  const actual = jest.requireActual("@metamask/mobile-wallet-protocol-core");
+jest.mock('@metamask/mobile-wallet-protocol-core', () => {
+  const actual = jest.requireActual('@metamask/mobile-wallet-protocol-core');
 
   return {
     ...actual,
@@ -104,7 +121,7 @@ jest.mock("@metamask/mobile-wallet-protocol-core", () => {
   };
 });
 
-jest.mock("@metamask/mobile-wallet-protocol-dapp-client", () => {
+jest.mock('@metamask/mobile-wallet-protocol-dapp-client', () => {
   class DappClient {
     readonly #handlers = new Map<string, Set<(...args: unknown[]) => void>>();
 
@@ -157,13 +174,13 @@ function setupController(
   });
 
   const qrSyncMessenger: QrSyncControllerMessenger = new Messenger({
-    namespace: "QrSyncController",
+    namespace: 'QrSyncController',
     parent: rootMessenger,
   });
 
   rootMessenger.delegate({
     messenger: qrSyncMessenger,
-    actions: ["AccountTreeController:exportState"],
+    actions: ['AccountTreeController:exportState'],
     events: [],
   });
 
@@ -172,17 +189,20 @@ function setupController(
     filterAllGroups: jest.fn().mockReturnThis(),
     serialize: jest.fn().mockReturnValue([
       {
-        type: "Mnemonic",
-        name: "Wallet 1",
-        mnemonic: btoa("test mnemonic"),
+        type: 'Mnemonic',
+        name: 'Wallet 1',
+        mnemonic: btoa('test mnemonic'),
         isPrimary: true,
-        groups: [{ groupIndex: 0, name: "Account 1" }],
+        groups: [{ groupIndex: 0, name: 'Account 1' }],
       },
     ]),
   };
 
   const mockExportState = jest.fn().mockResolvedValue(mockSnapshot);
-  rootMessenger.registerActionHandler("AccountTreeController:exportState", mockExportState);
+  rootMessenger.registerActionHandler(
+    'AccountTreeController:exportState',
+    mockExportState,
+  );
 
   const controller = new QrSyncController({
     keyManager: mockKeyManager,
@@ -196,7 +216,8 @@ function setupController(
     qrSyncMessenger,
     mockExportState,
     mockSnapshot,
-    primaryGroupId: entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
+    primaryGroupId:
+      entropyFixtures[0]?.groupId ?? primaryEntropyFixture.groupId,
     entropyFixtures,
   };
 }
@@ -216,18 +237,20 @@ function mockEmitSessionRequest(
     expiresAt: number;
   }> = {},
 ): void {
-  mockMwp.dappClient?.emit("session_request", {
+  mockMwp.dappClient?.emit('session_request', {
     id: overrides.id ?? TEST_SESSION_ID,
     expiresAt: overrides.expiresAt ?? Date.now() + 60_000,
   });
 }
 
 function mockEmitOtpRequired(
-  submit: (otp: string) => Promise<void> = jest.fn().mockResolvedValue(undefined),
+  submit: (otp: string) => Promise<void> = jest
+    .fn()
+    .mockResolvedValue(undefined),
   cancel: () => void = jest.fn(),
   deadline = Date.now() + 60_000,
 ): void {
-  mockMwp.dappClient?.emit("otp_required", {
+  mockMwp.dappClient?.emit('otp_required', {
     submit,
     cancel,
     deadline,
@@ -235,7 +258,7 @@ function mockEmitOtpRequired(
 }
 
 function mockEmitConnected(): void {
-  mockMwp.dappClient?.emit("connected");
+  mockMwp.dappClient?.emit('connected');
 }
 
 async function flushAsyncWork(): Promise<void> {
@@ -247,18 +270,18 @@ async function flushAsyncWork(): Promise<void> {
 
 function mockEmitInvalidSyncOffer(): void {
   mockEmitConnected();
-  mockMwp.dappClient?.emit("message", {
+  mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_OFFER,
-    version: "1.0.0",
+    version: '1.0.0',
     data: {},
   });
 }
 
 function mockEmitSyncOffer(isOnboardingCompleted = true): void {
   mockEmitConnected();
-  mockMwp.dappClient?.emit("message", {
+  mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_OFFER,
-    version: "1.0.0",
+    version: '1.0.0',
     data: { sessionId: TEST_SESSION_ID, isOnboardingCompleted },
   });
 }
@@ -268,24 +291,24 @@ async function mockSetReviewingSyncOffer(
   isOnboardingCompleted = true,
 ): Promise<void> {
   mockEmitOtpRequired();
-  await controller.submitOtp("123456");
+  await controller.submitOtp('123456');
   mockEmitSyncOffer(isOnboardingCompleted);
   if (controller.state.qrSyncPhase !== QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
-    throw new Error("Expected reviewing sync offer phase");
+    throw new Error('Expected reviewing sync offer phase');
   }
 }
 
 function mockEmitSyncCompleted(): void {
-  mockMwp.dappClient?.emit("message", {
+  mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_COMPLETED,
-    version: "1.0.0",
+    version: '1.0.0',
   });
 }
 
 function mockEmitSyncCancel(): void {
-  mockMwp.dappClient?.emit("message", {
+  mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_CANCEL,
-    version: "1.0.0",
+    version: '1.0.0',
   });
 }
 
@@ -295,14 +318,14 @@ function mockEmitSyncError(
     message?: string;
   } = {},
 ): void {
-  mockMwp.dappClient?.emit("message", {
+  mockMwp.dappClient?.emit('message', {
     type: QrSyncActionTypes.SYNC_ERROR,
-    version: "1.0.0",
+    version: '1.0.0',
     data,
   });
 }
 
-describe("QrSyncController", () => {
+describe('QrSyncController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockMwp.dappClient = null;
@@ -313,16 +336,16 @@ describe("QrSyncController", () => {
     jest.useRealTimers();
   });
 
-  describe("initial state", () => {
-    it("starts idle with no active session", () => {
+  describe('initial state', () => {
+    it('starts idle with no active session', () => {
       const { controller } = setupController();
 
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
   });
 
-  describe("createSession", () => {
-    it("connects to the relay and exposes a QR payload for mobile to scan", async () => {
+  describe('createSession', () => {
+    it('connects to the relay and exposes a QR payload for mobile to scan', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -330,9 +353,9 @@ describe("QrSyncController", () => {
       expect(mockMwp.connect).toHaveBeenCalledWith({
         initialPayload: {
           type: QrSyncActionTypes.INIT_SYNC_SESSION,
-          version: "1.0.0",
+          version: '1.0.0',
         },
-        mode: "untrusted",
+        mode: 'untrusted',
       });
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
       expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
@@ -341,22 +364,24 @@ describe("QrSyncController", () => {
       );
       const decodedSessionRequest = JSON.parse(
         Buffer.from(
-          new URL(controller.state.qrSyncQrPayload ?? "").searchParams.get("p") ?? "",
-          "base64",
-        ).toString("utf8"),
+          new URL(controller.state.qrSyncQrPayload ?? '').searchParams.get(
+            'p',
+          ) ?? '',
+          'base64',
+        ).toString('utf8'),
       );
       expect(decodedSessionRequest.id).toBe(TEST_SESSION_ID);
-      expect(controller.state.qrSyncConnectionStatus).toBe("connecting");
+      expect(controller.state.qrSyncConnectionStatus).toBe('connecting');
     });
 
-    it("marks the session as failed when the relay connection fails", async () => {
+    it('marks the session as failed when the relay connection fails', async () => {
       const { controller } = setupController();
-      mockMwp.connect.mockRejectedValueOnce(new Error("Relay unavailable"));
+      mockMwp.connect.mockRejectedValueOnce(new Error('Relay unavailable'));
 
       await controller.createSession();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.UNKNOWN,
@@ -364,44 +389,44 @@ describe("QrSyncController", () => {
       });
     });
 
-    it("cancels OTP and cleans up when connect fails during handshake", async () => {
+    it('cancels OTP and cleans up when connect fails during handshake', async () => {
       const cancelOtp = jest.fn();
       const { controller } = setupController();
 
       mockMwp.connect.mockImplementationOnce(async () => {
         mockEmitSessionRequest();
         mockEmitOtpRequired(jest.fn().mockResolvedValue(undefined), cancelOtp);
-        throw new Error("Relay unavailable");
+        throw new Error('Relay unavailable');
       });
 
       await controller.createSession();
 
       expect(cancelOtp).toHaveBeenCalledTimes(1);
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
     });
 
-    it("marks the session as QR expired when the handshake request expires", async () => {
+    it('marks the session as QR expired when the handshake request expires', async () => {
       const { controller } = setupController();
       const expiredError = new MwpCoreSessionError(
         MwpCoreErrorCode.REQUEST_EXPIRED,
-        "Did not receive handshake offer from wallet in time.",
+        'Did not receive handshake offer from wallet in time.',
       );
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
       await controller.createSession();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.QR_EXPIRED,
-        message: "Did not receive handshake offer from wallet in time.",
+        message: 'Did not receive handshake offer from wallet in time.',
       });
     });
 
-    it("waits for in-flight cleanup before reconnecting after a client error", async () => {
+    it('waits for in-flight cleanup before reconnecting after a client error', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -410,11 +435,15 @@ describe("QrSyncController", () => {
       const disconnectDeferred = new Promise<void>((resolve) => {
         resolveDisconnect = resolve;
       });
-      mockMwp.dappClient?.disconnect.mockImplementationOnce(() => disconnectDeferred);
+      mockMwp.dappClient?.disconnect.mockImplementationOnce(
+        () => disconnectDeferred,
+      );
 
-      mockMwp.dappClient?.emit("error", new Error("channel failed"));
+      mockMwp.dappClient?.emit('error', new Error('channel failed'));
 
-      const { WebSocketTransport } = jest.requireMock("@metamask/mobile-wallet-protocol-core") as {
+      const { WebSocketTransport } = jest.requireMock(
+        '@metamask/mobile-wallet-protocol-core',
+      ) as {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         WebSocketTransport: {
           create: jest.Mock;
@@ -440,11 +469,13 @@ describe("QrSyncController", () => {
 
       expect(transportCreateCalled).toBe(true);
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
-      expect(controller.state.qrSyncConnectionStatus).toBe(QrSyncConnectionStatus.CONNECTING);
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTING,
+      );
       expect(controller.state.qrSyncError).toBeNull();
     });
 
-    it("resets previous failed session state before reconnecting after OTP expires", async () => {
+    it('resets previous failed session state before reconnecting after OTP expires', async () => {
       const cancelOtp = jest.fn();
       const { controller } = setupController();
 
@@ -454,7 +485,9 @@ describe("QrSyncController", () => {
       try {
         mockEmitOtpRequired(jest.fn(), cancelOtp);
 
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
 
         expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
         expect(controller.state.qrSyncError).toStrictEqual({
@@ -465,14 +498,16 @@ describe("QrSyncController", () => {
         jest.useRealTimers();
       }
 
-      const { WebSocketTransport } = jest.requireMock("@metamask/mobile-wallet-protocol-core") as {
+      const { WebSocketTransport } = jest.requireMock(
+        '@metamask/mobile-wallet-protocol-core',
+      ) as {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         WebSocketTransport: {
           create: jest.Mock;
         };
       };
 
-      let stateDuringInitialize: QrSyncController["state"] | undefined;
+      let stateDuringInitialize: QrSyncController['state'] | undefined;
       let resolveTransport!: (value: object) => void;
       const transportDeferred = new Promise<object>((resolve) => {
         resolveTransport = resolve;
@@ -504,23 +539,25 @@ describe("QrSyncController", () => {
     });
   });
 
-  describe("submitOtp", () => {
-    it("forwards the OTP to mobile and waits for the sync offer", async () => {
+  describe('submitOtp', () => {
+    it('forwards the OTP to mobile and waits for the sync offer', async () => {
       const { controller } = setupController();
       const submitOtp = jest.fn().mockResolvedValue(undefined);
 
       await mockStartSession(controller);
       mockEmitOtpRequired(submitOtp);
 
-      await controller.submitOtp(" 123456 ");
+      await controller.submitOtp(' 123456 ');
 
-      expect(submitOtp).toHaveBeenCalledWith("123456");
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+      expect(submitOtp).toHaveBeenCalledWith('123456');
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
 
       mockEmitSyncOffer();
     });
 
-    it("fails the session when sync offer times out", async () => {
+    it('fails the session when sync offer times out', async () => {
       const submitOtp = jest.fn().mockResolvedValue(undefined);
       const { controller } = setupController();
 
@@ -529,27 +566,31 @@ describe("QrSyncController", () => {
 
       jest.useFakeTimers();
       try {
-        await controller.submitOtp("123456");
+        await controller.submitOtp('123456');
 
-        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+        expect(controller.state.qrSyncPhase).toBe(
+          QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+        );
 
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT);
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT,
+        );
 
         expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
           expect.objectContaining({
             type: QrSyncActionTypes.SYNC_ERROR,
-            version: "1.0.0",
+            version: '1.0.0',
             data: { message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT },
           }),
         );
         expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
           expect.objectContaining({
             type: QrSyncActionTypes.SYNC_CANCEL,
-            version: "1.0.0",
+            version: '1.0.0',
           }),
         );
         expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-        expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
         expect(controller.state.qrSyncError).toStrictEqual({
           code: QrSyncErrorCodes.SESSION_EXPIRED,
           message: QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT,
@@ -559,7 +600,7 @@ describe("QrSyncController", () => {
       }
     });
 
-    it("fails the session and cancels OTP when OTP submission times out", async () => {
+    it('fails the session and cancels OTP when OTP submission times out', async () => {
       const cancelOtp = jest.fn();
       const { controller } = setupController();
 
@@ -569,10 +610,12 @@ describe("QrSyncController", () => {
       try {
         mockEmitOtpRequired(jest.fn(), cancelOtp);
 
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
 
         expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-        expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
         expect(controller.state.qrSyncQrPayload).toBeNull();
         expect(controller.state.qrSyncError).toStrictEqual({
           code: QrSyncErrorCodes.OTP_EXPIRED,
@@ -583,7 +626,7 @@ describe("QrSyncController", () => {
       }
     });
 
-    it("fails the session when the client emits OTP_MAX_ATTEMPTS_REACHED during OTP entry", async () => {
+    it('fails the session when the client emits OTP_MAX_ATTEMPTS_REACHED during OTP entry', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -591,31 +634,31 @@ describe("QrSyncController", () => {
 
       const maxAttemptsReachedError = new MwpCoreSessionError(
         MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED,
-        "OTP max attempts reached.",
+        'OTP max attempts reached.',
       );
-      mockMwp.dappClient?.emit("error", maxAttemptsReachedError);
+      mockMwp.dappClient?.emit('error', maxAttemptsReachedError);
       await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncQrPayload).toBeNull();
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
-        message: "OTP max attempts reached.",
+        message: 'OTP max attempts reached.',
       });
     });
 
-    it("rejects OTP submission when the flow is not awaiting OTP input", async () => {
+    it('rejects OTP submission when the flow is not awaiting OTP input', async () => {
       const { controller } = setupController();
 
-      await expect(controller.submitOtp("123456")).rejects.toThrow(
+      await expect(controller.submitOtp('123456')).rejects.toThrow(
         'QrSyncController action invalid in phase "idle"',
       );
     });
   });
 
-  describe("cancelOtp", () => {
-    it("notifies mobile and cancels the session when the user backs out of OTP entry", async () => {
+  describe('cancelOtp', () => {
+    it('notifies mobile and cancels the session when the user backs out of OTP entry', async () => {
       const { controller } = setupController();
       const cancelOtp = jest.fn();
 
@@ -627,32 +670,32 @@ describe("QrSyncController", () => {
       expect(cancelOtp).toHaveBeenCalledTimes(1);
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith({
         type: QrSyncActionTypes.SYNC_CANCEL,
-        version: "1.0.0",
+        version: '1.0.0',
       });
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
       expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
     });
 
-    it("records a cancellation reason when provided", async () => {
+    it('records a cancellation reason when provided', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitOtpRequired();
 
-      await controller.cancelOtp("User closed verification screen");
+      await controller.cancelOtp('User closed verification screen');
 
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith({
         type: QrSyncActionTypes.SYNC_CANCEL,
-        version: "1.0.0",
+        version: '1.0.0',
       });
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.SYNC_FAILED,
-        message: "User closed verification screen",
+        message: 'User closed verification screen',
       });
     });
 
-    it("rejects cancellation when the flow is not awaiting OTP input", async () => {
+    it('rejects cancellation when the flow is not awaiting OTP input', async () => {
       const { controller } = setupController();
 
       await expect(controller.cancelOtp()).rejects.toThrow(
@@ -661,43 +704,49 @@ describe("QrSyncController", () => {
     });
   });
 
-  describe("sync offer from mobile", () => {
-    it("moves to wallet review when mobile sends a sync offer", async () => {
+  describe('sync offer from mobile', () => {
+    it('moves to wallet review when mobile sends a sync offer', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitOtpRequired();
-      await controller.submitOtp("123456");
+      await controller.submitOtp('123456');
 
       mockEmitSyncOffer();
 
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.REVIEWING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toStrictEqual({
         sessionId: TEST_SESSION_ID,
         isOnboardingCompleted: true,
       });
     });
 
-    it("rejects sync offers when the dapp client is not connected", async () => {
+    it('rejects sync offers when the dapp client is not connected', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitOtpRequired();
-      await controller.submitOtp("123456");
+      await controller.submitOtp('123456');
 
       expect(() => {
-        mockMwp.dappClient?.emit("message", {
+        mockMwp.dappClient?.emit('message', {
           type: QrSyncActionTypes.SYNC_OFFER,
-          version: "1.0.0",
+          version: '1.0.0',
           data: { sessionId: TEST_SESSION_ID, isOnboardingCompleted: true },
         });
-      }).toThrow(`QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`);
+      }).toThrow(
+        `QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`,
+      );
 
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toBeNull();
     });
 
-    it("rejects sync offers when the flow is not awaiting a sync offer", async () => {
+    it('rejects sync offers when the flow is not awaiting a sync offer', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -706,30 +755,36 @@ describe("QrSyncController", () => {
 
       expect(() => {
         mockEmitSyncOffer();
-      }).toThrow(`QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`);
+      }).toThrow(
+        `QrSyncController: ${QrSyncErrorMessages.PREMATURE_SYNC_OFFER_RECEIVED}`,
+      );
 
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_OTP_INPUT);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_OTP_INPUT,
+      );
       expect(controller.state.syncOffer).toBeNull();
     });
 
-    it("ignores sync offers with an invalid payload", async () => {
+    it('ignores sync offers with an invalid payload', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitOtpRequired();
-      await controller.submitOtp("123456");
+      await controller.submitOtp('123456');
 
       mockEmitInvalidSyncOffer();
 
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_OFFER);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_OFFER,
+      );
       expect(controller.state.syncOffer).toBeNull();
 
       mockEmitSyncOffer();
     });
   });
 
-  describe("syncAccounts", () => {
-    it("exports selected mnemonics and sends sync-ready to mobile", async () => {
+  describe('syncAccounts', () => {
+    it('exports selected mnemonics and sends sync-ready to mobile', async () => {
       const { controller, mockExportState, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
@@ -744,16 +799,16 @@ describe("QrSyncController", () => {
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           type: QrSyncActionTypes.SYNC_READY,
-          version: "1.0.0",
+          version: '1.0.0',
           deadline: expect.any(Number),
           data: [
             expect.objectContaining({
-              type: "Mnemonic",
-              name: "Wallet 1",
+              type: 'Mnemonic',
+              name: 'Wallet 1',
               groups: [
                 expect.objectContaining({
                   groupIndex: 0,
-                  name: "Account 1",
+                  name: 'Account 1',
                 }),
               ],
               isPrimary: true,
@@ -761,30 +816,34 @@ describe("QrSyncController", () => {
           ],
         }),
       );
-      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION);
-      expect(controller.state.qrSyncSelectedAccountGroupIds).toStrictEqual([primaryGroupId]);
+      expect(controller.state.qrSyncPhase).toBe(
+        QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
+      );
+      expect(controller.state.qrSyncSelectedAccountGroupIds).toStrictEqual([
+        primaryGroupId,
+      ]);
 
       mockEmitSyncCompleted();
     });
 
-    it("marks non-primary wallets when exporting multiple entropy sources", async () => {
+    it('marks non-primary wallets when exporting multiple entropy sources', async () => {
       const { controller, mockSnapshot } = setupController({
         entropyFixtures: [primaryEntropyFixture, secondaryEntropyFixture],
       });
 
       mockSnapshot.serialize.mockReturnValue([
         {
-          type: "Mnemonic",
-          name: "Wallet 1",
-          mnemonic: btoa("test mnemonic primary"),
+          type: 'Mnemonic',
+          name: 'Wallet 1',
+          mnemonic: btoa('test mnemonic primary'),
           isPrimary: true,
-          groups: [{ groupIndex: 0, name: "Account 1" }],
+          groups: [{ groupIndex: 0, name: 'Account 1' }],
         },
         {
-          type: "Mnemonic",
-          name: "Wallet 2",
-          mnemonic: btoa("test mnemonic secondary"),
-          groups: [{ groupIndex: 0, name: "Account 1" }],
+          type: 'Mnemonic',
+          name: 'Wallet 2',
+          mnemonic: btoa('test mnemonic secondary'),
+          groups: [{ groupIndex: 0, name: 'Account 1' }],
         },
       ]);
 
@@ -803,16 +862,18 @@ describe("QrSyncController", () => {
       expect(syncReadyPayload?.data).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: "Mnemonic",
+            type: 'Mnemonic',
             isPrimary: true,
           }),
           expect.objectContaining({
-            type: "Mnemonic",
+            type: 'Mnemonic',
           }),
         ]),
       );
       expect(
-        syncReadyPayload?.data?.find((entry: { isPrimary?: boolean }) => entry.isPrimary === true),
+        syncReadyPayload?.data?.find(
+          (entry: { isPrimary?: boolean }) => entry.isPrimary === true,
+        ),
       ).toBeDefined();
       expect(
         syncReadyPayload?.data?.filter(
@@ -823,7 +884,7 @@ describe("QrSyncController", () => {
       mockEmitSyncCompleted();
     });
 
-    it("fails the session when sync completion times out", async () => {
+    it('fails the session when sync completion times out', async () => {
       const { controller, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
@@ -833,12 +894,16 @@ describe("QrSyncController", () => {
       try {
         await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
-        expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION);
+        expect(controller.state.qrSyncPhase).toBe(
+          QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION,
+        );
 
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT);
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT,
+        );
 
         expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-        expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+        expect(controller.state.qrSyncConnectionStatus).toBe('errored');
         expect(controller.state.qrSyncError).toStrictEqual({
           code: QrSyncErrorCodes.SESSION_EXPIRED,
           message: QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT,
@@ -849,8 +914,8 @@ describe("QrSyncController", () => {
     });
   });
 
-  describe("sync completion", () => {
-    it("finishes the flow when mobile reports sync-completed", async () => {
+  describe('sync completion', () => {
+    it('finishes the flow when mobile reports sync-completed', async () => {
       const { controller, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
@@ -859,43 +924,49 @@ describe("QrSyncController", () => {
       mockEmitSyncCompleted();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.COMPLETED);
-      expect(controller.state.qrSyncSelectedAccountGroupIds).toStrictEqual([primaryGroupId]);
+      expect(controller.state.qrSyncSelectedAccountGroupIds).toStrictEqual([
+        primaryGroupId,
+      ]);
     });
   });
 
-  describe("cancelSync and resetState", () => {
-    it("cleans up without notifying mobile when cancelSync is called before the channel is connected", async () => {
+  describe('cancelSync and resetState', () => {
+    it('cleans up without notifying mobile when cancelSync is called before the channel is connected', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
-      expect(controller.state.qrSyncConnectionStatus).toBe(QrSyncConnectionStatus.CONNECTING);
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTING,
+      );
 
       await controller.cancelSync();
 
       expect(mockMwp.dappClient?.sendRequest).not.toHaveBeenCalledWith({
         type: QrSyncActionTypes.SYNC_CANCEL,
-        version: "1.0.0",
+        version: '1.0.0',
       });
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
 
-    it("notifies mobile and resets state when cancelSync is called after the channel is connected", async () => {
+    it('notifies mobile and resets state when cancelSync is called after the channel is connected', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitConnected();
-      expect(controller.state.qrSyncConnectionStatus).toBe(QrSyncConnectionStatus.CONNECTED);
+      expect(controller.state.qrSyncConnectionStatus).toBe(
+        QrSyncConnectionStatus.CONNECTED,
+      );
 
       await controller.cancelSync();
 
       expect(mockMwp.dappClient?.sendRequest).toHaveBeenCalledWith({
         type: QrSyncActionTypes.SYNC_CANCEL,
-        version: "1.0.0",
+        version: '1.0.0',
       });
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
 
-    it("returns to the default idle state", async () => {
+    it('returns to the default idle state', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -905,14 +976,14 @@ describe("QrSyncController", () => {
       expect(controller.state).toStrictEqual(getDefaultQrSyncControllerState());
     });
 
-    it("resets to idle when the relay disconnects during cancelSync teardown", async () => {
+    it('resets to idle when the relay disconnects during cancelSync teardown', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitConnected();
 
       mockMwp.dappClient?.disconnect.mockImplementation(async () => {
-        mockMwp.dappClient?.emit("disconnected");
+        mockMwp.dappClient?.emit('disconnected');
       });
 
       await controller.cancelSync();
@@ -922,75 +993,75 @@ describe("QrSyncController", () => {
     });
   });
 
-  describe("channel errors", () => {
-    it("fails the session when the relay disconnects", async () => {
+  describe('channel errors', () => {
+    it('fails the session when the relay disconnects', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
-      mockMwp.dappClient?.emit("disconnected");
+      mockMwp.dappClient?.emit('disconnected');
       await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
-        message: "The sync channel disconnected.",
+        message: 'The sync channel disconnected.',
       });
     });
 
-    it("fails with QR expired when the client emits a REQUEST_EXPIRED error", async () => {
+    it('fails with QR expired when the client emits a REQUEST_EXPIRED error', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       const expiredError = new MwpCoreSessionError(
         MwpCoreErrorCode.REQUEST_EXPIRED,
-        "Did not receive handshake offer from wallet in time.",
+        'Did not receive handshake offer from wallet in time.',
       );
-      mockMwp.dappClient?.emit("error", expiredError);
+      mockMwp.dappClient?.emit('error', expiredError);
       await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.QR_EXPIRED,
-        message: "Did not receive handshake offer from wallet in time.",
+        message: 'Did not receive handshake offer from wallet in time.',
       });
     });
   });
 
-  describe("peer sync messages", () => {
-    it("cancels the session when mobile sends sync-cancel", async () => {
+  describe('peer sync messages', () => {
+    it('cancels the session when mobile sends sync-cancel', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitSyncCancel();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.CANCELLED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("disconnected");
+      expect(controller.state.qrSyncConnectionStatus).toBe('disconnected');
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.SYNC_REJECTED,
         message: QrSyncErrorMessages.SYNC_SESSION_CANCELLED_BY_PEER,
       });
     });
 
-    it("fails the session when mobile sends sync-error", async () => {
+    it('fails the session when mobile sends sync-error', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
       mockEmitSyncError({
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
       await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.SYNC_FAILED,
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
     });
 
-    it("fails the session when mobile sends sync-error during sync completion", async () => {
+    it('fails the session when mobile sends sync-error during sync completion', async () => {
       const { controller, primaryGroupId } = setupController();
 
       await mockStartSession(controller);
@@ -998,19 +1069,19 @@ describe("QrSyncController", () => {
       await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
       mockEmitSyncError({
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
       await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
-      expect(controller.state.qrSyncConnectionStatus).toBe("errored");
+      expect(controller.state.qrSyncConnectionStatus).toBe('errored');
       expect(controller.state.qrSyncError).toStrictEqual({
         code: QrSyncErrorCodes.SYNC_FAILED,
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
     });
 
-    it("ignores duplicate peer cancel messages after the session has ended", async () => {
+    it('ignores duplicate peer cancel messages after the session has ended', async () => {
       const { controller } = setupController();
 
       await mockStartSession(controller);
@@ -1023,10 +1094,10 @@ describe("QrSyncController", () => {
     });
   });
 
-  describe("Sentry reporting", () => {
-    it("reports unexpected session failures to Sentry", async () => {
+  describe('Sentry reporting', () => {
+    it('reports unexpected session failures to Sentry', async () => {
       const captureException = jest.fn();
-      const connectError = new Error("Relay unavailable");
+      const connectError = new Error('Relay unavailable');
       const { controller, qrSyncMessenger } = setupController();
       // @ts-expect-error - captureException mock
       qrSyncMessenger.captureException = captureException;
@@ -1038,15 +1109,17 @@ describe("QrSyncController", () => {
       const sentryError = captureException.mock.calls[0][0] as Error & {
         cause: unknown;
       };
-      expect(sentryError.message).toBe(`QR sync session failed (${QrSyncErrorCodes.UNKNOWN})`);
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.UNKNOWN})`,
+      );
       expect(sentryError.cause).toBe(connectError);
     });
 
-    it("does not report QR expiry to Sentry", async () => {
+    it('does not report QR expiry to Sentry', async () => {
       const captureException = jest.fn();
       const expiredError = new MwpCoreSessionError(
         MwpCoreErrorCode.REQUEST_EXPIRED,
-        "Did not receive handshake offer from wallet in time.",
+        'Did not receive handshake offer from wallet in time.',
       );
       const { controller, qrSyncMessenger } = setupController();
       // @ts-expect-error - captureException mock
@@ -1058,7 +1131,7 @@ describe("QrSyncController", () => {
       expect(captureException).not.toHaveBeenCalled();
     });
 
-    it("reports mobile sync-error messages to Sentry", async () => {
+    it('reports mobile sync-error messages to Sentry', async () => {
       const captureException = jest.fn();
       const { controller, qrSyncMessenger } = setupController();
       // @ts-expect-error - captureException mock
@@ -1066,7 +1139,7 @@ describe("QrSyncController", () => {
 
       await mockStartSession(controller);
       mockEmitSyncError({
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
       await flushAsyncWork();
 
@@ -1074,12 +1147,16 @@ describe("QrSyncController", () => {
       const sentryError = captureException.mock.calls[0][0] as Error & {
         cause: unknown;
       };
-      expect(sentryError.message).toBe(`QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`);
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
+      );
       expect(sentryError.cause).toBeInstanceOf(Error);
-      expect((sentryError.cause as Error).message).toBe("Mobile could not complete the sync");
+      expect((sentryError.cause as Error).message).toBe(
+        'Mobile could not complete the sync',
+      );
     });
 
-    it("reports sync-error during completion wait to Sentry only once", async () => {
+    it('reports sync-error during completion wait to Sentry only once', async () => {
       const captureException = jest.fn();
       const { controller, qrSyncMessenger, primaryGroupId } = setupController();
       // @ts-expect-error - captureException mock
@@ -1090,7 +1167,7 @@ describe("QrSyncController", () => {
       await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]);
 
       mockEmitSyncError({
-        message: "Mobile could not complete the sync",
+        message: 'Mobile could not complete the sync',
       });
       await flushAsyncWork();
 
@@ -1098,11 +1175,15 @@ describe("QrSyncController", () => {
       const sentryError = captureException.mock.calls[0][0] as Error & {
         cause: unknown;
       };
-      expect(sentryError.message).toBe(`QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`);
-      expect((sentryError.cause as Error).message).toBe("Mobile could not complete the sync");
+      expect(sentryError.message).toBe(
+        `QR sync session failed (${QrSyncErrorCodes.SYNC_FAILED})`,
+      );
+      expect((sentryError.cause as Error).message).toBe(
+        'Mobile could not complete the sync',
+      );
     });
 
-    it("does not report sync offer timeouts to Sentry", async () => {
+    it('does not report sync offer timeouts to Sentry', async () => {
       const captureException = jest.fn();
       const submitOtp = jest.fn().mockResolvedValue(undefined);
       const { controller, qrSyncMessenger } = setupController();
@@ -1114,8 +1195,10 @@ describe("QrSyncController", () => {
 
       jest.useFakeTimers();
       try {
-        await controller.submitOtp("123456");
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT);
+        await controller.submitOtp('123456');
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.SYNC_OFFER_TIMEOUT,
+        );
       } finally {
         jest.useRealTimers();
       }
@@ -1123,7 +1206,7 @@ describe("QrSyncController", () => {
       expect(captureException).not.toHaveBeenCalled();
     });
 
-    it("does not report OTP expiry to Sentry", async () => {
+    it('does not report OTP expiry to Sentry', async () => {
       const captureException = jest.fn();
       const { controller, qrSyncMessenger } = setupController();
       // @ts-expect-error - captureException mock
@@ -1134,7 +1217,9 @@ describe("QrSyncController", () => {
       jest.useFakeTimers();
       try {
         mockEmitOtpRequired(jest.fn());
-        await jest.advanceTimersByTimeAsync(QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
+        await jest.advanceTimersByTimeAsync(
+          QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT,
+        );
       } finally {
         jest.useRealTimers();
       }
@@ -1142,7 +1227,7 @@ describe("QrSyncController", () => {
       expect(captureException).not.toHaveBeenCalled();
     });
 
-    it("does not report transport disconnects to Sentry", async () => {
+    it('does not report transport disconnects to Sentry', async () => {
       const captureException = jest.fn();
       const { controller, qrSyncMessenger } = setupController();
       // @ts-expect-error - captureException mock
@@ -1150,17 +1235,20 @@ describe("QrSyncController", () => {
 
       await mockStartSession(controller);
       mockMwp.dappClient?.emit(
-        "disconnected",
-        new MwpCoreSessionError(MwpCoreErrorCode.TRANSPORT_DISCONNECTED, "Transport disconnected."),
+        'disconnected',
+        new MwpCoreSessionError(
+          MwpCoreErrorCode.TRANSPORT_DISCONNECTED,
+          'Transport disconnected.',
+        ),
       );
       await flushAsyncWork();
 
       expect(captureException).not.toHaveBeenCalled();
     });
 
-    it("reports send-message failures to Sentry", async () => {
+    it('reports send-message failures to Sentry', async () => {
       const captureException = jest.fn();
-      const sendError = new Error("Relay write failed");
+      const sendError = new Error('Relay write failed');
       const { controller, qrSyncMessenger, primaryGroupId } = setupController();
       // @ts-expect-error - captureException mock
       qrSyncMessenger.captureException = captureException;
@@ -1169,9 +1257,9 @@ describe("QrSyncController", () => {
       await mockSetReviewingSyncOffer(controller);
       mockMwp.dappClient?.sendRequest.mockRejectedValueOnce(sendError);
 
-      await expect(controller.syncAccounts(TEST_PASSWORD, [primaryGroupId])).rejects.toThrow(
-        QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE,
-      );
+      await expect(
+        controller.syncAccounts(TEST_PASSWORD, [primaryGroupId]),
+      ).rejects.toThrow(QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE);
 
       expect(captureException).toHaveBeenCalledTimes(1);
       const sentryError = captureException.mock.calls[0][0] as Error & {

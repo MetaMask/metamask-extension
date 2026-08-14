@@ -1,24 +1,24 @@
-import type { AccountGroupId } from "@metamask/account-api";
+import type { AccountGroupId } from '@metamask/account-api';
 import type {
   ControllerGetStateAction,
   ControllerStateChangedEvent,
-} from "@metamask/base-controller";
-import type { Messenger } from "@metamask/messenger";
+} from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 
 import {
   AccountTreeControllerExportStateAction,
   type AccountTreePayload,
-} from "@metamask/account-tree-controller";
-import type { QrSyncPhase } from "../../../../shared/constants/qr-sync";
-import { QrSyncErrorCodes } from "../../../../shared/constants/qr-sync";
-import type { KeyManager } from "./key-manager";
+} from '@metamask/account-tree-controller';
+import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
+import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
+import type { KeyManager } from './key-manager';
 import {
   QR_SYNC_CONTROLLER_NAME,
   QrSyncActionTypes,
   QrSyncConnectionStatus,
   QrSyncMessageVersion,
-} from "./constants";
-import type { QrSyncController } from "./qr-sync-controller";
+} from './constants';
+import type { QrSyncController } from './qr-sync-controller';
 
 export type QrSyncConnectionStatusType =
   (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];
@@ -30,7 +30,8 @@ export type QrSyncControllerInitOptions = {
   state?: Partial<QrSyncControllerState>;
 };
 
-export type QrSyncActionType = (typeof QrSyncActionTypes)[keyof typeof QrSyncActionTypes];
+export type QrSyncActionType =
+  (typeof QrSyncActionTypes)[keyof typeof QrSyncActionTypes];
 
 /**
  * The message structure for the whole QR Sync session over Mobile Wallet Protocol relay.
@@ -64,7 +65,8 @@ export type QrSyncOffer = {
   sessionId: string;
 };
 
-export type QrSyncErrorCodeType = (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
+export type QrSyncErrorCodeType =
+  (typeof QrSyncErrorCodes)[keyof typeof QrSyncErrorCodes];
 
 export type QrSyncError = {
   code: QrSyncErrorCodeType;
@@ -147,33 +149,33 @@ export type QrSyncControllerGetStateAction = ControllerGetStateAction<
 >;
 
 export type QrSyncControllerCreateSessionAction = {
-  type: "QrSyncController:createSession";
-  handler: QrSyncController["createSession"];
+  type: 'QrSyncController:createSession';
+  handler: QrSyncController['createSession'];
 };
 
 export type QrSyncControllerSubmitOtpAction = {
-  type: "QrSyncController:submitOtp";
-  handler: QrSyncController["submitOtp"];
+  type: 'QrSyncController:submitOtp';
+  handler: QrSyncController['submitOtp'];
 };
 
 export type QrSyncControllerCancelOtpAction = {
-  type: "QrSyncController:cancelOtp";
-  handler: QrSyncController["cancelOtp"];
+  type: 'QrSyncController:cancelOtp';
+  handler: QrSyncController['cancelOtp'];
 };
 
 export type QrSyncControllerSyncAccountsAction = {
-  type: "QrSyncController:syncAccounts";
-  handler: QrSyncController["syncAccounts"];
+  type: 'QrSyncController:syncAccounts';
+  handler: QrSyncController['syncAccounts'];
 };
 
 export type QrSyncControllerCancelSyncAction = {
-  type: "QrSyncController:cancelSync";
-  handler: QrSyncController["cancelSync"];
+  type: 'QrSyncController:cancelSync';
+  handler: QrSyncController['cancelSync'];
 };
 
 export type QrSyncControllerResetStateAction = {
-  type: "QrSyncController:resetState";
-  handler: QrSyncController["resetState"];
+  type: 'QrSyncController:resetState';
+  handler: QrSyncController['resetState'];
 };
 
 export type QrSyncControllerActions =
@@ -185,7 +187,9 @@ export type QrSyncControllerActions =
   | QrSyncControllerCancelSyncAction
   | QrSyncControllerResetStateAction;
 
-export type QrSyncAllowedActions = QrSyncControllerActions | AccountTreeControllerExportStateAction;
+export type QrSyncAllowedActions =
+  | QrSyncControllerActions
+  | AccountTreeControllerExportStateAction;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,
