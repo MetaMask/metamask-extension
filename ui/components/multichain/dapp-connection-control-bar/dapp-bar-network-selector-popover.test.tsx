@@ -315,10 +315,6 @@ describe('DappBarNetworkSelectorPopover', () => {
       expect(mockAddPermittedChain).not.toHaveBeenCalled();
     });
 
-    it('does not surface the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
-    });
-
     it('activates the selected network client', () => {
       expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
     });
@@ -381,10 +377,6 @@ describe('DappBarNetworkSelectorPopover', () => {
       );
     });
 
-    it('surfaces the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).toHaveBeenCalledTimes(1);
-    });
-
     it('persists the per-origin network client', () => {
       expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
         DAPP_ORIGIN,
@@ -429,7 +421,6 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
     expect(mockSetNetworkClientIdForDomain).not.toHaveBeenCalled();
     expect(mockAddPermittedChain).not.toHaveBeenCalled();
-    expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

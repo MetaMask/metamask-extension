@@ -444,6 +444,35 @@ describe('TokenList', () => {
     );
   });
 
+  it('renders newly selected account assets immediately after account switch', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValueOnce(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+        ]),
+      )
+      .mockReturnValueOnce(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'DAI', fiatBalance: 10 }),
+        ]),
+      );
+
+    const { rerender } = render();
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-DAI')).not.toBeInTheDocument();
+
+    rerender(
+      <Provider store={configureMockStore([thunk])({})}>
+        <TokenList onTokenClick={jest.fn()} />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('token-cell-DAI')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-USDC')).not.toBeInTheDocument();
+  });
+
   it('persists expansion for the browser session', () => {
     jest
       .mocked(getAssetsBySelectedAccountGroup)

@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Retrait des prédictions"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Échec de l’achat"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Échec de l’achat"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "A acheté $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "A acheté $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Échec de la vente"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Échec de la vente"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Découvrez comment nous protégeons vos données personnelles"
-  },
-  "backupApprovalInfo": {
-    "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
   "backupApprovalNotice": {
     "message": "Sauvegardez votre phrase secrète de récupération pour garder votre portefeuille et vos fonds en sécurité."
@@ -3405,11 +3446,11 @@
   "disconnectAllSites": {
     "message": "Tout déconnecter"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Si vous vous déconnectez de tous les sites, vous devrez reconnecter vos comptes et réseaux pour pouvoir les utiliser à nouveau."
-  },
   "disconnectAllSitesError": {
     "message": "Certaines dapps n’ont pas pu être déconnectées. Veuillez réessayer."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "Tout déconnecter?"
   },
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "Déconnecter $1"
   },
+  "disconnectQuestion": {
+    "message": "Déconnecter?"
+  },
   "disconnectThisAccount": {
     "message": "Déconnecter ce compte"
   },
   "discover": {
     "message": "Découvrir"
   },
+  "discoverSearchCap": {
+    "message": "capitalisation boursière",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Aucun résultat trouvé",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Aucun résultat trouvé pour « $1 »",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Découvrez d’autres actifs populaires",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "Il s’agit d’une fonction avancée, à utiliser avec précaution."
-  },
-  "editPermissions": {
-    "message": "Modifier les autorisations"
   },
   "editSpendingCap": {
     "message": "Modifier le plafond des dépenses"
@@ -6829,9 +6878,6 @@
   "permitSimulationDetailInfo": {
     "message": "Vous donnez au dépenseur l’autorisation de retirer ce nombre de jetons de votre compte."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 a accès à $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -6909,6 +6955,10 @@
   },
   "perpsCancelOrder": {
     "message": "Annuler l’ordre"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "L’ordre n’a pas pu être annulé. Veuillez réessayer.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "Définir l’unité de temps"
@@ -7048,6 +7098,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Estimation des pertes et profits au take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Approvisionnez votre compte pour commencer à trader.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Explorer les marchés"
@@ -7245,8 +7299,19 @@
   "perpsOrderBookApply": {
     "message": "Appliquer"
   },
+  "perpsOrderBookBuy": {
+    "message": "Achat : $1 %",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Classement par et Regroupement par"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Connexion au carnet d’ordres perdue"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Achat : $1 %, vente : $2 %",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Regrouper par"
@@ -7254,11 +7319,27 @@
   "perpsOrderBookListedBy": {
     "message": "Trié par"
   },
+  "perpsOrderBookLoading": {
+    "message": "Chargement du carnet d’ordres"
+  },
+  "perpsOrderBookNoData": {
+    "message": "Aucune donnée disponible pour le carnet d’ordres"
+  },
   "perpsOrderBookPrice": {
     "message": "Prix"
   },
   "perpsOrderBookReconnect": {
     "message": "Reconnecter"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconnexion au carnet d’ordres"
+  },
+  "perpsOrderBookResize": {
+    "message": "Redimensionner le carnet d’ordres"
+  },
+  "perpsOrderBookSell": {
+    "message": "Vente : $1 %",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Taille"
@@ -7269,8 +7350,24 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Utiliser $1 comme prix limite",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Type de valeur"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Carnet d’ordres affichant les cours acheteurs et vendeurs",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Carnet d’ordres affichant uniquement les cours acheteurs",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Carnet d’ordres affichant uniquement les cours vendeurs",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Date"
@@ -7491,6 +7588,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Le take profit doit être $1 à $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Cet ordre n’est plus ouvert",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Échec de l’annulation de l’ordre",
@@ -8069,6 +8170,80 @@
   "rampsOnNetwork": {
     "message": "sur $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Coordonnées bancaires pour le virement"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Acheter à nouveau"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Frais"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Numéro de la commande"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Payé avec",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Frais de $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Consulter sur $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Une erreur s’est produite lors de la passation de votre ordre.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Échec de l’achat",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Votre ordre est en cours de traitement.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Achat en cours",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Une erreur s’est produite lors de la passation de votre ordre.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Échec de la vente",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Votre ordre est en cours de traitement.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Vente en cours",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Vos fonds sont en cours d’acheminement.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Vente effectuée avec succès",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Vos cryptomonnaies sont en cours d’acheminement.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Achat effectué avec succès",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "Autres options"
@@ -9091,9 +9266,6 @@
   },
   "select": {
     "message": "Sélectionner"
-  },
-  "selectAccountToConnect": {
-    "message": "Sélectionner un compte à connecter"
   },
   "selectAll": {
     "message": "Tout sélectionner"
@@ -11251,15 +11423,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask a rencontré des difficultés à démarrer."
   },
-  "trustSignalBlockDescription": {
-    "message": "Si vous vous connectez à ce site, vous risquez de perdre tous vos actifs."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Site malveillant détecté"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Se connecter quand même"
-  },
   "tryAgain": {
     "message": "Réessayer"
   },
@@ -11517,6 +11680,10 @@
   },
   "viewTokenDetails": {
     "message": "Afficher les détails du jeton"
+  },
+  "viewXMore": {
+    "message": "Afficher $1 autres",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",

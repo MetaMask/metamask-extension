@@ -33,6 +33,7 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => false,
   hasBasicFunctionalityEnabled: () => true,
   getRemoteFeatureFlags: () => ({}),
+  getFeatureFlagThresholdGroups: () => ({}),
   appVersion: '1.0.0',
   userAgent: '',
 };

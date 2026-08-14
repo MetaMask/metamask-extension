@@ -851,6 +851,50 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "예측 자금 출금"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "매수 실패"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "매수 실패"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "$1 매수 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "$1 매수 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "$1 구매",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "$1 구매",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "매도 실패"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "매도 실패"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "$1 매도 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "$1 매도 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 매도 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 매도 완료",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
     "message": "발신: $1",
     "description": "$1 is the shortened sender address"
@@ -1769,9 +1813,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "개인 정보 보호 방법 알아보기"
-  },
-  "backupApprovalInfo": {
-    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
   "backupApprovalNotice": {
     "message": "비밀복구구문을 백업하여 지갑과 자금을 안전하게 보호하세요."
@@ -3405,11 +3446,11 @@
   "disconnectAllSites": {
     "message": "모두 연결 해제"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "모든 사이트에서 연결을 해제할 경우 계정과 네트워크를 다시 연결해야 해당 사이트들을 이용할 수 있습니다."
-  },
   "disconnectAllSitesError": {
     "message": "일부 디앱은 연결을 해제할 수 없습니다. 다시 시도해 주세요."
+  },
+  "disconnectAllSitesQuestion": {
+    "message": "모두 연결 해제?"
   },
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
@@ -3420,15 +3461,26 @@
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
+  "disconnectQuestion": {
+    "message": "연결 해제?"
+  },
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
   },
   "discover": {
     "message": "발견"
   },
+  "discoverSearchCap": {
+    "message": "한도",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "검색 결과가 없습니다",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "\"$1\"에 대한 검색 결과가 없습니다",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "다른 인기 자산 살펴보기",
@@ -3590,9 +3642,6 @@
   },
   "editNonceMessage": {
     "message": "이는 고급 기능으로, 주의해서 사용해야 합니다."
-  },
-  "editPermissions": {
-    "message": "권한 수정"
   },
   "editSpendingCap": {
     "message": "지출 한도 편집"
@@ -6833,9 +6882,6 @@
   "permitSimulationDetailInfo": {
     "message": "지출자에게 내 계정에서 이 정도의 토큰을 지출할 수 있는 권한을 부여합니다."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1은(는) $2에 액세스 할 수 있습니다."
-  },
   "perps": {
     "message": "무기한 선물"
   },
@@ -6913,6 +6959,10 @@
   },
   "perpsCancelOrder": {
     "message": "주문 취소"
+  },
+  "perpsCancelOrderFailed": {
+    "message": "주문이 취소되었습니다. 다시 시도해 주세요.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
   },
   "perpsCandleIntervals": {
     "message": "캔들 간격 설정"
@@ -7052,6 +7102,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "익절 시 예상 손익",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "거래를 시작하려면 자금을 추가하세요.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "시장 살펴보기"
@@ -7249,8 +7303,19 @@
   "perpsOrderBookApply": {
     "message": "적용"
   },
+  "perpsOrderBookBuy": {
+    "message": "매수: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "표시 & 분류 기준"
+  },
   "perpsOrderBookConnectionError": {
     "message": "오더북 연결 끊김"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "매수 $1%, 매도 $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "그룹화 기준"
@@ -7261,11 +7326,24 @@
   "perpsOrderBookLoading": {
     "message": "오더북 불러오는 중"
   },
+  "perpsOrderBookNoData": {
+    "message": "오더북 데이터 없음"
+  },
   "perpsOrderBookPrice": {
     "message": "가격"
   },
   "perpsOrderBookReconnect": {
     "message": "다시 연결"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "오더북 재연결 중"
+  },
+  "perpsOrderBookResize": {
+    "message": "오더북 크기 조정"
+  },
+  "perpsOrderBookSell": {
+    "message": "매도: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "규모"
@@ -7276,8 +7354,24 @@
   "perpsOrderBookTotal": {
     "message": "총액"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "지정가로 $1 사용",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "가치 유형"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "매수·매도 주문을 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "매수 주문만 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "매도 주문만 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "날짜"
@@ -7498,6 +7592,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "익절가는 $2 가격보다 $1 합니다",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "이 주문은 더 이상 유효하지 않습니다",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "주문 취소 실패",
@@ -8080,6 +8178,80 @@
   "rampsOnNetwork": {
     "message": "$1에서",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "은행 송금 세부 정보"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "다시 매수"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "수수료"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "주문 ID"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "결제 수단:",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 수수료",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "총액"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "$1에서 보기"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "주문에 오류가 발생했습니다.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "매수 실패",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "주문이 처리 중입니다.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "매수 진행 중",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "주문에 오류가 발생했습니다.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "매도 실패",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "주문이 처리 중입니다.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "매도 진행 중",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "자금을 송금 중입니다.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "매도 성공",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "암호화폐를 전송 중입니다.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "매수 성공",
+    "description": "Title for the successful ramp buy order toast"
   },
   "rampsOtherOptions": {
     "message": "기타 옵션"
@@ -9102,9 +9274,6 @@
   },
   "select": {
     "message": "선택"
-  },
-  "selectAccountToConnect": {
-    "message": "연결할 계정 선택"
   },
   "selectAll": {
     "message": "전체 선택"
@@ -11262,15 +11431,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask 시작 중 문제가 발생했습니다."
   },
-  "trustSignalBlockDescription": {
-    "message": "이 사이트에 연결하면 모든 자산을 잃을 수 있습니다."
-  },
-  "trustSignalBlockTitle": {
-    "message": "악성 사이트 감지됨"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "연결 계속"
-  },
   "tryAgain": {
     "message": "다시 시도"
   },
@@ -11528,6 +11688,10 @@
   },
   "viewTokenDetails": {
     "message": "토큰 세부 정보 보기"
+  },
+  "viewXMore": {
+    "message": "$1개 더 보기",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",

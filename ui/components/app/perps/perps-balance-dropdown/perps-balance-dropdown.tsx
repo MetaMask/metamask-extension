@@ -31,7 +31,7 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
-import { useOnClickOutside } from '../hooks/useClickOutside';
+import { useOnClickOutside } from '../../../../hooks/useClickOutside';
 import { getPrivacyAwareColor } from '../utils';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */

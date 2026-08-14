@@ -20,6 +20,7 @@ import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
 
 // ============================================================================
 // Types
@@ -1067,6 +1068,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           gaslessEnabled: false,
         },
       },
+      depositLimit: {
+        moneyAccountDeposit: 500000,
+      },
       perpsWithdrawAnyToken: false,
       predictWithdrawAnyToken: true,
       relayDisabledGasStationChains: [],
@@ -1163,6 +1167,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
               },
             },
           },
+          enableMoneyAccountTransactions: {
+            perpsDeposit: false,
+            perpsWithdraw: false,
+          },
         },
       },
       {
@@ -1187,6 +1195,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
                 enabled: false,
               },
             },
+          },
+          enableMoneyAccountTransactions: {
+            perpsDeposit: false,
+            perpsWithdraw: false,
           },
         },
       },
@@ -1269,7 +1281,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_tokens',
     productionDefault: {
-      enabled: false,
+      preferredTokens: {
+        default: [],
+        overrides: {},
+      },
+      blockedTokens: {
+        default: {
+          chainIds: [],
+          tokens: [],
+        },
+        overrides: {},
+      },
+      minimumRequiredTokenBalance: 10,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2526,6 +2549,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'erc20-token-allowance',
         'token-approval-revocation',
       ],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+    inProd: false,
+    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

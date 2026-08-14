@@ -287,7 +287,9 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
-      {disablePay !== true && hasTokens && <PayWithRow />}
+      {/* Keep mounted while funding tokens load after account override so the
+          selector does not unmount for the reselect wait, then remount. */}
+      {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
           <BridgeFeeRow

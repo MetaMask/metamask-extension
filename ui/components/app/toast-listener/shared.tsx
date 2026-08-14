@@ -10,7 +10,6 @@ type Props = {
   transactionId?: string;
   to?: string;
 };
-
 const TransactionToastContent = ({
   toastId,
   status,
@@ -22,7 +21,6 @@ const TransactionToastContent = ({
   return (
     <>
       <ToastContent title={title} description={description} />
-
       {to && (
         <Link
           to={to}
