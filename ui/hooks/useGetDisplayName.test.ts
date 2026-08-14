@@ -100,7 +100,14 @@ describe('useGetDisplayName', () => {
     setState({
       names: {
         ethereumAddress: {
-          [mockAddress.toLowerCase()]: { '*': { name: 'пример.eth' } },
+          [mockAddress.toLowerCase()]: {
+            '*': {
+              name: 'пример.eth',
+              sourceId: null,
+              origin: null,
+              proposedNames: {},
+            },
+          },
         },
       },
     });
