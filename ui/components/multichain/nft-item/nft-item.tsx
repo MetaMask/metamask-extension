@@ -22,10 +22,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getIpfsGateway,
-  getOpenSeaEnabled,
-} from '../../../selectors';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
