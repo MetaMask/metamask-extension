@@ -847,6 +847,8 @@
     },
     "@metamask/account-tree-controller": {
       "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
         "console.warn": true,
         "setTimeout": true,
         "structuredClone": true
@@ -858,7 +860,6 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/keyring-sdk": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
