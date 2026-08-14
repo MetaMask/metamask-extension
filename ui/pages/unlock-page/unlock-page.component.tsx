@@ -277,7 +277,10 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
         const search = fromLocation.search || '';
-        redirectTo = fromLocation.pathname + search;
+        // Keep the hash: deep links (e.g. /settings/privacy#metametrics) use it
+        // to scroll to a specific setting.
+        const hash = fromLocation.hash || '';
+        redirectTo = fromLocation.pathname + search + hash;
       }
       navigate(redirectTo, { replace: true });
     }
