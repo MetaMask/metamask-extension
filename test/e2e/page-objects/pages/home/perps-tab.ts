@@ -140,7 +140,8 @@ export class PerpsTab extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Shown for both the populated list header and the empty-state header.
+   * Only rendered when the section has transactions; empty/loading states omit it.
+   * Prefer `waitForRecentActivitySection()` before calling this.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -177,20 +178,38 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to Perps Home by clicking the Perps tab on the account overview.
-   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
-   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
+   * Navigates to Perps Home via bottom-nav Perps or the account-overview Perps tab.
+   * Requires the account overview / home chrome to be visible (e.g. after login).
+   * Waits until either entry point is present (avoids a short bottom-nav poll that
+   * false-negatives into waiting for an overview tab that never renders under
+   * bottom-nav treatment), clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
     console.log('Navigate to Perps home');
+    await this.driver.waitUntil(
+      async () => {
+        const isBottomNav = await this.driver.isElementPresentAndVisible(
+          this.bottomNavPerpsButton,
+          500,
+        );
+        if (isBottomNav) {
+          return true;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.accountOverviewPerpsTab,
+          500,
+        );
+      },
+      { timeout: 20000, interval: 500 },
+    );
+
     const isBottomNav = await this.driver.isElementPresentAndVisible(
       this.bottomNavPerpsButton,
-      3000,
+      1000,
     );
     if (isBottomNav) {
       await this.driver.clickElement(this.bottomNavPerpsButton);
     } else {
-      await this.driver.waitForSelector(this.accountOverviewPerpsTab);
       await this.driver.clickElement(this.accountOverviewPerpsTab);
     }
     await this.checkPageIsLoaded();

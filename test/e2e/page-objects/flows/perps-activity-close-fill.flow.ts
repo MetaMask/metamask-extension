@@ -38,6 +38,9 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
   await perpsTab.checkPageIsLoaded();
+  // See All only renders once userFills have populated the section (not on
+  // loading skeleton or empty state); wait to avoid flaky TimeoutError on click.
+  await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);
