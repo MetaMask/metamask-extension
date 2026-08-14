@@ -55,6 +55,18 @@ describe('canonicalize', () => {
     );
   });
 
+  it('keeps arbitrary UTM keys listed in sig_params and removes unsigned keys', () => {
+    const url = new URL(
+      `https://example.com/perps?utm_source=partner&utm_campaign=launch` +
+        `&redirectTo=https://evil.example&${SIG_PARAMS_PARAM}=utm_source%2Cutm_campaign` +
+        `&${SIG_PARAM}=signature`,
+    );
+
+    expect(canonicalize(url)).toBe(
+      'https://example.com/perps?sig_params=utm_source%2Cutm_campaign&utm_campaign=launch&utm_source=partner',
+    );
+  });
+
   it('preserves repeated values for allowed params listed in sig_params', () => {
     const url = new URL(
       `https://example.com/path?a=1&a=2&c=9&${SIG_PARAMS_PARAM}=a`,

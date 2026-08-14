@@ -1,3 +1,4 @@
+import { UTM_PARAMS, withDeeplinkAttribution } from './perps-attribution';
 import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
 
 /**
@@ -17,6 +18,7 @@ import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
  */
 export const perpsAsset = new Route({
   pathname: '/perps-asset',
+  signatureRequiredSearchParams: UTM_PARAMS,
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsMarketDetailPage',
   handler: function handler(params: URLSearchParams) {
     const symbol = params.get('symbol');
@@ -27,7 +29,7 @@ export const perpsAsset = new Route({
 
     return {
       path: `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`,
-      query: new URLSearchParams(),
+      query: withDeeplinkAttribution(params),
     };
   },
 });
