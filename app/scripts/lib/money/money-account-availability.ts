@@ -6,7 +6,9 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
+import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import { isMoneyAccountEnabled } from '../../../../shared/lib/money/feature-flags';
+import { applyManifestFlagOverrides } from '../../../../shared/lib/remote-feature-flag-utils';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 
 const log = createProjectLogger('money-account-availability');
@@ -49,12 +51,7 @@ export type MoneyAccountAvailabilityMessenger = Messenger<
   MoneyAccountAvailabilityEvents
 >;
 
-/**
- * Whether this user has a usable Money Account, and its address when they do.
- */
-export type MoneyAccountAvailability =
-  | { isAvailable: true; address: Hex }
-  | { isAvailable: false };
+export type { MoneyAccountAvailability };
 
 const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 
@@ -163,6 +160,11 @@ export class MoneyAccountAvailabilityService {
       'RemoteFeatureFlagController:getState',
     );
 
-    return isMoneyAccountEnabled(remoteFeatureFlags);
+    // The same parser and the same manifest-override merge every other reader
+    // of this flag uses, so the gate, the UI selectors and the controller init
+    // cannot disagree about what the flag means.
+    return isMoneyAccountEnabled(
+      applyManifestFlagOverrides(remoteFeatureFlags),
+    );
   }
 }

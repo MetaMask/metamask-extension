@@ -4,11 +4,22 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerGetNonceLockAction,
+  TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
@@ -70,12 +81,25 @@ export function getTransactionPayControllerMessenger(
 }
 
 type InitMessengerActions =
+  | AccountsControllerGetSelectedAccountAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
-  | TransactionControllerIsAtomicBatchSupportedAction;
+  | TransactionControllerIsAtomicBatchSupportedAction
+  // The Money Pay callbacks resolve the vault config, the money chain's
+  // network client, and the money account through the init messenger — see
+  // `app/scripts/lib/money/pay/pay-context.ts`.
+  | MoneyAccountControllerGetMoneyAccountAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | TransactionControllerAddTransactionBatchAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionMetadataAction;
 
-type InitMessengerEvents = never;
+// The Money account-override handler seeds Pay config when an unapproved
+// money transaction is added (`app/scripts/lib/money/pay/account-override.ts`).
+type InitMessengerEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 
 export type TransactionPayControllerInitMessenger = ReturnType<
   typeof getTransactionPayControllerInitMessenger
@@ -97,12 +121,20 @@ export function getTransactionPayControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'AccountsController:getSelectedAccount',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
+      'MoneyAccountController:getMoneyAccount',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
+      'TransactionController:addTransactionBatch',
       'TransactionController:getNonceLock',
+      'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
+      'TransactionController:updateTransactionMetadata',
     ],
-    events: [],
+    events: ['TransactionController:unapprovedTransactionAdded'],
   });
 
   return controllerInitMessenger;

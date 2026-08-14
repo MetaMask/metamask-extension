@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Hex } from '@metamask/utils';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { useConfirmContext } from '../../context/confirm';
@@ -8,6 +11,10 @@ import { parseStandardTokenTransactionData } from '../../../../../shared/lib/tra
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
 
@@ -73,8 +80,60 @@ export function useUpdateTokenAmount() {
     }
   }, [isUpdating, transactionId]);
 
+  const hasMoneyType = useCallback(
+    (type: TransactionType) =>
+      transactionMeta?.type === type ||
+      (transactionMeta?.nestedTransactions?.some((tx) => tx.type === type) ??
+        false),
+    [transactionMeta],
+  );
+
+  const isMoneyAccountDeposit = useMemo(
+    () => hasMoneyType(TransactionType.moneyAccountDeposit),
+    [hasMoneyType],
+  );
+
+  const isMoneyAccountWithdraw = useMemo(
+    () => hasMoneyType(TransactionType.moneyAccountWithdraw),
+    [hasMoneyType],
+  );
+
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
+      // Money deposits are a placeholder approve + deposit batch with no
+      // calldata to parse — the background commit path re-encodes both calls
+      // (it needs a vault read for the share preview) and has its own
+      // in-flight dedup, so `previousAmountRaw` tracking is not used here.
+      // Mobile gates this behind the deposit-quote-pipeline flag with a
+      // legacy per-call updater as the fallback; that legacy pipeline was
+      // deliberately not ported, so this is the extension's only path.
+      if (isMoneyAccountDeposit) {
+        updateMoneyAccountDepositAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account deposit amount',
+              error,
+            );
+          },
+        );
+        return;
+      }
+
+      // Same shape as deposits: the placeholder withdraw + transfer batch has
+      // no calldata to parse, and the background commit path resolves the
+      // recipient (the selected account) and the vault rate.
+      if (isMoneyAccountWithdraw) {
+        updateMoneyAccountWithdrawAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account withdrawal amount',
+              error,
+            );
+          },
+        );
+        return;
+      }
+
       if (!data || !to || decimals === undefined) {
         return;
       }
@@ -120,7 +179,17 @@ export function useUpdateTokenAmount() {
         }),
       );
     },
-    [amountRaw, data, decimals, dispatch, nestedCallIndex, to, transactionId],
+    [
+      amountRaw,
+      data,
+      decimals,
+      dispatch,
+      isMoneyAccountDeposit,
+      isMoneyAccountWithdraw,
+      nestedCallIndex,
+      to,
+      transactionId,
+    ],
   );
 
   return {
