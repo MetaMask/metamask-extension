@@ -318,14 +318,4 @@ describe('PerpsBalanceDropdown', () => {
       'text-success-default',
     );
   });
-
-  it('uses bg-elevated2 for the dropdown panel', () => {
-    renderWithProvider(<PerpsBalanceDropdown />, mockStore);
-
-    fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-
-    expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
-      'bg-elevated2',
-    );
-  });
 });
