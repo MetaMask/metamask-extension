@@ -8,7 +8,7 @@ repo: MetaMask/metamask-extension
 
 critical:
   files:
-    # Tooling / build entrypoints (yarn.lock stays out — lockfile-only noise; prefer dep review there)
+    # Tooling / build entrypoints
     - package.json
     - babel.config.js
     - tsconfig.json
@@ -30,7 +30,7 @@ critical:
     - app/scripts/messenger-client-init/network-controller-init.ts
     - app/scripts/lib/createMetamaskMiddleware.ts
     - app/scripts/lib/encryptor-factory.ts
-    # Narrow UI store wiring only (not all of ui/store/)
+    # Narrow UI store wiring only
     - ui/store/store.ts
     - ui/store/background-connection.ts
     - ui/store/patch-store-substream-connection.ts
