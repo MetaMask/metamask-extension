@@ -54,7 +54,7 @@ jobs:
           changed-files-path: changed-files/changed-files.json
           add-comment: false
           add-label: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.AI_ANALYZER_TOKEN }}
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
           # Gate override for Runway release-branch cherry-picks
           gate-override-risk-threshold: medium
