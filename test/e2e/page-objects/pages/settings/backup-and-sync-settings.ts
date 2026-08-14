@@ -25,6 +25,9 @@ class BackupAndSyncSettings {
 
   private readonly driver: Driver;
 
+  private readonly rampsSyncToggle =
+    '[data-testid="ramps-syncing-toggle-container"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -35,6 +38,7 @@ class BackupAndSyncSettings {
         this.accountSyncToggle,
         this.backupAndSyncToggle,
         this.contactSyncToggle,
+        this.rampsSyncToggle,
       ]);
     } catch (e) {
       console.log(
@@ -59,6 +63,11 @@ class BackupAndSyncSettings {
   async toggleContactSync(): Promise<void> {
     console.log('Toggling contact sync setting');
     await this.driver.clickElement(this.contactSyncToggle);
+  }
+
+  async toggleRampsSync(): Promise<void> {
+    console.log('Toggling ramps order sync setting');
+    await this.driver.clickElement(this.rampsSyncToggle);
   }
 }
 

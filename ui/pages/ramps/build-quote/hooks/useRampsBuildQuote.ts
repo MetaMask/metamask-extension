@@ -1,10 +1,7 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  getInternalOrderCode,
-  normalizeProviderCode,
-} from '@metamask/ramps-controller';
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -201,7 +198,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         return;
       }
 
-      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      const providerCode = selectedProvider?.id ?? '';
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;

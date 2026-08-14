@@ -47,6 +47,9 @@
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },
+    "app/scripts/messenger-client-init/identity/authentication-controller-init.test.ts": {
+      "warn: [authentication] Clearing persisted Profile Sync": 1
+    },
     "app/scripts/messenger-client-init/snaps/snap-controller-init.test.ts": {
       "error: Error: A handler for SnapController:setClientActive": 2
     },
@@ -491,7 +494,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 13
+      "MetaMask: Background connection not initialized": 17
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
       "MetaMask: Background connection not initialized": 12
@@ -509,7 +512,10 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 10
+      "MetaMask: Background connection not initialized": 14
+    },
+    "ui/hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing.test.tsx": {
+      "MetaMask: Background connection not initialized": 8
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 2

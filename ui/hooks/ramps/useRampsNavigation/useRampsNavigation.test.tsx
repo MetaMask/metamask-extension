@@ -17,11 +17,19 @@ import {
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
+import { runPortfolioBuyOrdersMigration } from '../utils/portfolioBuyOrdersMigration';
 import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
+
+jest.mock('../utils/portfolioBuyOrdersMigration', () => ({
+  runPortfolioBuyOrdersMigration: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockRunPortfolioBuyOrdersMigration =
+  runPortfolioBuyOrdersMigration as jest.Mock;
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -137,7 +145,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('flag on + ever connected to Portfolio → opens Portfolio (skips in-app)', async () => {
+  it('flag on + ever connected to Portfolio → runs silent migrate then in-app buy', async () => {
     const { result, getModalName } = run(
       buildState({
         subjects: {
@@ -169,10 +177,10 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(true);
-    expect(openTab).toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(mockRunPortfolioBuyOrdersMigration).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
@@ -253,6 +261,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 

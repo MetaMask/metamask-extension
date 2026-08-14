@@ -43,6 +43,19 @@ describe('determinePreferredProvider', () => {
     });
   });
 
+  it('matches Portfolio-style /providers/ ids to bare catalog ids', () => {
+    const result = determinePreferredProvider(
+      [{ providerId: '/providers/moonpay-staging', completedAt: 1000 }],
+      [
+        { id: 'moonpay-staging', name: 'MoonPay Staging' } as Provider,
+        transakProvider,
+      ],
+    );
+
+    expect(result?.provider.id).toBe('moonpay-staging');
+    expect(result?.autoSelected).toBe(false);
+  });
+
   it('returns null when providers are empty', () => {
     expect(determinePreferredProvider([], [])).toBeNull();
   });
