@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -7,6 +7,7 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
@@ -14,6 +15,14 @@ import {
   selectPreferredPayTokens,
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+  getTokenStandardAndDetailsByChain,
+} from '../../../../store/actions';
+import { useDispatch } from '../../../../store/hooks';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { parseTokenDetailDecimals } from '../../utils/token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -33,6 +42,7 @@ export function useAutomaticTransactionPayToken({
 } = {}) {
   // Per-id guard: don't re-dispatch on revisit, do dispatch for new tx.
   const isUpdated = useRef<string | undefined>(undefined);
+  const dispatch = useDispatch();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const availableTokens = useTransactionPayAvailableTokens();
@@ -75,6 +85,9 @@ export function useAutomaticTransactionPayToken({
     [tokens],
   );
 
+  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
+    useState(false);
+
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const isHardwareWallet = useMemo(
     () => Boolean(hardwareWalletType),
@@ -112,7 +125,7 @@ export function useAutomaticTransactionPayToken({
     ],
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       disable ||
       payToken ||
@@ -126,18 +139,99 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
-    setPayToken({
-      address: automaticToken.address,
-      chainId: automaticToken.chainId,
-    });
+    let cancelled = false;
 
-    isUpdated.current = transactionId;
+    const selectAutomaticToken = async () => {
+      const matchingToken = tokens.find(
+        (token) =>
+          token.address?.toLowerCase() ===
+            automaticToken.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            automaticToken.chainId.toLowerCase(),
+      );
+
+      // Post-quote destinations must exist in TokensController before
+      // `updatePaymentToken` can resolve metadata. PayWithModal imports first;
+      // auto-select must do the same or the call fails and this guard never
+      // retries (isUpdated would stick).
+      if (isPostQuoteWithdraw && !matchingToken) {
+        const isPreferredAutomatic =
+          preferredToken !== undefined &&
+          preferredToken.address.toLowerCase() ===
+            automaticToken.address.toLowerCase() &&
+          preferredToken.chainId.toLowerCase() ===
+            automaticToken.chainId.toLowerCase();
+
+        if (!isPreferredAutomatic) {
+          // Wait for allowlist enrichment (`useSendTokens`) to surface the
+          // destination token, then retry via the `tokens` dependency.
+          return;
+        }
+
+        try {
+          const metadata = await getImportMetadata(automaticToken);
+
+          if (!metadata) {
+            // Guessing decimals corrupts every amount derived from the token,
+            // for example 6-decimal USDC. Leave the import to the
+            // confirmation's own `useAddToken` and retry via `tokens`.
+            return;
+          }
+
+          const networkClientId = await findNetworkClientIdByChainId(
+            automaticToken.chainId,
+          );
+
+          await dispatch(
+            addToken(
+              {
+                address: automaticToken.address,
+                symbol: metadata.symbol,
+                decimals: metadata.decimals,
+                networkClientId,
+              },
+              true,
+            ),
+          );
+        } catch (error) {
+          console.error(
+            'Failed to import automatic withdraw destination token',
+            error,
+          );
+          return;
+        }
+      }
+
+      if (cancelled) {
+        return;
+      }
+
+      try {
+        await setPayToken({
+          address: automaticToken.address,
+          chainId: automaticToken.chainId,
+        });
+        isUpdated.current = transactionId;
+      } catch (error) {
+        console.error('Failed to set automatic pay token', error);
+      }
+    };
+
+    selectAutomaticToken();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     automaticToken,
     disable,
+    dispatch,
+    isPostQuoteWithdraw,
     payToken,
+    preferredToken,
     requiredTokens,
     setPayToken,
+    tokens,
     transactionId,
   ]);
 
@@ -147,8 +241,6 @@ export function useAutomaticTransactionPayToken({
   // account without touching `txParams.from`.
   const prevAccountKeyRef = useRef(`${from ?? ''}:${accountOverride ?? ''}`);
   const pendingAccountReselectRef = useRef(false);
-  const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
-    useState(false);
 
   useEffect(() => {
     const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
@@ -226,6 +318,45 @@ export function useAutomaticTransactionPayToken({
     isPostQuoteWithdraw,
     tokensWithBalance.length,
   ]);
+}
+
+/**
+ * Metadata to import a post-quote destination token with. Resolves from the
+ * token lists, the user's tokens or an on-chain lookup.
+ *
+ * @param token - The token to import.
+ * @param token.address - The token address.
+ * @param token.chainId - The chain the token is on.
+ * @returns The metadata, or `undefined` when the decimals are unknown.
+ */
+async function getImportMetadata({
+  address,
+  chainId,
+}: {
+  address: Hex;
+  chainId: Hex;
+}): Promise<{ symbol: string; decimals: number } | undefined> {
+  if (
+    address.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase() &&
+    chainId.toLowerCase() === CHAIN_IDS.MONAD.toLowerCase()
+  ) {
+    return { symbol: MUSD_TOKEN.symbol, decimals: MUSD_TOKEN.decimals };
+  }
+
+  const details = await getTokenStandardAndDetailsByChain(
+    address,
+    undefined,
+    undefined,
+    chainId,
+  );
+
+  const decimals = parseTokenDetailDecimals(details?.decimals);
+
+  if (decimals === undefined) {
+    return undefined;
+  }
+
+  return { symbol: details?.symbol ?? 'Token', decimals };
 }
 
 function getBestToken({
