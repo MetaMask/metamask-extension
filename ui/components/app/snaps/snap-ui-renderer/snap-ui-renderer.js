@@ -144,11 +144,13 @@ const SnapUIRendererComponent = ({
 
   const promptLegacyProps = useMemo(
     () =>
-      isPrompt && {
-        inputValue,
-        onInputChange,
-        placeholder,
-      },
+      isPrompt
+        ? {
+            inputValue,
+            onInputChange,
+            placeholder,
+          }
+        : undefined,
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
