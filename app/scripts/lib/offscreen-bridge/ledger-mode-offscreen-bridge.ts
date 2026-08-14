@@ -13,8 +13,10 @@ type RemoteFeatureFlagState = {
 };
 
 type LedgerModeController = {
-  getLedgerMode: () => LedgerHandlerMode;
   controllerMessenger: {
+    call: (
+      action: 'LegacyBackgroundApiService:getLedgerMode',
+    ) => LedgerHandlerMode;
     subscribe: (
       action: 'RemoteFeatureFlagController:stateChange',
       handler: (isDmkEnabled: boolean) => void,
@@ -50,7 +52,7 @@ export function sendSwitchLedgerModeMessage(mode: LedgerHandlerMode): void {
  *
  * No-op on MV2 (no offscreen document).
  *
- * @param controller - Controller exposing getLedgerMode and messenger subscribe.
+ * @param controller - Controller exposing messenger call/subscribe.
  */
 export function setupLedgerModeOffscreenBridge(
   controller: LedgerModeController,
@@ -59,7 +61,11 @@ export function setupLedgerModeOffscreenBridge(
     return;
   }
 
-  sendSwitchLedgerModeMessage(controller.getLedgerMode());
+  sendSwitchLedgerModeMessage(
+    controller.controllerMessenger.call(
+      'LegacyBackgroundApiService:getLedgerMode',
+    ),
+  );
 
   // When the `ledgerDmk` flag toggles, push a `switchLedgerMode` event to
   // the offscreen document so it can hot-swap the active Ledger handler.

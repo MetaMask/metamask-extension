@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "このトランザクションの予測される増減額が更新されました。先に進む前によく確認してください。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "未対応のウォレットです"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "結果が変更されました"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
@@ -3414,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "すべて接続解除"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "すべてのサイトとの接続を解除すると、これらをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
-  },
   "disconnectAllSitesError": {
     "message": "一部のDAppの接続を解除できませんでした。もう一度お試しください。"
   },
@@ -3434,6 +3425,26 @@
   },
   "discover": {
     "message": "ディスカバリ"
+  },
+  "discoverSearchCap": {
+    "message": "時価総額",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "結果が見つかりませんでした",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "「$1」に該当する結果は見つかりませんでした",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "他の人気資産をご覧ください",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "出来高",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snapのご紹介",
@@ -5389,10 +5400,6 @@
     "message": "お持ちのステーブルコインをmUSDに換えて、\n年換算で最大$1%のボーナスを獲得しましょう。\nこのボーナスは毎日請求できます。$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Powered by Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "お持ちのステーブルコインをmUSDに換えて、年換算$1%のボーナスを獲得しましょう。",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5435,6 @@
     "message": "請求可能なボーナスの詳細",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "ボーナスの詳細",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD換算手数料にはネットワークコストが含まれるほか、プロバイダー手数料も含まれる場合があります。なお、mUSDへの換算時にMetaMaskの手数料は発生しません。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5459,6 @@
   "musdConvert": {
     "message": "変換"
   },
-  "musdConvertAndGetBonus": {
-    "message": "換金して$1%獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "$1%のボーナスを獲得",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5472,6 @@
   },
   "musdEducationNotNow": {
     "message": "後で"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1%のmUSDボーナスを獲得",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSDを入手"
@@ -6927,6 +6922,10 @@
   "perpsCancelOrder": {
     "message": "注文取消"
   },
+  "perpsCancelOrderFailed": {
+    "message": "注文をキャンセルできませんでした。もう一度お試しください。",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "ローソクの間隔を設定"
   },
@@ -7065,6 +7064,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "利益確定での予想損益",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "取引を開始するには資金を追加してください。",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "市場を探索"
@@ -7262,8 +7265,19 @@
   "perpsOrderBookApply": {
     "message": "適用"
   },
+  "perpsOrderBookBuy": {
+    "message": "買い: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "表示単位 & グループ化"
+  },
   "perpsOrderBookConnectionError": {
     "message": "オーダーブックの接続が失われました"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "買い$1%、売り$2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "グループ化"
@@ -7274,11 +7288,24 @@
   "perpsOrderBookLoading": {
     "message": "オーダーブックを読み込んでいます"
   },
+  "perpsOrderBookNoData": {
+    "message": "オーダーブックのデータがありません"
+  },
   "perpsOrderBookPrice": {
     "message": "価格"
   },
   "perpsOrderBookReconnect": {
     "message": "再接続"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "オーダーブックに再接続しています"
+  },
+  "perpsOrderBookResize": {
+    "message": "オーダーブックのサイズ変更"
+  },
+  "perpsOrderBookSell": {
+    "message": "売り: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "サイズ"
@@ -7289,8 +7316,24 @@
   "perpsOrderBookTotal": {
     "message": "合計"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "$1をリミット価格として使用",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "値の種類"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "売値と買値が表示されたオーダーブック",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "売値のみが表示されたオーダーブック",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "買値のみが表示されたオーダーブック",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "日付"
@@ -7511,6 +7554,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "利益確定は$2価格よりも$1に設定する必要があります",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "この注文はすでに終了しています",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "注文を取り消すことができませんでした",
@@ -11306,9 +11353,6 @@
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
-  "tutorial": {
-    "message": "チュートリアル"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -11517,6 +11561,10 @@
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "すべて表示",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
   },
@@ -11536,6 +11584,10 @@
   },
   "viewTokenDetails": {
     "message": "トークンの詳細を表示"
+  },
+  "viewXMore": {
+    "message": "他$1件を表示",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",

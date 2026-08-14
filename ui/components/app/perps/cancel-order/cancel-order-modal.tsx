@@ -33,6 +33,7 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -43,9 +44,14 @@ import {
   usePerpsEligibility,
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
+import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
-import { isClosingOrder } from '../utils/orderUtils';
+import { isClosingOrder, isOrderNoLongerOpenError } from '../utils/orderUtils';
+import {
+  CANCEL_ORDER_I18N_KEY_OVERRIDES,
+  translatePerpsError,
+} from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -74,6 +80,7 @@ export const CancelOrderModal = ({
   const { replacePerpsToastByKey } = usePerpsToast();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { buildTrackingData } = usePerpsAttribution();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -154,9 +161,23 @@ export const CancelOrderModal = ({
         success: boolean;
         error?: string;
       }>('perpsCancelOrder', [
-        { orderId: order.orderId, symbol: order.symbol },
+        {
+          orderId: order.orderId,
+          symbol: order.symbol,
+          // Attribution-only trackingData — cancel has no fee/notional; zeros
+          // satisfy TrackingData while entry/discovery come from flow context.
+          trackingData: buildTrackingData({
+            totalFee: 0,
+            marketPrice: parseFloat(order.price) || 0,
+            vipTier: null,
+            vipDiscount: undefined,
+          }),
+        },
       ]);
       if (!result?.success) {
+        // A `success: false` result carries the same provider prose a rejection
+        // does, so route both through the catch below: it already closes out
+        // quietly for orders no longer on the book and translates the rest.
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
       track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
@@ -168,21 +189,55 @@ export const CancelOrderModal = ({
       setIsSubmitting(false);
       onClose();
     } catch (err) {
+      // The order is already off the book (filled, cancelled elsewhere, or
+      // removed with its position). The user wanted it gone and it is gone, so
+      // close out quietly instead of surfacing a failure they cannot act on.
+      if (isOrderNoLongerOpenError(err)) {
+        // Deliberately no analytics on THIS path. `TradingService.cancelOrder`
+        // already emitted `Perp Order Cancel Transaction` (submitted, then
+        // failed with the provider's message) for this attempt, so it is in the
+        // funnel and identifiable; a UI event here would be a second,
+        // contradictory-status row under the same name for one user action.
+        //
+        // The success path above and the generic-failure path below do still
+        // emit their own copies and duplicate the controller the same way. They
+        // predate this PR and removing them is a separate analytics change — do
+        // not "resolve" the inconsistency by re-adding an event here.
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
+          dataTestId: 'perps-toast-cancel-order-already-closed',
+        });
+        setIsSubmitting(false);
+        onClose();
+        return;
+      }
       const errorMessage =
         err instanceof Error ? err.message : t('somethingWentWrong');
-      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
-        [PERPS_EVENT_PROPERTY.ASSET]: order.symbol,
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
+      // Transport/background throws never reach the controller cancel
+      // submitted/terminal pipeline — keep client PerpsError for that gap.
+      // Do not re-emit client cancel transaction events (controller owns those).
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
       });
-      setError(errorMessage);
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+      );
+      // Analytics keeps the provider string; the trader gets copy they can act
+      // on. Raw provider prose (`ORDER_UNKNOWN_COIN`, `cancel 0: …`) reaches
+      // this branch, and the retry above makes it more reachable than before.
+      const displayedError =
+        translatePerpsError(
+          err,
+          t as (key: string) => string,
+          CANCEL_ORDER_I18N_KEY_OVERRIDES,
+        ) ?? t('perpsCancelOrderFailed');
+      setError(displayedError);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
-        description: errorMessage,
+        description: displayedError,
       });
       setIsSubmitting(false);
     }
@@ -190,7 +245,9 @@ export const CancelOrderModal = ({
     isEligible,
     order.orderId,
     order.symbol,
+    order.price,
     order.orderType,
+    buildTrackingData,
     onClose,
     replacePerpsToastByKey,
     track,

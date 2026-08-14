@@ -4,6 +4,7 @@ import {
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -64,6 +65,14 @@ function getApi(
         if (options.isHyperliquidSource) {
           config.isHyperliquidSource = true;
         }
+      });
+    },
+    setTransactionPayAccountOverride: (
+      transactionId: string,
+      accountOverride: Hex,
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        config.accountOverride = accountOverride;
       });
     },
     updateTransactionPaymentToken:

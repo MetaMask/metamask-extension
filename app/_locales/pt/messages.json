@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Você está enviando seus ativos para um endereço de queima. Se continuar, você perderá seus ativos."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "As mudanças estimadas para esta transação foram atualizadas. Revise com atenção antes de prosseguir."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Esta é sua primeira interação com este endereço. Certifique-se de que ele está correto antes de continuar."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Não há suporte para esta carteira"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Os resultados mudaram"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1ª interação"
@@ -3412,10 +3406,7 @@
     "message": "Se você se desconectar deste site, precisará reconectar suas contas e redes para usar este site novamente."
   },
   "disconnectAllSites": {
-    "message": "Desconectar tudo"
-  },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Se desconectar de todos os sites, você precisará reconectar suas contas e redes para usá-las novamente."
+    "message": "Desconectar todas"
   },
   "disconnectAllSitesError": {
     "message": "Não foi possível desconectar alguns dos dapps. Tente novamente."
@@ -3434,6 +3425,26 @@
   },
   "discover": {
     "message": "Descobrir"
+  },
+  "discoverSearchCap": {
+    "message": "teto",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "Nenhum resultado encontrado",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Nenhum resultado encontrado para “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Confira outros ativos populares",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Descobrir Snaps",
@@ -5385,10 +5396,6 @@
     "message": "Converta suas stablecoins em mUSD e ganhe um \nbônus anualizado de até $1% que você pode\nresgatar diariamente. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "Desenvolvido por Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Converta suas stablecoins em mUSD e ganhe um bônus anualizado de $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5431,6 @@
     "message": "Detalhes do bônus resgatável",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Detalhes do bônus",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "As taxas de conversão de mUSD incluem custos de rede e podem incluir taxas do provedor. A MetaMask não aplica taxas quando você converte para mUSD.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5455,6 @@
   "musdConvert": {
     "message": "Converter"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Converta e ganhe $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Ganhe um bônus de $1%",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5468,6 @@
   },
   "musdEducationNotNow": {
     "message": "Agora não"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Receba $1% de bônus em mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Obter mUSD"
@@ -6923,6 +6918,10 @@
   "perpsCancelOrder": {
     "message": "Cancelar ordem"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Não foi possível cancelar a ordem. Tente novamente.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Definir intervalo entre velas"
   },
@@ -7061,6 +7060,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Estimativa de P&L no take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Adicione fundos para inciar operações de trading.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Explorar mercados"
@@ -7258,8 +7261,19 @@
   "perpsOrderBookApply": {
     "message": "Aplicar"
   },
+  "perpsOrderBookBuy": {
+    "message": "Comprar: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Listado por & Group por"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Conexão com o livro de ordens perdida"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Comprar $1%, vender $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Agrupar por"
@@ -7270,11 +7284,24 @@
   "perpsOrderBookLoading": {
     "message": "Carregando livro de ordens"
   },
+  "perpsOrderBookNoData": {
+    "message": "Sem dados do livro de ordens"
+  },
   "perpsOrderBookPrice": {
     "message": "Preço"
   },
   "perpsOrderBookReconnect": {
     "message": "Reconectar"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconectando ao livro de ordens"
+  },
+  "perpsOrderBookResize": {
+    "message": "Redimensionar o livro de ordens"
+  },
+  "perpsOrderBookSell": {
+    "message": "Vender: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Tamanho"
@@ -7285,8 +7312,24 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Usar $1 como preço limite",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Tipo de valor"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Livro de ordens mostrando lances de compra e pedidos",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Livro de ordens mostrando apenas lances de compra",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Livro de ordens exibindo apenas pedidos",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Data"
@@ -7507,6 +7550,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Preço de Take profit deve ser de $1 ou $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Esta ordem não está mais aberta",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Falha ao cancelar a ordem",
@@ -11302,9 +11349,6 @@
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "Esta transação será revertida"
   },
@@ -11513,6 +11557,10 @@
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "Exibir tudo",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"
   },
@@ -11532,6 +11580,10 @@
   },
   "viewTokenDetails": {
     "message": "Ver detalhes do token"
+  },
+  "viewXMore": {
+    "message": "Ver mais $1",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Ver $1 no explorador",

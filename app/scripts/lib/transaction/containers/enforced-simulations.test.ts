@@ -252,6 +252,44 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('handles missing token balance changes', async () => {
+      options.transactionMeta.simulationData = {
+        nativeBalanceChange: BALANCE_CHANGE_MOCK,
+      } as SimulationData;
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+    });
+
+    it('ignores unsupported token standards', async () => {
+      simulationData.tokenBalanceChanges = [
+        {
+          ...BALANCE_CHANGE_MOCK,
+          address: TOKEN_MOCK,
+          standard: 'unsupported' as SimulationTokenStandard,
+        },
+      ];
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).not.toStrictEqual(
+        expect.stringContaining(remove0x(TOKEN_MOCK).toLowerCase()),
+      );
+    });
+
     it('signs delegation if useRealSignature', async () => {
       options.useRealSignature = true;
 
@@ -281,12 +319,25 @@ describe('Enforced Simulations Utils', () => {
       ).rejects.toThrow('No caveats generated for enforced simulations');
     });
 
+    it('throws when simulation data is missing', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = undefined;
+
+      await expect(
+        enforceSimulations({
+          ...options,
+          transactionMeta,
+        }),
+      ).rejects.toThrow('No caveats generated for enforced simulations');
+    });
+
     describe('applies slippage', () => {
       it('if decrease', async () => {
         simulationData.tokenBalanceChanges = [
           {
             ...BALANCE_CHANGE_MOCK,
             difference: toHex(100000),
+            previousBalance: toHex(200000),
             address: TOKEN_MOCK,
             standard: SimulationTokenStandard.erc20,
           },
@@ -299,6 +350,50 @@ describe('Enforced Simulations Utils', () => {
 
         expect(newTransaction.txParams.data).toStrictEqual(
           expect.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps an ERC-20 decrease at the previous balance', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            difference: toHex(100000),
+            previousBalance: toHex(105000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps a native decrease at the previous balance', async () => {
+        simulationData.nativeBalanceChange = {
+          ...BALANCE_CHANGE_MOCK,
+          difference: toHex(100000),
+          previousBalance: toHex(105000),
+        };
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
         );
       });
 

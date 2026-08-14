@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "此交易的预计更改已更新。继续之前请仔细审查。"
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "您首次与此地址交互。请确保地址正确，然后再继续。"
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "钱包不获支持"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "结果已发生变化"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
@@ -3414,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "断开所有连接"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "如果您断开与所有网站的连接，您需要重新连接账户和网络才能继续使用它们。"
-  },
   "disconnectAllSitesError": {
     "message": "部分去中心化应用无法断开连接。请重试。"
   },
@@ -3434,6 +3425,26 @@
   },
   "discover": {
     "message": "发现"
+  },
+  "discoverSearchCap": {
+    "message": "市值",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "未找到结果",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "未找到 “$1” 的相关结果",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "查看其他热门资产",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "交易量",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "探索 Snap",
@@ -5385,10 +5396,6 @@
     "message": "将您的稳定币兑换为 mUSD，即可赚取高达 $1% 的年化奖励，该奖励每日可领取。$2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "由 Relay 提供技术支持",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "将您的稳定币兑换为 mUSD，即可获得 $1% 的年化奖励。",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5431,6 @@
     "message": "可领取奖励详情",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "奖励详情",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 兑换费用包含网络费用，并可能包含提供商费用。兑换为 mUSD 时，MetaMask 不收取任何费用。",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5455,6 @@
   "musdConvert": {
     "message": "兑换"
   },
-  "musdConvertAndGetBonus": {
-    "message": "兑换并获得 $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "获得 $1% 的奖励",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5468,6 @@
   },
   "musdEducationNotNow": {
     "message": "暂时不"
-  },
-  "musdGetBonusPercentage": {
-    "message": "获取 $1% mUSD 奖励",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "获取 mUSD"
@@ -6923,6 +6918,10 @@
   "perpsCancelOrder": {
     "message": "取消订单"
   },
+  "perpsCancelOrderFailed": {
+    "message": "订单无法取消。请重试。",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "设置 K 线间隔"
   },
@@ -7061,6 +7060,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "预估止盈盈亏",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "充值后即可开始交易。",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "探索市场"
@@ -7258,8 +7261,19 @@
   "perpsOrderBookApply": {
     "message": "应用"
   },
+  "perpsOrderBookBuy": {
+    "message": "买入：$1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "排列方式与分组方式"
+  },
   "perpsOrderBookConnectionError": {
     "message": "订单簿连接丢失"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "买入 $1%，卖出 $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "分组依据"
@@ -7267,11 +7281,27 @@
   "perpsOrderBookListedBy": {
     "message": "排序依据"
   },
+  "perpsOrderBookLoading": {
+    "message": "正在加载订单簿"
+  },
+  "perpsOrderBookNoData": {
+    "message": "无订单簿数据"
+  },
   "perpsOrderBookPrice": {
     "message": "价格"
   },
   "perpsOrderBookReconnect": {
     "message": "重新连接"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "正在重新连接订单簿"
+  },
+  "perpsOrderBookResize": {
+    "message": "调整订单簿大小"
+  },
+  "perpsOrderBookSell": {
+    "message": "卖出：$1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "规模"
@@ -7282,8 +7312,24 @@
   "perpsOrderBookTotal": {
     "message": "共计"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "使用 $1 作为限价",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "价值类型"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "显示买盘和卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "仅显示买盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "仅显示卖盘的订单簿",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "日期"
@@ -7504,6 +7550,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "止盈价必须为 $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "此订单已关闭",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "取消订单失败",
@@ -11299,9 +11349,6 @@
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
   },
-  "tutorial": {
-    "message": "教程"
-  },
   "txAlertTitle": {
     "message": "该交易将撤销"
   },
@@ -11510,6 +11557,10 @@
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "查看全部",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"
   },
@@ -11529,6 +11580,10 @@
   },
   "viewTokenDetails": {
     "message": "查看代币详情"
+  },
+  "viewXMore": {
+    "message": "查看另外 $1 条",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",

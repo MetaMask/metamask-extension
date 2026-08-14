@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "Вы отправляете свои активы на адрес для сжигания. Если вы продолжите, вы потеряете их."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "Предполагаемые изменения для этой транзакции обновлены. Прежде чем продолжить, внимательно просмотрите их."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "Вы впервые взаимодействуете с этим адресом. Прежде чем продолжить, убедитесь, что он верный."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "Кошелек не поддерживается"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "Результаты изменились"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1-е взаимодействие"
@@ -3414,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "Отключить все"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "Если вы отключитесь от всех сайтов, вам придется повторно подключить свои счета и сети, чтобы снова использовать их."
-  },
   "disconnectAllSitesError": {
     "message": "Не удалось отключить приложения dapp. Повторите попытку."
   },
@@ -3434,6 +3425,26 @@
   },
   "discover": {
     "message": "Обзор"
+  },
+  "discoverSearchCap": {
+    "message": "максимум",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "Результаты не найдены",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "По запросу «$1» ничего не найдено",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "Посмотрите другие популярные активы",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "об.",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Откройте для себя Snaps",
@@ -3879,10 +3890,10 @@
     "message": "Не удалось получить ID блокчейна. Верен ли ваш URL RPC?"
   },
   "failover": {
-    "message": "Отказоустойчивость"
+    "message": "Резервный RPC"
   },
   "failoverRpcUrl": {
-    "message": "URL-адрес отказоустойчивого RPC"
+    "message": "URL-адрес резервного RPC"
   },
   "failureMessage": {
     "message": "Что-то пошло не так, и мы не смогли завершить действие"
@@ -5385,10 +5396,6 @@
     "message": "Конвертируйте стейблкоины в mUSD и зарабатывайте\nбонус до $1% годовых, который можно\nполучать ежедневно. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "При поддержке Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "Конвертируйте свои стейблкоины в mUSD и получите годовой бонус $1%.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5424,10 +5431,6 @@
     "message": "Детали доступного для получения бонуса",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "Детали бонуса",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "В стоимость конвертации mUSD входят расходы сети, а также могут входить комиссии поставщика. При обмене на mUSD комиссия MetaMask не взимается.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5452,10 +5455,6 @@
   "musdConvert": {
     "message": "Конвертировать"
   },
-  "musdConvertAndGetBonus": {
-    "message": "Конвертируйте и получите $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "Заработайте бонус $1%",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5469,10 +5468,6 @@
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Получите бонус в размере $1% mUSD",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Получить mUSD"
@@ -6254,7 +6249,7 @@
     "message": "Использовать секретную фразу для восстановления"
   },
   "onboardingSrpImport": {
-    "message": "Импорт с помощью секретной фразы для восстановления"
+    "message": "Использовать секретную фразу восстановления"
   },
   "onboardingSrpImportError": {
     "message": "Используйте только строчные буквы, проверьте орфографию и расположите слова в исходном порядке."
@@ -6923,6 +6918,10 @@
   "perpsCancelOrder": {
     "message": "Отменить ордер"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Не удалось отменить ордер. Повторите попытку.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Задать интервал свечи"
   },
@@ -7061,6 +7060,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "Прим. П/У при тейк-профите",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "Внесите средства, чтобы начать торговать.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "Обзор рынков"
@@ -7258,8 +7261,19 @@
   "perpsOrderBookApply": {
     "message": "Применить"
   },
+  "perpsOrderBookBuy": {
+    "message": "Покупка: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Сортировка и группировка"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Соединение с книгой ордеров потеряно"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Покупка $1%, продажа $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "Группировать по"
@@ -7270,11 +7284,24 @@
   "perpsOrderBookLoading": {
     "message": "Загрузка реестра ордеров"
   },
+  "perpsOrderBookNoData": {
+    "message": "Нет данных книги ордеров"
+  },
   "perpsOrderBookPrice": {
     "message": "Цена"
   },
   "perpsOrderBookReconnect": {
     "message": "Переподключить"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Переподключение к книге ордеров"
+  },
+  "perpsOrderBookResize": {
+    "message": "Изменить размер книги ордеров"
+  },
+  "perpsOrderBookSell": {
+    "message": "Продажа: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Размер"
@@ -7285,8 +7312,24 @@
   "perpsOrderBookTotal": {
     "message": "Итого"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Использовать $1 в качестве предельной цены",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Тип стоимости"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Книга ордеров показывает заявки на покупку и продажу",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Книга ордеров показывает только заявки на покупку",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Книга ордеров показывает только заявки на продажу",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Дата"
@@ -7507,6 +7550,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Тейк-профит должен быть $1 $2 цены",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Этот ордер больше не активен",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Не удалось отменить ордер",
@@ -9891,7 +9938,7 @@
     "message": "Показать секретную фразу для восстановления"
   },
   "showTestnetNetworks": {
-    "message": "Показать тестнеты"
+    "message": "Показать тестовые сети"
   },
   "sidePanelMigrationToast": {
     "message": "Теперь MetaMask по умолчанию открывается в боковой панели. $1 в любое время из меню.",
@@ -10207,7 +10254,7 @@
     "message": "Этот Snap хочет перенаправить вас на заблокированный сайт. $1."
   },
   "snaps": {
-    "message": "Привязки"
+    "message": "Snaps"
   },
   "snapsConnected": {
     "message": "Snaps подключены"
@@ -10333,13 +10380,13 @@
     "message": "Секретная фраза для восстановления, также называемая сид-фразой или мнемонической фразой, представляет собой набор слов, который позволяет вам получать доступ к вашему криптокошельку и управлять им. Чтобы переместить кошелек в MetaMask, вам нужна эта фраза."
   },
   "srpDetailsOwnsAccessListItemOne": {
-    "message": "Снимите все свои деньги"
+    "message": "Получить все ваши деньги"
   },
   "srpDetailsOwnsAccessListItemThree": {
-    "message": "Измените данные для входа"
+    "message": "Изменить ваши данные для входа"
   },
   "srpDetailsOwnsAccessListItemTwo": {
-    "message": "Проверьте транзакции"
+    "message": "Подтвердить транзакции"
   },
   "srpDetailsOwnsAccessListTitle": {
     "message": "Любой, кто знает вашу секретную фразу для восстановления, может:"
@@ -10418,7 +10465,7 @@
     "message": "Правильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
   },
   "srpSecurityQuizQuestionOneWrongAnswer": {
-    "message": "Не сможет вернуть ее вам"
+    "message": "Сможет вам ее вернуть"
   },
   "srpSecurityQuizQuestionOneWrongAnswerDescription": {
     "message": "Если вы потеряете свою секретную фразу для восстановления, она пропадет навсегда. Никто не может помочь вам вернуть ее, что бы кто ни говорил."
@@ -11302,9 +11349,6 @@
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"
   },
-  "tutorial": {
-    "message": "Руководство"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -11513,6 +11557,10 @@
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "Смотреть все",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"
   },
@@ -11532,6 +11580,10 @@
   },
   "viewTokenDetails": {
     "message": "Смотреть сведения о токене"
+  },
+  "viewXMore": {
+    "message": "Показать еще $1",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",

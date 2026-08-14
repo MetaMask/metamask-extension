@@ -1405,9 +1405,6 @@
   "alertMessageBurnAddress": {
     "message": "지금 자산을 소각 주소로 전송하고 있습니다. 계속 진행하면 자산을 잃게 됩니다."
   },
-  "alertMessageChangeInSimulationResults": {
-    "message": "이 트랜잭션의 예상 변경 사항이 업데이트되었습니다. 계속 진행하기 전에 자세히 검토하세요."
-  },
   "alertMessageFirstTimeInteraction": {
     "message": "이 주소와 처음으로 상호 작용합니다. 계속하기 전에 주소가 올바른지 확인하세요."
   },
@@ -1470,9 +1467,6 @@
   },
   "alertPayHardwareAccountTitle": {
     "message": "지원되지 않는 지갑"
-  },
-  "alertReasonChangeInSimulationResults": {
-    "message": "결과가 변경되었습니다"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "첫 상호작용"
@@ -3414,9 +3408,6 @@
   "disconnectAllSites": {
     "message": "모두 연결 해제"
   },
-  "disconnectAllSitesDescriptionText": {
-    "message": "모든 사이트에서 연결을 해제할 경우 계정과 네트워크를 다시 연결해야 해당 사이트들을 이용할 수 있습니다."
-  },
   "disconnectAllSitesError": {
     "message": "일부 디앱은 연결을 해제할 수 없습니다. 다시 시도해 주세요."
   },
@@ -3434,6 +3425,26 @@
   },
   "discover": {
     "message": "발견"
+  },
+  "discoverSearchCap": {
+    "message": "한도",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "검색 결과가 없습니다",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "\"$1\"에 대한 검색 결과가 없습니다",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
+  },
+  "discoverSearchPopularAssets": {
+    "message": "다른 인기 자산 살펴보기",
+    "description": "Empty state subtitle prompting users to open popular assets when Discover search has no results."
+  },
+  "discoverSearchVol": {
+    "message": "거래량",
+    "description": "Abbreviated label for volume in Discover search result rows."
   },
   "discoverSnaps": {
     "message": "Snap 알아보기",
@@ -5389,10 +5400,6 @@
     "message": "스테이블코인을 mUSD로 환전하면 최대 $1%의 연 환산 보너스를 벌 수 있고 이를 매일 수령할 수 있습니다. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
-  "musdBonusPoweredByRelay": {
-    "message": "제공자: Relay",
-    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
-  },
   "musdBoostDescription": {
     "message": "스테이블코인을 mUSD로 환전하고 $1%의 연 환산 보너스를 받으세요.",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5428,10 +5435,6 @@
     "message": "수령 가능한 보너스 정보",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionBonusTooltipAria": {
-    "message": "보너스 정보",
-    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
-  },
   "musdConversionFeeTooltipDescription": {
     "message": "mUSD 환전 수수료에는 네트워크 비용이 포함되며 제공업체 수수료가 포함될 수 있습니다. mUSD로 환전할 때 MetaMask 수수료는 적용되지 않습니다.",
     "description": "Body text shown above the fee breakdown in the transaction fee tooltip for mUSD conversion"
@@ -5456,10 +5459,6 @@
   "musdConvert": {
     "message": "전환"
   },
-  "musdConvertAndGetBonus": {
-    "message": "전환하고 $1% 받기",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEarnBonusPercentage": {
     "message": "$1% 보너스 받기",
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
@@ -5473,10 +5472,6 @@
   },
   "musdEducationNotNow": {
     "message": "나중에"
-  },
-  "musdGetBonusPercentage": {
-    "message": "$1% mUSD 보너스 받기",
-    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD 받기"
@@ -6927,6 +6922,10 @@
   "perpsCancelOrder": {
     "message": "주문 취소"
   },
+  "perpsCancelOrderFailed": {
+    "message": "주문이 취소되었습니다. 다시 시도해 주세요.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "캔들 간격 설정"
   },
@@ -7065,6 +7064,10 @@
   "perpsEstimatedPnlAtTakeProfit": {
     "message": "익절 시 예상 손익",
     "description": "Label for estimated profit or loss when take profit is hit"
+  },
+  "perpsExchangeAccountNotFound": {
+    "message": "거래를 시작하려면 자금을 추가하세요.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
   "perpsExploreMarkets": {
     "message": "시장 살펴보기"
@@ -7262,8 +7265,19 @@
   "perpsOrderBookApply": {
     "message": "적용"
   },
+  "perpsOrderBookBuy": {
+    "message": "매수: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "표시 & 분류 기준"
+  },
   "perpsOrderBookConnectionError": {
     "message": "오더북 연결 끊김"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "매수 $1%, 매도 $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
   },
   "perpsOrderBookGroupBy": {
     "message": "그룹화 기준"
@@ -7274,11 +7288,24 @@
   "perpsOrderBookLoading": {
     "message": "오더북 불러오는 중"
   },
+  "perpsOrderBookNoData": {
+    "message": "오더북 데이터 없음"
+  },
   "perpsOrderBookPrice": {
     "message": "가격"
   },
   "perpsOrderBookReconnect": {
     "message": "다시 연결"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "오더북 재연결 중"
+  },
+  "perpsOrderBookResize": {
+    "message": "오더북 크기 조정"
+  },
+  "perpsOrderBookSell": {
+    "message": "매도: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "규모"
@@ -7289,8 +7316,24 @@
   "perpsOrderBookTotal": {
     "message": "총액"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "지정가로 $1 사용",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "가치 유형"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "매수·매도 주문을 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "매수 주문만 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "매도 주문만 표시하는 오더북",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "날짜"
@@ -7511,6 +7554,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "익절가는 $2 가격보다 $1 합니다",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "이 주문은 더 이상 유효하지 않습니다",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "주문 취소 실패",
@@ -11310,9 +11357,6 @@
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
   },
-  "tutorial": {
-    "message": "튜토리얼"
-  },
   "txAlertTitle": {
     "message": "이 트랜잭션은 되돌려집니다"
   },
@@ -11521,6 +11565,10 @@
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
   },
+  "viewAll": {
+    "message": "모두 보기",
+    "description": "Link to show the full list for a Discover search section."
+  },
   "viewOnBlockExplorer": {
     "message": "블록 탐색기에서 보기"
   },
@@ -11540,6 +11588,10 @@
   },
   "viewTokenDetails": {
     "message": "토큰 세부 정보 보기"
+  },
+  "viewXMore": {
+    "message": "$1개 더 보기",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",
