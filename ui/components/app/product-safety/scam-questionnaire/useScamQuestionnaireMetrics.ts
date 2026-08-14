@@ -73,7 +73,7 @@ export function useScamQuestionnaireMetrics() {
         }),
 
       trackContactSupport: (answers: Answers) =>
-        fire(MetaMetricsEventName.ScamQuestionnaireContactSupport, {
+        fire(MetaMetricsEventName.ScamQuestionnaireSupportContacted, {
           ...getAnswerRecord(answers),
           red_flag_count: getRedFlagCount(answers),
           simulation_sending_assets_total_value: valueAtRisk,

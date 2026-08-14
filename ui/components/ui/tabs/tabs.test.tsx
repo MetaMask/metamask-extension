@@ -39,6 +39,27 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
+  it('resets nested content scroll position when switching tabs', () => {
+    const { getByTestId, getByText } = render(
+      <Tabs onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          <div data-testid="tab-content">Tab 1 Content</div>
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          <div data-testid="tab-content">Tab 2 Content</div>
+        </Tab>
+      </Tabs>,
+    );
+    const initialContent = getByTestId('tab-content');
+    initialContent.scrollTop = 100;
+
+    fireEvent.click(getByText('Tab 2'));
+
+    const activeContent = getByTestId('tab-content');
+    expect(activeContent).not.toBe(initialContent);
+    expect(activeContent.scrollTop).toBe(0);
+  });
+
   it('keeps clicked tab content visible while activeTab prop is still stale', () => {
     const onTabClick = jest.fn();
     const { getByText, queryByText } = render(
@@ -182,6 +203,268 @@ describe('Tabs', () => {
     fireEvent.click(getByText('Tab 2'));
 
     expect(onTabClick).not.toHaveBeenCalled();
+  });
+
+  describe('keyboard navigation', () => {
+    const renderKeyboardTabs = (onTabClick = jest.fn()) => {
+      const result = render(
+        <Tabs activeTab="tab1" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1">
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2">
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = result.getByRole('tablist');
+      const tabs = result.getAllByRole('tab');
+      return { ...result, onTabClick, tabList, tabs };
+    };
+
+    it('moves to the next tab on ArrowRight', () => {
+      const { getByText, queryByText, onTabClick, tabList, tabs } =
+        renderKeyboardTabs();
+
+      tabs[0].focus();
+      fireEvent.keyDown(tabList, { key: 'ArrowRight' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab2');
+      expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
+      expect(getByText('Tab 2 Content')).toBeInTheDocument();
+      expect(tabs[1]).toHaveFocus();
+      expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
+      expect(tabs[1]).toHaveAttribute('tabIndex', '0');
+      expect(tabs[0]).toHaveAttribute('tabIndex', '-1');
+    });
+
+    it('moves to the previous tab on ArrowLeft and wraps from first to last', () => {
+      const { getByText, queryByText, onTabClick, tabList, tabs } =
+        renderKeyboardTabs();
+
+      tabs[0].focus();
+      fireEvent.keyDown(tabList, { key: 'ArrowLeft' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab3');
+      expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
+      expect(getByText('Tab 3 Content')).toBeInTheDocument();
+      expect(tabs[2]).toHaveFocus();
+    });
+
+    it('wraps from last to first on ArrowRight', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab3" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1">
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2">
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      tabs[2].focus();
+      fireEvent.keyDown(tabList, { key: 'ArrowRight' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab1');
+      expect(getByText('Tab 1 Content')).toBeInTheDocument();
+      expect(tabs[0]).toHaveFocus();
+    });
+
+    it('moves to the first enabled tab on Home', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab3" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1">
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2">
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      tabs[2].focus();
+      fireEvent.keyDown(tabList, { key: 'Home' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab1');
+      expect(getByText('Tab 1 Content')).toBeInTheDocument();
+      expect(tabs[0]).toHaveFocus();
+    });
+
+    it('moves to the last enabled tab on End', () => {
+      const { getByText, queryByText, onTabClick, tabList, tabs } =
+        renderKeyboardTabs();
+
+      tabs[0].focus();
+      fireEvent.keyDown(tabList, { key: 'End' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab3');
+      expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
+      expect(getByText('Tab 3 Content')).toBeInTheDocument();
+      expect(tabs[2]).toHaveFocus();
+    });
+
+    it('skips disabled tabs when navigating with arrow keys', () => {
+      const onTabClick = jest.fn();
+      const { getByText, queryByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab1" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1">
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2" disabled>
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      tabs[0].focus();
+      fireEvent.keyDown(tabList, { key: 'ArrowRight' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab3');
+      expect(onTabClick).not.toHaveBeenCalledWith('tab2');
+      expect(queryByText('Tab 2 Content')).not.toBeInTheDocument();
+      expect(getByText('Tab 3 Content')).toBeInTheDocument();
+      expect(tabs[2]).toHaveFocus();
+    });
+
+    it('skips disabled tabs when using Home and End', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab2" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1" disabled>
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2">
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3" disabled>
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      tabs[1].focus();
+      fireEvent.keyDown(tabList, { key: 'Home' });
+      expect(onTabClick).not.toHaveBeenCalled();
+      expect(getByText('Tab 2 Content')).toBeInTheDocument();
+      expect(tabs[1]).toHaveFocus();
+
+      fireEvent.keyDown(tabList, { key: 'End' });
+      expect(onTabClick).not.toHaveBeenCalled();
+      expect(getByText('Tab 2 Content')).toBeInTheDocument();
+      expect(tabs[1]).toHaveFocus();
+    });
+
+    it('does not navigate when every tab is disabled', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole } = render(
+        <Tabs activeTab="tab1" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1" disabled>
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2" disabled>
+            Tab 2 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      fireEvent.keyDown(tabList, { key: 'ArrowRight' });
+      fireEvent.keyDown(tabList, { key: 'Home' });
+      fireEvent.keyDown(tabList, { key: 'End' });
+
+      expect(onTabClick).not.toHaveBeenCalled();
+      expect(getByText('Tab 1 Content')).toBeInTheDocument();
+    });
+
+    it('falls back from a disabled active tab to the previous enabled tab', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab2" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1">
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2" disabled>
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      fireEvent.keyDown(tabList, { key: 'ArrowRight' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab3');
+      expect(getByText('Tab 3 Content')).toBeInTheDocument();
+      expect(tabs[2]).toHaveFocus();
+    });
+
+    it('falls back to the first enabled tab when the active tab is disabled and has no prior enabled tab', () => {
+      const onTabClick = jest.fn();
+      const { getByText, getByRole, getAllByRole } = render(
+        <Tabs activeTab="tab1" onTabClick={onTabClick}>
+          <Tab tabKey="tab1" name="Tab 1" disabled>
+            Tab 1 Content
+          </Tab>
+          <Tab tabKey="tab2" name="Tab 2">
+            Tab 2 Content
+          </Tab>
+          <Tab tabKey="tab3" name="Tab 3">
+            Tab 3 Content
+          </Tab>
+        </Tabs>,
+      );
+
+      const tabList = getByRole('tablist');
+      const tabs = getAllByRole('tab');
+
+      fireEvent.keyDown(tabList, { key: 'Home' });
+
+      expect(onTabClick).toHaveBeenCalledWith('tab2');
+      expect(getByText('Tab 2 Content')).toBeInTheDocument();
+      expect(tabs[1]).toHaveFocus();
+    });
+
+    it('ignores keys that are not part of the tabs keyboard pattern', () => {
+      const { onTabClick, tabList, getByText } = renderKeyboardTabs();
+
+      fireEvent.keyDown(tabList, { key: 'Enter' });
+      fireEvent.keyDown(tabList, { key: 'a' });
+
+      expect(onTabClick).not.toHaveBeenCalled();
+      expect(getByText('Tab 1 Content')).toBeInTheDocument();
+    });
   });
 
   it('clamps to last tab when activeTab key does not exist', () => {

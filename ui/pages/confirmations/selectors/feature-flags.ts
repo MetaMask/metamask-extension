@@ -31,6 +31,8 @@ export type PreferredPayToken = {
   name?: string;
 };
 
+const EMPTY_PREFERRED_PAY_TOKENS: PreferredPayToken[] = [];
+
 type PreferredTokensConfig = {
   default?: PreferredPayToken[] | Record<string, PreferredPayToken[]>;
   overrides?: Record<string, PreferredPayToken[]>;
@@ -64,6 +66,12 @@ type RawPayTokensFlag = {
 type HardwareWalletConfig = {
   enabled?: boolean;
 };
+
+type ConfirmationsPayFlag = {
+  depositLimit?: Record<string, number>;
+};
+
+const EMPTY_DEPOSIT_LIMITS: Record<string, number> = {};
 
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
@@ -118,6 +126,18 @@ const selectPayHardwareFlag = createSelector(
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
+const selectConfirmationsPayFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay?: ConfirmationsPayFlag;
+      }
+    ).confirmations_pay,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
 /**
  * Resolves the effective post-quote config for a given transaction type.
  * Transaction-specific config may be supplied either as
@@ -169,16 +189,41 @@ export const selectIsPayAmountPrefillEnabled = createSelector(
     getIsPayAmountPrefillEnabled({ remoteFeatureFlags }, transactionType),
 );
 
-export const selectPreferredPayToken = createSelector(
-  [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
-  (flag, transactionType): PreferredPayToken | undefined => {
-    const preferredTokens = getPreferredTokensForTransaction(
-      flag?.preferredTokens,
-      transactionType,
-    );
+/**
+ * Per-transaction-type USD deposit limits from
+ * `confirmations_pay.depositLimit`. Empty map when unset.
+ */
+export const selectDepositLimits = createSelector(
+  selectConfirmationsPayFlag,
+  (flag): Record<string, number> => {
+    const depositLimit = flag?.depositLimit;
+    if (!depositLimit || typeof depositLimit !== 'object') {
+      return EMPTY_DEPOSIT_LIMITS;
+    }
 
-    return preferredTokens?.[0];
+    return depositLimit;
   },
+);
+
+/**
+ * Preferred MM Pay tokens for a transaction type from
+ * `confirmations_pay_tokens.preferredTokens`. Transaction-specific
+ * `overrides[transactionType]` (or a direct `[transactionType]` key) take
+ * precedence over `default`.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectPreferredPayTokens = createSelector(
+  [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
+  (flag, transactionType): PreferredPayToken[] =>
+    getPreferredTokensForTransaction(flag?.preferredTokens, transactionType) ??
+    EMPTY_PREFERRED_PAY_TOKENS,
+);
+
+export const selectPreferredPayToken = createSelector(
+  [selectPreferredPayTokens],
+  (preferredTokens): PreferredPayToken | undefined => preferredTokens[0],
 );
 
 /**
@@ -228,6 +273,46 @@ export const selectEnforcedSimulationsSlippage = createSelector(
 export const selectIsPayHardwareEnabled = createSelector(
   selectPayHardwareFlag,
   (flag): boolean => flag?.enabled ?? false,
+);
+
+type PayExtendedFlag = {
+  enableMoneyAccountTransactions?: Record<string, boolean>;
+};
+
+const selectPayExtendedFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_extended?: PayExtendedFlag;
+      }
+    ).confirmations_pay_extended,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+/**
+ * Map of transaction types that may use Money Account as a pay method, from
+ * `confirmations_pay_extended.enableMoneyAccountTransactions`.
+ */
+export const selectEnableMoneyAccountTransactions = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, boolean> => flag?.enableMoneyAccountTransactions ?? {},
+);
+
+/**
+ * Whether Money Account pay is enabled for a given transaction type.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectIsMoneyAccountTransactionEnabled = createSelector(
+  [
+    selectEnableMoneyAccountTransactions,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (enableMoneyAccountTransactions, transactionType): boolean =>
+    Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
 );
 
 function getPreferredTokensForTransaction(

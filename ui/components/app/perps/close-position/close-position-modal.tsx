@@ -365,7 +365,9 @@ export const ClosePositionModal = ({
   const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
   const hasConfirmedCloseRef = useRef(false);
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setClosePercent(100);
       setIsSubmitting(false);
@@ -373,18 +375,26 @@ export const ClosePositionModal = ({
       setIsGeoBlockModalOpen(false);
       setSelectedOrderType('market');
       setLimitPrice('');
-      // Reopening starts a fresh close session: a commit from the previous one
-      // must not suppress abandon tracking for this one.
+    }
+  }
+
+  // Reopening starts a fresh close session: a commit from the previous one
+  // must not suppress abandon tracking for this one.
+  useEffect(() => {
+    if (isOpen) {
       hasConfirmedCloseRef.current = false;
     }
   }, [isOpen]);
 
-  useEffect(() => {
+  const [prevIsCloseLimitOrderEnabled, setPrevIsCloseLimitOrderEnabled] =
+    useState(isCloseLimitOrderEnabled);
+  if (isCloseLimitOrderEnabled !== prevIsCloseLimitOrderEnabled) {
+    setPrevIsCloseLimitOrderEnabled(isCloseLimitOrderEnabled);
     if (!isCloseLimitOrderEnabled) {
       setSelectedOrderType('market');
       setLimitPrice('');
     }
-  }, [isCloseLimitOrderEnabled]);
+  }
 
   const displayName = getDisplaySymbol(position.symbol);
   const headerDisplayPrice = displayPrice ?? formatFiat(currentPrice);

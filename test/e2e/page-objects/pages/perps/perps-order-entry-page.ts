@@ -1,9 +1,16 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Page object for the Perps Order Entry page.
- * Accessible after clicking Long/Short on a market detail page.
- * Handles new orders, add-exposure, and reduce-exposure flows.
+ * The Perps Order Entry page for placing or adjusting a position (new order,
+ * add exposure, or reduce exposure).
+ *
+ * Screen: `#/perps/trade/:symbol`, reached from Long/Short on
+ * `PerpsMarketDetailPage`.
+ * Owns: direction tabs, market/limit type, amount and leverage inputs, TP/SL
+ * and auto-close controls, validation errors, submit, and back.
+ * Boundaries: market detail chrome and close-position / margin modals stay on
+ * `PerpsMarketDetailPage`. This object only covers the trade route form.
+ * Related: `PerpsMarketDetailPage` (how tests get here and where back returns).
  *
  * @see ui/pages/perps/perps-order-entry-page.tsx
  * @see ui/components/app/perps/order-entry/order-entry.tsx

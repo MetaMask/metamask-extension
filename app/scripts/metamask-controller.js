@@ -388,6 +388,9 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
+import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
+import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -677,6 +680,9 @@ export default class MetamaskController extends EventEmitter {
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
+      MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
+      MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
+      MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
@@ -2458,64 +2464,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a network and (optionally) sets it as the active network.
-   *
-   * @param {object} networkConfiguration - The network configuration to add.
-   * @param {object} [options0] - Options for post-add behavior.
-   * @param {boolean} [options0.setActive] - Whether to switch to the added network.
-   * @returns {Promise<object>} The added network configuration.
-   */
-  async _addNetworkAndSetActive(
-    networkConfiguration,
-    { setActive = true } = {},
-  ) {
-    if (setActive) {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      const { networkClientId } =
-        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
-        {};
-      await this.networkController.setActiveNetwork(networkClientId);
-      return addedNetwork;
-    }
-    const previousEnabledNetworkMap = Object.fromEntries(
-      Object.entries(
-        this.networkEnablementController.state.enabledNetworkMap,
-      ).map(([namespace, networks]) => [namespace, { ...networks }]),
-    );
-    const restorePreviousEnabledNetworkMap = () => {
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      this.networkEnablementController.restoreEnabledNetworkMap(
-        previousEnabledNetworkMap,
-      );
-    };
-
-    this.controllerMessenger.subscribe(
-      'NetworkEnablementController:stateChange',
-      restorePreviousEnabledNetworkMap,
-    );
-
-    try {
-      const addedNetwork =
-        await this.networkController.addNetwork(networkConfiguration);
-      await this.controllerMessenger.call(
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      );
-      return addedNetwork;
-    } catch (error) {
-      // `addNetwork` rejected, so `networkAdded` was not published
-      this.controllerMessenger.unsubscribe(
-        'NetworkEnablementController:stateChange',
-        restorePreviousEnabledNetworkMap,
-      );
-      throw error;
-    }
-  }
-
-  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -2966,7 +2914,10 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -3988,7 +3939,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:lookupSelectedNetworks',
       ),
-      resetWallet: this.resetWallet.bind(this),
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
   }
 
@@ -4004,43 +3958,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  /**
-   * Reset the wallet, restart the from the onboarding flow
-   *
-   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
-   * @returns void
-   */
-  async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
-    this.passkeyController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
   }
 
   /**
@@ -5379,7 +5296,10 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),

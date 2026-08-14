@@ -137,6 +137,10 @@ describe('initializeWallet', () => {
             '0xa86a': [],
             '0xe708': [],
           },
+          analyticsOptions: {
+            isRpcEndpointUrlPublic: expect.any(Function),
+            rpcServiceEventsSampleRate: expect.any(Number),
+          },
         },
         passkeyController: 'passkey-options',
         seedlessOnboardingController: 'seedless-onboarding-options',
